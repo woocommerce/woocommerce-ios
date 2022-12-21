@@ -63,11 +63,10 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
         }
     }
 
-    @MainActor
     init(username: String,
          password: String,
          siteAddress: String,
-         network: Network? = nil) async throws {
+         network: Network? = nil) throws {
         self.siteAddress = siteAddress
         self.username = username
 

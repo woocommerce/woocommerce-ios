@@ -1,25 +1,6 @@
 import Alamofire
 import Foundation
 
-// TODO: Replace with actual implementation.
-final class TemporaryApplicationPasswordUseCase: ApplicationPasswordUseCase {
-    init(siteID: Int64, credentials: Credentials) {
-        // no-op
-    }
-
-    var applicationPassword: ApplicationPassword? {
-        return nil
-    }
-
-    func generateNewPassword() async throws -> ApplicationPassword {
-        return .init(wpOrgUsername: "test", password: .init("12345"))
-    }
-
-    func deletePassword() async throws {
-        // no-op
-    }
-}
-
 /// Helper class to update requests with authorization header if possible.
 ///
 final class RequestAuthenticator {
@@ -32,16 +13,18 @@ final class RequestAuthenticator {
     private let applicationPasswordUseCase: ApplicationPasswordUseCase?
 
     /// Sets up the authenticator with optional credentials and application password use case.
-    /// `applicationPasswordUseCase` is injectable for testability.
+    /// `applicationPasswordUseCase` can be injected for unit tests.
     ///
     init(credentials: Credentials?, applicationPasswordUseCase: ApplicationPasswordUseCase? = nil) {
         self.credentials = credentials
         let useCase: ApplicationPasswordUseCase? = {
             if let applicationPasswordUseCase {
                 return applicationPasswordUseCase
-            } else if let credentials, case .wporg = credentials {
-                // TODO: setup DefaultApplicationPasswordUseCase
-                return nil
+            } else if let credentials,
+                      case let .wporg(username, password, siteAddress) = credentials {
+                return try? DefaultApplicationPasswordUseCase(username: username,
+                                                              password: password,
+                                                              siteAddress: siteAddress)
             } else {
                 return nil
             }

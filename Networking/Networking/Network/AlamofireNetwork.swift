@@ -2,18 +2,20 @@ import Combine
 import Foundation
 import Alamofire
 
-
 extension Alamofire.MultipartFormData: MultipartFormData {}
 
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
 public class AlamofireNetwork: Network {
-
-    private let backgroundSessionManager: Alamofire.SessionManager
-
     /// WordPress.com Credentials.
     ///
     private let credentials: Credentials?
+
+    private let backgroundSessionManager: Alamofire.SessionManager
+
+    /// Authenticator to update requests authorization header if possible.
+    ///
+    private let requestAuthenticator: RequestAuthenticator
 
     public var session: URLSession { SessionManager.default.session }
 
@@ -21,6 +23,7 @@ public class AlamofireNetwork: Network {
     ///
     public required init(credentials: Credentials?) {
         self.credentials = credentials
+        self.requestAuthenticator = RequestAuthenticator(credentials: credentials)
 
         // A unique ID is included in the background session identifier so that the session does not get invalidated when the initializer is called multiple
         // times (e.g. when logging in).
@@ -45,12 +48,17 @@ public class AlamofireNetwork: Network {
     ///     - Yes. We do the above because the Jetpack Tunnel endpoint doesn't properly relay the correct statusCode.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
-        let request = createRequest(wrapping: request)
-
-        Alamofire.request(request)
-            .responseData { response in
-                completion(response.value, response.networkingError)
+        requestAuthenticator.authenticateRequest(request) { result in
+            switch result {
+            case .success(let request):
+                Alamofire.request(request)
+                    .responseData { response in
+                        completion(response.value, response.networkingError)
+                    }
+            case .failure(let error):
+                completion(nil, error)
             }
+        }
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
@@ -63,10 +71,15 @@ public class AlamofireNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-        let request = createRequest(wrapping: request)
-
-        Alamofire.request(request).responseData { response in
-            completion(response.result.toSwiftResult())
+        requestAuthenticator.authenticateRequest(request) { result in
+            switch result {
+            case .success(let request):
+                Alamofire.request(request).responseData { response in
+                    completion(response.result.toSwiftResult())
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
 
@@ -79,12 +92,17 @@ public class AlamofireNetwork: Network {
     /// - Parameter request: Request that should be performed.
     /// - Returns: A publisher that emits the result of the given request.
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
-        let request = createRequest(wrapping: request)
-
         return Future() { promise in
-            Alamofire.request(request).responseData { response in
-                let result = response.result.toSwiftResult()
-                promise(Swift.Result.success(result))
+            self.requestAuthenticator.authenticateRequest(request) { result in
+                switch result {
+                case .success(let request):
+                    Alamofire.request(request).responseData { response in
+                        let result = response.result.toSwiftResult()
+                        promise(.success(result))
+                    }
+                case .failure(let error):
+                    promise(.success(.failure(error)))
+                }
             }
         }.eraseToAnyPublisher()
     }
@@ -92,13 +110,21 @@ public class AlamofireNetwork: Network {
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
-        let request = createRequest(wrapping: request)
-
-        backgroundSessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
-            switch encodingResult {
-            case .success(let upload, _, _):
-                upload.responseData { response in
-                    completion(response.value, response.error)
+        requestAuthenticator.authenticateRequest(request) { [weak self] result in
+            guard let self else {
+                return completion(nil, nil)
+            }
+            switch result {
+            case .success(let request):
+                self.backgroundSessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
+                    switch encodingResult {
+                    case .success(let upload, _, _):
+                        upload.responseData { response in
+                            completion(response.value, response.error)
+                        }
+                    case .failure(let error):
+                        completion(nil, error)
+                    }
                 }
             case .failure(let error):
                 completion(nil, error)
@@ -106,14 +132,6 @@ public class AlamofireNetwork: Network {
         }
     }
 }
-
-private extension AlamofireNetwork {
-    func createRequest(wrapping request: URLRequestConvertible) -> URLRequestConvertible {
-        credentials.map { AuthenticatedRequest(credentials: $0, request: request) } ??
-        UnauthenticatedRequest(request: request)
-    }
-}
-
 
 // MARK: - Alamofire.DataResponse: Helper Methods
 //

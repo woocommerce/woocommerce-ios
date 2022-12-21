@@ -19,7 +19,6 @@ class AuthenticatedState: StoresManagerState {
     ///
     private var errorObserverToken: NSObjectProtocol?
 
-
     /// Designated Initializer
     ///
     init(credentials: Credentials) {

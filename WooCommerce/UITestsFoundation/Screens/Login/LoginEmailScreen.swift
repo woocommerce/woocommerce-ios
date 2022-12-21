@@ -1,49 +1,54 @@
+import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let navBar = "WordPress.LoginEmailView"
-    static let emailTextField = "Login Email Address"
-    static let nextButton = "Login Email Next Button"
-    static let siteAddressButton = "Self Hosted Login Button"
-}
+public final class LoginEmailScreen: ScreenObject {
 
-final class LoginEmailScreen: BaseScreen {
-    private let navBar: XCUIElement
-    private let emailTextField: XCUIElement
-    private let nextButton: XCUIElement
-    private let siteAddressButton: XCUIElement
-
-    init() {
-        let app = XCUIApplication()
-        navBar = app.navigationBars[ElementStringIDs.navBar]
-        emailTextField = app.textFields[ElementStringIDs.emailTextField]
-        nextButton = app.buttons[ElementStringIDs.nextButton]
-        siteAddressButton = app.buttons[ElementStringIDs.siteAddressButton]
-
-        super.init(element: emailTextField)
+    private let emailButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Login Email Address"]
     }
 
-    func proceedWith(email: String) -> LinkOrPasswordScreen {
-        emailTextField.tap()
-        emailTextField.typeText(email)
+    private let nextButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Login Email Next Button"]
+    }
+
+    private let siteAddressButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Self Hosted Login Button"]
+    }
+
+    private let emailTextFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Self Hosted Login Button"]
+    }
+
+    private var emailButton: XCUIElement { emailButtonGetter(app) }
+    private var nextButton: XCUIElement { nextButtonGetter(app) }
+    private var siteAddressButton: XCUIElement { siteAddressButtonGetter(app) }
+    private var emailTextField: XCUIElement { emailTextFieldGetter(app) }
+
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                emailButtonGetter,
+                emailTextFieldGetter,
+                nextButtonGetter,
+                siteAddressButtonGetter
+            ],
+            app: app
+        )
+    }
+
+    func proceedWith(email: String) throws -> LinkOrPasswordScreen {
+        emailButton.enterText(text: email)
         nextButton.tap()
 
-        return LinkOrPasswordScreen()
+        return try LinkOrPasswordScreen()
     }
 
-    func goToSiteAddressLogin() -> LoginSiteAddressScreen {
+    func goToSiteAddressLogin() throws -> LoginSiteAddressScreen {
         siteAddressButton.tap()
-
-        return LoginSiteAddressScreen()
+        return try LoginSiteAddressScreen()
     }
 
-    static func isLoaded() -> Bool {
-        let expectedElement = XCUIApplication().textFields[ElementStringIDs.emailTextField]
-        return expectedElement.exists && expectedElement.isHittable
-    }
-
-    static func isEmailEntered() -> Bool {
-        let emailTextField = XCUIApplication().textFields[ElementStringIDs.emailTextField]
+    func isEmailEntered() -> Bool {
         return emailTextField.value != nil
     }
 }

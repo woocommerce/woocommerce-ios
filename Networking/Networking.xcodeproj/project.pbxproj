@@ -735,10 +735,10 @@
 		E1BAB2C72913FB5800C3982B /* WordPressApiError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */; };
 		EE338A0E294AF9BD00183934 /* ApplicationPasswordMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE338A0D294AF9BD00183934 /* ApplicationPasswordMapperTests.swift */; };
 		EE54C89F2947782E00A9BF61 /* ApplicationPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE54C89E2947782E00A9BF61 /* ApplicationPasswordUseCase.swift */; };
-		EE54C8A5294859D200A9BF61 /* ApplicationPasswordNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE54C8A4294859D200A9BF61 /* ApplicationPasswordNetwork.swift */; };
 		EE54C8A729486B6800A9BF61 /* ApplicationPasswordMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE54C8A629486B6800A9BF61 /* ApplicationPasswordMapper.swift */; };
+		EE71CC3D2951A8EA0074D908 /* ApplicationPasswordStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71CC3C2951A8EA0074D908 /* ApplicationPasswordStorage.swift */; };
+		EE71CC412951CE700074D908 /* generate-application-password-using-wporg-creds-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE71CC402951CE700074D908 /* generate-application-password-using-wporg-creds-success.json */; };
 		EE8A86F1286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */; };
-		EE8DE42F294AFC58005054E7 /* generate-application-password-using-wpcom-token-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8DE42E294AFC58005054E7 /* generate-application-password-using-wpcom-token-success.json */; };
 		EE8DE432294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */; };
 		EECB7EE8286555180028C888 /* media-update-product-id.json in Resources */ = {isa = PBXBuildFile; fileRef = EECB7EE7286555180028C888 /* media-update-product-id.json */; };
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
@@ -1506,10 +1506,10 @@
 		E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressApiError.swift; sourceTree = "<group>"; };
 		EE338A0D294AF9BD00183934 /* ApplicationPasswordMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordMapperTests.swift; sourceTree = "<group>"; };
 		EE54C89E2947782E00A9BF61 /* ApplicationPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordUseCase.swift; sourceTree = "<group>"; };
-		EE54C8A4294859D200A9BF61 /* ApplicationPasswordNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordNetwork.swift; sourceTree = "<group>"; };
 		EE54C8A629486B6800A9BF61 /* ApplicationPasswordMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordMapper.swift; sourceTree = "<group>"; };
+		EE71CC3C2951A8EA0074D908 /* ApplicationPasswordStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordStorage.swift; sourceTree = "<group>"; };
+		EE71CC402951CE700074D908 /* generate-application-password-using-wporg-creds-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-application-password-using-wporg-creds-success.json"; sourceTree = "<group>"; };
 		EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id-in-wordpress-site.json"; sourceTree = "<group>"; };
-		EE8DE42E294AFC58005054E7 /* generate-application-password-using-wpcom-token-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-application-password-using-wpcom-token-success.json"; sourceTree = "<group>"; };
 		EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultApplicationPasswordUseCaseTests.swift; sourceTree = "<group>"; };
 		EECB7EE7286555180028C888 /* media-update-product-id.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id.json"; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1723,7 +1723,6 @@
 				B518662620A09BCC00037A38 /* MockNetwork.swift */,
 				D87F6150226591E10031A13B /* NullNetwork.swift */,
 				DEFBA7532949CE6600C35BA9 /* RequestAuthenticator.swift */,
-				EE54C8A4294859D200A9BF61 /* ApplicationPasswordNetwork.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -2608,7 +2607,7 @@
 		EE338A0A294AF92A00183934 /* AppliicationPassword */ = {
 			isa = PBXGroup;
 			children = (
-				EE8DE42E294AFC58005054E7 /* generate-application-password-using-wpcom-token-success.json */,
+				EE71CC402951CE700074D908 /* generate-application-password-using-wporg-creds-success.json */,
 			);
 			path = AppliicationPassword;
 			sourceTree = "<group>";
@@ -2617,6 +2616,7 @@
 			isa = PBXGroup;
 			children = (
 				EE54C89E2947782E00A9BF61 /* ApplicationPasswordUseCase.swift */,
+				EE71CC3C2951A8EA0074D908 /* ApplicationPasswordStorage.swift */,
 			);
 			path = ApplicationPassword;
 			sourceTree = "<group>";
@@ -2804,6 +2804,7 @@
 				31A451D027863A2E00FE81AA /* stripe-account-live-live.json in Resources */,
 				740211DF2193985A002248DA /* comment-moderate-spam.json in Resources */,
 				B5147876211B9227007562E5 /* broken-orders-mark-2.json in Resources */,
+				EE71CC412951CE700074D908 /* generate-application-password-using-wporg-creds-success.json in Resources */,
 				3158FE6C26129D2E00E566B9 /* wcpay-account-rejected-terms-of-service.json in Resources */,
 				E16C59B928F927CA007D55BB /* iap-order-create.json in Resources */,
 				31054728262E2FEE00C5C02B /* wcpay-payment-intent-canceled.json in Resources */,
@@ -2811,7 +2812,6 @@
 				31A451D827863A2E00FE81AA /* stripe-account-restricted-overdue.json in Resources */,
 				D865CE69278CA245002C8520 /* stripe-payment-intent-unknown-status.json in Resources */,
 				0205021C27C86B9700FB1C6B /* inbox-note-without-isRead.json in Resources */,
-				EE8DE42F294AFC58005054E7 /* generate-application-password-using-wpcom-token-success.json in Resources */,
 				24F98C622502EFF600F49B68 /* feature-flags-load-all.json in Resources */,
 				DE50296128C609A300551736 /* jetpack-connected-user.json in Resources */,
 				B58D10C82114D21D00107ED4 /* generic_error.json in Resources */,
@@ -3091,6 +3091,7 @@
 				025CA2C0238EB8CB00B05C81 /* ProductShippingClass.swift in Sources */,
 				02C1CEF424C6A02B00703EBA /* ProductVariationMapper.swift in Sources */,
 				3105470C262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift in Sources */,
+				EE71CC3D2951A8EA0074D908 /* ApplicationPasswordStorage.swift in Sources */,
 				311D41302783C0E200052F64 /* StripeRemote.swift in Sources */,
 				267313312559CC930026F7EF /* PaymentGateway.swift in Sources */,
 				B58E5BEA20FFB3D0003C986E /* CodingUserInfoKey+Woo.swift in Sources */,
@@ -3270,7 +3271,6 @@
 				93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */,
 				31D27C8726028CE9002EDB1D /* SitePluginsMapper.swift in Sources */,
 				74D522B62113607F00042831 /* StatGranularity.swift in Sources */,
-				EE54C8A5294859D200A9BF61 /* ApplicationPasswordNetwork.swift in Sources */,
 				02C2549A25636E1500A04423 /* ShippingLabelAddress.swift in Sources */,
 				03DCB786262739D200C8953D /* CouponMapper.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,

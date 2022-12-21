@@ -477,6 +477,7 @@ private extension StoreStatsAndTopPerformersViewController {
         settings.style.buttonBarItemTitleColor = .textSubtle
         settings.style.buttonBarItemsShouldFillAvailableWidth = false
         settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
+        settings.style.buttonBarHeight = TabStrip.tabHeight
 
         changeCurrentIndexProgressive = {
             (oldCell: ButtonBarViewCell?,
@@ -546,6 +547,7 @@ private extension StoreStatsAndTopPerformersViewController {
     enum TabStrip {
         static let buttonLeftRightMargin: CGFloat   = 16.0
         static let selectedBarHeight: CGFloat       = 3.0
+        static let tabHeight: CGFloat               = 36.0
     }
 
     enum Constants {

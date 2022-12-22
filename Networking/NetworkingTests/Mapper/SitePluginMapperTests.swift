@@ -69,6 +69,6 @@ private extension SitePluginMapperTests {
             return nil
         }
 
-        return try? SitePluginMapper(withDataEnvelope: false).map(response: response)
+        return try? SitePluginMapper().map(response: response)
     }
 }

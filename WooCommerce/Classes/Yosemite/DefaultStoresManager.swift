@@ -510,11 +510,11 @@ private extension DefaultStoresManager {
                                                     isWordPressComStore: info.isWPCom)
                         self.sessionManager.defaultSite = updatedSite
                     case .failure(let error):
-                        DDLogWarn("⚠️ Cannot fetch generic site info: \(error)")
+                        DDLogError("⛔️ Cannot fetch generic site info: \(error)")
                     }
                 }
             case .failure(let error):
-                DDLogWarn("⚠️ Cannot fetch WordPress site info: \(error)")
+                DDLogError("⛔️ Cannot fetch WordPress site info: \(error)")
             }
         }
         dispatch(action)

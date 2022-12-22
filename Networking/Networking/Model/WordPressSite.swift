@@ -3,7 +3,7 @@ import Foundation
 /// Represents basic information for a WordPress site.
 ///
 public struct WordPressSite: Decodable, Equatable {
-    
+
     /// Site's Name.
     ///
     public let name: String
@@ -30,6 +30,28 @@ public struct WordPressSite: Decodable, Equatable {
         self.url = url
         self.timezone = timezone
         self.gmtOffset = gmtOffset
+    }
+}
+
+public extension WordPressSite {
+    /// Converts to `Site` with placeholder values for unknown fields.
+    ///
+    func asSite() -> Site {
+        Site(siteID: -1,
+             name: name,
+             description: description,
+             url: url,
+             adminURL: "",
+             loginURL: "",
+             frameNonce: "",
+             plan: "",
+             isJetpackThePluginInstalled: false,
+             isJetpackConnected: false,
+             isWooCommerceActive: true,
+             isWordPressComStore: false,
+             jetpackConnectionActivePlugins: [],
+             timezone: timezone,
+             gmtOffset: gmtOffset)
     }
 }
 

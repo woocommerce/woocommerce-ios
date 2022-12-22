@@ -231,10 +231,11 @@ private extension StatsStoreV4 {
                 switch result {
                 case .success(let siteVisitStats):
                     let totalViews = siteVisitStats.items?.map({ $0.views }).reduce(0, +) ?? 0
+                    let totalVisitors = siteVisitStats.items?.map({ $0.visitors }).reduce(0, +) ?? 0
                     let summaryStats = SiteSummaryStats(siteID: siteID,
                                                         date: siteVisitStats.date,
                                                         period: siteVisitStats.granularity,
-                                                        visitors: siteVisitStats.totalVisitors,
+                                                        visitors: totalVisitors,
                                                         views: totalViews)
                     onCompletion(.success(summaryStats))
                 case .failure(let error):

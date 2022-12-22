@@ -4,7 +4,7 @@ import Foundation
 ///
 public final class WordPressSiteRemote: Remote {
     public func fetchSiteInfo(for siteURL: String) async throws -> WordPressSite {
-        let path = "/wp-json/"
+        let path = "/wp-json"
         guard let url = URL(string: siteURL + path) else {
             throw NetworkError.invalidURL
         }

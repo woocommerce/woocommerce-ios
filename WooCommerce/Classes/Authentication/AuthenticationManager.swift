@@ -800,6 +800,14 @@ private extension AuthenticationManager {
         return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
     }
 
+    /// The error screen to be displayed when the user tries to log in with site credentials
+    /// with application password disabled.
+    ///
+    func applicationPasswordDisabledUI(for siteURL: String) -> UIViewController {
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: siteURL)
+        return ULErrorViewController(viewModel: viewModel)
+    }
+
     /// Checks if the authenticated user is eligible to use the app and navigates to the home screen.
     ///
     func didAuthenticateUser(to siteURL: String,
@@ -815,12 +823,16 @@ private extension AuthenticationManager {
                 self.applicationPasswordUseCase = applicationPasswordUseCase
                 let _ = try await applicationPasswordUseCase.generateNewPassword()
                 // TODO: check for role eligibility & check for Woo
-                // then navigate to home screen immediately with a placeholder store ID
                 await MainActor.run {
+                    // then navigate to home screen immediately with a placeholder store ID
                     startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
                 }
             } catch ApplicationPasswordUseCaseError.applicationPasswordsDisabled {
-                // TODO: show application password disabled error
+                // show application password disabled error
+                await MainActor.run {
+                    let errorUI = applicationPasswordDisabledUI(for: siteURL)
+                    navigationController.show(errorUI, sender: nil)
+                }
             } catch {
                 // TODO: show generic error
             }

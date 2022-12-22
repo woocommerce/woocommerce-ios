@@ -73,7 +73,9 @@ final class RequestAuthenticator {
     /// Attempts creating a request with WPCOM token if possible.
     ///
     private func authenticateUsingWPCOMTokenIfPossible(_ request: URLRequestConvertible) -> URLRequestConvertible {
-        credentials.map { AuthenticatedRequest(credentials: $0, request: request) } ??
-        UnauthenticatedRequest(request: request)
+        if let credentials, case .wpcom = credentials {
+            return AuthenticatedRequest(credentials: credentials, request: request)
+        }
+        return UnauthenticatedRequest(request: request)
     }
 }

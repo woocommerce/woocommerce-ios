@@ -18,7 +18,7 @@ public final class WordPressSiteStore: DeauthenticatedStore {
     }
 
     public override func registerSupportedActions(in dispatcher: Dispatcher) {
-        dispatcher.register(processor: self, for: AccountCreationAction.self)
+        dispatcher.register(processor: self, for: WordPressSiteAction.self)
     }
 
     /// Called whenever a given Action is dispatched.

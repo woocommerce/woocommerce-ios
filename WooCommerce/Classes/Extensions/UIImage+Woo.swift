@@ -37,6 +37,12 @@ extension UIImage {
         return UIImage(named: "icon-analytics")!
     }
 
+    /// App icon (iPhone size)
+    ///
+    static var appIconDefault: UIImage {
+        return UIImage(named: "AppIcon60x60")!
+    }
+
     /// Currency Image
     ///
     static var currencyImage: UIImage {

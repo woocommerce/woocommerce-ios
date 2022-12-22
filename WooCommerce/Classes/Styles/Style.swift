@@ -10,6 +10,14 @@ final class StyleManager {
         return .font(forStyle: .headline, weight: .semibold)
     }
 
+    static var statsFont: UIFont {
+        return self.fontForTextStyle(.title3, weight: .semibold, maximumPointSize: 36.0)
+    }
+
+    static var statsTitleFont: UIFont {
+        return self.fontForTextStyle(.caption2, weight: .regular, maximumPointSize: maxFontSize)
+    }
+
     static var chartLabelFont: UIFont {
         // Dashboard chart needs from a slighly smaller maximum font to be able to fit it when using the biggest accessibility font.
         return self.fontForTextStyle(.caption2, weight: .regular, maximumPointSize: 20.0)

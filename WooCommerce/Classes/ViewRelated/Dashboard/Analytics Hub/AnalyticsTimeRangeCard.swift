@@ -17,13 +17,20 @@ struct AnalyticsTimeRangeCard: View {
     ///
     @State private var showCustomRangeSelectionView: Bool = false
 
-    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+    /// Closure invoked when the time range card is tapped.
+    ///
+    private var onTapped: () -> Void
+
+    /// Closure invoked when a time range is selected.
+    ///
+    private var onSelected: (Range) -> Void
 
     init(viewModel: AnalyticsTimeRangeCardViewModel, selectionType: Binding<AnalyticsHubTimeRangeSelection.SelectionType>) {
         self.timeRangeTitle = viewModel.selectedRangeTitle
         self.currentRangeDescription = viewModel.currentRangeSubtitle
         self.previousRangeDescription = viewModel.previousRangeSubtitle
-        self.usageTracksEventEmitter = viewModel.usageTracksEventEmitter
+        self.onSelected = viewModel.onSelected
+        self.onTapped = viewModel.onTapped
         self._selectionType = selectionType
     }
 
@@ -34,8 +41,7 @@ struct AnalyticsTimeRangeCard: View {
                               items: Range.allCases,
                               contentKeyPath: \.description,
                               selected: internalSelectionBinding()) { selection in
-                    usageTracksEventEmitter.interacted()
-                    ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.tracksIdentifier))
+                    onSelected(selection)
                 }
                 .sheet(isPresented: $showCustomRangeSelectionView) {
                     RangedDatePicker(startDate: selectionType.startDate, endDate: selectionType.endDate, datesFormatter: DatesFormatter()) { start, end in
@@ -49,9 +55,8 @@ struct AnalyticsTimeRangeCard: View {
     private func createTimeRangeContent() -> some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             Button(action: {
-                usageTracksEventEmitter.interacted()
-                ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeButtonTapped())
                 showTimeRangeSelectionView.toggle()
+                onTapped()
             }, label: {
                 HStack {
                     Image(uiImage: .calendar)
@@ -152,8 +157,7 @@ struct TimeRangeCard_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = AnalyticsTimeRangeCardViewModel(selectedRangeTitle: "Month to Date",
                                                         currentRangeSubtitle: "Nov 1 - 23, 2022",
-                                                        previousRangeSubtitle: "Oct 1 - 23, 2022",
-                                                        usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter())
+                                                        previousRangeSubtitle: "Oct 1 - 23, 2022")
         AnalyticsTimeRangeCard(viewModel: viewModel, selectionType: .constant(.monthToDate))
     }
 }

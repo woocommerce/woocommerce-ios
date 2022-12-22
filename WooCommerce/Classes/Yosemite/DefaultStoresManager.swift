@@ -500,7 +500,8 @@ private extension DefaultStoresManager {
             switch result {
             case .success(let site):
                 self.sessionManager.defaultSite = site
-                /// Fetch more site info if possible
+                /// Trigger the `v1.1/connect/site-info` API to get information about
+                /// the site's Jetpack status and whether it's a WPCom site.
                 WordPressAuthenticator.fetchSiteInfo(for: url) { [weak self] result in
                     guard let self else { return }
                     switch result {

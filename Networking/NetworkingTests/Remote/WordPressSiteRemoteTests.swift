@@ -17,7 +17,7 @@ final class WordPressSiteRemoteTests: XCTestCase {
 
     /// Verifies that fetchSiteInfo properly parses the sample response.
     ///
-    func test_fetchSiteInfo_properly_returns_plugins() async throws {
+    func test_fetchSiteInfo_properly_returns_site() async throws {
         let remote = WordPressSiteRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info")
 

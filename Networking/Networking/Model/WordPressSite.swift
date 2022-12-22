@@ -22,9 +22,9 @@ public struct WordPressSite: Decodable, Equatable {
 
     /// Return the website UTC time offset, showing the difference in hours and minutes from UTC, from the westernmost (−12:00) to the easternmost (+14:00).
     ///
-    public let gmtOffset: Double
+    public let gmtOffset: String
 
-    public init(name: String, description: String, url: String, timezone: String, gmtOffset: Double) {
+    public init(name: String, description: String, url: String, timezone: String, gmtOffset: String) {
         self.name = name
         self.description = description
         self.url = url
@@ -37,12 +37,12 @@ public extension WordPressSite {
     /// Converts to `Site` with placeholder values for unknown fields.
     ///
     func asSite() -> Site {
-        Site(siteID: -1,
+        .init(siteID: -1, // Placeholder site ID
              name: name,
              description: description,
              url: url,
-             adminURL: "",
-             loginURL: "",
+             adminURL: url + "/wp-admin", // this would not work for sites with custom URLs
+             loginURL: url + "/wp-login.php", // this would not work for sites with custom URLs
              frameNonce: "",
              plan: "",
              isJetpackThePluginInstalled: false,
@@ -51,7 +51,7 @@ public extension WordPressSite {
              isWordPressComStore: false,
              jetpackConnectionActivePlugins: [],
              timezone: timezone,
-             gmtOffset: gmtOffset)
+             gmtOffset: Double(gmtOffset) ?? 0)
     }
 }
 

@@ -92,6 +92,17 @@ final class SessionManager: SessionManagerProtocol {
         }
     }
 
+    /// URL of the default store.
+    ///
+    var defaultStoreURL: String? {
+        switch defaultCredentials {
+        case .none:
+            return nil
+        case .some(let wrapped):
+            return wrapped.siteAddress
+        }
+    }
+
     /// Roles for the default Store Site.
     ///
     var defaultRoles: [User.Role] {

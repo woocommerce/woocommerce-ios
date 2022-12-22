@@ -10,6 +10,7 @@ public struct MockSessionManager: SessionManagerProtocol {
         defaultAccount = objectGraph.defaultAccount
         defaultSite = objectGraph.defaultSite
         defaultStoreID = objectGraph.defaultSite.siteID
+        defaultStoreURL = objectGraph.defaultSite.url
         defaultStoreIDPublisher = Just(objectGraph.defaultSite.siteID).eraseToAnyPublisher()
         defaultCredentials = objectGraph.userCredentials
     }
@@ -25,6 +26,8 @@ public struct MockSessionManager: SessionManagerProtocol {
     }
 
     public var defaultStoreID: Int64?
+
+    public var defaultStoreURL: String?
 
     public var defaultRoles: [User.Role] = []
 

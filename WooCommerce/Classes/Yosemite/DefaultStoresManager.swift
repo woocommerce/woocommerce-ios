@@ -508,7 +508,7 @@ private extension DefaultStoresManager {
                         let updatedSite = site.copy(isJetpackThePluginInstalled: info.hasJetpack,
                                                     isJetpackConnected: info.isJetpackConnected,
                                                     isWordPressComStore: info.isWPCom)
-                        self.sessionManager.defaultSite = site
+                        self.sessionManager.defaultSite = updatedSite
                     case .failure(let error):
                         DDLogWarn("⚠️ Cannot fetch generic site info: \(error)")
                     }

@@ -40,7 +40,7 @@ private extension WordPressSiteStore {
         Task {
             do {
                 let wpSite = try await remote.fetchSiteInfo(for: siteURL)
-                let site = wpSite.asSite()
+                let site = wpSite.asSite
                 await MainActor.run {
                     completion(.success(site))
                 }

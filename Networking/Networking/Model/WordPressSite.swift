@@ -36,34 +36,39 @@ public struct WordPressSite: Decodable, Equatable {
 public extension WordPressSite {
     /// Converts to `Site` with placeholder values for unknown fields.
     ///
-    func asSite() -> Site {
-        .init(siteID: -1, // Placeholder site ID
-             name: name,
-             description: description,
-             url: url,
-             adminURL: url + "/wp-admin", // this would not work for sites with custom URLs
-             loginURL: url + "/wp-login.php", // this would not work for sites with custom URLs
-             frameNonce: "",
-             plan: "",
-             isJetpackThePluginInstalled: false,
-             isJetpackConnected: false,
-             isWooCommerceActive: true,
-             isWordPressComStore: false,
-             jetpackConnectionActivePlugins: [],
-             timezone: timezone,
-             gmtOffset: Double(gmtOffset) ?? 0)
+    var asSite: Site {
+        .init(siteID: Constants.placeholderSiteID, // Placeholder site ID
+              name: name,
+              description: description,
+              url: url,
+              adminURL: url + Constants.adminPath, // this would not work for sites with custom URLs
+              loginURL: url + Constants.loginPath, // this would not work for sites with custom URLs
+              frameNonce: "",
+              plan: "",
+              isJetpackThePluginInstalled: false,
+              isJetpackConnected: false,
+              isWooCommerceActive: true, // we expect to only call this after checking Woo is active
+              isWordPressComStore: false,
+              jetpackConnectionActivePlugins: [],
+              timezone: timezone,
+              gmtOffset: Double(gmtOffset) ?? 0)
     }
 }
 
 /// Defines all of the WordPressSite CodingKeys
 ///
 private extension WordPressSite {
-
     enum CodingKeys: String, CodingKey {
         case name
         case description
         case url
         case timezone = "timezone_string"
         case gmtOffset = "gmt_offset"
+    }
+
+    enum Constants {
+        static let placeholderSiteID: Int64 = -1
+        static let adminPath = "/wp-admin"
+        static let loginPath = "/wp-login.php"
     }
 }

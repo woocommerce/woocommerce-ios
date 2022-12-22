@@ -37,7 +37,7 @@ public extension WordPressSite {
     /// Converts to `Site` with placeholder values for unknown fields.
     ///
     var asSite: Site {
-        .init(siteID: Constants.placeholderSiteID, // Placeholder site ID
+        .init(siteID: WooConstants.placeholderSiteID, // Placeholder site ID
               name: name,
               description: description,
               url: url,
@@ -67,7 +67,6 @@ private extension WordPressSite {
     }
 
     enum Constants {
-        static let placeholderSiteID: Int64 = -1
         static let adminPath = "/wp-admin"
         static let loginPath = "/wp-login.php"
     }

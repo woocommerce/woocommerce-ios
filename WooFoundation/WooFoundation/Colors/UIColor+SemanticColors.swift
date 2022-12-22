@@ -181,9 +181,12 @@ public extension UIColor {
         return .separator
     }
 
-    /// Primary Button Background. Resolves to `accent`
+    /// Primary Button Background.
     ///
-    static var primaryButtonBackground = accent
+    static var primaryButtonBackground: UIColor {
+        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+                       dark: .withColorStudio(.wooCommercePurple, shade: .shade50))
+    }
 
     /// Primary Button Title.
     ///

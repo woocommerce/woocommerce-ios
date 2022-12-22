@@ -3,11 +3,3 @@ protocol ResponseDataValidator {
     ///
     func validate(data: Data) throws -> Void
 }
-
-/// Placeholder implementation for `ResponseDataValidator`.
-///
-final class PlaceholderDataValidator: ResponseDataValidator {
-    func validate(data: Data) throws {
-        // no-op
-    }
-}

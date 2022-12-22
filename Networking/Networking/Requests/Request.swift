@@ -12,9 +12,3 @@ protocol Request: URLRequestConvertible {
     ///
     func responseDataValidator() -> ResponseDataValidator
 }
-
-extension URLRequest: Request {
-    func responseDataValidator() -> ResponseDataValidator {
-        PlaceholderDataValidator()
-    }
-}

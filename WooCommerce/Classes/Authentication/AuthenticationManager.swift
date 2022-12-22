@@ -8,7 +8,8 @@ import enum Experiments.ABTest
 import struct Networking.Settings
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
-
+import class Networking.DefaultApplicationPasswordUseCase
+import enum Networking.ApplicationPasswordUseCaseError
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
@@ -44,6 +45,9 @@ class AuthenticationManager: Authentication {
     private let featureFlagService: FeatureFlagService
 
     private let analytics: Analytics
+
+    /// Keep strong reference of the use case to check for application password availability if necessary.
+    private var applicationPasswordUseCase: DefaultApplicationPasswordUseCase?
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -802,9 +806,25 @@ private extension AuthenticationManager {
                              with siteCredentials: WordPressOrgCredentials,
                              in navigationController: UINavigationController,
                              source: SignInSource?) {
-        // TODO: check if application password is enabled & check for role eligibility & check for Woo
-        // then navigate to home screen immediately with a placeholder store ID
-        startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+        // check if application password is enabled
+        Task {
+            do {
+                let applicationPasswordUseCase = try DefaultApplicationPasswordUseCase(username: siteCredentials.username,
+                                                                                       password: siteCredentials.password,
+                                                                                       siteAddress: siteCredentials.siteURL)
+                self.applicationPasswordUseCase = applicationPasswordUseCase
+                let _ = try await applicationPasswordUseCase.generateNewPassword()
+                // TODO: check for role eligibility & check for Woo
+                // then navigate to home screen immediately with a placeholder store ID
+                await MainActor.run {
+                    startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+                }
+            } catch ApplicationPasswordUseCaseError.applicationPasswordsDisabled {
+                // TODO: show application password disabled error
+            } catch {
+                // TODO: show generic error
+            }
+        }
     }
 }
 

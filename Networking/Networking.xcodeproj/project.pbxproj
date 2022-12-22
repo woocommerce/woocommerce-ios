@@ -678,6 +678,7 @@
 		DE2E8E9D29530EEF002E4B14 /* WordPressSite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8E9C29530EEF002E4B14 /* WordPressSite.swift */; };
 		DE2E8E9F295310C5002E4B14 /* WordPressSiteMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8E9E295310C5002E4B14 /* WordPressSiteMapper.swift */; };
 		DE2E8EA12953115C002E4B14 /* WordPressSiteRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EA02953115C002E4B14 /* WordPressSiteRemote.swift */; };
+		DE2E8EA9295416C9002E4B14 /* wordpress-site-info.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2E8EA8295416C9002E4B14 /* wordpress-site-info.json */; };
 		DE34051328BDCA5100CF0D97 /* WordPressOrgRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051228BDCA5100CF0D97 /* WordPressOrgRequest.swift */; };
 		DE34051528BDEB1900CF0D97 /* WordPressOrgNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051428BDEB1900CF0D97 /* WordPressOrgNetwork.swift */; };
 		DE34051728BDEB6D00CF0D97 /* JetpackConnectionRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051628BDEB6D00CF0D97 /* JetpackConnectionRemote.swift */; };
@@ -1452,6 +1453,7 @@
 		DE2E8E9C29530EEF002E4B14 /* WordPressSite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSite.swift; sourceTree = "<group>"; };
 		DE2E8E9E295310C5002E4B14 /* WordPressSiteMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteMapper.swift; sourceTree = "<group>"; };
 		DE2E8EA02953115C002E4B14 /* WordPressSiteRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteRemote.swift; sourceTree = "<group>"; };
+		DE2E8EA8295416C9002E4B14 /* wordpress-site-info.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wordpress-site-info.json"; sourceTree = "<group>"; };
 		DE34051228BDCA5100CF0D97 /* WordPressOrgRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressOrgRequest.swift; sourceTree = "<group>"; };
 		DE34051428BDEB1900CF0D97 /* WordPressOrgNetwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordPressOrgNetwork.swift; sourceTree = "<group>"; };
 		DE34051628BDEB6D00CF0D97 /* JetpackConnectionRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JetpackConnectionRemote.swift; sourceTree = "<group>"; };
@@ -2052,6 +2054,7 @@
 			children = (
 				EE338A0A294AF92A00183934 /* AppliicationPassword */,
 				DE9DEEF4291CF1B40070AD7C /* site-plugin-without-envelope.json */,
+				DE2E8EA8295416C9002E4B14 /* wordpress-site-info.json */,
 				028CB714290223CB00331C09 /* account-username-suggestions.json */,
 				028CB71C2902589E00331C09 /* create-account-error-email-exists.json */,
 				028CB71D2902589E00331C09 /* create-account-error-invalid-email.json */,
@@ -3000,6 +3003,7 @@
 				31A451D127863A2E00FE81AA /* stripe-account-rejected-other.json in Resources */,
 				74ABA1CA213F19FE00FFAD30 /* top-performers-year.json in Resources */,
 				31A451CF27863A2E00FE81AA /* stripe-account-rejected-terms-of-service.json in Resources */,
+				DE2E8EA9295416C9002E4B14 /* wordpress-site-info.json in Resources */,
 				268EC45C26C169F600716F5C /* order-with-faulty-attributes.json in Resources */,
 				45AB8B0F24AA29DC00B5B36E /* product-tags-created.json in Resources */,
 				3158FE8426129F3A00E566B9 /* wcpay-account-unknown-status.json in Resources */,

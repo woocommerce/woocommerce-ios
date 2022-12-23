@@ -50,7 +50,8 @@ struct RESTRequest: URLRequestConvertible {
     /// Returns a URLRequest instance representing the current REST API Request.
     ///
     func asURLRequest() throws -> URLRequest {
-        let url = try (siteURL.removingSuffix("/") + Settings.basePath + wooApiVersion.path.removingPrefix("/") + path.removingPrefix("/")).asURL()
+        let components = [siteURL, Settings.basePath, wooApiVersion.path, path].map { $0.trimSlashes() }
+        let url = try components.joined(separator: "/").asURL()
         let request = try URLRequest(url: url, method: method)
         return try URLEncoding.default.encode(request, with: parameters)
     }
@@ -79,6 +80,16 @@ extension RESTRequest {
 
 private extension RESTRequest {
     enum Settings {
-        static let basePath = "/wp-json/"
+        static let basePath = "wp-json"
+    }
+}
+
+private extension String {
+    /// Trims front slash
+    ///
+    /// - Returns: String after removing prefix and suffix "/"
+    ///
+    func trimSlashes() -> String {
+        removingPrefix("/").removingSuffix("/")
     }
 }

@@ -59,7 +59,7 @@ extension RESTRequest {
         request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
         let username = applicationPassword.wpOrgUsername
-        let password = applicationPassword.wpOrgUsername
+        let password = applicationPassword.password.secretValue
         let loginString = "\(username):\(password)"
         guard let loginData = loginString.data(using: .utf8) else {
             return request

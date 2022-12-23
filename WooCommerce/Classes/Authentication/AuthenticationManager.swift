@@ -505,7 +505,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         if let wporg = credentials.wporg,
             featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin) {
             ServiceLocator.stores.authenticate(credentials: .wporg(username: wporg.username,
-                                                                   password: wporg.username,
+                                                                   password: wporg.password,
                                                                    siteAddress: wporg.siteURL))
             return onCompletion()
         }

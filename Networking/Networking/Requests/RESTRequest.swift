@@ -8,6 +8,10 @@ struct RESTRequest: URLRequestConvertible {
     ///
     let siteURL: String
 
+    /// WooCommerce API Version
+    ///
+    let wooApiVersion: WooAPIVersion
+
     /// HTTP Request Method
     ///
     let method: HTTPMethod
@@ -32,10 +36,12 @@ struct RESTRequest: URLRequestConvertible {
     ///     - fallbackRequest: A fallback Jetpack request to trigger if the REST request cannot be made.
     ///
     init(siteURL: String,
+         wooApiVersion: WooAPIVersion,
          method: HTTPMethod,
          path: String,
          parameters: [String: Any] = [:]) {
         self.siteURL = siteURL
+        self.wooApiVersion = wooApiVersion
         self.method = method
         self.path = path
         self.parameters = parameters
@@ -44,7 +50,8 @@ struct RESTRequest: URLRequestConvertible {
     /// Returns a URLRequest instance representing the current REST API Request.
     ///
     func asURLRequest() throws -> URLRequest {
-        let url = try (siteURL + path).asURL()
+        let components = [siteURL, Settings.basePath, wooApiVersion.path, path].map { $0.trimSlashes() }
+        let url = try components.joined(separator: "/").asURL()
         let request = try URLRequest(url: url, method: method)
         return try URLEncoding.default.encode(request, with: parameters)
     }
@@ -59,7 +66,7 @@ extension RESTRequest {
         request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
         let username = applicationPassword.wpOrgUsername
-        let password = applicationPassword.wpOrgUsername
+        let password = applicationPassword.password.secretValue
         let loginString = "\(username):\(password)"
         guard let loginData = loginString.data(using: .utf8) else {
             return request
@@ -68,5 +75,21 @@ extension RESTRequest {
 
         request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
         return request
+    }
+}
+
+private extension RESTRequest {
+    enum Settings {
+        static let basePath = "wp-json"
+    }
+}
+
+private extension String {
+    /// Trims front slash
+    ///
+    /// - Returns: String after removing prefix and suffix "/"
+    ///
+    func trimSlashes() -> String {
+        removingPrefix("/").removingSuffix("/")
     }
 }

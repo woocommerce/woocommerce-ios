@@ -1,6 +1,7 @@
 import Foundation
 import WordPressShared
 import WordPressKit
+import enum Alamofire.AFError
 
 public enum ApplicationPasswordUseCaseError: Error {
     case duplicateName
@@ -140,20 +141,28 @@ private extension DefaultApplicationPasswordUseCase {
                 switch result {
                 case .success(let data):
                     do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
                         let mapper = ApplicationPasswordMapper()
                         let password = try mapper.map(response: data)
                         continuation.resume(returning: password)
-                    } catch let DotcomError.unknown(code, _) where code == ErrorCode.applicationPasswordsDisabledErrorCode {
-                        continuation.resume(throwing: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
-                    } catch let DotcomError.unknown(code, _) where code == ErrorCode.duplicateNameErrorCode {
-                        continuation.resume(throwing: ApplicationPasswordUseCaseError.duplicateName)
                     } catch {
                         continuation.resume(throwing: error)
                     }
                 case .failure(let error):
-                    continuation.resume(throwing: error)
+                    guard let error = error as? AFError else {
+                        continuation.resume(throwing: error)
+                        return
+                    }
+
+                    switch error {
+                    case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.notFound)):
+                        continuation.resume(throwing: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
+                    case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.applicationPasswordsDisabledErrorCode)):
+                        continuation.resume(throwing: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
+                    case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.duplicateNameErrorCode)):
+                        continuation.resume(throwing: ApplicationPasswordUseCaseError.duplicateName)
+                    default:
+                        continuation.resume(throwing: error)
+                    }
                 }
             }
         }
@@ -172,14 +181,8 @@ private extension DefaultApplicationPasswordUseCase {
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
                 switch result {
-                case .success(let data):
-                    do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
-                        continuation.resume()
-                    } catch {
-                        continuation.resume(throwing: error)
-                    }
+                case .success:
+                    continuation.resume()
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 }
@@ -200,8 +203,9 @@ private extension DefaultApplicationPasswordUseCase {
     }
 
     enum ErrorCode {
-        static let applicationPasswordsDisabledErrorCode = "application_passwords_disabled"
-        static let duplicateNameErrorCode = "application_password_duplicate_name"
+        static let notFound = 404
+        static let applicationPasswordsDisabledErrorCode = 501
+        static let duplicateNameErrorCode = 409
     }
 
     enum Constants {

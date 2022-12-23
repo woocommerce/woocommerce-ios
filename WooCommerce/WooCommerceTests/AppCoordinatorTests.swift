@@ -54,7 +54,7 @@ final class AppCoordinatorTests: XCTestCase {
     func test_starting_app_logged_in_without_selected_site_presents_store_picker_if_there_are_connected_stores() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = nil
 
         let site = Site.fake().copy(siteID: 123, isWooCommerceActive: true)
@@ -72,7 +72,7 @@ final class AppCoordinatorTests: XCTestCase {
     func test_starting_app_logged_in_without_selected_site_presents_store_picker_if_there_are_no_connected_stores() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = nil
 
         let site = Site.fake().copy(siteID: 123, isWooCommerceActive: false)
@@ -90,7 +90,7 @@ final class AppCoordinatorTests: XCTestCase {
     func test_starting_app_logged_in_without_selected_site_presents_account_mismatched_if_there_is_no_store_matching_the_error_site_address() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = nil
 
         let site = Site.fake().copy(siteID: 123, url: "https://abc.com", isWooCommerceActive: true)
@@ -118,7 +118,7 @@ final class AppCoordinatorTests: XCTestCase {
     func test_starting_app_logged_in_without_selected_site_presents_error_if_the_error_site_address_does_not_have_woo() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = nil
 
         let siteURL = "https://test.com"
@@ -146,7 +146,7 @@ final class AppCoordinatorTests: XCTestCase {
 
     func test_starting_app_logged_in_with_selected_site_stays_on_tabbar() throws {
         // Given
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             guard case let AppSettingsAction.loadEligibilityErrorInfo(completion) = action else {
                 return
@@ -166,7 +166,7 @@ final class AppCoordinatorTests: XCTestCase {
 
     func test_starting_app_logged_in_with_selected_site_and_ineligible_status_presents_role_error() throws {
         // Given
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             guard case let AppSettingsAction.loadEligibilityErrorInfo(completion) = action else {
                 return
@@ -192,7 +192,7 @@ final class AppCoordinatorTests: XCTestCase {
 
     func test_starting_app_logged_in_then_logging_out_presents_authentication() throws {
         // Given
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = 134
         let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
 

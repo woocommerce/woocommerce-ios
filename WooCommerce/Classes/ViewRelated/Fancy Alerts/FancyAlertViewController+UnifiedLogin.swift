@@ -58,7 +58,7 @@ extension FancyAlertViewController {
                                              restartLoginAction: @escaping () -> Void) -> FancyAlertViewController {
         let retryButton = makeRetryButtonConfig(retryAction: retryAction)
         let loginButton = makeLoginButtonConfig(loginAction: restartLoginAction)
-        let config = FancyAlertViewController.Config(titleText: nil,
+        let config = FancyAlertViewController.Config(titleText: Localization.cannotLogin,
                                                      bodyText: Localization.applicationPasswordError,
                                                      headerImage: nil,
                                                      dividerPosition: .top,
@@ -126,7 +126,11 @@ private extension FancyAlertViewController {
             comment: "Error message displayed when application password cannot be fetched after authentication."
         )
         static let retryButton = NSLocalizedString("Try Again", comment: "Button to refetch application password for the current site")
-        static let retryLoginButton = NSLocalizedString("Log in to another site", comment: "Button to restart the login flow.")
+        static let retryLoginButton = NSLocalizedString("Log In With Another Account", comment: "Button to restart the login flow.")
+        static let cannotLogin = NSLocalizedString(
+            "Cannot log in",
+            comment: "Title of the alert displayed when application password cannot be fetched after authentication"
+        )
     }
 
     enum Strings {

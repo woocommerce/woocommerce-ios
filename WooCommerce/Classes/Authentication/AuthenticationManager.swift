@@ -9,6 +9,7 @@ import enum Experiments.ABTest
 import struct Networking.Settings
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
+import protocol Networking.ApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
 import enum Networking.ApplicationPasswordUseCaseError
 
@@ -48,7 +49,7 @@ class AuthenticationManager: Authentication {
     private let analytics: Analytics
 
     /// Keep strong reference of the use case to check for application password availability if necessary.
-    private var applicationPasswordUseCase: DefaultApplicationPasswordUseCase?
+    private var applicationPasswordUseCase: ApplicationPasswordUseCase?
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -816,17 +817,30 @@ private extension AuthenticationManager {
                              in navigationController: UINavigationController,
                              source: SignInSource?) {
         // check if application password is enabled
+        guard let applicationPasswordUseCase = try? DefaultApplicationPasswordUseCase(username: siteCredentials.username,
+                                                                               password: siteCredentials.password,
+                                                                                      siteAddress: siteCredentials.siteURL) else {
+            return assertionFailure("⛔️ Error creating application password use case")
+        }
+        self.applicationPasswordUseCase = applicationPasswordUseCase
+        checkApplicationPassword(for: siteURL,
+                                 with: applicationPasswordUseCase,
+                                 in: navigationController) { [weak self] in
+            guard let self else { return }
+            // TODO: check for role eligibility & check for Woo
+            // navigates to home screen immediately with a placeholder store ID
+            self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+        }
+    }
+
+    func checkApplicationPassword(for siteURL: String,
+                                  with useCase: ApplicationPasswordUseCase,
+                                  in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
         Task {
             do {
-                let applicationPasswordUseCase = try DefaultApplicationPasswordUseCase(username: siteCredentials.username,
-                                                                                       password: siteCredentials.password,
-                                                                                       siteAddress: siteCredentials.siteURL)
-                self.applicationPasswordUseCase = applicationPasswordUseCase
-                let _ = try await applicationPasswordUseCase.generateNewPassword()
-                // TODO: check for role eligibility & check for Woo
+                let _ = try await useCase.generateNewPassword()
                 await MainActor.run {
-                    // then navigate to home screen immediately with a placeholder store ID
-                    startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+                    onSuccess()
                 }
             } catch ApplicationPasswordUseCaseError.applicationPasswordsDisabled {
                 // show application password disabled error
@@ -839,7 +853,7 @@ private extension AuthenticationManager {
                 await MainActor.run {
                     DDLogError("⛔️ Error generating application password: \(error)")
                     let alert = FancyAlertViewController.makeApplicationPasswordAlert(retryAction: { [weak self] in
-                        self?.didAuthenticateUser(to: siteURL, with: siteCredentials, in: navigationController, source: source)
+                        self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController, onSuccess: onSuccess)
                     }, restartLoginAction: {
                         ServiceLocator.stores.deauthenticate()
                         navigationController.popToRootViewController(animated: true)

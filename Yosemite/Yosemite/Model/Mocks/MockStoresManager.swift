@@ -67,26 +67,25 @@ public class MockStoresManager: StoresManager {
         cardPresentPaymentActionHandler = MockCardPresentPaymentActionHandler(objectGraph: objectGraph, storageManager: storageManager)
     }
 
-    /// Accessor for whether the user is logged in (spoiler: they always will be when mocking)
+    /// Accessor for whether the user is logged in with WPCom (spoiler: they always will be when mocking)
     ///
-    public var isLoggedInPublisher: AnyPublisher<Bool, Never> {
-        isLoggedInSubject.eraseToAnyPublisher()
-    }
-
-    /// Accessor for whether the user is logged in with WPCom.
-    /// (spoiler: they always will be when mocking)
-    ///
-    public var isWPComAuthenticatedPublisher: AnyPublisher<Bool, Never> {
+    public var isLoggedInWithWPComPublisher: AnyPublisher<Bool, Never> {
         isLoggedInWithWPComSubject.eraseToAnyPublisher()
     }
 
-    /// The backing object for `isLoggedIn`
+    /// Accessor for whether the user is logged in with application password.
     ///
-    private let isLoggedInSubject = CurrentValueSubject<Bool, Never>(true)
+    public var isLoggedInWithoutWPComPublisher: AnyPublisher<Bool, Never> {
+        isLoggedInWithoutWPComSubject.eraseToAnyPublisher()
+    }
 
-    /// The backing object for `isWPComAuthenticated`
+    /// The backing object for `isLoggedInWithWPComPublisher`
     ///
     private let isLoggedInWithWPComSubject = CurrentValueSubject<Bool, Never>(true)
+
+    /// The backing object for `isLoggedInWithoutWPComPublisher`
+    ///
+    private let isLoggedInWithoutWPComSubject = CurrentValueSubject<Bool, Never>(false)
 
     /// A mock session manager that aligns with our mock object graph
     ///

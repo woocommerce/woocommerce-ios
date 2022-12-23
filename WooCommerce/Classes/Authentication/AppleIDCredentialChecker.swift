@@ -38,7 +38,7 @@ final class AppleIDCredentialChecker: AppleIDCredentialCheckerProtocol {
     }
 
     func observeLoggedInStateForAppleIDObservations() {
-        cancellable = stores.isLoggedInPublisher.sink { [weak self] isLoggedIn in
+        cancellable = stores.isLoggedInWithWPComPublisher.sink { [weak self] isLoggedIn in
             if isLoggedIn {
                 self?.startObservingAppleIDCredentialRevoked()
             } else {

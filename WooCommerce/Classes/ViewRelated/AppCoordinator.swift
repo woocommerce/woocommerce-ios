@@ -61,24 +61,28 @@ final class AppCoordinator {
     }
 
     func start() {
-        authStatesSubscription = Publishers.CombineLatest3(stores.isLoggedInPublisher, stores.isWPComAuthenticatedPublisher, stores.needsDefaultStorePublisher)
-            .sink {  [weak self] (isLoggedIn, isWPComAuthenticated, needsDefaultStore) in
+        authStatesSubscription = Publishers.CombineLatest3(
+            stores.isLoggedInWithWPComPublisher,
+            stores.isLoggedInWithoutWPComPublisher,
+            stores.needsDefaultStorePublisher
+        )
+            .sink {  [weak self] (isWPComAuthenticated, isAppPasswordAuthenticated, needsDefaultStore) in
                 guard let self = self else { return }
 
                 // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
-                switch (isLoggedIn, isWPComAuthenticated, needsDefaultStore) {
-                case (false, _, true), (false, _, false), (true, false, true):
+                switch (isWPComAuthenticated, isAppPasswordAuthenticated, needsDefaultStore) {
+                case (false, false, _), (false, true, true):
                     self.displayAuthenticatorWithOnboardingIfNeeded()
-                case (true, true, true):
+                case (true, _, true):
                     self.displayLoggedInStateWithoutDefaultStore()
-                case (true, _, false):
+                case (true, _, false), (_, true, false):
                     self.validateRoleEligibility {
                         self.configureAuthenticator()
                         self.displayLoggedInUI()
                         self.synchronizeAndShowWhatsNew()
                     }
                 }
-                self.isLoggedIn = isLoggedIn
+                self.isLoggedIn = isWPComAuthenticated || isAppPasswordAuthenticated
             }
 
         localNotificationResponsesSubscription = pushNotesManager.localNotificationUserResponses.sink { [weak self] response in

@@ -29,9 +29,11 @@ final class StoresManagerTests: XCTestCase {
         // Action
         let manager = DefaultStoresManager.testingInstance
         var isLoggedInValues = [Bool]()
-        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
-            isLoggedInValues.append(isLoggedIn)
-        }
+        cancellable = Publishers.CombineLatest(manager.isLoggedInWithWPComPublisher,
+                                               manager.isLoggedInWithoutWPComPublisher)
+            .sink { isLoggedInWithWPCom, isLoggedInWithoutWPCom in
+                isLoggedInValues.append(isLoggedInWithWPCom || isLoggedInWithoutWPCom)
+            }
 
         // Assert
         XCTAssertFalse(manager.isAuthenticated)
@@ -49,9 +51,11 @@ final class StoresManagerTests: XCTestCase {
         // Action
         let manager = DefaultStoresManager.testingInstance
         var isLoggedInValues = [Bool]()
-        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
-            isLoggedInValues.append(isLoggedIn)
-        }
+        cancellable = Publishers.CombineLatest(manager.isLoggedInWithWPComPublisher,
+                                               manager.isLoggedInWithoutWPComPublisher)
+            .sink { isLoggedInWithWPCom, isLoggedInWithoutWPCom in
+                isLoggedInValues.append(isLoggedInWithWPCom || isLoggedInWithoutWPCom)
+            }
 
         // Assert
         XCTAssertTrue(manager.isAuthenticated)
@@ -65,9 +69,11 @@ final class StoresManagerTests: XCTestCase {
         // Arrange
         let manager = DefaultStoresManager.testingInstance
         var isLoggedInValues = [Bool]()
-        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
-            isLoggedInValues.append(isLoggedIn)
-        }
+        cancellable = Publishers.CombineLatest(manager.isLoggedInWithWPComPublisher,
+                                               manager.isLoggedInWithoutWPComPublisher)
+            .sink { isLoggedInWithWPCom, isLoggedInWithoutWPCom in
+                isLoggedInValues.append(isLoggedInWithWPCom || isLoggedInWithoutWPCom)
+            }
 
         // Action
         manager.authenticate(credentials: SessionSettings.credentials)
@@ -84,9 +90,11 @@ final class StoresManagerTests: XCTestCase {
         let mockAuthenticationManager = MockAuthenticationManager()
         let manager = DefaultStoresManager.testingInstance
         var isLoggedInValues = [Bool]()
-        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
-            isLoggedInValues.append(isLoggedIn)
-        }
+        cancellable = Publishers.CombineLatest(manager.isLoggedInWithWPComPublisher,
+                                               manager.isLoggedInWithoutWPComPublisher)
+            .sink { isLoggedInWithWPCom, isLoggedInWithoutWPCom in
+                isLoggedInValues.append(isLoggedInWithWPCom || isLoggedInWithoutWPCom)
+            }
         let appCoordinator = AppCoordinator(window: UIWindow(frame: .zero), stores: manager, authenticationManager: mockAuthenticationManager)
         appCoordinator.start()
 
@@ -117,9 +125,11 @@ final class StoresManagerTests: XCTestCase {
         // Arrange
         let manager = DefaultStoresManager.testingInstance
         var isLoggedInValues = [Bool]()
-        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
-            isLoggedInValues.append(isLoggedIn)
-        }
+        cancellable = Publishers.CombineLatest(manager.isLoggedInWithWPComPublisher,
+                                               manager.isLoggedInWithoutWPComPublisher)
+            .sink { isLoggedInWithWPCom, isLoggedInWithoutWPCom in
+                isLoggedInValues.append(isLoggedInWithWPCom || isLoggedInWithoutWPCom)
+            }
 
         // Action
         manager.authenticate(credentials: SessionSettings.credentials)

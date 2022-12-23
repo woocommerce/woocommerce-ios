@@ -45,13 +45,13 @@ public protocol StoresManager {
     ///
     var isAuthenticated: Bool { get }
 
-    /// Publishes signal that indicates if the user is currently logged in with credentials.
-    ///
-    var isLoggedInPublisher: AnyPublisher<Bool, Never> { get }
-
     /// Publishes signal that indicates if the user is currently logged in with WPCom.
     ///
-    var isWPComAuthenticatedPublisher: AnyPublisher<Bool, Never> { get }
+    var isLoggedInWithWPComPublisher: AnyPublisher<Bool, Never> { get }
+
+    /// Publishes signal that indicates if the user is currently logged in with application password.
+    ///
+    var isLoggedInWithoutWPComPublisher: AnyPublisher<Bool, Never> { get }
 
     /// The currently logged in store/site ID. Nil when the app is logged out.
     ///

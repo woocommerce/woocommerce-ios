@@ -181,7 +181,7 @@ final class InAppPurchaseStoreTests: XCTestCase {
             do {
                 let isEntitled = try await userIsEntitledToProduct()
                 // Then
-                XCTAssertFalse(isEntitled)
+                XCTAssertFalse(try isEntitled.get())
             } catch {
                 XCTAssert(error is WordPressApiError)
             }
@@ -197,7 +197,7 @@ final class InAppPurchaseStoreTests: XCTestCase {
             do {
                 let isEntitled = try await userIsEntitledToProduct()
                 // Then
-                XCTAssertTrue(isEntitled)
+                XCTAssertTrue( try isEntitled.get())
             } catch {
                 XCTAssert(error is WordPressApiError)
             }
@@ -207,10 +207,10 @@ final class InAppPurchaseStoreTests: XCTestCase {
 
 private extension InAppPurchaseStoreTests {
     // Returns whether the user is entitled the product identified with the passed ID
-    func userIsEntitledToProduct() async throws -> Bool {
-        await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
-            let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { _ in
-                continuation.resume(returning: (true))
+    func userIsEntitledToProduct() async throws -> Result<Bool, Error> {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Result, Never>) in
+            let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { result in
+                    continuation.resume(returning: result)
             }
             self.store.onAction(action)
         }

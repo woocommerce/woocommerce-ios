@@ -61,17 +61,17 @@ final class AppCoordinator {
     }
 
     func start() {
-        authStatesSubscription = Publishers.CombineLatest3(stores.isLoggedInPublisher, stores.isWPComAuthenticatedPublisher, stores.needsDefaultStorePublisher)
-            .sink {  [weak self] (isLoggedIn, isWPComAuthenticated, needsDefaultStore) in
+        authStatesSubscription = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
+            .sink {  [weak self] isLoggedIn, needsDefaultStore in
                 guard let self = self else { return }
 
                 // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
-                switch (isLoggedIn, isWPComAuthenticated, needsDefaultStore) {
-                case (false, _, true), (false, _, false), (true, false, true):
+                switch (isLoggedIn, needsDefaultStore) {
+                case (false, true), (false, false):
                     self.displayAuthenticatorWithOnboardingIfNeeded()
-                case (true, true, true):
+                case (true, true):
                     self.displayLoggedInStateWithoutDefaultStore()
-                case (true, _, false):
+                case (true, false):
                     self.validateRoleEligibility {
                         self.configureAuthenticator()
                         self.displayLoggedInUI()

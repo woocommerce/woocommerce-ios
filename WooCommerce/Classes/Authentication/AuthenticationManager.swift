@@ -3,6 +3,7 @@ import KeychainAccess
 import WordPressAuthenticator
 import WordPressKit
 import Yosemite
+import WordPressUI
 import class Networking.UserAgent
 import enum Experiments.ABTest
 import struct Networking.Settings
@@ -834,7 +835,17 @@ private extension AuthenticationManager {
                     navigationController.show(errorUI, sender: nil)
                 }
             } catch {
-                // TODO: show generic error
+                // show generic error
+                await MainActor.run {
+                    DDLogError("⛔️ Error generating application password: \(error)")
+                    let alert = FancyAlertViewController.makeApplicationPasswordAlert(retryAction: { [weak self] in
+                        self?.didAuthenticateUser(to: siteURL, with: siteCredentials, in: navigationController, source: source)
+                    }, restartLoginAction: {
+                        ServiceLocator.stores.deauthenticate()
+                        navigationController.popToRootViewController(animated: true)
+                    })
+                    navigationController.present(alert, animated: true)
+                }
             }
         }
     }

@@ -178,13 +178,9 @@ final class InAppPurchaseStoreTests: XCTestCase {
     func test_user_is_entitled_to_product_returns_false_when_not_entitled() throws {
         // When
         Task {
-            do {
-                let isEntitled = try await userIsEntitledToProduct()
-                // Then
-                XCTAssertFalse(try isEntitled.get())
-            } catch {
-                XCTAssert(error is WordPressApiError)
-            }
+            let isEntitled = try await userIsEntitledToProduct()
+            // Then
+            XCTAssertFalse(try isEntitled.get())
         }
     }
 
@@ -194,13 +190,9 @@ final class InAppPurchaseStoreTests: XCTestCase {
 
         // When
         Task {
-            do {
-                let isEntitled = try await userIsEntitledToProduct()
-                // Then
-                XCTAssertTrue( try isEntitled.get())
-            } catch {
-                XCTAssert(error is WordPressApiError)
-            }
+            let isEntitled = try await userIsEntitledToProduct()
+            // Then
+            XCTAssertTrue( try isEntitled.get())
         }
     }
 }

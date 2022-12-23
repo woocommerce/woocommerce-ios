@@ -693,6 +693,7 @@ private extension StoreStatsV4PeriodViewController {
     func updateStatsDataToDefaultStyles() {
         revenueData.font = Constants.revenueFont
         revenueData.textColor = Constants.statsTextColor
+        revenueData.adjustsFontSizeToFitWidth = true
         revenueData.accessibilityIdentifier = "revenue-value"
     }
 }
@@ -704,9 +705,8 @@ private extension StoreStatsV4PeriodViewController {
     enum Constants {
         static let statsTextColor: UIColor = .text
         static let statsHighlightTextColor: UIColor = .statsHighlighted
-        static let statsFont: UIFont = .font(forStyle: .title3, weight: .semibold)
         static let revenueFont: UIFont = .font(forStyle: .largeTitle, weight: .semibold)
-        static let statsTitleFont: UIFont = .caption2
+        static let statsTitleFont: UIFont = StyleManager.statsTitleFont
 
         static let chartAnimationDuration: TimeInterval = 0.75
         static let chartExtraRightOffset: CGFloat       = 25.0

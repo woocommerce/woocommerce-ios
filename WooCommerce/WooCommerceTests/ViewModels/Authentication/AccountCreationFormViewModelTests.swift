@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 @testable import WooCommerce
+import WordPressAuthenticator
 
 final class AccountCreationFormViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
@@ -10,6 +11,9 @@ final class AccountCreationFormViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+
+        WordPressAuthenticator.initializeAuthenticator()
+
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)

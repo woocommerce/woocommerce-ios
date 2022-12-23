@@ -291,7 +291,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         let storeStatsPeriodView = storeStatsPeriodViewController.view!
         stackView.addArrangedSubview(storeStatsPeriodView)
         NSLayoutConstraint.activate([
-            storeStatsPeriodView.heightAnchor.constraint(equalToConstant: Constants.storeStatsPeriodViewHeight),
+            storeStatsPeriodView.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.storeStatsPeriodViewHeight),
             ])
 
         // Analytics Hub ("See more") button
@@ -358,7 +358,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
     }
 
     @objc func seeMoreButtonTapped() {
-        ServiceLocator.analytics.track(event: .AnalyticsHub.seeMoreAnalyticsTapped())
+        viewModel.trackSeeMoreButtonTapped()
         let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID, timeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
         show(analyticsHubVC, sender: self)
     }

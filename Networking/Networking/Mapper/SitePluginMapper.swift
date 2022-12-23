@@ -9,16 +9,12 @@ struct SitePluginMapper: Mapper {
     ///
     private let siteID: Int64
 
-    private let withDataEnvelope: Bool
-
     /// Initialized a mapper to serialize site plugins.
     /// - Parameters:
     ///   - siteID: Identifier for the site. Only required in authenticated state.
-    ///   - withDataEnvelope: Whether site plugin details are wrapped inside a `data` field.
     ///
-    init(siteID: Int64 = -1, withDataEnvelope: Bool = true) {
+    init(siteID: Int64 = WooConstants.placeholderSiteID) {
         self.siteID = siteID
-        self.withDataEnvelope = withDataEnvelope
     }
 
     /// (Attempts) to convert a dictionary into SitePlugin.
@@ -29,11 +25,11 @@ struct SitePluginMapper: Mapper {
             .siteID: siteID
         ]
 
-        if withDataEnvelope {
+        do {
             return try decoder.decode(SitePluginEnvelope.self, from: response).plugin
+        } catch {
+            return try decoder.decode(SitePlugin.self, from: response)
         }
-
-        return try decoder.decode(SitePlugin.self, from: response)
     }
 }
 

@@ -7,6 +7,7 @@ import class Networking.WordPressOrgNetwork
 import KeychainAccess
 import class WidgetKit.WidgetCenter
 import Experiments
+import WordPressAuthenticator
 
 // MARK: - DefaultStoresManager
 //
@@ -471,7 +472,13 @@ private extension DefaultStoresManager {
             return
         }
 
-        restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
+        if siteID == WooConstants.placeholderStoreID,
+           let url = sessionManager.defaultStoreURL {
+            restoreSessionSite(with: url)
+        } else {
+            restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
+        }
+
         synchronizeSettings(with: siteID) {
             ServiceLocator.selectedSiteSettings.refresh()
             ServiceLocator.shippingSettingsService.update(siteID: siteID)
@@ -483,6 +490,35 @@ private extension DefaultStoresManager {
         synchronizeSitePlugins(siteID: siteID)
 
         sendTelemetryIfNeeded(siteID: siteID)
+    }
+
+    /// Load the site with the specified URL into the session if possible.
+    ///
+    func restoreSessionSite(with url: String) {
+        let action = WordPressSiteAction.fetchSiteInfo(siteURL: url) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let site):
+                self.sessionManager.defaultSite = site
+                /// Trigger the `v1.1/connect/site-info` API to get information about
+                /// the site's Jetpack status and whether it's a WPCom site.
+                WordPressAuthenticator.fetchSiteInfo(for: url) { [weak self] result in
+                    guard let self else { return }
+                    switch result {
+                    case .success(let info):
+                        let updatedSite = site.copy(isJetpackThePluginInstalled: info.hasJetpack,
+                                                    isJetpackConnected: info.isJetpackConnected,
+                                                    isWordPressComStore: info.isWPCom)
+                        self.sessionManager.defaultSite = updatedSite
+                    case .failure(let error):
+                        DDLogError("⛔️ Cannot fetch generic site info: \(error)")
+                    }
+                }
+            case .failure(let error):
+                DDLogError("⛔️ Cannot fetch WordPress site info: \(error)")
+            }
+        }
+        dispatch(action)
     }
 
     /// Loads the specified siteID into the Session, if possible.

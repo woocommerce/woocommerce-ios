@@ -720,4 +720,8 @@ final class IconsTests: XCTestCase {
     func test_calendar_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.calendar)
     }
+
+    func test_app_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.appIconDefault)
+    }
 }

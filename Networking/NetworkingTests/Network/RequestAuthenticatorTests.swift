@@ -41,7 +41,9 @@ final class RequestAuthenticatorTests: XCTestCase {
         let applicationPassword = ApplicationPassword(wpOrgUsername: credentials.username, password: .init(credentials.secret))
         let useCase = MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword)
         let authenticator = RequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
-        let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
+        let wooAPIVersion = WooAPIVersion.mark1
+        let basePath = "wp-json"
+        let jetpackRequest = JetpackRequest(wooApiVersion: wooAPIVersion, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
 
         // When
         var updatedRequest: URLRequestConvertible?
@@ -54,7 +56,7 @@ final class RequestAuthenticatorTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(updatedRequest as? URLRequest)
-        let expectedURL = "https://test.com/test"
+        let expectedURL = "https://test.com/\(basePath)\(wooAPIVersion.path)test"
         assertEqual(expectedURL, request.url?.absoluteString)
         let authorizationValue = try XCTUnwrap(request.allHTTPHeaderFields?["Authorization"])
         XCTAssertTrue(authorizationValue.hasPrefix("Basic"))
@@ -66,7 +68,9 @@ final class RequestAuthenticatorTests: XCTestCase {
         let applicationPassword = ApplicationPassword(wpOrgUsername: credentials.username, password: .init(credentials.secret))
         let useCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
         let authenticator = RequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
-        let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
+        let wooAPIVersion = WooAPIVersion.mark1
+        let basePath = "wp-json"
+        let jetpackRequest = JetpackRequest(wooApiVersion: wooAPIVersion, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
 
         // When
         var updatedRequest: URLRequestConvertible?
@@ -79,7 +83,7 @@ final class RequestAuthenticatorTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(updatedRequest as? URLRequest)
-        let expectedURL = "https://test.com/test"
+        let expectedURL = "https://test.com/\(basePath)\(wooAPIVersion.path)test"
         assertEqual(expectedURL, request.url?.absoluteString)
         let authorizationValue = try XCTUnwrap(request.allHTTPHeaderFields?["Authorization"])
         XCTAssertTrue(authorizationValue.hasPrefix("Basic"))

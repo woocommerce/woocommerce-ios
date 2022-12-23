@@ -87,6 +87,21 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
     }
 
+    func test_starting_app_logged_in_with_wporg_credentials_but_no_selected_site_shows_prologue_screen() {
+        // Given
+        // Authenticates the app without selecting a site, so that the prologue screen is shown.
+        stores.authenticate(credentials: SessionSettings.wporgCredentials)
+        sessionManager.defaultStoreID = nil
+
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
+    }
+
     func test_starting_app_logged_in_without_selected_site_presents_account_mismatched_if_there_is_no_store_matching_the_error_site_address() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
@@ -155,6 +170,26 @@ final class AppCoordinatorTests: XCTestCase {
             completion(.failure(SampleError.first))
         }
         sessionManager.defaultStoreID = 134
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
+    }
+
+    func test_starting_app_logged_in_with_wporg_credentials_and_selected_site_stays_on_tabbar() throws {
+        // Given
+        stores.authenticate(credentials: SessionSettings.wporgCredentials)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            guard case let AppSettingsAction.loadEligibilityErrorInfo(completion) = action else {
+                return
+            }
+            // any failure except `.insufficientRole` will be treated as having an eligible status.
+            completion(.failure(SampleError.first))
+        }
+        sessionManager.defaultStoreID = WooConstants.placeholderStoreID
         let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
 
         // When

@@ -803,7 +803,6 @@ private extension AuthenticationManager {
                              in navigationController: UINavigationController,
                              source: SignInSource?) {
         // TODO: check if application password is enabled & check for role eligibility & check for Woo
-        // TODO: fetch site info and update default store.
         // then navigate to home screen immediately with a placeholder store ID
         startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
     }

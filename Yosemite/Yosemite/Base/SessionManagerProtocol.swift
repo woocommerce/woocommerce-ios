@@ -23,6 +23,10 @@ public protocol SessionManagerProtocol {
     ///
     var defaultStoreID: Int64? { get set }
 
+    /// URL of default store
+    ///
+    var defaultStoreURL: String? { get }
+
     /// Roles for the default Store Site.
     ///
     var defaultRoles: [User.Role] { get set }

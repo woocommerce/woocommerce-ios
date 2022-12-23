@@ -16,6 +16,8 @@ public enum NetworkError: Error, Equatable {
     /// Any statusCode that's not in the [200, 300) range!
     ///
     case unacceptableStatusCode(statusCode: Int)
+
+    case invalidURL
 }
 
 

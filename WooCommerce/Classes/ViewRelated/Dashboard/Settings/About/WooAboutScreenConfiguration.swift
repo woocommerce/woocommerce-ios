@@ -69,7 +69,7 @@ final class WooAboutScreenConfiguration: AboutScreenConfiguration {
     static var appInfo: AboutScreenAppInfo {
         return AboutScreenAppInfo(name: WooConstants.appDisplayName,
                                   version: Bundle.main.detailedVersionNumber(),
-                                  icon: UIImage(named: iconNameFromBundle())!)
+                                  icon: UIImage(named: iconNameFromBundle()) ?? .appIconDefault)
     }
 
     /// Provides font definitions for use in the header of the about screen.

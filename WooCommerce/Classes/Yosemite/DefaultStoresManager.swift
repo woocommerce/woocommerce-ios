@@ -51,7 +51,12 @@ class DefaultStoresManager: StoresManager {
         }
         didSet {
             state.didEnter()
-            updateAuthenticationStatePublishers()
+            isLoggedIn = isAuthenticated
+            if case .wpcom = sessionManager.defaultCredentials {
+                isWPComAuthenticated = true
+            } else {
+                isWPComAuthenticated = false
+            }
         }
     }
 
@@ -61,17 +66,17 @@ class DefaultStoresManager: StoresManager {
         return state is AuthenticatedState
     }
 
-    @Published private var isLoggedInWithWPCom: Bool = false
-    @Published private var isLoggedInWithoutWPCom: Bool = false
+    @Published private var isLoggedIn: Bool = false
+    @Published private var isWPComAuthenticated: Bool = false
 
-    var isLoggedInWithWPComPublisher: AnyPublisher<Bool, Never> {
-        $isLoggedInWithWPCom
+    var isLoggedInPublisher: AnyPublisher<Bool, Never> {
+        $isLoggedIn
             .removeDuplicates()
             .eraseToAnyPublisher()
     }
 
-    var isLoggedInWithoutWPComPublisher: AnyPublisher<Bool, Never> {
-        $isLoggedInWithoutWPCom
+    var isWPComAuthenticatedPublisher: AnyPublisher<Bool, Never> {
+        $isWPComAuthenticated
             .removeDuplicates()
             .eraseToAnyPublisher()
     }
@@ -103,7 +108,11 @@ class DefaultStoresManager: StoresManager {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
 
-        updateAuthenticationStatePublishers()
+        isLoggedIn = isAuthenticated
+        if case .wpcom = sessionManager.defaultCredentials {
+            isWPComAuthenticated = true
+        }
+
         restoreSessionAccountIfPossible()
         restoreSessionSiteIfPossible()
     }
@@ -127,8 +136,8 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
-        sessionManager.defaultCredentials = credentials
         state = AuthenticatedState(credentials: credentials)
+        sessionManager.defaultCredentials = credentials
 
         return self
     }
@@ -175,9 +184,9 @@ class DefaultStoresManager: StoresManager {
         let resetAction = CardPresentPaymentAction.reset
         ServiceLocator.stores.dispatch(resetAction)
 
-        sessionManager.reset()
         state = DeauthenticatedState()
 
+        sessionManager.reset()
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
         ServiceLocator.storageManager.reset()
@@ -225,20 +234,6 @@ class DefaultStoresManager: StoresManager {
 // MARK: - Private Methods
 //
 private extension DefaultStoresManager {
-
-    func updateAuthenticationStatePublishers() {
-        switch sessionManager.defaultCredentials {
-        case .none:
-            isLoggedInWithWPCom = false
-            isLoggedInWithoutWPCom = false
-        case .some(.wpcom):
-            isLoggedInWithWPCom = true
-            isLoggedInWithoutWPCom = false
-        case .some(.wporg):
-            isLoggedInWithWPCom = false
-            isLoggedInWithoutWPCom = true
-        }
-    }
 
     /// Loads the Default Account into the current Session, if possible.
     ///

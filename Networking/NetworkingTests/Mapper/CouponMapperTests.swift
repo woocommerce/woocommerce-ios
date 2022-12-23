@@ -9,21 +9,28 @@ final class CouponMapperTests: XCTestCase {
 
     /// Verifies that the coupon is parsed.
     ///
-    func test_Coupon_map_parses_all_coupons_in_response() throws {
+    func test_Coupon_map_parses_coupon_in_response() throws {
         let coupon = try mapRetrieveCouponResponse()
+        XCTAssertNotNil(coupon)
+    }
+
+    /// Verifies that the coupon is parsed.
+    ///
+    func test_Coupon_map_parses_coupon_in_response_without_data_envelope() throws {
+        let coupon = try mapRetrieveCouponResponseWithoutDataEnvelope()
         XCTAssertNotNil(coupon)
     }
 
     /// Verifies that the `siteID` is added in the mapper, because it's not provided by the API endpoint
     ///
-    func test_CouponsList_map_includes_siteID_in_parsed_results() throws {
+    func test_coupon_map_includes_siteID_in_parsed_results() throws {
         let coupon = try mapRetrieveCouponResponse()
         XCTAssertEqual(coupon.siteID, dummySiteID)
     }
 
     /// Verifies that the fields are all parsed correctly
     ///
-    func test_CouponsList_map_parses_all_fields_in_result() throws {
+    func test_coupon_map_parses_all_fields_in_result() throws {
         let coupon = try mapRetrieveCouponResponse()
 
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
@@ -76,6 +83,12 @@ private extension CouponMapperTests {
     ///
     func mapRetrieveCouponResponse() throws -> Coupon {
         return try mapCoupon(from: "coupon")
+    }
+
+    /// Returns the CouponMapper output from `coupon-without-data.json`
+    ///
+    func mapRetrieveCouponResponseWithoutDataEnvelope() throws -> Coupon {
+        return try mapCoupon(from: "coupon-without-data")
     }
 
     struct FileNotFoundError: Error {}

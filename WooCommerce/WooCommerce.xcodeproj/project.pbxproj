@@ -3270,6 +3270,9 @@
 		AECDE19C29561C8400E0CB6E /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
 		AECDE19F29561C8400E0CB6E /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		AECDE1A129561C8400E0CB6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AECDE1AA29561DAA00E0CB6E /* StoreWidgetsIntentsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StoreWidgetsIntentsExtension.entitlements; sourceTree = "<group>"; };
+		AECDE1AB29561DC100E0CB6E /* StoreWidgetsIntentsExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StoreWidgetsIntentsExtensionDebug.entitlements; sourceTree = "<group>"; };
+		AECDE1AC29561DCE00E0CB6E /* StoreWidgetsIntentsExtensionRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StoreWidgetsIntentsExtensionRelease.entitlements; sourceTree = "<group>"; };
 		AED089F127C794BC0020AE10 /* View+CurrencySymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+CurrencySymbol.swift"; sourceTree = "<group>"; };
 		AED9012C28E5F517002B4572 /* AppLinkWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLinkWidget.swift; sourceTree = "<group>"; };
 		AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewController.swift; sourceTree = "<group>"; };
@@ -6974,6 +6977,9 @@
 		AECDE19E29561C8400E0CB6E /* StoreWidgetsIntentsExtension */ = {
 			isa = PBXGroup;
 			children = (
+				AECDE1AC29561DCE00E0CB6E /* StoreWidgetsIntentsExtensionRelease.entitlements */,
+				AECDE1AB29561DC100E0CB6E /* StoreWidgetsIntentsExtensionDebug.entitlements */,
+				AECDE1AA29561DAA00E0CB6E /* StoreWidgetsIntentsExtension.entitlements */,
 				AECDE19F29561C8400E0CB6E /* IntentHandler.swift */,
 				AECDE1A129561C8400E0CB6E /* Info.plist */,
 			);
@@ -12109,6 +12115,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = StoreWidgetsIntentsExtension/StoreWidgetsIntentsExtensionDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -12136,6 +12143,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = StoreWidgetsIntentsExtension/StoreWidgetsIntentsExtensionRelease.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
@@ -12163,6 +12171,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = StoreWidgetsIntentsExtension/StoreWidgetsIntentsExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 99KV9Z6BKV;

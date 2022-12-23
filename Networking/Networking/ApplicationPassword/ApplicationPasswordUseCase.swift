@@ -141,8 +141,6 @@ private extension DefaultApplicationPasswordUseCase {
                 switch result {
                 case .success(let data):
                     do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
                         let mapper = ApplicationPasswordMapper()
                         let password = try mapper.map(response: data)
                         continuation.resume(returning: password)
@@ -183,14 +181,8 @@ private extension DefaultApplicationPasswordUseCase {
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
                 switch result {
-                case .success(let data):
-                    do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
-                        continuation.resume()
-                    } catch {
-                        continuation.resume(throwing: error)
-                    }
+                case .success:
+                    continuation.resume()
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 }

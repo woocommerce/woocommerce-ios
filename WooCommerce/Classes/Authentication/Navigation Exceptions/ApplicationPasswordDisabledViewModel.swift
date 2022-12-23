@@ -72,6 +72,6 @@ private extension ApplicationPasswordDisabledViewModel {
         )
     }
     enum Constants {
-        static let applicationPasswordLink = "https://developer.wordpress.org/rest-api/reference/application-passwords/"
+        static let applicationPasswordLink = "https://make.wordpress.org/core/2020/11/05/application-passwords-integration-guide/"
     }
 }

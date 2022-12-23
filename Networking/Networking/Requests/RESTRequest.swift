@@ -33,7 +33,6 @@ struct RESTRequest: URLRequestConvertible {
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
     ///      This can be encoded to the URL request query if the HTTP method is `.get`.
     ///     - headers: Headers to be added to the request.
-    ///     - fallbackRequest: A fallback Jetpack request to trigger if the REST request cannot be made.
     ///
     init(siteURL: String,
          wooApiVersion: WooAPIVersion,

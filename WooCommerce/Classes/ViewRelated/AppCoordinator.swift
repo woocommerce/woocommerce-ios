@@ -61,11 +61,10 @@ final class AppCoordinator {
     }
 
     func start() {
-        authStatesSubscription = Publishers.CombineLatest3(
-            stores.isLoggedInWithWPComPublisher,
-            stores.isLoggedInWithoutWPComPublisher,
-            stores.needsDefaultStorePublisher
-        )
+        authStatesSubscription = Publishers.CombineLatest3(stores.isLoggedInWithWPComPublisher,
+                                                           stores.isLoggedInWithoutWPComPublisher,
+                                                           stores.needsDefaultStorePublisher)
+            .prefix(1) // observe this only once when app starts since we'll navigate manually when logging in/out
             .sink {  [weak self] (isWPComAuthenticated, isAppPasswordAuthenticated, needsDefaultStore) in
                 guard let self = self else { return }
 

@@ -1197,6 +1197,8 @@
 		ABC3521A374A2355001E3CD6 /* CardReaderSettingsSearchingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC353433EABC5F0EC796222 /* CardReaderSettingsSearchingViewController.swift */; };
 		ABC35528D2D6BE6F516E5CEF /* InPersonPaymentsOnboardingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */; };
 		ABC35F18E744C5576B986CB3 /* InPersonPaymentsUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC35055F8AC8C8EB649F421 /* InPersonPaymentsUnavailableView.swift */; };
+		AE0AB0FE2956072A0050FC47 /* SharedSiteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0AB0FD2956072A0050FC47 /* SharedSiteData.swift */; };
+		AE0AB0FF2956072A0050FC47 /* SharedSiteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0AB0FD2956072A0050FC47 /* SharedSiteData.swift */; };
 		AE1CC33829129A010021C8EF /* LinkBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CC33729129A010021C8EF /* LinkBehavior.swift */; };
 		AE3AA889290C303B00BE422D /* WebKitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA888290C303B00BE422D /* WebKitViewController.swift */; };
 		AE3AA88B290C30B900BE422D /* WebViewControllerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA88A290C30B900BE422D /* WebViewControllerConfiguration.swift */; };
@@ -3217,6 +3219,7 @@
 		ABC35055F8AC8C8EB649F421 /* InPersonPaymentsUnavailableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsUnavailableView.swift; sourceTree = "<group>"; };
 		ABC353433EABC5F0EC796222 /* CardReaderSettingsSearchingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsSearchingViewController.swift; sourceTree = "<group>"; };
 		ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsOnboardingError.swift; sourceTree = "<group>"; };
+		AE0AB0FD2956072A0050FC47 /* SharedSiteData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedSiteData.swift; sourceTree = "<group>"; };
 		AE1CC33729129A010021C8EF /* LinkBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkBehavior.swift; sourceTree = "<group>"; };
 		AE3AA888290C303B00BE422D /* WebKitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebKitViewController.swift; sourceTree = "<group>"; };
 		AE3AA88A290C30B900BE422D /* WebViewControllerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerConfiguration.swift; sourceTree = "<group>"; };
@@ -5783,6 +5786,7 @@
 				265C99E028B9BA43005E6117 /* StoreInfoWidget.swift */,
 				265C99E328B9C834005E6117 /* StoreInfoProvider.swift */,
 				AEDE42E52954597800AED652 /* StatsTimeRange.swift */,
+				AE0AB0FD2956072A0050FC47 /* SharedSiteData.swift */,
 				260DE20828CA7CE2009ECD7C /* StoreInfoDataService.swift */,
 				265C99E528B9CB8E005E6117 /* StoreInfoViewModifiers.swift */,
 				3F1FA84728B60125009E246C /* StoreWidgets.intentdefinition */,
@@ -9943,6 +9947,7 @@
 				AED9012D28E5F517002B4572 /* AppLinkWidget.swift in Sources */,
 				2608C50728C941D600C9DFC0 /* UserDefaults+Woo.swift in Sources */,
 				265C99E628B9CB8E005E6117 /* StoreInfoViewModifiers.swift in Sources */,
+				AE0AB0FF2956072A0050FC47 /* SharedSiteData.swift in Sources */,
 				2608C50628C93AB700C9DFC0 /* WooConstants.swift in Sources */,
 				260DE20A28CA7CFE009ECD7C /* StoreInfoDataService.swift in Sources */,
 				AE56E73428E76CDB00A1292B /* StoreInfoInlineWidget.swift in Sources */,
@@ -10730,6 +10735,7 @@
 				DE2FE5812923729A0018040A /* JetpackSetupRequiredViewModel.swift in Sources */,
 				020DD48A23229495005822B1 /* ProductsTabProductTableViewCell.swift in Sources */,
 				26E7EE7429365F0700793045 /* TopPerformersView.swift in Sources */,
+				AE0AB0FE2956072A0050FC47 /* SharedSiteData.swift in Sources */,
 				74AAF6A5212A04A900C612B0 /* ChartMarker.swift in Sources */,
 				CE32B11520BF8779006FBCF4 /* ButtonTableViewCell.swift in Sources */,
 				025FDD3223717D2900824006 /* EditorFactory.swift in Sources */,

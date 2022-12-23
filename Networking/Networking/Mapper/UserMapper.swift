@@ -16,11 +16,7 @@ struct UserMapper: Mapper {
             .siteID: siteID
         ]
 
-        do {
-            return try decoder.decode(UserEnvelope.self, from: response).user
-        } catch {
-            return try decoder.decode(User.self, from: response)
-        }
+        return try decoder.decode(UserEnvelope.self, from: response).user
     }
 }
 

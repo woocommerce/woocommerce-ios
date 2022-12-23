@@ -89,7 +89,7 @@ struct EnableAnalyticsView: View {
             Spacer()
 
             // Primary Button to enable Analytics
-            Button(Localization.enableAction) {
+            Button(Localization.enableAction.localizedCapitalized) {
                 viewModel.enableAnalytics(onSuccess: {
                     setupNoticePresenterIfPossible()
                     let notice = Notice(title: Localization.analyticsEnabled, feedbackType: .success)
@@ -108,7 +108,7 @@ struct EnableAnalyticsView: View {
             .padding(.bottom, Constants.actionButtonMargin)
 
             /// Secondary Button to dismiss the view
-            Button(Localization.dismissAction) {
+            Button(Localization.dismissAction.localizedCapitalized) {
                 presentation.wrappedValue.dismiss()
             }
             .buttonStyle(SecondaryButtonStyle())

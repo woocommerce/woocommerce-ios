@@ -87,8 +87,10 @@ extension UIFont {
     /// Returns a UIFont instance for the specified Style + Weight.
     ///
     class func font(forStyle style: UIFont.TextStyle, weight: UIFont.Weight) -> UIFont {
-        let targetSize = pointSize(for: style)
-        return UIFont.systemFont(ofSize: targetSize, weight: weight)
+        let descriptor = UIFontDescriptor
+            .preferredFontDescriptor(withTextStyle: style)
+            .addingAttributes([.traits: [UIFontDescriptor.TraitKey.weight: weight]])
+        return UIFont(descriptor: descriptor, size: 0)
     }
 
     /// Returns the System's Point Size for the specified Style.

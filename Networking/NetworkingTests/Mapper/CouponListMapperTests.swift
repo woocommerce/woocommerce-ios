@@ -10,14 +10,21 @@ class CouponListMapperTests: XCTestCase {
     /// Verifies that the whole list is parsed, minus the items with non-default discount type.
     ///
     func test_CouponsList_map_parses_all_coupons_in_response() throws {
-        let coupons = try mapLoadAllCouponsResponse()
+        let coupons = try mapLoadAllCouponsResponseWithDataEnvelope()
+        XCTAssertEqual(coupons.count, 4)
+    }
+
+    /// Verifies that the whole list is parsed, minus the items with non-default discount type.
+    ///
+    func test_CouponsList_map_parses_all_coupons_in_response_without_data_envelope() throws {
+        let coupons = try mapLoadAllCouponsResponseWithoutDataEnvelope()
         XCTAssertEqual(coupons.count, 4)
     }
 
     /// Verifies that the `siteID` is added in the mapper, to all results, because it's not provided by the API endpoint
     ///
     func test_CouponsList_map_includes_siteID_in_parsed_results() throws {
-        let coupons = try mapLoadAllCouponsResponse()
+        let coupons = try mapLoadAllCouponsResponseWithDataEnvelope()
         XCTAssertTrue(coupons.count > 0)
 
         for coupon in coupons {
@@ -28,7 +35,7 @@ class CouponListMapperTests: XCTestCase {
     /// Verifies that the fields are all parsed correctly
     ///
     func test_CouponsList_map_parses_all_fields_in_result() throws {
-        let coupons = try mapLoadAllCouponsResponse()
+        let coupons = try mapLoadAllCouponsResponseWithDataEnvelope()
         let coupon = coupons[0]
 
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
@@ -63,7 +70,7 @@ class CouponListMapperTests: XCTestCase {
     /// Verifies that nulls in optional fields are parsed correctly
     ///
     func test_CouponsList_map_accepts_nulls_in_expected_optional_fields() throws {
-        let coupons = try mapLoadAllCouponsResponse()
+        let coupons = try mapLoadAllCouponsResponseWithDataEnvelope()
         let coupon = coupons[2]
 
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
@@ -113,7 +120,13 @@ private extension CouponListMapperTests {
 
     /// Returns the CouponsMapper output from `coupons-all.json`
     ///
-    func mapLoadAllCouponsResponse() throws -> [Coupon] {
+    func mapLoadAllCouponsResponseWithDataEnvelope() throws -> [Coupon] {
         return try mapCoupons(from: "coupons-all")
+    }
+
+    /// Returns the CouponsMapper output from `coupons-all-without-data.json`
+    ///
+    func mapLoadAllCouponsResponseWithoutDataEnvelope() throws -> [Coupon] {
+        return try mapCoupons(from: "coupons-all-without-data")
     }
 }

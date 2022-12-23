@@ -59,7 +59,7 @@ struct ShippingLineDetails: View {
                         .padding(.horizontal, insets: safeAreaInsets)
                         .addingTopAndBottomDividers()
                     }
-                    .background(Color(.listForeground))
+                    .background(Color(.listForeground(modal: false)))
 
                     Spacer(minLength: Layout.sectionSpacing)
 
@@ -75,7 +75,7 @@ struct ShippingLineDetails: View {
                             .padding(.horizontal, insets: safeAreaInsets)
                             .addingTopAndBottomDividers()
                         }
-                        .background(Color(.listForeground))
+                        .background(Color(.listForeground(modal: false)))
                     }
                 }
             }

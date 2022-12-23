@@ -107,7 +107,7 @@ private struct CustomAmountSection: View {
             .bodyStyle()
             .padding()
             .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground))
+            .background(Color(.listForeground(modal: false)))
             .accessibilityElement(children: .combine)
 
             Divider()
@@ -137,7 +137,7 @@ private struct EmailSection: View {
                                  keyboardType: .emailAddress)
                 .autocapitalization(.none)
                 .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.listForeground))
+                .background(Color(.listForeground(modal: false)))
 
             Divider()
         }
@@ -188,7 +188,7 @@ private struct PaymentsSection: View {
                 TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectionStyle: .none) {}
             }
             .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground))
+            .background(Color(.listForeground(modal: false)))
 
             Divider()
         }
@@ -235,7 +235,7 @@ private struct NoteSection: View {
             }
             .padding()
             .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground))
+            .background(Color(.listForeground(modal: false)))
 
             Divider()
         }
@@ -288,7 +288,7 @@ private struct TakePaymentSection: View {
             .padding()
 
         }
-        .background(Color(.listForeground).ignoresSafeArea())
+        .background(Color(.listForeground(modal: false)).ignoresSafeArea())
     }
 }
 

@@ -117,7 +117,7 @@ private extension OrderNoteTableViewCell {
     func configureNoteTextView() {
         noteTextView.font = .body
         noteTextView.textColor = .text
-        noteTextView.backgroundColor = .listForeground
+        noteTextView.backgroundColor = .listForeground(modal: false)
         noteTextView.adjustsFontForContentSizeCategory = true
 
         // Remove padding from inside text view

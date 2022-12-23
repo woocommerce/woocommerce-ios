@@ -573,7 +573,6 @@ private extension MainTabBarController {
             }
 
             orderTab.badgeValue = countReadableString
-            orderTab.badgeColor = .primary
         }
 
         viewModel.startObservingOrdersCount()

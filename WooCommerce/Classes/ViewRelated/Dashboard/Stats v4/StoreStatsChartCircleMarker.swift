@@ -24,7 +24,7 @@ final class StoreStatsChartCircleMarker: MarkerImage {
 private extension StoreStatsChartCircleMarker {
     enum Constants {
         static let radius: CGFloat = 4.5
-        static let fillColor: UIColor = .accent
+        static let fillColor: UIColor = .statsHighlighted
         static let borderWidth: CGFloat = 1.5
         static let borderColor: UIColor = .white
         static let shadowColor: UIColor =

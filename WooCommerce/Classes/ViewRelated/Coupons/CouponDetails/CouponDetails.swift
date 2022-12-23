@@ -139,7 +139,7 @@ struct CouponDetails: View {
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.bottom, Constants.margin)
-                        .background(Color(.listForeground))
+                        .background(Color(.listForeground(modal: false)))
 
                     Divider()
                     Spacer().frame(height: Constants.margin)
@@ -186,7 +186,7 @@ struct CouponDetails: View {
                     }
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
                     .padding(.bottom, Constants.margin)
-                    .background(Color(.listForeground))
+                    .background(Color(.listForeground(modal: false)))
 
                     Divider()
                 }

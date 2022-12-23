@@ -58,11 +58,11 @@ struct FeeLineDetails: View {
                                 }
                             }
                         }
-                        .background(Color(.listForeground))
+                        .background(Color(.listForeground(modal: false)))
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(.horizontal, insets: safeAreaInsets)
                     }
-                    .background(Color(.listForeground))
+                    .background(Color(.listForeground(modal: false)))
                     .addingTopAndBottomDividers()
 
                     Spacer(minLength: Layout.sectionSpacing)
@@ -79,7 +79,7 @@ struct FeeLineDetails: View {
                             .padding(.horizontal, insets: safeAreaInsets)
                             .addingTopAndBottomDividers()
                         }
-                        .background(Color(.listForeground))
+                        .background(Color(.listForeground(modal: false)))
                     }
                 }
             }

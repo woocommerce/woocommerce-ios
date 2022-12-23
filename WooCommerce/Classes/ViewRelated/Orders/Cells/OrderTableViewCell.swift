@@ -121,7 +121,7 @@ private extension OrderTableViewCell {
 
 private extension OrderTableViewCell {
     func configureBackground() {
-        backgroundColor = .listForeground
+        backgroundColor = .listForeground(modal: false)
         let backgroundView: UIView = {
             let view = UIView()
             view.backgroundColor = .listBackground

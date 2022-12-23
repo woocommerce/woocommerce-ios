@@ -51,6 +51,11 @@ class AuthenticationManager: Authentication {
     /// Keep strong reference of the use case to check for application password availability if necessary.
     private var applicationPasswordUseCase: ApplicationPasswordUseCase?
 
+    /// Keep strong reference of the use case to check for role eligibility if necessary.
+    private lazy var roleEligibilityUseCase: RoleEligibilityUseCase = {
+        .init(stores: ServiceLocator.stores)
+    }()
+
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -827,9 +832,12 @@ private extension AuthenticationManager {
                                  with: applicationPasswordUseCase,
                                  in: navigationController) { [weak self] in
             guard let self else { return }
-            // TODO: check for role eligibility & check for Woo
-            // navigates to home screen immediately with a placeholder store ID
-            self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+            self.checkRoleEligibility(in: navigationController) { [weak self] in
+                guard let self else { return }
+                // TODO: check for Woo
+                // navigates to home screen immediately with a placeholder store ID
+                self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+            }
         }
     }
 
@@ -862,6 +870,46 @@ private extension AuthenticationManager {
                 }
             }
         }
+    }
+
+    /// Checks role eligibility for the logged in user with the site address saved in the credentials.
+    /// Placeholder store ID is used because we are checking for users logging in with site credentials.
+    ///
+    func checkRoleEligibility(in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
+        roleEligibilityUseCase.checkEligibility(for: WooConstants.placeholderStoreID) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                onSuccess()
+            case .failure(let error):
+                if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
+                    self.showRoleErrorScreen(for: WooConstants.placeholderStoreID,
+                                             errorInfo: errorInfo,
+                                             in: navigationController,
+                                             onSuccess: onSuccess)
+                } else {
+                    // TODO: show generic error
+                    DDLogError("⛔️ Error checking role eligibility: \(error)")
+                }
+            }
+        }
+    }
+
+    /// Shows a Role Error page using the provided error information.
+    ///
+    func showRoleErrorScreen(for siteID: Int64,
+                             errorInfo: StorageEligibilityErrorInfo,
+                             in navigationController: UINavigationController,
+                             onSuccess: @escaping () -> Void) {
+        let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles, useCase: self.roleEligibilityUseCase)
+        let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
+
+        errorViewModel.onSuccess = onSuccess
+        errorViewModel.onDeauthenticationRequest = {
+            ServiceLocator.stores.deauthenticate()
+            navigationController.popToRootViewController(animated: true)
+        }
+        navigationController.show(errorViewController, sender: self)
     }
 }
 

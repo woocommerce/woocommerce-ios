@@ -53,7 +53,12 @@ struct RESTRequest: URLRequestConvertible {
         let components = [siteURL, Settings.basePath, wooApiVersion.path, path].map { $0.trimSlashes() }
         let url = try components.joined(separator: "/").asURL()
         let request = try URLRequest(url: url, method: method)
-        return try URLEncoding.default.encode(request, with: parameters)
+        switch method {
+        case .post, .put:
+            return try JSONEncoding.default.encode(request, with: parameters)
+        default:
+            return try URLEncoding.default.encode(request, with: parameters)
+        }
     }
 }
 

@@ -1233,6 +1233,9 @@
 		AEC95D412774C5AE001571F5 /* AddressFormViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC95D402774C5AE001571F5 /* AddressFormViewModelProtocol.swift */; };
 		AEC95D432774D07B001571F5 /* CreateOrderAddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC95D422774D07B001571F5 /* CreateOrderAddressFormViewModel.swift */; };
 		AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECD57D126DFDF7500A3B580 /* EditOrderAddressForm.swift */; };
+		AECDE19D29561C8400E0CB6E /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AECDE19C29561C8400E0CB6E /* Intents.framework */; };
+		AECDE1A029561C8400E0CB6E /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECDE19F29561C8400E0CB6E /* IntentHandler.swift */; };
+		AECDE1A429561C8400E0CB6E /* StoreWidgetsIntentsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AECDE19B29561C8400E0CB6E /* StoreWidgetsIntentsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AED089F227C794BC0020AE10 /* View+CurrencySymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED089F127C794BC0020AE10 /* View+CurrencySymbol.swift */; };
 		AED9012D28E5F517002B4572 /* AppLinkWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED9012C28E5F517002B4572 /* AppLinkWidget.swift */; };
 		AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */; };
@@ -1977,6 +1980,13 @@
 			remoteGlobalIDString = 3FF314DD26FC74450012E68E;
 			remoteInfo = UITestsFoundation;
 		};
+		AECDE1A229561C8400E0CB6E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AECDE19A29561C8400E0CB6E;
+			remoteInfo = StoreWidgetsIntentsExtension;
+		};
 		B55D4C1420B6131400D7A50F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
@@ -2035,6 +2045,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				AECDE1A429561C8400E0CB6E /* StoreWidgetsIntentsExtension.appex in Embed Foundation Extensions */,
 				3F1FA84F28B60126009E246C /* StoreWidgetsExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
@@ -3254,6 +3265,10 @@
 		AEC95D402774C5AE001571F5 /* AddressFormViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFormViewModelProtocol.swift; sourceTree = "<group>"; };
 		AEC95D422774D07B001571F5 /* CreateOrderAddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderAddressFormViewModel.swift; sourceTree = "<group>"; };
 		AECD57D126DFDF7500A3B580 /* EditOrderAddressForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOrderAddressForm.swift; sourceTree = "<group>"; };
+		AECDE19B29561C8400E0CB6E /* StoreWidgetsIntentsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StoreWidgetsIntentsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AECDE19C29561C8400E0CB6E /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
+		AECDE19F29561C8400E0CB6E /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
+		AECDE1A129561C8400E0CB6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AED089F127C794BC0020AE10 /* View+CurrencySymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+CurrencySymbol.swift"; sourceTree = "<group>"; };
 		AED9012C28E5F517002B4572 /* AppLinkWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLinkWidget.swift; sourceTree = "<group>"; };
 		AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewController.swift; sourceTree = "<group>"; };
@@ -4052,6 +4067,14 @@
 				3FF314E726FC74560012E68E /* ScreenObject in Frameworks */,
 				3FF314F126FC785C0012E68E /* XCTest.framework in Frameworks */,
 				3FF314E926FC74600012E68E /* XCUITestHelpers in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AECDE19829561C8400E0CB6E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AECDE19D29561C8400E0CB6E /* Intents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6867,6 +6890,7 @@
 				6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */,
 				3F1FA84128B60125009E246C /* WidgetKit.framework */,
 				2886DE5218EEA78ABAF0BE67 /* Pods_StoreWidgetsExtension.framework */,
+				AECDE19C29561C8400E0CB6E /* Intents.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -6944,6 +6968,15 @@
 				26C6E8E526E6B5F500C7BB0F /* StateSelectorViewModel.swift */,
 			);
 			path = "Address Edit";
+			sourceTree = "<group>";
+		};
+		AECDE19E29561C8400E0CB6E /* StoreWidgetsIntentsExtension */ = {
+			isa = PBXGroup;
+			children = (
+				AECDE19F29561C8400E0CB6E /* IntentHandler.swift */,
+				AECDE1A129561C8400E0CB6E /* Info.plist */,
+			);
+			path = StoreWidgetsIntentsExtension;
 			sourceTree = "<group>";
 		};
 		AED9012B28E5F27B002B4572 /* Lockscreen */ = {
@@ -7148,6 +7181,7 @@
 				CCDC49CB23FFFFF4003166BA /* WooCommerceUITests */,
 				3FF314DF26FC74450012E68E /* UITestsFoundation */,
 				3F1FA84428B60125009E246C /* StoreWidgets */,
+				AECDE19E29561C8400E0CB6E /* StoreWidgetsIntentsExtension */,
 				88A44ABE866401E6DB03AC60 /* Frameworks */,
 				B56DB3C72049BFAA00D4AA8E /* Products */,
 				8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */,
@@ -7167,6 +7201,7 @@
 				CCDC49CA23FFFFF4003166BA /* WooCommerceUITests.xctest */,
 				3FF314DE26FC74450012E68E /* UITestsFoundation.framework */,
 				3F1FA84028B60125009E246C /* StoreWidgetsExtension.appex */,
+				AECDE19B29561C8400E0CB6E /* StoreWidgetsIntentsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -9284,6 +9319,23 @@
 			productReference = 3FF314DE26FC74450012E68E /* UITestsFoundation.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		AECDE19A29561C8400E0CB6E /* StoreWidgetsIntentsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AECDE1A829561C8500E0CB6E /* Build configuration list for PBXNativeTarget "StoreWidgetsIntentsExtension" */;
+			buildPhases = (
+				AECDE19729561C8400E0CB6E /* Sources */,
+				AECDE19829561C8400E0CB6E /* Frameworks */,
+				AECDE19929561C8400E0CB6E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StoreWidgetsIntentsExtension;
+			productName = StoreWidgetsIntentsExtension;
+			productReference = AECDE19B29561C8400E0CB6E /* StoreWidgetsIntentsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		B56DB3C52049BFAA00D4AA8E /* WooCommerce */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B56DB3E62049BFAA00D4AA8E /* Build configuration list for PBXNativeTarget "WooCommerce" */;
@@ -9303,6 +9355,7 @@
 			dependencies = (
 				B55D4C1520B6131400D7A50F /* PBXTargetDependency */,
 				3F1FA84E28B60126009E246C /* PBXTargetDependency */,
+				AECDE1A329561C8400E0CB6E /* PBXTargetDependency */,
 			);
 			name = WooCommerce;
 			packageProductDependencies = (
@@ -9396,7 +9449,7 @@
 		B56DB3BE2049BFAA00D4AA8E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1340;
+				LastSwiftUpdateCheck = 1410;
 				LastUpgradeCheck = 1400;
 				ORGANIZATIONNAME = Automattic;
 				TargetAttributes = {
@@ -9405,6 +9458,9 @@
 					};
 					3FF314DD26FC74450012E68E = {
 						CreatedOnToolsVersion = 13.0;
+					};
+					AECDE19A29561C8400E0CB6E = {
+						CreatedOnToolsVersion = 14.1;
 					};
 					B55D4C0F20B612F300D7A50F = {
 						CreatedOnToolsVersion = 9.3.1;
@@ -9493,6 +9549,7 @@
 				CCDC49C923FFFFF4003166BA /* WooCommerceUITests */,
 				3FF314DD26FC74450012E68E /* UITestsFoundation */,
 				3F1FA83F28B60125009E246C /* StoreWidgetsExtension */,
+				AECDE19A29561C8400E0CB6E /* StoreWidgetsIntentsExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -9508,6 +9565,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		3FF314DC26FC74450012E68E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AECDE19929561C8400E0CB6E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -10007,6 +10071,14 @@
 				3F0CF3102704490A00EF3D71 /* SingleOrderScreen.swift in Sources */,
 				3F0CF3062704490A00EF3D71 /* SingleReviewScreen.swift in Sources */,
 				3F0CF3112704490A00EF3D71 /* ProductsScreen.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AECDE19729561C8400E0CB6E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AECDE1A029561C8400E0CB6E /* IntentHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11623,6 +11695,11 @@
 			target = 3FF314DD26FC74450012E68E /* UITestsFoundation */;
 			targetProxy = 3FF314ED26FC76CB0012E68E /* PBXContainerItemProxy */;
 		};
+		AECDE1A329561C8400E0CB6E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AECDE19A29561C8400E0CB6E /* StoreWidgetsIntentsExtension */;
+			targetProxy = AECDE1A229561C8400E0CB6E /* PBXContainerItemProxy */;
+		};
 		B55D4C1520B6131400D7A50F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B55D4C0F20B612F300D7A50F /* GenerateCredentials */;
@@ -12022,6 +12099,87 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+			};
+			name = "Release-Alpha";
+		};
+		AECDE1A529561C8500E0CB6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StoreWidgetsIntentsExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = StoreWidgetsIntentsExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Automattic. All rights reserved.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.StoreWidgetsIntentsExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AECDE1A629561C8500E0CB6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StoreWidgetsIntentsExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = StoreWidgetsIntentsExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Automattic. All rights reserved.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.StoreWidgetsIntentsExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AECDE1A729561C8500E0CB6E /* Release-Alpha */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 99KV9Z6BKV;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StoreWidgetsIntentsExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = StoreWidgetsIntentsExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Automattic. All rights reserved.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.StoreWidgetsIntentsExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = "Release-Alpha";
 		};
@@ -12447,6 +12605,16 @@
 				3FF314E226FC74450012E68E /* Debug */,
 				3FF314E326FC74450012E68E /* Release */,
 				3FF314E426FC74450012E68E /* Release-Alpha */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AECDE1A829561C8500E0CB6E /* Build configuration list for PBXNativeTarget "StoreWidgetsIntentsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AECDE1A529561C8500E0CB6E /* Debug */,
+				AECDE1A629561C8500E0CB6E /* Release */,
+				AECDE1A729561C8500E0CB6E /* Release-Alpha */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

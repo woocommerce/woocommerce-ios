@@ -1,12 +1,12 @@
 import Intents
 
-class IntentHandler: INExtension {
-    
+class IntentHandler: INExtension, StoreWidgetsConfigIntentHandling {
+
+    func provideStoreOptionsCollection(for intent: StoreWidgetsConfigIntent, searchTerm: String?) async throws -> INObjectCollection<IntentStore> {
+        return INObjectCollection(items: [IntentStore(identifier: "123123", display: "Test Store")])
+    }
+
     override func handler(for intent: INIntent) -> Any {
-        // This is the default implementation.  If you want different objects to handle different intents,
-        // you can override this and return the handler you want for that particular intent.
-        
         return self
     }
-    
 }

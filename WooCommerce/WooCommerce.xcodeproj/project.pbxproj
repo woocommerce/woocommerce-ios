@@ -1236,6 +1236,7 @@
 		AECDE19D29561C8400E0CB6E /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AECDE19C29561C8400E0CB6E /* Intents.framework */; };
 		AECDE1A029561C8400E0CB6E /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECDE19F29561C8400E0CB6E /* IntentHandler.swift */; };
 		AECDE1A429561C8400E0CB6E /* StoreWidgetsIntentsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AECDE19B29561C8400E0CB6E /* StoreWidgetsIntentsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AECDE1A929561D2200E0CB6E /* StoreWidgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3F1FA84728B60125009E246C /* StoreWidgets.intentdefinition */; };
 		AED089F227C794BC0020AE10 /* View+CurrencySymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED089F127C794BC0020AE10 /* View+CurrencySymbol.swift */; };
 		AED9012D28E5F517002B4572 /* AppLinkWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED9012C28E5F517002B4572 /* AppLinkWidget.swift */; };
 		AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */; };
@@ -10078,6 +10079,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AECDE1A929561D2200E0CB6E /* StoreWidgets.intentdefinition in Sources */,
 				AECDE1A029561C8400E0CB6E /* IntentHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

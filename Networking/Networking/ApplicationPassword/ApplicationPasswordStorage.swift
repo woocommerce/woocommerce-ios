@@ -26,16 +26,16 @@ struct ApplicationPasswordStorage {
     /// - Parameter password: `ApplicationPasword` to be saved
     ///
     func saveApplicationPassword(_ password: ApplicationPassword) {
-        keychain.password = password.wpOrgUsername
-        keychain.username = password.password.secretValue
+        keychain.username = password.wpOrgUsername
+        keychain.password = password.password.secretValue
     }
 
     /// Removes the currently saved password from storage
     ///
     func removeApplicationPassword() {
         // Delete password from keychain
-        keychain.password = nil
         keychain.username = nil
+        keychain.password = nil
     }
 }
 

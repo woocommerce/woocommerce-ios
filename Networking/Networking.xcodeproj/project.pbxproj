@@ -749,6 +749,7 @@
 		EE71CC412951CE700074D908 /* generate-application-password-using-wporg-creds-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE71CC402951CE700074D908 /* generate-application-password-using-wporg-creds-success.json */; };
 		EE80A24729547F8B003591E4 /* coupons-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE80A24529547F8B003591E4 /* coupons-all-without-data.json */; };
 		EE80A24829547F8B003591E4 /* coupon-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE80A24629547F8B003591E4 /* coupon-without-data.json */; };
+		EE80A25029556FBD003591E4 /* coupon-reports-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE80A24F29556FBD003591E4 /* coupon-reports-without-data.json */; };
 		EE8A86F1286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */; };
 		EE8DE432294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */; };
 		EECB7EE8286555180028C888 /* media-update-product-id.json in Resources */ = {isa = PBXBuildFile; fileRef = EECB7EE7286555180028C888 /* media-update-product-id.json */; };
@@ -1531,6 +1532,7 @@
 		EE71CC402951CE700074D908 /* generate-application-password-using-wporg-creds-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-application-password-using-wporg-creds-success.json"; sourceTree = "<group>"; };
 		EE80A24529547F8B003591E4 /* coupons-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupons-all-without-data.json"; sourceTree = "<group>"; };
 		EE80A24629547F8B003591E4 /* coupon-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupon-without-data.json"; sourceTree = "<group>"; };
+		EE80A24F29556FBD003591E4 /* coupon-reports-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupon-reports-without-data.json"; sourceTree = "<group>"; };
 		EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id-in-wordpress-site.json"; sourceTree = "<group>"; };
 		EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultApplicationPasswordUseCaseTests.swift; sourceTree = "<group>"; };
 		EECB7EE7286555180028C888 /* media-update-product-id.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id.json"; sourceTree = "<group>"; };
@@ -2069,8 +2071,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
-				EE80A24629547F8B003591E4 /* coupon-without-data.json */,
-				EE80A24529547F8B003591E4 /* coupons-all-without-data.json */,
+				EE80A24B29556F1D003591E4 /* Coupon */,
 				EE338A0A294AF92A00183934 /* AppliicationPassword */,
 				DE9DEEF4291CF1B40070AD7C /* site-plugin-without-envelope.json */,
 				DE2E8EA8295416C9002E4B14 /* wordpress-site-info.json */,
@@ -2120,9 +2121,6 @@
 				CE20179220E3EFA7005B4C18 /* broken-orders.json */,
 				B5147875211B9227007562E5 /* broken-orders-mark-2.json */,
 				74A7B4BD217A841400E85A8B /* broken-settings-general.json */,
-				03DCB7512624B3BE00C8953D /* coupons-all.json */,
-				03DCB77D262738E200C8953D /* coupon.json */,
-				DE2095C027966EC800171F1C /* coupon-reports.json */,
 				B58D10C72114D21C00107ED4 /* generic_error.json */,
 				B53EF53521813681003E146F /* generic_success.json */,
 				CCB2CAA126209A1200285CA0 /* generic_success_data.json */,
@@ -2654,6 +2652,43 @@
 			path = ApplicationPassword;
 			sourceTree = "<group>";
 		};
+		EE80A24B29556F1D003591E4 /* Coupon */ = {
+			isa = PBXGroup;
+			children = (
+				EE80A24E29556FA5003591E4 /* coupon-reports */,
+				EE80A24D29556F83003591E4 /* coupons-all */,
+				EE80A24C29556F76003591E4 /* coupon */,
+			);
+			path = Coupon;
+			sourceTree = "<group>";
+		};
+		EE80A24C29556F76003591E4 /* coupon */ = {
+			isa = PBXGroup;
+			children = (
+				03DCB77D262738E200C8953D /* coupon.json */,
+				EE80A24629547F8B003591E4 /* coupon-without-data.json */,
+			);
+			path = coupon;
+			sourceTree = "<group>";
+		};
+		EE80A24D29556F83003591E4 /* coupons-all */ = {
+			isa = PBXGroup;
+			children = (
+				03DCB7512624B3BE00C8953D /* coupons-all.json */,
+				EE80A24529547F8B003591E4 /* coupons-all-without-data.json */,
+			);
+			path = "coupons-all";
+			sourceTree = "<group>";
+		};
+		EE80A24E29556FA5003591E4 /* coupon-reports */ = {
+			isa = PBXGroup;
+			children = (
+				EE80A24F29556FBD003591E4 /* coupon-reports-without-data.json */,
+				DE2095C027966EC800171F1C /* coupon-reports.json */,
+			);
+			path = "coupon-reports";
+			sourceTree = "<group>";
+		};
 		EE8DE430294B17BA005054E7 /* ApplicationPassword */ = {
 			isa = PBXGroup;
 			children = (
@@ -2994,6 +3029,7 @@
 				743E84F222172D0A00FAC9D7 /* shipment_tracking_plugin_not_active.json in Resources */,
 				68CB801628D8A39700E169F8 /* customer.json in Resources */,
 				03EB99982907F4AA00F06A39 /* just-in-time-message-list-multiple.json in Resources */,
+				EE80A25029556FBD003591E4 /* coupon-reports-without-data.json in Resources */,
 				451A97DE260B59870059D135 /* shipping-label-packages-success.json in Resources */,
 				2676F4D0290B0EC800C7A15B /* product-id-only.json in Resources */,
 				31D27C8F2602B553002EDB1D /* plugins.json in Resources */,

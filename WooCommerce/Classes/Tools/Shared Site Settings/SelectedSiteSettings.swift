@@ -63,7 +63,7 @@ extension SelectedSiteSettings {
             ServiceLocator.currencySettings.updateCurrencyOptions(with: $0)
         }
 
-        // Needed to correcly format the widget data.
+        // Needed to correctly format the widget data.
         UserDefaults.group?[.defaultStoreCurrencySettings] = try? JSONEncoder().encode(ServiceLocator.currencySettings)
     }
 }

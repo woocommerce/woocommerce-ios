@@ -5,7 +5,7 @@ class IntentHandler: INExtension, StoreWidgetsConfigIntentHandling {
     func provideStoreOptionsCollection(for intent: StoreWidgetsConfigIntent, searchTerm: String?) async throws -> INObjectCollection<IntentStore> {
         var sitesArray = getAllStores()
         if let searchTerm {
-            sitesArray = sitesArray.filter { $0.siteName.contains(searchTerm) }
+            sitesArray = sitesArray.filter { $0.siteName.range(of: searchTerm, options: .caseInsensitive) != nil }
         }
         let sites = sitesArray.map { IntentStore(identifier: String($0.siteID), display: $0.siteName) }
         return INObjectCollection(items: sites)

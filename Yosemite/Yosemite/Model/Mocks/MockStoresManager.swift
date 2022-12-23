@@ -73,20 +73,9 @@ public class MockStoresManager: StoresManager {
         isLoggedInSubject.eraseToAnyPublisher()
     }
 
-    /// Accessor for whether the user is logged in with WPCom.
-    /// (spoiler: they always will be when mocking)
-    ///
-    public var isWPComAuthenticatedPublisher: AnyPublisher<Bool, Never> {
-        isLoggedInWithWPComSubject.eraseToAnyPublisher()
-    }
-
     /// The backing object for `isLoggedIn`
     ///
     private let isLoggedInSubject = CurrentValueSubject<Bool, Never>(true)
-
-    /// The backing object for `isWPComAuthenticated`
-    ///
-    private let isLoggedInWithWPComSubject = CurrentValueSubject<Bool, Never>(true)
 
     /// A mock session manager that aligns with our mock object graph
     ///

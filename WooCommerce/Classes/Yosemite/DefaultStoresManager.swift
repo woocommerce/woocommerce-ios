@@ -52,11 +52,6 @@ class DefaultStoresManager: StoresManager {
         didSet {
             state.didEnter()
             isLoggedIn = isAuthenticated
-            if case .wpcom = sessionManager.defaultCredentials {
-                isWPComAuthenticated = true
-            } else {
-                isWPComAuthenticated = false
-            }
         }
     }
 
@@ -67,16 +62,9 @@ class DefaultStoresManager: StoresManager {
     }
 
     @Published private var isLoggedIn: Bool = false
-    @Published private var isWPComAuthenticated: Bool = false
 
     var isLoggedInPublisher: AnyPublisher<Bool, Never> {
         $isLoggedIn
-            .removeDuplicates()
-            .eraseToAnyPublisher()
-    }
-
-    var isWPComAuthenticatedPublisher: AnyPublisher<Bool, Never> {
-        $isWPComAuthenticated
             .removeDuplicates()
             .eraseToAnyPublisher()
     }
@@ -109,9 +97,6 @@ class DefaultStoresManager: StoresManager {
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
 
         isLoggedIn = isAuthenticated
-        if case .wpcom = sessionManager.defaultCredentials {
-            isWPComAuthenticated = true
-        }
 
         restoreSessionAccountIfPossible()
         restoreSessionSiteIfPossible()

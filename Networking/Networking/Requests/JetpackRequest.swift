@@ -86,7 +86,7 @@ struct JetpackRequest: Request {
         guard availableAsRESTRequest else {
             return nil
         }
-        return RESTRequest(siteURL: siteURL, method: method, path: path, parameters: parameters)
+        return RESTRequest(siteURL: siteURL, wooApiVersion: wooApiVersion, method: method, path: path, parameters: parameters)
     }
 }
 

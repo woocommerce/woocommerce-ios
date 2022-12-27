@@ -11,22 +11,20 @@ final class StyleManager {
     }
 
     static var statsFont: UIFont {
-        return self.fontForTextStyle(.title3, weight: .semibold, maximumPointSize: 36.0)
+        return .font(forStyle: .title3, weight: .semibold, maxFontSize: 36.0)
     }
 
     static var statsTitleFont: UIFont {
-        return self.fontForTextStyle(.caption2, weight: .regular, maximumPointSize: maxFontSize)
+        return .font(forStyle: .caption2, weight: .regular, maxFontSize: maxFontSize)
     }
 
     static var chartLabelFont: UIFont {
         // Dashboard chart needs from a slighly smaller maximum font to be able to fit it when using the biggest accessibility font.
-        return self.fontForTextStyle(.caption2, weight: .regular, maximumPointSize: 20.0)
+        return .font(forStyle: .caption2, weight: .regular, maxFontSize: 20.0)
     }
 
     static var headlineSemiBold: UIFont {
-        return self.fontForTextStyle(.headline,
-        weight: .semibold,
-        maximumPointSize: maxFontSize)
+        return .font(forStyle: .headline, weight: .semibold, maxFontSize: maxFontSize)
     }
 
     static var subheadlineFont: UIFont {
@@ -38,21 +36,15 @@ final class StyleManager {
     }
 
     static var subheadlineBoldFont: UIFont {
-        return self.fontForTextStyle(.subheadline,
-        weight: .bold,
-        maximumPointSize: maxFontSize)
+        return .font(forStyle: .subheadline, weight: .bold, maxFontSize: maxFontSize)
     }
 
     static var thinCaptionFont: UIFont {
-        return self.fontForTextStyle(.caption1,
-        weight: .thin,
-        maximumPointSize: maxFontSize)
+        return .font(forStyle: .caption1, weight: .thin, maxFontSize: maxFontSize)
     }
 
     static var footerLabelFont: UIFont {
-        return self.fontForTextStyle(.footnote,
-        weight: .regular,
-        maximumPointSize: maxFontSize)
+        return .font(forStyle: .footnote, weight: .regular, maxFontSize: maxFontSize)
 
     }
 
@@ -64,25 +56,5 @@ final class StyleManager {
     // MARK: - StatusBar
     static var statusBarLight: UIStatusBarStyle {
         return UIStatusBarStyle.lightContent
-    }
-}
-
-
-// MARK: - Private convenience methods
-private extension StyleManager {
-    class func fontForTextStyle(_ style: UIFont.TextStyle, weight: UIFont.Weight, maximumPointSize: CGFloat = maxFontSize) -> UIFont {
-        let traits = [UIFontDescriptor.TraitKey.weight: weight]
-        var fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: style)
-        fontDescriptor = fontDescriptor.addingAttributes([.traits: traits])
-        let fontToGetSize = UIFont(descriptor: fontDescriptor, size: CGFloat(0.0))
-        return UIFontMetrics(forTextStyle: style).scaledFont(for: fontToGetSize, maximumPointSize: maximumPointSize)
-    }
-
-
-    private class func fontDescriptor(_ style: UIFont.TextStyle, maximumPointSize: CGFloat = maxFontSize) -> UIFontDescriptor {
-        let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: style)
-        let fontToGetSize = UIFont(descriptor: fontDescriptor, size: CGFloat(0.0))
-        let scaledFontSize = CGFloat.minimum(fontToGetSize.pointSize, maximumPointSize)
-        return fontDescriptor.withSize(scaledFontSize)
     }
 }

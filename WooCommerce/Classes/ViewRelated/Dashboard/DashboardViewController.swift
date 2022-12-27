@@ -291,7 +291,7 @@ private extension DashboardViewController {
 
         // This constraint will pin the bottom of the header to the top of the content
         // We want this to be active when the header is visible
-        contentTopToHeaderConstraint = contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor)
+        contentTopToHeaderConstraint = contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor, constant: Constants.tabStripSpacing)
         contentTopToHeaderConstraint?.isActive = true
 
         // This constraint has a lower priority and will pin the top of the content view to its superview
@@ -719,5 +719,6 @@ private extension DashboardViewController {
         static let backgroundColor: UIColor = .systemBackground
         static let iPhoneCollapsedNavigationBarHeight = CGFloat(44)
         static let iPadCollapsedNavigationBarHeight = CGFloat(50)
+        static let tabStripSpacing = CGFloat(12)
     }
 }

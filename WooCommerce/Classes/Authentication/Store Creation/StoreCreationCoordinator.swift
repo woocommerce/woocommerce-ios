@@ -312,7 +312,7 @@ private extension StoreCreationCoordinator {
                 } onSkip: { [weak self] in
                     // TODO: analytics
                     guard let self else { return }
-                    self.showDomainSelector(from: navigationController, storeName: storeName, categoryName: nil, planToPurchase: planToPurchase)
+                    self.showSellingStatusQuestion(from: navigationController, storeName: storeName, categoryName: nil, planToPurchase: planToPurchase)
                 })
         navigationController.pushViewController(questionController, animated: true)
         // TODO: analytics

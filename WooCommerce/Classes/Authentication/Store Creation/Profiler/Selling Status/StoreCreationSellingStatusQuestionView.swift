@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Hosting controller that wraps the `StoreCreationSellingStatusQuestionView`.
 final class StoreCreationSellingStatusQuestionHostingController: UIHostingController<StoreCreationSellingStatusQuestionView> {
-    init(viewModel: StoreCreationSellingStatusQuestionViewModel) {
-        super.init(rootView: StoreCreationSellingStatusQuestionView(viewModel: viewModel))
+    init(storeName: String, onContinue: @escaping () -> Void, onSkip: @escaping () -> Void) {
+        super.init(rootView: StoreCreationSellingStatusQuestionView(storeName: storeName, onContinue: onContinue, onSkip: onSkip))
     }
 
     @available(*, unavailable)
@@ -21,9 +21,10 @@ final class StoreCreationSellingStatusQuestionHostingController: UIHostingContro
 /// Shows the store selling status question in the store creation flow.
 struct StoreCreationSellingStatusQuestionView: View {
     @ObservedObject private var viewModel: StoreCreationSellingStatusQuestionViewModel
+    @ObservedObject private var platformsViewModel: StoreCreationSellingPlatformsQuestionViewModel
 
-    init(viewModel: StoreCreationSellingStatusQuestionViewModel) {
-        self.viewModel = viewModel
+    init(storeName: String, onContinue: @escaping () -> Void, onSkip: @escaping () -> Void) {
+        self.viewModel = StoreCreationSellingStatusQuestionViewModel(storeName: storeName, onContinue: onContinue, onSkip: onSkip)
     }
 
     var body: some View {
@@ -47,6 +48,6 @@ struct StoreCreationSellingStatusQuestionView: View {
 
 struct StoreCreationSellingStatusQuestionView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreCreationSellingStatusQuestionView(viewModel: .init(storeName: "New Year Store", onContinue: {}, onSkip: {}))
+        StoreCreationSellingStatusQuestionView(storeName: "New Year Store", onContinue: {}, onSkip: {})
     }
 }

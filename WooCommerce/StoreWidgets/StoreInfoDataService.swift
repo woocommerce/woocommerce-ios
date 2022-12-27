@@ -14,6 +14,10 @@ final class StoreInfoDataService {
         let conversion: Double
     }
 
+    enum DataError: Error {
+        case rangeDatesNil
+    }
+
     /// Revenue & Orders remote source.
     ///
     private var orderStatsRemoteV4: OrderStatsRemoteV4
@@ -59,11 +63,14 @@ private extension StoreInfoDataService {
     /// Async wrapper that fetches revenues & orders.
     ///
     func fetchRevenueAndOrders(for storeID: Int64, timeRange: StatsTimeRange) async throws -> OrderStatsV4 {
-        try await withCheckedThrowingContinuation { continuation in
+        guard let earliestDateToInclude = timeRange.earliestDate(latestDate: Date(), siteTimezone: .current),
+              let latestDateToInclude = timeRange.latestDate(currentDate: Date(), siteTimezone: .current) else {
+            throw DataError.rangeDatesNil
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
             // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
             Task { @MainActor in
-                let earliestDateToInclude = timeRange.earliestDate(latestDate: Date(), siteTimezone: .current)
-                let latestDateToInclude = timeRange.latestDate(currentDate: Date(), siteTimezone: .current)
                 orderStatsRemoteV4.loadOrderStats(for: storeID,
                                                   unit: timeRange.intervalGranularity,
                                                   earliestDateToInclude: earliestDateToInclude,
@@ -79,12 +86,14 @@ private extension StoreInfoDataService {
     /// Async wrapper that fetches visitors.
     ///
     func fetchVisitors(for storeID: Int64, timeRange: StatsTimeRange) async throws -> SiteVisitStats {
-        try await withCheckedThrowingContinuation { continuation in
+        guard let latestDateToInclude = timeRange.latestDate(currentDate: Date(), siteTimezone: .current) else {
+            throw DataError.rangeDatesNil
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
             // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
             Task { @MainActor in
-                let latestDateToInclude = timeRange.latestDate(currentDate: Date(), siteTimezone: .current)
                 let quantity = timeRange.siteVisitStatsQuantity(date: latestDateToInclude, siteTimezone: .current)
-
                 siteVisitStatsRemote.loadSiteVisitorStats(for: storeID,
                                                           unit: timeRange.siteVisitStatsGranularity,
                                                           latestDateToInclude: latestDateToInclude,

@@ -71,6 +71,8 @@ public class AccountStore: Store {
         case .synchronizeSites(let selectedSiteID, let onCompletion):
             synchronizeSites(selectedSiteID: selectedSiteID,
                              onCompletion: onCompletion)
+        case .fetchStores(onCompletion: let onCompletion):
+            fetchStores(onCompletion: onCompletion)
         case .synchronizeSitePlan(let siteID, let onCompletion):
             synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         case .updateAccountSettings(let userID, let tracksOptOut, let onCompletion):
@@ -183,6 +185,12 @@ private extension AccountStore {
                     onCompletion(.failure(error))
                 }
             }.store(in: &cancellables)
+    }
+
+    /// Loads all stores data from the storage.
+    ///
+    func fetchStores(onCompletion: @escaping ([Site]) -> Void) {
+        onCompletion(storageManager.viewStorage.loadAllWooCommerceSites().map { $0.toReadOnly() })
     }
 
     /// Loads the site plan for the default site.

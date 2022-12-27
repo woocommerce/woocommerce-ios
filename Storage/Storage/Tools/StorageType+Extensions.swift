@@ -33,6 +33,13 @@ public extension StorageType {
         allObjects(ofType: Site.self, matching: nil, sortedBy: nil)
     }
 
+    /// Retrieves all stored sites with active WooCommerce.
+    ///
+    func loadAllWooCommerceSites() -> [Site] {
+        let predicate = \Site.isWooCommerceActive == true
+        return allObjects(ofType: Site.self, matching: predicate, sortedBy: nil)
+    }
+
     // MARK: - Orders
 
     /// Retrieves the Stored Order.

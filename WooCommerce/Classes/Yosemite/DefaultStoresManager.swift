@@ -501,12 +501,24 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
-    /// Updates the necesary dependencies for the widget to function correctly.
+    /// Updates the necessary dependencies for the widget to function correctly.
     /// Reloads widgets timelines.
     ///
     func updateAndReloadWidgetInformation(with siteID: Int64?) {
         // Token to fire network requests
         keychain.currentAuthToken = sessionManager.defaultCredentials?.authToken
+
+        // Share all stores list to extensions
+        let action = AccountAction.fetchStores { sites in
+            let sharedSitesData = sites.map { SharedSiteData(siteID: $0.siteID, siteName: $0.name) }
+            do {
+                let encodedSitesData = try JSONEncoder().encode(sharedSitesData)
+                UserDefaults.group?[.sharedSitesData] = encodedSitesData
+            } catch {
+                DDLogWarn("⚠️ Unable to serialise shared sites data: \(error)")
+            }
+        }
+        dispatch(action)
 
         // Non-critical store info
         UserDefaults.group?[.defaultStoreID] = siteID

@@ -15,8 +15,7 @@ struct AuthenticatedRequest: URLRequestConvertible {
 
     /// Request that should be authenticated.
     ///
-    let request: URLRequestConvertible
-
+    let request: URLRequest
 
     /// Returns the Wrapped Request, but with a WordPress.com Bearer Token set up.
     ///
@@ -25,7 +24,7 @@ struct AuthenticatedRequest: URLRequestConvertible {
             throw AuthenticatedRequestError.invalidCredentials
         }
 
-        var authenticated = try request.asURLRequest()
+        var authenticated = request
 
         authenticated.setValue("Bearer " + authToken, forHTTPHeaderField: "Authorization")
         authenticated.setValue("application/json", forHTTPHeaderField: "Accept")

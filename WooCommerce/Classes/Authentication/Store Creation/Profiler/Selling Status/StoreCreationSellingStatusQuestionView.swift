@@ -21,7 +21,6 @@ final class StoreCreationSellingStatusQuestionHostingController: UIHostingContro
 /// Shows the store selling status question in the store creation flow.
 struct StoreCreationSellingStatusQuestionView: View {
     @ObservedObject private var viewModel: StoreCreationSellingStatusQuestionViewModel
-    @ObservedObject private var platformsViewModel: StoreCreationSellingPlatformsQuestionViewModel
 
     init(storeName: String, onContinue: @escaping () -> Void, onSkip: @escaping () -> Void) {
         self.viewModel = StoreCreationSellingStatusQuestionViewModel(storeName: storeName, onContinue: onContinue, onSkip: onSkip)

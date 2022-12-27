@@ -62,27 +62,6 @@ struct RESTRequest: URLRequestConvertible {
 }
 
 extension RESTRequest {
-    /// Updates the request headers with authentication information.
-    ///
-    func authenticateRequest(with applicationPassword: ApplicationPassword) throws -> URLRequest {
-        var request = try asURLRequest()
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
-
-        let username = applicationPassword.wpOrgUsername
-        let password = applicationPassword.password.secretValue
-        let loginString = "\(username):\(password)"
-        guard let loginData = loginString.data(using: .utf8) else {
-            return request
-        }
-        let base64LoginString = loginData.base64EncodedString()
-
-        request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
-        return request
-    }
-}
-
-private extension RESTRequest {
     enum Settings {
         static let basePath = "wp-json"
     }

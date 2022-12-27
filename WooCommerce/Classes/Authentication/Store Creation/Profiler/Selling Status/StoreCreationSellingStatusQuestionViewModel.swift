@@ -91,11 +91,11 @@ extension StoreCreationSellingStatusQuestionViewModel.SellingStatus {
 private extension StoreCreationSellingStatusQuestionViewModel {
     enum Localization {
         static let title = NSLocalizedString(
-            "Which of these best describes you?",
+            "Where are you on your commerce journey?",
             comment: "Title of the store creation profiler question about the store selling status."
         )
         static let subtitle = NSLocalizedString(
-            "Let us know where you are in your commerce journey so that we can tailor your Woo experience for you.",
+            "To speed things up, we’ll tailor your WooCommerce experience for you based on your response.",
             comment: "Subtitle of the store creation profiler question about the store selling status."
         )
     }

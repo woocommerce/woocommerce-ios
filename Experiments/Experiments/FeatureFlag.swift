@@ -137,4 +137,8 @@ public enum FeatureFlag: Int {
     /// Whether application password authentication should be used when a user logs in with site credentials.
     ///
     case applicationPasswordAuthenticationForSiteCredentialLogin
+
+    /// Allows merchants to create all variations from a single button
+    ///
+    case generateAllVariations
 }

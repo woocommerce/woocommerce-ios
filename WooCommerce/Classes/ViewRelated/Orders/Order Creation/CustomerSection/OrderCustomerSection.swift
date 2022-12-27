@@ -69,7 +69,7 @@ private struct OrderCustomerSectionContent: View {
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.listForeground))
+        .background(Color(.listForeground(modal: true)))
         .addingTopAndBottomDividers()
     }
 

@@ -31,7 +31,7 @@ final class DashboardViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.applySubheadlineStyle()
-        label.backgroundColor = .listForeground
+        label.backgroundColor = .listForeground(modal: false)
         return label
     }()
 
@@ -50,7 +50,7 @@ final class DashboardViewController: UIViewController {
     private lazy var headerStackView: UIStackView = {
         let view = UIStackView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .listForeground
+        view.backgroundColor = .listForeground(modal: false)
         view.axis = .vertical
         return view
     }()
@@ -426,7 +426,7 @@ private extension DashboardViewController {
         let cardView: FeatureAnnouncementCardView
 
         var body: some View {
-            cardView.background(Color(.listForeground))
+            cardView.background(Color(.listForeground(modal: false)))
         }
     }
 

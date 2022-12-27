@@ -92,6 +92,17 @@ final class SessionManager: SessionManagerProtocol {
         }
     }
 
+    /// URL of the default store.
+    ///
+    var defaultStoreURL: String? {
+        switch defaultCredentials {
+        case .none:
+            return nil
+        case .some(let wrapped):
+            return wrapped.siteAddress
+        }
+    }
+
     /// Roles for the default Store Site.
     ///
     var defaultRoles: [User.Role] {
@@ -159,17 +170,44 @@ final class SessionManager: SessionManagerProtocol {
 // MARK: - Private Methods
 //
 private extension SessionManager {
+    enum AuthenticationTypeIdentifier: String {
+        case wpcom = "AuthenticationType.wpcom"
+        case wporg = "AuthenticationType.wporg"
+
+        init(type: Credentials) {
+            switch type {
+            case .wpcom:
+                self = AuthenticationTypeIdentifier.wpcom
+            case .wporg:
+                self = AuthenticationTypeIdentifier.wporg
+            }
+        }
+    }
 
     /// Returns the Default Credentials, if any.
     ///
     func loadCredentials() -> Credentials? {
         guard let username = defaults[.defaultUsername] as? String,
-            let authToken = keychain[username],
-            let siteAddress = defaults[.defaultSiteAddress] as? String else {
+              let secret = keychain[username],
+              let siteAddress = defaults[.defaultSiteAddress] as? String else {
             return nil
         }
 
-        return Credentials(username: username, authToken: authToken, siteAddress: siteAddress)
+        // To cover the case of previous versions which don't have the credential type stored in user defaults
+        guard let defaultCredentialsType = defaults[.defaultCredentialsType] as? String else {
+            return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
+        }
+
+        guard let identifier = AuthenticationTypeIdentifier(rawValue: defaultCredentialsType) else {
+            return nil
+        }
+
+        switch identifier {
+        case .wpcom:
+            return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
+        case .wporg:
+            return .wporg(username: username, password: secret, siteAddress: siteAddress)
+        }
     }
 
     /// Persists the Credentials's authToken in the keychain, and username in User Settings.
@@ -177,7 +215,8 @@ private extension SessionManager {
     func saveCredentials(_ credentials: Credentials) {
         defaults[.defaultUsername] = credentials.username
         defaults[.defaultSiteAddress] = credentials.siteAddress
-        keychain[credentials.username] = credentials.authToken
+        defaults[.defaultCredentialsType] = AuthenticationTypeIdentifier(type: credentials).rawValue
+        keychain[credentials.username] = credentials.secret
     }
 
     /// Nukes both, the AuthToken and Default Username.
@@ -189,5 +228,6 @@ private extension SessionManager {
 
         keychain[username] = nil
         defaults[.defaultUsername] = nil
+        defaults[.defaultCredentialsType] = nil
     }
 }

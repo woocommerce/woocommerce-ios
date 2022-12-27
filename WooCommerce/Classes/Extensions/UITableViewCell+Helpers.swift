@@ -15,7 +15,7 @@ extension UITableViewCell {
     /// Applies the default background color
     ///
     func applyDefaultBackgroundStyle() {
-        backgroundColor = .listForeground
+        backgroundColor = .listForeground(modal: false)
     }
 
     /// Hides the separator for a cell.

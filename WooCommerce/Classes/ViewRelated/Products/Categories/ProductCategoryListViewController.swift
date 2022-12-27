@@ -80,7 +80,7 @@ private extension ProductCategoryListViewController {
     }
 
     func configureTableView() {
-        view.backgroundColor = .listForeground
+        view.backgroundColor = .listForeground(modal: false)
         tableView.backgroundColor = .listBackground
         tableView.dataSource = self
         tableView.delegate = self

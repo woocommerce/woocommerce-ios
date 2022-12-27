@@ -19,7 +19,7 @@ struct OrderCustomFieldsDetails: View {
                         }
                     }
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
-                    .background(Color(.listForeground))
+                    .background(Color(.listForeground(modal: false)))
                 }
                 .background(Color(.listBackground))
                 .ignoresSafeArea(edges: .horizontal)

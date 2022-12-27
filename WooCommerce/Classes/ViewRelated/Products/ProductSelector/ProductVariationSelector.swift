@@ -64,7 +64,7 @@ struct ProductVariationSelector: View {
                     }
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.listForeground).ignoresSafeArea())
+                .background(Color(.listForeground(modal: false)).ignoresSafeArea())
             case .empty:
                 EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                     .frame(maxHeight: .infinity)

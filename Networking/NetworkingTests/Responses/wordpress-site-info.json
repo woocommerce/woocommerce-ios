@@ -1,0 +1,9 @@
+{
+    "name": "My WordPress Site",
+    "description": "Just another WordPress site",
+    "url": "https://test.com",
+    "home": "https://test.com",
+    "gmt_offset": "0",
+    "timezone_string": "",
+    "authentication": [],
+}

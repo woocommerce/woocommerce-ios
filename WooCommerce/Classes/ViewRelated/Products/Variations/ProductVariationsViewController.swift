@@ -296,7 +296,7 @@ private extension ProductVariationsViewController {
                       actionSelector: Selector,
                       stylingHandler: (UIButton) -> Void) {
         let buttonContainer = UIView()
-        buttonContainer.backgroundColor = .listForeground
+        buttonContainer.backgroundColor = .listForeground(modal: false)
 
         let topButton = UIButton()
         topButton.translatesAutoresizingMaskIntoConstraints = false

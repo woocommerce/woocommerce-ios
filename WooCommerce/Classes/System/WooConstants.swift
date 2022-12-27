@@ -57,6 +57,10 @@ enum WooConstants {
     /// App link Widget Identifier.
     ///
     static let appLinkWidgetKind = "AppLinkWidget"
+
+    /// Placeholder store ID to be used when the user logs in with site credentials
+    ///
+    static let placeholderStoreID: Int64 = -1
 }
 
 // MARK: URLs

@@ -84,3 +84,23 @@ func process(someObject: Any) {
     process(someObject as! Element)
 }
 ```
+
+## Error Handling
+
+Avoid using `try?` when a function may throw an error, as it would fail silently. We can use a `do-catch` block instead to handle and log the error as needed. 
+
+**Preferred:**
+
+```swift
+do {
+    let fetchResults = try resultsController.performFetch()
+} catch {
+    DDLogError("Unable to fetch results controller: \(error)")
+}
+```
+
+**Not Preferred:**
+
+```swift
+let fetchResults = try? resultsController.performFetch()
+```

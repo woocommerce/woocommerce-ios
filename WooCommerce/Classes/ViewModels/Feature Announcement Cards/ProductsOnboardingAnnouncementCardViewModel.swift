@@ -56,6 +56,6 @@ private extension ProductsOnboardingAnnouncementCardViewModel {
     enum Localization {
         static let title = NSLocalizedString("Add products to sell", comment: "Title for the Products onboarding banner")
         static let message = NSLocalizedString("Build your catalog by adding what you want to sell.", comment: "Message for the Products onboarding banner")
-        static let buttonTitle = NSLocalizedString("Add a Product", comment: "Title for the button on the Products onboarding banner")
+        static let buttonTitle = NSLocalizedString("Add a product", comment: "Title for the button on the Products onboarding banner")
     }
 }

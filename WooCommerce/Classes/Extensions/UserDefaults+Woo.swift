@@ -7,6 +7,7 @@ import Foundation
 extension UserDefaults {
     enum Key: String {
         case sharedSitesData
+        case defaultCredentialsType
         case defaultAccountID
         case defaultUsername
         case defaultSiteAddress

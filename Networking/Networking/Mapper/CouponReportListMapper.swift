@@ -8,8 +8,11 @@ struct CouponReportListMapper: Mapper {
     ///
     func map(response: Data) throws -> [CouponReport] {
         let decoder = JSONDecoder()
-        let reports = try decoder.decode(CouponReportsEnvelope.self, from: response).reports
-        return reports
+        do {
+            return try decoder.decode(CouponReportsEnvelope.self, from: response).reports
+        } catch {
+            return try decoder.decode([CouponReport].self, from: response)
+        }
     }
 }
 

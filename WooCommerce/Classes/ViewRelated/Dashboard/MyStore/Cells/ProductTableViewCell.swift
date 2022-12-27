@@ -12,6 +12,7 @@ final class ProductTableViewCell: UITableViewCell {
     @IBOutlet private var nameLabel: UILabel!
     @IBOutlet private var detailLabel: UILabel!
     @IBOutlet private var accessoryLabel: UILabel!
+    @IBOutlet private var dataStackView: UIStackView!
 
     /// We use a custom view instead of the default separator as it's width varies depending on the image size, which varies depending on the screen size.
     @IBOutlet private var bottomBorderView: UIView!
@@ -62,6 +63,7 @@ final class ProductTableViewCell: UITableViewCell {
         backgroundColor = Constants.backgroundColor
         bottomBorderView.backgroundColor = .systemColor(.separator)
         selectionStyle = .default
+        adjustStackViewAxis()
     }
 
     private func applyProductImageStyle() {
@@ -70,6 +72,17 @@ final class ProductTableViewCell: UITableViewCell {
         productImage.layer.borderWidth = ProductImage.borderWidth
         productImage.layer.borderColor = ProductImage.borderColor.cgColor
         productImage.clipsToBounds = true
+    }
+
+    /// Adjusts the data stack view axis depending on the current trait collection content size category.
+    ///
+    private func adjustStackViewAxis() {
+        dataStackView.axis = traitCollection.preferredContentSizeCategory > .accessibilityMedium ? .vertical : .horizontal
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        adjustStackViewAxis()
     }
 }
 
@@ -128,7 +141,7 @@ private extension ProductTableViewCell {
         static let cornerRadius = CGFloat(2.0)
         static let borderWidth = CGFloat(0.5)
         static let borderColor = UIColor.border
-        static let backgroundColor = UIColor.listForeground
+        static let backgroundColor = UIColor.listForeground(modal: false)
     }
 
     enum Constants {

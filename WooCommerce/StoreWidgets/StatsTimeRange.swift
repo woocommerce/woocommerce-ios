@@ -69,24 +69,6 @@ extension StatsTimeRange {
         }
     }
 
-    /// The number of intervals for site visit stats to fetch given a time range.
-    /// The interval unit is in `siteVisitStatsGranularity`.
-    func siteVisitStatsQuantity(date: Date, siteTimezone: TimeZone) -> Int {
-        switch self {
-        case .today:
-            return 1
-        case .thisWeek:
-            return 7
-        case .thisMonth:
-            var calendar = Calendar.current
-            calendar.timeZone = siteTimezone
-            let daysThisMonth = calendar.range(of: .day, in: .month, for: date)
-            return daysThisMonth?.count ?? 0
-        case .thisYear:
-            return 12
-        }
-    }
-
     /// Returns the latest date to be shown for the time range, given the current date and site time zone
     ///
     /// - Parameters:

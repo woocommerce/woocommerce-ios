@@ -34,9 +34,7 @@ public struct RequestAuthenticator {
     }
 
     func authenticate(_ urlRequest: URLRequest) throws -> URLRequest {
-        guard case let .wporg(_, _, siteAddress) = credentials,
-              let url = urlRequest.url,
-              url.absoluteString.hasPrefix(siteAddress.trimSlashes() + "/" + RESTRequest.Settings.basePath) else {
+        guard isRestAPIRequest(urlRequest) else {
             // Handle non-REST requests as before
             return try authenticateUsingWPCOMTokenIfPossible(urlRequest)
         }
@@ -51,9 +49,29 @@ public struct RequestAuthenticator {
         let _ = try await applicationPasswordUseCase.generateNewPassword()
         return
     }
+
+    /// Checks whether the given URLRequest is eligible for retyring
+    ///
+    func shouldRetry(_ urlRequest: URLRequest) -> Bool {
+        isRestAPIRequest(urlRequest)
+    }
 }
 
 private extension RequestAuthenticator {
+    /// To check whether the given URLRequest is a REST API request
+    ///
+    /// - Parameter urlRequest: urlRequest to check
+    /// - Returns: `true` is the urlRequest is a REST API request
+    ///
+    func isRestAPIRequest(_ urlRequest: URLRequest) -> Bool {
+        guard case let .wporg(_, _, siteAddress) = credentials,
+              let url = urlRequest.url,
+              url.absoluteString.hasPrefix(siteAddress.trimSlashes() + "/" + RESTRequest.Settings.basePath) else {
+            return false
+        }
+        return true
+    }
+
     /// Attempts creating a request with WPCOM token if possible.
     ///
     func authenticateUsingWPCOMTokenIfPossible(_ urlRequest: URLRequest) throws -> URLRequest {

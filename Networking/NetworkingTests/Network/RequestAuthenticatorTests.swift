@@ -109,6 +109,36 @@ final class RequestAuthenticatorTests: XCTestCase {
         }
         await waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
+
+    func test_shouldRetry_returns_true_for_REST_request() throws {
+        // Given
+        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: "https://test.com/")
+        let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
+        let authenticator = RequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
+        let converter = RequestConverter(credentials: credentials)
+        let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
+
+        // When
+        let request = try converter.convert(jetpackRequest).asURLRequest()
+
+        // Then
+        XCTAssertTrue(authenticator.shouldRetry(request))
+    }
+
+    func test_shouldRetry_returns_true_for_non_REST_request() throws {
+        // Given
+        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: "https://test.com/")
+        let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
+        let authenticator = RequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
+        let converter = RequestConverter(credentials: credentials)
+        let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: false)
+
+        // When
+        let request = try converter.convert(jetpackRequest).asURLRequest()
+
+        // Then
+        XCTAssertFalse(authenticator.shouldRetry(request))
+    }
 }
 
 /// MOCK: application password use case

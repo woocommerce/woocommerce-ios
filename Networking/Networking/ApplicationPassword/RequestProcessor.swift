@@ -32,7 +32,8 @@ extension RequestProcessor: RequestRetrier {
                 completion: @escaping Alamofire.RequestRetryCompletion) {
         guard
             request.retryCount == 0, // Only retry once
-            shouldRetry(request), // Retry only REST API requests that use application password
+            let urlRequest = request.request,
+            requestAuthenticator.shouldRetry(urlRequest), // Retry only REST API requests that use application password
             shouldRetry(error) // Retry only specific errors
         else {
             return completion(false, 0.0)
@@ -61,16 +62,6 @@ private extension RequestProcessor {
                 completeRequests(false)
             }
         }
-    }
-
-    func shouldRetry(_ request: Alamofire.Request) -> Bool {
-        guard case let .wporg(_, _, siteAddress) = requestAuthenticator.credentials,
-              let url = request.request?.url,
-              url.absoluteString.hasPrefix(siteAddress + "/" + RESTRequest.Settings.basePath) else {
-            return false
-        }
-
-        return true
     }
 
     func shouldRetry(_ error: Error) -> Bool {

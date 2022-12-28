@@ -7,7 +7,7 @@ import Foundation
 /// already selling on.
 @MainActor
 final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
-    /// Other online platforms that the user might be selling.
+    /// Other online platforms that the user might be selling. Source of truth:
     /// https://github.com/Automattic/woocommerce.com/blob/trunk/themes/woo/start/config/options.json
     enum Platform: Equatable {
         case amazon

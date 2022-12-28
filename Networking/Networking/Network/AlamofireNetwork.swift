@@ -57,7 +57,7 @@ public class AlamofireNetwork: Network {
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         let request = requestConverter.convert(request)
         sessionManager.request(request)
-            .validate()
+            .validateIfRestRequest(for: request)
             .responseData { response in
                 completion(response.value, response.networkingError)
             }
@@ -75,7 +75,7 @@ public class AlamofireNetwork: Network {
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
         let request = requestConverter.convert(request)
         sessionManager.request(request)
-            .validate()
+            .validateIfRestRequest(for: request)
             .responseData { response in
                 completion(response.result.toSwiftResult())
             }
@@ -94,7 +94,7 @@ public class AlamofireNetwork: Network {
             let request = self.requestConverter.convert(request)
             self.sessionManager
                 .request(request)
-                .validate()
+                .validateIfRestRequest(for: request)
                 .responseData { response in
                     let result = response.result.toSwiftResult()
                     promise(.success(result))
@@ -127,6 +127,15 @@ private extension AlamofireNetwork {
         sessionManager.retrier = requestAuthenticator
         sessionManager.adapter = requestAuthenticator
         return sessionManager
+    }
+}
+
+private extension DataRequest {
+    func validateIfRestRequest(for request: URLRequestConvertible) -> Self {
+        guard request is RESTRequest else {
+            return self
+        }
+        return validate()
     }
 }
 

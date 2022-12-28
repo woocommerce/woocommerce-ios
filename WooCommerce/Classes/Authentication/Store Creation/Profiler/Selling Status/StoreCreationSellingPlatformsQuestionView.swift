@@ -32,6 +32,6 @@ struct StoreCreationSellingPlatformsQuestionView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             StoreCreationSellingPlatformsQuestionView(storeName: "New Year Store", onContinue: {}, onSkip: {})
-        }.background(Color.blue)
+        }
     }
 }

@@ -31,8 +31,6 @@ struct RESTRequest: URLRequestConvertible {
     ///     - method: HTTP Method we should use.
     ///     - path: path to the target endpoint.
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
-    ///      This can be encoded to the URL request query if the HTTP method is `.get`.
-    ///     - headers: Headers to be added to the request.
     ///
     init(siteURL: String,
          wooApiVersion: WooAPIVersion,

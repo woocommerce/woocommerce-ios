@@ -251,6 +251,7 @@
 		026B3C57249A046E00F7823C /* TextFieldTextAlignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */; };
 		026CF63A237E9ABE009563D4 /* ProductVariationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026CF638237E9ABE009563D4 /* ProductVariationsViewController.swift */; };
 		026CF63B237E9ABE009563D4 /* ProductVariationsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 026CF639237E9ABE009563D4 /* ProductVariationsViewController.xib */; };
+		026D4650295C08CA0037F59A /* StoreCreationSellingPlatformsQuestionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D464F295C08CA0037F59A /* StoreCreationSellingPlatformsQuestionViewModelTests.swift */; };
 		026D4A24280461960090164F /* LegacyCollectOrderPaymentUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D4A23280461960090164F /* LegacyCollectOrderPaymentUseCaseTests.swift */; };
 		0270F47624D005B00005210A /* ProductFormViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270F47524D005B00005210A /* ProductFormViewModelProtocol.swift */; };
 		0270F47824D006F60005210A /* ProductFormPresentationStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270F47724D006F60005210A /* ProductFormPresentationStyle.swift */; };
@@ -2293,6 +2294,7 @@
 		026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTextAlignment.swift; sourceTree = "<group>"; };
 		026CF638237E9ABE009563D4 /* ProductVariationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsViewController.swift; sourceTree = "<group>"; };
 		026CF639237E9ABE009563D4 /* ProductVariationsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVariationsViewController.xib; sourceTree = "<group>"; };
+		026D464F295C08CA0037F59A /* StoreCreationSellingPlatformsQuestionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationSellingPlatformsQuestionViewModelTests.swift; sourceTree = "<group>"; };
 		026D4A23280461960090164F /* LegacyCollectOrderPaymentUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyCollectOrderPaymentUseCaseTests.swift; sourceTree = "<group>"; };
 		0270C0A827069BEF00FC799F /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0270F47524D005B00005210A /* ProductFormViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormViewModelProtocol.swift; sourceTree = "<group>"; };
@@ -4147,6 +4149,7 @@
 			children = (
 				0201E4302946FFDB00C793C7 /* StoreCreationCategoryQuestionViewModelTests.swift */,
 				028A4654295AD2DA001CF6CE /* StoreCreationSellingStatusQuestionViewModelTests.swift */,
+				026D464F295C08CA0037F59A /* StoreCreationSellingPlatformsQuestionViewModelTests.swift */,
 			);
 			path = Profiler;
 			sourceTree = "<group>";
@@ -11581,6 +11584,7 @@
 				09C6A26227C01166001FAD73 /* BulkUpdateViewModelTests.swift in Sources */,
 				6856D806DE7DB61522D54044 /* NSMutableAttributedStringHelperTests.swift in Sources */,
 				023D69442588C6BD00F7DA72 /* ShippingLabelPaperSizeListSelectorCommandTests.swift in Sources */,
+				026D4650295C08CA0037F59A /* StoreCreationSellingPlatformsQuestionViewModelTests.swift in Sources */,
 				6856DF20E1BDCC391635F707 /* AgeTests.swift in Sources */,
 				025A1248247CE793008EA761 /* ProductFormViewModel+ObservablesTests.swift in Sources */,
 				BAFEF51E273C2151005F94CC /* SettingsViewModelTests.swift in Sources */,

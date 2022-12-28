@@ -122,10 +122,6 @@
                     }]
                 }
             }
-        },
-        "headers": {
-            "Content-Type": "application/json",
-            "Connection": "keep-alive"
         }
     }
 }

@@ -1,8 +1,10 @@
 import Combine
 import Foundation
 
-/// View model for the second step of `StoreCreationSellingStatusQuestionView`, an optional profiler question about store selling status in the store creation flow.
-/// When the user previously indicates that they're already selling online, this view model provides data for the followup question on the platforms they're already selling on.
+/// View model for the second step of `StoreCreationSellingStatusQuestionView`, an optional profiler question about store selling status
+/// in the store creation flow.
+/// When the user previously indicates that they're already selling online, this view model provides data for the followup question on the platforms they're
+/// already selling on.
 @MainActor
 final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
     /// Other online platforms that the user might be selling.

@@ -33,10 +33,6 @@
                 ["{{now offset='-1 years' format='yyyy-MM-dd'}}", 1350],
                 ["{{now format='yyyy-MM-dd'}}", 1299]
             ]
-        },
-        "headers": {
-            "Content-Type": "application/json",
-            "Connection": "keep-alive"
         }
     }
 }

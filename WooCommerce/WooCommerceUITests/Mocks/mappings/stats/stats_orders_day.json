@@ -64,10 +64,6 @@
             "avg_net_sales": 0,
             "avg_orders": 0,
             "avg_products": 0
-        },
-        "headers": {
-            "Content-Type": "application/json",
-            "Connection": "keep-alive"
         }
     }
 }

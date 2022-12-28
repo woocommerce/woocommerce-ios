@@ -45,10 +45,6 @@
                 "image": "https:\/\/automatticwidgets.com\/wp-content\/uploads\/2020\/01\/annie-theby-FlP6C5pkMKs-unsplash.png?w=201",
                 "currency": "USD"
             }]
-        },
-        "headers": {
-            "Content-Type": "application/json",
-            "Connection": "keep-alive"
         }
     }
 }

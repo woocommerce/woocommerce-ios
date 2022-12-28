@@ -308,12 +308,29 @@ private extension StoreCreationCoordinator {
         let questionController = StoreCreationCategoryQuestionHostingController(viewModel:
                 .init(storeName: storeName) { [weak self] categoryName in
                     guard let self else { return }
-                    self.showDomainSelector(from: navigationController, storeName: storeName, categoryName: categoryName, planToPurchase: planToPurchase)
+                    self.showSellingStatusQuestion(from: navigationController, storeName: storeName, categoryName: categoryName, planToPurchase: planToPurchase)
                 } onSkip: { [weak self] in
                     // TODO: analytics
                     guard let self else { return }
-                    self.showDomainSelector(from: navigationController, storeName: storeName, categoryName: nil, planToPurchase: planToPurchase)
+                    self.showSellingStatusQuestion(from: navigationController, storeName: storeName, categoryName: nil, planToPurchase: planToPurchase)
                 })
+        navigationController.pushViewController(questionController, animated: true)
+        // TODO: analytics
+    }
+
+    @MainActor
+    func showSellingStatusQuestion(from navigationController: UINavigationController,
+                                   storeName: String,
+                                   categoryName: String?,
+                                   planToPurchase: WPComPlanProduct) {
+        let questionController = StoreCreationSellingStatusQuestionHostingController(storeName: storeName) { [weak self] in
+            guard let self else { return }
+            self.showDomainSelector(from: navigationController, storeName: storeName, categoryName: categoryName, planToPurchase: planToPurchase)
+        } onSkip: { [weak self] in
+            // TODO: analytics
+            guard let self else { return }
+            self.showDomainSelector(from: navigationController, storeName: storeName, categoryName: nil, planToPurchase: planToPurchase)
+        }
         navigationController.pushViewController(questionController, animated: true)
         // TODO: analytics
     }

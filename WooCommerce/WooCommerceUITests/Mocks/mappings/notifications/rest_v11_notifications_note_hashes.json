@@ -60,5 +60,9 @@
                 "note_hash": 2174217949
             }]
         }
+    },
+    "headers": {
+        "Content-Type": "application/json",
+        "Connection": "keep-alive"
     }
 }

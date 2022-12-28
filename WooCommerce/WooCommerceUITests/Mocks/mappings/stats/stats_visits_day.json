@@ -58,6 +58,10 @@
                 ["{{now offset='-1 days' format='yyyy-MM-dd'}}", 205],
                 ["{{now format='yyyy-MM-dd'}}", 55]
             ]
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
         }
     }
 }

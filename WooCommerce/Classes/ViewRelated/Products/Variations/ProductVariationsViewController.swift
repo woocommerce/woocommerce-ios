@@ -618,7 +618,7 @@ private extension ProductVariationsViewController {
 
         }
         let bottomSheetPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
-        bottomSheetPresenter.show(from: self)
+        bottomSheetPresenter.show(from: self, sourceView: topStackView)
     }
 }
 

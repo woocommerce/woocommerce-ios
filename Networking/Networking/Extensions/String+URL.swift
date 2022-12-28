@@ -1,7 +1,7 @@
 import Foundation
 
 extension String {
-    /// Trims front slash
+    /// Trims forward slash
     ///
     /// - Returns: String after removing prefix and suffix "/"
     ///

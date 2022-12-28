@@ -2,6 +2,8 @@ import Intents
 
 class IntentHandler: INExtension, StoreWidgetsConfigIntentHandling {
 
+    /// Function provides dynamic sites list for widgets configuration UI, filtered by `searchTerm`
+    ///
     func provideStoreOptionsCollection(for intent: StoreWidgetsConfigIntent, searchTerm: String?) async throws -> INObjectCollection<IntentStore> {
         var sitesArray = getAllStores()
         if let searchTerm {
@@ -17,6 +19,9 @@ class IntentHandler: INExtension, StoreWidgetsConfigIntentHandling {
 }
 
 private extension IntentHandler {
+
+    /// Helper to read sites list from shared (group) UserDefaults
+    ///
     func getAllStores() -> [SharedSiteData] {
         guard let sitesData = UserDefaults.group?[.sharedSitesData] as? Data,
               let sitesArray = try? JSONDecoder().decode([SharedSiteData].self, from: sitesData) else {

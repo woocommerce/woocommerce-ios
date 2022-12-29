@@ -1,26 +1,12 @@
 import Foundation
 import Alamofire
 
-enum AuthenticatedRequestError: Error {
-    case invalidCredentials
-}
-
-/// Wraps up a URLRequestConvertible Instance, and injects the Credentials + `Settings.userAgent` whenever the actual Request is required.
+/// Wraps up a URLRequestConvertible Instance, and injects the application password + `Settings.userAgent` whenever the actual Request is required.
 ///
-struct AuthenticatedRequest: URLRequestConvertible {
+struct AuthenticatedRESTRequest: URLRequestConvertible {
     /// Authenticated Request
     ///
     let request: URLRequest
-
-    init(authToken: String, request: URLRequest) {
-        var authenticated = request
-
-        authenticated.setValue("Bearer " + authToken, forHTTPHeaderField: "Authorization")
-        authenticated.setValue("application/json", forHTTPHeaderField: "Accept")
-        authenticated.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
-
-        self.request = authenticated
-    }
 
     init(applicationPassword: ApplicationPassword, request: URLRequest) {
         var authenticated = request
@@ -42,7 +28,7 @@ struct AuthenticatedRequest: URLRequestConvertible {
         self.request = authenticated
     }
 
-    /// Returns the Wrapped Request, but with a WordPress.com Bearer Token set up.
+    /// Returns the Wrapped Request, but with the application password injected
     ///
     func asURLRequest() -> URLRequest {
         request

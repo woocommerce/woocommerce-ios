@@ -75,7 +75,7 @@ private extension RequestAuthenticator {
             return UnauthenticatedRequest(request: urlRequest).asURLRequest()
         }
 
-        return AuthenticatedRequest(authToken: authToken, request: urlRequest).asURLRequest()
+        return AuthenticatedDotcomRequest(authToken: authToken, request: urlRequest).asURLRequest()
     }
 
     /// Attempts creating a request with application password if possible.
@@ -85,6 +85,6 @@ private extension RequestAuthenticator {
             throw RequestAuthenticatorError.applicationPasswordNotAvailable
         }
 
-        return AuthenticatedRequest(applicationPassword: applicationPassword, request: urlRequest).asURLRequest()
+        return AuthenticatedRESTRequest(applicationPassword: applicationPassword, request: urlRequest).asURLRequest()
     }
 }

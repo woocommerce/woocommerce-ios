@@ -46,4 +46,8 @@ public protocol SessionManagerProtocol {
     /// Nukes all of the known Session's properties.
     ///
     func reset()
+
+    /// Deletes application password
+    ///
+    func deleteApplicationPassword()
 }

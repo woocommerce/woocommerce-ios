@@ -24,7 +24,7 @@ struct AuthenticatedRequest: URLRequestConvertible {
 
     init(applicationPassword: ApplicationPassword, request: URLRequest) {
         var authenticated = request
-        
+
         authenticated.setValue("application/json", forHTTPHeaderField: "Accept")
         authenticated.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 

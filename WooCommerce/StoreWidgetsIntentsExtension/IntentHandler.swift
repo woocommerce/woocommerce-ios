@@ -13,6 +13,16 @@ class IntentHandler: INExtension, StoreWidgetsConfigIntentHandling {
         return INObjectCollection(items: sites)
     }
 
+    /// Function provides default value for `store` parameter
+    ///
+    func defaultStore(for intent: StoreWidgetsConfigIntent) -> IntentStore? {
+        guard let selectedStore = getSelectedStore() else {
+            return nil
+        }
+
+        return IntentStore(identifier: String(selectedStore.siteID), display: selectedStore.siteName)
+    }
+
     override func handler(for intent: INIntent) -> Any {
         return self
     }

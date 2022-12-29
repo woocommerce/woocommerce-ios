@@ -60,7 +60,7 @@ private extension GenerateVariationsSelectorCommand {
     enum Localization {
         static let singleTitle = NSLocalizedString("Add new variation", comment: "Title for the option to generate just one variation")
         static let singleDescription = NSLocalizedString("Create one new variation. Manually set which attributes belong to the variable product.",
-                                                         comment: "Descroption for the option to generate just one variation")
+                                                         comment: "Description for the option to generate just one variation")
         static let allTitle = NSLocalizedString("Generate all variations", comment: "Title for the option to generate all possible variations")
         static let allDescription = NSLocalizedString("Creates variations for all combinations of your attributes.",
                                                          comment: "Descroption for the option to generate all possible variations")

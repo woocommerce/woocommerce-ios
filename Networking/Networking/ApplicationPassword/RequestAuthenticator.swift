@@ -34,12 +34,11 @@ public struct RequestAuthenticator {
     }
 
     func authenticate(_ urlRequest: URLRequest) throws -> URLRequest {
-        guard isRestAPIRequest(urlRequest) else {
-            // Handle non-REST requests as before
+        if isRestAPIRequest(urlRequest) {
+            return try authenticateUsingApplicationPasswordIfPossible(urlRequest)
+        } else {
             return try authenticateUsingWPCOMTokenIfPossible(urlRequest)
         }
-
-        return try authenticateUsingApplicationPasswordIfPossible(urlRequest)
     }
 
     func generateApplicationPassword() async throws {
@@ -75,10 +74,11 @@ private extension RequestAuthenticator {
     /// Attempts creating a request with WPCOM token if possible.
     ///
     func authenticateUsingWPCOMTokenIfPossible(_ urlRequest: URLRequest) throws -> URLRequest {
-        if let credentials, case .wpcom = credentials {
-            return try AuthenticatedRequest(credentials: credentials, request: urlRequest).asURLRequest()
+        guard case let .wpcom(_, authToken, _) = credentials else {
+            return UnauthenticatedRequest(request: urlRequest).asURLRequest()
         }
-        return UnauthenticatedRequest(request: urlRequest).asURLRequest()
+
+        return AuthenticatedRequest(authToken: authToken, request: urlRequest).asURLRequest()
     }
 
     /// Attempts creating a request with application password if possible.
@@ -88,22 +88,6 @@ private extension RequestAuthenticator {
             throw RequestAuthenticatorError.applicationPasswordNotAvailable
         }
 
-        var request = urlRequest
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
-
-        let username = applicationPassword.wpOrgUsername
-        let password = applicationPassword.password.secretValue
-        let loginString = "\(username):\(password)"
-        guard let loginData = loginString.data(using: .utf8) else {
-            return request
-        }
-        let base64LoginString = loginData.base64EncodedString()
-        request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
-
-        // Cookies from `CookieNonceAuthenticator` should be skipped
-        request.httpShouldHandleCookies = false
-
-        return request
+        return AuthenticatedRequest(applicationPassword: applicationPassword, request: urlRequest).asURLRequest()
     }
 }

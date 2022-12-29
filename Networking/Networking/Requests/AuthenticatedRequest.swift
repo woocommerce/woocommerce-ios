@@ -8,28 +8,43 @@ enum AuthenticatedRequestError: Error {
 /// Wraps up a URLRequestConvertible Instance, and injects the Credentials + `Settings.userAgent` whenever the actual Request is required.
 ///
 struct AuthenticatedRequest: URLRequestConvertible {
-
-    /// WordPress.com Credentials.
-    ///
-    let credentials: Credentials
-
-    /// Request that should be authenticated.
+    /// Authenticated Request
     ///
     let request: URLRequest
 
-    /// Returns the Wrapped Request, but with a WordPress.com Bearer Token set up.
-    ///
-    func asURLRequest() throws -> URLRequest {
-        guard case let .wpcom(_, authToken, _) = credentials else {
-            throw AuthenticatedRequestError.invalidCredentials
-        }
-
+    init(authToken: String, request: URLRequest) {
         var authenticated = request
 
         authenticated.setValue("Bearer " + authToken, forHTTPHeaderField: "Authorization")
         authenticated.setValue("application/json", forHTTPHeaderField: "Accept")
         authenticated.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
-        return authenticated
+        self.request = authenticated
+    }
+
+    init(applicationPassword: ApplicationPassword, request: URLRequest) {
+        var authenticated = request
+        
+        authenticated.setValue("application/json", forHTTPHeaderField: "Accept")
+        authenticated.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
+
+        let username = applicationPassword.wpOrgUsername
+        let password = applicationPassword.password.secretValue
+        let loginString = "\(username):\(password)"
+
+        if let loginData = loginString.data(using: .utf8) {
+            let base64LoginString = loginData.base64EncodedString()
+            authenticated.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
+        }
+
+        // Cookies from `CookieNonceAuthenticator` should be skipped
+        authenticated.httpShouldHandleCookies = false
+        self.request = authenticated
+    }
+
+    /// Returns the Wrapped Request, but with a WordPress.com Bearer Token set up.
+    ///
+    func asURLRequest() -> URLRequest {
+        request
     }
 }

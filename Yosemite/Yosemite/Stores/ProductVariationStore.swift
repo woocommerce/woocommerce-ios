@@ -62,15 +62,16 @@ public final class ProductVariationStore: Store {
 private extension ProductVariationStore {
 
     /// Synchronizes the product reviews associated with a given Site ID (if any!).
+    /// If successful, the result boolean value, will indicate weather there are more variations to fetch or not.
     ///
-    func synchronizeProductVariations(siteID: Int64, productID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeProductVariations(siteID: Int64, productID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         remote.loadAllProductVariations(for: siteID,
                                         productID: productID,
                                         context: nil,
                                         pageNumber: pageNumber,
                                         pageSize: pageSize) { [weak self] (productVariations, error) in
             guard let productVariations = productVariations else {
-                onCompletion(error)
+                onCompletion(.failure(error ?? NSError()))
                 return
             }
 
@@ -82,7 +83,8 @@ private extension ProductVariationStore {
             self?.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations,
                                                             siteID: siteID,
                                                             productID: productID) {
-                onCompletion(nil)
+                let couldBeMoreVariationsToFetch = productVariations.count == pageSize
+                onCompletion(.success(couldBeMoreVariationsToFetch))
             }
         }
     }

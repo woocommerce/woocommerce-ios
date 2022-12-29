@@ -7,8 +7,9 @@ import Networking
 public enum ProductVariationAction: Action {
 
     /// Synchronizes the ProductVariation's matching the specified criteria.
+    /// If successful, the result boolean value, will indicate weather there are more variations to fetch or not.
     ///
-    case synchronizeProductVariations(siteID: Int64, productID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
+    case synchronizeProductVariations(siteID: Int64, productID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Retrieves the specified ProductVariation.
     ///

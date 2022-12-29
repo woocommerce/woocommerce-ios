@@ -73,7 +73,7 @@ private extension SiteAddress {
 // MARK: - Mapping between country codes and readable names
 // The country names were extracted from the response to `/wp-json/wc/v3/settings/general`
 // The default countries are listed under `woocommerce_default_country`
-// in one of the following fomats:
+// in one of the following formats:
 // - `"COUNTRY_CODE": "READABALE_COUNTRY_NAME"
 // - `"COUNTRY_CODE:COUNTRY_REGION": "READABLE_COUNTRY_NAME - READABLE_COUNTRY_REGION"
 extension SiteAddress {

@@ -131,6 +131,10 @@ private extension AlamofireNetwork {
 }
 
 private extension DataRequest {
+    /// Validates only for `RESTRequest`
+    ///
+    ///   Only `RESTRequest` needs to be checked for status codes and retried if applicable by `RequestProcessor`
+    ///
     func validateIfRestRequest(for request: URLRequestConvertible) -> Self {
         guard request is RESTRequest else {
             return self

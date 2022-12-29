@@ -26,14 +26,24 @@ private extension IntentHandler {
         guard let sitesData = UserDefaults.group?[.sharedSitesData] as? Data,
               let sitesArray = try? JSONDecoder().decode([SharedSiteData].self, from: sitesData) else {
             // Fallback to single-store implementation
-            if let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
-               let storeName = UserDefaults.group?[.defaultStoreName] as? String {
-                return [SharedSiteData(siteID: storeID, siteName: storeName)]
+            if let selectedStore = getSelectedStore() {
+                return [selectedStore]
             } else {
                 return []
             }
         }
 
         return sitesArray
+    }
+
+    /// Helper to get details for the store selected in the host app
+    ///
+    func getSelectedStore() -> SharedSiteData? {
+        guard let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
+              let storeName = UserDefaults.group?[.defaultStoreName] as? String else {
+            return nil
+        }
+
+        return SharedSiteData(siteID: storeID, siteName: storeName)
     }
 }

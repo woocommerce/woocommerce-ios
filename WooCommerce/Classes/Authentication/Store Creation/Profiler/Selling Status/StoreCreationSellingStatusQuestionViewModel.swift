@@ -27,6 +27,9 @@ final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQu
 
     @Published private(set) var selectedStatus: SellingStatus?
 
+    /// Set to `true` when the user selects the selling status as "I am already selling online".
+    @Published private(set) var isAlreadySellingOnline: Bool = false
+
     private let onContinue: () -> Void
     private let onSkip: () -> Void
 
@@ -36,6 +39,10 @@ final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQu
         self.topHeader = storeName
         self.onContinue = onContinue
         self.onSkip = onSkip
+
+        $selectedStatus
+            .map { $0 == .alreadySellingOnline }
+            .assign(to: &$isAlreadySellingOnline)
     }
 }
 
@@ -44,6 +51,11 @@ extension StoreCreationSellingStatusQuestionViewModel: OptionalStoreCreationProf
         guard selectedStatus != nil else {
             return onSkip()
         }
+        guard selectedStatus != .alreadySellingOnline else {
+            // Handled in `StoreCreationSellingPlatformsQuestionViewModel`.
+            return
+        }
+        // TODO: submission API.
         onContinue()
     }
 

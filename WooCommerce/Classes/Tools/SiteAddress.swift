@@ -355,6 +355,8 @@ extension SiteAddress {
         case AE
         case GB
         case US
+        case UM
+        case VI
         case UY
         case UZ
 
@@ -655,6 +657,8 @@ extension SiteAddress {
             case .AE: return "United Arab Emirates"
             case .GB: return "United Kingdom"
             case .US: return "United States"
+            case .UM: return "United States Minor Outlying Islands"
+            case .VI: return "United States Virgin Islands"
             case .UY: return "Uruguay"
             case .UZ: return "Uzbekistan"
 

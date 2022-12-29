@@ -9,7 +9,7 @@ import Foundation
 final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
     /// Other online platforms that the user might be selling. Source of truth:
     /// https://github.com/Automattic/woocommerce.com/blob/trunk/themes/woo/start/config/options.json
-    enum Platform: Equatable {
+    enum Platform: Equatable, CaseIterable {
         case amazon
         case bigCartel
         case bigCommerce
@@ -33,9 +33,7 @@ final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfile
 
     /// Question content.
     /// TODO: 8376 - update values when API is ready.
-    let platforms: [Platform] = [
-        .amazon, .bigCartel, .bigCommerce, .eBay, .etsy, .facebookMarketplace, .googleShopping, .pinterest, .shopify, .square, .squarespace, .wix, .wordPress
-    ]
+    let platforms: [Platform] = Platform.allCases
 
     @Published private(set) var selectedPlatforms: Set<Platform> = []
 

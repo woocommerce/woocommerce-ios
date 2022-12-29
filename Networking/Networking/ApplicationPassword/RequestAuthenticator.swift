@@ -42,7 +42,7 @@ public struct RequestAuthenticator {
     }
 
     func generateApplicationPassword() async throws {
-        guard let applicationPasswordUseCase = applicationPasswordUseCase else {
+        guard let applicationPasswordUseCase else {
             throw RequestAuthenticatorError.applicationPasswordUseCaseNotAvailable
         }
         let _ = try await applicationPasswordUseCase.generateNewPassword()

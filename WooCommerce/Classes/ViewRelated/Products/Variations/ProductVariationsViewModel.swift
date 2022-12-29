@@ -25,6 +25,23 @@ final class ProductVariationsViewModel {
         useCase.generateVariation(onCompletion: onCompletion)
     }
 
+    /// Generates all missing variations for a product. Up to 100 variations.
+    ///
+    func generateAllVariations(for product: Product) {
+        let action = ProductVariationAction.synchronizeAllProductVariations(siteID: product.siteID, productID: product.productID) { result in
+            // Temp
+            let fetched = ServiceLocator.storageManager.viewStorage.loadProductVariations(siteID: product.siteID, productID: product.productID)
+            print("Synchronized \(fetched?.count ?? 0) variations")
+        }
+        stores.dispatch(action)
+
+        // TODO:
+        // - Generate all variations locally
+        // - Substract already created variations
+        // - Alert if there are more than 100 variations to create
+        // - Create variations remotely
+    }
+
     /// Updates the internal `formType` to `edit` if  the given product exists remotely and previous formType was `.add`
     ///
     func updatedFormTypeIfNeeded(newProduct: Product) {

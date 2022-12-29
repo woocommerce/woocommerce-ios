@@ -612,8 +612,7 @@ private extension ProductVariationsViewController {
             case .single:
                 self.createVariation()
             case .all:
-                // TODO: Start generate all variations flow
-                break
+                self.generateAllVariations()
             }
 
         }
@@ -691,6 +690,16 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
                 DDLogError("⛔️ Error generating variation: \(error)")
             }
         }
+    }
+
+    /// Generates all possible variations for the product attibutes.
+    ///
+    private func generateAllVariations() {
+        viewModel.generateAllVariations(for: product)
+        // TODO:
+        // - Show Loading Indicator
+        // - Alert if there are more than 100 variations to create
+        // - Hide Loading Indicator
     }
 }
 

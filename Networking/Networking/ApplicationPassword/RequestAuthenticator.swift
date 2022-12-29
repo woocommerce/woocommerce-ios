@@ -58,10 +58,7 @@ public struct RequestAuthenticator {
 
 private extension RequestAuthenticator {
     /// To check whether the given URLRequest is a REST API request
-    ///
-    /// - Parameter urlRequest: urlRequest to check
-    /// - Returns: `true` is the urlRequest is a REST API request
-    ///
+    /// 
     func isRestAPIRequest(_ urlRequest: URLRequest) -> Bool {
         guard case let .wporg(_, _, siteAddress) = credentials,
               let url = urlRequest.url,

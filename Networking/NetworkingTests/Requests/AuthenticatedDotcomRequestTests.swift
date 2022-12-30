@@ -11,9 +11,9 @@ final class AuthenticatedDotcomRequestTests: XCTestCase {
     ///
     private var unauthenticatedRequest: URLRequest!
 
-    /// Sample Credentials
+    /// Sample Auth Token
     ///
-    private let credentials = Credentials(username: "username", authToken: "yosemite", siteAddress: "https://wordpress.com")
+    private let authToken = "yosemite"
 
     override func setUp() {
         super.setUp()
@@ -33,14 +33,8 @@ final class AuthenticatedDotcomRequestTests: XCTestCase {
         // Given
         XCTAssertEqual(unauthenticatedRequest.allHTTPHeaderFields, [:])
 
-        guard case let .wpcom(_, authToken, _) = credentials else {
-            XCTFail("Missing credentials.")
-            return
-        }
-
-        let authenticated = AuthenticatedDotcomRequest(authToken: authToken, request: unauthenticatedRequest)
-
         // When
+        let authenticated = AuthenticatedDotcomRequest(authToken: authToken, request: unauthenticatedRequest)
         let output = authenticated.asURLRequest()
 
         // Then
@@ -55,14 +49,9 @@ final class AuthenticatedDotcomRequestTests: XCTestCase {
         // Given
         XCTAssertEqual(unauthenticatedRequest.allHTTPHeaderFields, [:])
 
-        guard case let .wpcom(_, authToken, _) = credentials else {
-            XCTFail("Missing credentials.")
-            return
-        }
-
-        let authenticated = AuthenticatedDotcomRequest(authToken: authToken, request: unauthenticatedRequest)
 
         // When
+        let authenticated = AuthenticatedDotcomRequest(authToken: authToken, request: unauthenticatedRequest)
         let output = authenticated.asURLRequest()
 
         // Then
@@ -76,14 +65,8 @@ final class AuthenticatedDotcomRequestTests: XCTestCase {
         // Given
         XCTAssertEqual(unauthenticatedRequest.allHTTPHeaderFields, [:])
 
-        guard case let .wpcom(_, authToken, _) = credentials else {
-            XCTFail("Missing credentials.")
-            return
-        }
-
-        let authenticated = AuthenticatedDotcomRequest(authToken: authToken, request: unauthenticatedRequest)
-
         // When
+        let authenticated = AuthenticatedDotcomRequest(authToken: authToken, request: unauthenticatedRequest)
         let output = authenticated.asURLRequest()
 
         // Then

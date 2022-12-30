@@ -11,6 +11,8 @@ final class StoreCreationCountryQuestionViewModel: StoreCreationProfilerQuestion
         let value: String
     }
 
+    typealias CountryCode = SiteAddress.CountryCode
+
     let topHeader: String
 
     let title: String = Localization.title
@@ -19,21 +21,39 @@ final class StoreCreationCountryQuestionViewModel: StoreCreationProfilerQuestion
 
     /// Question content.
     /// TODO: 8378 - update values when API is ready.
-    let countryCodes: [SiteAddress.CountryCode] = SiteAddress.CountryCode.allCases
+    let countryCodes: [CountryCode]
 
-    @Published private(set) var selectedCountryCode: SiteAddress.CountryCode?
+    /// The estimated country code given the current device locale.
+    let currentCountryCode: CountryCode?
 
+    /// The currently selected country code.
+    @Published private(set) var selectedCountryCode: CountryCode?
+
+    /// Whether the continue button is enabled.
     @Published private var isContinueButtonEnabledValue: Bool = false
 
-    private let onContinue: (SiteAddress.CountryCode) -> Void
-    private let onSkip: () -> Void
+    private let onContinue: (CountryCode) -> Void
 
     init(storeName: String,
-         onContinue: @escaping (SiteAddress.CountryCode) -> Void,
-         onSkip: @escaping () -> Void) {
+         currentLocale: Locale = .current,
+         onContinue: @escaping (CountryCode) -> Void) {
         self.topHeader = storeName
         self.onContinue = onContinue
-        self.onSkip = onSkip
+
+        currentCountryCode = currentLocale.regionCode.map { CountryCode(rawValue: $0) } ?? nil
+        selectedCountryCode = currentCountryCode
+
+        let allCountryCodes = CountryCode.allCases
+            .sorted(by: { $0.readableCountry < $1.readableCountry })
+        if let currentCountryCode {
+            countryCodes = {
+                var countryCodes = allCountryCodes
+                countryCodes.removeAll(where: { $0 == currentCountryCode })
+                return countryCodes
+            }()
+        } else {
+            countryCodes = allCountryCodes
+        }
 
         $selectedCountryCode
             .map { $0 != nil }
@@ -48,14 +68,14 @@ extension StoreCreationCountryQuestionViewModel: RequiredStoreCreationProfilerQu
 
     func continueButtonTapped() async {
         guard let selectedCountryCode else {
-            return onSkip()
+            return
         }
         onContinue(selectedCountryCode)
     }
 }
 
 extension StoreCreationCountryQuestionViewModel {
-    func selectCountry(_ countryCode: SiteAddress.CountryCode) {
+    func selectCountry(_ countryCode: CountryCode) {
         selectedCountryCode = countryCode
     }
 }

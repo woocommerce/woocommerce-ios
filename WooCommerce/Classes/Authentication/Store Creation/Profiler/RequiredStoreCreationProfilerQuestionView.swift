@@ -67,8 +67,8 @@ private enum Localization {
 
 private final class StoreCreationQuestionPreviewViewModel: StoreCreationProfilerQuestionViewModel, RequiredStoreCreationProfilerQuestionViewModel {
     let topHeader: String = "Store name"
-    let title: String = "Which of these best describes you?"
-    let subtitle: String = "Choose a category that defines your business the best."
+    let title: String = "This question is required"
+    let subtitle: String = "Choose an option to continue."
     @Published private var isContinueButtonEnabledValue: Bool = false
 
     var isContinueButtonEnabled: AnyPublisher<Bool, Never> {

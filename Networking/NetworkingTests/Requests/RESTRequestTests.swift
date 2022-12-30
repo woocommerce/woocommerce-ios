@@ -27,7 +27,7 @@ final class RESTRequestTests: XCTestCase {
 
     func test_it_uses_JSON_encoding_for_post_method() throws {
         // Given
-        let request = RESTRequest(siteURL: sampleSiteAddress, wooApiVersion: sampleWooApiVersion, method: .post, path: sampleRPC)
+        let request = RESTRequest(siteURL: sampleSiteAddress, wooApiVersion: sampleWooApiVersion, method: .post, path: sampleRPC, parameters: sampleParameters)
 
         // When
         let urlRequest = try request.asURLRequest()
@@ -38,7 +38,7 @@ final class RESTRequestTests: XCTestCase {
 
     func test_it_uses_JSON_encoding_for_put_method() throws {
         // Given
-        let request = RESTRequest(siteURL: sampleSiteAddress, wooApiVersion: sampleWooApiVersion, method: .put, path: sampleRPC)
+        let request = RESTRequest(siteURL: sampleSiteAddress, wooApiVersion: sampleWooApiVersion, method: .put, path: sampleRPC, parameters: sampleParameters)
 
         // When
         let urlRequest = try request.asURLRequest()
@@ -47,17 +47,21 @@ final class RESTRequestTests: XCTestCase {
         XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/json")
     }
 
-    func test_it_uses_URL_encoding_for_methods_other_than_post_and_put() throws {
+    func test_it_does_not_use_JSON_encoding_for_methods_other_than_post_and_put() throws {
         // Given
         let methods: [HTTPMethod] = [.options, .get, .head, .patch, .delete, .trace, .connect]
         for method in methods {
-            let request = RESTRequest(siteURL: sampleSiteAddress, wooApiVersion: sampleWooApiVersion, method: method, path: sampleRPC)
+            let request = RESTRequest(siteURL: sampleSiteAddress,
+                                      wooApiVersion: sampleWooApiVersion,
+                                      method: method,
+                                      path: sampleRPC,
+                                      parameters: sampleParameters)
 
             // When
             let urlRequest = try request.asURLRequest()
 
             // Then
-            XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/x-www-form-urlencoded; charset=utf-8")
+            XCTAssertNotEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/json")
         }
     }
 }

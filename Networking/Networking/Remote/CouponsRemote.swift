@@ -109,7 +109,8 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
                                      siteID: siteID,
-                                     path: Path.coupons + "/\(couponID)")
+                                     path: Path.coupons + "/\(couponID)",
+                                     availableAsRESTRequest: true)
 
         let mapper = CouponMapper(siteID: siteID)
 
@@ -132,7 +133,8 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                                      method: .delete,
                                      siteID: siteID,
                                      path: Path.coupons + "/\(couponID)",
-                                     parameters: [ParameterKey.force: true])
+                                     parameters: [ParameterKey.force: true],
+                                     availableAsRESTRequest: true)
 
         let mapper = CouponMapper(siteID: siteID)
 

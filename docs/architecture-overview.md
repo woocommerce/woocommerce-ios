@@ -172,21 +172,21 @@ of performing this task for us:
 3.  **RESTRequest**
 
         Represents a REST API request which will be used to contact to the site directly. (Skipping Jetpack tunnel) 
-        These requests are authenticated using application passwords. 
+        These requests are then authenticated using an application password using `AuthenticatedRESTRequest`.
 
 4.  **AuthenticatedDotcomRequest**
 
-        Injects a set of Credentials and a custom user-agent header into anything that conforms to the URLConvertible protocol. Usually wraps up
-        a DotcomRequest (OR) JetpackRequest.
+        Injects a WordPress.com authentication token and a custom user-agent header into a URLRequest. 
+        Used for authenticating a DotcomRequest (OR) JetpackRequest.
 
 5.  **AuthenticatedRESTRequest**
 
-        Injects application password and a custom user-agent header into anything that conforms to the URLConvertible protocol. Usually wraps up
-        a RESTRequest.
+         Injects application password and a custom user-agent header into a URLRequest.
+         Used for authenticating `RESTRequest`.
 
 6. **UnauthenticatedRequest**
 
-        Wraps up a `URLConvertible` with a custom user-agent header. Used when the request does not require WordPress.com authentication.
+        Wraps up a `URLRequest` with a custom user-agent header. Used when the request does not require WordPress.com authentication.
 
 ### Remote Endpoints
 

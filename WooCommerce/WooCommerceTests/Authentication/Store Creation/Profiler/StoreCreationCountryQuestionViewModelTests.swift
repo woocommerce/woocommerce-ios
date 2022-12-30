@@ -2,6 +2,7 @@ import Combine
 import XCTest
 @testable import WooCommerce
 
+@MainActor
 final class StoreCreationCountryQuestionViewModelTests: XCTestCase {
     private var subscriptions: Set<AnyCancellable> = []
 

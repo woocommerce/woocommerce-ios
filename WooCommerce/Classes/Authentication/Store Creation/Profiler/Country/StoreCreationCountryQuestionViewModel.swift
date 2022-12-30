@@ -3,14 +3,6 @@ import Foundation
 
 /// View model for `StoreCreationCountryQuestionView`, an optional profiler question about store country in the store creation flow.
 final class StoreCreationCountryQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
-    /// Contains necessary information about a category.
-    struct Category: Equatable {
-        /// Display name for the category.
-        let name: String
-        /// Value that is sent to the API.
-        let value: String
-    }
-
     typealias CountryCode = SiteAddress.CountryCode
 
     let topHeader: String

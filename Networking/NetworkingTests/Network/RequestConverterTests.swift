@@ -6,7 +6,7 @@ final class RequestConvertorTests: XCTestCase {
     func test_jetpack_request_is_returned_when_credentials_not_available() {
         // Given
         let converter = RequestConverter(credentials: nil)
-        let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: false)
+        let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
 
         // When
         let request = converter.convert(jetpackRequest)

@@ -7,11 +7,10 @@ final class RequestAuthenticatorTests: XCTestCase {
     func test_authenticateRequest_returns_unauthenticated_request_for_non_REST_request_without_WPCOM_credentials() throws {
         // Given
         let authenticator = RequestAuthenticator(credentials: nil)
-        let converter = RequestConverter(credentials: nil)
         let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: false)
 
         // When
-        let request = try converter.convert(jetpackRequest).asURLRequest()
+        let request = try jetpackRequest.asURLRequest()
         let updatedRequest = try authenticator.authenticate(request)
 
         // Then
@@ -22,11 +21,10 @@ final class RequestAuthenticatorTests: XCTestCase {
         // Given
         let credentials = Credentials(authToken: "secret")
         let authenticator = RequestAuthenticator(credentials: credentials)
-        let converter = RequestConverter(credentials: credentials)
         let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: false)
 
         // When
-        let request = try converter.convert(jetpackRequest).asURLRequest()
+        let request = try jetpackRequest.asURLRequest()
         let updatedRequest = try authenticator.authenticate(request)
 
         // Then
@@ -36,17 +34,17 @@ final class RequestAuthenticatorTests: XCTestCase {
 
     func test_authenticatedRequest_returns_REST_request_with_authorization_header_if_application_password_is_available() throws {
         // Given
-        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: "https://test.com/")
+        let siteURL = "https://test.com/"
+        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
         let applicationPassword = ApplicationPassword(wpOrgUsername: credentials.username, password: .init(credentials.secret))
         let useCase = MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword)
         let authenticator = RequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
-        let converter = RequestConverter(credentials: credentials)
         let wooAPIVersion = WooAPIVersion.mark1
         let basePath = RESTRequest.Settings.basePath
-        let jetpackRequest = JetpackRequest(wooApiVersion: wooAPIVersion, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
+        let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
 
         // When
-        let request = try converter.convert(jetpackRequest).asURLRequest()
+        let request = try restRequest.asURLRequest()
         let updatedRequest = try authenticator.authenticate(request)
 
         // Then
@@ -58,17 +56,18 @@ final class RequestAuthenticatorTests: XCTestCase {
 
     func test_authenticatedRequest_returns_REST_request_with_authorization_header_if_application_password_generation_succeeds() async throws {
         // Given
-        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: "https://test.com/")
+        let siteURL = "https://test.com/"
+        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
         let applicationPassword = ApplicationPassword(wpOrgUsername: credentials.username, password: .init(credentials.secret))
         let useCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
         let authenticator = RequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
-        let converter = RequestConverter(credentials: credentials)
         let wooAPIVersion = WooAPIVersion.mark1
         let basePath = RESTRequest.Settings.basePath
-        let jetpackRequest = JetpackRequest(wooApiVersion: wooAPIVersion, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
+        let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
 
         // When
-        let request = try converter.convert(jetpackRequest).asURLRequest()
+        let request = try restRequest.asURLRequest()
+
         do {
             let _ = try authenticator.authenticate(request)
         } catch RequestAuthenticatorError.applicationPasswordNotAvailable {
@@ -86,16 +85,17 @@ final class RequestAuthenticatorTests: XCTestCase {
 
     func test_authenticatedRequest_returns_error_if_generating_application_password_fails_for_REST_request() async throws {
         // Given
-        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: "https://test.com/")
+        let siteURL = "https://test.com/"
+        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
         let authenticator = RequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
-        let converter = RequestConverter(credentials: credentials)
-        let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
+        let wooAPIVersion = WooAPIVersion.mark1
+        let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
 
         let exp = expectation(description: "Failed with `NetworkError.timeout` error")
 
         // When
-        let request = try converter.convert(jetpackRequest).asURLRequest()
+        let request = try restRequest.asURLRequest()
         do {
             let _ = try authenticator.authenticate(request)
         } catch RequestAuthenticatorError.applicationPasswordNotAvailable {
@@ -112,14 +112,15 @@ final class RequestAuthenticatorTests: XCTestCase {
 
     func test_shouldRetry_returns_true_for_REST_request() throws {
         // Given
-        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: "https://test.com/")
+        let siteURL = "https://test.com/"
+        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
         let authenticator = RequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
-        let converter = RequestConverter(credentials: credentials)
-        let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
+        let wooAPIVersion = WooAPIVersion.mark1
+        let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
 
         // When
-        let request = try converter.convert(jetpackRequest).asURLRequest()
+        let request = try restRequest.asURLRequest()
 
         // Then
         XCTAssertTrue(authenticator.shouldRetry(request))
@@ -127,14 +128,14 @@ final class RequestAuthenticatorTests: XCTestCase {
 
     func test_shouldRetry_returns_true_for_non_REST_request() throws {
         // Given
-        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: "https://test.com/")
+        let siteURL = "https://test.com/"
+        let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
         let authenticator = RequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
-        let converter = RequestConverter(credentials: credentials)
         let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: false)
 
         // When
-        let request = try converter.convert(jetpackRequest).asURLRequest()
+        let request = try jetpackRequest.asURLRequest()
 
         // Then
         XCTAssertFalse(authenticator.shouldRetry(request))

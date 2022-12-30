@@ -49,13 +49,15 @@ final class RESTRequestTests: XCTestCase {
 
     func test_it_uses_URL_encoding_for_methods_other_than_post_and_put() throws {
         // Given
-        let method: HTTPMethod = try XCTUnwrap([.options, .get, .head, .patch, .delete, .trace, .connect].randomElement())
-        let request = RESTRequest(siteURL: sampleSiteAddress, wooApiVersion: sampleWooApiVersion, method: method, path: sampleRPC)
+        let methods: [HTTPMethod] = [.options, .get, .head, .patch, .delete, .trace, .connect]
+        for method in methods {
+            let request = RESTRequest(siteURL: sampleSiteAddress, wooApiVersion: sampleWooApiVersion, method: method, path: sampleRPC)
 
-        // When
-        let urlRequest = try request.asURLRequest()
+            // When
+            let urlRequest = try request.asURLRequest()
 
-        // Then
-        XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/x-www-form-urlencoded; charset=utf-8")
+            // Then
+            XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/x-www-form-urlencoded; charset=utf-8")
+        }
     }
 }

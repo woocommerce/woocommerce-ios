@@ -34,7 +34,7 @@ struct HubMenu: View {
         VStack {
             TopBar(avatarURL: viewModel.avatarURL,
                    storeTitle: viewModel.storeTitle,
-                   storeURL: viewModel.storeURL.absoluteString) {
+                   storeURL: viewModel.storeURL?.absoluteString) {
                 viewModel.presentSwitchStore()
             }
                    .padding([.leading, .trailing], Constants.padding)

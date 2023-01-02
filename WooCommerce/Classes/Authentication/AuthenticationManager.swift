@@ -743,7 +743,7 @@ private extension AuthenticationManager {
     /// The error screen to be displayed when the user tries to enter a site without WooCommerce.
     ///
     func noWooUI(for site: Site,
-                 with matcher: ULAccountMatcher,
+                 with matcher: ULAccountMatcher = .init(),
                  navigationController: UINavigationController,
                  onStorePickerDismiss: @escaping () -> Void) -> UIViewController {
         let viewModel = NoWooErrorViewModel(
@@ -836,9 +836,11 @@ private extension AuthenticationManager {
             guard let self else { return }
             self.checkRoleEligibility(in: navigationController) { [weak self] in
                 guard let self else { return }
-                // TODO: check for Woo
-                // navigates to home screen immediately with a placeholder store ID
-                self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+                self.checkWooInstallation(in: navigationController) { [weak self] in
+                    guard let self else { return }
+                    // navigates to home screen immediately with a placeholder store ID
+                    self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+                }
             }
         }
     }
@@ -928,6 +930,29 @@ private extension AuthenticationManager {
         }
         navigationController.show(errorViewController, sender: self)
     }
+
+    func checkWooInstallation(in navigationController: UINavigationController,
+                              onSuccess: @escaping () -> Void) {
+        let action = SitePluginAction.getPluginDetails(siteID: WooConstants.placeholderStoreID, pluginName: Constants.wooPluginName) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let plugin):
+                if plugin.status == .active {
+                    onSuccess()
+                } else {
+                    fallthrough // reuse the error handling for no Woo
+                }
+            case .failure:
+                guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+                    DDLogError("⛔️ No default site found!")
+                    return
+                }
+                let errorController = self.noWooUI(for: site, navigationController: navigationController, onStorePickerDismiss: {})
+                navigationController.show(errorController, sender: self)
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
 }
 
 private extension AuthenticationManager {
@@ -940,6 +965,9 @@ private extension AuthenticationManager {
             "Error fetching user information.",
             comment: "Error message displayed when user information cannot be fetched after authentication."
         )
+    }
+    enum Constants {
+        static let wooPluginName = "woocommerce/woocommerce"
     }
 }
 

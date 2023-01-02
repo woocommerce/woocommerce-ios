@@ -25,6 +25,8 @@ final class RequestProcessorTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: Request Authentication
+    //
     func test_adapt_authenticates_the_urlrequest() throws {
         // Given
         let urlRequest = URLRequest(url: URL(string: "https://test.com/")!)
@@ -36,6 +38,8 @@ final class RequestProcessorTests: XCTestCase {
         XCTAssertTrue(mockRequestAuthenticator.authenticateCalled)
     }
 
+    // MARK: Retry count
+    //
     func test_request_with_zero_retryCount_is_scheduled_for_retry() throws {
         // Given
         let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
@@ -69,6 +73,42 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(shouldRetry)
     }
+
+    // MARK: `shouldRetry` from RequestAuthenticator
+    //
+    func test_request_is_scheduled_for_retry_when_request_authenticator_shouldRetry_returns_true() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+
+        // When
+        mockRequestAuthenticator.mockedShouldRetryValue = true
+        let shouldRetry = waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: RequestAuthenticatorError.applicationPasswordNotAvailable) { shouldRetry, timeDelay in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(shouldRetry)
+    }
+
+    func test_request_is_not_scheduled_for_retry_when_request_authenticator_shouldRetry_returns_false() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+
+        // When
+        mockRequestAuthenticator.mockedShouldRetryValue = false
+        let shouldRetry = waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: RequestAuthenticatorError.applicationPasswordNotAvailable) { shouldRetry, timeDelay in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry)
+    }
 }
 
 // MARK: Helpers
@@ -91,6 +131,8 @@ private class MockTaskConvertible: TaskConvertible {
 }
 
 private class MockRequestAuthenticator: RequestAuthenticator {
+    var mockedShouldRetryValue: Bool?
+
     private(set) var authenticateCalled = false
 
     var credentials: Networking.Credentials? = nil
@@ -105,6 +147,6 @@ private class MockRequestAuthenticator: RequestAuthenticator {
     }
 
     func shouldRetry(_ urlRequest: URLRequest) -> Bool {
-        true
+        mockedShouldRetryValue ?? true
     }
 }

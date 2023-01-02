@@ -39,6 +39,10 @@ final class HubMenuViewModel: ObservableObject {
     ///
     @Published private(set) var menuElements: [HubMenuItem] = []
 
+    /// The switch store button should be hidden when logged in with site credentials only.
+    ///
+    @Published private(set) var switchStoreEnabled = false
+
     @Published var showingReviewDetail = false
 
     private let stores: StoresManager
@@ -59,6 +63,7 @@ final class HubMenuViewModel: ObservableObject {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
+        self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
         observeSiteForUIUpdates()
     }
 

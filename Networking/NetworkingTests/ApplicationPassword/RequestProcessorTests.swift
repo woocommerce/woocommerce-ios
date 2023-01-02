@@ -164,6 +164,42 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(shouldRetry)
     }
+
+    // MARK: Generate application password
+    //
+    func test_application_password_is_generated_upon_retrying_a_request() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertTrue(mockRequestAuthenticator.generateApplicationPasswordCalled)
+    }
+
+    func test_application_password_is_not_generated_when_a_request_is_not_eligible_for_retry() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+
+        // When
+        mockRequestAuthenticator.mockedShouldRetryValue = false
+        waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: RequestAuthenticatorError.applicationPasswordNotAvailable) { shouldRetry, timeDelay in
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertFalse(mockRequestAuthenticator.generateApplicationPasswordCalled)
+    }
 }
 
 // MARK: Helpers
@@ -189,6 +225,7 @@ private class MockRequestAuthenticator: RequestAuthenticator {
     var mockedShouldRetryValue: Bool?
 
     private(set) var authenticateCalled = false
+    private(set) var generateApplicationPasswordCalled = false
 
     var credentials: Networking.Credentials? = nil
 
@@ -198,7 +235,7 @@ private class MockRequestAuthenticator: RequestAuthenticator {
     }
 
     func generateApplicationPassword() async throws {
-        // Do nothing
+        generateApplicationPasswordCalled = true
     }
 
     func shouldRetry(_ urlRequest: URLRequest) -> Bool {

@@ -31,9 +31,9 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var storeTitle = Localization.myStore
 
-    @Published private(set) var storeURL: URL?
+    @Published private(set) var storeURL = WooConstants.URLs.blog.asURL()
 
-    @Published private(set) var woocommerceAdminURL: URL?
+    @Published private(set) var woocommerceAdminURL = WooConstants.URLs.blog.asURL()
 
     /// Child items
     ///

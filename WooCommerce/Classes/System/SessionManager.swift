@@ -173,7 +173,8 @@ final class SessionManager: SessionManagerProtocol {
         guard case let .wporg(username, password, siteAddress) = loadCredentials(),
               let usecase = try? DefaultApplicationPasswordUseCase(username: username,
                                                                    password: password,
-                                                                   siteAddress: siteAddress) else {
+                                                                   siteAddress: siteAddress,
+                                                                   keychain: keychain) else {
             return
         }
 

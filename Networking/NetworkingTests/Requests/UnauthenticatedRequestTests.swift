@@ -13,10 +13,23 @@ final class UnauthenticatedRequestTests: XCTestCase {
         let request = UnauthenticatedRequest(request: unauthenticatedRequest)
 
         // When
-        let urlRequest = try request.asURLRequest()
+        let urlRequest = request.asURLRequest()
 
         // Then
         let userAgentHeader = urlRequest.allHTTPHeaderFields?["User-Agent"]
         XCTAssertEqual(userAgentHeader, UserAgent.defaultUserAgent)
+    }
+
+    /// Verifies that the `Accept` header is injected, as part of the HTTP Headers.
+    func test_accept_is_injected_as_request_header() {
+        // Given
+        let request = UnauthenticatedRequest(request: unauthenticatedRequest)
+
+        // When
+        let urlRequest = request.asURLRequest()
+
+        // Then
+        let acceptHeader = urlRequest.allHTTPHeaderFields?["Accept"]
+        XCTAssertEqual(acceptHeader, "application/json")
     }
 }

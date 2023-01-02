@@ -119,7 +119,7 @@ class AuthenticationManager: Authentication {
                                                 subheadlineColor: .gray(.shade30),
                                                 placeholderColor: .placeholderImage,
                                                 viewControllerBackgroundColor: .listBackground,
-                                                textFieldBackgroundColor: .listForeground,
+                                                textFieldBackgroundColor: .listForeground(modal: false),
                                                 buttonViewBackgroundColor: .authPrologueBottomBackgroundColor,
                                                 buttonViewTopShadowImage: nil,
                                                 navBarImage: StyleManager.navBarImage,

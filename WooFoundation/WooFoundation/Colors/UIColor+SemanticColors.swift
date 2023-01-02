@@ -2,18 +2,18 @@ import UIKit
 
 // MARK: - Base colors.
 public extension UIColor {
-    /// Accent. Pink-50 (< iOS 13 and Light Mode) and Pink-30 (Dark Mode)
+    /// Accent. Purple-50 (Light Mode) and Purple-30 (Dark Mode)
     ///
     static var accent: UIColor {
-        return UIColor(light: .withColorStudio(.pink, shade: .shade50),
-                       dark: .withColorStudio(.pink, shade: .shade30))
+        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+                       dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
     }
 
-    /// Accent Dark. Pink-70 (< iOS 13 and Light Mode) and Pink-50 (Dark Mode)
+    /// Accent Dark. Purple-70 (Light Mode) and Purple-50 (Dark Mode)
     ///
     static var accentDark: UIColor {
-        return UIColor(light: .withColorStudio(.pink, shade: .shade70),
-                       dark: .withColorStudio(.pink, shade: .shade50))
+        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade80),
+                       dark: .withColorStudio(.wooCommercePurple, shade: .shade50))
     }
 
     /// Brand. WooCommercePurple-60 (all versions of iOS, Light and Dark Mode)
@@ -80,7 +80,7 @@ public extension UIColor {
 
 // MARK: - Text Colors.
 public extension UIColor {
-    /// Text link. Pink-50
+    /// Text link. Purple-50
     ///
     static var textLink: UIColor {
         return .accent
@@ -181,9 +181,12 @@ public extension UIColor {
         return .separator
     }
 
-    /// Primary Button Background. Resolves to `accent`
+    /// Primary Button Background.
     ///
-    static var primaryButtonBackground = accent
+    static var primaryButtonBackground: UIColor {
+        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+                       dark: .withColorStudio(.wooCommercePurple, shade: .shade50))
+    }
 
     /// Primary Button Title.
     ///
@@ -353,11 +356,11 @@ public extension UIColor {
         return .accent
     }
 
-    /// Stats chart data bar highlighted color.
+    /// Stats highlighted color (chart data bar and text color).
     ///
-    static var chartDataBarHighlighted: UIColor {
-        return UIColor(light: .withColorStudio(.pink, shade: .shade70),
-                       dark: .withColorStudio(.pink, shade: .shade10))
+    static var statsHighlighted: UIColor {
+        return UIColor(light: .withColorStudio(.pink, shade: .shade50),
+                       dark: .withColorStudio(.pink, shade: .shade30))
     }
 }
 
@@ -391,10 +394,15 @@ public extension UIColor {
         return UIColor(light: .gray(.shade0), dark: .black)
     }
 
-    /// List ForeGround.
-    ///
-    static var listForeground: UIColor {
-        return .secondarySystemGroupedBackground
+    /// List foreground.
+    /// - Parameter modal: Whether the view is presented modally. When `true`, returns a darker background in dark mode, for better contrast.
+    static func listForeground(modal: Bool) -> UIColor {
+        if modal {
+            return UIColor(light: .secondarySystemGroupedBackground,
+                           dark: .systemGroupedBackground)
+        } else {
+            return .secondarySystemGroupedBackground
+        }
     }
 }
 

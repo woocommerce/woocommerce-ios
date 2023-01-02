@@ -21,7 +21,7 @@ struct ProductInOrder: View {
                             .padding()
                         Divider()
                     }
-                    .background(Color(.listForeground))
+                    .background(Color(.listForeground(modal: false)))
 
                     Spacer(minLength: Layout.sectionSpacing)
 
@@ -36,7 +36,7 @@ struct ProductInOrder: View {
                         .foregroundColor(Color(.error))
                         Divider()
                     }
-                    .background(Color(.listForeground))
+                    .background(Color(.listForeground(modal: false)))
                 }
             }
             .background(Color(.listBackground))

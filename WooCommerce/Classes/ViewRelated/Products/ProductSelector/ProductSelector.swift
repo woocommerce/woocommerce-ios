@@ -97,7 +97,7 @@ struct ProductSelector: View {
                         }
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
-                    .background(Color(.listForeground).ignoresSafeArea())
+                    .background(Color(.listForeground(modal: false)).ignoresSafeArea())
 
                 case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
@@ -181,7 +181,7 @@ extension ProductSelector {
     struct Configuration {
         var showsFilters: Bool = false
         var multipleSelectionsEnabled: Bool = false
-        var searchHeaderBackgroundColor: UIColor = .listForeground
+        var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
         var doneButtonTitleSingularFormat: String = ""
         var doneButtonTitlePluralFormat: String = ""

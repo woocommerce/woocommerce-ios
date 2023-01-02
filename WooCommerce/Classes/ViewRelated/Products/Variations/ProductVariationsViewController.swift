@@ -283,7 +283,8 @@ private extension ProductVariationsViewController {
 //
 private extension ProductVariationsViewController {
     func configureTopStackView() {
-        addTopButton(title: Localization.generateVariationAction,
+        let title = featureFlagService.isFeatureFlagEnabled(.generateAllVariations) ? Localization.addVariationAction : Localization.generateVariationAction
+        addTopButton(title: title,
                      insets: .init(top: 16, left: 16, bottom: 8, right: 16),
                      hasBottomBorder: true,
                      actionSelector: #selector(addButtonTapped),
@@ -296,7 +297,7 @@ private extension ProductVariationsViewController {
                       actionSelector: Selector,
                       stylingHandler: (UIButton) -> Void) {
         let buttonContainer = UIView()
-        buttonContainer.backgroundColor = .listForeground
+        buttonContainer.backgroundColor = .listForeground(modal: false)
 
         let topButton = UIButton()
         topButton.translatesAutoresizingMaskIntoConstraints = false
@@ -563,7 +564,12 @@ private extension ProductVariationsViewController {
 
     @objc func addButtonTapped() {
         analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
-        createVariation()
+
+        if featureFlagService.isFeatureFlagEnabled(.generateAllVariations) {
+            presentGenerateVariationOptions()
+        } else {
+            createVariation()
+        }
     }
 
     /// More Options Action Sheet
@@ -593,6 +599,26 @@ private extension ProductVariationsViewController {
         popoverController?.barButtonItem = sender
 
         present(actionSheet, animated: true)
+    }
+
+    /// Displays a bottom sheet allowing the merchant to choose whether to generate one variation or to generate all variations.
+    ///
+    private func presentGenerateVariationOptions() {
+        let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.addVariationAction)
+        let command = GenerateVariationsSelectorCommand(selected: nil) { [weak self] option in
+            guard let self else { return }
+            self.dismiss(animated: true)
+            switch option {
+            case .single:
+                self.createVariation()
+            case .all:
+                // TODO: Start generate all variations flow
+                break
+            }
+
+        }
+        let bottomSheetPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
+        bottomSheetPresenter.show(from: self, sourceView: topStackView)
     }
 }
 

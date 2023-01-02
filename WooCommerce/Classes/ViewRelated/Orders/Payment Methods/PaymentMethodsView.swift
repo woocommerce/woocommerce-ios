@@ -74,7 +74,7 @@ struct PaymentMethodsView: View {
                         }
                     }
                     .padding(.horizontal)
-                    .background(Color(.listForeground))
+                    .background(Color(.listForeground(modal: false)))
 
                     if viewModel.showUpsellCardReaderFeatureBanner {
                         FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
@@ -85,7 +85,7 @@ struct PaymentMethodsView: View {
                             showingPurchaseCardReaderView = true
                         })
                         .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(.listForeground))
+                        .background(Color(.listForeground(modal: false)))
                     }
                 }
 

@@ -612,8 +612,7 @@ private extension ProductVariationsViewController {
             case .single:
                 self.createVariation()
             case .all:
-                // TODO: Start generate all variations flow
-                break
+                self.generateAllVariations()
             }
 
         }
@@ -649,22 +648,23 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
         transitionToSyncingState(pageNumber: pageNumber)
 
         let action = ProductVariationAction
-            .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
+            .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
                 guard let self = self else {
                     return
                 }
 
-                if let error = error {
+                switch result {
+                case .success:
+                    ServiceLocator.analytics.track(.productVariationListLoaded)
+                case .failure(let error):
                     ServiceLocator.analytics.track(.productVariationListLoadError, withError: error)
 
                     DDLogError("⛔️ Error synchronizing product variations: \(error)")
                     self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
-                } else {
-                    ServiceLocator.analytics.track(.productVariationListLoaded)
                 }
 
                 self.transitionToResultsUpdatedState()
-                onCompletion?(error == nil)
+                onCompletion?(result.isSuccess)
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -690,6 +690,16 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
                 DDLogError("⛔️ Error generating variation: \(error)")
             }
         }
+    }
+
+    /// Generates all possible variations for the product attibutes.
+    ///
+    private func generateAllVariations() {
+        viewModel.generateAllVariations(for: product)
+        // TODO:
+        // - Show Loading Indicator
+        // - Alert if there are more than 100 variations to create
+        // - Hide Loading Indicator
     }
 }
 

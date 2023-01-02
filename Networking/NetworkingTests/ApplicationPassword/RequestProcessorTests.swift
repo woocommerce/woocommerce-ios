@@ -1,13 +1,32 @@
 import XCTest
 @testable import Networking
+@testable import Alamofire
 
 /// RequestProcessor Unit Tests
 ///
 final class RequestProcessorTests: XCTestCase {
+    private var mockRequestAuthenticator: MockRequestAuthenticator!
+    private var sut: RequestProcessor!
+    private var sessionManager: Alamofire.SessionManager!
+
+    override func setUp() {
+        super.setUp()
+
+        sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        mockRequestAuthenticator = MockRequestAuthenticator()
+        sut = RequestProcessor(requestAuthenticator: mockRequestAuthenticator)
+    }
+
+    override func tearDown() {
+        sut = nil
+        mockRequestAuthenticator = nil
+        sessionManager = nil
+
+        super.tearDown()
+    }
+
     func test_adapt_authenticates_the_urlrequest() throws {
         // Given
-        let mockRequestAuthenticator = MockRequestAuthenticator()
-        let sut = RequestProcessor(requestAuthenticator: mockRequestAuthenticator)
         let urlRequest = URLRequest(url: URL(string: "https://test.com/")!)
 
         // When
@@ -15,6 +34,59 @@ final class RequestProcessorTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mockRequestAuthenticator.authenticateCalled)
+    }
+
+    func test_request_with_zero_retryCount_is_scheduled_for_retry() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+
+        // When
+        request.retryCount = 0
+        let shouldRetry = waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: RequestAuthenticatorError.applicationPasswordNotAvailable) { shouldRetry, timeDelay in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(shouldRetry)
+    }
+
+    func test_request_with_non_zero_retryCount_is_not_scheduled_for_retry() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+
+        // When
+        request.retryCount = 1
+        let shouldRetry = waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: RequestAuthenticatorError.applicationPasswordNotAvailable) { shouldRetry, timeDelay in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry)
+    }
+}
+
+// MARK: Helpers
+//
+private extension RequestProcessorTests {
+    func mockRequest() throws -> Alamofire.Request {
+        let originalTask = MockTaskConvertible()
+        let task = try originalTask.task(session: sessionManager.session, adapter: nil, queue: .main)
+        return Alamofire.Request(session: sessionManager.session, requestTask: .data(originalTask, task))
+    }
+}
+
+
+private class MockTaskConvertible: TaskConvertible {
+    let urlRequest = URLRequest(url: URL(string: "https://test.com/")!)
+
+    func task(session: URLSession, adapter: RequestAdapter?, queue: DispatchQueue) throws -> URLSessionTask {
+        session.dataTask(with: urlRequest)
     }
 }
 

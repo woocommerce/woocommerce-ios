@@ -69,7 +69,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 password: String,
                 siteAddress: String,
                 network: Network? = nil,
-                keychain: Keychain? = nil) throws {
+                keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) throws {
         self.siteAddress = siteAddress
         self.username = username
         self.storage = ApplicationPasswordStorage(keychain: keychain)

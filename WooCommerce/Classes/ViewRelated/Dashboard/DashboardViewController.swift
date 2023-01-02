@@ -52,6 +52,8 @@ final class DashboardViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .listForeground(modal: false)
         view.axis = .vertical
+        view.directionalLayoutMargins = .init(top: 0, leading: 0, bottom: Constants.tabStripSpacing, trailing: 0)
+        view.spacing = Constants.headerStackViewSpacing
         return view
     }()
 
@@ -291,7 +293,7 @@ private extension DashboardViewController {
 
         // This constraint will pin the bottom of the header to the top of the content
         // We want this to be active when the header is visible
-        contentTopToHeaderConstraint = contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor, constant: Constants.tabStripSpacing)
+        contentTopToHeaderConstraint = contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor)
         contentTopToHeaderConstraint?.isActive = true
 
         // This constraint has a lower priority and will pin the top of the content view to its superview
@@ -720,5 +722,6 @@ private extension DashboardViewController {
         static let iPhoneCollapsedNavigationBarHeight = CGFloat(44)
         static let iPadCollapsedNavigationBarHeight = CGFloat(50)
         static let tabStripSpacing = CGFloat(12)
+        static let headerStackViewSpacing = CGFloat(4)
     }
 }

@@ -833,8 +833,6 @@ private extension AuthenticationManager {
                                  with: applicationPasswordUseCase,
                                  in: navigationController) { [weak self] in
             guard let self else { return }
-            // Remove cookies to prepare for authentication with application password
-            HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
             self.checkRoleEligibility(in: navigationController) { [weak self] in
                 guard let self else { return }
                 // TODO: check for Woo

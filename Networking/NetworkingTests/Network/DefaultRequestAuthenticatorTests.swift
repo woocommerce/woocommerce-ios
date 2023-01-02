@@ -2,7 +2,7 @@ import XCTest
 import Alamofire
 @testable import Networking
 
-final class RequestAuthenticatorTests: XCTestCase {
+final class DefaultRequestAuthenticatorTests: XCTestCase {
 
     func test_authenticateRequest_returns_unauthenticated_request_for_non_REST_request_without_WPCOM_credentials() throws {
         // Given

@@ -12,6 +12,7 @@ import protocol Storage.StorageManagerType
 import protocol Networking.ApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
 import enum Networking.ApplicationPasswordUseCaseError
+import enum Alamofire.AFError
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
@@ -836,7 +837,7 @@ private extension AuthenticationManager {
             guard let self else { return }
             self.checkRoleEligibility(in: navigationController) { [weak self] in
                 guard let self else { return }
-                self.checkWooInstallation(in: navigationController) { [weak self] in
+                self.checkWooInstallation(for: siteURL, in: navigationController) { [weak self] in
                     guard let self else { return }
                     // navigates to home screen immediately with a placeholder store ID
                     self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
@@ -931,24 +932,35 @@ private extension AuthenticationManager {
         navigationController.show(errorViewController, sender: self)
     }
 
-    func checkWooInstallation(in navigationController: UINavigationController,
+    func checkWooInstallation(for siteURL: String,
+                              in navigationController: UINavigationController,
                               onSuccess: @escaping () -> Void) {
-        let action = SitePluginAction.getPluginDetails(siteID: WooConstants.placeholderStoreID, pluginName: Constants.wooPluginName) { [weak self] result in
-            guard let self else { return }
+        let action = SitePluginAction.getPluginDetails(siteID: WooConstants.placeholderStoreID, pluginName: Constants.wooPluginName) { result in
+            var errorMessage: String?
             switch result {
             case .success(let plugin):
                 if plugin.status == .active {
-                    onSuccess()
+                    return onSuccess()
                 } else {
-                    fallthrough // reuse the error handling for no Woo
+                    errorMessage = String.localizedStringWithFormat(Localization.noWooError, siteURL.trimHTTPScheme())
                 }
-            case .failure:
-                guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                    DDLogError("⛔️ No default site found!")
-                    return
+            case .failure(let error):
+                DDLogError("⛔️ Error checking Woo: \(error)")
+                if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error as? AFError {
+                    errorMessage = String.localizedStringWithFormat(Localization.noWooError, siteURL.trimHTTPScheme())
+                } else {
+                    errorMessage = Localization.wooCheckError
                 }
-                let errorController = self.noWooUI(for: site, navigationController: navigationController, onStorePickerDismiss: {})
-                navigationController.show(errorController, sender: self)
+            }
+            if let errorMessage {
+                let alert = FancyAlertViewController.makeSiteCredentialLoginAlert(
+                    message: errorMessage,
+                    restartLoginAction: {
+                        ServiceLocator.stores.deauthenticate()
+                        navigationController.popToRootViewController(animated: true)
+                    }
+                )
+                navigationController.present(alert, animated: true)
             }
         }
         ServiceLocator.stores.dispatch(action)
@@ -964,6 +976,15 @@ private extension AuthenticationManager {
         static let roleEligibilityCheckError = NSLocalizedString(
             "Error fetching user information.",
             comment: "Error message displayed when user information cannot be fetched after authentication."
+        )
+        static let noWooError = NSLocalizedString(
+            "It looks like %1$@ is not a WooCommerce site.",
+            comment: "Message explaining that the site entered doesn't have WooCommerce installed or activated. "
+            + "Reads like 'It looks like awebsite.com is not a WooCommerce site."
+        )
+        static let wooCheckError = NSLocalizedString(
+            "Error checking for the WooCommerce plugin.",
+            comment: "Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication"
         )
     }
     enum Constants {

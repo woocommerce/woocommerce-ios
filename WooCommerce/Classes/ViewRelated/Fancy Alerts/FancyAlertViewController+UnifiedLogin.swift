@@ -53,6 +53,20 @@ extension FancyAlertViewController {
         let controller = FancyAlertViewController.controllerWithConfiguration(configuration: config)
         return controller
     }
+
+    static func makeApplicationPasswordAlert(retryAction: @escaping () -> Void,
+                                             restartLoginAction: @escaping () -> Void) -> FancyAlertViewController {
+        let retryButton = makeRetryButtonConfig(retryAction: retryAction)
+        let loginButton = makeLoginButtonConfig(loginAction: restartLoginAction)
+        let config = FancyAlertViewController.Config(titleText: Localization.cannotLogin,
+                                                     bodyText: Localization.applicationPasswordError,
+                                                     headerImage: nil,
+                                                     dividerPosition: .top,
+                                                     defaultButton: loginButton,
+                                                     cancelButton: retryButton)
+        let controller = FancyAlertViewController.controllerWithConfiguration(configuration: config)
+        return controller
+    }
 }
 
 
@@ -107,6 +121,16 @@ private extension FancyAlertViewController {
             comment: "Description of alert for suggestion on how to connect to a WP.com site" +
             "Presented when a user logs in with an email that does not have access to a WP.com site"
         )
+        static let applicationPasswordError = NSLocalizedString(
+            "Error fetching application password for your site.",
+            comment: "Error message displayed when application password cannot be fetched after authentication."
+        )
+        static let retryButton = NSLocalizedString("Try Again", comment: "Button to refetch application password for the current site")
+        static let retryLoginButton = NSLocalizedString("Log In With Another Account", comment: "Button to restart the login flow.")
+        static let cannotLogin = NSLocalizedString(
+            "Cannot log in",
+            comment: "Title of the alert displayed when application password cannot be fetched after authentication"
+        )
     }
 
     enum Strings {
@@ -121,6 +145,20 @@ private extension FancyAlertViewController {
     static func makeDismissButtonConfig() -> FancyAlertViewController.Config.ButtonConfig {
         return FancyAlertViewController.Config.ButtonConfig(Localization.dismissButton) { controller, _ in
             controller.dismiss(animated: true)
+        }
+    }
+
+    static func makeRetryButtonConfig(retryAction: @escaping () -> Void) -> FancyAlertViewController.Config.ButtonConfig {
+        return FancyAlertViewController.Config.ButtonConfig(Localization.retryButton) { controller, _ in
+            controller.dismiss(animated: true)
+            retryAction()
+        }
+    }
+
+    static func makeLoginButtonConfig(loginAction: @escaping () -> Void) -> FancyAlertViewController.Config.ButtonConfig {
+        return FancyAlertViewController.Config.ButtonConfig(Localization.retryLoginButton) { controller, _ in
+            controller.dismiss(animated: true)
+            loginAction()
         }
     }
 

@@ -3,23 +3,23 @@ import WordPressShared
 import WordPressKit
 import enum Alamofire.AFError
 
-enum ApplicationPasswordUseCaseError: Error {
+public enum ApplicationPasswordUseCaseError: Error {
     case duplicateName
     case applicationPasswordsDisabled
     case failedToConstructLoginOrAdminURLUsingSiteAddress
 }
 
-struct ApplicationPassword {
+public struct ApplicationPassword {
     /// WordPress org username that the application password belongs to
     ///
-    let wpOrgUsername: String
+    public let wpOrgUsername: String
 
     /// Application password
     ///
-    let password: Secret<String>
+    public let password: Secret<String>
 }
 
-protocol ApplicationPasswordUseCase {
+public protocol ApplicationPasswordUseCase {
     /// Returns the locally saved ApplicationPassword if available
     ///
     var applicationPassword: ApplicationPassword? { get }
@@ -37,7 +37,7 @@ protocol ApplicationPasswordUseCase {
     func deletePassword() async throws
 }
 
-final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
+final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     /// Site Address
     ///
     private let siteAddress: String
@@ -64,10 +64,10 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
         }
     }
 
-    init(username: String,
-         password: String,
-         siteAddress: String,
-         network: Network? = nil) throws {
+    public init(username: String,
+                password: String,
+                siteAddress: String,
+                network: Network? = nil) throws {
         self.siteAddress = siteAddress
         self.username = username
 
@@ -92,7 +92,7 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
 
     /// Returns the locally saved ApplicationPassword if available
     ///
-    var applicationPassword: ApplicationPassword? {
+    public var applicationPassword: ApplicationPassword? {
         storage.applicationPassword
     }
 
@@ -102,7 +102,7 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     ///
     /// - Returns: Generated `ApplicationPassword` instance
     ///
-    func generateNewPassword() async throws -> ApplicationPassword {
+    public func generateNewPassword() async throws -> ApplicationPassword {
         async let password = try {
             do {
                 return try await createApplicationPassword()
@@ -121,7 +121,7 @@ final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     ///
     ///  Deletes locally and also sends an API request to delete it from the site
     ///
-    func deletePassword() async throws {
+    public func deletePassword() async throws {
         try await deleteApplicationPassword()
     }
 }

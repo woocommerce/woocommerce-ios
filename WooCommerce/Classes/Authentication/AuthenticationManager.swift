@@ -3,12 +3,15 @@ import KeychainAccess
 import WordPressAuthenticator
 import WordPressKit
 import Yosemite
+import WordPressUI
 import class Networking.UserAgent
 import enum Experiments.ABTest
 import struct Networking.Settings
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
-
+import protocol Networking.ApplicationPasswordUseCase
+import class Networking.DefaultApplicationPasswordUseCase
+import enum Networking.ApplicationPasswordUseCaseError
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
@@ -44,6 +47,9 @@ class AuthenticationManager: Authentication {
     private let featureFlagService: FeatureFlagService
 
     private let analytics: Analytics
+
+    /// Keep strong reference of the use case to check for application password availability if necessary.
+    private var applicationPasswordUseCase: ApplicationPasswordUseCase?
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -796,15 +802,68 @@ private extension AuthenticationManager {
         return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
     }
 
+    /// The error screen to be displayed when the user tries to log in with site credentials
+    /// with application password disabled.
+    ///
+    func applicationPasswordDisabledUI(for siteURL: String) -> UIViewController {
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: siteURL)
+        return ULErrorViewController(viewModel: viewModel)
+    }
+
     /// Checks if the authenticated user is eligible to use the app and navigates to the home screen.
     ///
     func didAuthenticateUser(to siteURL: String,
                              with siteCredentials: WordPressOrgCredentials,
                              in navigationController: UINavigationController,
                              source: SignInSource?) {
-        // TODO: check if application password is enabled & check for role eligibility & check for Woo
-        // then navigate to home screen immediately with a placeholder store ID
-        startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+        // check if application password is enabled
+        guard let applicationPasswordUseCase = try? DefaultApplicationPasswordUseCase(
+            username: siteCredentials.username,
+            password: siteCredentials.password,
+            siteAddress: siteCredentials.siteURL
+        ) else {
+            return assertionFailure("⛔️ Error creating application password use case")
+        }
+        self.applicationPasswordUseCase = applicationPasswordUseCase
+        checkApplicationPassword(for: siteURL,
+                                 with: applicationPasswordUseCase,
+                                 in: navigationController) { [weak self] in
+            guard let self else { return }
+            // TODO: check for role eligibility & check for Woo
+            // navigates to home screen immediately with a placeholder store ID
+            self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+        }
+    }
+
+    func checkApplicationPassword(for siteURL: String,
+                                  with useCase: ApplicationPasswordUseCase,
+                                  in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
+        Task {
+            do {
+                let _ = try await useCase.generateNewPassword()
+                await MainActor.run {
+                    onSuccess()
+                }
+            } catch ApplicationPasswordUseCaseError.applicationPasswordsDisabled {
+                // show application password disabled error
+                await MainActor.run {
+                    let errorUI = applicationPasswordDisabledUI(for: siteURL)
+                    navigationController.show(errorUI, sender: nil)
+                }
+            } catch {
+                // show generic error
+                await MainActor.run {
+                    DDLogError("⛔️ Error generating application password: \(error)")
+                    let alert = FancyAlertViewController.makeApplicationPasswordAlert(retryAction: { [weak self] in
+                        self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController, onSuccess: onSuccess)
+                    }, restartLoginAction: {
+                        ServiceLocator.stores.deauthenticate()
+                        navigationController.popToRootViewController(animated: true)
+                    })
+                    navigationController.present(alert, animated: true)
+                }
+            }
+        }
     }
 }
 

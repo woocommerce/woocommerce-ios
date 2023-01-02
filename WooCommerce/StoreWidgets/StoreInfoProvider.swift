@@ -69,7 +69,7 @@ final class StoreInfoProvider: IntentTimelineProvider {
     /// Redacted entry with sample data.
     ///
     func placeholder(in context: Context) -> StoreInfoEntry {
-        let dependencies = Self.fetchDependencies()
+        let dependencies = Self.fetchDependencies(for: nil)
         return Self.placeholderEntry(for: dependencies)
     }
 
@@ -82,7 +82,7 @@ final class StoreInfoProvider: IntentTimelineProvider {
     /// Real data widget.
     ///
     func getTimeline(for configuration: StoreWidgetsConfigIntent, in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
-        guard let dependencies = Self.fetchDependencies() else {
+        guard let dependencies = Self.fetchDependencies(for: configuration.store) else {
             return completion(Timeline<StoreInfoEntry>(entries: [StoreInfoEntry.notConnected], policy: .never))
         }
 
@@ -120,15 +120,31 @@ private extension StoreInfoProvider {
 
     /// Fetches the required dependencies from the keychain and the shared users default.
     ///
-    static func fetchDependencies() -> Dependencies? {
+    static func fetchDependencies(for selectedStore: IntentStore?) -> Dependencies? {
         let keychain = Keychain(service: WooConstants.keychainServiceName)
+        let storeID: Int64?
+        let storeName: String?
+
+        if let selectedStore {
+            if let storeIDString = selectedStore.identifier {
+                storeID = Int64(storeIDString)
+            } else {
+                storeID = nil
+            }
+            storeName = selectedStore.displayString
+        } else {
+            storeID = UserDefaults.group?[.defaultStoreID] as? Int64
+            storeName = UserDefaults.group?[.defaultStoreName] as? String
+        }
+
         guard let authToken = keychain[WooConstants.authToken],
-              let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
-              let storeName = UserDefaults.group?[.defaultStoreName] as? String,
+              let storeID,
+              let storeName,
               let storeCurrencySettingsData = UserDefaults.group?[.defaultStoreCurrencySettings] as? Data,
               let storeCurrencySettings = try? JSONDecoder().decode(CurrencySettings.self, from: storeCurrencySettingsData) else {
             return nil
         }
+
         return Dependencies(authToken: authToken,
                             storeID: storeID,
                             storeName: storeName,

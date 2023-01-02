@@ -940,7 +940,7 @@ private extension AuthenticationManager {
                 if plugin.status == .active {
                     return onSuccess()
                 } else {
-                    errorMessage = String.localizedStringWithFormat(Localization.noWooError, siteURL.trimHTTPScheme())
+                    errorMessage = Localization.noWooError
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error checking Woo: \(error)")

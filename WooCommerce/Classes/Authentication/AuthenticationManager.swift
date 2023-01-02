@@ -3,7 +3,6 @@ import KeychainAccess
 import WordPressAuthenticator
 import WordPressKit
 import Yosemite
-import WordPressUI
 import class Networking.UserAgent
 import enum Experiments.ABTest
 import struct Networking.Settings
@@ -837,7 +836,7 @@ private extension AuthenticationManager {
             guard let self else { return }
             self.checkRoleEligibility(in: navigationController) { [weak self] in
                 guard let self else { return }
-                self.checkWooInstallation(for: siteURL, in: navigationController) { [weak self] in
+                self.checkWooInstallation(in: navigationController) { [weak self] in
                     guard let self else { return }
                     // navigates to home screen immediately with a placeholder store ID
                     self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
@@ -865,12 +864,12 @@ private extension AuthenticationManager {
                 // show generic error
                 await MainActor.run {
                     DDLogError("⛔️ Error generating application password: \(error)")
-                    let alert = FancyAlertViewController.makeSiteCredentialLoginAlert(
+                    let alert = self.siteCredentialLoginAlert(
                         message: Localization.applicationPasswordError,
-                        retryAction: { [weak self] in
+                        onRetry: { [weak self] in
                             self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController, onSuccess: onSuccess)
                         },
-                        restartLoginAction: {
+                        onRestartLogin: {
                             ServiceLocator.stores.deauthenticate()
                             navigationController.popToRootViewController(animated: true)
                         }
@@ -899,12 +898,12 @@ private extension AuthenticationManager {
                 } else {
                     // show generic error
                     DDLogError("⛔️ Error checking role eligibility: \(error)")
-                    let alert = FancyAlertViewController.makeSiteCredentialLoginAlert(
+                    let alert = self.siteCredentialLoginAlert(
                         message: Localization.roleEligibilityCheckError,
-                        retryAction: { [weak self] in
+                        onRetry: { [weak self] in
                             self?.checkRoleEligibility(in: navigationController, onSuccess: onSuccess)
                         },
-                        restartLoginAction: {
+                        onRestartLogin: {
                             ServiceLocator.stores.deauthenticate()
                             navigationController.popToRootViewController(animated: true)
                         }
@@ -932,8 +931,7 @@ private extension AuthenticationManager {
         navigationController.show(errorViewController, sender: self)
     }
 
-    func checkWooInstallation(for siteURL: String,
-                              in navigationController: UINavigationController,
+    func checkWooInstallation(in navigationController: UINavigationController,
                               onSuccess: @escaping () -> Void) {
         let action = SitePluginAction.getPluginDetails(siteID: WooConstants.placeholderStoreID, pluginName: Constants.wooPluginName) { result in
             var errorMessage: String?
@@ -947,15 +945,14 @@ private extension AuthenticationManager {
             case .failure(let error):
                 DDLogError("⛔️ Error checking Woo: \(error)")
                 if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error as? AFError {
-                    errorMessage = String.localizedStringWithFormat(Localization.noWooError, siteURL.trimHTTPScheme())
+                    errorMessage = Localization.noWooError
                 } else {
                     errorMessage = Localization.wooCheckError
                 }
             }
             if let errorMessage {
-                let alert = FancyAlertViewController.makeSiteCredentialLoginAlert(
-                    message: errorMessage,
-                    restartLoginAction: {
+                let alert = self.siteCredentialLoginAlert(message: errorMessage,
+                                                          onRestartLogin: {
                         ServiceLocator.stores.deauthenticate()
                         navigationController.popToRootViewController(animated: true)
                     }
@@ -964,6 +961,25 @@ private extension AuthenticationManager {
             }
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    func siteCredentialLoginAlert(message: String,
+                                  onRetry: (() -> Void)? = nil,
+                                  onRestartLogin: @escaping () -> Void) -> UIAlertController {
+        let alert = UIAlertController(title: Localization.cannotLogin,
+                                      message: message,
+                                      preferredStyle: .alert)
+        if let onRetry {
+            let retryAction = UIAlertAction(title: Localization.retryButton, style: .default) { _ in
+                onRetry()
+            }
+            alert.addAction(retryAction)
+        }
+        let restartAction = UIAlertAction(title: Localization.restartLoginButton, style: .cancel) { _ in
+            onRestartLogin()
+        }
+        alert.addAction(restartAction)
+        return alert
     }
 }
 
@@ -978,14 +994,19 @@ private extension AuthenticationManager {
             comment: "Error message displayed when user information cannot be fetched after authentication."
         )
         static let noWooError = NSLocalizedString(
-            "It looks like %1$@ is not a WooCommerce site.",
-            comment: "Message explaining that the site entered doesn't have WooCommerce installed or activated. "
-            + "Reads like 'It looks like awebsite.com is not a WooCommerce site."
+            "It looks like this is not a WooCommerce site.",
+            comment: "Message explaining that the site entered doesn't have WooCommerce installed or activated."
         )
         static let wooCheckError = NSLocalizedString(
             "Error checking for the WooCommerce plugin.",
             comment: "Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication"
         )
+        static let cannotLogin = NSLocalizedString(
+            "Cannot log in",
+            comment: "Title of the alert displayed when application password cannot be fetched after authentication"
+        )
+        static let retryButton = NSLocalizedString("Try Again", comment: "Button to refetch application password for the current site")
+        static let restartLoginButton = NSLocalizedString("Log In With Another Account", comment: "Button to restart the login flow.")
     }
     enum Constants {
         static let wooPluginName = "woocommerce/woocommerce"

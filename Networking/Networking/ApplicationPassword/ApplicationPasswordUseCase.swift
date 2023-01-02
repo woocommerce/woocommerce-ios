@@ -2,6 +2,7 @@ import Foundation
 import WordPressShared
 import WordPressKit
 import enum Alamofire.AFError
+import KeychainAccess
 
 public enum ApplicationPasswordUseCaseError: Error {
     case duplicateName
@@ -52,7 +53,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
 
     /// To store application password
     ///
-    private let storage = ApplicationPasswordStorage()
+    private let storage: ApplicationPasswordStorage
 
     /// Used to name the password in wpadmin.
     ///
@@ -67,9 +68,11 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     public init(username: String,
                 password: String,
                 siteAddress: String,
-                network: Network? = nil) throws {
+                network: Network? = nil,
+                keychain: Keychain? = nil) throws {
         self.siteAddress = siteAddress
         self.username = username
+        self.storage = ApplicationPasswordStorage(keychain: keychain)
 
         if let network {
             self.network = network

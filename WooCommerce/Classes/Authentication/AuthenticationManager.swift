@@ -861,12 +861,16 @@ private extension AuthenticationManager {
                 // show generic error
                 await MainActor.run {
                     DDLogError("⛔️ Error generating application password: \(error)")
-                    let alert = FancyAlertViewController.makeApplicationPasswordAlert(retryAction: { [weak self] in
-                        self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController, onSuccess: onSuccess)
-                    }, restartLoginAction: {
-                        ServiceLocator.stores.deauthenticate()
-                        navigationController.popToRootViewController(animated: true)
-                    })
+                    let alert = FancyAlertViewController.makeSiteCredentialLoginAlert(
+                        message: Localization.applicationPasswordError,
+                        retryAction: { [weak self] in
+                            self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController, onSuccess: onSuccess)
+                        },
+                        restartLoginAction: {
+                            ServiceLocator.stores.deauthenticate()
+                            navigationController.popToRootViewController(animated: true)
+                        }
+                    )
                     navigationController.present(alert, animated: true)
                 }
             }
@@ -889,8 +893,19 @@ private extension AuthenticationManager {
                                              in: navigationController,
                                              onSuccess: onSuccess)
                 } else {
-                    // TODO: show generic error
+                    // show generic error
                     DDLogError("⛔️ Error checking role eligibility: \(error)")
+                    let alert = FancyAlertViewController.makeSiteCredentialLoginAlert(
+                        message: Localization.roleEligibilityCheckError,
+                        retryAction: { [weak self] in
+                            self?.checkRoleEligibility(in: navigationController, onSuccess: onSuccess)
+                        },
+                        restartLoginAction: {
+                            ServiceLocator.stores.deauthenticate()
+                            navigationController.popToRootViewController(animated: true)
+                        }
+                    )
+                    navigationController.present(alert, animated: true)
                 }
             }
         }
@@ -911,6 +926,19 @@ private extension AuthenticationManager {
             navigationController.popToRootViewController(animated: true)
         }
         navigationController.show(errorViewController, sender: self)
+    }
+}
+
+private extension AuthenticationManager {
+    enum Localization {
+        static let applicationPasswordError = NSLocalizedString(
+            "Error fetching application password for your site.",
+            comment: "Error message displayed when application password cannot be fetched after authentication."
+        )
+        static let roleEligibilityCheckError = NSLocalizedString(
+            "Error fetching user information.",
+            comment: "Error message displayed when user information cannot be fetched after authentication."
+        )
     }
 }
 

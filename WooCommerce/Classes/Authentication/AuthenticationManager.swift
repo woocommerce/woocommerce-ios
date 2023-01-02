@@ -966,8 +966,8 @@ private extension AuthenticationManager {
     func siteCredentialLoginAlert(message: String,
                                   onRetry: (() -> Void)? = nil,
                                   onRestartLogin: @escaping () -> Void) -> UIAlertController {
-        let alert = UIAlertController(title: Localization.cannotLogin,
-                                      message: message,
+        let alert = UIAlertController(title: message,
+                                      message: nil,
                                       preferredStyle: .alert)
         if let onRetry {
             let retryAction = UIAlertAction(title: Localization.retryButton, style: .default) { _ in
@@ -1000,10 +1000,6 @@ private extension AuthenticationManager {
         static let wooCheckError = NSLocalizedString(
             "Error checking for the WooCommerce plugin.",
             comment: "Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication"
-        )
-        static let cannotLogin = NSLocalizedString(
-            "Cannot log in",
-            comment: "Title of the alert displayed when application password cannot be fetched after authentication"
         )
         static let retryButton = NSLocalizedString("Try Again", comment: "Button to refetch application password for the current site")
         static let restartLoginButton = NSLocalizedString("Log In With Another Account", comment: "Button to restart the login flow.")

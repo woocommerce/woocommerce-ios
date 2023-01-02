@@ -3,7 +3,7 @@ import Combine
 import XCTest
 import Networking
 @testable import WooCommerce
-
+import Yosemite
 
 /// StoresManager Unit Tests
 ///
@@ -271,6 +271,18 @@ final class StoresManagerTests: XCTestCase {
         // Then
         XCTAssertTrue(mockProductImageUploader.resetWasCalled)
     }
+
+    func test_removing_default_store_invokes_delete_application_password() {
+        // Given
+        let mockSessionManager = MockSessionManager()
+        let sut = DefaultStoresManager(sessionManager: mockSessionManager)
+
+        // When
+        sut.removeDefaultStore()
+
+        // Then
+        XCTAssertTrue(mockSessionManager.deleteApplicationPasswordInvoked)
+    }
 }
 
 
@@ -291,5 +303,45 @@ final class MockAuthenticationManager: AuthenticationManager {
     override func authenticationUI() -> UIViewController {
         authenticationUIInvoked = true
         return UIViewController()
+    }
+}
+
+final class MockSessionManager: SessionManagerProtocol {
+    private(set) var deleteApplicationPasswordInvoked: Bool = false
+
+    var defaultAccount: Yosemite.Account? = nil
+
+    var defaultAccountID: Int64? = nil
+
+    var defaultSite: Yosemite.Site? = nil
+
+    let site = PassthroughSubject<Yosemite.Site?, Never>()
+
+    var defaultSitePublisher: AnyPublisher<Yosemite.Site?, Never> {
+        site.eraseToAnyPublisher()
+    }
+
+    var defaultStoreID: Int64? = nil
+
+    var defaultStoreURL: String? = nil
+
+    var defaultRoles: [Yosemite.User.Role] = []
+
+    let storeID = PassthroughSubject<Int64?, Never>()
+
+    var defaultStoreIDPublisher: AnyPublisher<Int64?, Never> {
+        storeID.eraseToAnyPublisher()
+    }
+
+    var anonymousUserID: String? = nil
+
+    var defaultCredentials: Yosemite.Credentials? = nil
+
+    func reset() {
+        // Do nothing
+    }
+
+    func deleteApplicationPassword() {
+        deleteApplicationPasswordInvoked = true
     }
 }

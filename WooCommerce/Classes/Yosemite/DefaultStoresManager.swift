@@ -166,6 +166,7 @@ class DefaultStoresManager: StoresManager {
     /// Prepares for changing the selected store and remains Authenticated.
     ///
     func removeDefaultStore() {
+        sessionManager.deleteApplicationPassword()
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
         ServiceLocator.pushNotesManager.unregisterForRemoteNotifications()

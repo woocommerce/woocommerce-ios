@@ -103,7 +103,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
 private extension BottomSheetListSelectorViewController {
 
     func configureMainView() {
-        view.backgroundColor = .listForeground
+        view.backgroundColor = .listForeground(modal: false)
     }
 
     func configureTableView() {
@@ -114,7 +114,7 @@ private extension BottomSheetListSelectorViewController {
         tableView.estimatedSectionHeaderHeight = (viewProperties.title != nil || viewProperties.subtitle != nil) ? estimatedSectionHeight : .zero
         tableView.sectionHeaderHeight = UITableView.automaticDimension
 
-        tableView.backgroundColor = .listForeground
+        tableView.backgroundColor = .listForeground(modal: false)
 
         registerTableViewCells()
         registerTableViewHeaderFooters()

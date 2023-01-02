@@ -59,7 +59,7 @@ struct CouponRestrictions: View {
                             .padding(.leading, Constants.margin)
                             .padding(.leading, insets: geometry.safeAreaInsets)
                     }
-                    .background(Color(.listForeground))
+                    .background(Color(.listForeground(modal: false)))
 
                     VStack(alignment: .leading, spacing: 0) {
                         VStack {
@@ -151,7 +151,7 @@ struct CouponRestrictions: View {
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .background(Color(.listForeground))
+            .background(Color(.listForeground(modal: false)))
             .ignoresSafeArea(.container, edges: [.horizontal])
             .sheet(isPresented: $showingExcludeProducts) {
                 ProductSelector(configuration: ProductSelector.Configuration.excludedProductsForCoupons,

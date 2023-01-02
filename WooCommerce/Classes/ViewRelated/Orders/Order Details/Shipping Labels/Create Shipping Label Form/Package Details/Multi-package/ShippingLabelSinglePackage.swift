@@ -29,7 +29,7 @@ struct ShippingLabelSinglePackage: View {
             ForEach(viewModel.itemsRows) { productItemRow in
                 productItemRow
                     .padding(.horizontal, insets: safeAreaInsets)
-                    .background(Color(.listForeground))
+                    .background(Color(.listForeground(modal: false)))
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)
@@ -50,7 +50,7 @@ struct ShippingLabelSinglePackage: View {
                         ShippingLabelPackageSelection(viewModel: viewModel.packageListViewModel)
                     })
                 }
-                .background(Color(.listForeground))
+                .background(Color(.listForeground(modal: false)))
                 .renderedIf(!viewModel.isOriginalPackaging)
 
                 VStack(spacing: 0) {
@@ -70,7 +70,7 @@ struct ShippingLabelSinglePackage: View {
                                     subtitle: Localization.individuallyShipped)
                     .padding(.horizontal, insets: safeAreaInsets)
             }
-            .background(Color(.listForeground))
+            .background(Color(.listForeground(modal: false)))
             .renderedIf(viewModel.isOriginalPackaging)
 
             VStack(spacing: 0) {
@@ -82,7 +82,7 @@ struct ShippingLabelSinglePackage: View {
                                     isError: !viewModel.hasValidPackageDimensions)
                     .padding(.horizontal, insets: safeAreaInsets)
             }
-            .background(Color(.listForeground))
+            .background(Color(.listForeground(modal: false)))
             .renderedIf(viewModel.isOriginalPackaging)
 
             ValidationErrorRow(errorMessage: Localization.invalidDimensions)
@@ -103,7 +103,7 @@ struct ShippingLabelSinglePackage: View {
 
                 Divider()
             }
-            .background(Color(.listForeground))
+            .background(Color(.listForeground(modal: false)))
 
             if viewModel.isValidTotalWeight {
                 ListHeaderView(text: Localization.footer, alignment: .left)

@@ -9,6 +9,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let analytics: Analytics
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -19,15 +20,19 @@ final class AnalyticsHubViewModel: ObservableObject {
     init(siteID: Int64,
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType)
 
         self.siteID = siteID
         self.stores = stores
+        self.analytics = analytics
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
-        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection, usageTracksEventEmitter: usageTracksEventEmitter)
+        self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,
+                                                                 usageTracksEventEmitter: usageTracksEventEmitter,
+                                                                 analytics: analytics)
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         bindViewModelsWithData()
@@ -286,7 +291,8 @@ private extension AnalyticsHubViewModel {
                 guard let self else { return }
                 self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType)
                 self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection,
-                                                                         usageTracksEventEmitter: self.usageTracksEventEmitter)
+                                                                         usageTracksEventEmitter: self.usageTracksEventEmitter,
+                                                                         analytics: self.analytics)
 
                 // Update data on range selection change
                 Task.init {
@@ -386,11 +392,19 @@ private extension AnalyticsHubViewModel {
     }
 
     static func timeRangeCard(timeRangeSelection: AnalyticsHubTimeRangeSelection,
-                              usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) -> AnalyticsTimeRangeCardViewModel {
+                              usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
+                              analytics: Analytics) -> AnalyticsTimeRangeCardViewModel {
         return AnalyticsTimeRangeCardViewModel(selectedRangeTitle: timeRangeSelection.rangeSelectionDescription,
                                                currentRangeSubtitle: timeRangeSelection.currentRangeDescription,
                                                previousRangeSubtitle: timeRangeSelection.previousRangeDescription,
-                                               usageTracksEventEmitter: usageTracksEventEmitter)
+                                               onTapped: {
+            usageTracksEventEmitter.interacted()
+            analytics.track(event: .AnalyticsHub.dateRangeButtonTapped())
+        },
+                                               onSelected: { selection in
+            usageTracksEventEmitter.interacted()
+            analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.tracksIdentifier))
+        })
     }
 }
 

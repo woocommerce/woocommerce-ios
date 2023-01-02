@@ -204,6 +204,17 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual([false, true, false], emittedValues)
     }
+
+    func test_trackSeeMoreButtonTapped_tracks_expected_event() {
+        // Given
+        let viewModel = makeViewModel()
+
+        // When
+        viewModel.trackSeeMoreButtonTapped()
+
+        // Then
+        assertEqual(["dashboard_see_more_analytics_tapped"], analyticsProvider.receivedEvents)
+    }
 }
 
 private extension StoreStatsAndTopPerformersPeriodViewModelTests {

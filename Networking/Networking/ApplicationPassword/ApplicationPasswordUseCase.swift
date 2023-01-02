@@ -6,7 +6,7 @@ import enum Alamofire.AFError
 public enum ApplicationPasswordUseCaseError: Error {
     case duplicateName
     case applicationPasswordsDisabled
-    case invalidSiteAddress
+    case failedToConstructLoginOrAdminURLUsingSiteAddress
 }
 
 public struct ApplicationPassword {
@@ -77,7 +77,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
             guard let loginURL = URL(string: siteAddress + Constants.loginPath),
                   let adminURL = URL(string: siteAddress + Constants.adminPath) else {
                 DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteAddress)")
-                throw ApplicationPasswordUseCaseError.invalidSiteAddress
+                throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
             }
             // Prepares the authenticator with username and password
             let authenticator = CookieNonceAuthenticator(username: username,

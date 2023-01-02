@@ -42,9 +42,9 @@ extension UITabBar {
     /// Configures the appearance object for a tabbar's items with the default WC style.
     ///
     private static func applyWooAppearance(to tabBarItemAppearance: UITabBarItemAppearance) {
-        tabBarItemAppearance.normal.badgeTextAttributes = [.foregroundColor: UIColor.textInverted]
-        tabBarItemAppearance.selected.badgeTextAttributes = [.foregroundColor: UIColor.textInverted]
-        tabBarItemAppearance.disabled.badgeTextAttributes = [.foregroundColor: UIColor.textInverted]
+        tabBarItemAppearance.normal.badgeTextAttributes = [.foregroundColor: UIColor.white]
+        tabBarItemAppearance.selected.badgeTextAttributes = [.foregroundColor: UIColor.white]
+        tabBarItemAppearance.disabled.badgeTextAttributes = [.foregroundColor: UIColor.white]
         tabBarItemAppearance.normal.badgeBackgroundColor = .primary
         tabBarItemAppearance.selected.badgeBackgroundColor = .primary
         tabBarItemAppearance.disabled.badgeBackgroundColor = .primary

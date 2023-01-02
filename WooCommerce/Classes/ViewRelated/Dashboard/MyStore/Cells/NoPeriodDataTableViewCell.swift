@@ -22,7 +22,7 @@ final class NoPeriodDataTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         contentView.backgroundColor = Constants.backgroundColor
-        backgroundColor = .listForeground
+        backgroundColor = .listForeground(modal: false)
     }
 }
 

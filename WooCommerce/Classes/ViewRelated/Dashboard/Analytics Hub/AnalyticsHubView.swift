@@ -69,7 +69,7 @@ struct AnalyticsHubView: View {
                     AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard,
                                            selectionType: $viewModel.timeRangeSelectionType)
                         .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground))
+                        .background(Color(uiColor: .listForeground(modal: false)))
 
                     Divider()
                 }
@@ -79,7 +79,7 @@ struct AnalyticsHubView: View {
 
                     AnalyticsReportCard(viewModel: viewModel.revenueCard)
                         .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground))
+                        .background(Color(uiColor: .listForeground(modal: false)))
 
                     Divider()
                 }
@@ -89,7 +89,7 @@ struct AnalyticsHubView: View {
 
                     AnalyticsReportCard(viewModel: viewModel.ordersCard)
                         .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground))
+                        .background(Color(uiColor: .listForeground(modal: false)))
 
                     Divider()
                 }
@@ -99,7 +99,7 @@ struct AnalyticsHubView: View {
 
                     AnalyticsProductCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
                         .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground))
+                        .background(Color(uiColor: .listForeground(modal: false)))
 
                     Divider()
                 }
@@ -109,7 +109,7 @@ struct AnalyticsHubView: View {
 
                     AnalyticsReportCard(viewModel: viewModel.sessionsCard)
                         .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground))
+                        .background(Color(uiColor: .listForeground(modal: false)))
 
                     Divider()
                 }

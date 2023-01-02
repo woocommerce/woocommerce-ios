@@ -15,8 +15,8 @@ extension UICollectionViewCell {
     /// Applies the default background color
     ///
     func applyDefaultBackgroundStyle() {
-        backgroundColor = .listForeground
-        contentView.backgroundColor = .listForeground
+        backgroundColor = .listForeground(modal: false)
+        contentView.backgroundColor = .listForeground(modal: false)
     }
 
     func applyGrayBackgroundStyle() {

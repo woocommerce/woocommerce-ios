@@ -1,23 +1,22 @@
 import Foundation
 import protocol Alamofire.URLRequestConvertible
 
-
 /// Wraps up a `URLRequestConvertible` instance, and injects the `UserAgent.defaultUserAgent`.
 ///
 struct UnauthenticatedRequest: URLRequestConvertible {
 
     /// Request that does not require WPCOM authentication.
     ///
-    let request: URLRequestConvertible
+    let request: URLRequest
 
     /// Returns the wrapped request, with a custom user-agent header.
     ///
-    func asURLRequest() throws -> URLRequest {
-        var authenticated = try request.asURLRequest()
+    func asURLRequest() -> URLRequest {
+        var unauthenticated = request
 
-        authenticated.setValue("application/json", forHTTPHeaderField: "Accept")
-        authenticated.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
+        unauthenticated.setValue("application/json", forHTTPHeaderField: "Accept")
+        unauthenticated.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
-        return authenticated
+        return unauthenticated
     }
 }

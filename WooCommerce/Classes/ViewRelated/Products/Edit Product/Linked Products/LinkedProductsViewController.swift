@@ -50,12 +50,12 @@ private extension LinkedProductsViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = .listForeground
+        view.backgroundColor = .listForeground(modal: false)
     }
 
     func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = .listForeground
+        tableView.backgroundColor = .listForeground(modal: false)
         tableView.separatorStyle = .none
 
         registerTableViewCells()

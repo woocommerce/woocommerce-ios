@@ -100,7 +100,7 @@ struct Inbox: View {
 private extension Inbox {
 
     enum Constants {
-        static let listForeground: Color = Color(.listForeground)
+        static let listForeground: Color = Color(.listForeground(modal: false))
         static let listBackground: Color = Color(.listBackground)
     }
 

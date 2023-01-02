@@ -31,7 +31,7 @@ final class DashboardViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.applySubheadlineStyle()
-        label.backgroundColor = .listForeground
+        label.backgroundColor = .listForeground(modal: false)
         return label
     }()
 
@@ -50,7 +50,7 @@ final class DashboardViewController: UIViewController {
     private lazy var headerStackView: UIStackView = {
         let view = UIStackView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .listForeground
+        view.backgroundColor = .listForeground(modal: false)
         view.axis = .vertical
         return view
     }()
@@ -291,7 +291,7 @@ private extension DashboardViewController {
 
         // This constraint will pin the bottom of the header to the top of the content
         // We want this to be active when the header is visible
-        contentTopToHeaderConstraint = contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor)
+        contentTopToHeaderConstraint = contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor, constant: Constants.tabStripSpacing)
         contentTopToHeaderConstraint?.isActive = true
 
         // This constraint has a lower priority and will pin the top of the content view to its superview
@@ -426,7 +426,7 @@ private extension DashboardViewController {
         let cardView: FeatureAnnouncementCardView
 
         var body: some View {
-            cardView.background(Color(.listForeground))
+            cardView.background(Color(.listForeground(modal: false)))
         }
     }
 
@@ -719,5 +719,6 @@ private extension DashboardViewController {
         static let backgroundColor: UIColor = .systemBackground
         static let iPhoneCollapsedNavigationBarHeight = CGFloat(44)
         static let iPadCollapsedNavigationBarHeight = CGFloat(50)
+        static let tabStripSpacing = CGFloat(12)
     }
 }

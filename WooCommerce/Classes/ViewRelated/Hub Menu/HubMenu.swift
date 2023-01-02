@@ -80,7 +80,7 @@ struct HubMenu: View {
                             }
                         }).accessibilityIdentifier(menu.accessibilityIdentifier)
                     }
-                    .background(Color(.listForeground))
+                    .background(Color(.listForeground(modal: false)))
                     .cornerRadius(Constants.cornerRadius)
                     .padding([.bottom], Constants.padding)
                 }

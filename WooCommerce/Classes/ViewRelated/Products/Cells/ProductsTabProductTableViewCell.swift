@@ -97,7 +97,7 @@ extension ProductsTabProductTableViewCell {
             selectedProductImageOverlayView?.removeFromSuperview()
             selectedProductImageOverlayView = nil
         }
-        let selectedBackgroundColor = isSelected ? UIColor.primary.withAlphaComponent(0.2): .listForeground
+        let selectedBackgroundColor = isSelected ? UIColor.primary.withAlphaComponent(0.2): .listForeground(modal: false)
         backgroundColor = selectedBackgroundColor
     }
 
@@ -153,7 +153,7 @@ private extension ProductsTabProductTableViewCell {
     }
 
     func configureBackground() {
-        backgroundColor = .listForeground
+        backgroundColor = .listForeground(modal: false)
 
         //Background when selected
         selectedBackgroundView = UIView()
@@ -236,7 +236,7 @@ private extension ProductsTabProductTableViewCell {
     enum Colors {
         static let imageBorderColor = UIColor.border
         static let imagePlaceholderTintColor = UIColor.systemColor(.systemGray2)
-        static let imageBackgroundColor = UIColor.listForeground
+        static let imageBackgroundColor = UIColor.listForeground(modal: false)
     }
 }
 
@@ -268,7 +268,7 @@ struct ProductsTabProductTableViewCell_Previews: PreviewProvider {
             ProductsTabProductTableViewCellRepresentable(viewModel: nonSelectedViewModel)
             ProductsTabProductTableViewCellRepresentable(viewModel: selectedViewModel)
         }
-        .background(Color(UIColor.listForeground))
+        .background(Color(UIColor.listForeground(modal: false)))
     }
 
     static var previews: some View {

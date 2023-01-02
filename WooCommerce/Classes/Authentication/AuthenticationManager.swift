@@ -124,7 +124,7 @@ class AuthenticationManager: Authentication {
                                                 subheadlineColor: .gray(.shade30),
                                                 placeholderColor: .placeholderImage,
                                                 viewControllerBackgroundColor: .listBackground,
-                                                textFieldBackgroundColor: .listForeground,
+                                                textFieldBackgroundColor: .listForeground(modal: false),
                                                 buttonViewBackgroundColor: .authPrologueBottomBackgroundColor,
                                                 buttonViewTopShadowImage: nil,
                                                 navBarImage: StyleManager.navBarImage,
@@ -822,9 +822,10 @@ private extension AuthenticationManager {
                              in navigationController: UINavigationController,
                              source: SignInSource?) {
         // check if application password is enabled
-        guard let applicationPasswordUseCase = try? DefaultApplicationPasswordUseCase(username: siteCredentials.username,
-                                                                               password: siteCredentials.password,
-                                                                                      siteAddress: siteCredentials.siteURL) else {
+        guard let applicationPasswordUseCase = try? DefaultApplicationPasswordUseCase(
+            username: siteCredentials.username,
+            password: siteCredentials.password,
+            siteAddress: siteCredentials.siteURL) else {
             return assertionFailure("⛔️ Error creating application password use case")
         }
         self.applicationPasswordUseCase = applicationPasswordUseCase

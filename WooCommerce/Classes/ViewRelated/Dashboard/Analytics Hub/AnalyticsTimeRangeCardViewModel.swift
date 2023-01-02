@@ -16,7 +16,11 @@ struct AnalyticsTimeRangeCardViewModel {
     ///
     let previousRangeSubtitle: String
 
-    /// Analytics Usage Tracks Event Emitter
+    /// Closure invoked when the time range card is tapped.
     ///
-    let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+    var onTapped: () -> Void = {}
+
+    /// Closure invoked when a time range is selected.
+    ///
+    var onSelected: (AnalyticsTimeRangeCard.Range) -> Void = { _ in }
 }

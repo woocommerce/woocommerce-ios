@@ -6,11 +6,13 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     private var stores: MockStoresManager!
     private var eventEmitter: StoreStatsUsageTracksEventEmitter!
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: Analytics!
 
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting())
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         eventEmitter = StoreStatsUsageTracksEventEmitter(analytics: analytics)
     }
 
@@ -166,5 +168,19 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(vm.showSessionsCard)
+    }
+
+    func test_time_range_card_tracks_expected_events() throws {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, analytics: analytics)
+
+        // When
+        vm.timeRangeCard.onTapped()
+        vm.timeRangeCard.onSelected(.weekToDate)
+
+        // Then
+        assertEqual(["analytics_hub_date_range_button_tapped", "analytics_hub_date_range_option_selected"], analyticsProvider.receivedEvents)
+        let optionSelectedEventProperty = try XCTUnwrap(analyticsProvider.receivedProperties.last?["option"] as? String)
+        assertEqual("Week to Date", optionSelectedEventProperty)
     }
 }

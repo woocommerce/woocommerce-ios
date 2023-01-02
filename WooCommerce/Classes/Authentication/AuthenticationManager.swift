@@ -825,7 +825,8 @@ private extension AuthenticationManager {
         guard let applicationPasswordUseCase = try? DefaultApplicationPasswordUseCase(
             username: siteCredentials.username,
             password: siteCredentials.password,
-            siteAddress: siteCredentials.siteURL) else {
+            siteAddress: siteCredentials.siteURL
+        ) else {
             return assertionFailure("⛔️ Error creating application password use case")
         }
         self.applicationPasswordUseCase = applicationPasswordUseCase

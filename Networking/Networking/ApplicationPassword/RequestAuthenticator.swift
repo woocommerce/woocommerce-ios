@@ -3,10 +3,31 @@ enum RequestAuthenticatorError: Error {
     case applicationPasswordNotAvailable
 }
 
+protocol RequestAuthenticator {
+    /// Credentials to authenticate the URLRequest
+    ///
+    var credentials: Credentials? { get }
+
+    /// Authenticates the provided urlRequest using the `credentials`
+    ///
+    /// - Parameter urlRequest: `URLRequest` to authenticate
+    /// - Returns: Authenticated `URLRequest`
+    ///
+    func authenticate(_ urlRequest: URLRequest) throws -> URLRequest
+
+    /// Generates application password
+    ///
+    func generateApplicationPassword() async throws
+
+    /// Checks whether the given URLRequest is eligible for retyring
+    ///
+    func shouldRetry(_ urlRequest: URLRequest) -> Bool
+}
+
 /// Authenticates request
 ///
-public struct RequestAuthenticator {
-    /// Credentials.
+public struct DefaultRequestAuthenticator: RequestAuthenticator {
+    /// Credentials to authenticate the URLRequest
     ///
     let credentials: Credentials?
 
@@ -33,6 +54,11 @@ public struct RequestAuthenticator {
         self.applicationPasswordUseCase = useCase
     }
 
+    /// Authenticates the provided urlRequest using the `credentials`
+    ///
+    /// - Parameter urlRequest: `URLRequest` to authenticate
+    /// - Returns: Authenticated `URLRequest`
+    ///
     func authenticate(_ urlRequest: URLRequest) throws -> URLRequest {
         if isRestAPIRequest(urlRequest) {
             return try authenticateUsingApplicationPasswordIfPossible(urlRequest)
@@ -41,6 +67,8 @@ public struct RequestAuthenticator {
         }
     }
 
+    /// Generates application password
+    ///
     func generateApplicationPassword() async throws {
         guard let applicationPasswordUseCase else {
             throw RequestAuthenticatorError.applicationPasswordUseCaseNotAvailable
@@ -56,7 +84,7 @@ public struct RequestAuthenticator {
     }
 }
 
-private extension RequestAuthenticator {
+private extension DefaultRequestAuthenticator {
     /// To check whether the given URLRequest is a REST API request
     /// 
     func isRestAPIRequest(_ urlRequest: URLRequest) -> Bool {

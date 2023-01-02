@@ -62,6 +62,29 @@ class SessionManagerTests: XCTestCase {
         XCTAssertEqual(retrieved, Settings.wporgCredentials)
     }
 
+    /// Verifies that application password is deleted upon calling `deleteApplicationPassword`
+    ///
+    func test_deleteApplicationPassword_deletes_password_from_keychain() {
+        // Given
+        manager.defaultCredentials = Settings.wporgCredentials
+        let storage = ApplicationPasswordStorage(keychain: Keychain(service: Settings.keychainServiceName))
+        let password = ApplicationPassword(wpOrgUsername: "username", password: Secret("pass"))
+
+        // When
+        storage.saveApplicationPassword(password)
+
+        // Then
+        XCTAssertNotNil(storage.applicationPassword)
+
+        // When
+        manager.deleteApplicationPassword()
+
+        // Then
+        waitUntil {
+            storage.applicationPassword == nil
+        }
+    }
+
     /// Verifies that application password is deleted upon reset
     ///
     func test_application_password_is_deleted_upon_reset() {

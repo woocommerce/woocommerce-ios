@@ -7,8 +7,8 @@ struct ApplicationPasswordStorage {
     ///
     private let keychain: Keychain
 
-    init(keychain: Keychain = Keychain(service: KeychainServiceName.name)) {
-        self.keychain = keychain
+    init(keychain: Keychain? = nil) {
+        self.keychain = keychain ?? Keychain(service: KeychainServiceName.name)
     }
 
     /// Returns the saved application password if available

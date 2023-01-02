@@ -9,6 +9,8 @@ final class RequestProcessorTests: XCTestCase {
     private var sut: RequestProcessor!
     private var sessionManager: Alamofire.SessionManager!
 
+    private let url = URL(string: "https://test.com/")!
+
     override func setUp() {
         super.setUp()
 
@@ -29,7 +31,7 @@ final class RequestProcessorTests: XCTestCase {
     //
     func test_adapt_authenticates_the_urlrequest() throws {
         // Given
-        let urlRequest = URLRequest(url: URL(string: "https://test.com/")!)
+        let urlRequest = URLRequest(url: url)
 
         // When
         let _ = try sut.adapt(urlRequest)
@@ -102,6 +104,59 @@ final class RequestProcessorTests: XCTestCase {
         mockRequestAuthenticator.mockedShouldRetryValue = false
         let shouldRetry = waitFor { promise in
             self.sut.should(sessionManager, retry: request, with: RequestAuthenticatorError.applicationPasswordNotAvailable) { shouldRetry, timeDelay in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry)
+    }
+
+    // MARK: Error type
+    //
+    func test_request_is_scheduled_for_retry_when_applicationPasswordNotAvailable_error_occurs() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let shouldRetry = waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(shouldRetry)
+    }
+
+    func test_request_is_scheduled_for_retry_when_401_error_occurs() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+
+        // When
+        let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
+        let shouldRetry = waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(shouldRetry)
+    }
+
+    func test_request_is_not_scheduled_for_retry_when_irrelavant_error_occurs() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+
+        // When
+        let error = AFError.invalidURL(url: url)
+        let shouldRetry = waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
                 promise(shouldRetry)
             }
         }

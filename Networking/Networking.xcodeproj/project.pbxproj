@@ -721,6 +721,7 @@
 		DEC51AF92769A212009F3DF4 /* SystemStatus+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AF82769A212009F3DF4 /* SystemStatus+Settings.swift */; };
 		DEC51AFB2769C66B009F3DF4 /* SystemStatusMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */; };
 		DEC51B02276AFB35009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */; };
+		DEF13C5029629EEA0024A02B /* user-complete-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEF13C4F29629EEA0024A02B /* user-complete-without-data.json */; };
 		DEFBA74E29485A7600C35BA9 /* RESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA74D29485A7600C35BA9 /* RESTRequest.swift */; };
 		DEFBA7542949CE6600C35BA9 /* RequestProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA7532949CE6600C35BA9 /* RequestProcessor.swift */; };
 		DEFBA7562949D17400C35BA9 /* RequestAuthenticatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA7552949D17300C35BA9 /* RequestAuthenticatorTests.swift */; };
@@ -756,11 +757,11 @@
 		EE99814E295AA7430074AE68 /* RequestAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE99814D295AA7430074AE68 /* RequestAuthenticator.swift */; };
 		EE998150295AACE10074AE68 /* RequestConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE99814F295AACE10074AE68 /* RequestConverter.swift */; };
 		EECB7EE8286555180028C888 /* media-update-product-id.json in Resources */ = {isa = PBXBuildFile; fileRef = EECB7EE7286555180028C888 /* media-update-product-id.json */; };
+		EEFAA579295D2FC7003583BE /* RESTRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA578295D2FC7003583BE /* RESTRequestTests.swift */; };
 		EEFAA57B295D7793003583BE /* AuthenticatedDotcomRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA57A295D7793003583BE /* AuthenticatedDotcomRequest.swift */; };
 		EEFAA57D295D77F0003583BE /* AuthenticatedRESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA57C295D77F0003583BE /* AuthenticatedRESTRequest.swift */; };
 		EEFAA57F295D78DF003583BE /* AuthenticatedDotcomRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA57E295D78DF003583BE /* AuthenticatedDotcomRequestTests.swift */; };
 		EEFAA581295D78E9003583BE /* AuthenticatedRESTRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA580295D78E9003583BE /* AuthenticatedRESTRequestTests.swift */; };
-		EEFAA579295D2FC7003583BE /* RESTRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA578295D2FC7003583BE /* RESTRequestTests.swift */; };
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
 		FE28F6E426842848004465C7 /* UserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E326842848004465C7 /* UserMapper.swift */; };
 		FE28F6E6268429B6004465C7 /* UserRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E5268429B6004465C7 /* UserRemote.swift */; };
@@ -1512,6 +1513,7 @@
 		DEC51AF82769A212009F3DF4 /* SystemStatus+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+Settings.swift"; sourceTree = "<group>"; };
 		DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusMapperTests.swift; sourceTree = "<group>"; };
 		DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+DropinMustUsePlugin.swift"; sourceTree = "<group>"; };
+		DEF13C4F29629EEA0024A02B /* user-complete-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "user-complete-without-data.json"; sourceTree = "<group>"; };
 		DEFBA74D29485A7600C35BA9 /* RESTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequest.swift; sourceTree = "<group>"; };
 		DEFBA7532949CE6600C35BA9 /* RequestProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestProcessor.swift; sourceTree = "<group>"; };
 		DEFBA7552949D17300C35BA9 /* RequestAuthenticatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestAuthenticatorTests.swift; sourceTree = "<group>"; };
@@ -1547,11 +1549,11 @@
 		EE99814D295AA7430074AE68 /* RequestAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestAuthenticator.swift; sourceTree = "<group>"; };
 		EE99814F295AACE10074AE68 /* RequestConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestConverter.swift; sourceTree = "<group>"; };
 		EECB7EE7286555180028C888 /* media-update-product-id.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id.json"; sourceTree = "<group>"; };
+		EEFAA578295D2FC7003583BE /* RESTRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequestTests.swift; sourceTree = "<group>"; };
 		EEFAA57A295D7793003583BE /* AuthenticatedDotcomRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedDotcomRequest.swift; sourceTree = "<group>"; };
 		EEFAA57C295D77F0003583BE /* AuthenticatedRESTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedRESTRequest.swift; sourceTree = "<group>"; };
 		EEFAA57E295D78DF003583BE /* AuthenticatedDotcomRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedDotcomRequestTests.swift; sourceTree = "<group>"; };
 		EEFAA580295D78E9003583BE /* AuthenticatedRESTRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedRESTRequestTests.swift; sourceTree = "<group>"; };
-		EEFAA578295D2FC7003583BE /* RESTRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequestTests.swift; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 		FE28F6E126840DED004465C7 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -2294,6 +2296,7 @@
 				74ABA1C6213F19FD00FFAD30 /* top-performers-month.json */,
 				74ABA1C7213F19FE00FFAD30 /* top-performers-year.json */,
 				FE28F6E726842D57004465C7 /* user-complete.json */,
+				DEF13C4F29629EEA0024A02B /* user-complete-without-data.json */,
 				7495AACE225D366D00801A89 /* variation-as-product.json */,
 				02A26F192744F5FC008E4EDB /* wc-site-settings-partial.json */,
 				D800DA0D25EFEC21001E13CE /* wcpay-connection-token.json */,
@@ -3084,6 +3087,7 @@
 				CC80E3F92948C8BC00D5FF45 /* site-visits-quarter.json in Resources */,
 				020D07C223D858BB00FD9580 /* media-upload.json in Resources */,
 				31A451D127863A2E00FE81AA /* stripe-account-rejected-other.json in Resources */,
+				DEF13C5029629EEA0024A02B /* user-complete-without-data.json in Resources */,
 				74ABA1CA213F19FE00FFAD30 /* top-performers-year.json in Resources */,
 				31A451CF27863A2E00FE81AA /* stripe-account-rejected-terms-of-service.json in Resources */,
 				DE2E8EA9295416C9002E4B14 /* wordpress-site-info.json in Resources */,

@@ -310,6 +310,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.moreImage)
     }
 
+    func test_multiSelectIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.multiSelectIcon)
+    }
+
     func test_multipleUsers_image_is_not_nil() {
         XCTAssertNotNil(UIImage.multipleUsersImage)
     }

@@ -704,6 +704,12 @@ extension UIImage {
         return ellipsisImage.imageWithTintColor(tintColor)!
     }
 
+    /// Select multiple items icon
+    ///
+    static var multiSelectIcon: UIImage {
+        return UIImage(named: "icon-multiselect")!
+    }
+
     /// Payment celebration
     ///
     static var celebrationImage: UIImage {

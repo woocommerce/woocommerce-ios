@@ -10,8 +10,8 @@ final class RequestProcessor {
 
     private let requestAuthenticator: RequestAuthenticator
 
-    init(credentials: Credentials?) {
-        requestAuthenticator = RequestAuthenticator(credentials: credentials)
+    init(requestAuthenticator: RequestAuthenticator) {
+        self.requestAuthenticator = requestAuthenticator
     }
 }
 

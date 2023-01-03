@@ -10,14 +10,14 @@ public enum ApplicationPasswordUseCaseError: Error {
     case failedToConstructLoginOrAdminURLUsingSiteAddress
 }
 
-struct ApplicationPassword {
+public struct ApplicationPassword {
     /// WordPress org username that the application password belongs to
     ///
-    public let wpOrgUsername: String
+    let wpOrgUsername: String
 
     /// Application password
     ///
-    public let password: Secret<String>
+    let password: Secret<String>
 }
 
 public protocol ApplicationPasswordUseCase {
@@ -95,7 +95,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
 
     /// Returns the locally saved ApplicationPassword if available
     ///
-    var applicationPassword: ApplicationPassword? {
+    public var applicationPassword: ApplicationPassword? {
         storage.applicationPassword
     }
 
@@ -105,7 +105,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///
     /// - Returns: Generated `ApplicationPassword` instance
     ///
-    func generateNewPassword() async throws -> ApplicationPassword {
+    public func generateNewPassword() async throws -> ApplicationPassword {
         async let password = try {
             do {
                 return try await createApplicationPassword()

@@ -673,39 +673,6 @@ private extension AuthenticationManager {
         }
     }
 
-    /// The error screen to be displayed when the user enters a site
-    /// without Jetpack in the site discovery flow.
-    /// More about this flow: pe5sF9-mz-p2.
-    ///
-    func jetpackErrorUI(for siteURL: String, with matcher: ULAccountMatcher, in navigationController: UINavigationController) -> UIViewController {
-        let viewModel = JetpackErrorViewModel(siteURL: siteURL,
-                                              siteCredentials: nil,
-                                              onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
-            guard let self = self else { return }
-
-            // Tries re-syncing to get an updated store list
-            ServiceLocator.stores.synchronizeEntities { [weak self] in
-                guard let self = self else { return }
-                matcher.refreshStoredSites()
-                guard let matchedSite = matcher.matchedSite(originalURL: siteURL) else {
-                    DDLogWarn("⚠️ Could not find \(siteURL) connected to the account")
-                    return
-                }
-                // checks if the site has woo
-                if matchedSite.isWooCommerceActive == false {
-                    let noWooUI = self.noWooUI(for: matchedSite,
-                                               with: matcher,
-                                               navigationController: navigationController,
-                                               onStorePickerDismiss: {})
-                    navigationController.show(noWooUI, sender: nil)
-                } else {
-                    self.startStorePicker(with: matchedSite.siteID, in: navigationController, onDismiss: {})
-                }
-            }
-        })
-        return ULErrorViewController(viewModel: viewModel)
-    }
-
     /// The error screen to be displayed when the user tries to enter a site
     /// whose Jetpack is not associated with their account.
     /// - Parameters:

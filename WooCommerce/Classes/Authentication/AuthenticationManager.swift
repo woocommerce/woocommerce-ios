@@ -786,18 +786,9 @@ private extension AuthenticationManager {
         }
 
         // Shows the native Jetpack flow during the site discovery flow.
-        if ABTest.nativeJetpackSetupFlow.variation != .control {
-            return jetpackSetupUI(for: site.url,
-                                  connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
-                                  in: navigationController)
-        }
-
-        /// Jetpack is required. Present an error if we don't detect a valid installation.
-        guard site.hasJetpack && site.isJetpackActive else {
-            return jetpackErrorUI(for: site.url, with: matcher, in: navigationController)
-        }
-
-        return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
+        return jetpackSetupUI(for: site.url,
+                              connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
+                              in: navigationController)
     }
 
     /// The error screen to be displayed when the user tries to log in with site credentials

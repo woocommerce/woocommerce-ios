@@ -12,13 +12,13 @@ import enum Alamofire.AFError
 final class PostSiteCredentialLoginChecker {
     private let stores: StoresManager
     private let applicationPasswordUseCase: ApplicationPasswordUseCase
-
-    /// Keep strong reference of the use case to check for role eligibility if necessary.
-    private lazy var roleEligibilityUseCase: RoleEligibilityUseCase = .init(stores: stores)
+    private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
 
     init(applicationPasswordUseCase: ApplicationPasswordUseCase,
+         roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(stores: ServiceLocator.stores),
          stores: StoresManager = ServiceLocator.stores) {
         self.applicationPasswordUseCase = applicationPasswordUseCase
+        self.roleEligibilityUseCase = roleEligibilityUseCase
         self.stores = stores
     }
 

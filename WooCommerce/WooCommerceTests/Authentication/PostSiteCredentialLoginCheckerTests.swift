@@ -1,11 +1,11 @@
 import XCTest
-import protocol Yosemite.StoresManager
+@testable import Yosemite
 @testable import Networking
 @testable import WooCommerce
 
 final class PostSiteCredentialLoginCheckerTests: XCTestCase {
     private let testURL = "https://test.com"
-    private var stores: StoresManager!
+    private var stores: MockStoresManager!
     private var navigationController: UINavigationController!
 
     override func setUp() {
@@ -62,6 +62,65 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertFalse(isSuccess)
         XCTAssertTrue(navigationController.viewControllers.isEmpty)
         XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
+    }
+
+    func test_role_error_screen_is_displayed_when_the_user_is_not_eligible() {
+        // Given
+        let applicationPassword = ApplicationPassword(wpOrgUsername: "test", password: .init("secret"))
+        let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
+        let roleCheckUseCase = MockRoleEligibilityUseCase()
+        let errorInfo = StorageEligibilityErrorInfo(name: "Billie Jean", roles: ["skater", "writer"])
+        roleCheckUseCase.errorToReturn = .insufficientRole(info: errorInfo)
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,
+                                                     roleEligibilityUseCase: roleCheckUseCase)
+        var isSuccess = false
+
+        // When
+        checker.checkEligibility(for: testURL, from: navigationController) {
+            isSuccess = true
+        }
+        waitUntil {
+            self.navigationController.viewControllers.isNotEmpty
+        }
+
+        // Then
+        XCTAssertFalse(isSuccess)
+        XCTAssertTrue(navigationController.topViewController is RoleErrorViewController)
+    }
+
+    func test_error_alert_is_displayed_when_user_info_cannot_be_fetched() {
+        // Given
+        let applicationPassword = ApplicationPassword(wpOrgUsername: "test", password: .init("secret"))
+        let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
+        let roleCheckUseCase = MockRoleEligibilityUseCase()
+        roleCheckUseCase.errorToReturn = .unknown(error: NetworkError.timeout)
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,
+                                                     roleEligibilityUseCase: roleCheckUseCase)
+        var isSuccess = false
+
+        // When
+        checker.checkEligibility(for: testURL, from: navigationController) {
+            isSuccess = true
+        }
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+
+        // Then
+        XCTAssertFalse(isSuccess)
+        XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
+    }
+}
+
+private extension PostSiteCredentialLoginCheckerTests {
+    struct Constants {
+        static let eligibleRoles = ["shop_manager", "editor"]
+        static let ineligibleRoles = ["author", "editor"]
+    }
+
+    func makeUser(eligible: Bool = false) -> User {
+        User(localID: 0, siteID: 0, email: "email", username: "username", firstName: "first", lastName: "last",
+             nickname: "nick", roles: eligible ? Constants.eligibleRoles : Constants.ineligibleRoles)
     }
 }
 

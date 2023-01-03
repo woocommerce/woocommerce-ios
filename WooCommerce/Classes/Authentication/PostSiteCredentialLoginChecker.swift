@@ -1,7 +1,6 @@
 import Yosemite
 import protocol Networking.ApplicationPasswordUseCase
 import enum Networking.ApplicationPasswordUseCaseError
-import enum Alamofire.AFError
 
 /// Checks if the user is eligible to use the app after logging in with site credentials only.
 /// The following checks are made:
@@ -29,7 +28,7 @@ final class PostSiteCredentialLoginChecker {
                                  with: applicationPasswordUseCase,
                                  in: navigationController) { [weak self] in
             self?.checkRoleEligibility(in: navigationController) {
-                self?.checkWooInstallation(in: navigationController, onSuccess: onSuccess)
+                self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
             }
         }
     }
@@ -117,23 +116,22 @@ private extension PostSiteCredentialLoginChecker {
 
     /// Checks if WooCommerce is active on the logged in site.
     ///
-    func checkWooInstallation(in navigationController: UINavigationController,
+    func checkWooInstallation(for siteURL: String, in navigationController: UINavigationController,
                               onSuccess: @escaping () -> Void) {
-        let action = SettingAction.checkIfWooCommerceIsActive(siteID: WooConstants.placeholderStoreID) { [weak self] result in
+        let action = WordPressSiteAction.fetchSiteInfo(siteURL: siteURL) { [weak self] result in
             switch result {
-            case .success:
-                onSuccess()
+            case .success(let site):
+                if site.isWooCommerceActive {
+                    onSuccess()
+                } else {
+                    self?.showAlert(message: Localization.noWooError, in: navigationController)
+                }
             case .failure(let error):
                 DDLogError("⛔️ Error checking Woo: \(error)")
-                if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error as? AFError {
-                    // if status code is 404, Woo is not active
-                    self?.showAlert(message: Localization.noWooError, in: navigationController)
-                } else {
-                    // otherwise, show generic error
-                    self?.showAlert(message: Localization.wooCheckError, in: navigationController, onRetry: {
-                        self?.checkWooInstallation(in: navigationController, onSuccess: onSuccess)
-                    })
-                }
+                // show generic error
+                self?.showAlert(message: Localization.wooCheckError, in: navigationController, onRetry: {
+                    self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
+                })
             }
         }
         stores.dispatch(action)
@@ -181,7 +179,7 @@ private extension PostSiteCredentialLoginChecker {
             comment: "Error message displayed when user information cannot be fetched after authentication."
         )
         static let noWooError = NSLocalizedString(
-            "It looks like this is not a WooCommerce site.",
+            "Please install and activate WooCommerce plugin on your site to use the app.",
             comment: "Message explaining that the site entered doesn't have WooCommerce installed or activated."
         )
         static let wooCheckError = NSLocalizedString(

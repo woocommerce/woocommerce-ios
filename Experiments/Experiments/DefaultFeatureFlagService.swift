@@ -45,6 +45,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .systemStatusReportInSupportRequest:
             return true
+        case .IPPInAppFeedbackBanner:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,

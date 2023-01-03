@@ -12,7 +12,6 @@ final class LoginPrologueViewController: UIViewController {
     private let isFeatureCarouselShown: Bool
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
-    private let isSimplifiedLogin: Bool
 
     /// Background View, to be placed surrounding the bottom area.
     ///
@@ -45,7 +44,6 @@ final class LoginPrologueViewController: UIViewController {
         self.isFeatureCarouselShown = isFeatureCarouselShown
         self.analytics = analytics
         self.featureFlagService = featureFlagService
-        self.isSimplifiedLogin = ABTest.abTestLoginWithWPComOnly.variation != .control
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -99,8 +97,6 @@ private extension LoginPrologueViewController {
         let pageTypes: [LoginProloguePageType] = {
             if isFeatureCarouselShown {
                 return [.stats, .orderManagement, .products, .reviews]
-            } else if isSimplifiedLogin {
-                return [.simplifiedLoginI1Intro]
             } else {
                 return [.getStarted]
             }
@@ -127,7 +123,7 @@ private extension LoginPrologueViewController {
         guard isNewToWooCommerceButtonShown else {
             return newToWooCommerceButton.isHidden = true
         }
-        let title = isSimplifiedLogin ? Localization.learnMoreAboutWoo : Localization.newToWooCommerce
+        let title = Localization.newToWooCommerce
         newToWooCommerceButton.setTitle(title, for: .normal)
         newToWooCommerceButton.applyLinkButtonStyle()
         newToWooCommerceButton.titleLabel?.numberOfLines = 0
@@ -155,8 +151,5 @@ private extension LoginPrologueViewController {
     enum Localization {
         static let newToWooCommerce = NSLocalizedString("New to WooCommerce?",
                                                         comment: "Title of button in the login prologue screen for users who are new to WooCommerce.")
-        static let learnMoreAboutWoo = NSLocalizedString("Learn more about WooCommerce",
-                                                         comment: "Title of button in the simplified login prologue screen " +
-                                                         "for learning more about WooCommerce.")
     }
 }

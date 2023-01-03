@@ -66,7 +66,7 @@ public class SitePluginsRemote: Remote {
                                  pluginName: String,
                                  completion: @escaping (Result<SitePlugin, Error>) -> Void) {
         let path = String(format: "%@/%@", Constants.sitePluginsPath, pluginName)
-        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path, parameters: nil, availableAsRESTRequest: true)
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = SitePluginMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }

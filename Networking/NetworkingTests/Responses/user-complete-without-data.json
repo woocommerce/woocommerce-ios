@@ -1,5 +1,4 @@
 {
-  "data": {
     "id": 1,
     "username": "test-username",
     "first_name": "Test",
@@ -9,5 +8,4 @@
     "roles": [
         "administrator"
     ]
-  }
 }

@@ -23,7 +23,9 @@ public struct WordPressSite: Decodable, Equatable {
     /// Return the website UTC time offset, showing the difference in hours and minutes from UTC, from the westernmost (−12:00) to the easternmost (+14:00).
     ///
     public let gmtOffset: String
-    
+
+    /// Namespaces supported by the site.
+    ///
     public let namespaces: [String]
 
     /// Whether WooCommerce is one of the active plugins in the site.

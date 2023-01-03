@@ -33,8 +33,4 @@ public enum SettingAction: Action {
     /// Enables WC Analytics for the specified store
     ///
     case enableAnalyticsSetting(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
-
-    /// Checks whether WooCommerce is active for the specified store
-    ///
-    case checkIfWooCommerceIsActive(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
 }

@@ -46,10 +46,8 @@ final class PostSiteCredentialLoginChecker {
         checkApplicationPassword(for: siteURL,
                                  with: applicationPasswordUseCase,
                                  in: navigationController) { [weak self] in
-            guard let self else { return }
-            self.checkRoleEligibility(in: navigationController) { [weak self] in
-                guard let self else { return }
-                self.checkWooInstallation(in: navigationController, onSuccess: onSuccess)
+            self?.checkRoleEligibility(in: navigationController) {
+                self?.checkWooInstallation(in: navigationController, onSuccess: onSuccess)
             }
         }
     }
@@ -92,20 +90,19 @@ private extension PostSiteCredentialLoginChecker {
     ///
     func checkRoleEligibility(in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
         roleEligibilityUseCase.checkEligibility(for: WooConstants.placeholderStoreID) { [weak self] result in
-            guard let self else { return }
             switch result {
             case .success:
                 onSuccess()
             case .failure(let error):
                 if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
-                    self.showRoleErrorScreen(for: WooConstants.placeholderStoreID,
+                    self?.showRoleErrorScreen(for: WooConstants.placeholderStoreID,
                                              errorInfo: errorInfo,
                                              in: navigationController,
                                              onSuccess: onSuccess)
                 } else {
                     // show generic error
                     DDLogError("⛔️ Error checking role eligibility: \(error)")
-                    self.showAlert(
+                    self?.showAlert(
                         message: Localization.roleEligibilityCheckError,
                         in: navigationController,
                         onRetry: { [weak self] in
@@ -123,7 +120,7 @@ private extension PostSiteCredentialLoginChecker {
                              errorInfo: StorageEligibilityErrorInfo,
                              in navigationController: UINavigationController,
                              onSuccess: @escaping () -> Void) {
-        let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles, useCase: self.roleEligibilityUseCase)
+        let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles, useCase: roleEligibilityUseCase)
         let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
 
         errorViewModel.onSuccess = onSuccess
@@ -134,10 +131,11 @@ private extension PostSiteCredentialLoginChecker {
         navigationController.show(errorViewController, sender: self)
     }
 
+    /// Checks if WooCommerce is active on the logged in site.
+    ///
     func checkWooInstallation(in navigationController: UINavigationController,
                               onSuccess: @escaping () -> Void) {
         let action = SettingAction.checkIfWooCommerceIsActive(siteID: WooConstants.placeholderStoreID) { [weak self] result in
-            guard let self else { return }
             switch result {
             case .success:
                 onSuccess()
@@ -145,10 +143,10 @@ private extension PostSiteCredentialLoginChecker {
                 DDLogError("⛔️ Error checking Woo: \(error)")
                 if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error as? AFError {
                     // if status code is 404, Woo is not active
-                    self.showAlert(message: Localization.noWooError, in: navigationController)
+                    self?.showAlert(message: Localization.noWooError, in: navigationController)
                 } else {
                     // otherwise, show generic error
-                    self.showAlert(message: Localization.wooCheckError, in: navigationController, onRetry: { [weak self] in
+                    self?.showAlert(message: Localization.wooCheckError, in: navigationController, onRetry: {
                         self?.checkWooInstallation(in: navigationController, onSuccess: onSuccess)
                     })
                 }
@@ -157,6 +155,8 @@ private extension PostSiteCredentialLoginChecker {
         stores.dispatch(action)
     }
 
+    /// Shows an error alert with a button to restart login and an optional button to retry the failed action.
+    ///
     func showAlert(message: String,
                    in navigationController: UINavigationController,
                    onRetry: (() -> Void)? = nil) {

@@ -34,7 +34,8 @@ struct HubMenu: View {
         VStack {
             TopBar(avatarURL: viewModel.avatarURL,
                    storeTitle: viewModel.storeTitle,
-                   storeURL: viewModel.storeURL.absoluteString) {
+                   storeURL: viewModel.storeURL.absoluteString,
+                   switchStoreEnabled: viewModel.switchStoreEnabled) {
                 viewModel.presentSwitchStore()
             }
                    .padding([.leading, .trailing], Constants.padding)
@@ -141,6 +142,7 @@ struct HubMenu: View {
         let avatarURL: URL?
         let storeTitle: String
         let storeURL: String?
+        let switchStoreEnabled: Bool
         var switchStoreHandler: (() -> Void)?
 
         @State private var showSettings = false
@@ -177,6 +179,7 @@ struct HubMenu: View {
                     }
                     .linkStyle()
                     .accessibilityIdentifier("switch-store-button")
+                    .renderedIf(switchStoreEnabled)
                 }
                 Spacer()
                 VStack {

@@ -132,9 +132,7 @@ class AuthenticationManager: Authentication {
 
         let continueWithWPButtonTitle = AuthenticationConstants.continueWithWPButtonTitle
 
-        let emailAddressPlaceholder = isSimplifiedLoginI1Enabled ?
-        "name@example.com" :
-        WordPressAuthenticatorDisplayStrings.defaultStrings.emailAddressPlaceholder
+        let emailAddressPlaceholder = WordPressAuthenticatorDisplayStrings.defaultStrings.emailAddressPlaceholder
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                                   getStartedInstructions: getStartedInstructions,

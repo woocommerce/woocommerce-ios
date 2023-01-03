@@ -1878,6 +1878,7 @@
 		DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */; };
 		DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437726D8DAD900888A75 /* InProgressView.swift */; };
 		DEF13C522963D0B20024A02B /* PostSiteCredentialLoginChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF13C512963D0B20024A02B /* PostSiteCredentialLoginChecker.swift */; };
+		DEF13C542963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF13C532963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift */; };
 		DEF3300C270444070073AE29 /* ShippingLabelSelectedRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF3300B270444060073AE29 /* ShippingLabelSelectedRate.swift */; };
 		DEF36DE82898D3CF00178AC2 /* JetpackSetupWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF36DE52898D3CF00178AC2 /* JetpackSetupWebViewModel.swift */; };
 		DEF36DE92898D3CF00178AC2 /* AuthenticatedWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF36DE62898D3CF00178AC2 /* AuthenticatedWebViewController.swift */; };
@@ -3941,6 +3942,7 @@
 		DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintCustomsFormsView.swift; sourceTree = "<group>"; };
 		DEE6437726D8DAD900888A75 /* InProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InProgressView.swift; sourceTree = "<group>"; };
 		DEF13C512963D0B20024A02B /* PostSiteCredentialLoginChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSiteCredentialLoginChecker.swift; sourceTree = "<group>"; };
+		DEF13C532963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSiteCredentialLoginCheckerTests.swift; sourceTree = "<group>"; };
 		DEF3300B270444060073AE29 /* ShippingLabelSelectedRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSelectedRate.swift; sourceTree = "<group>"; };
 		DEF36DE52898D3CF00178AC2 /* JetpackSetupWebViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JetpackSetupWebViewModel.swift; sourceTree = "<group>"; };
 		DEF36DE62898D3CF00178AC2 /* AuthenticatedWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedWebViewController.swift; sourceTree = "<group>"; };
@@ -6493,6 +6495,7 @@
 				DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */,
 				DE50295228BF4A8A00551736 /* JetpackConnectionWebViewModelTests.swift */,
 				020D0BFC2914E92800BB3DCE /* StorePickerCoordinatorTests.swift */,
+				DEF13C532963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -11375,6 +11378,7 @@
 				453904F523BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift in Sources */,
 				D85DD1E1257F376200861AA8 /* NotWPAccountViewModelTests.swift in Sources */,
 				020C908424C84652001E2BEB /* ProductListMultiSelectorSearchUICommandTests.swift in Sources */,
+				DEF13C542963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift in Sources */,
 				EEC2D281292D10520072132E /* SiteCredentialLoginHostingViewControllerTests.swift in Sources */,
 				746FC23D2200A62B00C3096C /* DateWooTests.swift in Sources */,
 				31F21B5A263CB41A0035B50A /* MockCardPresentPaymentsStoresManager.swift in Sources */,

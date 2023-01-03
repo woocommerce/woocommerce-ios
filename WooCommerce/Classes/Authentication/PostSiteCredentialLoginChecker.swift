@@ -75,17 +75,13 @@ private extension PostSiteCredentialLoginChecker {
                 // show generic error
                 await MainActor.run {
                     DDLogError("⛔️ Error generating application password: \(error)")
-                    let alert = self.showAlert(
+                    self.showAlert(
                         message: Localization.applicationPasswordError,
+                        in: navigationController,
                         onRetry: { [weak self] in
                             self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController, onSuccess: onSuccess)
-                        },
-                        onRestartLogin: {
-                            ServiceLocator.stores.deauthenticate()
-                            navigationController.popToRootViewController(animated: true)
                         }
                     )
-                    navigationController.present(alert, animated: true)
                 }
             }
         }
@@ -109,17 +105,13 @@ private extension PostSiteCredentialLoginChecker {
                 } else {
                     // show generic error
                     DDLogError("⛔️ Error checking role eligibility: \(error)")
-                    let alert = self.showAlert(
+                    self.showAlert(
                         message: Localization.roleEligibilityCheckError,
+                        in: navigationController,
                         onRetry: { [weak self] in
                             self?.checkRoleEligibility(in: navigationController, onSuccess: onSuccess)
-                        },
-                        onRestartLogin: {
-                            ServiceLocator.stores.deauthenticate()
-                            navigationController.popToRootViewController(animated: true)
                         }
                     )
-                    navigationController.present(alert, animated: true)
                 }
             }
         }
@@ -135,8 +127,8 @@ private extension PostSiteCredentialLoginChecker {
         let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
 
         errorViewModel.onSuccess = onSuccess
-        errorViewModel.onDeauthenticationRequest = {
-            ServiceLocator.stores.deauthenticate()
+        errorViewModel.onDeauthenticationRequest = { [weak self] in
+            self?.stores.deauthenticate()
             navigationController.popToRootViewController(animated: true)
         }
         navigationController.show(errorViewController, sender: self)
@@ -144,38 +136,30 @@ private extension PostSiteCredentialLoginChecker {
 
     func checkWooInstallation(in navigationController: UINavigationController,
                               onSuccess: @escaping () -> Void) {
-        let action = SitePluginAction.getPluginDetails(siteID: WooConstants.placeholderStoreID, pluginName: Constants.wooPluginName) { result in
-            var errorMessage: String?
+        let action = SettingAction.checkIfWooCommerceIsActive(siteID: WooConstants.placeholderStoreID) { [weak self] result in
+            guard let self else { return }
             switch result {
-            case .success(let plugin):
-                if plugin.status == .active {
-                    return onSuccess()
-                } else {
-                    errorMessage = Localization.noWooError
-                }
+            case .success:
+                onSuccess()
             case .failure(let error):
                 DDLogError("⛔️ Error checking Woo: \(error)")
                 if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error as? AFError {
-                    errorMessage = Localization.noWooError
+                    // if status code is 404, Woo is not active
+                    self.showAlert(message: Localization.noWooError, in: navigationController)
                 } else {
-                    errorMessage = Localization.wooCheckError
+                    // otherwise, show generic error
+                    self.showAlert(message: Localization.wooCheckError, in: navigationController, onRetry: { [weak self] in
+                        self?.checkWooInstallation(in: navigationController, onSuccess: onSuccess)
+                    })
                 }
             }
-            if let errorMessage {
-                let alert = self.showAlert(message: errorMessage, onRestartLogin: {
-                        ServiceLocator.stores.deauthenticate()
-                        navigationController.popToRootViewController(animated: true)
-                    }
-                )
-                navigationController.present(alert, animated: true)
-            }
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func showAlert(message: String,
-                   onRetry: (() -> Void)? = nil,
-                   onRestartLogin: @escaping () -> Void) -> UIAlertController {
+                   in navigationController: UINavigationController,
+                   onRetry: (() -> Void)? = nil) {
         let alert = UIAlertController(title: message,
                                       message: nil,
                                       preferredStyle: .alert)
@@ -185,11 +169,12 @@ private extension PostSiteCredentialLoginChecker {
             }
             alert.addAction(retryAction)
         }
-        let restartAction = UIAlertAction(title: Localization.restartLoginButton, style: .cancel) { _ in
-            onRestartLogin()
+        let restartAction = UIAlertAction(title: Localization.restartLoginButton, style: .cancel) { [weak self] _ in
+            self?.stores.deauthenticate()
+            navigationController.popToRootViewController(animated: true)
         }
         alert.addAction(restartAction)
-        return alert
+        navigationController.present(alert, animated: true)
     }
 
     /// The error screen to be displayed when the user tries to log in with site credentials
@@ -221,8 +206,5 @@ private extension PostSiteCredentialLoginChecker {
         )
         static let retryButton = NSLocalizedString("Try Again", comment: "Button to refetch application password for the current site")
         static let restartLoginButton = NSLocalizedString("Log In With Another Account", comment: "Button to restart the login flow.")
-    }
-    enum Constants {
-        static let wooPluginName = "woocommerce/woocommerce"
     }
 }

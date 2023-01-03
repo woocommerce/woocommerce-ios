@@ -49,6 +49,8 @@ final class InPersonPaymentsMenuViewController: UIViewController {
 
     private var activityIndicator: UIActivityIndicatorView?
 
+    private var topBannerView: UIView?
+
     init(stores: StoresManager = ServiceLocator.stores,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
     ) {
@@ -75,6 +77,9 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         configureTableReload()
         runCardPresentPaymentsOnboarding()
         configureWebViewPresentation()
+        if featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            configureIPPInAppFeedbackBanner()
+        }
         viewModel.viewDidLoad()
     }
 }
@@ -333,6 +338,41 @@ private extension InPersonPaymentsMenuViewController {
             let connectionController = AuthenticatedWebViewController(viewModel: viewModel)
             self.navigationController?.show(connectionController, sender: nil)
         }.store(in: &cancellables)
+    }
+
+    private func configureIPPInAppFeedbackBanner() {
+        // TODO: Create a new one rather than reusing OrdersTopBannerFactory. Uses TopBannerView.
+        topBannerView = OrdersTopBannerFactory.createOrdersBanner(
+            onTopButtonPressed: {
+                print("onTopButtonPressed")
+            },
+            onDismissButtonPressed: {
+                self.hideIPPInAppFeedbackBanner()
+                print("onDismissButtonPressed")
+            },
+            onGiveFeedbackButtonPressed: {
+                // TODO: Open webview with the survey form
+                print("onGiveFeedbackButtonPressed")
+            })
+        showIPPInAppFeedbackBanner()
+    }
+
+    private func showIPPInAppFeedbackBanner() {
+        guard let topBannerView = topBannerView else { return }
+
+        // Configures header container view:
+        // TODO: Find the correct width and height
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToAllEdges(topBannerView)
+
+        tableView.tableHeaderView = headerContainer
+        tableView.updateFooterHeight()
+    }
+
+    private func hideIPPInAppFeedbackBanner() {
+        // TODO: Hide on dismiss
+        print("hideIPPInAppFeedbackBanner called")
     }
 }
 

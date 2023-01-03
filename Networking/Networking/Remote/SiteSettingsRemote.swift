@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// SiteSettings: Remote Endpoints
 ///
 public class SiteSettingsRemote: Remote {
@@ -69,6 +68,23 @@ public class SiteSettingsRemote: Remote {
         let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
 
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Checks the WooCommerce site settings endpoint to confirm if the WooCommerce plugin is available or not.
+    /// We pass an empty `_fields` just to reduce the response payload size, as we don't care about the contents.
+    /// The current use case is for a workaround for Jetpack Connection Package sites.
+    /// - Parameter siteID: Site for which we will fetch the site settings.
+    /// - Returns: A publisher that emits a boolean which indicates if WooCommerce plugin is active.
+    public func checkIfWooCommerceIsActive(for siteID: Int64, completion: @escaping (Result<Bool, Error>) -> Void) {
+        let parameters = ["_fields": ""]
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Constants.siteSettingsPath,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = WooCommerceAvailabilityMapper()
+        return enqueue(request, mapper: mapper, completion: completion)
     }
 }
 

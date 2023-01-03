@@ -48,6 +48,8 @@ public class SettingStore: Store {
             retrieveAnalyticsSetting(siteID: siteID, onCompletion: onCompletion)
         case let .enableAnalyticsSetting(siteID, onCompletion):
             enableAnalyticsSetting(siteID: siteID, onCompletion: onCompletion)
+        case let .checkIfWooCommerceIsActive(siteID, onCompletion):
+            checkIfWooCommerceIsActive(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -161,6 +163,10 @@ private extension SettingStore {
                 onCompletion(.failure(error))
             }
         }
+    }
+
+    func checkIfWooCommerceIsActive(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        siteSettingsRemote.checkIfWooCommerceIsActive(for: siteID, completion: onCompletion)
     }
 }
 

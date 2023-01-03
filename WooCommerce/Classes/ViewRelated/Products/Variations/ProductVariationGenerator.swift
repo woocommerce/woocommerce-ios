@@ -69,6 +69,7 @@ struct ProductVariationGenerator {
             let attributes = combination.options.map { option in
                 ProductVariationAttribute(id: option.attributeID, name: option.attributeName, option: option.value)
             }
+            // Setting a regular price is not required when creating a variation.
             return CreateProductVariation(regularPrice: "", attributes: attributes)
         }
     }

@@ -45,6 +45,9 @@ struct StoreCreationSummaryViewModel {
     let storeSlug: String
     /// Optional category name from the previous profiler question.
     let categoryName: String?
+    /// Country code for the store location.
+    /// `nil` only when the `storeCreationM3Profiler` feature flag is disabled.
+    let countryCode: SiteAddress.CountryCode?
 }
 
 /// Displays a summary of the store creation flow with the store information (e.g. store name, store slug).
@@ -77,7 +80,7 @@ struct StoreCreationSummaryView: View {
                         }
                         .background(Color(.systemColor(.systemGray6)))
 
-                        VStack {
+                        VStack(alignment: .leading, spacing: 16) {
                             VStack(alignment: .leading, spacing: Layout.spacingBetweenStoreNameAndDomain) {
                                 // Store name.
                                 Text(viewModel.storeName)
@@ -86,12 +89,18 @@ struct StoreCreationSummaryView: View {
                                 Text(viewModel.storeSlug)
                                     .foregroundColor(Color(.secondaryLabel))
                                     .bodyStyle()
-                                // Store category (optional).
-                                if let categoryName = viewModel.categoryName {
-                                    Text(categoryName)
-                                        .foregroundColor(Color(.label))
-                                        .bodyStyle()
-                                }
+                            }
+                            // Store country.
+                            if let country = viewModel.country {
+                                Text(country)
+                                    .foregroundColor(Color(.label))
+                                    .bodyStyle()
+                            }
+                            // Store category (optional).
+                            if let categoryName = viewModel.categoryName {
+                                Text(categoryName)
+                                    .foregroundColor(Color(.label))
+                                    .bodyStyle()
                             }
                         }
                         .padding(Layout.storeInfoPadding)
@@ -146,12 +155,25 @@ private extension StoreCreationSummaryView {
     }
 }
 
+private extension StoreCreationSummaryViewModel {
+    /// Text for the store country label.
+    var country: String? {
+        countryCode.map { [$0.readableCountry, $0.flagEmoji].compactMap { $0 }.joined(separator: " ") }
+    }
+}
+
 struct StoreCreationSummaryView_Previews: PreviewProvider {
     static var previews: some View {
         StoreCreationSummaryView(viewModel:
-                .init(storeName: "Fruity shop", storeSlug: "fruityshop.com", categoryName: "Arts and Crafts"))
+                .init(storeName: "Fruity shop",
+                      storeSlug: "fruityshop.com",
+                      categoryName: "Arts and Crafts",
+                      countryCode: .UG))
         StoreCreationSummaryView(viewModel:
-                .init(storeName: "Fruity shop", storeSlug: "fruityshop.com", categoryName: "Arts and Crafts"))
+                .init(storeName: "Fruity shop",
+                      storeSlug: "fruityshop.com",
+                      categoryName: "Arts and Crafts",
+                      countryCode: nil))
         .preferredColorScheme(.dark)
     }
 }

@@ -110,6 +110,94 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertFalse(isSuccess)
         XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
     }
+
+    func test_onSuccess_is_triggered_when_the_site_has_active_woo() {
+        // Given
+        let applicationPassword = ApplicationPassword(wpOrgUsername: "test", password: .init("secret"))
+        let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
+        let roleCheckUseCase = MockRoleEligibilityUseCase()
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,
+                                                     roleEligibilityUseCase: roleCheckUseCase,
+                                                     stores: stores)
+        var isSuccess = false
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+            switch action {
+            case .fetchSiteInfo(_, let completion):
+                let site = Site.fake().copy(isWooCommerceActive: true)
+                completion(.success(site))
+            }
+        }
+        checker.checkEligibility(for: testURL, from: navigationController) {
+            isSuccess = true
+        }
+
+        // Then
+        waitUntil {
+            isSuccess == true
+        }
+    }
+
+    func test_error_alert_is_displayed_if_the_site_does_not_have_active_woo() {
+        // Given
+        let applicationPassword = ApplicationPassword(wpOrgUsername: "test", password: .init("secret"))
+        let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
+        let roleCheckUseCase = MockRoleEligibilityUseCase()
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,
+                                                     roleEligibilityUseCase: roleCheckUseCase,
+                                                     stores: stores)
+        var isSuccess = false
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+            switch action {
+            case .fetchSiteInfo(_, let completion):
+                let site = Site.fake().copy(isWooCommerceActive: false)
+                completion(.success(site))
+            }
+        }
+        checker.checkEligibility(for: testURL, from: navigationController) {
+            isSuccess = true
+        }
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+
+        // Then
+        XCTAssertFalse(isSuccess)
+        XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
+    }
+
+    func test_error_alert_is_displayed_if_the_site_info_cannot_be_fetched() {
+        // Given
+        let applicationPassword = ApplicationPassword(wpOrgUsername: "test", password: .init("secret"))
+        let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
+        let roleCheckUseCase = MockRoleEligibilityUseCase()
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,
+                                                     roleEligibilityUseCase: roleCheckUseCase,
+                                                     stores: stores)
+        var isSuccess = false
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+            switch action {
+            case .fetchSiteInfo(_, let completion):
+                let site = Site.fake().copy(isWooCommerceActive: false)
+                completion(.failure(NetworkError.timeout))
+            }
+        }
+        checker.checkEligibility(for: testURL, from: navigationController) {
+            isSuccess = true
+        }
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+
+        // Then
+        XCTAssertFalse(isSuccess)
+        XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
+    }
 }
 
 private extension PostSiteCredentialLoginCheckerTests {

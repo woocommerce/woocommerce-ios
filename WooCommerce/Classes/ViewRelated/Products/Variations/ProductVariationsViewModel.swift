@@ -29,15 +29,20 @@ final class ProductVariationsViewModel {
     ///
     func generateAllVariations(for product: Product) {
         let action = ProductVariationAction.synchronizeAllProductVariations(siteID: product.siteID, productID: product.productID) { result in
-            // Temp
-            let fetched = ServiceLocator.storageManager.viewStorage.loadProductVariations(siteID: product.siteID, productID: product.productID)
-            print("Synchronized \(fetched?.count ?? 0) variations")
+            // TODO: Fetch this via a results controller
+            let existingVariations = ServiceLocator.storageManager.viewStorage.loadProductVariations(siteID: product.siteID, productID: product.productID)?
+                .map {
+                    $0.toReadOnly()
+                } ?? []
+
+            // TEMP
+            let variationsToGenerate = ProductVariationGenerator.generateVariations(for: product, excluding: existingVariations)
+            print("Variations to Generate: \(variationsToGenerate.count)")
+
         }
         stores.dispatch(action)
 
         // TODO:
-        // - Generate all variations locally
-        // - Substract already created variations
         // - Alert if there are more than 100 variations to create
         // - Create variations remotely
     }

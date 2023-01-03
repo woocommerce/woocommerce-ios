@@ -54,12 +54,13 @@ extension FancyAlertViewController {
         return controller
     }
 
-    static func makeApplicationPasswordAlert(retryAction: @escaping () -> Void,
+    static func makeSiteCredentialLoginAlert(message: String,
+                                             retryAction: @escaping () -> Void,
                                              restartLoginAction: @escaping () -> Void) -> FancyAlertViewController {
         let retryButton = makeRetryButtonConfig(retryAction: retryAction)
         let loginButton = makeLoginButtonConfig(loginAction: restartLoginAction)
         let config = FancyAlertViewController.Config(titleText: Localization.cannotLogin,
-                                                     bodyText: Localization.applicationPasswordError,
+                                                     bodyText: message,
                                                      headerImage: nil,
                                                      dividerPosition: .top,
                                                      defaultButton: loginButton,
@@ -120,10 +121,6 @@ private extension FancyAlertViewController {
             "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app.",
             comment: "Description of alert for suggestion on how to connect to a WP.com site" +
             "Presented when a user logs in with an email that does not have access to a WP.com site"
-        )
-        static let applicationPasswordError = NSLocalizedString(
-            "Error fetching application password for your site.",
-            comment: "Error message displayed when application password cannot be fetched after authentication."
         )
         static let retryButton = NSLocalizedString("Try Again", comment: "Button to refetch application password for the current site")
         static let retryLoginButton = NSLocalizedString("Log In With Another Account", comment: "Button to restart the login flow.")

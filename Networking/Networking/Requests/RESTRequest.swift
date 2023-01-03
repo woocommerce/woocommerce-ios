@@ -47,7 +47,9 @@ struct RESTRequest: URLRequestConvertible {
     /// Returns a URLRequest instance representing the current REST API Request.
     ///
     func asURLRequest() throws -> URLRequest {
-        let components = [siteURL, Settings.basePath, wooApiVersion.path, path].map { $0.trimSlashes() }
+        let components = [siteURL, Settings.basePath, wooApiVersion.path, path]
+            .map { $0.trimSlashes() }
+            .filter { $0.isEmpty == false }
         let url = try components.joined(separator: "/").asURL()
         let request = try URLRequest(url: url, method: method)
         switch method {

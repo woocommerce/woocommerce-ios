@@ -8,6 +8,7 @@ import enum Experiments.ABTest
 import struct Networking.Settings
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
+import class Networking.DefaultApplicationPasswordUseCase
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
@@ -802,8 +803,15 @@ private extension AuthenticationManager {
     func didAuthenticateUser(to siteURL: String,
                              with siteCredentials: WordPressOrgCredentials,
                              in navigationController: UINavigationController) {
-        let checker = PostSiteCredentialLoginChecker(siteURL: siteURL, siteCredentials: siteCredentials)
-        checker.checkEligibility(from: navigationController) { [weak self] in
+        guard let useCase = try? DefaultApplicationPasswordUseCase(
+            username: siteCredentials.username,
+            password: siteCredentials.password,
+            siteAddress: siteCredentials.siteURL
+        ) else {
+            return assertionFailure("⛔️ Error creating application password use case")
+        }
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
+        checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
             // navigates to home screen immediately with a placeholder store ID
             self?.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
         }

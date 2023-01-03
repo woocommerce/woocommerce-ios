@@ -1,8 +1,5 @@
-import WordPressAuthenticator
-import WordPressKit
 import Yosemite
 import protocol Networking.ApplicationPasswordUseCase
-import class Networking.DefaultApplicationPasswordUseCase
 import enum Networking.ApplicationPasswordUseCaseError
 import enum Alamofire.AFError
 
@@ -13,36 +10,21 @@ import enum Alamofire.AFError
 /// - Whether WooCommerce is installed and activated on the logged in site.
 ///
 final class PostSiteCredentialLoginChecker {
-    private let siteURL: String
-    private let siteCredentials: WordPressOrgCredentials
     private let stores: StoresManager
-
-    /// Keep strong reference of the use case to check for application password availability if necessary.
-    private var applicationPasswordUseCase: ApplicationPasswordUseCase?
+    private let applicationPasswordUseCase: ApplicationPasswordUseCase
 
     /// Keep strong reference of the use case to check for role eligibility if necessary.
     private lazy var roleEligibilityUseCase: RoleEligibilityUseCase = .init(stores: stores)
 
-    init(siteURL: String,
-         siteCredentials: WordPressOrgCredentials,
+    init(applicationPasswordUseCase: ApplicationPasswordUseCase,
          stores: StoresManager = ServiceLocator.stores) {
-        self.siteURL = siteURL
-        self.siteCredentials = siteCredentials
+        self.applicationPasswordUseCase = applicationPasswordUseCase
         self.stores = stores
     }
 
     /// Checks whether the user is eligible to use the app.
     ///
-    func checkEligibility(from navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
-        // check if application password is enabled
-        guard let applicationPasswordUseCase = try? DefaultApplicationPasswordUseCase(
-            username: siteCredentials.username,
-            password: siteCredentials.password,
-            siteAddress: siteCredentials.siteURL
-        ) else {
-            return assertionFailure("⛔️ Error creating application password use case")
-        }
-        self.applicationPasswordUseCase = applicationPasswordUseCase
+    func checkEligibility(for siteURL: String, from navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
         checkApplicationPassword(for: siteURL,
                                  with: applicationPasswordUseCase,
                                  in: navigationController) { [weak self] in
@@ -54,6 +36,8 @@ final class PostSiteCredentialLoginChecker {
 }
 
 private extension PostSiteCredentialLoginChecker {
+    /// Checks if application password is enabled for the specified site.
+    ///
     func checkApplicationPassword(for siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
                                   in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {

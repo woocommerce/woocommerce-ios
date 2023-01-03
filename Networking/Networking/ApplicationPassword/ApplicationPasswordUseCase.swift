@@ -2,6 +2,7 @@ import Foundation
 import WordPressShared
 import WordPressKit
 import enum Alamofire.AFError
+import KeychainAccess
 
 public enum ApplicationPasswordUseCaseError: Error {
     case duplicateName
@@ -12,11 +13,11 @@ public enum ApplicationPasswordUseCaseError: Error {
 public struct ApplicationPassword {
     /// WordPress org username that the application password belongs to
     ///
-    public let wpOrgUsername: String
+    let wpOrgUsername: String
 
     /// Application password
     ///
-    public let password: Secret<String>
+    let password: Secret<String>
 }
 
 public protocol ApplicationPasswordUseCase {
@@ -52,7 +53,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
 
     /// To store application password
     ///
-    private let storage = ApplicationPasswordStorage()
+    private let storage: ApplicationPasswordStorage
 
     /// Used to name the password in wpadmin.
     ///
@@ -67,9 +68,11 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     public init(username: String,
                 password: String,
                 siteAddress: String,
-                network: Network? = nil) throws {
+                network: Network? = nil,
+                keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) throws {
         self.siteAddress = siteAddress
         self.username = username
+        self.storage = ApplicationPasswordStorage(keychain: keychain)
 
         if let network {
             self.network = network

@@ -7,7 +7,7 @@ struct ApplicationPasswordStorage {
     ///
     private let keychain: Keychain
 
-    init(keychain: Keychain = Keychain(service: KeychainServiceName.name)) {
+    init(keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
         self.keychain = keychain
     }
 
@@ -36,16 +36,6 @@ struct ApplicationPasswordStorage {
         // Delete password from keychain
         keychain.username = nil
         keychain.password = nil
-    }
-}
-
-// MARK: - Constants
-//
-private extension ApplicationPasswordStorage {
-    enum KeychainServiceName {
-        /// Matching `WooConstants.keychainServiceName`
-        ///
-        static let name = "com.automattic.woocommerce"
     }
 }
 

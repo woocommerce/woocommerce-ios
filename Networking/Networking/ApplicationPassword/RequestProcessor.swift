@@ -58,6 +58,7 @@ private extension RequestProcessor {
                 isAuthenticating = false
                 completeRequests(true)
             } catch {
+                TracksProvider.shared.track("failed_regenerating_application_password")
                 isAuthenticating = false
                 completeRequests(false)
             }
@@ -72,6 +73,7 @@ private extension RequestProcessor {
 
         // Failed authorization
         if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 401)) = error as? AFError {
+            TracksProvider.shared.track("application_password_failed_authorization")
             return true
         }
 

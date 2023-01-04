@@ -37,7 +37,7 @@ struct ProductVariationGenerator {
     /// Generates all posible combination for a product attributes.
     ///
     private static func getCombinations(from product: Product) -> [Combination] {
-        // Iterates through attributes while eceiving the previous combinations list.
+        // Iterates through attributes while receiving the previous combinations list.
         product.attributes.reduce([Combination(options: [])]) { combinations, attribute in
             combinations.flatMap { combination in
                 // When receiving a previous combination list, we add each attribute to each previous combination util we finish with them.
@@ -53,8 +53,8 @@ struct ProductVariationGenerator {
     private static func filterExistingCombinations(_ combinations: [Combination], existing variations: [ProductVariation]) -> [Combination] {
         // Convert variations into combinations
         let existingCombinations = variations.map { existingVariation in
-            let options = existingVariation.attributes.map { attibute in
-                Option(attributeID: attibute.id, attributeName: attibute.name, value: attibute.option)
+            let options = existingVariation.attributes.map { attribute in
+                Option(attributeID: attribute.id, attributeName: attribute.name, value: attribute.option)
             }
             return Combination(options: options)
         }

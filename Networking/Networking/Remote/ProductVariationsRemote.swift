@@ -16,6 +16,10 @@ public protocol ProductVariationsRemoteProtocol {
                                 productID: Int64,
                                 newVariation: CreateProductVariation,
                                 completion: @escaping (Result<ProductVariation, Error>) -> Void)
+    func createProductVariations(siteID: Int64,
+                                 productID: Int64,
+                                 productVariations: [CreateProductVariation],
+                                 completion: @escaping (Result<[ProductVariation], Error>) -> Void)
     func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func updateProductVariationImage(siteID: Int64,
                                      productID: Int64,

@@ -357,7 +357,9 @@ private extension InPersonPaymentsMenuViewController {
             icon: .speakerIcon.withRenderingMode(.alwaysTemplate),
             iconTintColor: .wooCommercePurple(.shade50),
             isExpanded: false,
-            topButton: .chevron(handler: {}),
+            topButton: .chevron(handler: {
+                self.tableView.updateHeaderHeight()
+            }),
             actionButtons: [giveFeedbackAction, dismissFeedbackAction]
         )
         let topBannerView = TopBannerView(viewModel: viewModel)

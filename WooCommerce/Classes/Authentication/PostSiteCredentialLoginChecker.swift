@@ -198,7 +198,7 @@ private extension PostSiteCredentialLoginChecker {
             comment: "Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication"
         )
         static let invalidLoginOrAdminURL = NSLocalizedString(
-            "Application password cannot be generated due to custom login or admin URL on your site.",
+            "Application password cannot be generated due to a custom login or admin URL on your site.",
             comment: "Message to display when the constructed admin or login URL for the logged-in site is not accessible"
         )
         static let contactSupport = NSLocalizedString("Contact Support", comment: "Button to contact support for login")

@@ -43,7 +43,7 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertEqual(site.gmtOffset, 0)
         XCTAssertEqual(site.adminURL, "https://test.com/wp-admin")
         XCTAssertEqual(site.loginURL, "https://test.com/wp-login.php")
-        XCTAssertTrue(site.isWooCommerceActive)
+        XCTAssertFalse(site.isWooCommerceActive)
         XCTAssertFalse(site.isJetpackConnected)
         XCTAssertFalse(site.isJetpackThePluginInstalled)
     }

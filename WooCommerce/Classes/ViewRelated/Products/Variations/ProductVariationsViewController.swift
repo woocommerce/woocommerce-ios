@@ -619,6 +619,13 @@ private extension ProductVariationsViewController {
         let bottomSheetPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
         bottomSheetPresenter.show(from: self, sourceView: topStackView)
     }
+
+    /// Informs the merchant about errors that happen during the variation generation
+    ///
+    private func presentGenerationError(_ error: ProductVariationsViewModel.GenerationError) {
+        let notice = Notice(title: error.errorTitle, message: error.errorDescription)
+        noticePresenter.enqueue(notice: notice)
+    }
 }
 
 // MARK: - Placeholders
@@ -695,10 +702,17 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
     /// Generates all possible variations for the product attibutes.
     ///
     private func generateAllVariations() {
-        viewModel.generateAllVariations(for: product)
+        viewModel.generateAllVariations(for: product) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                self.presentGenerationError(error)
+            }
+        }
         // TODO:
         // - Show Loading Indicator
-        // - Alert if there are more than 100 variations to create
         // - Hide Loading Indicator
     }
 }

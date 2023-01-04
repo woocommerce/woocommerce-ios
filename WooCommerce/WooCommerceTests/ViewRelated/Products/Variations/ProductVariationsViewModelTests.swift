@@ -122,7 +122,18 @@ final class ProductVariationsViewModelTests: XCTestCase {
             ProductAttribute.fake().copy(attributeID: 2, name: "Color", options: ["Red", "Green", "Blue", "White", "Black"]),
             ProductAttribute.fake().copy(attributeID: 3, name: "Fabric", options: ["Cotton", "Nylon", "Polyester", "Silk", "Linen"]),
         ])
-        let viewModel = ProductVariationsViewModel(formType: .edit)
+
+        let stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case .synchronizeAllProductVariations(_, _, let onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        let viewModel = ProductVariationsViewModel(stores: stores, formType: .edit)
 
         // When
         let error = waitFor { promise in

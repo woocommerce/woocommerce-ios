@@ -436,6 +436,8 @@ private extension StoreCreationCoordinator {
                                planToPurchase: planToPurchase,
                                siteID: result.siteID,
                                siteSlug: result.siteSlug)
+        } onSupport: { [weak self] in
+            self?.showSupport(from: navigationController)
         }
         navigationController.pushViewController(storeSummary, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .storeSummary))

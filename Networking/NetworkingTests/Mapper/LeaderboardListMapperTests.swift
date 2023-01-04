@@ -41,13 +41,13 @@ private extension LeaderboardListMapperTests {
     /// Returns the LeaderboardListMapper output from `products.json`
     ///
     func mapLeaderboardListResponse() throws -> [Leaderboard] {
-        return try mapLeaderboardList(from: "leaderboards-products")
+        return try mapLeaderboardList(from: "leaderboards-year")
     }
 
     /// Returns the LeaderboardListMapper output from `leaderboards-products-without-data.json`
     ///
     func mapLeaderboardListResponseWithoutDataEnvelope() throws -> [Leaderboard] {
-        return try mapLeaderboardList(from: "leaderboards-products-without-data")
+        return try mapLeaderboardList(from: "leaderboards-year-without-data")
     }
 
     struct FileNotFoundError: Error {}

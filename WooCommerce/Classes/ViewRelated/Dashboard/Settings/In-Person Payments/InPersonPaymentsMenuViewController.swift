@@ -592,19 +592,26 @@ private extension InPersonPaymentsMenuViewController {
             comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
         )
 
-        static let feedbackBannerTitle = NSLocalizedString("How can we improve in-person payments?",
-                                                           comment: "Title of the feedback banner in the Payments tab")
+        static let feedbackBannerTitle = NSLocalizedString(
+            "How can we improve in-person payments?",
+            comment: "Title of the feedback banner in the Payments tab"
+        )
 
-        static let feedbackBannerContent = NSLocalizedString("You enabled an option to collect payments in person." +
-                                                             "Please help us better understand your needs and tell us how we can improve the payments experience.",
-                                                             comment: "Content of the feedback banner in the Payments tab")
+        static let feedbackBannerContent = NSLocalizedString(
+            "You enabled an option to collect payments in person." +
+            "Please help us better understand your needs and tell us how we can improve the payments experience.",
+            comment: "Content of the feedback banner in the Payments tab"
+        )
 
-        static let giveFeedbackButton = NSLocalizedString("Give Feedback",
-                                                                comment: "Title of the feedback action button on the in-app feedback banner")
+        static let giveFeedbackButton = NSLocalizedString(
+            "Give Feedback",
+            comment: "Title of the feedback action button on the in-app feedback banner"
+        )
 
-        static let dismissFeedbackButton = NSLocalizedString("Dismiss",
-                                                                   comment: "Title of the dismiss action button on the in-app feedback banner")
-
+        static let dismissFeedbackButton = NSLocalizedString(
+            "Dismiss",
+            comment: "Title of the dismiss action button on the in-app feedback banner"
+        )
     }
 }
 

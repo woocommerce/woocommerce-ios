@@ -26,6 +26,13 @@ public enum ProductVariationAction: Action {
                                  newVariation: CreateProductVariation,
                                  onCompletion: (Result<ProductVariation, Error>) -> Void)
 
+    /// Creates the provided ProductVariations.
+    ///
+    case createProductVariations(siteID: Int64,
+                                 productID: Int64,
+                                 productVariations: [CreateProductVariation],
+                                 onCompletion: (Result<[ProductVariation], Error>) -> Void)
+
     /// Updates a specified ProductVariation.
     ///
     case updateProductVariation(productVariation: ProductVariation, onCompletion: (Result<ProductVariation, ProductUpdateError>) -> Void)

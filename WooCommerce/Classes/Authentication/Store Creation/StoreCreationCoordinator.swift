@@ -383,6 +383,8 @@ private extension StoreCreationCoordinator {
                                                             countryCode: countryCode,
                                                             domain: domain,
                                                             planToPurchase: planToPurchase)
+        }, onSupport: { [weak self] in
+            self?.showSupport(from: navigationController)
         })
         navigationController.pushViewController(domainSelector, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .domainPicker))

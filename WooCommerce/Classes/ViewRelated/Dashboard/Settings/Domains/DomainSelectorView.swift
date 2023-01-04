@@ -7,14 +7,14 @@ final class DomainSelectorHostingController: UIHostingController<DomainSelectorV
     /// - Parameters:
     ///   - viewModel: View model for the domain selector.
     ///   - onDomainSelection: Called when the user continues with a selected domain name.
+    ///   - onSupport: Called when the user taps to contact support.
     init(viewModel: DomainSelectorViewModel,
-         onDomainSelection: @escaping (String) async -> Void) {
+         onDomainSelection: @escaping (String) async -> Void,
+         onSupport: @escaping () -> Void) {
         self.viewModel = viewModel
-        super.init(rootView: DomainSelectorView(viewModel: viewModel))
-
-        rootView.onDomainSelection = { domain in
-            await onDomainSelection(domain)
-        }
+        super.init(rootView: DomainSelectorView(viewModel: viewModel,
+                                                onDomainSelection: onDomainSelection,
+                                                onSupport: onSupport))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -55,8 +55,8 @@ struct DomainSelectorView: View {
         case results(domains: [String])
     }
 
-    /// Set in the hosting controller.
-    var onDomainSelection: ((String) async -> Void) = { _ in }
+    private let onDomainSelection: (String) async -> Void
+    private let onSupport: () -> Void
 
     /// View model to drive the view.
     @ObservedObject private var viewModel: DomainSelectorViewModel
@@ -70,8 +70,12 @@ struct DomainSelectorView: View {
 
     @FocusState private var textFieldIsFocused: Bool
 
-    init(viewModel: DomainSelectorViewModel) {
+    init(viewModel: DomainSelectorViewModel,
+         onDomainSelection: @escaping (String) async -> Void,
+         onSupport: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onDomainSelection = onDomainSelection
+        self.onSupport = onSupport
     }
 
     var body: some View {
@@ -177,6 +181,18 @@ struct DomainSelectorView: View {
                 .background(Color(.systemBackground))
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    onSupport()
+                } label: {
+                    Image(uiImage: .helpOutlineImage)
+                        .renderingMode(.template)
+                        .linkStyle()
+                }
+                .accessibilityLabel(Localization.supportButtonAccessibilityLabel)
+            }
+        }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.large)
         .onChange(of: viewModel.isLoadingDomainSuggestions) { isLoadingDomainSuggestions in
@@ -203,6 +219,10 @@ private extension DomainSelectorView {
         static let searchPlaceholder = NSLocalizedString("Type a name for your store", comment: "Placeholder of the search text field on the domain selector.")
         static let suggestionsHeader = NSLocalizedString("SUGGESTIONS", comment: "Header label of the domain suggestions on the domain selector.")
         static let continueButtonTitle = NSLocalizedString("Continue", comment: "Title of the button to continue with a selected domain.")
+        static let supportButtonAccessibilityLabel = NSLocalizedString(
+            "Help & Support",
+            comment: "Accessibility label for the Help & Support image navigation bar button in the store creation flow."
+        )
     }
 }
 
@@ -237,7 +257,9 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Empty query state.
             DomainSelectorView(viewModel:
                     .init(initialSearchTerm: "",
-                          stores: DomainSelectorViewStores(result: nil)))
+                          stores: DomainSelectorViewStores(result: nil)),
+                               onDomainSelection: { _ in },
+                               onSupport: {})
             // Results state.
             DomainSelectorView(viewModel:
                     .init(initialSearchTerm: "Fruit smoothie",
@@ -248,18 +270,24 @@ struct DomainSelectorView_Previews: PreviewProvider {
                             .init(name: "freesmoothieeee.com", isFree: true),
                             .init(name: "greatfruitsmoothie1.com", isFree: true),
                             .init(name: "tropicalsmoothie.com", isFree: true)
-                          ]))))
+                          ]))),
+                               onDomainSelection: { _ in },
+                               onSupport: {})
             // Error state.
             DomainSelectorView(viewModel:
                     .init(initialSearchTerm: "test",
                           stores: DomainSelectorViewStores(result: .failure(
                             DotcomError.unknown(code: "invalid_query",
                                                 message: "Domain searches must contain a word with the following characters.")
-                          ))))
+                          ))),
+                               onDomainSelection: { _ in },
+                               onSupport: {})
             // Loading state.
             DomainSelectorView(viewModel:
                     .init(initialSearchTerm: "test",
-                          stores: DomainSelectorViewStores(result: nil)))
+                          stores: DomainSelectorViewStores(result: nil)),
+                               onDomainSelection: { _ in },
+                               onSupport: {})
         }
     }
 }

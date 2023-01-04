@@ -62,6 +62,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .generateAllVariations:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .productsBulkEditing:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

@@ -262,6 +262,10 @@ private extension ProductsViewController {
         }
         coordinatingController.start()
     }
+
+    @objc func startBulkEditing() {
+        // TODO-8517: implement selection state
+    }
 }
 
 // MARK: - View Configuration
@@ -318,6 +322,25 @@ private extension ProductsViewController {
             return button
         }()
         rightBarButtonItems.append(searchItem)
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsBulkEditing) {
+            let bulkEditItem: UIBarButtonItem = {
+                let button = UIBarButtonItem(image: .multiSelectIcon,
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(startBulkEditing))
+                button.accessibilityTraits = .button
+                button.accessibilityLabel = NSLocalizedString("Edit products",
+                                                              comment: "Action to start bulk editing of products")
+                button.accessibilityHint = NSLocalizedString(
+                    "Edit status or price for multiple products at once",
+                    comment: "VoiceOver accessibility hint, informing the user the button can be used to bulk edit products"
+                )
+
+                return button
+            }()
+            rightBarButtonItems.append(bulkEditItem)
+        }
 
         navigationItem.rightBarButtonItems = rightBarButtonItems
     }

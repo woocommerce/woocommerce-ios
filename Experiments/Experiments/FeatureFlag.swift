@@ -145,4 +145,8 @@ public enum FeatureFlag: Int {
     /// Allows merchants to create all variations from a single button
     ///
     case generateAllVariations
+
+    /// Bulk editing of status and price in products list
+    ///
+    case productsBulkEditing
 }

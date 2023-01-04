@@ -96,7 +96,7 @@ extension ProductVariationsViewModel {
             switch self {
             case .tooManyVariations(let variationCount):
                 let format = NSLocalizedString(
-                    "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %1$@ variations.",
+                    "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations.",
                     comment: "Error description for when there are too many variations to generate."
                 )
                 return String.localizedStringWithFormat(format, variationCount)

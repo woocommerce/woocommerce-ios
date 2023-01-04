@@ -62,7 +62,6 @@ class AuthenticationManager: Authentication {
         let isWPComMagicLinkPreferredToPassword = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let isStoreCreationMVPEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
-        let isNativeJetpackSetupEnabled = ABTest.nativeJetpackSetupFlow.variation != .control
         let isWPComLoginRequiredForSiteCredentialsLogin = !featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
@@ -91,7 +90,7 @@ class AuthenticationManager: Authentication {
                                                                 emphasizeEmailForWPComPassword: true,
                                                                 wpcomPasswordInstructions:
                                                                 AuthenticationConstants.wpcomPasswordInstructions,
-                                                                skipXMLRPCCheckForSiteDiscovery: isNativeJetpackSetupEnabled)
+                                                                skipXMLRPCCheckForSiteDiscovery: true)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -664,39 +663,6 @@ private extension AuthenticationManager {
         }
     }
 
-    /// The error screen to be displayed when the user enters a site
-    /// without Jetpack in the site discovery flow.
-    /// More about this flow: pe5sF9-mz-p2.
-    ///
-    func jetpackErrorUI(for siteURL: String, with matcher: ULAccountMatcher, in navigationController: UINavigationController) -> UIViewController {
-        let viewModel = JetpackErrorViewModel(siteURL: siteURL,
-                                              siteCredentials: nil,
-                                              onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
-            guard let self = self else { return }
-
-            // Tries re-syncing to get an updated store list
-            ServiceLocator.stores.synchronizeEntities { [weak self] in
-                guard let self = self else { return }
-                matcher.refreshStoredSites()
-                guard let matchedSite = matcher.matchedSite(originalURL: siteURL) else {
-                    DDLogWarn("⚠️ Could not find \(siteURL) connected to the account")
-                    return
-                }
-                // checks if the site has woo
-                if matchedSite.isWooCommerceActive == false {
-                    let noWooUI = self.noWooUI(for: matchedSite,
-                                               with: matcher,
-                                               navigationController: navigationController,
-                                               onStorePickerDismiss: {})
-                    navigationController.show(noWooUI, sender: nil)
-                } else {
-                    self.startStorePicker(with: matchedSite.siteID, in: navigationController, onDismiss: {})
-                }
-            }
-        })
-        return ULErrorViewController(viewModel: viewModel)
-    }
-
     /// The error screen to be displayed when the user tries to enter a site
     /// whose Jetpack is not associated with their account.
     /// - Parameters:
@@ -777,18 +743,9 @@ private extension AuthenticationManager {
         }
 
         // Shows the native Jetpack flow during the site discovery flow.
-        if ABTest.nativeJetpackSetupFlow.variation != .control {
-            return jetpackSetupUI(for: site.url,
-                                  connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
-                                  in: navigationController)
-        }
-
-        /// Jetpack is required. Present an error if we don't detect a valid installation.
-        guard site.hasJetpack && site.isJetpackActive else {
-            return jetpackErrorUI(for: site.url, with: matcher, in: navigationController)
-        }
-
-        return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
+        return jetpackSetupUI(for: site.url,
+                              connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
+                              in: navigationController)
     }
 
     /// Checks if the authenticated user is eligible to use the app and navigates to the home screen.

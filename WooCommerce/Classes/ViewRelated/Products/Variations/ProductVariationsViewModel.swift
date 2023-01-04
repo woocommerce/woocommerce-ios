@@ -71,3 +71,29 @@ extension ProductVariationsViewModel {
         product.attributesForVariations.isEmpty
     }
 }
+
+extension ProductVariationsViewModel {
+    /// Type to represent known generation errors
+    ///
+    enum GenerationError: LocalizedError {
+        case tooManyVariations(variationCount: Int)
+
+        var errorTitle: String {
+            switch self {
+            case .tooManyVariations:
+                return NSLocalizedString("Generation limit exceeded", comment: "Error title for for when there are too many variations to generate.")
+            }
+        }
+
+        var errorDescription: String? {
+            switch self {
+            case .tooManyVariations(let variationCount):
+                let format = NSLocalizedString(
+                    "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %1$@ variations.",
+                    comment: "Error description for when there are too many variations to generate."
+                )
+                return String.localizedStringWithFormat(format, variationCount)
+            }
+        }
+    }
+}

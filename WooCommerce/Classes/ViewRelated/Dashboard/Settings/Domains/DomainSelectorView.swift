@@ -183,14 +183,9 @@ struct DomainSelectorView: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
+                SupportButton {
                     onSupport()
-                } label: {
-                    Image(uiImage: .helpOutlineImage)
-                        .renderingMode(.template)
-                        .linkStyle()
                 }
-                .accessibilityLabel(Localization.supportButtonAccessibilityLabel)
             }
         }
         .navigationTitle(Localization.title)
@@ -219,10 +214,6 @@ private extension DomainSelectorView {
         static let searchPlaceholder = NSLocalizedString("Type a name for your store", comment: "Placeholder of the search text field on the domain selector.")
         static let suggestionsHeader = NSLocalizedString("SUGGESTIONS", comment: "Header label of the domain suggestions on the domain selector.")
         static let continueButtonTitle = NSLocalizedString("Continue", comment: "Title of the button to continue with a selected domain.")
-        static let supportButtonAccessibilityLabel = NSLocalizedString(
-            "Help & Support",
-            comment: "Accessibility label for the Help & Support image navigation bar button in the store creation flow."
-        )
     }
 }
 

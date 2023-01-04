@@ -51,14 +51,9 @@ struct RequiredStoreCreationProfilerQuestionView<QuestionContent: View>: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
+                SupportButton{
                     viewModel.supportButtonTapped()
-                } label: {
-                    Image(uiImage: .helpOutlineImage)
-                        .renderingMode(.template)
-                        .linkStyle()
                 }
-                .accessibilityLabel(Localization.supportButtonAccessibilityLabel)
             }
         }
         // Disables large title to avoid a large gap below the navigation bar.
@@ -76,10 +71,6 @@ private enum Layout {
 
 private enum Localization {
     static let continueButtonTitle = NSLocalizedString("Continue", comment: "Title of the button to continue with a profiler question.")
-    static let supportButtonAccessibilityLabel = NSLocalizedString(
-        "Help & Support",
-        comment: "Accessibility label for the Help & Support image navigation bar button in the store creation flow."
-    )
 }
 
 #if DEBUG

@@ -83,14 +83,9 @@ struct StoreNameForm: View {
                 .buttonStyle(TextButtonStyle())
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
+                SupportButton {
                     onSupport()
-                } label: {
-                    Image(uiImage: .helpOutlineImage)
-                        .renderingMode(.template)
-                        .linkStyle()
                 }
-                .accessibilityLabel(Localization.supportButtonAccessibilityLabel)
             }
         }
         // Disables large title to avoid a large gap below the navigation bar.
@@ -140,10 +135,6 @@ private extension StoreNameForm {
         static let cancelButtonTitle = NSLocalizedString(
             "Cancel",
             comment: "Navigation bar button on the store name form to leave the store creation flow."
-        )
-        static let supportButtonAccessibilityLabel = NSLocalizedString(
-            "Help & Support",
-            comment: "Accessibility label for the Help & Support image navigation bar button in the store creation flow."
         )
     }
 }

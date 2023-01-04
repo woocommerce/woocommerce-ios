@@ -128,14 +128,9 @@ struct StoreCreationSummaryView: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
+                SupportButton {
                     onSupport()
-                } label: {
-                    Image(uiImage: .helpOutlineImage)
-                        .renderingMode(.template)
-                        .linkStyle()
                 }
-                .accessibilityLabel(Localization.supportButtonAccessibilityLabel)
             }
         }
         .navigationTitle(Localization.title)
@@ -163,10 +158,6 @@ private extension StoreCreationSummaryView {
         static let continueButtonTitle = NSLocalizedString(
             "Continue to Payment",
             comment: "Title of the button on the store creation summary view to continue to payment."
-        )
-        static let supportButtonAccessibilityLabel = NSLocalizedString(
-            "Help & Support",
-            comment: "Accessibility label for the Help & Support image navigation bar button in the store creation flow."
         )
     }
 }

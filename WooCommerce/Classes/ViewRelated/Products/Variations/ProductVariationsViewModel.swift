@@ -27,7 +27,7 @@ final class ProductVariationsViewModel {
 
     /// Generates all missing variations for a product. Up to 100 variations.
     ///
-    func generateAllVariations(for product: Product) {
+    func generateAllVariations(for product: Product, onCompletion: @escaping (Result<Void, GenerationError>) -> Void) {
         let action = ProductVariationAction.synchronizeAllProductVariations(siteID: product.siteID, productID: product.productID) { result in
             // TODO: Fetch this via a results controller
             let existingVariations = ServiceLocator.storageManager.viewStorage.loadProductVariations(siteID: product.siteID, productID: product.productID)?
@@ -38,6 +38,13 @@ final class ProductVariationsViewModel {
             // TEMP
             let variationsToGenerate = ProductVariationGenerator.generateVariations(for: product, excluding: existingVariations)
             print("Variations to Generate: \(variationsToGenerate.count)")
+
+            // Guard for 100 variation limit
+            guard variationsToGenerate.count <= 100 else {
+                return onCompletion(.failure(.tooManyVariations(variationCount: variationsToGenerate.count)))
+            }
+
+            onCompletion(.success(()))
 
         }
         stores.dispatch(action)
@@ -69,5 +76,31 @@ extension ProductVariationsViewModel {
     ///
     func shouldShowAttributeGuide(for product: Product) -> Bool {
         product.attributesForVariations.isEmpty
+    }
+}
+
+extension ProductVariationsViewModel {
+    /// Type to represent known generation errors
+    ///
+    enum GenerationError: LocalizedError, Equatable {
+        case tooManyVariations(variationCount: Int)
+
+        var errorTitle: String {
+            switch self {
+            case .tooManyVariations:
+                return NSLocalizedString("Generation limit exceeded", comment: "Error title for for when there are too many variations to generate.")
+            }
+        }
+
+        var errorDescription: String? {
+            switch self {
+            case .tooManyVariations(let variationCount):
+                let format = NSLocalizedString(
+                    "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations.",
+                    comment: "Error description for when there are too many variations to generate."
+                )
+                return String.localizedStringWithFormat(format, variationCount)
+            }
+        }
     }
 }

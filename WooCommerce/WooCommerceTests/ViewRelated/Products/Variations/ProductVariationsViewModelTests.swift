@@ -114,4 +114,38 @@ final class ProductVariationsViewModelTests: XCTestCase {
         XCTAssertTrue(product.existsRemotely)
         XCTAssertEqual(viewModel.formType, .readonly)
     }
+
+    func test_trying_to_generate_more_than_100_variations_will_return_error() {
+        // Given
+        let product = Product.fake().copy(attributes: [
+            ProductAttribute.fake().copy(attributeID: 1, name: "Size", options: ["XS", "S", "M", "L", "XL"]),
+            ProductAttribute.fake().copy(attributeID: 2, name: "Color", options: ["Red", "Green", "Blue", "White", "Black"]),
+            ProductAttribute.fake().copy(attributeID: 3, name: "Fabric", options: ["Cotton", "Nylon", "Polyester", "Silk", "Linen"]),
+        ])
+
+        let stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case .synchronizeAllProductVariations(_, _, let onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        let viewModel = ProductVariationsViewModel(stores: stores, formType: .edit)
+
+        // When
+        let error = waitFor { promise in
+            viewModel.generateAllVariations(for: product) { result in
+                if case let .failure(error) = result {
+                    promise(error)
+                }
+            }
+        }
+
+        // Then
+        XCTAssertEqual(error, .tooManyVariations(variationCount: 125))
+
+    }
 }

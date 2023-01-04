@@ -5,17 +5,21 @@ import Yosemite
 ///
 struct ProductVariationGenerator {
 
-    /// Group a colection of attribute options.
+    /// Group a collection of attribute options.
     /// EG: [Size: Large, Color: Black, Fabric: Cotton]
     ///
-    private struct Combination: Hashable {
+    private struct Combination: Hashable, Equatable {
         let options: [Option]
+
+        static func == (lhs: Combination, rhs: Combination) -> Bool {
+            Set(lhs.options) == Set(rhs.options)
+        }
     }
 
     /// Represents an attribute option.
     /// EG: Size: Large
     ///
-    private struct Option: Hashable {
+    private struct Option: Hashable, Equatable {
         let attributeID: Int64
         let attributeName: String
         let value: String
@@ -33,7 +37,7 @@ struct ProductVariationGenerator {
     /// Generates all posible combination for a product attributes.
     ///
     private static func getCombinations(from product: Product) -> [Combination] {
-        // Iterates through attributes while eceiving the previous combinations list.
+        // Iterates through attributes while receiving the previous combinations list.
         product.attributes.reduce([Combination(options: [])]) { combinations, attribute in
             combinations.flatMap { combination in
                 // When receiving a previous combination list, we add each attribute to each previous combination util we finish with them.
@@ -49,17 +53,17 @@ struct ProductVariationGenerator {
     private static func filterExistingCombinations(_ combinations: [Combination], existing variations: [ProductVariation]) -> [Combination] {
         // Convert variations into combinations
         let existingCombinations = variations.map { existingVariation in
-            let options = existingVariation.attributes.map { attibute in
-                Option(attributeID: attibute.id, attributeName: attibute.name, value: attibute.option)
+            let options = existingVariation.attributes.map { attribute in
+                Option(attributeID: attribute.id, attributeName: attribute.name, value: attribute.option)
             }
             return Combination(options: options)
         }
 
         // Filter existing combinations.
-        let existingSet = Set(existingCombinations)
-        return combinations.filter { combination in
-            !existingSet.contains(combination)
+        let unique = combinations.filter { combination in
+            !existingCombinations.contains(combination)
         }
+        return unique
     }
 
     /// Convert the provided combinations into `[CreateProductVariation]` types that are consumed by our Yosemite stores.

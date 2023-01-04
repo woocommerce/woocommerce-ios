@@ -264,7 +264,7 @@ private extension ProductsViewController {
     }
 
     @objc func startBulkEditing() {
-        // TODO-8517: implement selection state
+        tableView.setEditing(!tableView.isEditing, animated: true)
     }
 }
 
@@ -370,6 +370,8 @@ private extension ProductsViewController {
         tableView.backgroundColor = .listBackground
         tableView.tableFooterView = footerSpinnerView
         tableView.separatorStyle = .none
+
+        tableView.allowsMultipleSelectionDuringEditing = true
 
         // Adds the refresh control to table view manually so that the refresh control always appears below the navigation bar title in
         // large or normal size to be consistent with Dashboard and Orders tab with large titles workaround.
@@ -627,6 +629,10 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard !tableView.isEditing else {
+            return
+        }
+
         tableView.deselectRow(at: indexPath, animated: true)
 
         ServiceLocator.analytics.track(.productListProductTapped)

@@ -76,6 +76,8 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         runCardPresentPaymentsOnboarding()
         configureWebViewPresentation()
         viewModel.viewDidLoad()
+        // WIP:
+        viewModel.displayResults()
     }
 }
 

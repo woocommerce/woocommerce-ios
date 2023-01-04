@@ -102,6 +102,31 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         }
     }
 
+    /// Creates the provided `ProductVariations`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the ProductVariations.
+    ///     - productID: Identifier of the Product.
+    ///     - productVariations: the ProductVariations to created remotely.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func createProductVariations(siteID: Int64,
+                                        productID: Int64,
+                                        productVariations: [CreateProductVariation],
+                                        completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
+
+        do {
+            let parameters = try productVariations.map { try $0.toDictionary() }
+            let path = "\(Path.products)/\(productID)/variations/batch"
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: ["create": parameters])
+            let mapper = ProductVariationsBulkCreateMapper(siteID: siteID, productID: productID)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
     /// Updates a specific `ProductVariation`.
     ///
     /// - Parameters:

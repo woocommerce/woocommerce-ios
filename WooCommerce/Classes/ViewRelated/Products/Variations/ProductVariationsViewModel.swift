@@ -40,7 +40,7 @@ final class ProductVariationsViewModel {
             print("Variations to Generate: \(variationsToGenerate.count)")
 
             // Guard for 100 variation limit
-            guard variationsToGenerate.count < 100 else {
+            guard variationsToGenerate.count <= 100 else {
                 return onCompletion(.failure(.tooManyVariations(variationCount: variationsToGenerate.count)))
             }
 
@@ -82,7 +82,7 @@ extension ProductVariationsViewModel {
 extension ProductVariationsViewModel {
     /// Type to represent known generation errors
     ///
-    enum GenerationError: LocalizedError {
+    enum GenerationError: LocalizedError, Equatable {
         case tooManyVariations(variationCount: Int)
 
         var errorTitle: String {

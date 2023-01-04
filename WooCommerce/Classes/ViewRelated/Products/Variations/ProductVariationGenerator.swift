@@ -5,17 +5,21 @@ import Yosemite
 ///
 struct ProductVariationGenerator {
 
-    /// Group a colection of attribute options.
+    /// Group a collection of attribute options.
     /// EG: [Size: Large, Color: Black, Fabric: Cotton]
     ///
-    private struct Combination: Hashable {
+    private struct Combination: Hashable, Equatable {
         let options: [Option]
+
+        static func == (lhs: Combination, rhs: Combination) -> Bool {
+            Set(lhs.options) == Set(rhs.options)
+        }
     }
 
     /// Represents an attribute option.
     /// EG: Size: Large
     ///
-    private struct Option: Hashable {
+    private struct Option: Hashable, Equatable {
         let attributeID: Int64
         let attributeName: String
         let value: String
@@ -56,10 +60,10 @@ struct ProductVariationGenerator {
         }
 
         // Filter existing combinations.
-        let existingSet = Set(existingCombinations)
-        return combinations.filter { combination in
-            !existingSet.contains(combination)
+        let unique = combinations.filter { combination in
+            !existingCombinations.contains(combination)
         }
+        return unique
     }
 
     /// Convert the provided combinations into `[CreateProductVariation]` types that are consumed by our Yosemite stores.

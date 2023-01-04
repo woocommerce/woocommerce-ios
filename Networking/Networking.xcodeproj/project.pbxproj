@@ -722,6 +722,8 @@
 		DEC51AFB2769C66B009F3DF4 /* SystemStatusMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */; };
 		DEC51B02276AFB35009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */; };
 		DEF13C5029629EEA0024A02B /* user-complete-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEF13C4F29629EEA0024A02B /* user-complete-without-data.json */; };
+		DEF13C562965689F0024A02B /* LeaderboardListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF13C552965689F0024A02B /* LeaderboardListMapperTests.swift */; };
+		DEF13C5829656A610024A02B /* leaderboards-products-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEF13C5729656A600024A02B /* leaderboards-products-without-data.json */; };
 		DEFBA74E29485A7600C35BA9 /* RESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA74D29485A7600C35BA9 /* RESTRequest.swift */; };
 		DEFBA7542949CE6600C35BA9 /* RequestProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA7532949CE6600C35BA9 /* RequestProcessor.swift */; };
 		DEFBA7562949D17400C35BA9 /* DefaultRequestAuthenticatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA7552949D17300C35BA9 /* DefaultRequestAuthenticatorTests.swift */; };
@@ -1515,6 +1517,8 @@
 		DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusMapperTests.swift; sourceTree = "<group>"; };
 		DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+DropinMustUsePlugin.swift"; sourceTree = "<group>"; };
 		DEF13C4F29629EEA0024A02B /* user-complete-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "user-complete-without-data.json"; sourceTree = "<group>"; };
+		DEF13C552965689F0024A02B /* LeaderboardListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardListMapperTests.swift; sourceTree = "<group>"; };
+		DEF13C5729656A600024A02B /* leaderboards-products-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "leaderboards-products-without-data.json"; sourceTree = "<group>"; };
 		DEFBA74D29485A7600C35BA9 /* RESTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequest.swift; sourceTree = "<group>"; };
 		DEFBA7532949CE6600C35BA9 /* RequestProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestProcessor.swift; sourceTree = "<group>"; };
 		DEFBA7552949D17300C35BA9 /* DefaultRequestAuthenticatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRequestAuthenticatorTests.swift; sourceTree = "<group>"; };
@@ -2162,6 +2166,7 @@
 				B524194621AC643900D6FC0A /* device-settings.json */,
 				24F98C612502EFF600F49B68 /* feature-flags-load-all.json */,
 				268B68FA24C87384007EBF1D /* leaderboards-products.json */,
+				DEF13C5729656A600024A02B /* leaderboards-products-without-data.json */,
 				E18152C128F85E0A0011A0EC /* iap-products.json */,
 				E16C59B628F92782007D55BB /* iap-sample-receipt.json */,
 				E16C59B828F927CA007D55BB /* iap-order-create.json */,
@@ -2521,6 +2526,7 @@
 			isa = PBXGroup;
 			children = (
 				B505F6D220BEE3A500BB1B69 /* AccountMapperTests.swift */,
+				DEF13C552965689F0024A02B /* LeaderboardListMapperTests.swift */,
 				DE2E8EAA2954170D002E4B14 /* WordPressSiteMapperTests.swift */,
 				9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */,
 				077F39DB26A58F4800ABEADC /* SystemPluginMapperTests.swift */,
@@ -3011,6 +3017,7 @@
 				31054718262E2F5E00C5C02B /* wcpay-payment-intent-requires-confirmation.json in Resources */,
 				D8FBFF2922D52AFB006E3336 /* order-stats-v4-year.json in Resources */,
 				D865CE65278CA202002C8520 /* stripe-payment-intent-canceled.json in Resources */,
+				DEF13C5829656A610024A02B /* leaderboards-products-without-data.json in Resources */,
 				AED8AEBA272A97B400663FCC /* null-data.json in Resources */,
 				02BA23CA22EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json in Resources */,
 				31A451D627863A2E00FE81AA /* stripe-account-unknown-status.json in Resources */,
@@ -3525,6 +3532,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEF13C562965689F0024A02B /* LeaderboardListMapperTests.swift in Sources */,
 				45551F142523E7FF007EF104 /* UserAgentTests.swift in Sources */,
 				03EB998A2906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift in Sources */,
 				DE34051D28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift in Sources */,

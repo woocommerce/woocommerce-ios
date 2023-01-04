@@ -724,6 +724,7 @@
 		DEF13C5029629EEA0024A02B /* user-complete-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEF13C4F29629EEA0024A02B /* user-complete-without-data.json */; };
 		DEF13C562965689F0024A02B /* LeaderboardListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF13C552965689F0024A02B /* LeaderboardListMapperTests.swift */; };
 		DEF13C5A296571150024A02B /* leaderboards-year-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEF13C59296571150024A02B /* leaderboards-year-without-data.json */; };
+		DEF13C5C2965812D0024A02B /* order-stats-v4-year-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEF13C5B2965812D0024A02B /* order-stats-v4-year-without-data.json */; };
 		DEFBA74E29485A7600C35BA9 /* RESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA74D29485A7600C35BA9 /* RESTRequest.swift */; };
 		DEFBA7542949CE6600C35BA9 /* RequestProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA7532949CE6600C35BA9 /* RequestProcessor.swift */; };
 		DEFBA7562949D17400C35BA9 /* DefaultRequestAuthenticatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA7552949D17300C35BA9 /* DefaultRequestAuthenticatorTests.swift */; };
@@ -1519,6 +1520,7 @@
 		DEF13C4F29629EEA0024A02B /* user-complete-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "user-complete-without-data.json"; sourceTree = "<group>"; };
 		DEF13C552965689F0024A02B /* LeaderboardListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardListMapperTests.swift; sourceTree = "<group>"; };
 		DEF13C59296571150024A02B /* leaderboards-year-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "leaderboards-year-without-data.json"; sourceTree = "<group>"; };
+		DEF13C5B2965812D0024A02B /* order-stats-v4-year-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-v4-year-without-data.json"; sourceTree = "<group>"; };
 		DEFBA74D29485A7600C35BA9 /* RESTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequest.swift; sourceTree = "<group>"; };
 		DEFBA7532949CE6600C35BA9 /* RequestProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestProcessor.swift; sourceTree = "<group>"; };
 		DEFBA7552949D17300C35BA9 /* DefaultRequestAuthenticatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRequestAuthenticatorTests.swift; sourceTree = "<group>"; };
@@ -2195,6 +2197,7 @@
 				D8FBFF2322D52815006E3336 /* order-stats-v4-daily.json */,
 				D8FBFF2622D529F2006E3336 /* order-stats-v4-month.json */,
 				D8FBFF2822D52AFA006E3336 /* order-stats-v4-year.json */,
+				DEF13C5B2965812D0024A02B /* order-stats-v4-year-without-data.json */,
 				D8FBFF1422D3BE09006E3336 /* order-stats-v4-defaults.json */,
 				D8FBFF1722D4DDB9006E3336 /* order-stats-v4-hour.json */,
 				D8C11A5B22DFCF8100D4A88D /* order-stats-v4-year-alt.json */,
@@ -3099,6 +3102,7 @@
 				31A451D127863A2E00FE81AA /* stripe-account-rejected-other.json in Resources */,
 				DEF13C5029629EEA0024A02B /* user-complete-without-data.json in Resources */,
 				74ABA1CA213F19FE00FFAD30 /* top-performers-year.json in Resources */,
+				DEF13C5C2965812D0024A02B /* order-stats-v4-year-without-data.json in Resources */,
 				31A451CF27863A2E00FE81AA /* stripe-account-rejected-terms-of-service.json in Resources */,
 				DE2E8EA9295416C9002E4B14 /* wordpress-site-info.json in Resources */,
 				268EC45C26C169F600716F5C /* order-with-faulty-attributes.json in Resources */,

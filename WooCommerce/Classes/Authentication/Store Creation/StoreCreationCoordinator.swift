@@ -148,6 +148,8 @@ private extension StoreCreationCoordinator {
             }
         } onClose: { [weak self] in
             self?.showDiscardChangesAlert(flow: .native)
+        } onSupport: { [weak self] in
+            self?.showSupport(from: navigationController)
         }
         navigationController.pushViewController(storeNameForm, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .storeName))
@@ -296,6 +298,10 @@ private extension StoreCreationCoordinator {
 
         // Presents the alert with the presented webview.
         navigationController.presentedViewController?.present(alert, animated: true)
+    }
+
+    func showSupport(from navigationController: UINavigationController) {
+        ZendeskProvider.shared.showNewRequestIfPossible(from: navigationController, with: "origin:store-creation")
     }
 }
 

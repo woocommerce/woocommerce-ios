@@ -379,7 +379,7 @@ private extension InPersonPaymentsMenuViewController {
         // Configures header container view:
         // TODO: Find the correct width and height
         let width = Int(tableView.frame.width)
-        let height = 150
+        let height = 100
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
 
         headerContainer.addSubview(topBannerView)

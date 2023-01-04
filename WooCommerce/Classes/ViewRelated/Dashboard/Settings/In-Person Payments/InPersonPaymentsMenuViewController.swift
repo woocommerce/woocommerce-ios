@@ -78,7 +78,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         runCardPresentPaymentsOnboarding()
         configureWebViewPresentation()
         if featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            configureIPPInAppFeedbackBanner()
+            configureFeedbackBanner()
         }
         viewModel.viewDidLoad()
     }
@@ -340,29 +340,46 @@ private extension InPersonPaymentsMenuViewController {
         }.store(in: &cancellables)
     }
 
-    private func configureIPPInAppFeedbackBanner() {
-        // TODO: Create a new one rather than reusing OrdersTopBannerFactory. Uses TopBannerView.
-        topBannerView = OrdersTopBannerFactory.createOrdersBanner(
-            onTopButtonPressed: {
-                print("onTopButtonPressed")
-            },
-            onDismissButtonPressed: {
-                self.hideIPPInAppFeedbackBanner()
-                print("onDismissButtonPressed")
-            },
-            onGiveFeedbackButtonPressed: {
-                // TODO: Open webview with the survey form
-                print("onGiveFeedbackButtonPressed")
+    private func createFeedbackBanner() -> TopBannerView {
+        let giveFeedbackAction = TopBannerViewModel.ActionButton(
+            title: Localization.giveFeedbackButton,
+            action: { _ in
+                self.displayFeedbackBannerSurvey()
             })
-        showIPPInAppFeedbackBanner()
+        let dismissFeedbackAction = TopBannerViewModel.ActionButton(
+            title: Localization.dismissFeedbackButton,
+            action: { _ in
+                self.dismissFeedbackBanner()
+            })
+        let viewModel = TopBannerViewModel(
+            title: Localization.feedbackBannerTitle,
+            infoText: Localization.feedbackBannerContent,
+            icon: .speakerIcon.withRenderingMode(.alwaysTemplate),
+            iconTintColor: .wooCommercePurple(.shade50),
+            isExpanded: false,
+            topButton: .chevron(handler: {}),
+            actionButtons: [giveFeedbackAction, dismissFeedbackAction]
+        )
+        let topBannerView = TopBannerView(viewModel: viewModel)
+        topBannerView.translatesAutoresizingMaskIntoConstraints = false
+        return topBannerView
     }
 
-    private func showIPPInAppFeedbackBanner() {
+    private func configureFeedbackBanner() {
+        topBannerView = createFeedbackBanner()
+        //tableView.updateHeaderHeight()
+        showFeedbackBanner()
+    }
+
+    private func showFeedbackBanner() {
         guard let topBannerView = topBannerView else { return }
 
         // Configures header container view:
         // TODO: Find the correct width and height
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        let width = Int(tableView.frame.width)
+        let height = 150
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
+
         headerContainer.addSubview(topBannerView)
         headerContainer.pinSubviewToAllEdges(topBannerView)
 
@@ -370,9 +387,16 @@ private extension InPersonPaymentsMenuViewController {
         tableView.updateFooterHeight()
     }
 
-    private func hideIPPInAppFeedbackBanner() {
-        // TODO: Hide on dismiss
-        print("hideIPPInAppFeedbackBanner called")
+    private func displayFeedbackBannerSurvey() {
+        // TODO: Different surveys will be shown:
+        let surveyNavigation = SurveyCoordinatingController(survey: .inAppFeedback)
+        self.present(surveyNavigation, animated: true, completion: nil)
+    }
+
+    private func dismissFeedbackBanner() {
+        topBannerView?.removeFromSuperview()
+        topBannerView = nil
+        tableView.updateHeaderHeight()
     }
 }
 
@@ -565,6 +589,20 @@ private extension InPersonPaymentsMenuViewController {
             "Continue setup",
             comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
         )
+
+        static let feedbackBannerTitle = NSLocalizedString("How can we improve in-person payments?",
+                                                           comment: "Title of the feedback banner in the Payments tab")
+
+        static let feedbackBannerContent = NSLocalizedString("You enabled an option to collect payments in person." +
+                                                             "Please help us better understand your needs and tell us how we can improve the payments experience.",
+                                                             comment: "Content of the feedback banner in the Payments tab")
+
+        static let giveFeedbackButton = NSLocalizedString("Give Feedback",
+                                                                comment: "Title of the feedback action button on the in-app feedback banner")
+
+        static let dismissFeedbackButton = NSLocalizedString("Dismiss",
+                                                                   comment: "Title of the dismiss action button on the in-app feedback banner")
+
     }
 }
 

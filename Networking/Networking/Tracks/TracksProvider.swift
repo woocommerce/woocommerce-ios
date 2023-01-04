@@ -42,7 +42,5 @@ private extension TracksProvider {
 
     enum UserProperties {
         static let platformKey          = "platform"
-        static let voiceOverKey         = "accessibility_voice_over_enabled"
-        static let rtlKey               = "is_rtl_language"
     }
 }

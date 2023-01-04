@@ -155,9 +155,8 @@ private extension PostSiteCredentialLoginChecker {
             }
             alert.addAction(retryAction)
         } else {
-            let supportAction = UIAlertAction(title: Localization.contactSupport, style: .default) { [weak self] _ in
+            let supportAction = UIAlertAction(title: Localization.contactSupport, style: .default) { _ in
                 navigationController.popViewController(animated: true)
-                self?.stores.deauthenticate()
                 ServiceLocator.authenticationManager.presentSupport(from: navigationController, sourceTag: .loginSiteAddress)
             }
             alert.addAction(supportAction)

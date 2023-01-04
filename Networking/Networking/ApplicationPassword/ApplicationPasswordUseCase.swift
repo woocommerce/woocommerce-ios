@@ -8,6 +8,17 @@ public enum ApplicationPasswordUseCaseError: Error {
     case duplicateName
     case applicationPasswordsDisabled
     case failedToConstructLoginOrAdminURLUsingSiteAddress
+
+    var errorDescription: String {
+        switch self {
+        case .applicationPasswordsDisabled:
+            return "application_password_disabled"
+        case .duplicateName:
+            return "duplicate_name"
+        case .failedToConstructLoginOrAdminURLUsingSiteAddress:
+            return "application_password_failed_to_construct_login_or_admin_URL"
+        }
+    }
 }
 
 public struct ApplicationPassword {
@@ -80,6 +91,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
             guard let loginURL = URL(string: siteAddress + Constants.loginPath),
                   let adminURL = URL(string: siteAddress + Constants.adminPath) else {
                 DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteAddress)")
+                TracksProvider.shared.track(ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress.errorDescription)
                 throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
             }
             // Prepares the authenticator with username and password
@@ -156,14 +168,22 @@ private extension DefaultApplicationPasswordUseCase {
                         return
                     }
 
+                    let eventName = "application_password_generation_failed"
                     switch error {
                     case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.notFound)):
-                        continuation.resume(throwing: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
+                        let error = ApplicationPasswordUseCaseError.applicationPasswordsDisabled
+                        TracksProvider.shared.track(eventName, withProperties: ["error": error.errorDescription])
+                        continuation.resume(throwing: error)
                     case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.applicationPasswordsDisabledErrorCode)):
-                        continuation.resume(throwing: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
+                        let error = ApplicationPasswordUseCaseError.applicationPasswordsDisabled
+                        TracksProvider.shared.track(eventName, withProperties:  ["error": error.errorDescription])
+                        continuation.resume(throwing: error)
                     case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.duplicateNameErrorCode)):
-                        continuation.resume(throwing: ApplicationPasswordUseCaseError.duplicateName)
+                        let error = ApplicationPasswordUseCaseError.duplicateName
+                        TracksProvider.shared.track(eventName, withProperties:  ["error": error.errorDescription])
+                        continuation.resume(throwing: error)
                     default:
+                        TracksProvider.shared.track(eventName)
                         continuation.resume(throwing: error)
                     }
                 }
@@ -185,8 +205,10 @@ private extension DefaultApplicationPasswordUseCase {
             network.responseData(for: request) { result in
                 switch result {
                 case .success:
+                    TracksProvider.shared.track("application_password_delete_successful")
                     continuation.resume()
                 case .failure(let error):
+                    TracksProvider.shared.track("application_password_delete_failed")
                     continuation.resume(throwing: error)
                 }
             }

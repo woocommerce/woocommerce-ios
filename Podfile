@@ -186,6 +186,7 @@ end
 #
 target 'Networking' do
   project 'Networking/Networking.xcodeproj'
+  tracks
   networking_pods
 end
 

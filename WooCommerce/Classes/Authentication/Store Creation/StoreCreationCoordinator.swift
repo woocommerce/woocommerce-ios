@@ -355,13 +355,15 @@ private extension StoreCreationCoordinator {
                                   planToPurchase: WPComPlanProduct) {
         let questionController = StoreCreationCountryQuestionHostingController(viewModel:
                 .init(storeName: storeName) { [weak self] countryCode in
-            guard let self else { return }
-            self.showDomainSelector(from: navigationController,
-                                    storeName: storeName,
-                                    categoryName: categoryName,
-                                    countryCode: countryCode,
-                                    planToPurchase: planToPurchase)
-        })
+                    guard let self else { return }
+                    self.showDomainSelector(from: navigationController,
+                                            storeName: storeName,
+                                            categoryName: categoryName,
+                                            countryCode: countryCode,
+                                            planToPurchase: planToPurchase)
+                } onSupport: { [weak self] in
+                    self?.showSupport(from: navigationController)
+                })
         navigationController.pushViewController(questionController, animated: true)
         // TODO: analytics
     }

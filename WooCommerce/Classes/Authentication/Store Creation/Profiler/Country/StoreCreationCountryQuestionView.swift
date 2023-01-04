@@ -58,7 +58,8 @@ struct StoreCreationCountryQuestionView_Previews: PreviewProvider {
         NavigationView {
             StoreCreationCountryQuestionView(viewModel: .init(storeName: "only in 2023",
                                                               currentLocale: Locale.init(identifier: "en_US"),
-                                                              onContinue: { _ in }))
+                                                              onContinue: { _ in },
+                                                              onSupport: {}))
         }
     }
 }

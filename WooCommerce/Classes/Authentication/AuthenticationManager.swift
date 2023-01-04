@@ -69,7 +69,6 @@ class AuthenticationManager: Authentication {
     func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol) {
         let isWPComMagicLinkPreferredToPassword = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
-        let isSimplifiedLoginI1Enabled = ABTest.abTestLoginWithWPComOnly.variation != .control
         let isStoreCreationMVPEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
         let isNativeJetpackSetupEnabled = ABTest.nativeJetpackSetupFlow.variation != .control
         let isWPComLoginRequiredForSiteCredentialsLogin = !featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin)
@@ -78,7 +77,7 @@ class AuthenticationManager: Authentication {
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: WooConstants.URLs.termsOfService.rawValue,
                                                                 wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
-                                                                whatIsWPComURL: isSimplifiedLoginI1Enabled ? nil : WooConstants.URLs.whatIsWPCom.rawValue,
+                                                                whatIsWPComURL: WooConstants.URLs.whatIsWPCom.rawValue,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
@@ -94,9 +93,9 @@ class AuthenticationManager: Authentication {
                                                                 isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
                                                                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
                                                                     isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen,
-                                                                enableWPComLoginOnlyInPrologue: isSimplifiedLoginI1Enabled,
+                                                                enableWPComLoginOnlyInPrologue: false,
                                                                 enableSiteCreation: isStoreCreationMVPEnabled,
-                                                                enableSocialLogin: !isSimplifiedLoginI1Enabled,
+                                                                enableSocialLogin: true,
                                                                 emphasizeEmailForWPComPassword: true,
                                                                 wpcomPasswordInstructions:
                                                                 AuthenticationConstants.wpcomPasswordInstructions,
@@ -134,17 +133,11 @@ class AuthenticationManager: Authentication {
                                                     LoginPrologueViewController(isFeatureCarouselShown: false),
                                                 statusBarStyle: .default)
 
-        let getStartedInstructions = isSimplifiedLoginI1Enabled ?
-        AuthenticationConstants.getStartedInstructionsForSimplifiedLogin :
-        AuthenticationConstants.getStartedInstructions
+        let getStartedInstructions = AuthenticationConstants.getStartedInstructions
 
-        let continueWithWPButtonTitle = isSimplifiedLoginI1Enabled ?
-        AuthenticationConstants.loginButtonTitle :
-        AuthenticationConstants.continueWithWPButtonTitle
+        let continueWithWPButtonTitle = AuthenticationConstants.continueWithWPButtonTitle
 
-        let emailAddressPlaceholder = isSimplifiedLoginI1Enabled ?
-        "name@example.com" :
-        WordPressAuthenticatorDisplayStrings.defaultStrings.emailAddressPlaceholder
+        let emailAddressPlaceholder = WordPressAuthenticatorDisplayStrings.defaultStrings.emailAddressPlaceholder
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                                   getStartedInstructions: getStartedInstructions,

@@ -389,7 +389,7 @@ private extension InPersonPaymentsMenuViewController {
 
     private func displayFeedbackBannerSurvey() {
         // TODO: Different surveys will be shown:
-        let surveyNavigation = SurveyCoordinatingController(survey: .inAppFeedback)
+        let surveyNavigation = SurveyCoordinatingController(survey: .IPPinAppFeedback)
         self.present(surveyNavigation, animated: true, completion: nil)
     }
 

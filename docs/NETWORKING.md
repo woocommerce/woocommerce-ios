@@ -46,7 +46,6 @@ At the moment, we provide four implementations of `URLRequestConvertible`:
 * [`RESTRequest`](../Networking/Networking/Requests/RESTRequest.swift) represents a REST API request sent to the site (instead of through the Jetpack tunnel) directly.  
 * [`AuthenticatedDotcomRequest`](../Networking/Networking/Requests/AuthenticatedDotcomRequest.swift) Wraps up a `URLRequestConvertible` instance, and injects WordPress.com authentication token.
 * [`AuthenticatedRESTRequest`](../Networking/Networking/Requests/AuthenticatedRESTRequest.swift) Wraps up a `URLRequestConvertible` instance, and injects application password.
-* [`WordPressOrgRequest`](../Networking/Networking/Requests/WordPressOrgRequest.swift) model requests to the WordPress.org REST API.
 * [`UnauthenticatedRequest`](../Networking/Networking/Requests/UnauthenticatedRequest.swift) Wraps up a `URLRequestConvertible` instance, and injects a custom user-agent header
 
 ## [`Mapper`](../Networking/Networking/Mapper/Mapper.swift)

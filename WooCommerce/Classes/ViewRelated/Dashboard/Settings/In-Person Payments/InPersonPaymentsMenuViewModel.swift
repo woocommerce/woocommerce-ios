@@ -33,7 +33,7 @@ final class InPersonPaymentsMenuViewModel {
         dependencies.analytics
     }
 
-    private lazy var resultsController = createIPPOrdersResultsController()
+    private lazy var resultsController = createRecentIPPOrdersResultsController()
 
     // MARK: - Output properties
     @Published var showWebView: AuthenticatedWebViewModel? = nil
@@ -75,18 +75,20 @@ final class InPersonPaymentsMenuViewModel {
         })
     }
 
-    func displayResults() {
+    /// This method is just a helper for debugging, we may use it for populating different Banner content based on the fetched objects count
+    ///
+    func displayIPPFeedbackBannerIfEligible() {
+        // Debug:
         let results = resultsController.fetchedObjects
         let resultsCount = results.count
-        // Debug:
         print("IPP transactions within 30 days: \(resultsCount)")
         print(results.map { ("OrderID: \($0.orderID) - PaymentMethodID: \($0.paymentMethodID) - DatePaid: \(String(describing: $0.datePaid))") })
 
         if resultsCount < 10 {
-            // TODO: Select banner 1
+            // TODO: Populate banner 1
             print("< 10 transactions. Banner 1 shown")
         } else {
-            // TODO: Select banner 2
+            // TODO: Populate banner 2
             print(">= 10 transactions. Banner 2 shown")
         }
     }
@@ -101,9 +103,9 @@ final class InPersonPaymentsMenuViewModel {
 }
 
 private extension InPersonPaymentsMenuViewModel {
-    /// Results controller that fetches IPP transactions
+    /// Results controller that fetches IPP transactions within the last 30 days
     ///
-    func createIPPOrdersResultsController() -> ResultsController<StorageOrder> {
+    func createRecentIPPOrdersResultsController() -> ResultsController<StorageOrder> {
         let today = Date()
         let thirtyDaysBeforeToday = Calendar.current.date(
             byAdding: .day,

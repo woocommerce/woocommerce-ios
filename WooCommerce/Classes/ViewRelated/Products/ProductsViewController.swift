@@ -269,7 +269,7 @@ private extension ProductsViewController {
         // Disable pull-to-refresh while editing
         refreshControl.removeFromSuperview()
 
-        configureNavigationBarRightButtonItemsForEditing()
+        configureNavigationBarForEditing()
         showOrHideToolbar()
     }
 
@@ -279,7 +279,7 @@ private extension ProductsViewController {
         // Enable pull-to-refresh
         tableView.addSubview(refreshControl)
 
-        configureNavigationBarRightButtonItems()
+        configureNavigationBar()
         showOrHideToolbar()
     }
 }
@@ -359,6 +359,15 @@ private extension ProductsViewController {
         }
 
         navigationItem.rightBarButtonItems = rightBarButtonItems
+    }
+
+    func configureNavigationBarForEditing() {
+        navigationItem.title = NSLocalizedString(
+            "Select items",
+            comment: "Title that appears on top of the Product List screen when bulk editing starts."
+        )
+
+        configureNavigationBarRightButtonItemsForEditing()
     }
 
     func configureNavigationBarRightButtonItemsForEditing() {

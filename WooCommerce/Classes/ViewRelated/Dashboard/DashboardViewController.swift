@@ -543,6 +543,12 @@ private extension DashboardViewController {
             return
         }
 
+        // Resets the Auto Layout constraint that pins the previous content view to the bottom of the header view.
+        // Otherwise, if `contentTopToHeaderConstraint?.isActive = true` is called after the previous content view is removed
+        // in the next line `remove(previousDashboardUI)`, the app crashes because the content view is no longer in the
+        // view hierarchy.
+        contentTopToHeaderConstraint = nil
+
         // Tears down the previous child view controller.
         if let previousDashboardUI = dashboardUI {
             remove(previousDashboardUI)

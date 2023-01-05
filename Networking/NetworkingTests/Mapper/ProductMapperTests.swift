@@ -6,6 +6,10 @@ import XCTest
 ///
 final class ProductMapperTests: XCTestCase {
 
+    private enum ProductMapperTestsError: Error {
+        case parsingFailure
+    }
+
     /// Dummy Site ID.
     ///
     private let dummySiteID: Int64 = 33334444

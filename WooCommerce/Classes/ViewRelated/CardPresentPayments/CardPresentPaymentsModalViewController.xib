@@ -62,6 +62,9 @@
                                 </stackView>
                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" verticalHuggingPriority="1000" image="woo-celebration" translatesAutoresizingMaskIntoConstraints="NO" id="Osv-Wo-lxW">
                                     <rect key="frame" x="57" y="81" width="134" height="117"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" relation="lessThanOrEqual" secondItem="Osv-Wo-lxW" secondAttribute="width" multiplier="1:1" id="dDT-H7-4Ey"/>
+                                    </constraints>
                                 </imageView>
                                 <stackView opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="751" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="k73-qi-GuD">
                                     <rect key="frame" x="103.5" y="230" width="41.5" height="43"/>

@@ -16,9 +16,7 @@ final class CardPresentModalBuiltInSuccessWithoutEmail: CardPresentPaymentsModal
 
     var topSubtitle: String? = nil
 
-    let image: UIImage = .builtInReaderSuccess.resizedImage(
-        CGSize(width: 304, height: 260),
-        interpolationQuality: .default)
+    let image: UIImage = .builtInReaderSuccess
 
     let primaryButtonTitle: String? = Localization.printReceipt
 

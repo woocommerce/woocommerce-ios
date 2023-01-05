@@ -22,9 +22,7 @@ final class CardPresentModalBuiltInFollowReaderInstructions: CardPresentPayments
         amount
     }
 
-    let image: UIImage = .preparingBuiltInReader.resizedImage(
-        CGSize(width: 300, height: 227),
-        interpolationQuality: .default)
+    let image: UIImage = .preparingBuiltInReader
 
     let primaryButtonTitle: String? = nil
 

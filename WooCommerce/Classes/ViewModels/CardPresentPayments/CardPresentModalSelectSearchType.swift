@@ -10,9 +10,7 @@ final class CardPresentModalSelectSearchType: CardPresentPaymentsModalViewModel 
 
     var topSubtitle: String? = nil
 
-    var image: UIImage = .cardPaymentsSelectReaderType.resizedImage(
-        CGSize(width: 304, height: 260),
-        interpolationQuality: .default)
+    var image: UIImage = .cardPaymentsSelectReaderType
 
     var primaryButtonTitle: String?
 

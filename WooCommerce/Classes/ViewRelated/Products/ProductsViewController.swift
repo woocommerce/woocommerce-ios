@@ -264,15 +264,22 @@ private extension ProductsViewController {
     }
 
     @objc func startBulkEditing() {
-        tableView.setEditing(!tableView.isEditing, animated: true)
+        tableView.setEditing(true, animated: true)
 
         // Disable pull-to-refresh while editing
-        if tableView.isEditing {
-            refreshControl.removeFromSuperview()
-        } else {
-            tableView.addSubview(refreshControl)
-        }
+        refreshControl.removeFromSuperview()
 
+        configureNavigationBarRightButtonItemsForEditing()
+        showOrHideToolbar()
+    }
+
+    @objc func finishBulkEditing() {
+        tableView.setEditing(false, animated: true)
+
+        // Enable pull-to-refresh
+        tableView.addSubview(refreshControl)
+
+        configureNavigationBarRightButtonItems()
         showOrHideToolbar()
     }
 }
@@ -352,6 +359,12 @@ private extension ProductsViewController {
         }
 
         navigationItem.rightBarButtonItems = rightBarButtonItems
+    }
+
+    func configureNavigationBarRightButtonItemsForEditing() {
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                              target: self,
+                                                              action: #selector(finishBulkEditing))]
     }
 
     /// Apply Woo styles.

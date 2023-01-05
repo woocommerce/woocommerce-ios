@@ -26,8 +26,15 @@ final class ProductVariationsViewModel {
     }
 
     /// Generates all missing variations for a product. Up to 100 variations.
+    /// Parameters:
+    /// - `Product`: Product on which we will be creating the variations
+    /// - `onConfirmation`: Closure invoked before creating the variation as a confirmation guard.
+    ///                    It provides another `onCompletion` closure to be invoked with the confirmation result.
+    /// - `onCompletion`: Closure invoked when the generate process has ended.
     ///
-    func generateAllVariations(for product: Product, onCompletion: @escaping (Result<Void, GenerationError>) -> Void) {
+    func generateAllVariations(for product: Product,
+                               onConfirmation: @escaping (_ numberOfVariations: Int, _ onCompletion: @escaping (Bool) -> Void) -> Void,
+                               onCompletion: @escaping (Result<Void, GenerationError>) -> Void) {
 
         fetchAllVariations(of: product) { [weak self] result in
             guard let self else { return }
@@ -46,7 +53,12 @@ final class ProductVariationsViewModel {
                     return onCompletion(.success(()))
                 }
 
-                self.createVariationsRemotely(for: product, variations: variationsToGenerate, onCompletion: onCompletion)
+                // Wait for user confirmation before continuing
+                onConfirmation(variationsToGenerate.count) { confirmed in
+                    if confirmed {
+                        self.createVariationsRemotely(for: product, variations: variationsToGenerate, onCompletion: onCompletion)
+                    }
+                }
 
             case .failure:
                 // TODO: Log and inform error

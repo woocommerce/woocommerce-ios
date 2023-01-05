@@ -362,12 +362,17 @@ private extension ProductsViewController {
     }
 
     func configureNavigationBarForEditing() {
-        navigationItem.title = NSLocalizedString(
-            "Select items",
-            comment: "Title that appears on top of the Product List screen when bulk editing starts."
-        )
-
+        configureNavigationBarTitleForEditing()
         configureNavigationBarRightButtonItemsForEditing()
+    }
+
+    func configureNavigationBarTitleForEditing() {
+        let selectedProducts = tableView.indexPathsForSelectedRows?.count ?? 0
+        if selectedProducts == 0 {
+            navigationItem.title = Localization.bulkEditingTitle
+        } else {
+            navigationItem.title = String.localizedStringWithFormat(Localization.bulkEditingItemsTitle, String(selectedProducts))
+        }
     }
 
     func configureNavigationBarRightButtonItemsForEditing() {
@@ -666,6 +671,7 @@ extension ProductsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard !tableView.isEditing else {
+            configureNavigationBarTitleForEditing()
             return
         }
 
@@ -1087,5 +1093,16 @@ private extension ProductsViewController {
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         static let toolbarButtonInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
+    }
+
+    enum Localization {
+        static let bulkEditingTitle = NSLocalizedString(
+            "Select items",
+            comment: "Title that appears on top of the Product List screen when bulk editing starts."
+        )
+        static let bulkEditingItemsTitle = NSLocalizedString(
+            "%1$@ selected",
+            comment: "Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected"
+        )
     }
 }

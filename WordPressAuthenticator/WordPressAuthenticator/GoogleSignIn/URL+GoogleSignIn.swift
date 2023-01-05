@@ -10,7 +10,7 @@ extension URL {
         let queryItems = [
             ("client_id", clientId),
             ("code_challenge", pkce.codeCallenge),
-            ("code_challenge_method", pkce.mode.method),
+            ("code_challenge_method", pkce.method.urlQueryParameterValue),
             ("redirect_uri", redirectURI(from: clientId)),
             ("response_type", "code"),
             // TODO: We might want to add some of these or them configurable

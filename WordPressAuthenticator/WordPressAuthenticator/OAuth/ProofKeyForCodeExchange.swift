@@ -13,11 +13,11 @@
 // Note: The common abbreviation of "Proof Key for Code Exchange" is PKCE and is pronounced "pixy".
 struct ProofKeyForCodeExchange {
 
-    enum Mode {
+    enum Method {
         case s256
         case plain
 
-        var method: String {
+        var urlQueryParameterValue: String {
             switch self {
             case .plain: return "plain"
             case .s256: return "S256"
@@ -26,15 +26,15 @@ struct ProofKeyForCodeExchange {
     }
 
     let codeVerifier: String
-    let mode: Mode
+    let method: Method
 
-    init(codeVerifier: String, mode: Mode) {
+    init(codeVerifier: String, method: Method) {
         self.codeVerifier = codeVerifier
-        self.mode = mode
+        self.method = method
     }
 
     var codeCallenge: String {
-        switch mode {
+        switch method {
         case .s256:
             // TODO: code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
             fatalError()

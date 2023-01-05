@@ -5,7 +5,7 @@ class ProofKeyForCodeExchangeTests: XCTestCase {
 
     func testCodeChallengeInPlainModeIsTheSameAsCodeVerifier() {
         XCTAssertEqual(
-            ProofKeyForCodeExchange(codeVerifier: "abc", mode: .plain).codeCallenge,
+            ProofKeyForCodeExchange(codeVerifier: "abc", method: .plain).codeCallenge,
             "abc"
         )
     }
@@ -14,11 +14,11 @@ class ProofKeyForCodeExchangeTests: XCTestCase {
         // TODO:
     }
 
-    func testModePlainMethod() {
-        XCTAssertEqual(ProofKeyForCodeExchange.Mode.plain.method, "plain")
+    func testMethodURLQueryParameterValuePlain() {
+        XCTAssertEqual(ProofKeyForCodeExchange.Method.plain.urlQueryParameterValue, "plain")
     }
 
-    func testModeS256Method() {
-        XCTAssertEqual(ProofKeyForCodeExchange.Mode.s256.method, "S256")
+    func testMethodURLQueryParameterValueS256() {
+        XCTAssertEqual(ProofKeyForCodeExchange.Method.s256.urlQueryParameterValue, "S256")
     }
 }

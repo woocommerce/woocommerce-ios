@@ -265,6 +265,13 @@ private extension ProductsViewController {
 
     @objc func startBulkEditing() {
         tableView.setEditing(!tableView.isEditing, animated: true)
+
+        // Disable pull-to-refresh while editing
+        if tableView.isEditing {
+            refreshControl.removeFromSuperview()
+        } else {
+            tableView.addSubview(refreshControl)
+        }
     }
 }
 

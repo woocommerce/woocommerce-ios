@@ -33,6 +33,14 @@ final class InPersonPaymentsMenuViewModel {
         dependencies.analytics
     }
 
+    private var isCODEnabled: Bool {
+        guard let siteID = siteID,
+              let codGateway = dependencies.storage.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: "cod")?.toReadOnly() else {
+            return false
+        }
+        return codGateway.enabled
+    }
+
     private lazy var resultsController = createRecentIPPOrdersResultsController()
 
     // MARK: - Output properties
@@ -78,23 +86,25 @@ final class InPersonPaymentsMenuViewModel {
     /// This method is just a helper for debugging, we may use it for populating different Banner content based on the fetched objects count
     ///
     func displayIPPFeedbackBannerIfEligible() {
-        // Debug:
-        let results = resultsController.fetchedObjects
-        let resultsCount = results.count
-        print("IPP transactions within 30 days: \(resultsCount)")
-        print(results.map { ("OrderID: \($0.orderID) - PaymentMethodID: \($0.paymentMethodID) - DatePaid: \(String(describing: $0.datePaid))") })
+        if isCODEnabled {
+            // Debug:
+            let results = resultsController.fetchedObjects
+            let resultsCount = results.count
+            print("IPP transactions within 30 days: \(resultsCount)")
+            print(results.map { ("OrderID: \($0.orderID) - PaymentMethodID: \($0.paymentMethodID) - DatePaid: \(String(describing: $0.datePaid))") })
 
-        if resultsCount == 0 {
-            // TODO: Populate banner 1
-            // TODO: Should this option use a different results controller? We're looking for 0 orders historically, not within 30 days.
-            print("0 transactions. Banner 1 shown")
-        }
-        else if resultsCount < 10 {
-            // TODO: Populate banner 2
-            print("< 10 transactions within 30 days. Banner 2 shown")
-        } else if resultsCount >= 10 {
-            // TODO: Populate banner 3
-            print(">= 10 transactions within 30 days. Banner 3 shown")
+            if resultsCount == 0 {
+                // TODO: Should this option use a different results controller? We're looking for 0 orders historically, not within 30 days.
+                print("0 transactions. Banner 1 shown")
+            }
+            else if resultsCount < 10 {
+                print("< 10 transactions within 30 days. Banner 2 shown")
+            } else if resultsCount >= 10 {
+                print(">= 10 transactions within 30 days. Banner 3 shown")
+            }
+        } else {
+            print("COD not enabled.")
+            DDLogInfo("COD not enabled.")
         }
     }
 
@@ -112,6 +122,7 @@ private extension InPersonPaymentsMenuViewModel {
     ///
     func createRecentIPPOrdersResultsController() -> ResultsController<StorageOrder> {
         let today = Date()
+        let paymentGateway = Constants.wcpay
         let thirtyDaysBeforeToday = Calendar.current.date(
             byAdding: .day,
             value: -30,
@@ -121,7 +132,7 @@ private extension InPersonPaymentsMenuViewModel {
         // TODO: Question. Are we looking for the paymentMethodID to be woocommerce_payments? Or COD?
         let predicate = NSPredicate(
             format: "siteID == %lld AND paymentMethodID == %@ AND datePaid >= %@",
-            argumentArray: [siteID ?? 0, "woocommerce_payments", thirtyDaysBeforeToday]
+            argumentArray: [siteID ?? 0, paymentGateway, thirtyDaysBeforeToday]
         )
 
         return ResultsController<StorageOrder>(storageManager: storage, matching: predicate, sortedBy: [])
@@ -131,4 +142,5 @@ private extension InPersonPaymentsMenuViewModel {
 private enum Constants {
     static let utmCampaign = "payments_menu_item"
     static let utmSource = "payments_menu"
+    static let wcpay = "woocommerce_payments"
 }

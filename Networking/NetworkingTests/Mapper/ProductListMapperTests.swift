@@ -4,7 +4,11 @@ import XCTest
 
 /// ProductListMapper Unit Tests
 ///
-class ProductListMapperTests: XCTestCase {
+final class ProductListMapperTests: XCTestCase {
+    private enum ProductListMapperTestsError: Error {
+        case parsingFailure
+    }
+
     /// Dummy Site ID.
     ///
     private let dummySiteID: Int64 = 33334444

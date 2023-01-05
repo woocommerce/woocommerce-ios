@@ -31,7 +31,7 @@ private extension ErrorTopBannerFactory {
                                             comment: "The info of the Error Loading Data banner")
         static let troubleshoot = NSLocalizedString("Troubleshoot",
                                                     comment: "The title of the button to get troubleshooting information in the Error Loading Data banner")
-        static let contactSupport = NSLocalizedString("Contact Support",
+        static let contactSupport = NSLocalizedString("Contact support",
                                                       comment: "The title of the button to contact support in the Error Loading Data banner")
     }
 }

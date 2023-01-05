@@ -11,8 +11,13 @@ struct CouponMapper: Mapper {
     /// (Attempts) to convert a dictionary into `Coupon`.
     ///
     func map(response: Data) throws -> Coupon {
-        let coupon = try Coupon.decoder.decode(CouponEnvelope.self, from: response).coupon
-        return coupon.copy(siteID: siteID)
+        let decoder = Coupon.decoder
+        do {
+            let coupon = try decoder.decode(CouponEnvelope.self, from: response).coupon
+            return coupon.copy(siteID: siteID)
+        } catch {
+            return try decoder.decode(Coupon.self, from: response).copy(siteID: siteID)
+        }
     }
 }
 

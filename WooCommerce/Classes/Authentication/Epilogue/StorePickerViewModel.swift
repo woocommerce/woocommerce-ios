@@ -72,8 +72,12 @@ final class StorePickerViewModel {
 // MARK: - Private helpers
 private extension StorePickerViewModel {
     func refetchSitesAndUpdateState() {
-        try? resultsController.performFetch()
-        state = StorePickerState(sites: resultsController.fetchedObjects)
+        do {
+            try resultsController.performFetch()
+            state = StorePickerState(sites: resultsController.fetchedObjects)
+        } catch {
+            DDLogError("⛔️ Unable to re-fetch sites and update state: \(error)")
+        }
     }
 
     func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {

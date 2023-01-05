@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-30 09:54:04+0000 */
+/* Translation-Revision-Date: 2022-12-14 17:59:43+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -9,7 +9,7 @@
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
-/* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% הושלמו";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
@@ -38,12 +38,6 @@
 
 /* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@ Version" = "גרסת %1$@";
-
-/* A label prompting users to learn more about In-Person Payments.
-\u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about Inu{2011}Person Payments" = "%1$@ about Inu{2011}Person Payments";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -487,9 +481,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "ניתן להוסיף מרחוק את הפרטים של הקבצים שניתנים להורדה המוצרים";
 
-/* Navigates to a screen to create a simple payments order */
-"Add simple payments order" = "להוסיף הזמנה של תשלומים פשוטים";
-
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "להוסיף את התיאור לקופון.";
 
@@ -501,6 +492,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "להוסיף משקל וממדים";
+
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Add your first store" = "להוסיף את החנות הראשונה שלך";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "כתובת";
@@ -566,7 +560,7 @@ which should be translated separately and considered part of this sentence. */
 "All reviews marked as read" = "כל הביקורות שמסומנות כ'נקרא'";
 
 /* Subtitle of the store creation plan screen. */
-"All the featues you need, already built in" = "כל האפשרויות שצריך מובנות ישירות בשירות";
+"All the features you need, already built in" = "כל הכלים שצריך, כבר מוּבְנים בשירות";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "לאפשר";
@@ -697,7 +691,8 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "שם האפליקציה";
 
-/* Change order status screen - button title to apply selection */
+/* Apply navigation button in custom range date picker
+   Change order status screen - button title to apply selection */
 "Apply" = "החלה";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -834,6 +829,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's blog */
 "Blog" = "אתר";
 
+/* The button title on the reader type alert, for the user to choose a bluetooth reader. */
+"Bluetooth Reader" = "קורא Bluetooth";
+
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "נדרשות הרשאות ל-Bluetooth";
 
@@ -934,6 +932,7 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on deleting a variation
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
+   Cancel button title
    Cancel button title in the issue refund screen
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
@@ -1076,6 +1075,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "יש לבדוק את תיבת האימייל!";
 
+/* Title of the WPCOM checkout web view. */
+"Checkout" = "תשלום בקופה";
+
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "יש לבחור גודל נייר";
 
@@ -1138,9 +1140,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the Close action on the Jetpack Install view */
 "Close" = "סגור";
 
-/* Close Account button title to close the user's WordPress.com account
-   Link on the store picker for users who signed in with Apple to close their WordPress.com account. */
+/* Close Account button title to close the user's WordPress.com account */
 "Close Account" = "סגירת חשבון";
+
+/* Button to close the WordPress.com account on the store picker. */
+"Close account" = "סגירת חשבון";
 
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "סוגר את החשבון....";
@@ -1176,6 +1180,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "יצירת הערה חדשה להזמנה.";
+
+/* Dialog title that displays when a configuration update just finished installing */
+"Configuration updated" = "ההגדרה עודכנה";
+
+/* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
+"Configuring iPhone" = "מגדיר את ה-iPhone";
 
 /* Close Account confirmation alert title. */
 "Confirm Close Account" = "לאשר את סגירת החשבון";
@@ -1452,9 +1462,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for the entire cart" = "ליצור הנחה של סכום כולל קבוע עבור עגלת הקניות במלואה";
 
-/* Description of the Action sheet option when the user wants to create full manual order */
-"Create a new manual order" = "ליצור הזמנה ידנית חדשה";
-
 /* Button to create a new store from the store picker */
 "Create a new store" = "ליצור חנות חדשה";
 
@@ -1463,9 +1470,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation web view. */
 "Create a store" = "ליצור חנות";
-
-/* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "ליצור הזמנה עם מידע חיוני בלבד";
 
 /* Title of the Create coupon screen */
 "Create coupon" = "ליצור קופון";
@@ -1476,17 +1480,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "יצירת אריזה חדשה";
 
-/* Action sheet option when the user wants to create full manual order */
-"Create order" = "ליצור הזמנה";
-
 /* Title of the banner notice in the Orders tab */
-"Create orders & take payments!" = "ליצור הזמנות ולקבל תשלומים!";
+"Create orders!" = "יצירת הזמנות!";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "אפשר ליצור תווית משלוח מהמכשיר שלך!";
-
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"Create your first store" = "ליצור את החנות הראשונה שלך";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "ליצור את הסוג הראשון שלך";
@@ -1532,6 +1530,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder name of a custom shipment tracking carrier
    Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "ספק מותאם";
+
+/* Title in custom range date picker */
+"Custom Date Range" = "טווח תאריכים מותאם אישית";
 
 /* Title for the order custom fields list */
 "Custom Fields" = "שדות מותאמים";
@@ -1592,7 +1593,9 @@ which should be translated separately and considered part of this sentence. */
 "DETAILS" = "פרטים";
 
 /* Navigation title of the orders filter selector screen for date range
-   Row title for filtering orders by date range. */
+   Row title for filtering orders by date range.
+   Title describing the possible date range selections of the Analytics Hub
+   Title of the range selection list */
 "Date Range" = "טווח תאריכים";
 
 /* Title of 'Date Paid' section in the receipt */
@@ -1950,7 +1953,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "הופעל";
 
-/* Label for one of the filters in order custom date range */
+/* End Date label in custom range date picker
+   Label for one of the filters in order custom date range */
 "End Date" = "תאריך סיום";
 
 /* The title used when asking the user for feedback for the app. */
@@ -2303,6 +2307,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "הנחת מוצר קבועה";
 
+/* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
+"Follow reader instructions to pay" = "לביצוע תשלום, יש לעקוב אחר ההוראות בקורא הכרטיסים";
+
 /* User role badge */
 "Follower" = "עוקב";
 
@@ -2406,9 +2413,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "ההרשמה ל-Google נכשלה.";
 
-/* Confirmation text of the button on the bottom announcement modalwhen a merchant taps on Simple Payment */
-"Got it!" = "הבנתי!";
-
 /* Display label for grouped product type. */
 "Grouped" = "בקבוצה";
 
@@ -2486,12 +2490,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button for opening Help.Presented when logging in with a site address that does not have WooCommerce
    Button to contact support on the Jetpack setup interrupted screen
+   Button to get help from the store picker
    Help and Support navigation title
    Help button
    Help button on account mismatch error screen.
    Help button on Jetpack required error screen.
-   Help button on Jetpack setup required screen.
-   Help button on store picker screen. */
+   Help button on Jetpack setup required screen. */
 "Help" = "עזרה";
 
 /* My Store > Settings > Help and Feedback settings section title */
@@ -2821,6 +2825,18 @@ which should be translated separately and considered part of this sentence. */
 /* Last 7 days section header */
 "Last 7 days" = "7 הימים האחרונים";
 
+/* Title of the Analytics Hub Last Month selection range */
+"Last Month" = "החודש הקודם";
+
+/* Title of the Analytics Hub Last Quarter selection range */
+"Last Quarter" = "הרבעון הקודם";
+
+/* Title of the Analytics Hub Last Week selection range */
+"Last Week" = "השבוע הקודם";
+
+/* Title of the Analytics Hub Last Year selection range */
+"Last Year" = "השנה הקודמת";
+
 /* Text field name in Edit Address Form */
 "Last name" = "שם משפחה";
 
@@ -2829,8 +2845,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
@@ -2984,6 +2998,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "יש להתחבר באמצעות שם המשתמש והסיסמה של WordPress.com.‏";
+
+/* Button to log out from the current account from the store picker */
+"Log out" = "התנתקות";
 
 /* A generic error during site credential login */
 "Login failed. Please try again." = "ההתחברות נכשלה. יש לנסות שוב.";
@@ -3194,7 +3211,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label for net sales (net revenue) in the Analytics Hub */
 "Net Sales" = "סכום מכירות נטו";
 
-/* Top performers — label for the total sales of a product */
+/* Label for the total sales of a product in the Analytics Hub
+   Top performers — label for the total sales of a product */
 "Net sales: %@" = "סכום מכירות נטו: %@";
 
 /* Title for table view section of network active plugins */
@@ -3281,9 +3299,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "לא נבחרו הזמנות";
 
-/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
-"No previous period available" = "אין תקופות קודמות זמינות";
-
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "טרם צוין מחיר";
 
@@ -3352,9 +3367,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "לאחר הוספת המאפיינים, באפשרותך ליצור את הסוג הראשון שלך!";
-
-/* Message of the bottom announcement modal when a merchant taps on Simple Payment */
-"Now you can quickly access In-Person Payments and other features with ease." = "כעת אפשר לגשת בקלות ובמהירות ל'תשלומים באופן אישי' ולאפשרויות נוספות.";
 
 /* Alert dismissal title
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
@@ -3667,9 +3679,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the hub menu payments button */
 "Payments" = "תשלומים";
 
-/* Title of the bottom announcement modal when a merchant taps on Simple Payment */
-"Payments from the Menu tab" = "תשלומים מהלשונית 'תפריט'";
-
 /* Display label for pending order status.
    Display label for the review's pending status */
 "Pending" = "ממתין לאישור";
@@ -3723,8 +3732,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "יש להטעין את הקורא";
 
+/* Error message shown when the built-in reader cannot be used because the device does not meet minimum requirements. */
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "עליך לוודא שהטלפון שלך עומד בדרישות הבאות: מכשיר iPhone XS או מכשיר חדש יותר עם מערכת הפעלה של iOS 16.0 ומעלה. יש לפנות לתמיכה אם השגיאה הזאת מופיעה במכשיר נתמך.";
+
+/* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "עליך לוודא שה-Apple ID שלך תקף ולנסות שוב. חשבון Apple ID תקף נדרש כדי לקבל את תנאי השימוש של Apple";
+
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "יש לחבר את החנות שלך אל Jetpack כדי לגשת אליה באפליקציה הזאת.";
+
+/* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
+"Please contact support – there was an issue connecting to the built-in reader" = "יש לפנות לתמיכה – אירעה בעיה בהתחברות לקורא הכרטיסים המובנה";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "כדי להשתמש באפליקציה, יש לפנות לבעלי האתר כדי לקבל הזמנה לאתר זה כמנהל חנות או כמנהל מערכת.";
@@ -3810,6 +3828,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "יש לבחור חבילה";
 
+/* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
+"Please sign in to iCloud on this device, so you can use the built-in card reader" = "כדי להשתמש בקורא הכרטיסים המובנה, יש להתחבר אל iCloud מהמכשיר הזה";
+
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "יש לנסות דומיין אחר.";
 
@@ -3827,6 +3848,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "יש לנסות שוב או לפנות אלינו בכל עת ואנחנו נשמח לעזור!";
+
+/* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "כדי להשתמש בקורא הכרטיסים המובנה, יש לנסות שוב ולקבל את תנאי השימוש של Apple";
+
+/* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
+"Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "אפשר לנסות שוב או לצאת מהמסך הזה ולחזור לחנות כדי לבדוק אם בפעם הקודמת יצאת ממסך התשלום בקופה לפני שהתהליך הסתיים.";
 
 /* Account creation error when an unexpected error occurs.
    Message of the alert when the store cannot be created in the store creation flow.
@@ -3909,6 +3936,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "מכין את המסמך";
+
+/* Title label for modal dialog that appears when connecting to a built in card reader */
+"Preparing iPhone card reader..." = "מכין את קורא הכרטיסים של ה-iPhone...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "יש להציג את הכרטיס לביצוע תשלום";
@@ -4135,6 +4165,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "בידוד";
+
+/* Title of the Analytics Hub Quarter to Date selection range */
+"Quarter to Date" = "הרבעון עד התאריך הנוכחי";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "להקים חנות מקוונת יפה ולהתחיל למכור מהר.";
@@ -4499,9 +4532,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Scan Products */
 "Scan products" = "לסרוק מוצרים";
 
-/* Title label for modal dialog that appears when searching for a card reader */
-"Scanning for reader" = "סורק כדי לאתר קורא";
-
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "סורק לאיתור קוראים";
 
@@ -4608,6 +4638,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "בחירת סגנון פסקה";
+
+/* The title for the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
+"Select reader type" = "בחירת סוג קורא";
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "לבחור בתאריך התחלה";
@@ -4841,9 +4874,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Display label for simple product type. */
 "Simple" = "פשוט";
 
-/* Action sheet option when the user wants to create Simple Payments order */
-"Simple payment" = "תשלום פשוט";
-
 /* Action sheet option when the user wants to change the Product type to simple physical product */
 "Simple physical product" = "מוצר פיזי פשוט";
 
@@ -4911,6 +4941,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error title when Jetpack install fails */
 "Sorry, something went wrong during install" = "מצטערים, משהו השתבש במהלך ההתקנה";
 
+/* Error shown when there is a problem retrieving the dates for the selected date range. */
+"Sorry, something went wrong. We can't load analytics for the selected date range." = "מצטערים, משהו השתבש. אנחנו לא יכולים לטעון נתונים אנליטיים עבור טווח התאריכים שנבחר.";
+
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "כתובת המייל כבר נמצאת בשימוש!";
 
@@ -4967,7 +5000,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "תעריף סטנדרטי";
 
-/* Label for one of the filters in order custom date range */
+/* Label for one of the filters in order custom date range
+   Start Date label in custom range date picker */
 "Start Date" = "תאריך התחלה";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
@@ -5131,7 +5165,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "יש להצמיד או להכניס את הכרטיס לביצוע החזר כספי";
 
-/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader */
+/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader
+   The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "להקיש לתשלום ב-iPhone";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
@@ -5316,11 +5351,20 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "בכתובת האינטרנט חסר מארח חוקי.";
 
+/* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
+"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "הסכום לא נתמך על ידי קורא הכרטיסים המובנה – יש לנסות קורא כרטיסים נפרד או אמצעי תשלום שונה.";
+
+/* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "האפליקציה לא הצליחה להפעיל את קורא הכרטיסים מאחר ששבב ה-NFC מושבת. יש לפנות לתמיכה לפרטים נוספים.";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "לא ניתן היה להסיר את המאפיין.";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "לא ניתן היה לשמור את הסוג.";
+
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "לא ניתן להשתמש בקורא הכרטיסים המובנה במהלך שיחה טלפונית. יש לסיים את השיחה ולנסות שוב";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "הכרטיס הזה לא תומך במטבע שצוין. יש לנסות אמצעי תשלום אחר";
@@ -5367,6 +5411,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "הכרטיס נדחה על ידי קורא הכרטיסים – יש לנסות אמצעי תשלום אחר להחזר הכספי";
 
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the iPhone card reader - please try another means of payment" = "הכרטיס נדחה על ידי קורא הכרטיסים של ה-iPhone – יש לנסות אמצעי תשלום אחר";
+
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "הכרטיס נדחה על ידי מעבד התשלומים – יש לנסות אמצעי תשלום אחר";
 
@@ -5379,8 +5426,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "קוד הקופון לא יכול להיות ריק";
 
+/* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
+"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "המטבע לא נתמך על ידי קורא הכרטיסים המובנה – יש לנסות קורא כרטיסים נפרד או אמצעי תשלום שונה.";
+
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "הלקוח יקבל אימייל כאשר ההזמנה הושלמה";
+
+/* Label within the modal dialog that appears when connecting to a built in card reader */
+"The first time you connect, you may be prompted to accept Apple's Terms of Service." = "עם החיבור הראשון, ייתכן שתופיע בקשה לקבל את תנאי השימוש של Apple.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "השם של החבילה המותאמת החדשה אינו ייחודי.";
@@ -5547,6 +5600,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "אירעה שגיאה במהלך גביית התשלום.";
 
+/* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
+"There was an issue preparing the built in reader for payment – please try again." = "הייתה בעיה בהכנת קורא הכרטיסים המובנה לביצוע תשלומים – יש לנסות שוב.";
+
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "אין סיכונים, אפשר לבטל תוך 30 ימים ולקבל החזר כספי מלא.";
 
@@ -5685,9 +5741,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "כדי להמשיך עם חשבון Google, ראשית יש להתחבר עם הסיסמה שלך ב-WordPress.com. נבקש את הנתון הזה פעם אחת בלבד.";
-
-/* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "כדי להפעיל את קורא הכרטיסים, יש ללחוץ לחיצה קצרה על כפתור ההפעלה.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "כדי להשתמש באפליקציה הזאת עבור %@ עליך להתקין את התוסף של Jetpack ולחבר אותו בחנות שלך.";
@@ -5900,8 +5953,20 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Notice message when loading product categories fails */
 "Unable to load categories" = "לא ניתן לטעון את הקטגוריות";
 
+/* Text displayed when there is an error loading order stats data. */
+"Unable to load order analytics" = "לא ניתן לטעון את הנתונים האנליטיים לגבי הזמנות";
+
+/* Text displayed when there is an error loading product stats data. */
+"Unable to load product analytics" = "לא ניתן לטעון את הנתונים האנליטיים לגבי מוצרים";
+
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "לא ניתן היה לטעון את מאפייני המוצר";
+
+/* Text displayed when there is an error loading items sold stats data. */
+"Unable to load product items sold analytics" = "לא ניתן לטעון נתונים אנליטיים של פריטי המוצרים שנמכרו";
+
+/* Text displayed when there is an error loading revenue stats data. */
+"Unable to load revenue analytics" = "לא ניתן לטעון את הנתונים האנליטיים לגבי רווחים";
 
 /* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "לא ניתן לטעון את המיסים להזמנה";
@@ -6384,7 +6449,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "We're sorry, we were unable to verify In-Person Payments for this store." = "מצטערים, לא הצלחנו לאמת תשלומים באופן אישי בחנות זו.";
 
 /* Content of the banner notice in the Orders tab */
-"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button" = "אנחנו כרגע עובדים על אפשרות ליצור הזמנות ולקבל תשלומים מהמכשיר שלך! אפשר לנסות את האפשרויות האלו על ידי הקשה על הכפתור '+'";
+"We've been working on making it possible to create orders from your device! You can try this out by tapping on the \"+\" button" = "השקענו מאמצים כדי לאפשר יצירת הזמנות מהמכשיר! אפשר לנסות את זה בהקשה על הכפתור '+'";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "שלחנו אליך אימייל עם קישור להרשמה כדי ליצור את החשבון החדש שלך ב-WordPress.com. עליך לבדוק את האימייל ממכשיר זה ולהקיש על הקישור בהודעה שקיבלת מ-WordPress.com.";
@@ -6424,7 +6489,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "What is WooCommerce Shipping?" = "מה זה WooCommerce Shipping?";
 
 /* Navigates to page with details about What is WordPress.com. */
-"What is WordPress.com?" = "_מה זה WordPress.com?_";
+"What is WordPress.com?" = "מה זה WordPress.com?";
 
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "מה חדש ב-WooCommerce";
@@ -6503,7 +6568,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "כן, אני רוצה לשנות";
 
-/* Yesterday Section Header */
+/* Title of the Analytics Hub Yesterday selection range
+   Yesterday Section Header */
 "Yesterday" = "אתמול";
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
@@ -6564,17 +6630,29 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "עליך לעדכן את התוכנה של קורא הכרטיסים שלך כדי לגבות תשלומים. הביטול יחסום את החיבור של קורא הכרטיסים.";
 
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"Your device needs a lock screen passcode set to use the built-in card reader" = "יש להגדיר קוד סיסמה במסך הנעילה של המכשיר כדי להשתמש בקורא הכרטיסים המובנה";
+
 /* Title of the email field on the account creation form. */
 "Your email address" = "כתובת האימייל שלך";
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "כתובת האימייל שלך לא מקושרת לחשבון ב-WordPress.com";
 
+/* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
+"Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "ה-iPhone שלך יכול לשמש כקורא כרטיסים. לחלופין, אפשר לחבר קורא חיצוני דרך Bluetooth.";
+
+/* Label that displays when a configuration update is happening */
+"Your iPhone needs to be configured to collect payments." = "עליך להגדיר את ה-iPhone שלך לצורך גביית תשלומים.";
+
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "הקופון החדש שלך נותר!";
 
 /* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "בחשבון התשלומים שלך יש דרישות ממתינות";
+
+/* Dialog message that displays when a configuration update just finished installing */
+"Your phone will be ready to collect payments in a moment..." = "הטלפון שלך יהיה מוכן לגביית תשלומים עוד רגע...";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "לאחר השלמת העדכון, קורא הכרטיסים יופעל מחדש באופן אוטומטי ויתחבר שוב";
@@ -6609,12 +6687,55 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "סמל";
 
+/* Label for a cancel button */
+"cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "ביטול";
+
+/* Label within the modal dialog that appears when checking the built in card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "רק רגע, אנחנו בודקים את אם המכשיר שלך מוכן לשימוש באפשרות Tap to Pay on iPhone (הקשה לתשלום ב-iPhone).";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "למידע נוסף";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "%1$@ לגבי תשלומים באופן אישי";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.title" = "בודק את המכשיר";
+
+/* Label for a cancel button */
+"cardPresent.modalScanningForReader.cancelButton" = "ביטול";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"cardPresent.modalScanningForReader.instruction" = "כדי להפעיל את קורא הכרטיסים, יש ללחוץ לחיצה קצרה על כפתור ההפעלה שלו.";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.modalScanningForReader.learnMore.link" = "למידע נוסף";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.modalScanningForReader.learnMore.text" = "%1$@ לגבי תשלומים באופן אישי";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.modalScanningForReader.title" = "המערכת סורקת כדי לאתר קורא";
+
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "מסחר אלקטרוני";
 
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
+
+/* Indicates the status of a built in card reader. Presented to users when payment collection starts */
+"iPhone reader is ready" = "קורא הכרטיסים של ה-iPhone מוכן";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "האפליקציה הזו משתמשת ב-Bluetooth כדי להתחבר לקוראי הכרטיסים הנתמכים.";
@@ -6636,6 +6757,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "החזר כספי ידני";
+
+/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
+"no previous period" = "אין תקופה קודמת";
 
 /* No comment provided by engineer. */
 "password" = "סיסמה";
@@ -6700,9 +6824,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "אין אפשרות להביא את הנתונים הסטטיסטיים מהיום";
-
-/* Today */
-"today" = "היום";
 
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "לא ידוע";

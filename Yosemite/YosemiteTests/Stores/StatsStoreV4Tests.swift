@@ -503,6 +503,179 @@ final class StatsStoreV4Tests: XCTestCase {
         let storageTopEarnerStats = viewStorage.loadTopEarnerStats(date: "2020", granularity: StatGranularity.year.rawValue)
         XCTAssertEqual(storageTopEarnerStats?.toReadOnly(), expectedTopEarnerStats)
     }
+
+    // MARK: - StatsStoreV4.retrieveSiteSummaryStats
+
+    /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` returns any retrieved SiteSummaryStats.
+    ///
+    func test_retrieveSiteSummaryStats_returns_retrieved_stats() throws {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/summary/", filename: "site-summary-stats")
+
+        // When
+        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
+                                                                siteTimezone: .current,
+                                                                period: .day,
+                                                                quantity: 1,
+                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55"),
+                                                                saveInStorage: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let siteSummaryStats = try XCTUnwrap(result).get()
+        XCTAssertEqual(siteSummaryStats, sampleSiteSummaryStats())
+    }
+
+    /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` makes the expected alternate network request for multiple stats periods.
+    ///
+    func test_retrieveSiteSummaryStats_makes_expected_network_request_for_multiple_periods() throws {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let _: Void = waitFor { promise in
+            let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
+                                                                siteTimezone: .init(identifier: "GMT") ?? .current,
+                                                                period: .month,
+                                                                quantity: 3,
+                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-31T17:06:55"),
+                                                                saveInStorage: false) { _ in
+                promise(())
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+        XCTAssertEqual(request.path, "sites/\(sampleSiteID)/stats/visits/")
+        XCTAssertEqual(request.parameters?["date"] as? String, "2022-12-31")
+        XCTAssertEqual(request.parameters?["unit"] as? String, "month")
+        XCTAssertEqual(request.parameters?["quantity"] as? String, "3")
+    }
+
+    /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` converts and returns SiteSummaryStats for multiple periods.
+    ///
+    func test_retrieveSiteSummaryStats_returns_retrieved_quarter_stats() throws {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits-quarter")
+
+        // When
+        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
+                                                                siteTimezone: .current,
+                                                                period: .month,
+                                                                quantity: 3,
+                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-31T17:06:55"),
+                                                                saveInStorage: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let siteSummaryStats = try XCTUnwrap(result).get()
+        XCTAssertEqual(siteSummaryStats, sampleSiteSummaryStatsQuarter())
+    }
+
+    /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` returns an error whenever there is an error response from the backend.
+    ///
+    func test_retrieveSiteSummaryStats_returns_error_upon_response_error() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/summary/", filename: "generic_error")
+
+        // When
+        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
+                                                                siteTimezone: .current,
+                                                                period: .day,
+                                                                quantity: 1,
+                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55"),
+                                                                saveInStorage: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` returns an error whenever there is no backend response.
+    ///
+    func test_retrieveSiteSummaryStats_returns_error_upon_empty_response() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
+                                                                siteTimezone: .current,
+                                                                period: .day,
+                                                                quantity: 1,
+                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55"),
+                                                                saveInStorage: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` effectively persists any retrieved SiteSummaryStats.
+    ///
+    func test_retrieveSiteSummaryStats_effectively_persists_retrieved_stats() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/summary/", filename: "site-summary-stats")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSummaryStats.self), 0)
+
+        // When
+        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
+                                                                siteTimezone: .current,
+                                                                period: .day,
+                                                                quantity: 1,
+                                                                latestDateToInclude: DateFormatter.dateFromString(with: "2022-12-09T17:06:55"),
+                                                                saveInStorage: true) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSummaryStats.self), 1)
+
+        let readOnlySiteSummaryStats = viewStorage.firstObject(ofType: Storage.SiteSummaryStats.self)?.toReadOnly()
+        XCTAssertEqual(readOnlySiteSummaryStats, sampleSiteSummaryStats())
+    }
+
+    /// Verifies that `upsertStoredSiteSummaryStats` does not produce duplicate entries.
+    ///
+    func test_upsertStoredSiteSummaryStats_effectively_updates_preexistant_SiteSummaryStats() {
+        let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertNil(viewStorage.loadSiteSummaryStats(date: "2022-12-09", period: StatGranularity.day.rawValue))
+        statsStore.upsertStoredSiteSummaryStats(readOnlyStats: sampleSiteSummaryStats())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSummaryStats.self), 1)
+        statsStore.upsertStoredSiteSummaryStats(readOnlyStats: sampleSiteSummaryStatsMutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSummaryStats.self), 1)
+
+        let expectedSiteSummaryStats = sampleSiteSummaryStatsMutated()
+        let storageSiteSummaryStats = viewStorage.loadSiteSummaryStats(date: "2022-12-09", period: StatGranularity.day.rawValue)
+        XCTAssertEqual(storageSiteSummaryStats?.toReadOnly(), expectedSiteSummaryStats)
+    }
 }
 
 
@@ -603,11 +776,11 @@ private extension StatsStoreV4Tests {
 
 
     func sampleSiteVisitStatsItem1() -> Networking.SiteVisitStatsItem {
-        return SiteVisitStatsItem(period: "2014-01-01", visitors: 1135)
+        return SiteVisitStatsItem(period: "2014-01-01", visitors: 1135, views: 12821)
     }
 
     func sampleSiteVisitStatsItem2() -> Networking.SiteVisitStatsItem {
-        return SiteVisitStatsItem(period: "2015-01-01", visitors: 1629)
+        return SiteVisitStatsItem(period: "2015-01-01", visitors: 1629, views: 14808)
     }
 
     func sampleSiteVisitStatsMutated() -> Networking.SiteVisitStats {
@@ -619,11 +792,11 @@ private extension StatsStoreV4Tests {
 
 
     func sampleSiteVisitStatsItem1Mutated() -> Networking.SiteVisitStatsItem {
-        return SiteVisitStatsItem(period: "2014-01-01", visitors: 1140)
+        return SiteVisitStatsItem(period: "2014-01-01", visitors: 1140, views: 12831)
     }
 
     func sampleSiteVisitStatsItem2Mutated() -> Networking.SiteVisitStatsItem {
-        return SiteVisitStatsItem(period: "2015-01-01", visitors: 1634)
+        return SiteVisitStatsItem(period: "2015-01-01", visitors: 1634, views: 14818)
     }
 
     // MARK: - Top Earner Stats Sample
@@ -682,5 +855,31 @@ private extension StatsStoreV4Tests {
                                   total: 60000,
                                   currency: "",
                                   imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/07/img_7472-scaled.jpeg")
+    }
+
+    // MARK: - Site Summary Stats Sample
+
+    func sampleSiteSummaryStats() -> Networking.SiteSummaryStats {
+        return SiteSummaryStats(siteID: sampleSiteID,
+                                date: "2022-12-09",
+                                period: .day,
+                                visitors: 12,
+                                views: 123)
+    }
+
+    func sampleSiteSummaryStatsMutated() -> Networking.SiteSummaryStats {
+        return SiteSummaryStats(siteID: sampleSiteID,
+                                date: "2022-12-09",
+                                period: .day,
+                                visitors: 15,
+                                views: 127)
+    }
+
+    func sampleSiteSummaryStatsQuarter() -> Networking.SiteSummaryStats {
+        return SiteSummaryStats(siteID: sampleSiteID,
+                                date: "2022-12-09",
+                                period: .month,
+                                visitors: 243,
+                                views: 486)
     }
 }

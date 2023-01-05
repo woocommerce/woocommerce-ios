@@ -54,6 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Setup Components
         setupAnalytics()
         setupCocoaLumberjack()
+        setupLibraryLogger()
         setupLogLevel(.verbose)
         setupPushNotificationsManagerIfPossible()
         setupAppRatingManager()
@@ -88,6 +89,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupMainWindow()
         setupComponentsAppearance()
         setupNoticePresenter()
+        disableAnimationsIfNeeded()
 
         // Start app navigation.
         appCoordinator?.start()
@@ -276,12 +278,19 @@ private extension AppDelegate {
         DDLog.add(logger)
     }
 
-    /// Sets up the current Log Leve.
+    /// Sets up loggers for WordPress libraries
+    ///
+    func setupLibraryLogger() {
+        let logger = ServiceLocator.wordPressLibraryLogger
+        WPSharedSetLoggingDelegate(logger)
+        WPAuthenticatorSetLoggingDelegate(logger)
+        WPKitSetLoggingDelegate(logger)
+    }
+
+    /// Sets up the current Log Level.
     ///
     func setupLogLevel(_ level: DDLogLevel) {
-        WPSharedSetLoggingLevel(level)
-        WPAuthenticatorSetLoggingLevel(level)
-        WPKitSetLoggingLevel(level)
+        CocoaLumberjack.dynamicLogLevel = level
     }
 
     /// Setup: Notice Presenter
@@ -357,16 +366,26 @@ private extension AppDelegate {
             ServiceLocator.setStores(ScreenshotStoresManager(storageManager: ServiceLocator.storageManager))
         }
 
-        if ProcessConfiguration.shouldDisableAnimations {
-            UIView.setAnimationsEnabled(false)
-
-            /// Trick found at: https://twitter.com/twannl/status/1232966604142653446
-            UIApplication.shared.currentKeyWindow?.layer.speed = 100
-        }
-
         if ProcessConfiguration.shouldSimulatePushNotification {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { _, _ in }
         }
+    }
+
+    func disableAnimationsIfNeeded() {
+        guard ProcessConfiguration.shouldDisableAnimations else {
+            return
+        }
+
+        UIView.setAnimationsEnabled(false)
+
+        /// Trick found at: https://twitter.com/twannl/status/1232966604142653446
+        UIApplication
+            .shared
+            .connectedScenes
+            .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
+            .forEach {
+                $0.layer.speed = 100
+            }
     }
 
     /// Tracks if the application was opened via a widget tap.

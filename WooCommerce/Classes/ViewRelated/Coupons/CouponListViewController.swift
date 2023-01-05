@@ -487,7 +487,7 @@ private extension CouponListViewController {
         )
         static let createCouponAction = NSLocalizedString("Create Coupon",
                                                           comment: "Title of the create coupon button on the coupon list screen when it's empty")
-        static let giveFeedbackAction = NSLocalizedString("Give Feedback", comment: "Title of the feedback action button on the coupon list screen")
+        static let giveFeedbackAction = NSLocalizedString("Give feedback", comment: "Title of the feedback action button on the coupon list screen")
         static let dismissAction = NSLocalizedString("Dismiss", comment: "Title of the dismiss action button on the coupon list screen")
         static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon from the Coupon Details screen")
     }

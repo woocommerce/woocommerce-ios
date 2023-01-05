@@ -337,7 +337,7 @@ extension MainTabBarController {
             }
             let siteID = Int64(note.meta.identifier(forKey: .site) ?? Int.min)
 
-            switchToStore(with: siteID, onCompletion: { _ in
+            showStore(with: siteID, onCompletion: { _ in
                 presentNotificationDetails(for: note)
             })
         }
@@ -367,8 +367,16 @@ extension MainTabBarController {
                                                                               "already_read": note.read ])
     }
 
-    private static func switchToStore(with siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
-        SwitchStoreUseCase(stores: ServiceLocator.stores).switchToStoreIfSiteIsStored(with: siteID) { siteChanged in
+    private static func showStore(with siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
+        let stores = ServiceLocator.stores
+
+        // Already showing that store, do nothing
+        guard siteID != stores.sessionManager.defaultStoreID else {
+            onCompletion(true)
+            return
+        }
+
+        SwitchStoreUseCase(stores: stores).switchToStoreIfSiteIsStored(with: siteID) { siteChanged in
             guard siteChanged else {
                 return onCompletion(false)
             }
@@ -393,9 +401,10 @@ extension MainTabBarController {
     }
 
     static func navigateToOrderDetails(with orderID: Int64, siteID: Int64) {
-        switchToStore(with: siteID, onCompletion: { siteChanged in
+        showStore(with: siteID, onCompletion: { storeIsShown in
             switchToOrdersTab {
-                guard siteChanged else {
+                // It failed to show the order's store. We navigate to the orders tab and stop, as we cannot show the order details screen
+                guard storeIsShown else {
                     return
                 }
                 // We give some time to the orders tab transition to finish, otherwise it might prevent the second navigation from happening
@@ -564,7 +573,6 @@ private extension MainTabBarController {
             }
 
             orderTab.badgeValue = countReadableString
-            orderTab.badgeColor = .primary
         }
 
         viewModel.startObservingOrdersCount()

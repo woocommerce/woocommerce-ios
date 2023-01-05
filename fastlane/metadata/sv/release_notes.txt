@@ -1,2 +1,1 @@
-Vi har fokuserat på att åtgärda vissa stabilitets- och prestandaproblem för att göra din upplevelse smidigare. Fortsätt lämna feedback. Vi läser allt.
-
+Goda nyheter! Vi har lagt till en ny analyssektion i appen. Det är bara att klicka på knappen Se mer under butiksstatistiken om du vill se mer detaljerad information om intäkter och beställningar. Det här är inte allt – fler uppdateringar är på väg under de kommande veckorna!

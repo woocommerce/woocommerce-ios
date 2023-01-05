@@ -1,7 +1,21 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+11.8
+-----
+- [*] Design refresh: Buttons, links, and other calls to action are now purple instead of pink. [https://github.com/woocommerce/woocommerce-ios/pull/8451]
+- [internal] Design: Updated capitalization for various pages, links, and buttons to match new design guidelines. [https://github.com/woocommerce/woocommerce-ios/pull/8455]
+- [internal] Remove A/B testing and release native Jetpack installation flow for all users. [https://github.com/woocommerce/woocommerce-ios/pull/8533]
+
+11.7
+-----
+- [**] Analytics Hub: Now you can select custom date ranges. [https://github.com/woocommerce/woocommerce-ios/pull/8414]
+- [**] Analytics Hub: Now you can see Views and Conversion Rate analytics in the new Sessions card. [https://github.com/woocommerce/woocommerce-ios/pull/8428]
+- [*] My Store: We fixed an issue with Visitors and Conversion stats where sometimes visitors could be counted more than once in the selected period. [https://github.com/woocommerce/woocommerce-ios/pull/8427]
+
+
 11.6
 -----
+- [***] We added a new Analytics Hub inside the My Store area of the app. Simply click on the See More button under the store stats to check more detailed information on Revenue, Orders and Products. [https://github.com/woocommerce/woocommerce-ios/pull/8356]
 - [*] In-Person Payments: fixed timing issues in payments flow, which caused "Remove card" to be shown for too long [https://github.com/woocommerce/woocommerce-ios/pull/8351]
 
 11.5

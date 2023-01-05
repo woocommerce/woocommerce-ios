@@ -64,9 +64,12 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProto
     ///
     private let configuration: CardPresentPaymentsConfiguration
 
+    /// Celebration UX when the payment is captured successfully.
+    private let paymentCaptureCelebration: PaymentCaptureCelebrationProtocol
+
     /// IPP payments collector.
     ///
-    private lazy var paymentOrchestrator = LegacyPaymentCaptureOrchestrator(stores: stores)
+    private lazy var paymentOrchestrator = LegacyPaymentCaptureOrchestrator(stores: stores, celebration: paymentCaptureCelebration)
 
     /// Controller to connect a card reader.
     ///
@@ -91,6 +94,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProto
          alerts: OrderDetailsPaymentAlertsProtocol,
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
+         paymentCaptureCelebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.order = order
@@ -100,6 +104,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProto
         self.alerts = alerts
         self.configuration = configuration
         self.stores = stores
+        self.paymentCaptureCelebration = paymentCaptureCelebration
         self.analytics = analytics
     }
 
@@ -119,7 +124,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProto
         guard isTotalAmountValid() else {
             let error = totalAmountInvalidError()
             onCollect(.failure(error))
-            return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCompleted)
+            return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCancel)
         }
 
         configureBackend()
@@ -293,6 +298,9 @@ private extension LegacyCollectOrderPaymentUseCase {
                 switch result {
                 case .success(let capturedPaymentData):
                     self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
+                case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(_))):
+                    self?.trackPaymentCancelation()
+                    onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
                 case .failure(let error):
                     self?.handlePaymentFailureAndRetryPayment(error, onCompletion: onCompletion)
                 }

@@ -59,7 +59,7 @@ struct CouponRestrictions: View {
                             .padding(.leading, Constants.margin)
                             .padding(.leading, insets: geometry.safeAreaInsets)
                     }
-                    .background(Color(.listForeground))
+                    .background(Color(.listForeground(modal: false)))
 
                     VStack(alignment: .leading, spacing: 0) {
                         VStack {
@@ -151,7 +151,7 @@ struct CouponRestrictions: View {
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .background(Color(.listForeground))
+            .background(Color(.listForeground(modal: false)))
             .ignoresSafeArea(.container, edges: [.horizontal])
             .sheet(isPresented: $showingExcludeProducts) {
                 ProductSelector(configuration: ProductSelector.Configuration.excludedProductsForCoupons,
@@ -185,7 +185,7 @@ private extension CouponRestrictions {
 
     enum Localization {
         static let usageRestriction = NSLocalizedString(
-            "Usage Restrictions",
+            "Usage restrictions",
             comment: "Title for the usage restrictions section on coupon usage restrictions screen"
         )
         static let minimumSpend = NSLocalizedString(
@@ -269,7 +269,7 @@ private extension ProductSelector.Configuration {
               variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
 
     enum Localization {
-        static let title = NSLocalizedString("Exclude Products", comment: "Title for the screen to exclude products for a coupon")
+        static let title = NSLocalizedString("Exclude products", comment: "Title for the screen to exclude products for a coupon")
         static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the Exclude Products screen")
         static let productRowAccessibilityHint = NSLocalizedString("Toggles selection to exclude this product in a coupon.",
                                                                    comment: "Accessibility hint for excluding a product in the Exclude Products screen")

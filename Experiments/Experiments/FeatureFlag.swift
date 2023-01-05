@@ -87,6 +87,10 @@ public enum FeatureFlag: Int {
     ///
     case storeCreationM2WithInAppPurchasesEnabled
 
+    /// Store creation milestone 3 - profiler questions
+    ///
+    case storeCreationM3Profiler
+
     /// Just In Time Messages on Dashboard
     ///
     case justInTimeMessagesOnDashboard
@@ -94,6 +98,10 @@ public enum FeatureFlag: Int {
     /// Adds the System Status Report to support requests
     ///
     case systemStatusReportInSupportRequest
+
+    /// IPP in-app feedback banner
+    ///
+    case IPPInAppFeedbackBanner
 
     // MARK: - Performance Monitoring
     //
@@ -130,7 +138,15 @@ public enum FeatureFlag: Int {
     /// - Note: The app will ignore this if `performanceMonitoring` is `false`.
     case performanceMonitoringViewController
 
-    /// Temporary feature flag for the native Jetpack setup flow.
+    /// Whether application password authentication should be used when a user logs in with site credentials.
     ///
-    case analyticsHub
+    case applicationPasswordAuthenticationForSiteCredentialLogin
+
+    /// Allows merchants to create all variations from a single button
+    ///
+    case generateAllVariations
+
+    /// Bulk editing of status and price in products list
+    ///
+    case productsBulkEditing
 }

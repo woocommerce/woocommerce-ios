@@ -33,7 +33,12 @@ public final class OrderStatsRemoteV4: Remote {
             ParameterKeys.forceRefresh: forceRefresh
         ]
 
-        let request = JetpackRequest(wooApiVersion: .wcAnalytics, method: .get, siteID: siteID, path: Constants.orderStatsPath, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Constants.orderStatsPath,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = OrderStatsV4Mapper(siteID: siteID, granularity: unit)
         enqueue(request, mapper: mapper, completion: completion)
     }

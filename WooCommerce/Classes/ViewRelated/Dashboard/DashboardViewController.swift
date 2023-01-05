@@ -31,7 +31,7 @@ final class DashboardViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.applySubheadlineStyle()
-        label.backgroundColor = .listForeground
+        label.backgroundColor = .listForeground(modal: false)
         return label
     }()
 
@@ -50,8 +50,10 @@ final class DashboardViewController: UIViewController {
     private lazy var headerStackView: UIStackView = {
         let view = UIStackView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .listForeground
+        view.backgroundColor = .listForeground(modal: false)
         view.axis = .vertical
+        view.directionalLayoutMargins = .init(top: 0, leading: 0, bottom: Constants.tabStripSpacing, trailing: 0)
+        view.spacing = Constants.headerStackViewSpacing
         return view
     }()
 
@@ -132,8 +134,9 @@ final class DashboardViewController: UIViewController {
         observeAnnouncements()
         observeShowWebViewSheet()
         observeAddProductTrigger()
-        viewModel.syncAnnouncements(for: siteID)
+
         Task { @MainActor in
+            await viewModel.syncAnnouncements(for: siteID)
             await reloadDashboardUIStatsVersion(forced: true)
         }
     }
@@ -387,7 +390,9 @@ private extension DashboardViewController {
         let webViewSheet = WebViewSheet(viewModel: viewModel) { [weak self] in
             guard let self = self else { return }
             self.dismiss(animated: true)
-            self.viewModel.syncAnnouncements(for: self.siteID)
+            Task {
+                await self.viewModel.syncAnnouncements(for: self.siteID)
+            }
         }
         let hostingController = UIHostingController(rootView: webViewSheet)
         hostingController.presentationController?.delegate = self
@@ -411,7 +416,9 @@ private extension DashboardViewController {
         coordinator.onProductCreated = { [weak self] in
             guard let self else { return }
             self.viewModel.announcementViewModel = nil // Remove the products onboarding banner
-            self.viewModel.syncAnnouncements(for: self.siteID)
+            Task {
+                await self.viewModel.syncAnnouncements(for: self.siteID)
+            }
         }
         coordinator.start()
     }
@@ -421,26 +428,27 @@ private extension DashboardViewController {
         let cardView: FeatureAnnouncementCardView
 
         var body: some View {
-            cardView.background(Color(.listForeground))
+            cardView.background(Color(.listForeground(modal: false)))
         }
     }
 
     func observeAnnouncements() {
         viewModel.$announcementViewModel.sink { [weak self] viewModel in
             guard let self = self else { return }
-            self.removeAnnouncement()
-            guard let viewModel = viewModel else {
-                return
+            Task { @MainActor in
+                self.removeAnnouncement()
+                guard let viewModel = viewModel else {
+                    return
+                }
+
+                let cardView = FeatureAnnouncementCardView(
+                    viewModel: viewModel,
+                    dismiss: { [weak self] in
+                        self?.viewModel.announcementViewModel = nil
+                    },
+                    callToAction: {})
+                self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
             }
-
-            let cardView = FeatureAnnouncementCardView(
-                viewModel: viewModel,
-                dismiss: { [weak self] in
-                    self?.viewModel.announcementViewModel = nil
-                },
-                callToAction: {})
-
-            self.showAnnouncement(AnnouncementCardWrapper(cardView: cardView))
         }
         .store(in: &subscriptions)
     }
@@ -509,7 +517,9 @@ extension DashboardViewController: DashboardUIScrollDelegate {
 extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
-            viewModel.syncAnnouncements(for: siteID)
+            Task {
+                await viewModel.syncAnnouncements(for: siteID)
+            }
         }
     }
 }
@@ -532,6 +542,12 @@ private extension DashboardViewController {
         guard dashboardUI !== updatedDashboardUI else {
             return
         }
+
+        // Resets the Auto Layout constraint that pins the previous content view to the bottom of the header view.
+        // Otherwise, if `contentTopToHeaderConstraint?.isActive = true` is called after the previous content view is removed
+        // in the next line `remove(previousDashboardUI)`, the app crashes because the content view is no longer in the
+        // view hierarchy.
+        contentTopToHeaderConstraint = nil
 
         // Tears down the previous child view controller.
         if let previousDashboardUI = dashboardUI {
@@ -622,7 +638,7 @@ private extension DashboardViewController {
 
     func pullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-        viewModel.syncAnnouncements(for: siteID)
+        await viewModel.syncAnnouncements(for: siteID)
         await reloadDashboardUIStatsVersion(forced: true)
     }
 }
@@ -711,5 +727,7 @@ private extension DashboardViewController {
         static let backgroundColor: UIColor = .systemBackground
         static let iPhoneCollapsedNavigationBarHeight = CGFloat(44)
         static let iPadCollapsedNavigationBarHeight = CGFloat(50)
+        static let tabStripSpacing = CGFloat(12)
+        static let headerStackViewSpacing = CGFloat(4)
     }
 }

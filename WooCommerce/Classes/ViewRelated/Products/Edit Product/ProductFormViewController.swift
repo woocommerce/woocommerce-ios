@@ -488,7 +488,7 @@ private extension ProductFormViewController {
         tableView.dataSource = tableViewDataSource
         tableView.delegate = self
 
-        tableView.backgroundColor = .listForeground
+        tableView.backgroundColor = .listForeground(modal: false)
         tableView.removeLastCellSeparator()
 
         // Since the table view is in a container under a stack view, the safe area adjustment should be handled in the container view.
@@ -970,11 +970,21 @@ private extension ProductFormViewController {
     }
 
     func createPublishBarButtonItem() -> UIBarButtonItem {
-        return UIBarButtonItem(title: Localization.publishTitle, style: .done, target: self, action: #selector(publishProduct))
+        let publishButton = UIBarButtonItem(title: Localization.publishTitle,
+                                            style: .done,
+                                            target: self,
+                                            action: #selector(publishProduct))
+        publishButton.accessibilityIdentifier = "publish-product-button"
+        return publishButton
     }
 
     func createSaveBarButtonItem() -> UIBarButtonItem {
-        return UIBarButtonItem(title: Localization.saveTitle, style: .done, target: self, action: #selector(saveProductAndLogEvent))
+        let saveButton = UIBarButtonItem(title: Localization.saveTitle,
+                                         style: .done,
+                                         target: self,
+                                         action: #selector(saveProductAndLogEvent))
+        saveButton.accessibilityIdentifier = "save-product-button"
+        return saveButton
     }
 
     func createPreviewBarButtonItem() -> UIBarButtonItem {

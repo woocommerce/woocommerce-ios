@@ -25,7 +25,7 @@ At the time of writing this document, these are the subclasses of `Remote`:
 * `ShipmentsRemote` All things Shipment Tracking, from tracking providers to actual tracking associated to an order
 * `SiteAPIRemote` Loads the API information associated to a site.
 * `SiteSettingsRemote` Loads a site’s settings
-* `SiteVisitStatsremote` fetches visitor stats for a given site
+* `SiteStatsremote` fetches Jetpack stats for a given site
 * `TaxClassesRemote` fetches tax classes for a given site.
 * `TopEarnersStatsRemote`fetches the top earner stats for a given site.
 
@@ -43,7 +43,9 @@ A protocol the abstracts the actual URL requests.
 At the moment, we provide four implementations of `URLRequestConvertible`:
 * [`DotcomRequest`](../Networking/Networking/Requests/DotcomRequest.swift) models requests to WordPress.com
 * [`JetpackRequest`](../Networking/Networking/Requests/JetpackRequest.swift) represents a Jetpack-Tunneled WordPress.com 
-* [`AuthenticatedRequest`](../Networking/Networking/Requests/AuthenticatedRequest.swift) Wraps up a `URLRequestConvertible` instance, and injects credentials (username and token) when required
+* [`RESTRequest`](../Networking/Networking/Requests/RESTRequest.swift) represents a REST API request sent to the site (instead of through the Jetpack tunnel) directly.  
+* [`AuthenticatedDotcomRequest`](../Networking/Networking/Requests/AuthenticatedDotcomRequest.swift) Wraps up a `URLRequestConvertible` instance, and injects WordPress.com authentication token.
+* [`AuthenticatedRESTRequest`](../Networking/Networking/Requests/AuthenticatedRESTRequest.swift) Wraps up a `URLRequestConvertible` instance, and injects application password.
 * [`WordPressOrgRequest`](../Networking/Networking/Requests/WordPressOrgRequest.swift) model requests to the WordPress.org REST API.
 * [`UnauthenticatedRequest`](../Networking/Networking/Requests/UnauthenticatedRequest.swift) Wraps up a `URLRequestConvertible` instance, and injects a custom user-agent header
 

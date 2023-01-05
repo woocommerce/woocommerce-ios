@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-29 10:54:04+0000 */
+/* Translation-Revision-Date: 2022-12-14 18:00:55+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -9,7 +9,7 @@
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
-/* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "已完成 %.0f%%";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
@@ -38,12 +38,6 @@
 
 /* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@ Version" = "版本 %1$@";
-
-/* A label prompting users to learn more about In-Person Payments.
-\u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about Inu{2011}Person Payments" = "%1$@「親自收款」功能{2011}";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -487,9 +481,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "遠端新增商品的「可下載檔案」資訊";
 
-/* Navigates to a screen to create a simple payments order */
-"Add simple payments order" = "新增輕鬆付款訂單";
-
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "新增優惠券說明。";
 
@@ -501,6 +492,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "新增重量和尺寸";
+
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Add your first store" = "新增你的第一間商店";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "地址";
@@ -566,7 +560,7 @@ which should be translated separately and considered part of this sentence. */
 "All reviews marked as read" = "已將所有評論標記為已讀";
 
 /* Subtitle of the store creation plan screen. */
-"All the featues you need, already built in" = "你需要的所有功能均已內建";
+"All the features you need, already built in" = "你需要的所有功能均已內建";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "允許";
@@ -697,7 +691,8 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "應用程式名稱";
 
-/* Change order status screen - button title to apply selection */
+/* Apply navigation button in custom range date picker
+   Change order status screen - button title to apply selection */
 "Apply" = "套用";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -834,6 +829,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's blog */
 "Blog" = "網誌";
 
+/* The button title on the reader type alert, for the user to choose a bluetooth reader. */
+"Bluetooth Reader" = "藍牙讀卡機";
+
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "需要藍牙權限";
 
@@ -934,6 +932,7 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on deleting a variation
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
+   Cancel button title
    Cancel button title in the issue refund screen
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
@@ -1076,6 +1075,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "請檢查你的電子郵件！";
 
+/* Title of the WPCOM checkout web view. */
+"Checkout" = "結帳";
+
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "選擇紙張大小";
 
@@ -1138,9 +1140,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the Close action on the Jetpack Install view */
 "Close" = "關閉";
 
-/* Close Account button title to close the user's WordPress.com account
-   Link on the store picker for users who signed in with Apple to close their WordPress.com account. */
+/* Close Account button title to close the user's WordPress.com account */
 "Close Account" = "關閉帳號";
+
+/* Button to close the WordPress.com account on the store picker. */
+"Close account" = "關閉帳號";
 
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "正在關閉帳號…";
@@ -1176,6 +1180,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "撰寫新訂單備註";
+
+/* Dialog title that displays when a configuration update just finished installing */
+"Configuration updated" = "已更新設定";
+
+/* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
+"Configuring iPhone" = "正在設定 iPhone";
 
 /* Close Account confirmation alert title. */
 "Confirm Close Account" = "確認關閉帳號";
@@ -1452,9 +1462,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for the entire cart" = "為整個購物車建立固定的總折扣";
 
-/* Description of the Action sheet option when the user wants to create full manual order */
-"Create a new manual order" = "建立全新手動訂單";
-
 /* Button to create a new store from the store picker */
 "Create a new store" = "建立新商店";
 
@@ -1463,9 +1470,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation web view. */
 "Create a store" = "建立商店";
-
-/* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "建立包含最少資訊的訂單";
 
 /* Title of the Create coupon screen */
 "Create coupon" = "建立優惠券";
@@ -1476,17 +1480,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "建立新包裹";
 
-/* Action sheet option when the user wants to create full manual order */
-"Create order" = "建立訂單";
-
 /* Title of the banner notice in the Orders tab */
-"Create orders & take payments!" = "建立訂單和收取款項！";
+"Create orders!" = "建立訂單！";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "從你的裝置建立郵寄標籤！";
-
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"Create your first store" = "建立你的第一個商店";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "建立第一個款式";
@@ -1532,6 +1530,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder name of a custom shipment tracking carrier
    Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "自訂貨運業者";
+
+/* Title in custom range date picker */
+"Custom Date Range" = "自訂日期範圍";
 
 /* Title for the order custom fields list */
 "Custom Fields" = "自訂欄位";
@@ -1592,7 +1593,9 @@ which should be translated separately and considered part of this sentence. */
 "DETAILS" = "詳細資訊";
 
 /* Navigation title of the orders filter selector screen for date range
-   Row title for filtering orders by date range. */
+   Row title for filtering orders by date range.
+   Title describing the possible date range selections of the Analytics Hub
+   Title of the range selection list */
 "Date Range" = "日期範圍";
 
 /* Title of 'Date Paid' section in the receipt */
@@ -1950,7 +1953,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "啟用";
 
-/* Label for one of the filters in order custom date range */
+/* End Date label in custom range date picker
+   Label for one of the filters in order custom date range */
 "End Date" = "結束日期";
 
 /* The title used when asking the user for feedback for the app. */
@@ -2303,6 +2307,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "固定的商品折扣";
 
+/* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
+"Follow reader instructions to pay" = "請依照讀卡機指示付款";
+
 /* User role badge */
 "Follower" = "關注者";
 
@@ -2406,9 +2413,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google 註冊失敗。";
 
-/* Confirmation text of the button on the bottom announcement modalwhen a merchant taps on Simple Payment */
-"Got it!" = "瞭解！";
-
 /* Display label for grouped product type. */
 "Grouped" = "組合";
 
@@ -2486,12 +2490,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button for opening Help.Presented when logging in with a site address that does not have WooCommerce
    Button to contact support on the Jetpack setup interrupted screen
+   Button to get help from the store picker
    Help and Support navigation title
    Help button
    Help button on account mismatch error screen.
    Help button on Jetpack required error screen.
-   Help button on Jetpack setup required screen.
-   Help button on store picker screen. */
+   Help button on Jetpack setup required screen. */
 "Help" = "幫助";
 
 /* My Store > Settings > Help and Feedback settings section title */
@@ -2821,6 +2825,18 @@ which should be translated separately and considered part of this sentence. */
 /* Last 7 days section header */
 "Last 7 days" = "過去 7 天";
 
+/* Title of the Analytics Hub Last Month selection range */
+"Last Month" = "上個月";
+
+/* Title of the Analytics Hub Last Quarter selection range */
+"Last Quarter" = "上個季度";
+
+/* Title of the Analytics Hub Last Week selection range */
+"Last Week" = "上週";
+
+/* Title of the Analytics Hub Last Year selection range */
+"Last Year" = "去年";
+
 /* Text field name in Edit Address Form */
 "Last name" = "姓氏";
 
@@ -2829,8 +2845,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
@@ -2984,6 +2998,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "請使用你的 WordPress.com 使用者名稱和密碼登入。";
+
+/* Button to log out from the current account from the store picker */
+"Log out" = "登出";
 
 /* A generic error during site credential login */
 "Login failed. Please try again." = "登入失敗。 請再試一次。";
@@ -3194,7 +3211,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label for net sales (net revenue) in the Analytics Hub */
 "Net Sales" = "淨銷售額";
 
-/* Top performers — label for the total sales of a product */
+/* Label for the total sales of a product in the Analytics Hub
+   Top performers — label for the total sales of a product */
 "Net sales: %@" = "淨銷售額：%@";
 
 /* Title for table view section of network active plugins */
@@ -3281,9 +3299,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "未選取訂單";
 
-/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
-"No previous period available" = "無法使用上一期";
-
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "未設定價格";
 
@@ -3352,9 +3367,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "現在您已新增屬性，可以建立第一個款式了！";
-
-/* Message of the bottom announcement modal when a merchant taps on Simple Payment */
-"Now you can quickly access In-Person Payments and other features with ease." = "你現在可以快速輕鬆存取「親自收款」和其他功能。";
 
 /* Alert dismissal title
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
@@ -3667,9 +3679,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the hub menu payments button */
 "Payments" = "付款";
 
-/* Title of the bottom announcement modal when a merchant taps on Simple Payment */
-"Payments from the Menu tab" = "從「選單」分頁使用付款功能";
-
 /* Display label for pending order status.
    Display label for the review's pending status */
 "Pending" = "待審核";
@@ -3723,8 +3732,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "請為讀卡機充電";
 
+/* Error message shown when the built-in reader cannot be used because the device does not meet minimum requirements. */
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "請檢查你的手機是否符合以下要求：執行 iOS 16.0 或以上版本的 iPhone XS 或後續機型。 如果受支援的裝置顯示此錯誤訊息，請聯絡支援團隊。";
+
+/* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "請檢查你的 Apple ID 是否有效，然後再試一次。 需要有效的 Apple ID 才能接受 Apple 的服務條款";
+
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "請將你的商店連結到 Jetpack，以在此應用程式上存取你的商店。";
+
+/* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
+"Please contact support – there was an issue connecting to the built-in reader" = "連接內建讀卡機時發生問題，請聯絡支援人員";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "請聯絡網站管理員以獲得網站邀請，成為商店經理或管理員後即可使用應用程式。";
@@ -3810,6 +3828,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "請選取包裹";
 
+/* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
+"Please sign in to iCloud on this device, so you can use the built-in card reader" = "若要使用內建讀卡機，請在此裝置上登入 iCloud";
+
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "請嘗試其他網域。";
 
@@ -3827,6 +3848,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "請再試一次或與我們聯絡，我們將很樂意提供協助！";
+
+/* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "請再試一次；你需要接受 Apple 的服務條款，才能使用內建讀卡機";
+
+/* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
+"Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "請再試一次，或離開此畫面並再次檢查你的商店 (如果你先前在付款處理過程中離開了結帳畫面)。";
 
 /* Account creation error when an unexpected error occurs.
    Message of the alert when the store cannot be created in the store creation flow.
@@ -3909,6 +3936,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "正在準備文件";
+
+/* Title label for modal dialog that appears when connecting to a built in card reader */
+"Preparing iPhone card reader..." = "正在準備 iPhone 讀卡機…";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "出示卡片以付款";
@@ -4135,6 +4165,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "檢疫";
+
+/* Title of the Analytics Hub Quarter to Date selection range */
+"Quarter to Date" = "季度初至今";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "快速上手並透過精美的線上商店銷售。";
@@ -4499,9 +4532,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Scan Products */
 "Scan products" = "掃描產品";
 
-/* Title label for modal dialog that appears when searching for a card reader */
-"Scanning for reader" = "掃瞄讀卡機";
-
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "正在掃瞄讀卡機";
 
@@ -4608,6 +4638,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "選取段落風格";
+
+/* The title for the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
+"Select reader type" = "選取讀卡機類型";
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "選擇開始日期";
@@ -4841,9 +4874,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Display label for simple product type. */
 "Simple" = "簡單";
 
-/* Action sheet option when the user wants to create Simple Payments order */
-"Simple payment" = "輕鬆付款";
-
 /* Action sheet option when the user wants to change the Product type to simple physical product */
 "Simple physical product" = "簡單的實體產品";
 
@@ -4911,6 +4941,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error title when Jetpack install fails */
 "Sorry, something went wrong during install" = "不好意思，安裝時發生錯誤";
 
+/* Error shown when there is a problem retrieving the dates for the selected date range. */
+"Sorry, something went wrong. We can't load analytics for the selected date range." = "不好意思，出了一些問題。 我們無法為選定的日期範圍載入分析。";
+
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "很抱歉，已有人使用該電子郵件地址！";
 
@@ -4967,7 +5000,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "標準稅率";
 
-/* Label for one of the filters in order custom date range */
+/* Label for one of the filters in order custom date range
+   Start Date label in custom range date picker */
 "Start Date" = "開始日期";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
@@ -5131,7 +5165,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "感應或插入卡片以退款";
 
-/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader */
+/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader
+   The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "iPhone 上的「Tap to Pay」(輕觸付款) 功能";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
@@ -5316,11 +5351,20 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "網址缺少有效的主機。";
 
+/* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
+"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "內建讀卡機不支援該金額，請嘗試使用硬體讀卡機或其他付款方式。";
+
+/* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "NFC 晶片已停用，該應用程式無法啟用讀卡機。 如需詳細資訊，請聯絡支援團隊。";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "無法移除該屬性。";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "無法儲存該屬性。";
+
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "通話期間無法使用內建讀卡機。 請在通話結束後再試一次";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "卡片不支援此幣別。 請嘗試其他付款方式";
@@ -5367,6 +5411,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "該卡片遭讀卡機拒絕 - 請嘗試其他退款方式";
 
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the iPhone card reader - please try another means of payment" = "該卡片被 iPhone 讀卡機拒絕，請嘗試其他付款方式";
+
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "該卡片被付款處理商拒絕 - 請嘗試其他付款方式";
 
@@ -5379,8 +5426,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "優惠券代碼不得為空白";
 
+/* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
+"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "內建讀卡機不支援該幣別，請嘗試使用硬體讀卡機或其他付款方式。";
+
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "訂單完成後，客戶會收到電子郵件";
+
+/* Label within the modal dialog that appears when connecting to a built in card reader */
+"The first time you connect, you may be prompted to accept Apple's Terms of Service." = "第一次連線時，系統可能會提示你接受 Apple 的服務條款。";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "新的自訂包裹名稱與其他包裹名稱重複。";
@@ -5547,6 +5600,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "嘗試收款時發生錯誤。";
 
+/* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
+"There was an issue preparing the built in reader for payment – please try again." = "內建讀卡機準備付款時發生問題，請再試一次。";
+
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "沒有任何風險，30 天內取消可獲得全額退款。";
 
@@ -5685,9 +5741,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "若要繼續使用此帳號，請先使用你的 WordPress.com 密碼登入。 系統只會向你要求一次。";
-
-/* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "若要開啟讀卡機，請按一下電源鍵。";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "若要將此應用程式用於 %@，你需要在自己的商店安裝並連結 Jetpack 外掛程式。";
@@ -5900,8 +5953,20 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Notice message when loading product categories fails */
 "Unable to load categories" = "無法載入目錄";
 
+/* Text displayed when there is an error loading order stats data. */
+"Unable to load order analytics" = "無法載入訂單分析";
+
+/* Text displayed when there is an error loading product stats data. */
+"Unable to load product analytics" = "無法載入產品分析";
+
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "無法載入商品屬性";
+
+/* Text displayed when there is an error loading items sold stats data. */
+"Unable to load product items sold analytics" = "無法載入已售出產品項目的分析";
+
+/* Text displayed when there is an error loading revenue stats data. */
+"Unable to load revenue analytics" = "無法載入營收分析";
 
 /* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "無法載入訂單稅金";
@@ -6384,7 +6449,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "We're sorry, we were unable to verify In-Person Payments for this store." = "很抱歉，我們無法驗證此商店的親自收款功能。";
 
 /* Content of the banner notice in the Orders tab */
-"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button" = "我們致力於開發各種功能，讓你能夠透過裝置建立訂單和收取款項！ 點選「+」按鈕即可體驗這些功能";
+"We've been working on making it possible to create orders from your device! You can try this out by tapping on the \"+\" button" = "我們致力於開發各種功能，讓你能夠透過裝置建立訂單！ 點選「+」按鈕即可試用此功能";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "我們已透過電子郵件傳送註冊連結給你，使用此連結即可建立新的 WordPress.com 帳號。 請使用此裝置查看電子郵件，並點選 WordPress.com 所傳送電子郵件中的連結。";
@@ -6424,7 +6489,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "What is WooCommerce Shipping?" = "什麼是 WooCommerce Shipping？";
 
 /* Navigates to page with details about What is WordPress.com. */
-"What is WordPress.com?" = "_什麼是 WordPress.com？_";
+"What is WordPress.com?" = "什麼是 WordPress.com？";
 
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "WooCommerce 新功能";
@@ -6503,7 +6568,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "是，請變更";
 
-/* Yesterday Section Header */
+/* Title of the Analytics Hub Yesterday selection range
+   Yesterday Section Header */
 "Yesterday" = "昨天";
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
@@ -6564,17 +6630,29 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "你的讀卡機軟體需要更新才能收取款項。 取消更新將會封鎖你的讀卡機連線。";
 
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"Your device needs a lock screen passcode set to use the built-in card reader" = "你的裝置需要設定鎖定畫面密碼才能使用內建讀卡機";
+
 /* Title of the email field on the account creation form. */
 "Your email address" = "你的電子郵件地址";
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "你的電子郵件並未用於 WordPress.com 帳號";
 
+/* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
+"Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "你的 iPhone 可做為讀卡機使用，或者你可以透過藍牙連線至外部讀卡機。";
+
+/* Label that displays when a configuration update is happening */
+"Your iPhone needs to be configured to collect payments." = "你需要設定你的 iPhone 才能收款。";
+
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "你的新優惠券已建立完成！";
 
 /* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "你的付款帳號有待處理的要求";
+
+/* Dialog message that displays when a configuration update just finished installing */
+"Your phone will be ready to collect payments in a moment..." = "你的手機快要可以收款了…";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "更新完成後，你的讀卡機會自動重新啟動並重新連線";
@@ -6609,12 +6687,55 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "圖示";
 
+/* Label for a cancel button */
+"cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "取消";
+
+/* Label within the modal dialog that appears when checking the built in card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "請稍候，我們正在檢查你的裝置是否已可以使用 iPhone 上的「Tap to Pay」(輕觸付款) 功能。";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "深入瞭解";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "%1$@ 關於親自收款";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.title" = "檢查裝置";
+
+/* Label for a cancel button */
+"cardPresent.modalScanningForReader.cancelButton" = "取消";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"cardPresent.modalScanningForReader.instruction" = "若要開啟讀卡機，請按一下電源鍵。";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.modalScanningForReader.learnMore.link" = "深入瞭解";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.modalScanningForReader.learnMore.text" = "%1$@ 關於親自收款";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.modalScanningForReader.title" = "掃瞄讀卡機";
+
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "電子商務";
 
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
+
+/* Indicates the status of a built in card reader. Presented to users when payment collection starts */
+"iPhone reader is ready" = "iPhone 讀卡機已準備就緒";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "此應用程式使用藍牙來與支援的讀卡機連線。";
@@ -6636,6 +6757,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "手動退款";
+
+/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
+"no previous period" = "沒有上個期間";
 
 /* No comment provided by engineer. */
 "password" = "密碼";
@@ -6700,9 +6824,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "無法擷取今日的統計資料";
-
-/* Today */
-"today" = "今天";
 
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "未知";

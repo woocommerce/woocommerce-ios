@@ -37,6 +37,12 @@ extension UIImage {
         return UIImage(named: "icon-analytics")!
     }
 
+    /// App icon (iPhone size)
+    ///
+    static var appIconDefault: UIImage {
+        return UIImage(named: "AppIcon60x60")!
+    }
+
     /// Currency Image
     ///
     static var currencyImage: UIImage {
@@ -353,6 +359,12 @@ extension UIImage {
     ///
     static var heartOutlineImage: UIImage {
         return UIImage.gridicon(.heartOutline)
+    }
+
+    /// Help Outline
+    ///
+    static var helpOutlineImage: UIImage {
+        return UIImage.gridicon(.helpOutline)
     }
 
     /// House Image
@@ -684,6 +696,12 @@ extension UIImage {
     static var moreImage: UIImage {
         let tintColor = UIColor.primary
         return ellipsisImage.imageWithTintColor(tintColor)!
+    }
+
+    /// Select multiple items icon
+    ///
+    static var multiSelectIcon: UIImage {
+        return UIImage(named: "icon-multiselect")!
     }
 
     /// Payment celebration

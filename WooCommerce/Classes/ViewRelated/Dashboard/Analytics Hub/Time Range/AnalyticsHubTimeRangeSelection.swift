@@ -33,40 +33,26 @@ public class AnalyticsHubTimeRangeSelection {
          currentDate: Date = Date(),
          timezone: TimeZone = TimeZone.current,
          calendar: Calendar = Locale.current.calendar) {
-        var selectionData: AnalyticsHubTimeRangeData
 
-        switch selectionType {
-        case .today:
-            selectionData = AnalyticsHubTodayRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .yesterday:
-            selectionData = AnalyticsHubYesterdayRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .lastWeek:
-            selectionData = AnalyticsHubLastWeekRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .lastMonth:
-            selectionData = AnalyticsHubLastMonthRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .lastYear:
-            selectionData = AnalyticsHubLastYearRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .weekToDate:
-            selectionData = AnalyticsHubWeekToDateRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .monthToDate:
-            selectionData = AnalyticsHubMonthToDateRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
-        case .yearToDate:
-            selectionData = AnalyticsHubYearToDateRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar)
+        // Exit early if we can't generate a selection Data.
+        guard let selectionData = selectionType.toRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar) else {
+            self.currentTimeRange = nil
+            self.previousTimeRange = nil
+            self.formattedCurrentRangeText = nil
+            self.formattedPreviousRangeText = nil
+            self.rangeSelectionDescription = ""
+            return
         }
 
         let currentTimeRange = selectionData.currentTimeRange
         let previousTimeRange = selectionData.previousTimeRange
+        let useShortFormat = selectionType == .today || selectionType == .yesterday
+
         self.currentTimeRange = currentTimeRange
         self.previousTimeRange = previousTimeRange
-
-        let simplifiedDescription = selectionType == .today || selectionType == .yesterday
-        self.formattedCurrentRangeText = currentTimeRange?.formatToString(simplified: simplifiedDescription,
-                                                                          timezone: timezone,
-                                                                          calendar: calendar)
-        self.formattedPreviousRangeText = previousTimeRange?.formatToString(simplified: simplifiedDescription,
-                                                                            timezone: timezone,
-                                                                            calendar: calendar)
         self.rangeSelectionDescription = selectionType.description
+        self.formattedCurrentRangeText = currentTimeRange?.formatToString(simplified: useShortFormat, timezone: timezone, calendar: calendar)
+        self.formattedPreviousRangeText = previousTimeRange?.formatToString(simplified: useShortFormat, timezone: timezone, calendar: calendar)
     }
 
     /// Unwrap the generated selected `AnalyticsHubTimeRange` based on the `selectedTimeRange`
@@ -91,34 +77,84 @@ public class AnalyticsHubTimeRangeSelection {
 
 // MARK: - Time Range Selection Type
 extension AnalyticsHubTimeRangeSelection {
-    enum SelectionType: CaseIterable {
+    enum SelectionType: Equatable {
+
+        case custom(start: Date, end: Date)
         case today
         case yesterday
         case lastWeek
         case lastMonth
+        case lastQuarter
         case lastYear
         case weekToDate
         case monthToDate
+        case quarterToDate
         case yearToDate
 
-        var description: String {
+        /// The granularity that should be used to request stats from the given SelectedType
+        ///
+        var granularity: StatsGranularityV4 {
             switch self {
-            case .today:
-                return Localization.today
-            case .yesterday:
-                return Localization.yesterday
-            case .lastWeek:
-                return Localization.lastWeek
-            case .lastMonth:
-                return Localization.lastMonth
-            case .lastYear:
-                return Localization.lastYear
-            case .weekToDate:
-                return Localization.weekToDate
-            case .monthToDate:
-                return Localization.monthToDate
-            case .yearToDate:
-                return Localization.yearToDate
+            case .today, .yesterday:
+                return .hourly
+            case .custom, .weekToDate, .lastWeek:
+                return .daily
+            case .monthToDate, .lastMonth:
+                return .daily
+            case .quarterToDate, .lastQuarter:
+                return .weekly
+            case .yearToDate, .lastYear:
+                return .monthly
+            }
+        }
+
+        /// The response interval size that should be used to request stats from the given SelectedType
+        /// in order to proper determine the stats charts and changes
+        ///
+        var intervalSize: Int {
+            switch self {
+            case .custom, .today, .yesterday:
+                return 24
+            case .weekToDate, .lastWeek:
+                return 7
+            case .monthToDate, .lastMonth:
+                return 31
+            case .quarterToDate, .lastQuarter:
+                return 13
+            case .yearToDate, .lastYear:
+                return 12
+            }
+        }
+
+        /// The period used to request site summary stats from the given SelectedType.
+        ///
+        /// Returns `nil` if there isn't a `StatGranularity` period that can be used to fetch stats for the given SelectedType.
+        ///
+        var period: StatGranularity? {
+            switch self {
+            case .custom:
+                return nil
+            case .today, .yesterday:
+                return .day
+            case .weekToDate, .lastWeek:
+                return .week
+            case .monthToDate, .lastMonth, .quarterToDate, .lastQuarter:
+                return .month
+            case .yearToDate, .lastYear:
+                return .year
+            }
+        }
+
+        /// The quantity of periods used to request site summary stats from the given SelectedType.
+        ///
+        /// Defaults to 1 (a single period) except for ranges not matching a `StatGranularity` period.
+        ///
+        var quantity: Int {
+            switch self {
+            case .quarterToDate, .lastQuarter:
+                return 3 // Stats summary calculated from 3 months of data
+            default:
+                return 1
             }
         }
 
@@ -136,6 +172,37 @@ extension AnalyticsHubTimeRangeSelection {
         }
     }
 }
+
+// MARK: - SelectionType helper functions
+private extension AnalyticsHubTimeRangeSelection.SelectionType {
+    func toRangeData(referenceDate: Date, timezone: TimeZone, calendar: Calendar) -> AnalyticsHubTimeRangeData? {
+        switch self {
+        case let .custom(start, end):
+            return AnalyticsHubCustomRangeData(start: start, end: end, timezone: timezone, calendar: calendar)
+        case .today:
+            return AnalyticsHubTodayRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .yesterday:
+            return AnalyticsHubYesterdayRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .lastWeek:
+            return AnalyticsHubLastWeekRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .lastMonth:
+            return AnalyticsHubLastMonthRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .lastQuarter:
+            return AnalyticsHubLastQuarterRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .lastYear:
+            return AnalyticsHubLastYearRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .weekToDate:
+            return AnalyticsHubWeekToDateRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .monthToDate:
+            return AnalyticsHubMonthToDateRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .quarterToDate:
+            return AnalyticsHubQuarterToDateRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        case .yearToDate:
+            return AnalyticsHubYearToDateRangeData(referenceDate: referenceDate, timezone: timezone, calendar: calendar)
+        }
+    }
+}
+
 // MARK: - Constants
 extension AnalyticsHubTimeRangeSelection {
     enum TimeRangeGeneratorError: Error {
@@ -144,14 +211,6 @@ extension AnalyticsHubTimeRangeSelection {
     }
 
     enum Localization {
-        static let today = NSLocalizedString("Today", comment: "Title of the Analytics Hub Today's selection range")
-        static let yesterday = NSLocalizedString("Yesterday", comment: "Title of the Analytics Hub Yesterday selection range")
-        static let lastWeek = NSLocalizedString("Last Week", comment: "Title of the Analytics Hub Last Week selection range")
-        static let lastMonth = NSLocalizedString("Last Month", comment: "Title of the Analytics Hub Last Month selection range")
-        static let lastYear = NSLocalizedString("Last Year", comment: "Title of the Analytics Hub Last Year selection range")
-        static let weekToDate = NSLocalizedString("Week to Date", comment: "Title of the Analytics Hub Week to Date selection range")
-        static let monthToDate = NSLocalizedString("Month to Date", comment: "Title of the Analytics Hub Month to Date selection range")
-        static let yearToDate = NSLocalizedString("Year to Date", comment: "Title of the Analytics Hub Year to Date selection range")
         static let selectionTitle = NSLocalizedString("Date Range", comment: "Title of the range selection list")
         static let noCurrentPeriodAvailable = NSLocalizedString("No current period available",
                                                                 comment: "A error message when it's not possible to acquire"

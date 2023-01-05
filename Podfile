@@ -27,15 +27,15 @@ def aztec
 end
 
 def tracks
-  pod 'Automattic-Tracks-iOS', '~> 0.13.0'
-  # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => ''
+  pod 'Automattic-Tracks-iOS', '~> 1.0-beta'
+  # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'trunk'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => ''
   # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
 end
 
 def wordpress_kit
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressKit', '~> 4.49.0'
+  pod 'WordPressKit', '~> 5.0.0'
   # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
 end
 
@@ -56,6 +56,21 @@ def stripe_terminal
   pod 'StripeTerminal', '~> 2.14'
 end
 
+def networking_pods
+  alamofire
+  cocoa_lumberjack
+
+  pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
+
+  # Used for HTML parsing
+  aztec
+
+  # Used for storing application password
+  keychain
+
+  wordpress_kit
+end
+
 # Main Target!
 # ============
 #
@@ -71,12 +86,12 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 4.3.0'
-#   pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
+  pod 'WordPressAuthenticator', '~> 5.0.0'
+  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
-  pod 'WordPressShared', '~> 1.15'
+  pod 'WordPressShared', '~> 2.0'
 
   pod 'WordPressUI', '~> 1.12.5'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
@@ -122,6 +137,7 @@ def yosemite_pods
   stripe_terminal
   cocoa_lumberjack
   wordpress_kit
+  networking_pods
 
   aztec
 end
@@ -163,21 +179,6 @@ end
 target 'WooFoundationTests' do
   project 'WooFoundation/WooFoundation.xcodeproj'
   woofoundation_pods
-end
-
-# Networking Layer:
-# =================
-#
-def networking_pods
-  alamofire
-  cocoa_lumberjack
-
-  pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
-
-  # Used for HTML parsing
-  aztec
-
-  wordpress_kit
 end
 
 # Networking Target:

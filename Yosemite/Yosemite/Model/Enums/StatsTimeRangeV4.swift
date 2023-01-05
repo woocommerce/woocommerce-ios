@@ -51,6 +51,20 @@ extension StatsTimeRangeV4 {
         }
     }
 
+    /// Represents the period unit of the summary stats given a time range.
+    public var summaryStatsGranularity: StatGranularity {
+        switch self {
+        case .today:
+            return .day
+        case .thisWeek:
+            return .week
+        case .thisMonth:
+            return .month
+        case .thisYear:
+            return .year
+        }
+    }
+
     /// Represents the period unit of the leaderboards v4 API  given a time range.
     public var leaderboardsGranularity: StatsGranularityV4 {
         switch self {

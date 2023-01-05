@@ -1,2 +1,1 @@
-Nous nous sommes concentrés sur des problèmes de stabilité et de performances pour améliorer la fluidité de votre expérience. Continuez de nous faire parvenir vos commentaires. Nous les lisons tous.
-
+Bonne nouvelle ! Nous avons ajouté une nouvelle section d’analyses à l’application. Cliquez simplement sur le bouton En savoir plus sous les statistiques de la boutique pour obtenir plus d’informations sur les revenus et les commandes. Ce n’est pas tout : d’autres mises à jour sont à venir dans les prochaines semaines !

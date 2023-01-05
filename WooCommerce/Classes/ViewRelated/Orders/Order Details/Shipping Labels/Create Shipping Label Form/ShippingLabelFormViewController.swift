@@ -62,7 +62,7 @@ private extension ShippingLabelFormViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = .listForeground
+        view.backgroundColor = .listForeground(modal: false)
     }
 
     func configureTableView() {

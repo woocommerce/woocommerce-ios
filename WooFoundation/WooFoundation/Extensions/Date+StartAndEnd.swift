@@ -96,6 +96,43 @@ public extension Date {
         return calendar.date(byAdding: components, to: startOfMonth)
     }
 
+    // MARK: Quarter
+
+    /// Returns self's start of quarter in the given time zone.
+    func startOfQuarter(timezone: TimeZone, calendar: Calendar) -> Date? {
+        guard let startOfMonth = startOfMonth(timezone: timezone) else {
+            return nil
+        }
+
+        var components = calendar.dateComponents([.month, .year], from: startOfMonth)
+        switch components.month {
+        case 1, 2, 3:
+            components.month = 1
+        case 4, 5, 6:
+            components.month = 4
+        case 7, 8, 9:
+            components.month = 7
+        case 10, 11, 12:
+            components.month = 10
+        default:
+            return nil
+        }
+
+        return calendar.date(from: components)
+    }
+
+    /// Returns self's end of quarter in the given time zone.
+    func endOfQuarter(timezone: TimeZone, calendar: Calendar) -> Date? {
+        guard let startOfQuarter = startOfQuarter(timezone: timezone, calendar: calendar) else {
+            return nil
+        }
+
+        var oneMonthUnit = DateComponents()
+        oneMonthUnit.month = 3
+        oneMonthUnit.second = -1
+        return calendar.date(byAdding: oneMonthUnit, to: startOfQuarter)
+    }
+
     // MARK: Year
 
     /// Returns self's start of year in the given time zone.

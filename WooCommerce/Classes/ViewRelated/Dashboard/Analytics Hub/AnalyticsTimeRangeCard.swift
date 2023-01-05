@@ -9,12 +9,28 @@ struct AnalyticsTimeRangeCard: View {
     let previousRangeDescription: String
     @Binding var selectionType: AnalyticsHubTimeRangeSelection.SelectionType
 
+    /// Determines if the time range selection should be shown.
+    ///
     @State private var showTimeRangeSelectionView: Bool = false
+
+    /// Determines if the custom range selection should be shown.
+    ///
+    @State private var showCustomRangeSelectionView: Bool = false
+
+    /// Closure invoked when the time range card is tapped.
+    ///
+    private var onTapped: () -> Void
+
+    /// Closure invoked when a time range is selected.
+    ///
+    private var onSelected: (Range) -> Void
 
     init(viewModel: AnalyticsTimeRangeCardViewModel, selectionType: Binding<AnalyticsHubTimeRangeSelection.SelectionType>) {
         self.timeRangeTitle = viewModel.selectedRangeTitle
         self.currentRangeDescription = viewModel.currentRangeSubtitle
         self.previousRangeDescription = viewModel.previousRangeSubtitle
+        self.onSelected = viewModel.onSelected
+        self.onTapped = viewModel.onTapped
         self._selectionType = selectionType
     }
 
@@ -22,9 +38,17 @@ struct AnalyticsTimeRangeCard: View {
         createTimeRangeContent()
             .sheet(isPresented: $showTimeRangeSelectionView) {
                 SelectionList(title: Localization.timeRangeSelectionTitle,
-                              items: AnalyticsHubTimeRangeSelection.SelectionType.allCases,
+                              items: Range.allCases,
                               contentKeyPath: \.description,
-                              selected: $selectionType)
+                              selected: internalSelectionBinding()) { selection in
+                    onSelected(selection)
+                }
+                .sheet(isPresented: $showCustomRangeSelectionView) {
+                    RangedDatePicker(startDate: selectionType.startDate, endDate: selectionType.endDate, datesFormatter: DatesFormatter()) { start, end in
+                        showTimeRangeSelectionView = false // Dismiss the initial sheet for a smooth transition
+                        self.selectionType = .custom(start: start, end: end)
+                    }
+                }
             }
     }
 
@@ -32,6 +56,7 @@ struct AnalyticsTimeRangeCard: View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             Button(action: {
                 showTimeRangeSelectionView.toggle()
+                onTapped()
             }, label: {
                 HStack {
                     Image(uiImage: .calendar)
@@ -49,6 +74,7 @@ struct AnalyticsTimeRangeCard: View {
                             .bold()
                     }
                     .padding(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                     Image(uiImage: .chevronDownImage)
@@ -70,6 +96,37 @@ struct AnalyticsTimeRangeCard: View {
         }
         .padding([.top, .bottom])
         .frame(maxWidth: .infinity)
+    }
+
+    /// Tracks the range selection internally to determine if the custom range selection should be presented or not.
+    /// If custom range selection is not needed, the internal selection is forwarded to `selectionType`.
+    ///
+    private func internalSelectionBinding() -> Binding<Range> {
+        .init(
+            get: {
+                return selectionType.asTimeCardRange
+            },
+            set: { newValue in
+                switch newValue {
+                    // If we get a `custom` case it is because we need to present the custom range selection
+                case .custom:
+                    showCustomRangeSelectionView = true
+                default:
+                    // Any other selection should be forwarded to our parent binding.
+                    selectionType = newValue.asAnalyticsHubRange
+                }
+            }
+        )
+    }
+}
+
+private extension AnalyticsTimeRangeCard {
+    /// Specific `DatesFormatter` for the `RangedDatePicker` when presented in the analytics hub module.
+    ///
+    struct DatesFormatter: RangedDateTextFormatter {
+        func format(start: Date, end: Date) -> String {
+            AnalyticsHubTimeRange(start: start, end: end).formatToString(simplified: false, timezone: .current, calendar: Locale.current.calendar)
+        }
     }
 }
 
@@ -102,5 +159,22 @@ struct TimeRangeCard_Previews: PreviewProvider {
                                                         currentRangeSubtitle: "Nov 1 - 23, 2022",
                                                         previousRangeSubtitle: "Oct 1 - 23, 2022")
         AnalyticsTimeRangeCard(viewModel: viewModel, selectionType: .constant(.monthToDate))
+    }
+}
+
+
+extension AnalyticsTimeRangeCard {
+    enum Range: CaseIterable {
+        case custom
+        case today
+        case yesterday
+        case lastWeek
+        case lastMonth
+        case lastQuarter
+        case lastYear
+        case weekToDate
+        case monthToDate
+        case quarterToDate
+        case yearToDate
     }
 }

@@ -1,2 +1,1 @@
-We focused on some stability and performance issues to make your experience smoother. Please keep sharing feedback. We read every one of them.
-
+Good news! We added a new analytics section to the app! Simply click on the See More button under the store stats to check more detailed information on Revenue and Orders. This isn’t the last of it – more updates to come in the next few weeks!

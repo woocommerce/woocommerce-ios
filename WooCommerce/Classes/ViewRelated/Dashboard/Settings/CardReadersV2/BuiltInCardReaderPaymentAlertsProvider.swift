@@ -21,8 +21,7 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
         return CardPresentModalBuiltInFollowReaderInstructions(name: name,
                                               amount: amount,
                                               transactionType: .collectPayment,
-                                              inputMethods: inputMethods,
-                                              onCancel: { })
+                                              inputMethods: inputMethods)
     }
 
     func displayReaderMessage(message: String) -> CardPresentPaymentsModalViewModel {
@@ -79,6 +78,10 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
 
     func retryableError(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalRetryableError(primaryAction: tryAgain)
+    }
+
+    func cancelledOnReader() -> CardPresentPaymentsModalViewModel? {
+        return nil
     }
 }
 

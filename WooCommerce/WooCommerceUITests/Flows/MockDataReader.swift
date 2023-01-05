@@ -39,6 +39,12 @@ class GetMocks {
         return updatedData
     }
 
+    static func readNewProductData() throws -> ProductData {
+        let originalData = try JSONDecoder().decode(NewProductMock.self, from: self.getMockData(test: ProductsTests.self, filename: "products_add_new"))
+
+        return try XCTUnwrap(originalData.response.jsonBody.data)
+    }
+
     static func readReviewsData() throws -> [ReviewData] {
         let originalData = try JSONDecoder().decode(ReviewMock.self, from: self.getMockData(test: ReviewsTests.self, filename: "products_reviews_all"))
         var updatedData = originalData.response.jsonBody.data

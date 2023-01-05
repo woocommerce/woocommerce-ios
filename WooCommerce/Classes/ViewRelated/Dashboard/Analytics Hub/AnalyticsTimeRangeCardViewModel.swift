@@ -15,4 +15,12 @@ struct AnalyticsTimeRangeCardViewModel {
     /// Previous Range Subtitle.
     ///
     let previousRangeSubtitle: String
+
+    /// Closure invoked when the time range card is tapped.
+    ///
+    var onTapped: () -> Void = {}
+
+    /// Closure invoked when a time range is selected.
+    ///
+    var onSelected: (AnalyticsTimeRangeCard.Range) -> Void = { _ in }
 }

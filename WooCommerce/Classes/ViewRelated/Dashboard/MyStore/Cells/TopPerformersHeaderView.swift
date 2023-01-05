@@ -64,7 +64,7 @@ class TopPerformersHeaderView: UITableViewHeaderFooterView {
         leftColumn.textColor = .listIcon
         rightColumn.textColor = .listIcon
         borderView.backgroundColor = .systemColor(.separator)
-        contentView.backgroundColor = .listForeground
+        contentView.backgroundColor = .listForeground(modal: false)
     }
 }
 

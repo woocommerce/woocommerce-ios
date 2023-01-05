@@ -22,7 +22,7 @@ final class BottomSheetListSelectorSectionHeaderView: UITableViewHeaderFooterVie
 
 private extension BottomSheetListSelectorSectionHeaderView {
     func configureMainView() {
-        contentView.backgroundColor = .listForeground
+        contentView.backgroundColor = .listForeground(modal: false)
     }
 
     func configureTitle() {

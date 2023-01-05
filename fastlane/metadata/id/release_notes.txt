@@ -1,2 +1,1 @@
-Kami fokus pada sejumlah masalah stabilitas dan performa untuk melancarkan pengalaman Anda. Mohon terus berikan feedback kepada kami. Kami membaca semuanya.
-
+Kabar baik! Kami menambahkan bagian analitik baru dalam aplikasi! Klik tombol Lihat Selengkapnya di bawah statistik toko untuk melihat informasi terperinci tentang Pendapatan dan Pesanan. Pembaruan ini bukanlah yang terakhir – masih akan ada yang lainnya dalam beberapa minggu ke depan!

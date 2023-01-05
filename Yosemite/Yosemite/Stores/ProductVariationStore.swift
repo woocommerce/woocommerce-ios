@@ -36,6 +36,8 @@ public final class ProductVariationStore: Store {
         }
 
         switch action {
+        case .synchronizeAllProductVariations(let siteID, let productID, let onCompletion):
+            synchronizeAllProductVariations(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .synchronizeProductVariations(let siteID, let productID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .retrieveProductVariation(let siteID, let productID, let variationID, let onCompletion):
@@ -61,16 +63,30 @@ public final class ProductVariationStore: Store {
 //
 private extension ProductVariationStore {
 
-    /// Synchronizes the product reviews associated with a given Site ID (if any!).
+    /// Synchronizes all the product reviews associated with a given Site ID (if any!).
     ///
-    func synchronizeProductVariations(siteID: Int64, productID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeAllProductVariations(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let maxPageSize = 100 // API only allows to fetch a max of 100 variations at a time
+        recursivelySyncAllVariations(siteID: siteID,
+                                     productID: productID,
+                                     pageNumber: Default.firstPageNumber,
+                                     pageSize: maxPageSize) { result in
+            // Transforms Result<Bool, Error> -> Result<Void, Error> as the bool value is not needed anymore.
+            onCompletion(result.map { _ in () }) //
+        }
+    }
+
+    /// Synchronizes the product reviews associated with a given Site ID (if any!).
+    /// If successful, the result boolean value, will indicate weather there are more variations to fetch or not.
+    ///
+    func synchronizeProductVariations(siteID: Int64, productID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         remote.loadAllProductVariations(for: siteID,
                                         productID: productID,
                                         context: nil,
                                         pageNumber: pageNumber,
                                         pageSize: pageSize) { [weak self] (productVariations, error) in
             guard let productVariations = productVariations else {
-                onCompletion(error)
+                onCompletion(.failure(error ?? NSError()))
                 return
             }
 
@@ -82,7 +98,8 @@ private extension ProductVariationStore {
             self?.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations,
                                                             siteID: siteID,
                                                             productID: productID) {
-                onCompletion(nil)
+                let couldBeMoreVariationsToFetch = productVariations.count == pageSize
+                onCompletion(.success(couldBeMoreVariationsToFetch))
             }
         }
     }
@@ -405,6 +422,30 @@ private extension ProductVariationStore {
             let newStorageImage = storage.insertNewObject(ofType: Storage.ProductImage.self)
             newStorageImage.update(with: readOnlyImage)
             storageVariation.image = newStorageImage
+        }
+    }
+
+    /// Recursively sync all product variations starting with the given page number and using a maximum page size.
+    ///
+    private func recursivelySyncAllVariations(siteID: Int64,
+                                              productID: Int64,
+                                              pageNumber: Int,
+                                              pageSize: Int,
+                                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+            switch result {
+            case .success(let hasMoreVariationsToFetch):
+                guard hasMoreVariationsToFetch else {
+                    return onCompletion(.success(false))
+                }
+                self?.recursivelySyncAllVariations(siteID: siteID,
+                                                   productID: productID,
+                                                   pageNumber: pageNumber + 1,
+                                                   pageSize: pageSize,
+                                                   onCompletion: onCompletion)
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
         }
     }
 }

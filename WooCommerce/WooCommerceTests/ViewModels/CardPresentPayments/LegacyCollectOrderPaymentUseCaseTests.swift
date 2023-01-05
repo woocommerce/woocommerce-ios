@@ -24,14 +24,15 @@ final class LegacyCollectOrderPaymentUseCaseTests: XCTestCase {
 
         alerts = MockOrderDetailsPaymentAlerts()
         useCase = LegacyCollectOrderPaymentUseCase(siteID: defaultSiteID,
-                                             order: .fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5"),
-                                             formattedAmount: "1.5",
-                                             paymentGatewayAccount: .fake().copy(gatewayID: Mocks.paymentGatewayAccount),
-                                             rootViewController: .init(),
-                                             alerts: alerts,
-                                             configuration: Mocks.configuration,
-                                             stores: stores,
-                                             analytics: analytics)
+                                                   order: .fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5"),
+                                                   formattedAmount: "1.5",
+                                                   paymentGatewayAccount: .fake().copy(gatewayID: Mocks.paymentGatewayAccount),
+                                                   rootViewController: .init(),
+                                                   alerts: alerts,
+                                                   configuration: Mocks.configuration,
+                                                   stores: stores,
+                                                   paymentCaptureCelebration: MockPaymentCaptureCelebration(),
+                                                   analytics: analytics)
     }
 
     override func tearDown() {
@@ -155,14 +156,15 @@ final class LegacyCollectOrderPaymentUseCaseTests: XCTestCase {
     func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {
         // Given
         let useCase = LegacyCollectOrderPaymentUseCase(siteID: 122,
-                                                 order: .fake().copy(total: "0.49"),
-                                                 formattedAmount: "0.49",
-                                                 paymentGatewayAccount: .fake().copy(gatewayID: Mocks.paymentGatewayAccount),
-                                                 rootViewController: .init(),
-                                                 alerts: alerts,
-                                                 configuration: Mocks.configuration,
-                                                 stores: stores,
-                                                 analytics: analytics)
+                                                       order: .fake().copy(total: "0.49"),
+                                                       formattedAmount: "0.49",
+                                                       paymentGatewayAccount: .fake().copy(gatewayID: Mocks.paymentGatewayAccount),
+                                                       rootViewController: .init(),
+                                                       alerts: alerts,
+                                                       configuration: Mocks.configuration,
+                                                       stores: stores,
+                                                       paymentCaptureCelebration: MockPaymentCaptureCelebration(),
+                                                       analytics: analytics)
 
         // When
         // Mocks card reader connection success since the minimum amount is only checked after reader connection success.
@@ -171,9 +173,9 @@ final class LegacyCollectOrderPaymentUseCaseTests: XCTestCase {
         let _: Void = waitFor { [weak self] promise in
             useCase.collectPayment(onCollect: { collectPaymentResult in
                 result = collectPaymentResult
-            }, onCancel: {}, onCompleted: {
+            }, onCancel: {
                 promise(())
-            })
+            }, onCompleted: {})
             // Dismisses error to complete the payment flow for `onCollect` to be triggered.
             self?.alerts.dismissErrorCompletion?()
         }

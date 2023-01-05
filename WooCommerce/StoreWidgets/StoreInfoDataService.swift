@@ -17,9 +17,9 @@ final class StoreInfoDataService {
     ///
     private var orderStatsRemoteV4: OrderStatsRemoteV4
 
-    /// Visitors remoute source
+    /// Visitors remote source
     ///
-    private var siteVisitStatsRemote: SiteVisitStatsRemote
+    private var siteStatsRemote: SiteStatsRemote
 
     /// Network helper.
     ///
@@ -28,7 +28,7 @@ final class StoreInfoDataService {
     init(authToken: String) {
         network = AlamofireNetwork(credentials: Credentials(authToken: authToken))
         orderStatsRemoteV4 = OrderStatsRemoteV4(network: network)
-        siteVisitStatsRemote = SiteVisitStatsRemote(network: network)
+        siteStatsRemote = SiteStatsRemote(network: network)
     }
 
     /// Async function that fetches todays stats data.
@@ -36,16 +36,16 @@ final class StoreInfoDataService {
     func fetchTodayStats(for storeID: Int64) async throws -> Stats {
         // Prepare them to run in parallel
         async let revenueAndOrdersRequest = fetchTodaysRevenueAndOrders(for: storeID)
-        async let visitorsRequest = fetchTodaysVisitors(for: storeID)
+        async let siteStatsRequest = fetchTodaysVisitors(for: storeID)
 
         // Wait for for response
-        let (revenueAndOrders, visitors) = try await (revenueAndOrdersRequest, visitorsRequest)
+        let (revenueAndOrders, siteStats) = try await (revenueAndOrdersRequest, siteStatsRequest)
 
         // Assemble stats data
-        let conversion = visitors.totalVisitors > 0 ? Double(revenueAndOrders.totals.totalOrders) / Double(visitors.totalVisitors) : 0
+        let conversion = siteStats.visitors > 0 ? Double(revenueAndOrders.totals.totalOrders) / Double(siteStats.visitors) : 0
         return Stats(revenue: revenueAndOrders.totals.grossRevenue,
                      totalOrders: revenueAndOrders.totals.totalOrders,
-                     totalVisitors: visitors.totalVisitors,
+                     totalVisitors: siteStats.visitors,
                      conversion: min(conversion, 1))
     }
 }
@@ -74,14 +74,13 @@ private extension StoreInfoDataService {
 
     /// Async wrapper that fetches todays visitors.
     ///
-    func fetchTodaysVisitors(for storeID: Int64) async throws -> SiteVisitStats {
+    func fetchTodaysVisitors(for storeID: Int64) async throws -> SiteSummaryStats {
         try await withCheckedThrowingContinuation { continuation in
-            // `WKWebView` is accessed internally, we are foreced to dispatch the call in the main thread.
+            // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
             Task { @MainActor in
-                siteVisitStatsRemote.loadSiteVisitorStats(for: storeID,
-                                                          unit: .day,
-                                                          latestDateToInclude: Date().endOfDay(timezone: .current),
-                                                          quantity: 1) { result in
+                siteStatsRemote.loadSiteSummaryStats(for: storeID,
+                                                     period: .day,
+                                                     includingDate: Date().endOfDay(timezone: .current)) { result in
                     continuation.resume(with: result)
                 }
             }

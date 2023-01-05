@@ -8,7 +8,7 @@ struct PermanentNoticeView: View {
 
     var body: some View {
         PermanentNoticeContentView(notice: notice)
-            .background(Color(.listForeground))
+            .background(Color(.listForeground(modal: false)))
             .overlay(Rectangle()
                 .frame(width: nil, height: 0.5, alignment: .top)
                 .foregroundColor(Color(UIColor.systemColor(.separator))), alignment: .top)

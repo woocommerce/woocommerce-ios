@@ -78,7 +78,10 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     // MARK: Child View Controllers
 
     private lazy var storeStatsPeriodViewController: StoreStatsV4PeriodViewController = {
-        StoreStatsV4PeriodViewController(siteID: siteID, timeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
+        StoreStatsV4PeriodViewController(siteID: siteID,
+                                         timeRange: timeRange,
+                                         currentDate: currentDate,
+                                         usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
@@ -288,13 +291,11 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         let storeStatsPeriodView = storeStatsPeriodViewController.view!
         stackView.addArrangedSubview(storeStatsPeriodView)
         NSLayoutConstraint.activate([
-            storeStatsPeriodView.heightAnchor.constraint(equalToConstant: Constants.storeStatsPeriodViewHeight),
+            storeStatsPeriodView.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.storeStatsPeriodViewHeight),
             ])
 
         // Analytics Hub ("See more") button
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analyticsHub) {
-            stackView.addArrangedSubview(analyticsHubButtonView)
-        }
+        stackView.addArrangedSubview(analyticsHubButtonView)
 
         // In-app Feedback Card
         stackView.addArrangedSubviews(inAppFeedbackCardViewsForStackView)
@@ -340,7 +341,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.applySecondaryButtonStyle()
-        button.setTitle(Localization.seeMoreButton, for: .normal)
+        button.setTitle(Localization.seeMoreButton.localizedCapitalized, for: .normal)
         button.addTarget(self, action: #selector(seeMoreButtonTapped), for: .touchUpInside)
 
         let view = UIView(frame: .zero)
@@ -357,7 +358,8 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
     }
 
     @objc func seeMoreButtonTapped() {
-        let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID, timeRange: timeRange)
+        viewModel.trackSeeMoreButtonTapped()
+        let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID, timeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
         show(analyticsHubVC, sender: self)
     }
 }

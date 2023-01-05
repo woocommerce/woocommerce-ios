@@ -5,7 +5,7 @@ import WordPressUI
 extension GhostStyle {
     static var wooDefaultGhostStyle: Self {
         return GhostStyle(beatDuration: Defaults.beatDuration,
-                          beatStartColor: .listForeground,
+                          beatStartColor: .listForeground(modal: false),
                           beatEndColor: .ghostCellAnimationEndColor)
     }
 }

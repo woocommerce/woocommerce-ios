@@ -8,7 +8,7 @@ import enum Experiments.ABTest
 import struct Networking.Settings
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
-
+import class Networking.DefaultApplicationPasswordUseCase
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
@@ -45,6 +45,9 @@ class AuthenticationManager: Authentication {
 
     private let analytics: Analytics
 
+    /// Keeps a reference to the checker
+    private var postSiteCredentialLoginChecker: PostSiteCredentialLoginChecker?
+
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -56,17 +59,16 @@ class AuthenticationManager: Authentication {
     /// Initializes the WordPress Authenticator.
     ///
     func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol) {
-        let isWPComMagicLinkPreferredToPassword = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
-        let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
-        let isSimplifiedLoginI1Enabled = ABTest.abTestLoginWithWPComOnly.variation != .control
-        let isStoreCreationMVPEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
-        let isNativeJetpackSetupEnabled = ABTest.nativeJetpackSetupFlow.variation != .control
+        let isWPComMagicLinkPreferredToPassword = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
+        let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
+        let isStoreCreationMVPEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+        let isWPComLoginRequiredForSiteCredentialsLogin = !featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: WooConstants.URLs.termsOfService.rawValue,
                                                                 wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
-                                                                whatIsWPComURL: isSimplifiedLoginI1Enabled ? nil : WooConstants.URLs.whatIsWPCom.rawValue,
+                                                                whatIsWPComURL: WooConstants.URLs.whatIsWPCom.rawValue,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
@@ -78,17 +80,17 @@ class AuthenticationManager: Authentication {
                                                                 enableUnifiedAuth: true,
                                                                 continueWithSiteAddressFirst: false,
                                                                 enableSiteCredentialsLoginForSelfHostedSites: true,
-                                                                isWPComLoginRequiredForSiteCredentialsLogin: true,
+                                                                isWPComLoginRequiredForSiteCredentialsLogin: isWPComLoginRequiredForSiteCredentialsLogin,
                                                                 isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
                                                                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
                                                                     isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen,
-                                                                enableWPComLoginOnlyInPrologue: isSimplifiedLoginI1Enabled,
+                                                                enableWPComLoginOnlyInPrologue: false,
                                                                 enableSiteCreation: isStoreCreationMVPEnabled,
-                                                                enableSocialLogin: !isSimplifiedLoginI1Enabled,
+                                                                enableSocialLogin: true,
                                                                 emphasizeEmailForWPComPassword: true,
                                                                 wpcomPasswordInstructions:
                                                                 AuthenticationConstants.wpcomPasswordInstructions,
-                                                                skipXMLRPCCheckForSiteDiscovery: isNativeJetpackSetupEnabled)
+                                                                skipXMLRPCCheckForSiteDiscovery: true)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -112,7 +114,7 @@ class AuthenticationManager: Authentication {
                                                 subheadlineColor: .gray(.shade30),
                                                 placeholderColor: .placeholderImage,
                                                 viewControllerBackgroundColor: .listBackground,
-                                                textFieldBackgroundColor: .listForeground,
+                                                textFieldBackgroundColor: .listForeground(modal: false),
                                                 buttonViewBackgroundColor: .authPrologueBottomBackgroundColor,
                                                 buttonViewTopShadowImage: nil,
                                                 navBarImage: StyleManager.navBarImage,
@@ -122,17 +124,11 @@ class AuthenticationManager: Authentication {
                                                     LoginPrologueViewController(isFeatureCarouselShown: false),
                                                 statusBarStyle: .default)
 
-        let getStartedInstructions = isSimplifiedLoginI1Enabled ?
-        AuthenticationConstants.getStartedInstructionsForSimplifiedLogin :
-        AuthenticationConstants.getStartedInstructions
+        let getStartedInstructions = AuthenticationConstants.getStartedInstructions
 
-        let continueWithWPButtonTitle = isSimplifiedLoginI1Enabled ?
-        AuthenticationConstants.loginButtonTitle :
-        AuthenticationConstants.continueWithWPButtonTitle
+        let continueWithWPButtonTitle = AuthenticationConstants.continueWithWPButtonTitle
 
-        let emailAddressPlaceholder = isSimplifiedLoginI1Enabled ?
-        "name@example.com" :
-        WordPressAuthenticatorDisplayStrings.defaultStrings.emailAddressPlaceholder
+        let emailAddressPlaceholder = WordPressAuthenticatorDisplayStrings.defaultStrings.emailAddressPlaceholder
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                                   getStartedInstructions: getStartedInstructions,
@@ -380,6 +376,15 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return DDLogError("⛔️ No site URL found to present Login Epilogue.")
         }
 
+        /// If the user logged in with site credentials and application password feature flag is enabled,
+        /// check if they can use the app and navigates to the home screen.
+        if let siteCredentials = credentials.wporg,
+           featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin) {
+            return didAuthenticateUser(to: siteURL,
+                                       with: siteCredentials,
+                                       in: navigationController)
+        }
+
         /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
         if isJetpackInvalidForSelfHostedSite(url: siteURL) {
             return presentJetpackError(for: siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
@@ -485,8 +490,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Synchronizes the specified WordPress Account.
     ///
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
+        if let wporg = credentials.wporg,
+            featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin) {
+            ServiceLocator.stores.authenticate(credentials: .wporg(username: wporg.username,
+                                                                   password: wporg.password,
+                                                                   siteAddress: wporg.siteURL))
+            return onCompletion()
+        }
+
         guard let wpcom = credentials.wpcom else {
-            fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
+            fatalError("No valid credentials found!")
         }
 
         // If Apple ID is previously set, saves it to Keychain now that authentication is complete.
@@ -650,39 +663,6 @@ private extension AuthenticationManager {
         }
     }
 
-    /// The error screen to be displayed when the user enters a site
-    /// without Jetpack in the site discovery flow.
-    /// More about this flow: pe5sF9-mz-p2.
-    ///
-    func jetpackErrorUI(for siteURL: String, with matcher: ULAccountMatcher, in navigationController: UINavigationController) -> UIViewController {
-        let viewModel = JetpackErrorViewModel(siteURL: siteURL,
-                                              siteCredentials: nil,
-                                              onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
-            guard let self = self else { return }
-
-            // Tries re-syncing to get an updated store list
-            ServiceLocator.stores.synchronizeEntities { [weak self] in
-                guard let self = self else { return }
-                matcher.refreshStoredSites()
-                guard let matchedSite = matcher.matchedSite(originalURL: siteURL) else {
-                    DDLogWarn("⚠️ Could not find \(siteURL) connected to the account")
-                    return
-                }
-                // checks if the site has woo
-                if matchedSite.isWooCommerceActive == false {
-                    let noWooUI = self.noWooUI(for: matchedSite,
-                                               with: matcher,
-                                               navigationController: navigationController,
-                                               onStorePickerDismiss: {})
-                    navigationController.show(noWooUI, sender: nil)
-                } else {
-                    self.startStorePicker(with: matchedSite.siteID, in: navigationController, onDismiss: {})
-                }
-            }
-        })
-        return ULErrorViewController(viewModel: viewModel)
-    }
-
     /// The error screen to be displayed when the user tries to enter a site
     /// whose Jetpack is not associated with their account.
     /// - Parameters:
@@ -713,7 +693,7 @@ private extension AuthenticationManager {
     /// The error screen to be displayed when the user tries to enter a site without WooCommerce.
     ///
     func noWooUI(for site: Site,
-                 with matcher: ULAccountMatcher,
+                 with matcher: ULAccountMatcher = .init(),
                  navigationController: UINavigationController,
                  onStorePickerDismiss: @escaping () -> Void) -> UIViewController {
         let viewModel = NoWooErrorViewModel(
@@ -763,18 +743,29 @@ private extension AuthenticationManager {
         }
 
         // Shows the native Jetpack flow during the site discovery flow.
-        if ABTest.nativeJetpackSetupFlow.variation != .control {
-            return jetpackSetupUI(for: site.url,
-                                  connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
-                                  in: navigationController)
-        }
+        return jetpackSetupUI(for: site.url,
+                              connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
+                              in: navigationController)
+    }
 
-        /// Jetpack is required. Present an error if we don't detect a valid installation.
-        guard site.hasJetpack && site.isJetpackActive else {
-            return jetpackErrorUI(for: site.url, with: matcher, in: navigationController)
+    /// Checks if the authenticated user is eligible to use the app and navigates to the home screen.
+    ///
+    func didAuthenticateUser(to siteURL: String,
+                             with siteCredentials: WordPressOrgCredentials,
+                             in navigationController: UINavigationController) {
+        guard let useCase = try? DefaultApplicationPasswordUseCase(
+            username: siteCredentials.username,
+            password: siteCredentials.password,
+            siteAddress: siteCredentials.siteURL
+        ) else {
+            return assertionFailure("⛔️ Error creating application password use case")
         }
-
-        return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
+        checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
+            // navigates to home screen immediately with a placeholder store ID
+            self?.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+        }
+        self.postSiteCredentialLoginChecker = checker
     }
 }
 

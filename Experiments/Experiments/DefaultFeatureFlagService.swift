@@ -39,10 +39,14 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .storeCreationM2WithInAppPurchasesEnabled:
             return false
+        case .storeCreationM3Profiler:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .justInTimeMessagesOnDashboard:
             return true
         case .systemStatusReportInSupportRequest:
             return true
+        case .IPPInAppFeedbackBanner:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,
@@ -51,10 +55,15 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
                 .performanceMonitoringUserInteraction:
             // Disabled by default to avoid costs spikes, unless in internal testing builds.
             return buildConfig == .alpha
-        case .analyticsHub:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .tapToPayOnIPhone:
             return buildConfig == .localDeveloper
+        case .applicationPasswordAuthenticationForSiteCredentialLogin:
+            // Enable this to test application password authentication (WIP)
+            return false
+        case .generateAllVariations:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .productsBulkEditing:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

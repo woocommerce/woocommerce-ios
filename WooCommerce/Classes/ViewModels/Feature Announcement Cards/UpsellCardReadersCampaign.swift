@@ -41,7 +41,7 @@ extension UpsellCardReadersCampaign {
             comment: "Message for the feature announcement banner intended to upsell card readers")
 
         static let cardButtonTitle = NSLocalizedString(
-            "Purchase Card Reader",
+            "Purchase card reader",
             comment: "Title for the button on the feature announcement banner intended to upsell card readers")
 
         static let dismissTitle = NSLocalizedString(

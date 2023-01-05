@@ -26,7 +26,11 @@ struct WooCrashLoggingStack: CrashLoggingStack {
         /// Upload any remaining files any time the app becomes active
         let willEnterForeground = UIApplication.willEnterForegroundNotification
         NotificationCenter.default.addObserver(forName: willEnterForeground, object: nil, queue: nil, using: self.willEnterForeground)
-        _ = try? crashLogging.start()
+        do {
+            _ = try crashLogging.start()
+        } catch {
+            DDLogError("⛔️ Unable to start WooCrashLoggingStack: \(error)")
+        }
     }
 
     func crash() {
@@ -46,12 +50,8 @@ struct WooCrashLoggingStack: CrashLoggingStack {
     }
 
     func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]? = nil) -> Never {
-        do {
-            crashLoggingDataProvider.appIsCrashing = true
-            try crashLogging.logErrorAndWait(error, userInfo: userInfo, level: .fatal)
-        } catch {
-            DDLogError("⛔️ Unable to send startup error message to Sentry: \(error)")
-        }
+        crashLoggingDataProvider.appIsCrashing = true
+        crashLogging.logErrorAndWait(error, userInfo: userInfo, level: .fatal)
         fatalError(error.localizedDescription)
     }
 

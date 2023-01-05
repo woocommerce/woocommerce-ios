@@ -36,7 +36,7 @@ final class FilteredOrdersHeaderBar: UIView {
 
 private extension FilteredOrdersHeaderBar {
     func configureBackground() {
-        backgroundColor = .listForeground
+        backgroundColor = .listForeground(modal: false)
     }
 
     /// Setup: Labels

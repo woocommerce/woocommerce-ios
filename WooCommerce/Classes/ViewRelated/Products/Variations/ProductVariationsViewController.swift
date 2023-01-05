@@ -283,7 +283,8 @@ private extension ProductVariationsViewController {
 //
 private extension ProductVariationsViewController {
     func configureTopStackView() {
-        addTopButton(title: Localization.generateVariationAction,
+        let title = featureFlagService.isFeatureFlagEnabled(.generateAllVariations) ? Localization.addVariationAction : Localization.generateVariationAction
+        addTopButton(title: title,
                      insets: .init(top: 16, left: 16, bottom: 8, right: 16),
                      hasBottomBorder: true,
                      actionSelector: #selector(addButtonTapped),
@@ -296,7 +297,7 @@ private extension ProductVariationsViewController {
                       actionSelector: Selector,
                       stylingHandler: (UIButton) -> Void) {
         let buttonContainer = UIView()
-        buttonContainer.backgroundColor = .listForeground
+        buttonContainer.backgroundColor = .listForeground(modal: false)
 
         let topButton = UIButton()
         topButton.translatesAutoresizingMaskIntoConstraints = false
@@ -563,7 +564,12 @@ private extension ProductVariationsViewController {
 
     @objc func addButtonTapped() {
         analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
-        createVariation()
+
+        if featureFlagService.isFeatureFlagEnabled(.generateAllVariations) {
+            presentGenerateVariationOptions()
+        } else {
+            createVariation()
+        }
     }
 
     /// More Options Action Sheet
@@ -594,6 +600,32 @@ private extension ProductVariationsViewController {
 
         present(actionSheet, animated: true)
     }
+
+    /// Displays a bottom sheet allowing the merchant to choose whether to generate one variation or to generate all variations.
+    ///
+    private func presentGenerateVariationOptions() {
+        let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.addVariationAction)
+        let command = GenerateVariationsSelectorCommand(selected: nil) { [weak self] option in
+            guard let self else { return }
+            self.dismiss(animated: true)
+            switch option {
+            case .single:
+                self.createVariation()
+            case .all:
+                self.generateAllVariations()
+            }
+
+        }
+        let bottomSheetPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
+        bottomSheetPresenter.show(from: self, sourceView: topStackView)
+    }
+
+    /// Informs the merchant about errors that happen during the variation generation
+    ///
+    private func presentGenerationError(_ error: ProductVariationsViewModel.GenerationError) {
+        let notice = Notice(title: error.errorTitle, message: error.errorDescription)
+        noticePresenter.enqueue(notice: notice)
+    }
 }
 
 // MARK: - Placeholders
@@ -623,22 +655,23 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
         transitionToSyncingState(pageNumber: pageNumber)
 
         let action = ProductVariationAction
-            .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
+            .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
                 guard let self = self else {
                     return
                 }
 
-                if let error = error {
+                switch result {
+                case .success:
+                    ServiceLocator.analytics.track(.productVariationListLoaded)
+                case .failure(let error):
                     ServiceLocator.analytics.track(.productVariationListLoadError, withError: error)
 
                     DDLogError("⛔️ Error synchronizing product variations: \(error)")
                     self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
-                } else {
-                    ServiceLocator.analytics.track(.productVariationListLoaded)
                 }
 
                 self.transitionToResultsUpdatedState()
-                onCompletion?(error == nil)
+                onCompletion?(result.isSuccess)
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -664,6 +697,23 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
                 DDLogError("⛔️ Error generating variation: \(error)")
             }
         }
+    }
+
+    /// Generates all possible variations for the product attibutes.
+    ///
+    private func generateAllVariations() {
+        viewModel.generateAllVariations(for: product) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                self.presentGenerationError(error)
+            }
+        }
+        // TODO:
+        // - Show Loading Indicator
+        // - Hide Loading Indicator
     }
 }
 

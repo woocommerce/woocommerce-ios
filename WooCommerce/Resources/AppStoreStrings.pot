@@ -57,9 +57,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v11.5-whats-new"
+msgctxt "v11.7-whats-new"
 msgid ""
-"This release includes a few bug fixes and improvements to make your experience smoother. Stay tuned for exciting updates in the coming weeks!\n"
+"Did you know we've added a new analytics section? It's now possible to select custom date ranges when viewing your stats! Simply click on the See More button under the store stats to check it out.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

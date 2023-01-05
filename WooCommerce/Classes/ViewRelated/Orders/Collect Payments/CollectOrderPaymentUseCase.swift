@@ -84,9 +84,12 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private let configuration: CardPresentPaymentsConfiguration
 
+    /// Celebration UX when the payment is captured successfully.
+    private let paymentCaptureCelebration: PaymentCaptureCelebrationProtocol
+
     /// IPP payments collector.
     ///
-    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores)
+    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores, celebration: paymentCaptureCelebration)
 
     /// Coordinates emailing a receipt after payment success.
     private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
@@ -102,6 +105,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          rootViewController: UIViewController,
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
+         paymentCaptureCelebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.order = order
@@ -111,6 +115,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
         self.configuration = configuration
         self.stores = stores
+        self.paymentCaptureCelebration = paymentCaptureCelebration
         self.analytics = analytics
     }
 
@@ -133,7 +138,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         guard isTotalAmountValid() else {
             let error = totalAmountInvalidError()
             onCollect(.failure(error))
-            return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCompleted)
+            return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCancel)
         }
 
         preflightController = CardPresentPaymentPreflightController(siteID: siteID,
@@ -145,7 +150,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
             switch connectionResult {
             case .connected(let reader):
                 self.connectedReader = reader
-                self.attemptPayment(alertProvider: reader.paymentAlertProvider, onCompletion: { [weak self] result in
+                let paymentAlertProvider = reader.paymentAlertProvider()
+                self.attemptPayment(alertProvider: paymentAlertProvider, onCompletion: { [weak self] result in
                     guard let self = self else { return }
                     // Inform about the collect payment state
                     switch result {
@@ -160,12 +166,11 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                         return onCompleted()
                     }
                     self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters,
-                                             alertProvider: reader.paymentAlertProvider,
+                                             alertProvider: paymentAlertProvider,
                                              onCompleted: onCompleted)
                 })
             case .canceled:
-                self.alertsPresenter.dismiss()
-                self.trackPaymentCancelation()
+                self.handlePaymentCancellation()
                 onCancel()
             case .none:
                 break
@@ -178,7 +183,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 }
 
 private extension CardReader {
-    var paymentAlertProvider: CardReaderTransactionAlertsProviding {
+    func paymentAlertProvider() -> CardReaderTransactionAlertsProviding {
         switch readerType {
         case .appleBuiltIn:
             return BuiltInCardReaderPaymentAlertsProvider()
@@ -275,6 +280,13 @@ private extension CollectOrderPaymentUseCase {
                 switch result {
                 case .success(let capturedPaymentData):
                     self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
+                case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(let cancellationSource))):
+                    switch cancellationSource {
+                    case .reader:
+                        self?.handlePaymentCancellationFromReader(alertProvider: paymentAlerts)
+                    default:
+                        self?.handlePaymentCancellation()
+                    }
                 case .failure(let error):
                     self?.handlePaymentFailureAndRetryPayment(error, alertProvider: paymentAlerts, onCompletion: onCompletion)
                 }
@@ -295,6 +307,19 @@ private extension CollectOrderPaymentUseCase {
 
         // Success Callback
         onCompletion(.success(capturedPaymentData))
+    }
+
+    func handlePaymentCancellation() {
+        trackPaymentCancelation()
+        alertsPresenter.dismiss()
+    }
+
+    func handlePaymentCancellationFromReader(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding) {
+        trackPaymentCancelation()
+        guard let dismissedOnReaderAlert = paymentAlerts.cancelledOnReader() else {
+            return alertsPresenter.dismiss()
+        }
+        alertsPresenter.present(viewModel: dismissedOnReaderAlert)
     }
 
     /// Log the failure reason, cancel the current payment and retry it if possible.

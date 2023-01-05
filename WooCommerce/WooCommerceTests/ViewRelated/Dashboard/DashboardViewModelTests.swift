@@ -48,12 +48,17 @@ final class DashboardViewModelTests: XCTestCase {
     func test_statsVersion_remains_v4_when_non_store_stats_sync_returns_noRestRoute_error() {
         // Given
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            if case let .retrieveStats(_, _, _, _, _, _, completion) = action {
+            switch action {
+            case let .retrieveStats(_, _, _, _, _, _, completion):
                 completion(.failure(DotcomError.empty))
-            } else if case let .retrieveSiteVisitStats(_, _, _, _, completion) = action {
+            case let .retrieveSiteVisitStats(_, _, _, _, completion):
                 completion(.failure(DotcomError.noRestRoute))
-            } else if case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion) = action {
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
                 completion(.failure(DotcomError.noRestRoute))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
+                completion(.failure(DotcomError.noRestRoute))
+            default:
+                XCTFail("Received unsupported action: \(action)")
             }
         }
         let viewModel = DashboardViewModel(stores: stores)
@@ -63,6 +68,7 @@ final class DashboardViewModelTests: XCTestCase {
         viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
         viewModel.syncSiteVisitStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
         viewModel.syncTopEarnersStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
+        viewModel.syncSiteSummaryStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v4)
@@ -89,7 +95,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statsVersion, .v4)
     }
 
-    func test_products_onboarding_announcements_take_precedence() {
+    func test_products_onboarding_announcements_take_precedence() async {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -115,16 +121,17 @@ final class DashboardViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
+
         let viewModel = DashboardViewModel(stores: stores)
 
         // When
-        viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.syncAnnouncements(for: sampleSiteID)
 
         // Then (check announcement image because it is unique and not localized)
         XCTAssertEqual(viewModel.announcementViewModel?.image, .emptyProductsImage)
     }
 
-    func test_onboarding_announcement_not_displayed_when_previously_dismissed() {
+    func test_onboarding_announcement_not_displayed_when_previously_dismissed() async {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -142,26 +149,29 @@ final class DashboardViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
+
+        prepareStoresToShowJustInTimeMessage(.success([]))
+
         let viewModel = DashboardViewModel(stores: stores)
 
         // When
-        viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.syncAnnouncements(for: sampleSiteID)
 
         // Then
         XCTAssertNil(viewModel.announcementViewModel)
     }
 
-    func test_view_model_syncs_just_in_time_messages_when_ineligible_for_products_onboarding() {
+    func test_view_model_syncs_just_in_time_messages_when_ineligible_for_products_onboarding() async {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
         prepareStoresToShowJustInTimeMessage(.success([message]))
         let viewModel = DashboardViewModel(stores: stores)
 
         // When
-        viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.syncAnnouncements(for: sampleSiteID)
 
         // Then
-        XCTAssertEqual(viewModel.announcementViewModel?.title, "JITM Message")
+        XCTAssertEqual( viewModel.announcementViewModel?.title, "JITM Message")
     }
 
     func prepareStoresToShowJustInTimeMessage(_ response: Result<[Yosemite.JustInTimeMessage], Error>) {
@@ -183,7 +193,7 @@ final class DashboardViewModelTests: XCTestCase {
         }
     }
 
-    func test_no_announcement_to_display_when_no_announcements_are_synced() {
+    func test_no_announcement_to_display_when_no_announcements_are_synced() async {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -204,13 +214,13 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(stores: stores)
 
         // When
-        viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.syncAnnouncements(for: sampleSiteID)
 
         // Then
         XCTAssertNil(viewModel.announcementViewModel)
     }
 
-    func test_fetch_success_analytics_logged_when_just_in_time_messages_retrieved() {
+    func test_fetch_success_analytics_logged_when_just_in_time_messages_retrieved() async {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id",
                                                              featureClass: "test-feature-class")
@@ -221,7 +231,7 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(stores: stores, analytics: analytics)
 
         // When
-        viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.syncAnnouncements(for: sampleSiteID)
 
         // Then
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "jitm_fetch_success"),
@@ -235,7 +245,7 @@ final class DashboardViewModelTests: XCTestCase {
         assertEqual(2, properties["count"] as? Int64)
     }
 
-    func test_when_two_messages_are_received_only_the_first_is_displayed() {
+    func test_when_two_messages_are_received_only_the_first_is_displayed() async {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(title: "Higher priority JITM")
 
@@ -244,20 +254,20 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(stores: stores, analytics: analytics)
 
         // When
-        viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.syncAnnouncements(for: sampleSiteID)
 
         // Then
         XCTAssertEqual(viewModel.announcementViewModel?.title, "Higher priority JITM")
     }
 
-    func test_fetch_failure_analytics_logged_when_just_in_time_message_errors() {
+    func test_fetch_failure_analytics_logged_when_just_in_time_message_errors() async {
         // Given
         let error = DotcomError.noRestRoute
         prepareStoresToShowJustInTimeMessage(.failure(error))
         let viewModel = DashboardViewModel(stores: stores, analytics: analytics)
 
         // When
-        viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.syncAnnouncements(for: sampleSiteID)
 
         // Then
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "jitm_fetch_failure"),
@@ -271,7 +281,7 @@ final class DashboardViewModelTests: XCTestCase {
         assertEqual("Dotcom Invalid REST Route", properties["error_description"] as? String)
     }
 
-    func test_when_no_messages_are_received_existing_messages_are_removed() {
+    func test_when_no_messages_are_received_existing_messages_are_removed() async {
         // Given
         prepareStoresToShowJustInTimeMessage(.success([]))
 
@@ -282,7 +292,7 @@ final class DashboardViewModelTests: XCTestCase {
             siteID: sampleSiteID)
 
         // When
-        viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.syncAnnouncements(for: sampleSiteID)
 
         // Then
         XCTAssertNil(viewModel.announcementViewModel)

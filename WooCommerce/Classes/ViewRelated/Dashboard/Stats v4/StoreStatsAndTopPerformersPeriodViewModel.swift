@@ -61,6 +61,14 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
         storesManager.dispatch(action)
     }
 
+    /// Tracks when the Analytics "See More" button is tapped
+    ///
+    func trackSeeMoreButtonTapped() {
+        analytics.track(event: .AnalyticsHub.seeMoreAnalyticsTapped())
+    }
+
+    // MARK: Private helpers
+
     /// Calculates and updates the value of `isInAppFeedbackCardVisible`.
     private func refreshIsInAppFeedbackCardVisibleValue() {
         // Abort right away if we don't need to calculate the real value.

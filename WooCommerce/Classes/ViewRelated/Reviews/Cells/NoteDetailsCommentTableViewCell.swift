@@ -256,7 +256,7 @@ private extension NoteDetailsCommentTableViewCell {
     }
 
     func configureTextView() {
-        textView.backgroundColor = .listForeground
+        textView.backgroundColor = .listForeground(modal: false)
         textView.accessibilityIdentifier = "single-review-comment"
     }
 

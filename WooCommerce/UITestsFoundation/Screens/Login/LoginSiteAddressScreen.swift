@@ -1,42 +1,33 @@
+import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let navBar = "WordPressAuthenticator.LoginSiteAddressView"
-    static let nextButton = "Site Address Next Button"
+public final class LoginSiteAddressScreen: ScreenObject {
 
-    // TODO: clean up comments when unifiedSiteAddress is permanently enabled.
-
-    // For original Site Address. This matches accessibilityIdentifier in Login.storyboard.
-    // Leaving here for now in case unifiedSiteAddress is disabled.
-    // static let siteAddressTextField = "usernameField"
-
-    // For unified Site Address. This matches TextFieldTableViewCell.accessibilityIdentifier.
-    static let siteAddressTextField = "Site address"
-}
-
-public final class LoginSiteAddressScreen: BaseScreen {
-    private let navBar: XCUIElement
-    private let siteAddressTextField: XCUIElement
-    private let nextButton: XCUIElement
-
-    init() {
-        let app = XCUIApplication()
-        navBar = app.navigationBars[ElementStringIDs.navBar]
-        siteAddressTextField = app.textFields[ElementStringIDs.siteAddressTextField]
-        nextButton = app.buttons[ElementStringIDs.nextButton]
-
-        super.init(element: siteAddressTextField)
+    private let nextButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Site Address Next Button"]
     }
 
-    public func proceedWith(siteUrl: String) -> GetStartedScreen {
-        siteAddressTextField.tap()
-        siteAddressTextField.typeText(siteUrl)
+    private let siteAddressFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.textFields["Site address"]
+    }
+
+    private var nextButton: XCUIElement { nextButtonGetter(app) }
+    private var siteAddressField: XCUIElement { siteAddressFieldGetter(app) }
+
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                nextButtonGetter,
+                siteAddressFieldGetter
+            ],
+            app: app
+        )
+    }
+
+    public func proceedWith(siteUrl: String) throws -> GetStartedScreen {
+        siteAddressField.enterText(text: siteUrl)
         nextButton.tap()
 
-        return GetStartedScreen()
-    }
-
-    static func isLoaded() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.nextButton].exists
+        return try GetStartedScreen()
     }
 }

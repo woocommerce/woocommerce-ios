@@ -100,9 +100,9 @@ struct StatsDataTextFormatter {
 
     // MARK: Views and Visitors Stats
 
-    /// Creates the text to display for the visitor count.
+    /// Creates the text to display for the visitor count based on SiteVisitStats data and a given interval.
     ///
-    static func createVisitorCountText(siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) -> String {
+    static func createVisitorCountText(siteStats: SiteVisitStats?, selectedIntervalIndex: Int) -> String {
         if let visitorCount = visitorCount(at: selectedIntervalIndex, siteStats: siteStats) {
             return Double(visitorCount).humanReadableString()
         } else {
@@ -110,35 +110,47 @@ struct StatsDataTextFormatter {
         }
     }
 
-    /// Creates the text to display for the visitor count delta.
+    /// Creates the text to display for the visitor count based on SiteSummaryStats data.
     ///
-    static func createVisitorCountDelta(from previousPeriod: SiteVisitStats?, to currentPeriod: SiteVisitStats?) -> DeltaPercentage {
-        let previousCount = visitorCount(at: nil, siteStats: previousPeriod)
-        let currentCount = visitorCount(at: nil, siteStats: currentPeriod)
-        return createDeltaPercentage(from: previousCount, to: currentCount)
+    static func createVisitorCountText(siteStats: SiteSummaryStats?) -> String {
+        guard let visitorCount = siteStats?.visitors else {
+            return Constants.placeholderText
+        }
+
+        return Double(visitorCount).humanReadableString()
+    }
+
+    /// Creates the text to display for the views count.
+    ///
+    static func createViewsCountText(siteStats: SiteSummaryStats?) -> String {
+        guard let viewsCount = siteStats?.views else {
+            return Constants.placeholderText
+        }
+
+        return Double(viewsCount).humanReadableString()
     }
 
     // MARK: Conversion Stats
 
-    /// Creates the text to display for the conversion rate.
+    /// Creates the text to display for the conversion rate based on SiteVisitStats data and a given interval.
     ///
-    static func createConversionRateText(orderStats: OrderStatsV4?, siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) -> String {
-        let visitors = visitorCount(at: selectedIntervalIndex, siteStats: siteStats)
-        let orders = orderCount(at: selectedIntervalIndex, orderStats: orderStats)
-
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .percent
-        numberFormatter.minimumFractionDigits = 1
-
-        if let visitors, let orders {
-            // Maximum conversion rate is 100%.
-            let conversionRate = visitors > 0 ? min(orders/visitors, 1): 0
-            let minimumFractionDigits = floor(conversionRate * 100.0) == conversionRate * 100.0 ? 0: 1
-            numberFormatter.minimumFractionDigits = minimumFractionDigits
-            return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
-        } else {
+    static func createConversionRateText(orderStats: OrderStatsV4?, siteStats: SiteVisitStats?, selectedIntervalIndex: Int) -> String {
+        guard let visitors = visitorCount(at: selectedIntervalIndex, siteStats: siteStats),
+              let orders = orderCount(at: selectedIntervalIndex, orderStats: orderStats) else {
             return Constants.placeholderText
         }
+
+        return createConversionRateText(converted: orders, total: visitors)
+    }
+
+    /// Creates the text to display for the conversion rate based on SiteSummaryStats data.
+    ///
+    static func createConversionRateText(orderStats: OrderStatsV4?, siteStats: SiteSummaryStats?) -> String {
+        guard let visitors = siteStats?.visitors, let orders = orderStats?.totals.totalOrders else {
+            return Constants.placeholderText
+        }
+
+        return createConversionRateText(converted: Double(orders), total: Double(visitors))
     }
 
     // MARK: Product Stats
@@ -208,16 +220,14 @@ private extension StatsDataTextFormatter {
         return numberFormatter
     }()
 
-    /// Retrieves the visitor count for the provided order stats and, optionally, a specific interval.
+    /// Retrieves the visitor count for the provided site stats and a specific interval.
     ///
-    static func visitorCount(at selectedIndex: Int?, siteStats: SiteVisitStats?) -> Double? {
+    static func visitorCount(at selectedIndex: Int, siteStats: SiteVisitStats?) -> Double? {
         let siteStatsItems = siteStats?.items?.sorted(by: { (lhs, rhs) -> Bool in
             return lhs.period < rhs.period
         }) ?? []
-        if let selectedIndex, selectedIndex < siteStatsItems.count {
+        if selectedIndex < siteStatsItems.count {
             return Double(siteStatsItems[selectedIndex].visitors)
-        } else if let siteStats {
-            return Double(siteStats.totalVisitors)
         } else {
             return nil
         }
@@ -261,9 +271,21 @@ private extension StatsDataTextFormatter {
         }
     }
 
+    /// Creates the text to display for the conversion rate from 2 input values.
+    ///
+    static func createConversionRateText(converted: Double, total: Double) -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .percent
+        numberFormatter.minimumFractionDigits = 1
+
+        // Maximum conversion rate is 100%.
+        let conversionRate = total > 0 ? min(converted/total, 1) : 0
+        let minimumFractionDigits = floor(conversionRate * 100.0) == conversionRate * 100.0 ? 0 : 1
+        numberFormatter.minimumFractionDigits = minimumFractionDigits
+        return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
+    }
+
     enum Constants {
         static let placeholderText = "-"
     }
-
-
 }

@@ -109,7 +109,7 @@ private extension CustomerNoteTableViewCell {
     func configureBodyTextView() {
         bodyTextView.font = .body
         bodyTextView.textColor = .text
-        bodyTextView.backgroundColor = .listForeground
+        bodyTextView.backgroundColor = .listForeground(modal: false)
         bodyTextView.adjustsFontForContentSizeCategory = true
 
         // Remove padding from inside text view

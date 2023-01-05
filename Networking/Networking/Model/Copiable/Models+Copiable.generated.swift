@@ -1912,6 +1912,30 @@ extension Networking.SiteSetting {
     }
 }
 
+extension Networking.SiteSummaryStats {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        date: CopiableProp<String> = .copy,
+        period: CopiableProp<StatGranularity> = .copy,
+        visitors: CopiableProp<Int> = .copy,
+        views: CopiableProp<Int> = .copy
+    ) -> Networking.SiteSummaryStats {
+        let siteID = siteID ?? self.siteID
+        let date = date ?? self.date
+        let period = period ?? self.period
+        let visitors = visitors ?? self.visitors
+        let views = views ?? self.views
+
+        return Networking.SiteSummaryStats(
+            siteID: siteID,
+            date: date,
+            period: period,
+            visitors: visitors,
+            views: views
+        )
+    }
+}
+
 extension Networking.SiteVisitStats {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -1936,14 +1960,17 @@ extension Networking.SiteVisitStats {
 extension Networking.SiteVisitStatsItem {
     public func copy(
         period: CopiableProp<String> = .copy,
-        visitors: CopiableProp<Int> = .copy
+        visitors: CopiableProp<Int> = .copy,
+        views: CopiableProp<Int> = .copy
     ) -> Networking.SiteVisitStatsItem {
         let period = period ?? self.period
         let visitors = visitors ?? self.visitors
+        let views = views ?? self.views
 
         return Networking.SiteVisitStatsItem(
             period: period,
-            visitors: visitors
+            visitors: visitors,
+            views: views
         )
     }
 }

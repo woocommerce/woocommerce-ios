@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-11-29 14:54:03+0000 */
+/* Translation-Revision-Date: 2022-12-14 18:00:28+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -9,7 +9,7 @@
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
-/* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "Выполнено %.0f%%";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
@@ -38,12 +38,6 @@
 
 /* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@ Version" = "Версия %1$@";
-
-/* A label prompting users to learn more about In-Person Payments.
-\u{2011} is a special character that acts as nonbreaking hyphen for "-" in the "In-Person" string.
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about Inu{2011}Person Payments" = "%1$@ об очных платежах (Inu{2011}Person Payments)";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -487,9 +481,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Добавляйте информацию о загружаемых файлах удаленно";
 
-/* Navigates to a screen to create a simple payments order */
-"Add simple payments order" = "Добавить заказ простых платежей";
-
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Добавьте описание купона.";
 
@@ -501,6 +492,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Добавить вес и размеры";
+
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"Add your first store" = "Добавьте первый магазин";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "Адрес";
@@ -566,7 +560,7 @@ which should be translated separately and considered part of this sentence. */
 "All reviews marked as read" = "Все отзывы помечены как прочитанные";
 
 /* Subtitle of the store creation plan screen. */
-"All the featues you need, already built in" = "Все необходимые функции к вашим услугам";
+"All the features you need, already built in" = "Все необходимые функции к вашим услугам";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "Разрешить";
@@ -697,7 +691,8 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Название приложения";
 
-/* Change order status screen - button title to apply selection */
+/* Apply navigation button in custom range date picker
+   Change order status screen - button title to apply selection */
 "Apply" = "Применить";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -834,6 +829,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's blog */
 "Blog" = "Блог";
 
+/* The button title on the reader type alert, for the user to choose a bluetooth reader. */
+"Bluetooth Reader" = "Устройство чтения Bluetooth";
+
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "Требуются права доступа к Bluetooth";
 
@@ -934,6 +932,7 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on deleting a variation
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
+   Cancel button title
    Cancel button title in the issue refund screen
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
@@ -1076,6 +1075,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Проверьте электронную почту!";
 
+/* Title of the WPCOM checkout web view. */
+"Checkout" = "Оформление заказа";
+
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Выбрать размер бумаги";
 
@@ -1138,9 +1140,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the Close action on the Jetpack Install view */
 "Close" = "Закрыть";
 
-/* Close Account button title to close the user's WordPress.com account
-   Link on the store picker for users who signed in with Apple to close their WordPress.com account. */
+/* Close Account button title to close the user's WordPress.com account */
 "Close Account" = "Закрыть учётную запись";
+
+/* Button to close the WordPress.com account on the store picker. */
+"Close account" = "Закрыть учётную запись";
 
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "Закрытие учётной записи...";
@@ -1176,6 +1180,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Составить новое примечание к заказу.";
+
+/* Dialog title that displays when a configuration update just finished installing */
+"Configuration updated" = "Настройки обновлены";
+
+/* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
+"Configuring iPhone" = "Настройка iPhone";
 
 /* Close Account confirmation alert title. */
 "Confirm Close Account" = "Подтвердите закрытие учётной записи";
@@ -1452,9 +1462,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for the entire cart" = "Создайте фиксированную скидку на всю корзину";
 
-/* Description of the Action sheet option when the user wants to create full manual order */
-"Create a new manual order" = "Создание нового заказа вручную";
-
 /* Button to create a new store from the store picker */
 "Create a new store" = "Создать новый магазин";
 
@@ -1463,9 +1470,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation web view. */
 "Create a store" = "Создание магазина";
-
-/* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "Создание заказа с минимумом информации";
 
 /* Title of the Create coupon screen */
 "Create coupon" = "Создание купона";
@@ -1476,17 +1480,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Создать новую посылку";
 
-/* Action sheet option when the user wants to create full manual order */
-"Create order" = "Создать заказ";
-
 /* Title of the banner notice in the Orders tab */
-"Create orders & take payments!" = "Создавайте заказы и принимайте платежи!";
+"Create orders!" = "Создавайте заказы!";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "Печатайте транспортные этикетки со своего устройства!";
-
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"Create your first store" = "Создайте свой первый магазин";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Создайте первый вариант";
@@ -1532,6 +1530,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder name of a custom shipment tracking carrier
    Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Другой перевозчик";
+
+/* Title in custom range date picker */
+"Custom Date Range" = "Произвольный период";
 
 /* Title for the order custom fields list */
 "Custom Fields" = "Произвольные поля";
@@ -1592,7 +1593,9 @@ which should be translated separately and considered part of this sentence. */
 "DETAILS" = "ДЕТАЛИ";
 
 /* Navigation title of the orders filter selector screen for date range
-   Row title for filtering orders by date range. */
+   Row title for filtering orders by date range.
+   Title describing the possible date range selections of the Analytics Hub
+   Title of the range selection list */
 "Date Range" = "Период";
 
 /* Title of 'Date Paid' section in the receipt */
@@ -1950,7 +1953,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "Включить";
 
-/* Label for one of the filters in order custom date range */
+/* End Date label in custom range date picker
+   Label for one of the filters in order custom date range */
 "End Date" = "Дата окончания";
 
 /* The title used when asking the user for feedback for the app. */
@@ -2303,6 +2307,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Фиксированная скидка на товар";
 
+/* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
+"Follow reader instructions to pay" = "Для приёма платежей следуйте инструкциям в приложении";
+
 /* User role badge */
 "Follower" = "Читатель";
 
@@ -2406,9 +2413,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Регистрация в Google не удалась.";
 
-/* Confirmation text of the button on the bottom announcement modalwhen a merchant taps on Simple Payment */
-"Got it!" = "Понятно!";
-
 /* Display label for grouped product type. */
 "Grouped" = "Сборный";
 
@@ -2486,12 +2490,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button for opening Help.Presented when logging in with a site address that does not have WooCommerce
    Button to contact support on the Jetpack setup interrupted screen
+   Button to get help from the store picker
    Help and Support navigation title
    Help button
    Help button on account mismatch error screen.
    Help button on Jetpack required error screen.
-   Help button on Jetpack setup required screen.
-   Help button on store picker screen. */
+   Help button on Jetpack setup required screen. */
 "Help" = "Помощь";
 
 /* My Store > Settings > Help and Feedback settings section title */
@@ -2821,6 +2825,18 @@ which should be translated separately and considered part of this sentence. */
 /* Last 7 days section header */
 "Last 7 days" = "Последние 7 дней";
 
+/* Title of the Analytics Hub Last Month selection range */
+"Last Month" = "Прошлый месяц";
+
+/* Title of the Analytics Hub Last Quarter selection range */
+"Last Quarter" = "Прошлый квартал";
+
+/* Title of the Analytics Hub Last Week selection range */
+"Last Week" = "Прошлая неделя";
+
+/* Title of the Analytics Hub Last Year selection range */
+"Last Year" = "Прошлый год";
+
 /* Text field name in Edit Address Form */
 "Last name" = "Фамилия";
 
@@ -2829,8 +2845,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
@@ -2984,6 +2998,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "Войдите, указав имя пользователя WordPress.com и пароль.";
+
+/* Button to log out from the current account from the store picker */
+"Log out" = "Выйти";
 
 /* A generic error during site credential login */
 "Login failed. Please try again." = "Не удалось выполнить вход. Повторите попытку.";
@@ -3194,7 +3211,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label for net sales (net revenue) in the Analytics Hub */
 "Net Sales" = "Чистый объем продаж";
 
-/* Top performers — label for the total sales of a product */
+/* Label for the total sales of a product in the Analytics Hub
+   Top performers — label for the total sales of a product */
 "Net sales: %@" = "Чистая выручка: %@";
 
 /* Title for table view section of network active plugins */
@@ -3281,9 +3299,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "Заказы не выбраны";
 
-/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
-"No previous period available" = "Нет доступного предыдущего периода";
-
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Не установлена цена";
 
@@ -3352,9 +3367,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Атрибуты добавлены, теперь можно создать первый вариант!";
-
-/* Message of the bottom announcement modal when a merchant taps on Simple Payment */
-"Now you can quickly access In-Person Payments and other features with ease." = "Открыть меню очных платежей и других функций стало проще.";
 
 /* Alert dismissal title
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
@@ -3667,9 +3679,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the hub menu payments button */
 "Payments" = "Платежи";
 
-/* Title of the bottom announcement modal when a merchant taps on Simple Payment */
-"Payments from the Menu tab" = "Платежи из вкладки меню";
-
 /* Display label for pending order status.
    Display label for the review's pending status */
 "Pending" = "Ожидает проверки";
@@ -3723,8 +3732,17 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Зарядите терминал";
 
+/* Error message shown when the built-in reader cannot be used because the device does not meet minimum requirements. */
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "Убедитесь, что ваш телефон отвечает этим требованиям: iPhone XS или более новая модель под управлением iOS версии 16.0 или выше. Если ошибка появляется на поддерживаемом устройстве, обратитесь в службу поддержки.";
+
+/* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Убедитесь, что ваш Apple ID действителен, и повторите попытку. Чтобы принять условия предоставления услуг Apple, требуется действительный Apple ID";
+
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "Подключите магазин к Jetpack, чтобы работать с ним в этом приложении.";
+
+/* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
+"Please contact support – there was an issue connecting to the built-in reader" = "Обратитесь в службу поддержки — проблема с подключением к приложению чтения карт";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Чтобы использовать приложение, получите приглашение у владельца сайта, например у директора магазина или администратора.";
@@ -3810,6 +3828,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Выберите посылку";
 
+/* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
+"Please sign in to iCloud on this device, so you can use the built-in card reader" = "Войдите в iCloud на этом устройстве, чтобы использовать приложение чтения карт";
+
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "Выберите другой домен.";
 
@@ -3827,6 +3848,12 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Повторите попытку или обратитесь к нам.";
+
+/* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "Повторите попытку и примите условия предоставления услуг Apple, чтобы использовать приложение чтения карт";
+
+/* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
+"Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "Повторите попытку или закройте экран и вернитесь в магазин, если вы покинули экран оформления заказа в момент оплаты.";
 
 /* Account creation error when an unexpected error occurs.
    Message of the alert when the store cannot be created in the store creation flow.
@@ -3909,6 +3936,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "Подготовка документа";
+
+/* Title label for modal dialog that appears when connecting to a built in card reader */
+"Preparing iPhone card reader..." = "Подготовка iPhone к чтению карт...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "Передайте карту для оплаты";
@@ -4135,6 +4165,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "Карантин";
+
+/* Title of the Analytics Hub Quarter to Date selection range */
+"Quarter to Date" = "С начала квартала до текущего дня";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Создайте онлайн-магазин и начните продажи в кротчайшие сроки.";
@@ -4499,9 +4532,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Scan Products */
 "Scan products" = "Сканировать товары";
 
-/* Title label for modal dialog that appears when searching for a card reader */
-"Scanning for reader" = "Поиск устройства чтения";
-
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "Поиск устройств чтения";
 
@@ -4608,6 +4638,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Выбрать стиль абзацев";
+
+/* The title for the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
+"Select reader type" = "Выберите тип устройства чтения";
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "Выбрать дату начала";
@@ -4841,9 +4874,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Display label for simple product type. */
 "Simple" = "Обычный";
 
-/* Action sheet option when the user wants to create Simple Payments order */
-"Simple payment" = "Платёж без хлопот";
-
 /* Action sheet option when the user wants to change the Product type to simple physical product */
 "Simple physical product" = "Простой физический продукт";
 
@@ -4911,6 +4941,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error title when Jetpack install fails */
 "Sorry, something went wrong during install" = "Что-то пошло не так во время установки";
 
+/* Error shown when there is a problem retrieving the dates for the selected date range. */
+"Sorry, something went wrong. We can't load analytics for the selected date range." = "Что-то пошло не так. Не удаётся загрузить данные аналитики для выбранного диапазона дат.";
+
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "Извините, этот адрес e-mail уже используется!";
 
@@ -4967,7 +5000,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Стандартный тариф";
 
-/* Label for one of the filters in order custom date range */
+/* Label for one of the filters in order custom date range
+   Start Date label in custom range date picker */
 "Start Date" = "Дата начала";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
@@ -5131,7 +5165,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "Приложите или вставьте карту для возврата средств";
 
-/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader */
+/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader
+   The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "Оплата в касание с помощью iPhone";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
@@ -5316,11 +5351,20 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "В URL-адресе отсутствует допустимый хост.";
 
+/* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
+"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "Приложение чтения карт не поддерживает платежи на такую сумму. Используйте внешнее устройство чтения карт или другой способ оплаты.";
+
+/* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "Приложение не может читать карты, поскольку отключён модуль NFC. За подробной информацией обращайтесь в службу поддержки.";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Не удалось удалить атрибут.";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "Невозможно сохранить атрибут.";
+
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "Приложение чтения карт нельзя использовать во время телефонного вызова. Повторите попытку после завершения вызова";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "Карта не поддерживает эту валюту. Попробуйте другое средство платежа";
@@ -5367,6 +5411,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "Карта отклонена устройством чтения карт. Попробуйте другое средство возврата";
 
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the iPhone card reader - please try another means of payment" = "Карта отклонена приложением iPhone. Попробуйте другое средство платежа.";
+
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "Карта отклонена платёжной системой. Попробуйте другое средство платежа";
 
@@ -5379,8 +5426,14 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "Необходимо указать код купона";
 
+/* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
+"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "Приложение чтения карт не поддерживает эту валюту. Используйте внешнее устройство чтения карт или другой способ оплаты.";
+
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "После выполнения заказа клиент получит сообщение по электронной почте.";
+
+/* Label within the modal dialog that appears when connecting to a built in card reader */
+"The first time you connect, you may be prompted to accept Apple's Terms of Service." = "При первом подключении, возможно, вам будет предложено принять условия предоставления услуг Apple.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "Такое специальное название посылки уже есть.";
@@ -5547,6 +5600,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "При сборе платежа произошла ошибка.";
 
+/* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
+"There was an issue preparing the built in reader for payment – please try again." = "При подготовке телефона к чтению карт возникла проблема. Повторите попытку.";
+
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "Никаких рисков: можно отменить подписку в течение 30 дней и получить полную компенсацию.";
 
@@ -5685,9 +5741,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "Чтобы продолжить работу с этой учётной записью, сначала войдите в систему со своим паролем WordPress.com. Он будет запрошен только один раз.";
-
-/* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "Чтобы включить устройство чтения карт, нажмите кнопку питания.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Чтобы использовать это приложение для %@, нужно установить и подключить плагин Jetpack к магазину.";
@@ -5900,8 +5953,20 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Notice message when loading product categories fails */
 "Unable to load categories" = "Не удается загрузить категории";
 
+/* Text displayed when there is an error loading order stats data. */
+"Unable to load order analytics" = "Не удалось загрузить данные анализа заказов";
+
+/* Text displayed when there is an error loading product stats data. */
+"Unable to load product analytics" = "Не удалось загрузить данные анализа товаров";
+
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Не удалось загрузить атрибуты продукта";
+
+/* Text displayed when there is an error loading items sold stats data. */
+"Unable to load product items sold analytics" = "Не удалось загрузить данные анализа проданных товаров";
+
+/* Text displayed when there is an error loading revenue stats data. */
+"Unable to load revenue analytics" = "Не удалось загрузить данные анализа доходов";
 
 /* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "Не удалось загрузить сведения о налогах для заказа";
@@ -6384,7 +6449,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "We're sorry, we were unable to verify In-Person Payments for this store." = "Не удалось подтвердить очные платежи в этом магазине.";
 
 /* Content of the banner notice in the Orders tab */
-"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button" = "Мы работаем над функцией, которая поможет создавать заказы и принимать платежи на вашем устройстве! Эти возможности можно испытать, нажав кнопку \"+\"";
+"We've been working on making it possible to create orders from your device! You can try this out by tapping on the \"+\" button" = "Мы работаем над функцией, которая поможет создавать заказы на вашем устройстве! Вы можете попробовать её, нажав кнопку \"+\"";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Мы выслали вам по электронной почте ссылку для регистрации новой учетной записи WordPress.com. Проверьте электронную почту на этом устройстве и перейдите по ссылке в письме от WordPress.com.";
@@ -6424,7 +6489,7 @@ This is the link to the website, and forms part of a longer sentence which it sh
 "What is WooCommerce Shipping?" = "Что такое WooCommerce Shipping?";
 
 /* Navigates to page with details about What is WordPress.com. */
-"What is WordPress.com?" = "_Что такое WordPress.com?_";
+"What is WordPress.com?" = "Что такое WordPress.com?";
 
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "Что нового в WooCommerce";
@@ -6503,7 +6568,8 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Да, изменить";
 
-/* Yesterday Section Header */
+/* Title of the Analytics Hub Yesterday selection range
+   Yesterday Section Header */
 "Yesterday" = "Вчера";
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
@@ -6564,17 +6630,29 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Для сбора платежей требуется обновить ваш платёжный терминал. Отмена приведёт к блокировке подключения терминала.";
 
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"Your device needs a lock screen passcode set to use the built-in card reader" = "Чтобы использовать телефон для чтения карт, нужно настроить на нём пароль экрана блокировки";
+
 /* Title of the email field on the account creation form. */
 "Your email address" = "Ваш адрес электронной почты";
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "Адрес эл. почты не используется с учётной записью WordPress.com";
 
+/* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
+"Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "Используйте свой iPhone для чтения карт или подключитесь к внешнему устройству чтения через Bluetooth.";
+
+/* Label that displays when a configuration update is happening */
+"Your iPhone needs to be configured to collect payments." = "Чтобы собирать платежи, нужно настроить ваш iPhone.";
+
 /* Message displayed when a coupon was successfully created */
 "Your new coupon was created!" = "Новый купон создан.";
 
 /* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "Для вашей учётной записи есть требования на утверждении.";
+
+/* Dialog message that displays when a configuration update just finished installing */
+"Your phone will be ready to collect payments in a moment..." = "Через мгновение ваш телефон будет готов собирать платежи...";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Устройство чтения автоматически перезапустится и повторно подключится после завершения обновления";
@@ -6609,12 +6687,55 @@ This is the link to the website, and forms part of a longer sentence which it sh
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Иконка";
 
+/* Label for a cancel button */
+"cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Отмена";
+
+/* Label within the modal dialog that appears when checking the built in card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "Подождите, пока мы проверяем готовность вашего iPhone к использованию функции Tap to Pay.";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "Подробнее";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "%1$@ об очных платежах";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Проверка устройства";
+
+/* Label for a cancel button */
+"cardPresent.modalScanningForReader.cancelButton" = "Отмена";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"cardPresent.modalScanningForReader.instruction" = "Чтобы включить устройство чтения карт, нажмите кнопку питания.";
+
+/* A label prompting users to learn more about In-Person Payments.
+This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"cardPresent.modalScanningForReader.learnMore.link" = "Подробнее";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"cardPresent.modalScanningForReader.learnMore.text" = "%1$@ об очных платежах";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"cardPresent.modalScanningForReader.title" = "Поиск устройства чтения";
+
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
 
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
+
+/* Indicates the status of a built in card reader. Presented to users when payment collection starts */
+"iPhone reader is ready" = "iPhone готов к чтению карт";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "Это приложение использует Bluetooth для подключения к платёжным терминалам.";
@@ -6636,6 +6757,9 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "возврат вручную";
+
+/* A error message when it's not possible toacquire the Analytics Hub previous selection range */
+"no previous period" = "нет предыдущего периода";
 
 /* No comment provided by engineer. */
 "password" = "Пароль";
@@ -6700,9 +6824,6 @@ This is the link to the website, and forms part of a longer sentence which it sh
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Не удаётся получить статистику за сегодня";
-
-/* Today */
-"today" = "сегодня";
 
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "неизвестно";

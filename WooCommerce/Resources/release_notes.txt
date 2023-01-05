@@ -1,1 +1,1 @@
-This release includes a few bug fixes and improvements to make your experience smoother. Stay tuned for exciting updates in the coming weeks!
+Did you know we've added a new analytics section? It's now possible to select custom date ranges when viewing your stats! Simply click on the See More button under the store stats to check it out.

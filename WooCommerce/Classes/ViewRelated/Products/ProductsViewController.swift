@@ -272,6 +272,8 @@ private extension ProductsViewController {
         } else {
             tableView.addSubview(refreshControl)
         }
+
+        showOrHideToolbar()
     }
 }
 
@@ -456,6 +458,11 @@ private extension ProductsViewController {
     /// if there is 1 or more products, toolbar will be visible
     ///
     func showOrHideToolbar() {
+        guard !tableView.isEditing else {
+            toolbar.isHidden = true
+            return
+        }
+
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
     }
 }

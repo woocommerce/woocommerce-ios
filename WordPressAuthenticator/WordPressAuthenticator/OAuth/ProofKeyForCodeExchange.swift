@@ -1,4 +1,6 @@
-// https://developers.google.com/identity/protocols/oauth2/native-app#step1-code-verifier
+// See:
+// - https://developers.google.com/identity/protocols/oauth2/native-app#step1-code-verifier
+// - https://www.rfc-editor.org/rfc/rfc7636
 //
 // FIXME: follow spec!
 //
@@ -7,6 +9,8 @@
 // characters and a maximum length of 128 characters.
 //
 // The code verifier should have enough entropy to make it impractical to guess the value.
+//
+// Note: The common abbreviation of "Proof Key for Code Exchange" is PKCE and is pronounced "pixy".
 struct ProofKeyForCodeExchange {
 
     enum Mode {

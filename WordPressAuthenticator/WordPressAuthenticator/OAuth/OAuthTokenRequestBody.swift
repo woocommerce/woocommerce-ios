@@ -33,14 +33,7 @@ struct OAuthTokenRequestBody: Encodable {
         var components = URLComponents()
         components.queryItems = items
 
-        guard let query = components.query else {
-            throw OAuthError.failedToBuildURLQuery
-        }
-
-        guard let data = query.data(using: .utf8) else {
-            throw OAuthError.failedToEncodeURLQuery(query: query)
-        }
-
-        return data
+        // We can assume `query` to never be nil because we set `queryItems` in the line above.
+        return Data(components.query!.utf8)
     }
 }

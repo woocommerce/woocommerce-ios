@@ -346,12 +346,8 @@ private extension ProductsViewController {
                                              target: self,
                                              action: #selector(startBulkEditing))
                 button.accessibilityTraits = .button
-                button.accessibilityLabel = NSLocalizedString("Edit products",
-                                                              comment: "Action to start bulk editing of products")
-                button.accessibilityHint = NSLocalizedString(
-                    "Edit status or price for multiple products at once",
-                    comment: "VoiceOver accessibility hint, informing the user the button can be used to bulk edit products"
-                )
+                button.accessibilityLabel = Localization.bulkEditingNavBarButtonTitle
+                button.accessibilityHint = Localization.bulkEditingNavBarButtonHint
 
                 return button
             }()
@@ -1096,6 +1092,13 @@ private extension ProductsViewController {
     }
 
     enum Localization {
+
+        static let bulkEditingNavBarButtonTitle = NSLocalizedString("Edit products", comment: "Action to start bulk editing of products")
+        static let bulkEditingNavBarButtonHint = NSLocalizedString(
+            "Edit status or price for multiple products at once",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to bulk edit products"
+        )
+
         static let bulkEditingTitle = NSLocalizedString(
             "Select items",
             comment: "Title that appears on top of the Product List screen when bulk editing starts."

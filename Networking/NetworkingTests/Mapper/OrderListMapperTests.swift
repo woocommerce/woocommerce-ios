@@ -40,6 +40,35 @@ class OrderListMapperTests: XCTestCase {
         XCTAssertEqual(firstOrder.totalTax, "1.20")
     }
 
+    /// Verifies that all of the Order Fields are parsed correctly when the response has no data envelope.
+    ///
+    func test_order_fields_are_properly_parsed_when_the_response_has_no_data_envelope() {
+        let orders = mapLoadAllOrdersResponseWithoutDataEnvelope()
+        XCTAssert(orders.count == 1)
+
+        let firstOrder = orders[0]
+        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:12")
+        let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:14")
+        let datePaid = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:14")
+
+        XCTAssertEqual(firstOrder.orderID, 963)
+        XCTAssertEqual(firstOrder.parentID, 0)
+        XCTAssertEqual(firstOrder.customerID, 11)
+        XCTAssertEqual(firstOrder.number, "963")
+        XCTAssertEqual(firstOrder.status, .processing)
+        XCTAssertEqual(firstOrder.currency, "USD")
+        XCTAssertEqual(firstOrder.customerNote, "")
+        XCTAssertEqual(firstOrder.dateCreated, dateCreated)
+        XCTAssertEqual(firstOrder.dateModified, dateModified)
+        XCTAssertEqual(firstOrder.datePaid, datePaid)
+        XCTAssertEqual(firstOrder.discountTotal, "30.00")
+        XCTAssertEqual(firstOrder.discountTax, "1.20")
+        XCTAssertEqual(firstOrder.shippingTotal, "0.00")
+        XCTAssertEqual(firstOrder.shippingTax, "0.00")
+        XCTAssertEqual(firstOrder.total, "31.20")
+        XCTAssertEqual(firstOrder.totalTax, "1.20")
+    }
+
     /// Verifies that the siteID field is properly set.
     ///
     func test_site_identifier_is_properly_injected_into_every_order() {
@@ -154,6 +183,12 @@ private extension OrderListMapperTests {
     ///
     func mapLoadAllOrdersResponse() -> [Order] {
         return mapOrders(from: "orders-load-all")
+    }
+
+    /// Returns the OrderListMapper output upon receiving `orders-load-all-without-data`
+    ///
+    func mapLoadAllOrdersResponseWithoutDataEnvelope() -> [Order] {
+        return mapOrders(from: "orders-load-all-without-data")
     }
 
     /// Returns the OrderListMapper output upon receiving `broken-order`

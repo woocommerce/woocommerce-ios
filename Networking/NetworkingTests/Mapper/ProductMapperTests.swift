@@ -7,7 +7,7 @@ import XCTest
 final class ProductMapperTests: XCTestCase {
 
     private enum ProductMapperTestsError: Error {
-        case parsingFailure
+        case unableToLoadFile
     }
 
     /// Dummy Site ID.
@@ -315,11 +315,11 @@ private extension ProductMapperTests {
     ///
     func mapLoadProductResponse() throws -> [Product] {
         guard let product = mapProduct(from: "product") else {
-            throw ProductMapperTestsError.parsingFailure
+            throw ProductMapperTestsError.unableToLoadFile
         }
 
         guard let productWithoutDataEnvelope = mapProduct(from: "product-without-data") else {
-            throw ProductMapperTestsError.parsingFailure
+            throw ProductMapperTestsError.unableToLoadFile
         }
 
         return [product, productWithoutDataEnvelope]

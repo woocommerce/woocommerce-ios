@@ -6,7 +6,7 @@ import XCTest
 final class ProductIDMapperTests: XCTestCase {
 
     private enum ProductIDMapperTestsError: Error {
-        case parsingFailure
+        case unableToLoadFile
     }
 
     /// Verifies that IDs are parsed correctly.
@@ -32,7 +32,7 @@ private extension ProductIDMapperTests {
     ///
     func mapIDs(from filename: String) throws -> [Int64] {
         guard let response = Loader.contentsOf(filename) else {
-            throw ProductIDMapperTestsError.parsingFailure
+            throw ProductIDMapperTestsError.unableToLoadFile
         }
 
         return try! ProductIDMapper().map(response: response)

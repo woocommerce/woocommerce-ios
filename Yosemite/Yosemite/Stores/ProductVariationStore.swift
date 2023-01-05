@@ -67,14 +67,21 @@ private extension ProductVariationStore {
 
     /// Synchronizes all the product reviews associated with a given Site ID (if any!).
     ///
-    func synchronizeAllProductVariations(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeAllProductVariations(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<[ProductVariation], Error>) -> Void) {
         let maxPageSize = 100 // API only allows to fetch a max of 100 variations at a time
         recursivelySyncAllVariations(siteID: siteID,
                                      productID: productID,
                                      pageNumber: Default.firstPageNumber,
-                                     pageSize: maxPageSize) { result in
-            // Transforms Result<Bool, Error> -> Result<Void, Error> as the bool value is not needed anymore.
-            onCompletion(result.map { _ in () }) //
+                                     pageSize: maxPageSize) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                let storedVariations = self.storageManager.viewStorage.loadProductVariations(siteID: siteID, productID: productID) ?? []
+                let readOnlyVariations = storedVariations.map { $0.toReadOnly() }
+                onCompletion(.success(readOnlyVariations))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
         }
     }
 

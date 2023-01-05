@@ -699,7 +699,7 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
         }
     }
 
-    /// Generates all possible variations for the product attibutes.
+    /// Generates all possible variations for the product attributes.
     ///
     private func generateAllVariations() {
         viewModel.generateAllVariations(for: product) { [weak self] result in

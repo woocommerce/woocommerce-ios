@@ -127,7 +127,7 @@ final class ProductVariationsViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
             case .synchronizeAllProductVariations(_, _, let onCompletion):
-                onCompletion(.success(()))
+                onCompletion(.success([]))
             default:
                 break
             }
@@ -159,7 +159,7 @@ final class ProductVariationsViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
             case .synchronizeAllProductVariations(_, _, let onCompletion):
-                onCompletion(.success(()))
+                onCompletion(.success([]))
             case .createProductVariations(_, _, _, let onCompletion):
                 onCompletion(.success([]))
             default:

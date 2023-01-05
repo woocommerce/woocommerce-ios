@@ -28,33 +28,31 @@ final class ProductVariationsViewModel {
     /// Generates all missing variations for a product. Up to 100 variations.
     ///
     func generateAllVariations(for product: Product, onCompletion: @escaping (Result<Void, GenerationError>) -> Void) {
-        let action = ProductVariationAction.synchronizeAllProductVariations(siteID: product.siteID, productID: product.productID) { [weak self] result in
-            // TODO: Fetch this via a results controller
-            let existingVariations = ServiceLocator.storageManager.viewStorage.loadProductVariations(siteID: product.siteID, productID: product.productID)?
-                .map {
-                    $0.toReadOnly()
-                } ?? []
 
-            let variationsToGenerate = ProductVariationGenerator.generateVariations(for: product, excluding: existingVariations)
+        fetchAllVariations(of: product) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let existingVariations):
 
-            // Guard for 100 variation limit
-            guard variationsToGenerate.count <= 100 else {
-                return onCompletion(.failure(.tooManyVariations(variationCount: variationsToGenerate.count)))
+                let variationsToGenerate = ProductVariationGenerator.generateVariations(for: product, excluding: existingVariations)
+
+                // Guard for 100 variation limit
+                guard variationsToGenerate.count <= 100 else {
+                    return onCompletion(.failure(.tooManyVariations(variationCount: variationsToGenerate.count)))
+                }
+
+                guard variationsToGenerate.count > 0 else {
+                    // TODO: Inform user that no variation will be created
+                    return onCompletion(.success(()))
+                }
+
+                self.createVariationsRemotely(for: product, variations: variationsToGenerate, onCompletion: onCompletion)
+
+            case .failure:
+                // TODO: Log and inform error
+                break
             }
-
-            guard variationsToGenerate.count > 0 else {
-                // TODO: Inform user that no variation will be created
-                return onCompletion(.success(()))
-            }
-
-            self?.createVariationsRemotely(for: product, variations: variationsToGenerate, onCompletion: onCompletion)
-
         }
-        stores.dispatch(action)
-
-        // TODO:
-        // - Alert if there are more than 100 variations to create
-        // - Create variations remotely
     }
 
     /// Updates the internal `formType` to `edit` if  the given product exists remotely and previous formType was `.add`
@@ -64,6 +62,13 @@ final class ProductVariationsViewModel {
             return
         }
         formType = .edit
+    }
+
+    /// Fetches all remote variations.
+    ///
+    private func fetchAllVariations(of product: Product, onCompletion: @escaping (Result<[ProductVariation], Error>) -> Void) {
+        let action = ProductVariationAction.synchronizeAllProductVariations(siteID: product.siteID, productID: product.productID, onCompletion: onCompletion)
+        stores.dispatch(action)
     }
 
     /// Creates the provided variations remotely.

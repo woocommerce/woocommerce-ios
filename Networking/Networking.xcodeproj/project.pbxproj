@@ -690,6 +690,7 @@
 		DE34051D28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051C28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift */; };
 		DE34051F28BDFB0B00CF0D97 /* JetpackConnectionRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051E28BDFB0B00CF0D97 /* JetpackConnectionRemoteTests.swift */; };
 		DE34052128BDFE3500CF0D97 /* WordPressOrgRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34052028BDFE3500CF0D97 /* WordPressOrgRequestTests.swift */; };
+		DE42F95D2966CB6A00D514C2 /* order-notes-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE42F95C2966CB6A00D514C2 /* order-notes-without-data.json */; };
 		DE50295928C5BD0200551736 /* JetpackUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295828C5BD0200551736 /* JetpackUser.swift */; };
 		DE50295B28C5F99700551736 /* DotcomUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295A28C5F99700551736 /* DotcomUser.swift */; };
 		DE50295D28C6068B00551736 /* JetpackUserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295C28C6068B00551736 /* JetpackUserMapper.swift */; };
@@ -1485,6 +1486,7 @@
 		DE34051C28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionURLMapperTests.swift; sourceTree = "<group>"; };
 		DE34051E28BDFB0B00CF0D97 /* JetpackConnectionRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionRemoteTests.swift; sourceTree = "<group>"; };
 		DE34052028BDFE3500CF0D97 /* WordPressOrgRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressOrgRequestTests.swift; sourceTree = "<group>"; };
+		DE42F95C2966CB6A00D514C2 /* order-notes-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-notes-without-data.json"; sourceTree = "<group>"; };
 		DE50295828C5BD0200551736 /* JetpackUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackUser.swift; sourceTree = "<group>"; };
 		DE50295A28C5F99700551736 /* DotcomUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomUser.swift; sourceTree = "<group>"; };
 		DE50295C28C6068B00551736 /* JetpackUserMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackUserMapper.swift; sourceTree = "<group>"; };
@@ -2191,6 +2193,7 @@
 				B559EBA920A0B5CD00836CD4 /* orders-load-all.json */,
 				DEF13C5D296686AB0024A02B /* orders-load-all-without-data.json */,
 				74C8F06520EEB76400B6EDC9 /* order-notes.json */,
+				DE42F95C2966CB6A00D514C2 /* order-notes-without-data.json */,
 				CEF88DAA233E911A00BED485 /* order-fully-refunded.json */,
 				CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */,
 				D8FBFF2322D52815006E3336 /* order-stats-v4-daily.json */,
@@ -3036,6 +3039,7 @@
 				D8FBFF1522D3BE09006E3336 /* order-stats-v4-defaults.json in Resources */,
 				7495AACF225D366D00801A89 /* variation-as-product.json in Resources */,
 				0272E3FB254AABB800436277 /* order-with-line-item-attributes-before-API-support.json in Resources */,
+				DE42F95D2966CB6A00D514C2 /* order-notes-without-data.json in Resources */,
 				31723C892787A299007F1405 /* stripe-connection-token.json in Resources */,
 				74A1D266211898F000931DFA /* site-visits-year.json in Resources */,
 				743BF8BE21191B63008A9D87 /* site-visits.json in Resources */,

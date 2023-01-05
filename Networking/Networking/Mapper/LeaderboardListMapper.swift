@@ -8,7 +8,11 @@ struct LeaderboardListMapper: Mapper {
     ///
     func map(response: Data) throws -> [Leaderboard] {
         let decoder = JSONDecoder()
-        return try decoder.decode(LeaderboardsEnvelope.self, from: response).data
+        do {
+            return try decoder.decode(LeaderboardsEnvelope.self, from: response).data
+        } catch {
+            return try decoder.decode([Leaderboard].self, from: response)
+        }
     }
 }
 

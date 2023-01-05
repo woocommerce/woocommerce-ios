@@ -183,7 +183,6 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
             switch action {
             case .fetchSiteInfo(_, let completion):
-                let site = Site.fake().copy(isWooCommerceActive: false)
                 completion(.failure(NetworkError.timeout))
             }
         }

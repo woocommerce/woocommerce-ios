@@ -2,16 +2,12 @@ import SwiftUI
 
 /// Hosting controller that wraps the `StoreCreationSummaryView`.
 final class StoreCreationSummaryHostingController: UIHostingController<StoreCreationSummaryView> {
-    private let onContinueToPayment: () -> Void
-
     init(viewModel: StoreCreationSummaryViewModel,
-         onContinueToPayment: @escaping () -> Void) {
-        self.onContinueToPayment = onContinueToPayment
-        super.init(rootView: StoreCreationSummaryView(viewModel: viewModel))
-
-        rootView.onContinueToPayment = { [weak self] in
-            self?.onContinueToPayment()
-        }
+         onContinueToPayment: @escaping () -> Void,
+         onSupport: @escaping () -> Void) {
+        super.init(rootView: StoreCreationSummaryView(viewModel: viewModel,
+                                                      onContinueToPayment: onContinueToPayment,
+                                                      onSupport: onSupport))
     }
 
     @available(*, unavailable)
@@ -52,13 +48,17 @@ struct StoreCreationSummaryViewModel {
 
 /// Displays a summary of the store creation flow with the store information (e.g. store name, store slug).
 struct StoreCreationSummaryView: View {
-    /// Set in the hosting controller.
-    var onContinueToPayment: (() -> Void) = {}
+    private let onContinueToPayment: () -> Void
+    private let onSupport: () -> Void
 
     private let viewModel: StoreCreationSummaryViewModel
 
-    init(viewModel: StoreCreationSummaryViewModel) {
+    init(viewModel: StoreCreationSummaryViewModel,
+         onContinueToPayment: @escaping () -> Void,
+         onSupport: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onContinueToPayment = onContinueToPayment
+        self.onSupport = onSupport
     }
 
     var body: some View {
@@ -126,6 +126,13 @@ struct StoreCreationSummaryView: View {
                 .padding(Layout.defaultButtonPadding)
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                SupportButton {
+                    onSupport()
+                }
+            }
+        }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.large)
     }
@@ -168,12 +175,16 @@ struct StoreCreationSummaryView_Previews: PreviewProvider {
                 .init(storeName: "Fruity shop",
                       storeSlug: "fruityshop.com",
                       categoryName: "Arts and Crafts",
-                      countryCode: .UG))
+                      countryCode: .UG),
+                                 onContinueToPayment: {},
+                                 onSupport: {})
         StoreCreationSummaryView(viewModel:
                 .init(storeName: "Fruity shop",
                       storeSlug: "fruityshop.com",
                       categoryName: "Arts and Crafts",
-                      countryCode: nil))
+                      countryCode: nil),
+                                 onContinueToPayment: {},
+                                 onSupport: {})
         .preferredColorScheme(.dark)
     }
 }

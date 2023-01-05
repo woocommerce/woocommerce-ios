@@ -63,8 +63,10 @@ public extension Variation {
         switch self {
         case .control:
             return "control"
-        case .treatment(let string):
-            return string.map { "treatment: \($0)" } ?? "treatment"
+        case .treatment:
+            return "treatment"
+        case .customTreatment(let name):
+            return "treatment: \(name)"
         }
     }
 }

@@ -361,6 +361,12 @@ extension UIImage {
         return UIImage.gridicon(.heartOutline)
     }
 
+    /// Help Outline
+    ///
+    static var helpOutlineImage: UIImage {
+        return UIImage.gridicon(.helpOutline)
+    }
+
     /// House Image
     ///
     static var houseImage: UIImage {

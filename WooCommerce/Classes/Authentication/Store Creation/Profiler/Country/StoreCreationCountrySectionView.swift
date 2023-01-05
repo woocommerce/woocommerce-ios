@@ -28,6 +28,6 @@ struct StoreCreationCountrySectionView: View {
 
 struct StoreCreationCountrySectionView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreCreationCountrySectionView(header: "EXAMPLES", countryCodes: [.FJ, .UM, .US], viewModel: .init(storeName: "", onContinue: { _ in }))
+        StoreCreationCountrySectionView(header: "EXAMPLES", countryCodes: [.FJ, .UM, .US], viewModel: .init(storeName: "", onContinue: { _ in }, onSupport: {}))
     }
 }

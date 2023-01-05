@@ -17,7 +17,7 @@ public final class JetpackConnectionRemote: Remote {
     ///
     public func retrieveJetpackPluginDetails(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
         let path = "\(Path.plugins)/\(Constants.jetpackPluginName)"
-        let request = WordPressOrgRequest(baseURL: siteURL, method: .get, path: path)
+        let request = RESTRequest(siteURL: siteURL, method: .get, path: path)
         let mapper = SitePluginMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -26,7 +26,7 @@ public final class JetpackConnectionRemote: Remote {
     ///
     public func installJetpackPlugin(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
         let parameters: [String: Any] = [Field.slug.rawValue: Constants.jetpackPluginSlug]
-        let request = WordPressOrgRequest(baseURL: siteURL, method: .post, path: Path.plugins, parameters: parameters)
+        let request = RESTRequest(siteURL: siteURL, method: .post, path: Path.plugins, parameters: parameters)
         let mapper = SitePluginMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -36,7 +36,7 @@ public final class JetpackConnectionRemote: Remote {
     public func activateJetpackPlugin(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
         let path = "\(Path.plugins)/\(Constants.jetpackPluginName)"
         let parameters: [String: Any] = [Field.status.rawValue: Constants.activeStatus]
-        let request = WordPressOrgRequest(baseURL: siteURL, method: .put, path: path, parameters: parameters)
+        let request = RESTRequest(siteURL: siteURL, method: .put, path: path, parameters: parameters)
         let mapper = SitePluginMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -44,7 +44,7 @@ public final class JetpackConnectionRemote: Remote {
     /// Fetches the URL for setting up Jetpack connection.
     ///
     public func fetchJetpackConnectionURL(completion: @escaping (Result<URL, Error>) -> Void) {
-        let request = WordPressOrgRequest(baseURL: siteURL, method: .get, path: Path.jetpackConnectionURL)
+        let request = RESTRequest(siteURL: siteURL, method: .get, path: Path.jetpackConnectionURL)
         let mapper = JetpackConnectionURLMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -88,7 +88,7 @@ public final class JetpackConnectionRemote: Remote {
     /// Fetches the user connection state with the site's Jetpack.
     ///
     public func fetchJetpackUser(completion: @escaping (Result<JetpackUser, Error>) -> Void) {
-        let request = WordPressOrgRequest(baseURL: siteURL, method: .get, path: Path.jetpackConnectionUser)
+        let request = RESTRequest(siteURL: siteURL, method: .get, path: Path.jetpackConnectionUser)
         let mapper = JetpackUserMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }

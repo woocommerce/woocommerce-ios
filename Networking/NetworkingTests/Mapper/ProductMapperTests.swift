@@ -312,8 +312,16 @@ private extension ProductMapperTests {
 
     /// Returns the ProductMapper output upon receiving `product`
     ///
-    func mapLoadProductResponse() -> Product? {
-        return mapProduct(from: "product")
+    func mapLoadProductResponse() throws -> [Product] {
+        guard let product = mapProduct(from: "product") else {
+            throw ProductMapperTestsError.parsingFailure
+        }
+
+        guard let productWithoutDataEnvelope = mapProduct(from: "product-without-data") else {
+            throw ProductMapperTestsError.parsingFailure
+        }
+
+        return [product, productWithoutDataEnvelope]
     }
 
     /// Returns the ProductMapper output upon receiving `product-alternative-types`

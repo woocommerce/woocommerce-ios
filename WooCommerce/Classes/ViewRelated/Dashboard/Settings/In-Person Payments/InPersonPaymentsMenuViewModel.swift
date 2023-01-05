@@ -84,12 +84,17 @@ final class InPersonPaymentsMenuViewModel {
         print("IPP transactions within 30 days: \(resultsCount)")
         print(results.map { ("OrderID: \($0.orderID) - PaymentMethodID: \($0.paymentMethodID) - DatePaid: \(String(describing: $0.datePaid))") })
 
-        if resultsCount < 10 {
+        if resultsCount == 0 {
             // TODO: Populate banner 1
-            print("< 10 transactions. Banner 1 shown")
-        } else {
+            // TODO: Should this option use a different results controller? We're looking for 0 orders historically, not within 30 days.
+            print("0 transactions. Banner 1 shown")
+        }
+        else if resultsCount < 10 {
             // TODO: Populate banner 2
-            print(">= 10 transactions. Banner 2 shown")
+            print("< 10 transactions within 30 days. Banner 2 shown")
+        } else if resultsCount >= 10 {
+            // TODO: Populate banner 3
+            print(">= 10 transactions within 30 days. Banner 3 shown")
         }
     }
 
@@ -113,6 +118,7 @@ private extension InPersonPaymentsMenuViewModel {
             to: today
         )!
 
+        // TODO: Question. Are we looking for the paymentMethodID to be woocommerce_payments? Or COD?
         let predicate = NSPredicate(
             format: "siteID == %lld AND paymentMethodID == %@ AND datePaid >= %@",
             argumentArray: [siteID ?? 0, "woocommerce_payments", thirtyDaysBeforeToday]

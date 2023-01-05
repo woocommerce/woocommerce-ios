@@ -3,14 +3,15 @@ import XCTest
 
 public final class ProductsScreen: ScreenObject {
 
-    // TODO: Remove force `try` once `ScreenObject` migration is completed
-    public let tabBar = try! TabNavComponent()
+    public let tabBar: TabNavComponent
 
     static var isVisible: Bool {
         (try? ProductsScreen().isLoaded) ?? false
     }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
+        tabBar = try TabNavComponent(app: app)
+
         try super.init(
             expectedElementGetters: [
                 // swiftlint:disable next opening_brace

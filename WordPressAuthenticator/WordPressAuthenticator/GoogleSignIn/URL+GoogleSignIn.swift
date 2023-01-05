@@ -30,16 +30,9 @@ extension URL {
         if #available(iOS 16.0, *) {
             return googleSignInBaseURL.appending(queryItems: queryItems)
         } else {
-            let baseURL = googleSignInBaseURL
-            guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
-                throw URLError(
-                    .unsupportedURL,
-                    userInfo: [
-                        NSLocalizedDescriptionKey: "Could not create `URLComponents` instance from \(baseURL)"
-                    ]
-                )
-            }
-
+            // Given `googleSignInBaseURL` is assumed as a valid URL, a `URLComponents` instance
+            // should always be available.
+            var components = URLComponents(url: googleSignInBaseURL, resolvingAgainstBaseURL: false)!
             components.queryItems = queryItems
             return try components.asURL()
         }

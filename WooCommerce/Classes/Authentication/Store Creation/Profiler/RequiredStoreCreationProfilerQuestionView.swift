@@ -51,7 +51,7 @@ struct RequiredStoreCreationProfilerQuestionView<QuestionContent: View>: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                SupportButton{
+                SupportButton {
                     viewModel.supportButtonTapped()
                 }
             }

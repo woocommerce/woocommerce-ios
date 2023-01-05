@@ -469,6 +469,31 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertEqual(readOnlyStoredProductVariation, expectedProductVariation)
     }
 
+    func test_creating_product_variations_properly_stores_them_locally() {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/batch", filename: "product-variations-bulk-create")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+
+        let createdProductVariation = CreateProductVariation(regularPrice: "", attributes: sampleProductVariationAttributes())
+
+        // When
+        let result = waitFor { promise in
+            let action = ProductVariationAction.createProductVariations(siteID: self.sampleSiteID,
+                                                                        productID: self.sampleProductID,
+                                                                        productVariations: [createdProductVariation]) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertTrue(result.isSuccess)
+    }
+
     /// Verifies that `ProductVariationAction.createProductVariation` returns an error whenever there is an error response from the backend.
     ///
     func test_createProductVariation_returns_error_upon_response_error() throws {

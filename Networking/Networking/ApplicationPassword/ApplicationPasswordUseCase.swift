@@ -138,7 +138,7 @@ private extension DefaultApplicationPasswordUseCase {
         let passwordName = await applicationPasswordName
 
         let parameters = [ParameterKey.name: passwordName]
-        let request = WordPressOrgRequest(baseURL: siteAddress, method: .post, path: Path.applicationPasswords, parameters: parameters)
+        let request = RESTRequest(siteURL: siteAddress, method: .post, path: Path.applicationPasswords, parameters: parameters)
         return try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
                 switch result {
@@ -179,7 +179,7 @@ private extension DefaultApplicationPasswordUseCase {
 
         let passwordName = await applicationPasswordName
         let parameters = [ParameterKey.name: passwordName]
-        let request = WordPressOrgRequest(baseURL: siteAddress, method: .delete, path: Path.applicationPasswords, parameters: parameters)
+        let request = RESTRequest(siteURL: siteAddress, method: .delete, path: Path.applicationPasswords, parameters: parameters)
 
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in

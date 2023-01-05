@@ -34,7 +34,10 @@ extension URL {
             // should always be available.
             var components = URLComponents(url: googleSignInBaseURL, resolvingAgainstBaseURL: false)!
             components.queryItems = queryItems
-            return try components.asURL()
+            // Likewise, we can as long as the given `queryItems` are valid, we can assume `url` to
+            // not be nil. If `queryItems` are invalid, a developer error has been committed, and
+            // crashing is appropriate.
+            return components.url!
         }
     }
 

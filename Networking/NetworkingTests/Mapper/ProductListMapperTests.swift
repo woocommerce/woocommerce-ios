@@ -224,17 +224,20 @@ private extension ProductListMapperTests {
 
     /// Returns the ProductListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProducts(from filename: String) -> [Product] {
+    func mapProducts(from filename: String) throws -> [Product] {
         guard let response = Loader.contentsOf(filename) else {
-            return []
+            throw ProductListMapperTestsError.parsingFailure
         }
 
-        return try! ProductListMapper(siteID: dummySiteID).map(response: response)
+        return try ProductListMapper(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the ProductListMapper output upon receiving `products-load-all`
+    /// Returns the ProductListMapper output upon receiving `products-load-all` and `products-load-all-without-data`
     ///
-    func mapLoadAllProductsResponse() -> [Product] {
-        return mapProducts(from: "products-load-all")
+    func mapLoadAllProductsResponse() throws -> [[Product]] {
+        let products = try mapProducts(from: "products-load-all")
+        let productsWithoutDataEnvelope = try mapProducts(from: "products-load-all-without-data")
+
+        return [products, productsWithoutDataEnvelope]
     }
 }

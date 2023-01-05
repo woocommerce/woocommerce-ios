@@ -37,13 +37,13 @@ private extension EntityIDMapperTests {
         return try! EntityIDMapper().map(response: response)
     }
 
-    /// Returns the EntityIDMapper output upon receiving `product-ids-only`
+    /// Returns the EntityIDMapper output upon receiving `product-id-only`
     ///
     func mapLoadIDsResponse() throws -> Int64 {
         try mapIDs(from: "product-id-only")
     }
 
-    /// Returns the EntityIDMapper output upon receiving `product-ids-only-without-data`
+    /// Returns the EntityIDMapper output upon receiving `product-id-only-without-data`
     ///
     func mapLoadIDsResponseWithoutData() throws -> Int64 {
         try mapIDs(from: "product-id-only-without-data")

@@ -76,13 +76,18 @@ final class InPersonPaymentsMenuViewModel {
     }
 
     func displayResults() {
-        // Business logic:
-        let results = resultsController.fetchedObjects.count
-        print("IPP transactions within 30 days: \(results)")
-        if results < 10 {
+        let results = resultsController.fetchedObjects
+        let resultsCount = results.count
+        // Debug:
+        print("IPP transactions within 30 days: \(resultsCount)")
+        print(results.map { ("OrderID: \($0.orderID) - PaymentMethodID: \($0.paymentMethodID) - DatePaid: \(String(describing: $0.datePaid))") })
+
+        if resultsCount < 10 {
             // TODO: Select banner 1
+            print("< 10 transactions. Banner 1 shown")
         } else {
             // TODO: Select banner 2
+            print(">= 10 transactions. Banner 2 shown")
         }
     }
 
@@ -99,8 +104,18 @@ private extension InPersonPaymentsMenuViewModel {
     /// Results controller that fetches IPP transactions
     ///
     func createIPPOrdersResultsController() -> ResultsController<StorageOrder> {
-        // TODO: Add further details to Query: Limit 30 days
-        let predicate = NSPredicate(format: "siteID == %lld AND paymentMethodID == %@", siteID ?? 0, "woocommerce_payments")
+        let today = Date()
+        let thirtyDaysBeforeToday = Calendar.current.date(
+            byAdding: .day,
+            value: -30,
+            to: today
+        )!
+
+        let predicate = NSPredicate(
+            format: "siteID == %lld AND paymentMethodID == %@ AND datePaid >= %@",
+            argumentArray: [siteID ?? 0, "woocommerce_payments", thirtyDaysBeforeToday]
+        )
+
         return ResultsController<StorageOrder>(storageManager: storage, matching: predicate, sortedBy: [])
     }
 }

@@ -765,6 +765,8 @@
 		EEA658402966C05D00112DF0 /* product-search-sku-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EEA6583F2966C05D00112DF0 /* product-search-sku-without-data.json */; };
 		EEA658422966C41A00112DF0 /* ProductIDMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA658412966C41A00112DF0 /* ProductIDMapperTests.swift */; };
 		EEA658462966C67C00112DF0 /* products-ids-only-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EEA658452966C67C00112DF0 /* products-ids-only-without-data.json */; };
+		EEA658482966CBAD00112DF0 /* EntityIDMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA658472966CBAD00112DF0 /* EntityIDMapperTests.swift */; };
+		EEA6584C2966CC4800112DF0 /* product-id-only-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EEA6584B2966CC4800112DF0 /* product-id-only-without-data.json */; };
 		EECB7EE8286555180028C888 /* media-update-product-id.json in Resources */ = {isa = PBXBuildFile; fileRef = EECB7EE7286555180028C888 /* media-update-product-id.json */; };
 		EEFAA579295D2FC7003583BE /* RESTRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA578295D2FC7003583BE /* RESTRequestTests.swift */; };
 		EEFAA57B295D7793003583BE /* AuthenticatedDotcomRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA57A295D7793003583BE /* AuthenticatedDotcomRequest.swift */; };
@@ -1566,6 +1568,8 @@
 		EEA6583F2966C05D00112DF0 /* product-search-sku-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-search-sku-without-data.json"; sourceTree = "<group>"; };
 		EEA658412966C41A00112DF0 /* ProductIDMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductIDMapperTests.swift; sourceTree = "<group>"; };
 		EEA658452966C67C00112DF0 /* products-ids-only-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-ids-only-without-data.json"; sourceTree = "<group>"; };
+		EEA658472966CBAD00112DF0 /* EntityIDMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIDMapperTests.swift; sourceTree = "<group>"; };
+		EEA6584B2966CC4800112DF0 /* product-id-only-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-id-only-without-data.json"; sourceTree = "<group>"; };
 		EECB7EE7286555180028C888 /* media-update-product-id.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id.json"; sourceTree = "<group>"; };
 		EEFAA578295D2FC7003583BE /* RESTRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequestTests.swift; sourceTree = "<group>"; };
 		EEFAA57A295D7793003583BE /* AuthenticatedDotcomRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedDotcomRequest.swift; sourceTree = "<group>"; };
@@ -2248,6 +2252,7 @@
 				CE0A0F1E223998A00075ED8D /* products-load-all.json */,
 				EEA6583D2966B41E00112DF0 /* products-load-all-without-data.json */,
 				2676F4CF290B0EC700C7A15B /* product-id-only.json */,
+				EEA6584B2966CC4800112DF0 /* product-id-only-without-data.json */,
 				CCF434652906C2A400B4475A /* products-ids-only.json */,
 				EEA658452966C67C00112DF0 /* products-ids-only-without-data.json */,
 				CCF434692906C9C300B4475A /* products-ids-only-empty.json */,
@@ -2611,6 +2616,7 @@
 				68F48B1028E3BBC60045C15B /* WCAnalyticsCustomerMapperTests.swift */,
 				EE338A0D294AF9BD00183934 /* ApplicationPasswordMapperTests.swift */,
 				EEA658412966C41A00112DF0 /* ProductIDMapperTests.swift */,
+				EEA658472966CBAD00112DF0 /* EntityIDMapperTests.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -3108,6 +3114,7 @@
 				45A4B85625D2E75300776FB4 /* shipping-label-address-validation-success.json in Resources */,
 				457FC68C2382B2FD00B41B02 /* product-update.json in Resources */,
 				CE19CB11222486A600E8AF7A /* order-statuses.json in Resources */,
+				EEA6584C2966CC4800112DF0 /* product-id-only-without-data.json in Resources */,
 				02F096C22406691100C0C1D5 /* media-library.json in Resources */,
 				028CB717290223CB00331C09 /* create-account-error-password.json in Resources */,
 				D800DA0E25EFEC21001E13CE /* wcpay-connection-token.json in Resources */,
@@ -3603,6 +3610,7 @@
 				077F39DA26A58ED700ABEADC /* SystemStatusRemoteTests.swift in Sources */,
 				0359EA1F27AAE4680048DE2D /* WCPayChargeMapperTests.swift in Sources */,
 				31D27C952602B737002EDB1D /* SitePluginsRemoteTests.swift in Sources */,
+				EEA658482966CBAD00112DF0 /* EntityIDMapperTests.swift in Sources */,
 				DEC51AFB2769C66B009F3DF4 /* SystemStatusMapperTests.swift in Sources */,
 				DE34051F28BDFB0B00CF0D97 /* JetpackConnectionRemoteTests.swift in Sources */,
 				74AB5B4D21AF354E00859C12 /* SiteAPIMapperTests.swift in Sources */,

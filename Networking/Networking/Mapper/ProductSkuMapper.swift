@@ -13,7 +13,7 @@ struct ProductSkuMapper: Mapper {
         do {
             return try decoder.decode(ProductSkuEnvelope.self, from: response).productsSkus.first?[Constants.skuKey] ?? ""
         } catch {
-            return try decoder.decode(ProductSkuEnvelope.SkuType.self, from: response).first?[Constants.skuKey] ?? ""
+            return try decoder.decode(ProductSkuEnvelope.ProductsSkus.self, from: response).first?[Constants.skuKey] ?? ""
         }
     }
 }
@@ -31,9 +31,9 @@ private extension ProductSkuMapper {
 /// allows us to do parse all the things with JSONDecoder.
 ///
 private struct ProductSkuEnvelope: Decodable {
-    typealias SkuType = [[String: String]]
+    typealias ProductsSkus = [[String: String]]
 
-    let productsSkus: SkuType
+    let productsSkus: ProductsSkus
 
     private enum CodingKeys: String, CodingKey {
         case productsSkus = "data"

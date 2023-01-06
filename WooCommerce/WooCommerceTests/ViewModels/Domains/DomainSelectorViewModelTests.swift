@@ -130,6 +130,8 @@ private extension DomainSelectorViewModelTests {
             switch action {
             case let .loadFreeDomainSuggestions(_, completion):
                 completion(.success(suggestions))
+            default:
+                return
             }
         }
     }
@@ -139,6 +141,8 @@ private extension DomainSelectorViewModelTests {
             switch action {
             case let .loadFreeDomainSuggestions(_, completion):
                 completion(.failure(error))
+            default:
+                return
             }
         }
     }

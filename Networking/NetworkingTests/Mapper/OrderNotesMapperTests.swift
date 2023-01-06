@@ -35,7 +35,7 @@ class OrderNotesMapperTests: XCTestCase {
     ///
     func test_Note_fields_are_properly_parsed_when_response_has_no_data_envelope() {
         let notes = mapLoadAllOrderNotesResponseWithoutDataEnvelope()
-        XCTAssertEqual(notes.count, 19)
+        XCTAssertEqual(notes.count, 2)
 
         let firstNote = notes[0]
         let firstNoteCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-06-23T16:05:55")

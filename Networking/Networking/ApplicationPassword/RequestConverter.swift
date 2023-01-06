@@ -6,9 +6,9 @@ struct RequestConverter {
     let credentials: Credentials?
 
     func convert(_ request: URLRequestConvertible) -> URLRequestConvertible {
-        guard let jetpackRequest = request as? JetpackRequest,
+        guard let convertibleRequest = request as? RESTRequestConvertible,
               case let .wporg(_, _, siteAddress) = credentials,
-              let restRequest = jetpackRequest.asRESTRequest(with: siteAddress) else {
+              let restRequest = convertibleRequest.asRESTRequest(with: siteAddress) else {
             return request
         }
 

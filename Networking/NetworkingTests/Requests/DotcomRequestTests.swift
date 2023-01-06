@@ -5,7 +5,7 @@ import XCTest
 
 /// WordPress.com Requests Unit Tests
 ///
-class DotcomRequestTests: XCTestCase {
+final class DotcomRequestTests: XCTestCase {
 
     /// RPC Sample Method Path
     ///
@@ -14,6 +14,10 @@ class DotcomRequestTests: XCTestCase {
     /// Sample Parameters
     ///
     private let sampleParameters = ["some": "thing", "yo": "semite"]
+
+    /// Sample site address
+    ///
+    private let sampleSiteAddress = "https://wordpress.com"
 
     /// Sample Parameters as a Query String
     ///
@@ -90,6 +94,64 @@ class DotcomRequestTests: XCTestCase {
 
             XCTAssertEqual(value, sampleParameters[key])
         }
+    }
+
+    // MARK: `RESTRequest` conversion
+
+    func test_it_is_converted_into_RESTRequest_for_wpMark2_when_availableAsRESTRequest_is_true() throws {
+        // Given
+        let request = DotcomRequest(wordpressApiVersion: .wpMark2, method: .post, path: sampleRPC, parameters: sampleParameters, availableAsRESTRequest: true)
+
+        // When
+        let output = try XCTUnwrap(request.asRESTRequest(with: sampleSiteAddress))
+
+        // Then
+        XCTAssertEqual(output.wooApiVersion, .none)
+        XCTAssertEqual(output.method, .post)
+        XCTAssertEqual(output.path, WordPressAPIVersion.wpMark2.path + sampleRPC)
+        let params = try XCTUnwrap(output.parameters as? [String: String])
+        XCTAssertEqual(params, sampleParameters)
+        XCTAssertEqual(output.siteURL, sampleSiteAddress)
+    }
+
+    func test_converting_into_RESTRequest_is_nil_for_non_WPOrg_endpoints__even_if_availableAsRESTRequest_is_true() throws {
+        let apis = WordPressAPIVersion.allCases.filter({ $0.isWPOrgEndpoint == false })
+        for api in apis {
+            // Given
+            let request = DotcomRequest(wordpressApiVersion: api, method: .post, path: sampleRPC, parameters: sampleParameters, availableAsRESTRequest: true)
+
+            // Then
+            XCTAssertNil(request.asRESTRequest(with: sampleSiteAddress))
+        }
+    }
+
+    func test_converting_into_RESTRequest_is_nil_when_availableAsRESTRequest_is_false() {
+        // Given
+        let request = DotcomRequest(wordpressApiVersion: .wpMark2, method: .post, path: sampleRPC, parameters: sampleParameters, availableAsRESTRequest: false)
+
+        // Then
+        XCTAssertNil(request.asRESTRequest(with: sampleSiteAddress))
+    }
+
+    func test_the_converted_RESTRequest_path_does_not_have_sites_component() throws {
+        // Given
+        let pathWithSite = "/sites/12345/media/"
+        let request = DotcomRequest(wordpressApiVersion: .wpMark2,
+                                    method: .post,
+                                    path: pathWithSite,
+                                    parameters: sampleParameters,
+                                    availableAsRESTRequest: true)
+
+        // When
+        let output = try XCTUnwrap(request.asRESTRequest(with: sampleSiteAddress))
+
+        // Then
+        XCTAssertEqual(output.wooApiVersion, .none)
+        XCTAssertEqual(output.method, .post)
+        XCTAssertEqual(output.path, WordPressAPIVersion.wpMark2.path + "media/")
+        let params = try XCTUnwrap(output.parameters as? [String: String])
+        XCTAssertEqual(params, sampleParameters)
+        XCTAssertEqual(output.siteURL, sampleSiteAddress)
     }
 }
 

@@ -58,6 +58,9 @@ final class AppCoordinator {
         self.featureFlagService = featureFlagService
 
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
+
+        // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
+        configureAuthenticator()
     }
 
     func start() {

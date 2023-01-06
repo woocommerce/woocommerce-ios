@@ -41,6 +41,30 @@ public struct FreeDomainSuggestion: Decodable, Equatable {
     }
 }
 
+/// Necessary data for a site's domain.
+public struct SiteDomain: Decodable, Equatable {
+    /// Domain name.
+    public let name: String
+
+    /// Whether the domain is the site's primary domain.
+    public let isPrimary: Bool
+
+    /// The next renewal date, if available.
+    public let renewalDate: Date?
+
+    public init(name: String, isPrimary: Bool, renewalDate: Date? = nil) {
+        self.name = name
+        self.isPrimary = isPrimary
+        self.renewalDate = renewalDate
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case name = "domain"
+        case isPrimary = "primary_domain"
+        case renewalDate = "auto_renewal_date"
+    }
+}
+
 // MARK: - Constants
 //
 private extension DomainRemote {

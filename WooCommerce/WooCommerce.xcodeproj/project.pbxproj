@@ -396,6 +396,8 @@
 		02C2756F24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2756E24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift */; };
 		02C27BCE282CB52F0065471A /* CardPresentPaymentReceiptEmailCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C27BCD282CB52F0065471A /* CardPresentPaymentReceiptEmailCoordinator.swift */; };
 		02C27BD0282CDF9E0065471A /* CardPresentPaymentReceiptEmailCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C27BCF282CDF9E0065471A /* CardPresentPaymentReceiptEmailCoordinatorTests.swift */; };
+		02C37B7B2967096800F0CF9E /* DomainSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C37B7A2967096800F0CF9E /* DomainSettingsView.swift */; };
+		02C37B7D2967B72A00F0CF9E /* FreeStagingDomainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C37B7C2967B72A00F0CF9E /* FreeStagingDomainView.swift */; };
 		02C3FACE282A93020095440A /* WooAnalyticsEvent+Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C3FACD282A93020095440A /* WooAnalyticsEvent+Dashboard.swift */; };
 		02C3FDEA251091CE009569EE /* ProductFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C3FDE9251091CE009569EE /* ProductFactoryTests.swift */; };
 		02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C8876B24501FAC00E4470F /* FilterListViewController.swift */; };
@@ -2453,6 +2455,8 @@
 		02C2756E24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductShippingSettingsViewModel+ProductVariationTests.swift"; sourceTree = "<group>"; };
 		02C27BCD282CB52F0065471A /* CardPresentPaymentReceiptEmailCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentReceiptEmailCoordinator.swift; sourceTree = "<group>"; };
 		02C27BCF282CDF9E0065471A /* CardPresentPaymentReceiptEmailCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentReceiptEmailCoordinatorTests.swift; sourceTree = "<group>"; };
+		02C37B7A2967096800F0CF9E /* DomainSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSettingsView.swift; sourceTree = "<group>"; };
+		02C37B7C2967B72A00F0CF9E /* FreeStagingDomainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeStagingDomainView.swift; sourceTree = "<group>"; };
 		02C3FACD282A93020095440A /* WooAnalyticsEvent+Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Dashboard.swift"; sourceTree = "<group>"; };
 		02C3FDE9251091CE009569EE /* ProductFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFactoryTests.swift; sourceTree = "<group>"; };
 		02C8876B24501FAC00E4470F /* FilterListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterListViewController.swift; sourceTree = "<group>"; };
@@ -4520,6 +4524,8 @@
 				023930602918F36400B2632F /* DomainSelectorView.swift */,
 				02393068291A065000B2632F /* DomainRowView.swift */,
 				02DAE7FB291B7B8B009342B7 /* DomainSelectorViewModel.swift */,
+				02C37B7A2967096800F0CF9E /* DomainSettingsView.swift */,
+				02C37B7C2967B72A00F0CF9E /* FreeStagingDomainView.swift */,
 			);
 			path = Domains;
 			sourceTree = "<group>";
@@ -10375,6 +10381,7 @@
 				D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */,
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
 				035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */,
+				02C37B7D2967B72A00F0CF9E /* FreeStagingDomainView.swift in Sources */,
 				457509E4267B9E91005FA2EA /* AggregatedProductListViewController.swift in Sources */,
 				D8815B0D263861A400EDAD62 /* CardPresentModalSuccess.swift in Sources */,
 				0235595524496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift in Sources */,
@@ -10619,6 +10626,7 @@
 				B6E851F5276330200041D1BA /* RefundFeesDetailsTableViewCell.swift in Sources */,
 				028E1F702833DD0A001F8829 /* DashboardViewModel.swift in Sources */,
 				2602A63D27BD3C8C00B347F1 /* RemoteOrderSynchronizer.swift in Sources */,
+				02C37B7B2967096800F0CF9E /* DomainSettingsView.swift in Sources */,
 				CC4B252B27CFCEE2008D2E6E /* OrderTotalsCalculator.swift in Sources */,
 				0247F512286F73EA009C177E /* WooAnalyticsEvent+ImageUpload.swift in Sources */,
 				B57C744A20F5649300EEFC87 /* EmptyStoresTableViewCell.swift in Sources */,

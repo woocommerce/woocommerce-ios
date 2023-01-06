@@ -27,7 +27,11 @@ struct RefundMapper: Mapper {
             .orderID: orderID
         ]
 
-        return try decoder.decode(RefundEnvelope.self, from: response).refund
+        do {
+            return try decoder.decode(RefundEnvelope.self, from: response).refund
+        } catch {
+            return try decoder.decode(Refund.self, from: response)
+        }
     }
 
     /// (Attempts) to encode a Refund object into JSONEncoded data.

@@ -40,14 +40,3 @@ final class ReportOrderTotalsMapperTests: XCTestCase {
         XCTAssertEqual(statuses.count, 8)
     }
 }
-
-private extension ReportOrderTotalsMapperTests {
-    /// Returns the CustomerMapper output upon receiving `filename` (Data Encoded)
-    ///
-    func mapStatus(from filename: String) throws -> [OrderStatus] {
-        guard let response = Loader.contentsOf(filename) else {
-            return []
-        }
-        return try ReportOrderTotalsMapper(siteID: dummySiteID).map(response: response)
-    }
-}

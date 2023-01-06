@@ -1,1 +1,1 @@
-İyi haber! Uygulamaya yeni bir analiz bölümü ekledik! Gelir ve Siparişler'le ilgili daha ayrıntılı bilgileri kontrol etmek için mağaza istatistiklerinin altındaki Daha Fazlasını Gör düğmesine tıklamanız yeterlidir. Bu son değil - önümüzdeki birkaç hafta içinde daha fazla güncelleme gelecek!
+Yeni bir analiz bölümü eklediğimizi biliyor musunuz? İstatistiklerinizi görüntülerken özel tarih aralıkları seçmek artık mümkün! Kontrol etmek için yalnızca mağaza istatistikleri altında Daha Fazlasını Gör düğmesine tıklayın.

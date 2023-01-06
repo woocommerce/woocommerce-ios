@@ -77,7 +77,7 @@ class OrderNotesMapperTests: XCTestCase {
 ///
 private extension OrderNotesMapperTests {
 
-    /// Returns the OrderNotesMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the [OrderNote] output upon receiving `filename` (Data Encoded)
     ///
     func mapNotes(from filename: String) -> [OrderNote] {
         guard let response = Loader.contentsOf(filename) else {
@@ -87,19 +87,19 @@ private extension OrderNotesMapperTests {
         return try! OrderNotesMapper().map(response: response)
     }
 
-    /// Returns the OrderNotesMapper output upon receiving `order-notes`
+    /// Returns the [OrderNote] output upon receiving `order-notes`
     ///
     func mapLoadAllOrderNotesResponse() -> [OrderNote] {
         return mapNotes(from: "order-notes")
     }
 
-    /// Returns the OrderNotesMapper output upon receiving `order-notes-without-data`
+    /// Returns the [OrderNote] output upon receiving `order-notes-without-data`
     ///
     func mapLoadAllOrderNotesResponseWithoutDataEnvelope() -> [OrderNote] {
         return mapNotes(from: "order-notes-without-data")
     }
 
-    /// Returns the OrderNotesMapper output upon receiving `broken-order`
+    /// Returns the [OrderNote] output upon receiving `broken-order`
     ///
     func mapLoadBrokenOrderNotesResponse() -> [OrderNote] {
         return mapNotes(from: "broken-notes")

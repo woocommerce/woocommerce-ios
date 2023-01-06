@@ -3,7 +3,7 @@ import Foundation
 
 /// Defines the supported WordPress API Versions.
 ///
-enum WordPressAPIVersion: String {
+enum WordPressAPIVersion: String, CaseIterable {
 
     /// WordPress.com Endpoint Mark 1.1
     ///
@@ -33,5 +33,18 @@ enum WordPressAPIVersion: String {
     ///
     var path: String {
         return rawValue
+    }
+
+    /// Returns `true` if it is a WordPress.org endpoint
+    ///
+    /// Returns `false` if it is a WordPress.com endpoint
+    ///
+    var isWPOrgEndpoint: Bool {
+        switch self {
+        case .wpMark2:
+            return true
+        case .mark1_1, .mark1_2, .mark1_5, .wpcomMark2:
+            return false
+        }
     }
 }

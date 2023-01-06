@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 11.8
+You’ll notice some nice visual changes to the look of the app! Take a look and please share your feedback – more updates to come in the next few weeks!
+
 ## 11.7
 Did you know we've added a new analytics section? It's now possible to select custom date ranges when viewing your stats! Simply click on the See More button under the store stats to check it out.
 

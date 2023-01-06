@@ -1,9 +1,9 @@
 import Foundation
 import Alamofire
 
-/// Wraps up a URLRequestConvertible Instance, and injects the Authorization + User Agent whenever the actual Request is required.
+/// Represents a WordPress.org REST API request
 ///
-struct RESTRequest: URLRequestConvertible {
+struct RESTRequest: Request {
     /// URL of the site to make the request with
     ///
     let siteURL: String
@@ -33,7 +33,7 @@ struct RESTRequest: URLRequestConvertible {
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
     ///
     init(siteURL: String,
-         wooApiVersion: WooAPIVersion,
+         wooApiVersion: WooAPIVersion = .none,
          method: HTTPMethod,
          path: String,
          parameters: [String: Any] = [:]) {
@@ -58,6 +58,10 @@ struct RESTRequest: URLRequestConvertible {
         default:
             return try URLEncoding.default.encode(request, with: parameters)
         }
+    }
+
+    func responseDataValidator() -> ResponseDataValidator {
+        PlaceholderDataValidator()
     }
 }
 

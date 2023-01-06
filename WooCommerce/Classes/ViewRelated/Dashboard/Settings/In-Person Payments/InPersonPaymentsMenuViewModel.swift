@@ -33,7 +33,11 @@ final class InPersonPaymentsMenuViewModel {
         return stores.sessionManager.defaultStoreID
     }
 
-    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+    var isEligibleForCardPresentPayments: Bool {
+        cardPresentPaymentsConfiguration.isSupportedCountry
+    }
+
+    let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     init(dependencies: Dependencies = Dependencies(),
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration) {

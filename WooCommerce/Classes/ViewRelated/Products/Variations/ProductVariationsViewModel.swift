@@ -28,23 +28,26 @@ final class ProductVariationsViewModel {
     /// Generates all missing variations for a product. Up to 100 variations.
     ///
     func generateAllVariations(for product: Product, onCompletion: @escaping (Result<Void, GenerationError>) -> Void) {
-        let action = ProductVariationAction.synchronizeAllProductVariations(siteID: product.siteID, productID: product.productID) { result in
+        let action = ProductVariationAction.synchronizeAllProductVariations(siteID: product.siteID, productID: product.productID) { [weak self] result in
             // TODO: Fetch this via a results controller
             let existingVariations = ServiceLocator.storageManager.viewStorage.loadProductVariations(siteID: product.siteID, productID: product.productID)?
                 .map {
                     $0.toReadOnly()
                 } ?? []
 
-            // TEMP
             let variationsToGenerate = ProductVariationGenerator.generateVariations(for: product, excluding: existingVariations)
-            print("Variations to Generate: \(variationsToGenerate.count)")
 
             // Guard for 100 variation limit
             guard variationsToGenerate.count <= 100 else {
                 return onCompletion(.failure(.tooManyVariations(variationCount: variationsToGenerate.count)))
             }
 
-            onCompletion(.success(()))
+            guard variationsToGenerate.count > 0 else {
+                // TODO: Inform user that no variation will be created
+                return onCompletion(.success(()))
+            }
+
+            self?.createVariationsRemotely(for: product, variations: variationsToGenerate, onCompletion: onCompletion)
 
         }
         stores.dispatch(action)
@@ -61,6 +64,25 @@ final class ProductVariationsViewModel {
             return
         }
         formType = .edit
+    }
+
+    /// Creates the provided variations remotely.
+    ///
+    private func createVariationsRemotely(for product: Product,
+                                          variations: [CreateProductVariation],
+                                          onCompletion: @escaping (Result<Void, GenerationError>) -> Void) {
+        let action = ProductVariationAction.createProductVariations(siteID: product.siteID,
+                                                                    productID: product.productID,
+                                                                    productVariations: variations, onCompletion: { result in
+            switch result {
+            case .success:
+                onCompletion(.success(()))
+            case .failure:
+                // TODO: Log Error
+                break
+            }
+        })
+        stores.dispatch(action)
     }
 }
 

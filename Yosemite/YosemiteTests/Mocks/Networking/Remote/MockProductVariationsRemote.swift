@@ -127,6 +127,13 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
         }
     }
 
+    func createProductVariations(siteID: Int64,
+                                 productID: Int64,
+                                 productVariations: [Networking.CreateProductVariation],
+                                 completion: @escaping (Result<[Networking.ProductVariation], Error>) -> Void) {
+        // No op
+    }
+
     func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {

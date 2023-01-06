@@ -8,7 +8,7 @@ public enum ProductVariationAction: Action {
 
     /// Synchronizes all the ProductVariation's available in the store.
     ///
-    case synchronizeAllProductVariations(siteID: Int64, productID: Int64, onCompletion: (Result<Void, Error>) -> Void)
+    case synchronizeAllProductVariations(siteID: Int64, productID: Int64, onCompletion: (Result<[ProductVariation], Error>) -> Void)
 
     /// Synchronizes the ProductVariation's matching the specified criteria.
     /// If successful, the result boolean value, will indicate weather there are more variations to fetch or not.

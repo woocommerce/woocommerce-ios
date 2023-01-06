@@ -26,27 +26,49 @@ final class ProductVariationsViewModel {
     }
 
     /// Generates all missing variations for a product. Up to 100 variations.
+    /// Parameters:
+    /// - `Product`: Product on which we will be creating the variations
+    /// - `onStateChanged`: Closure invoked every time there is a significant state change in the generation process.
     ///
-    func generateAllVariations(for product: Product, onCompletion: @escaping (Result<Void, GenerationError>) -> Void) {
+    func generateAllVariations(for product: Product, onStateChanged: @escaping (GenerationState) -> Void) {
 
+        // Fetch Previous variations
+        onStateChanged(.fetching)
         fetchAllVariations(of: product) { [weak self] result in
-            guard let self else { return }
             switch result {
             case .success(let existingVariations):
 
+                // Generate variations locally
                 let variationsToGenerate = ProductVariationGenerator.generateVariations(for: product, excluding: existingVariations)
 
                 // Guard for 100 variation limit
                 guard variationsToGenerate.count <= 100 else {
-                    return onCompletion(.failure(.tooManyVariations(variationCount: variationsToGenerate.count)))
+                    return onStateChanged(.error(.tooManyVariations(variationCount: variationsToGenerate.count)))
                 }
 
+                // Guard for no variations to generate
                 guard variationsToGenerate.count > 0 else {
-                    // TODO: Inform user that no variation will be created
-                    return onCompletion(.success(()))
+                    return onStateChanged(.finished(false))
                 }
 
-                self.createVariationsRemotely(for: product, variations: variationsToGenerate, onCompletion: onCompletion)
+                // Confirm generation with merchant
+                onStateChanged(.confirmation(variationsToGenerate.count, { confirmed in
+
+                    guard confirmed else {
+                        return onStateChanged(.canceled)
+                    }
+
+                    // Create variations remotely
+                    onStateChanged(.creating)
+                    self?.createVariationsRemotely(for: product, variations: variationsToGenerate) { result in
+                        switch result {
+                        case .success:
+                            onStateChanged(.finished(true))
+                        case .failure(let error):
+                            onStateChanged(.error(error))
+                        }
+                    }
+                }))
 
             case .failure:
                 // TODO: Log and inform error
@@ -106,7 +128,36 @@ extension ProductVariationsViewModel {
     }
 }
 
+// MARK: Definitions for Generate All Variations
 extension ProductVariationsViewModel {
+    /// Type that represents the possible states while all variations are being created.
+    ///
+    enum GenerationState {
+        /// State while previous variations are being fetched
+        ///
+        case fetching
+
+        /// State to allow merchant to confirm the variation generation
+        ///
+        case confirmation(_ numberOfVariations: Int, _ onCompletion: (_ confirmed: Bool) -> Void)
+
+        /// State while the variations are being created remotely
+        ///
+        case creating
+
+        ///State when the merchant decides to not continue with the generation process.
+        ///
+        case canceled
+
+        /// State when the the process is finished. `variationsCreated` indicates if  variations were created or not.
+        ///
+        case finished(_ variationsCreated: Bool)
+
+        /// Error state in any part of the process.
+        ///
+        case error(GenerationError)
+    }
+
     /// Type to represent known generation errors
     ///
     enum GenerationError: LocalizedError, Equatable {

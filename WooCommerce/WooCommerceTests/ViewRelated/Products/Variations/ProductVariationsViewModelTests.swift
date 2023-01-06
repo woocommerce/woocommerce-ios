@@ -146,6 +146,39 @@ final class ProductVariationsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(error, .tooManyVariations(variationCount: 125))
+    }
 
+    func test_generating_less_than_100_variations_invokes_create_action() {
+        // Given
+        let product = Product.fake().copy(attributes: [
+            ProductAttribute.fake().copy(attributeID: 1, name: "Size", options: ["XS", "S", "M", "L", "XL"]),
+            ProductAttribute.fake().copy(attributeID: 2, name: "Color", options: ["Red", "Green", "Blue", "White", "Black"]),
+        ])
+
+        let stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case .synchronizeAllProductVariations(_, _, let onCompletion):
+                onCompletion(.success(()))
+            case .createProductVariations(_, _, _, let onCompletion):
+                onCompletion(.success([]))
+            default:
+                break
+            }
+        }
+
+        let viewModel = ProductVariationsViewModel(stores: stores, formType: .edit)
+
+        // When
+        let succeeded = waitFor { promise in
+            viewModel.generateAllVariations(for: product) { result in
+                if case .success = result {
+                    promise(true)
+                }
+            }
+        }
+
+        // Then
+        XCTAssertTrue(succeeded)
     }
 }

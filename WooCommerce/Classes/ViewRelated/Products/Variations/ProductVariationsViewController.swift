@@ -639,7 +639,40 @@ private extension ProductVariationsViewController {
         controller.addCancelActionWithTitle(Localization.cancel) { _ in
             onCompletion(false)
         }
-        present(controller, animated: true)
+
+        // There should be an `inProgressViewController` being presented. Fallback to `self` in case there isn't one.
+        let baseViewController = presentedViewController ?? self
+        baseViewController.present(controller, animated: true)
+    }
+
+    /// Presents a blocking view controller while variations are being fetched.
+    ///
+    private func presentFetchingIndicator() {
+        let inProgressViewController = InProgressViewController(viewProperties: .init(title: Localization.fetchingVariations, message: ""))
+        present(inProgressViewController, animated: true)
+    }
+
+    /// Presents a blocking view controller while variations are being created.
+    ///
+    private func presentCreatingIndicator() {
+        let newViewProperties = InProgressViewProperties(title: Localization.creatingVariations, message: "")
+
+        // There should be already a presented `InProgressViewController`. But we present one in case there isn;t.
+        guard let inProgressViewController = self.presentedViewController as? InProgressViewController else {
+            let inProgressViewController = InProgressViewController(viewProperties: newViewProperties)
+            return present(inProgressViewController, animated: true)
+        }
+
+        // Update the already presented view controller with the "Creating..." copy.
+        inProgressViewController.updateViewProperties(newViewProperties)
+    }
+
+    /// Dismiss any `InProgressViewController` being presented.
+    ///
+    private func dismissBlockingIndicator() {
+        if let inProgressViewController = self.presentedViewController as? InProgressViewController {
+            inProgressViewController.dismiss(animated: true)
+        }
     }
 }
 
@@ -720,19 +753,19 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
         viewModel.generateAllVariations(for: product) { [weak self] currentState in
             switch currentState {
             case .fetching:
-                break // TODO: Show fetching loading Indicator
+                self?.presentFetchingIndicator()
             case .confirmation(let variationCount, let onCompletion):
                 self?.presentGenerationConfirmation(numberOfVariations: variationCount, onCompletion: onCompletion)
             case .creating:
-                break // TODO: Show creating loading Indicator
+                self?.presentCreatingIndicator()
             case .canceled:
-                break // TODO: Remove loading indicator
+                self?.dismissBlockingIndicator()
             case .finished(let variationsCreated):
-                // TODO: Remove loading indicator
+                self?.dismissBlockingIndicator()
                 // TODO: Inform about created variations
                 break
             case .error(let error):
-                // TODO: Remove loading indicator
+                self?.dismissBlockingIndicator()
                 self?.presentGenerationError(error)
             }
         }
@@ -852,6 +885,10 @@ private extension ProductVariationsViewController {
         }
         static let ok = NSLocalizedString("OK", comment: "Button text to confirm that we want to generate all variations")
         static let cancel = NSLocalizedString("Cancel", comment: "Button text to confirm that we don't want to generate all variations")
+        static let fetchingVariations = NSLocalizedString("Fetching Variations...",
+                                                          comment: "Blocking indicator text when fetching existing variations prior generating them.")
+        static let creatingVariations = NSLocalizedString("Creating Variations...",
+                                                          comment: "Blocking indicator text when creating multiple variations remotely.")
 
     }
 

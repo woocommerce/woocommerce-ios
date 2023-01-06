@@ -18,6 +18,12 @@ public protocol CardReaderService {
 
     // MARK: - Commands
 
+    /// Checks for support of a given reader type and discovery method combination. Does not start discovery.
+    ///
+    func checkSupport(for cardReaderType: CardReaderType,
+                      configProvider: CardReaderConfigProvider,
+                      discoveryMethod: CardReaderDiscoveryMethod) -> Bool
+
     /// Starts the service.
     /// That could imply, for example, that the reader discovery process starts
     func start(_ configProvider: CardReaderConfigProvider, discoveryMethod: CardReaderDiscoveryMethod) throws

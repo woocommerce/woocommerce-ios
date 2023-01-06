@@ -1,5 +1,5 @@
 import Combine
-/// The adapter wrapping the Stripe Terminal SDK
+/// A no-op replacement for the adapter wrapping the Stripe Terminal SDK
 public struct NoOpCardReaderService: CardReaderService {
     // MARK: - Queries
     /// The publisher that emits the list of discovered readers whenever the service discovers a new reader.
@@ -17,6 +17,12 @@ public struct NoOpCardReaderService: CardReaderService {
 
     public init() {}
     // MARK: - Commands
+
+    public func checkSupport(for cardReaderType: CardReaderType,
+                             configProvider: CardReaderConfigProvider,
+                             discoveryMethod: CardReaderDiscoveryMethod) -> Bool {
+        return false
+    }
 
     /// Starts the service.
     /// That could imply, for example, that the reader discovery process starts

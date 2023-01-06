@@ -169,7 +169,7 @@ class OrderListMapperTests: XCTestCase {
 ///
 private extension OrderListMapperTests {
 
-    /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the [Order] output upon receiving `filename` (Data Encoded)
     ///
     func mapOrders(from filename: String) -> [Order] {
         guard let response = Loader.contentsOf(filename) else {
@@ -179,25 +179,25 @@ private extension OrderListMapperTests {
         return try! OrderListMapper(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the OrderListMapper output upon receiving `orders-load-all`
+    /// Returns the [Order] output upon receiving `orders-load-all`
     ///
     func mapLoadAllOrdersResponse() -> [Order] {
         return mapOrders(from: "orders-load-all")
     }
 
-    /// Returns the OrderListMapper output upon receiving `orders-load-all-without-data`
+    /// Returns the [Order] output upon receiving `orders-load-all-without-data`
     ///
     func mapLoadAllOrdersResponseWithoutDataEnvelope() -> [Order] {
         return mapOrders(from: "orders-load-all-without-data")
     }
 
-    /// Returns the OrderListMapper output upon receiving `broken-order`
+    /// Returns the [Order] output upon receiving `broken-order`
     ///
     func mapLoadBrokenOrderResponse() -> [Order] {
         return mapOrders(from: "broken-orders")
     }
 
-    /// Returns the OrderListMapper output upon receiving `broken-orders-mark-2`
+    /// Returns the [Order] output upon receiving `broken-orders-mark-2`
     ///
     func mapLoadBrokenOrdersResponseMarkII() -> [Order] {
         return mapOrders(from: "broken-orders-mark-2")

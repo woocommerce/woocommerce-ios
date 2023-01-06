@@ -386,7 +386,7 @@ final class OrderMapperTests: XCTestCase {
 ///
 private extension OrderMapperTests {
 
-    /// Returns the OrderMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the Order output upon receiving `filename` (Data Encoded)
     ///
     func mapOrder(from filename: String) -> Order? {
         guard let response = Loader.contentsOf(filename) else {
@@ -396,62 +396,62 @@ private extension OrderMapperTests {
         return try! OrderMapper(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the OrderMapper output upon receiving `order`
+    /// Returns the Order output upon receiving `order`
     ///
     func mapLoadOrderResponse() -> Order? {
         return mapOrder(from: "order")
     }
 
-    /// Returns the OrderMapper output upon receiving `order-without-data`
+    /// Returns the Order output upon receiving `order-without-data`
     ///
     func mapLoadOrderResponseWithoutDataEnvelope() -> Order? {
         return mapOrder(from: "order-without-data")
     }
 
-    /// Returns the OrderMapper output upon receiving `broken-order`
+    /// Returns the Order output upon receiving `broken-order`
     ///
     func mapLoadBrokenOrderResponse() -> Order? {
         return mapOrder(from: "broken-order")
     }
 
-    /// Returns the OrderMapper output upon receiving `order-fully-refunded`
+    /// Returns the Order output upon receiving `order-fully-refunded`
     ///
     func mapLoadFullyRefundedOrderResponse() -> Order? {
         return mapOrder(from: "order-fully-refunded")
     }
 
-    /// Returns the OrderMapper output upon receiving `order-details-partially-refunded`
+    /// Returns the Order output upon receiving `order-details-partially-refunded`
     ///
     func mapLoadPartiallRefundedOrderResponse() -> Order? {
         return mapOrder(from: "order-details-partially-refunded")
     }
 
-    /// Returns the OrderMapper output upon receiving `order-with-line-item-attributes`
+    /// Returns the Order output upon receiving `order-with-line-item-attributes`
     ///
     func mapLoadOrderWithLineItemAttributesResponse() -> Order? {
         return mapOrder(from: "order-with-line-item-attributes")
     }
 
-    /// Returns the OrderMapper output upon receiving `order-with-faulty-attributes`
+    /// Returns the Order output upon receiving `order-with-faulty-attributes`
     /// Where the `value` to `_measurement_data` is not a `string` but a `JSON object`
     ///
     func mapLoadOrderWithFaultyAttributesResponse() -> Order? {
         return mapOrder(from: "order-with-faulty-attributes")
     }
 
-    /// Returns the OrderMapper output upon receiving `order-with-line-item-attributes-before-API-support`
+    /// Returns the Order output upon receiving `order-with-line-item-attributes-before-API-support`
     ///
     func mapLoadOrderWithLineItemAttributesBeforeAPISupportResponse() -> Order? {
         return mapOrder(from: "order-with-line-item-attributes-before-API-support")
     }
 
-    /// Returns the OrderMapper output upon receiving `order-with-deleted-refunds`
+    /// Returns the Order output upon receiving `order-with-deleted-refunds`
     ///
     func mapLoadOrderWithDeletedRefundsResponse() -> Order? {
         return mapOrder(from: "order-with-deleted-refunds")
     }
 
-    /// Returns the OrderMapper output upon receiving `order-with-charge`
+    /// Returns the Order output upon receiving `order-with-charge`
     ///
     func mapLoadOrderWithChargeResponse() -> Order? {
         return mapOrder(from: "order-with-charge")

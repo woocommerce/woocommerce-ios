@@ -42,7 +42,7 @@ public struct FreeDomainSuggestion: Decodable, Equatable {
 }
 
 /// Necessary data for a site's domain.
-public struct SiteDomain: Decodable, Equatable {
+public struct SiteDomain: Equatable {
     /// Domain name.
     public let name: String
 
@@ -56,12 +56,6 @@ public struct SiteDomain: Decodable, Equatable {
         self.name = name
         self.isPrimary = isPrimary
         self.renewalDate = renewalDate
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case name = "domain"
-        case isPrimary = "primary_domain"
-        case renewalDate = "auto_renewal_date"
     }
 }
 

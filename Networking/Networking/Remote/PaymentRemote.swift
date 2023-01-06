@@ -68,6 +68,19 @@ public struct WPComPlan: Decodable, Equatable {
     }
 }
 
+/// Contains necessary data for a site's WPCOM plan.
+public struct WPComSitePlan {
+    /// WPCOM plan of a site.
+    public let plan: WPComPlan
+    /// Whether a site has domain credit from the WPCOM plan.
+    public let hasDomainCredit: Bool
+
+    public init(plan: WPComPlan, hasDomainCredit: Bool) {
+        self.plan = plan
+        self.hasDomainCredit = hasDomainCredit
+    }
+}
+
 /// Possible error cases from loading a WPCOM plan.
 public enum LoadPlanError: Error {
     case noMatchingPlan

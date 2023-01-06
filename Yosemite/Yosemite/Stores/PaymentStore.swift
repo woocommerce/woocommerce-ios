@@ -40,6 +40,8 @@ public final class PaymentStore: Store {
         switch action {
         case .loadPlan(let productID, let completion):
             loadPlan(productID: productID, completion: completion)
+        case .loadSiteCurrentPlan(let siteID, let completion):
+            loadSiteCurrentPlan(siteID: siteID, completion: completion)
         case .createCart(let productID, let siteID, let completion):
             createCart(productID: productID, siteID: siteID, completion: completion)
         }
@@ -57,6 +59,12 @@ private extension PaymentStore {
                 completion(.failure(error))
             }
         }
+    }
+
+    func loadSiteCurrentPlan(siteID: Int64,
+                             completion: (Result<WPComSitePlan, Error>) -> Void) {
+        // TODO: 8558 - fetch site's current plan
+        completion(.success(.init(plan: .init(productID: 0, name: "", formattedPrice: ""), hasDomainCredit: true)))
     }
 
     func createCart(productID: String,

@@ -55,6 +55,10 @@ final class DomainSettingsViewModel: ObservableObject {
         stores.dispatch(DomainAction.loadDomains(siteID: siteID) { [weak self] result in
             self?.handleDomainsResult(result)
         })
+
+        stores.dispatch(PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in
+            self?.handleSiteCurrentPlanResult(result)
+        })
     }
 }
 
@@ -69,6 +73,15 @@ private extension DomainSettingsViewModel {
                 .map { Domain(isPrimary: $0.isPrimary, name: $0.name, autoRenewalDate: $0.renewalDate) }
         case .failure(let error):
             DDLogError("⛔️ Error retrieving domains for siteID \(siteID): \(error)")
+        }
+    }
+
+    func handleSiteCurrentPlanResult(_ result: Result<WPComSitePlan, Error>) {
+        switch result {
+        case .success(let sitePlan):
+            hasDomainCredit = sitePlan.hasDomainCredit
+        case .failure(let error):
+            DDLogError("⛔️ Error retrieving site plan for siteID \(siteID): \(error)")
         }
     }
 }
@@ -147,21 +160,25 @@ import enum Networking.DotcomError
 
 /// StoresManager that specifically handles `DomainAction` for `DomainSettingsView` previews.
 final class DomainSettingsViewStores: DefaultStoresManager {
-    private let result: Result<[SiteDomain], Error>?
+    private let domainsResult: Result<[SiteDomain], Error>
+    private let sitePlanResult: Result<WPComSitePlan, Error>
 
-    init(result: Result<[SiteDomain], Error>?) {
-        self.result = result
+    init(domainsResult: Result<[SiteDomain], Error>,
+         sitePlanResult: Result<WPComSitePlan, Error>) {
+        self.domainsResult = domainsResult
+        self.sitePlanResult = sitePlanResult
         super.init(sessionManager: ServiceLocator.stores.sessionManager)
     }
 
     override func dispatch(_ action: Action) {
         if let action = action as? DomainAction {
             if case let .loadDomains(_, completion) = action {
-                if let result {
-                    completion(result)
-                }
+                completion(domainsResult)
             }
-            // TODO: plan action
+        } else if let action = action as? PaymentAction {
+            if case let .loadSiteCurrentPlan(_, completion) = action {
+                completion(sitePlanResult)
+            }
         }
     }
 }
@@ -173,20 +190,31 @@ struct DomainSettingsView_Previews: PreviewProvider {
                 DomainSettingsView(viewModel:
                         .init(siteID: 134,
                               stores: DomainSettingsViewStores(
-                                result: .success([
+                                // There is one free domain and two paid domains.
+                                domainsResult: .success([
                                     .init(name: "free.test", isPrimary: true),
                                     .init(name: "one.test", isPrimary: false, renewalDate: .distantFuture),
                                     .init(name: "duo.test", isPrimary: true, renewalDate: .now)
-                                ]))))
+                                ]),
+                                // The site has domain credit.
+                                sitePlanResult: .success(.init(plan: .init(productID: 0,
+                                                                           name: "",
+                                                                           formattedPrice: ""),
+                                                               hasDomainCredit: true)))))
             }
 
             NavigationView {
                 DomainSettingsView(viewModel:
                         .init(siteID: 134,
                               stores: DomainSettingsViewStores(
-                                result: .success([
+                                // There is one free domain and no other paid domains.
+                                domainsResult: .success([
                                     .init(name: "free.test", isPrimary: true)
-                                ]))))
+                                ]),
+                                sitePlanResult: .success(.init(plan: .init(productID: 0,
+                                                                           name: "",
+                                                                           formattedPrice: ""),
+                                                               hasDomainCredit: true)))))
             }
         }
     }

@@ -138,6 +138,7 @@ public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
 public typealias User = Networking.User
 public typealias WooAPIVersion = Networking.WooAPIVersion
 public typealias WPComPlan = Networking.WPComPlan
+public typealias WPComSitePlan = Networking.WPComSitePlan
 public typealias StoredProductSettings = Networking.StoredProductSettings
 public typealias CardReader = Hardware.CardReader
 public typealias CardReaderDiscoveryMethod = Hardware.CardReaderDiscoveryMethod

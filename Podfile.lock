@@ -6,7 +6,7 @@ PODS:
   - AppAuth/Core (1.6.0)
   - AppAuth/ExternalUserAgent (1.6.0):
     - AppAuth/Core
-  - Automattic-Tracks-iOS (1.0.0-beta.1):
+  - Automattic-Tracks-iOS (1.0.0):
     - Sentry (~> 7.25)
     - Sodium (>= 0.9.1)
     - UIDeviceIdentifier (~> 2.0)
@@ -28,9 +28,9 @@ PODS:
   - Kingfisher (7.2.2)
   - NSObject-SafeExpectations (0.0.4)
   - "NSURL+IDN (0.4)"
-  - Sentry (7.31.3):
-    - Sentry/Core (= 7.31.3)
-  - Sentry/Core (7.31.3)
+  - Sentry (7.31.5):
+    - Sentry/Core (= 7.31.5)
+  - Sentry/Core (7.31.5)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
   - StripeTerminal (2.14.0)
@@ -75,7 +75,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 1.0-beta)
+  - Automattic-Tracks-iOS (~> 1.0.0)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -135,7 +135,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
-  Automattic-Tracks-iOS: 337ccaadcec4239b88c54f075ffeb62d6fe13000
+  Automattic-Tracks-iOS: 93df154824af31eba947718110023acce1ce7905
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
   GoogleSignIn: fd381840dbe7c1137aa6dc30849a5c3e070c034a
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
@@ -145,7 +145,7 @@ SPEC CHECKSUMS:
   Kingfisher: 184d4d1a8c36666e663caf8e08abe87898595c53
   NSObject-SafeExpectations: ab8fe623d36b25aa1f150affa324e40a2f3c0374
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
-  Sentry: 08884c523575ec0f6690d94ed3ccb0246a1600bf
+  Sentry: 4c9babff9034785067c896fd580b1f7de44da020
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
   StripeTerminal: 9bb367c9efa7bcddf2602cc29f8962390d87b6a6
@@ -169,6 +169,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 1147980034fb44a400cdf3061dd01ef22f06b8c6
+PODFILE CHECKSUM: 17ff88b703dd664331487078325e3a051db87976
 
 COCOAPODS: 1.11.3

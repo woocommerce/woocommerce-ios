@@ -1,4 +1,1 @@
-- [*] Design refresh: Buttons, links, and other calls to action are now purple instead of pink. [https://github.com/woocommerce/woocommerce-ios/pull/8451]
-- [internal] Design: Updated capitalization for various pages, links, and buttons to match new design guidelines. [https://github.com/woocommerce/woocommerce-ios/pull/8455]
-- [internal] Remove A/B testing and release native Jetpack installation flow for all users. [https://github.com/woocommerce/woocommerce-ios/pull/8533]
-
+You’ll notice some nice visual changes to the look of the app! Take a look and please share your feedback – more updates to come in the next few weeks!

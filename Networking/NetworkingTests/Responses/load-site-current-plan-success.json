@@ -1,0 +1,53 @@
+{
+    "1": {
+        "formatted_original_price": "US$0",
+        "raw_price": 0,
+        "formatted_price": "US$0",
+        "raw_discount": 0,
+        "formatted_discount": "US$0",
+        "product_slug": "free_plan",
+        "product_name": "WordPress.com Free",
+        "discount_reason": null,
+        "is_domain_upgrade": null,
+        "currency_code": "USD",
+        "interval": -1
+    },
+    "1008": {
+        "formatted_original_price": "US$0",
+        "raw_price": 300,
+        "formatted_price": "US$300",
+        "raw_discount": 0,
+        "formatted_discount": "US$0",
+        "product_slug": "business-bundle",
+        "product_name": "WordPress.com Business",
+        "discount_reason": null,
+        "is_domain_upgrade": null,
+        "currency_code": "USD",
+        "current_plan": true,
+        "user_is_owner": true,
+        "id": "",
+        "has_domain_credit": false,
+        "expiry": "2025-01-01T00:00:00+00:00",
+        "free_trial": false,
+        "subscribed_date": "2019-04-29T04:32:29+00:00",
+        "auto_renew": false,
+        "auto_renew_date": "2024-12-02T00:00:00+00:00",
+        "partner_name": "",
+        "user_facing_expiry": "2025-01-01T00:00:00+00:00",
+        "interval": 365
+    },
+    "1011": {
+        "formatted_original_price": "US$540",
+        "raw_price": 240,
+        "formatted_price": "US$240",
+        "raw_discount": 300,
+        "formatted_discount": "US$300",
+        "product_slug": "ecommerce-bundle",
+        "product_name": "WordPress.com eCommerce",
+        "discount_reason": "Your recent plan purchase is deducted from the price (US$540).",
+        "is_domain_upgrade": false,
+        "currency_code": "USD",
+        "can_start_trial": false,
+        "interval": 365
+    }
+}

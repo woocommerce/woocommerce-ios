@@ -6,6 +6,11 @@ public protocol DomainRemoteProtocol {
     /// - Parameter query: What the domain suggestions are based on.
     /// - Returns: The result of free domain suggestions.
     func loadFreeDomainSuggestions(query: String) async throws -> [FreeDomainSuggestion]
+
+    /// Loads all domains for a site.
+    /// - Parameter siteID: ID of the site to load the domains for.
+    /// - Returns: A list of domains.
+    func loadDomains(siteID: Int64) async throws -> [SiteDomain]
 }
 
 /// Domain: Remote Endpoints
@@ -20,6 +25,13 @@ public class DomainRemote: Remote, DomainRemoteProtocol {
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         return try await enqueue(request)
+    }
+
+    public func loadDomains(siteID: Int64) async throws -> [SiteDomain] {
+        let path = "sites/\(siteID)/\(Path.domains)"
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
+        let response: SiteDomainEnvelope = try await enqueue(request)
+        return response.domains
     }
 }
 
@@ -42,7 +54,7 @@ public struct FreeDomainSuggestion: Decodable, Equatable {
 }
 
 /// Necessary data for a site's domain.
-public struct SiteDomain: Equatable {
+public struct SiteDomain: Decodable, Equatable {
     /// Domain name.
     public let name: String
 
@@ -57,6 +69,35 @@ public struct SiteDomain: Equatable {
         self.isPrimary = isPrimary
         self.renewalDate = renewalDate
     }
+
+    /// Custom decoding implementation since `renewalDate` is an empty string instead of `null` when it's unavailable.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let name = try container.decode(String.self, forKey: .name)
+        let isPrimary = try container.decode(Bool.self, forKey: .isPrimary)
+
+        let renewalDate: Date? = {
+            guard let dateString = try? container.decodeIfPresent(String.self, forKey: .renewalDate) else {
+                return nil
+            }
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MMMM d, yyyy"
+            return dateFormatter.date(from: dateString)
+        }()
+
+        self.init(name: name, isPrimary: isPrimary, renewalDate: renewalDate)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case name = "domain"
+        case isPrimary = "primary_domain"
+        case renewalDate = "auto_renewal_date"
+    }
+}
+
+/// Maps to a list of domains to match the API response.
+private struct SiteDomainEnvelope: Decodable {
+    let domains: [SiteDomain]
 }
 
 // MARK: - Constants
@@ -77,5 +118,6 @@ private extension DomainRemote {
 
     enum Path {
         static let domainSuggestions = "domains/suggestions"
+        static let domains = "domains"
     }
 }

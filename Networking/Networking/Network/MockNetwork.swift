@@ -193,6 +193,8 @@ private extension MockNetwork {
             return request.path
         case let request as DotcomRequest:
             return request.path
+        case let request as RESTRequest:
+            return request.path
         default:
             let targetURL = try! request.asURLRequest().url?.absoluteString
             return targetURL ?? ""

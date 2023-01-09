@@ -19,7 +19,11 @@ struct ReportOrderTotalsMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID
         ]
-        return try decoder.decode(ReportOrderTotalsEnvelope.self, from: response).data
+        do {
+            return try decoder.decode(ReportOrderTotalsEnvelope.self, from: response).data
+        } catch {
+            return try decoder.decode([OrderStatus].self, from: response)
+        }
     }
 }
 

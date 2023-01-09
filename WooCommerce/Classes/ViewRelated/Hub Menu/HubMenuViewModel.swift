@@ -199,7 +199,8 @@ extension HubMenuViewModel {
 
         let title: String = Localization.viewStore
         let icon: UIImage = .storeImage
-        let iconColor: UIColor = .accent
+        let iconColor: UIColor = UIColor(light: .withColorStudio(.pink, shade: .shade50),
+                                         dark: .withColorStudio(.pink, shade: .shade30))
         let badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-view-store"
         let trackingOption: String = "view_store"

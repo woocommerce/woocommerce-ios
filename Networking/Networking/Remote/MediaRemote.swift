@@ -2,6 +2,8 @@ import Foundation
 
 /// Protocol for `MediaRemote` mainly used for mocking.
 public protocol MediaRemoteProtocol {
+    // MARK: Load Media library
+    //
     func loadMediaLibrary(for siteID: Int64,
                           pageNumber: Int,
                           pageSize: Int,
@@ -11,6 +13,13 @@ public protocol MediaRemoteProtocol {
                                            pageNumber: Int,
                                            pageSize: Int,
                                            completion: @escaping (Result<[WordPressMedia], Error>) -> Void)
+    func loadMediaLibraryUsingRestApi(siteURL: String,
+                                      pageNumber: Int,
+                                      pageSize: Int,
+                                      completion: @escaping (Result<[WordPressMedia], Error>) -> Void)
+
+    // MARK: Upload Media
+    //
     func uploadMedia(for siteID: Int64,
                      productID: Int64,
                      context: String?,
@@ -20,6 +29,13 @@ public protocol MediaRemoteProtocol {
                                     productID: Int64,
                                     mediaItems: [UploadableMedia],
                                     completion: @escaping (Result<WordPressMedia, Error>) -> Void)
+    func uploadMediaUsingRestApi(siteURL: String,
+                                 productID: Int64,
+                                 mediaItems: [UploadableMedia],
+                                 completion: @escaping (Result<WordPressMedia, Error>) -> Void)
+
+    // MARK: Update Product ID
+    //
     func updateProductID(siteID: Int64,
                          productID: Int64,
                          mediaID: Int64,
@@ -28,11 +44,18 @@ public protocol MediaRemoteProtocol {
                                         productID: Int64,
                                         mediaID: Int64,
                                         completion: @escaping (Result<WordPressMedia, Error>) -> Void)
+    func updateProductIDUsingRestApi(siteURL: String,
+                                     productID: Int64,
+                                     mediaID: Int64,
+                                     completion: @escaping (Result<WordPressMedia, Error>) -> Void)
 }
 
 /// Media: Remote Endpoints
 ///
 public class MediaRemote: Remote, MediaRemoteProtocol {
+    // MARK: Load Media library
+    //
+
     /// Loads an array of media from the site's WP Media Library.
     /// API reference: https://developer.wordpress.com/docs/api/1.2/get/sites/%24site/media/
     ///
@@ -98,6 +121,35 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             completion(.failure(error))
         }
     }
+
+    /// Loads an array of media from the site's WP Media Library via WordPress site API.
+    /// API reference: https://developer.wordpress.org/rest-api/reference/media/#list-media
+    ///
+    /// - Parameters:
+    ///   - siteURL: Site for which we'll load the media from.
+    ///   - pageNumber: The index of the page of media data to load from, starting from 1.
+    ///   - pageSize: The number of media items to return.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadMediaLibraryUsingRestApi(siteURL: String,
+                                             pageNumber: Int = Default.pageNumber,
+                                             pageSize: Int = 25,
+                                             completion: @escaping (Result<[WordPressMedia], Error>) -> Void) {
+        let parameters: [String: Any] = [
+            ParameterKey.pageSize: pageSize,
+            ParameterKey.pageNumber: pageNumber,
+            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
+            ParameterKey.mimeType: "image"
+        ]
+
+        let path = "media"
+        let request = RESTRequest(siteURL: siteURL, wordpressApiVersion: .wpMark2, method: .get, path: path, parameters: parameters)
+        let mapper = WordPressMediaListMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    // MARK: Upload Media
+    //
 
     /// Uploads an array of media in the local file system.
     /// API reference: https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/media/new/
@@ -182,6 +234,43 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         }
     }
 
+    /// Uploads an array of media in the local file system to the WordPress site.via WordPress site API
+    /// API reference: https://developer.wordpress.org/rest-api/reference/media/#create-a-media-item
+    ///
+    /// - Parameters:
+    ///   - siteURL: Site for which we'll upload the media to.
+    ///   - productID: Product for which the media items are first added to.
+    ///   - mediaItems: An array of uploadable media items.
+    ///   - completion: Closure to be executed upon completion.
+    public func uploadMediaUsingRestApi(siteURL: String,
+                                        productID: Int64,
+                                        mediaItems: [UploadableMedia],
+                                        completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
+        let formParameters: [String: String] = [
+            ParameterKey.wordPressMediaPostID: "\(productID)",
+            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
+        ]
+        let path = "media"
+        let request = RESTRequest(siteURL: siteURL, wordpressApiVersion: .wpMark2, method: .post, path: path)
+        let mapper = WordPressMediaMapper()
+
+        enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in
+            formParameters.forEach { (key, value) in
+                multipartFormData.append(Data(value.utf8), withName: key)
+            }
+
+            mediaItems.forEach { mediaItem in
+                multipartFormData.append(mediaItem.localURL,
+                                         withName: ParameterValue.mediaUploadName,
+                                         fileName: mediaItem.filename,
+                                         mimeType: mediaItem.mimeType)
+            }
+        }, completion: completion)
+    }
+
+    // MARK: Update Product ID
+    //
+
     /// Sets the provided `productID` as `parent_id` of the `media`.
     ///
     /// API reference: https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/media/%24media_ID/
@@ -235,6 +324,32 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         } catch {
             completion(.failure(error))
         }
+    }
+
+    /// Sets the provided `productID` as post ID of the Media in WordPress site using WordPress site API
+    ///
+    /// API reference: to the WordPress site.via WordPress site API
+    /// https://developer.wordpress.org/rest-api/reference/media/#update-a-media-item
+    ///
+    /// - Parameters:
+    ///     - siteURL: Site in which the media was uploaded to.
+    ///     - productID: Product ID to use as post ID of the media.
+    ///     - mediaID: ID of media for which post ID needs to be updated.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateProductIDUsingRestApi(siteURL: String,
+                                            productID: Int64,
+                                            mediaID: Int64,
+                                            completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
+        let parameters: [String: String] = [
+            ParameterKey.wordPressMediaPostID: "\(productID)",
+            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
+        ]
+        let path = "media/\(mediaID)"
+        let request = RESTRequest(siteURL: siteURL, wordpressApiVersion: .wpMark2, method: .post, path: path, parameters: parameters)
+        let mapper = WordPressMediaMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
     }
 }
 

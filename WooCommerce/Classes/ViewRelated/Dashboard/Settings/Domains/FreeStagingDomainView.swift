@@ -5,7 +5,7 @@ struct FreeStagingDomainView: View {
     let domain: DomainSettingsViewModel.FreeStagingDomain
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Layout.contentSpacing) {
             VStack(alignment: .leading, spacing: 0) {
                 Text(Localization.freeDomainTitle)
                 Text(domain.name)
@@ -45,6 +45,7 @@ private extension FreeStagingDomainView {
         static let horizontalPadding: CGFloat = 6
         static let verticalPadding: CGFloat = 4
         static let cornerRadius: CGFloat = 8
+        static let contentSpacing: CGFloat = 8
     }
 }
 

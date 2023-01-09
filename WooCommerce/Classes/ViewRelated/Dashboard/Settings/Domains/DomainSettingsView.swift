@@ -27,7 +27,7 @@ struct DomainSettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 36) {
+            VStack(alignment: .leading, spacing: Layout.contentSpacing) {
                 if let freeDomain = viewModel.freeStagingDomain {
                     HStack {
                         FreeStagingDomainView(domain: freeDomain)
@@ -43,7 +43,7 @@ struct DomainSettingsView: View {
                     // TODO: 8558 - show domain list with search domain action
                 }
             }
-            .padding(.init(top: 39, leading: 16, bottom: 16, trailing: 16))
+            .padding(Layout.contentPadding)
         }
         .safeAreaInset(edge: .bottom) {
             if viewModel.domains.isEmpty {
@@ -55,7 +55,7 @@ struct DomainSettingsView: View {
                         // TODO: 8558 - search domain action
                     }
                     .buttonStyle(PrimaryButtonStyle())
-                    .padding(Layout.defaultPadding)
+                    .padding(Layout.bottomContentPadding)
                 }
                 .background(Color(.systemBackground))
             }
@@ -81,7 +81,9 @@ private extension DomainSettingsView {
 private extension DomainSettingsView {
     enum Layout {
         static let dividerHeight: CGFloat = 1
-        static let defaultPadding: EdgeInsets = .init(top: 10, leading: 16, bottom: 10, trailing: 16)
+        static let bottomContentPadding: EdgeInsets = .init(top: 10, leading: 16, bottom: 10, trailing: 16)
+        static let contentPadding: EdgeInsets = .init(top: 39, leading: 16, bottom: 16, trailing: 16)
+        static let contentSpacing: CGFloat = 36
     }
 }
 

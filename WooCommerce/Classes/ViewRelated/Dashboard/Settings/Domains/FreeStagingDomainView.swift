@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Shows a site's free staging domain, with an optional badge if the domain is the primary domain.
 struct FreeStagingDomainView: View {
     let domain: DomainSettingsViewModel.FreeStagingDomain
 
@@ -11,6 +12,7 @@ struct FreeStagingDomainView: View {
                     .bold()
             }
             if domain.isPrimary {
+                // TODO: 8558 - refactor to reuse `BadgeView`
                 Text(Localization.primaryDomainNotice)
                     .foregroundColor(Color(.textBrand))
                     .padding(.leading, Layout.horizontalPadding)
@@ -38,7 +40,7 @@ private extension FreeStagingDomainView {
     }
 }
 
-extension FreeStagingDomainView {
+private extension FreeStagingDomainView {
     enum Layout {
         static let horizontalPadding: CGFloat = 6
         static let verticalPadding: CGFloat = 4

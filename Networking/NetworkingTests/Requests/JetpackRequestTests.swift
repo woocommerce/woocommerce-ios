@@ -140,7 +140,7 @@ final class JetpackRequestTests: XCTestCase {
         let output = try XCTUnwrap(request.asRESTRequest(with: sampleSiteAddress))
 
         // Then
-        XCTAssertEqual(output.wooApiVersion, .mark3)
+        XCTAssertEqual(output.apiVersionPath, WooAPIVersion.mark3.path)
         XCTAssertEqual(output.method, .post)
         XCTAssertEqual(output.path, sampleRPC)
         let params = try XCTUnwrap(output.parameters as? [String: String])

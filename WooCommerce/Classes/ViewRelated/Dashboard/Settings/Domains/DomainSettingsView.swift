@@ -61,7 +61,7 @@ struct DomainSettingsView: View {
             }
         }
         .navigationBarTitle(Localization.title)
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             viewModel.onAppear()
         }

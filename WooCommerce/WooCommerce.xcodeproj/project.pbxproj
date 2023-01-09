@@ -1218,6 +1218,7 @@
 		ABC35528D2D6BE6F516E5CEF /* InPersonPaymentsOnboardingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */; };
 		ABC35F18E744C5576B986CB3 /* InPersonPaymentsUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC35055F8AC8C8EB649F421 /* InPersonPaymentsUnavailableView.swift */; };
 		AE1CC33829129A010021C8EF /* LinkBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CC33729129A010021C8EF /* LinkBehavior.swift */; };
+		AE2E5F6629685CF8009262D3 /* ProductsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E5F6529685CF8009262D3 /* ProductsListViewModel.swift */; };
 		AE3AA889290C303B00BE422D /* WebKitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA888290C303B00BE422D /* WebKitViewController.swift */; };
 		AE3AA88B290C30B900BE422D /* WebViewControllerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA88A290C30B900BE422D /* WebViewControllerConfiguration.swift */; };
 		AE3AA88D290C30E800BE422D /* WebProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA88C290C30E800BE422D /* WebProgressView.swift */; };
@@ -3259,6 +3260,7 @@
 		ABC353433EABC5F0EC796222 /* CardReaderSettingsSearchingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsSearchingViewController.swift; sourceTree = "<group>"; };
 		ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsOnboardingError.swift; sourceTree = "<group>"; };
 		AE1CC33729129A010021C8EF /* LinkBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkBehavior.swift; sourceTree = "<group>"; };
+		AE2E5F6529685CF8009262D3 /* ProductsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsListViewModel.swift; sourceTree = "<group>"; };
 		AE3AA888290C303B00BE422D /* WebKitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebKitViewController.swift; sourceTree = "<group>"; };
 		AE3AA88A290C30B900BE422D /* WebViewControllerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerConfiguration.swift; sourceTree = "<group>"; };
 		AE3AA88C290C30E800BE422D /* WebProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebProgressView.swift; sourceTree = "<group>"; };
@@ -6783,6 +6785,7 @@
 				02A65300246AA63600755A01 /* ProductDetailsFactory.swift */,
 				B92FF9AF27FC7821005C34E3 /* ProductsViewController.xib */,
 				0260F40023224E8100EDA10A /* ProductsViewController.swift */,
+				AE2E5F6529685CF8009262D3 /* ProductsListViewModel.swift */,
 				020DD49023239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift */,
 				02564A89246CDF6100D6DB2A /* ProductsTopBannerFactory.swift */,
 				0279F0D9252DB4BE0098D7DE /* ProductVariationDetailsFactory.swift */,
@@ -10355,6 +10358,7 @@
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
 				45EF7984244F26BB00B22BA2 /* Array+IndexPath.swift in Sources */,
 				02E6B97823853D81000A36F0 /* TitleAndValueTableViewCell.swift in Sources */,
+				AE2E5F6629685CF8009262D3 /* ProductsListViewModel.swift in Sources */,
 				CC770C8A27B1497700CE6ABC /* SearchHeader.swift in Sources */,
 				02BAB02724D13A6400F8B06E /* ProductVariationFormActionsFactory.swift in Sources */,
 				45CDAFAE2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.swift in Sources */,

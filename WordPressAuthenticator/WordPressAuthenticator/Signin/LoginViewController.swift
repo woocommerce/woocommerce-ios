@@ -474,6 +474,7 @@ extension LoginViewController {
             return
         }
 
+        vc.dismissBlock = dismissBlock
         vc.loginFields = loginFields
         navigationController?.pushViewController(vc, animated: true)
     }

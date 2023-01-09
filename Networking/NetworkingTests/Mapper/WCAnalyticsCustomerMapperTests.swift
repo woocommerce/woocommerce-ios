@@ -60,7 +60,7 @@ class WCAnalyticsCustomerMapperTests: XCTestCase {
         XCTAssertEqual(customers[3].name, "John Doe")
     }
 
-    func test_WCAnalyticsCustomer_array_maps_all_available_entities_if_response_has_no_data_eenvelope() {
+    func test_WCAnalyticsCustomer_array_maps_all_available_entities_if_response_has_no_data_envelope() {
         // Given
         let mapper = WCAnalyticsCustomerMapper(siteID: dummySiteID)
         var customers: [WCAnalyticsCustomer] = []

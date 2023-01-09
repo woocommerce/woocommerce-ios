@@ -155,7 +155,7 @@ private extension BetaFeature {
             "phone's built in reader")
         static let tapToPayOnIPhoneDescription = NSLocalizedString(
             "Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. " +
-            "Supported on iPhone XS and newer phones, running iOS 15.5 or above.",
+            "Supported on iPhone XS and newer phones, running iOS 16 or above, for US-based stores.",
             comment: "Cell description on beta features screen to enable in-app purchases")
     }
 }

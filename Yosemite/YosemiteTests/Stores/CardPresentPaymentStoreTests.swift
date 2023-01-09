@@ -775,4 +775,37 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(result, account)
     }
+
+    func test_checkDeviceSupport_action_passes_configuration_provider_to_service() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let action = CardPresentPaymentAction.checkDeviceSupport(siteID: sampleSiteID,
+                                                                 cardReaderType: .appleBuiltIn,
+                                                                 discoveryMethod: .localMobile,
+                                                                 onCompletion: { _ in })
+
+        cardPresentStore.onAction(action)
+
+        XCTAssertNotNil(mockCardReaderService.spyCheckSupportConfigProvider)
+    }
+
+    func test_checkDeviceSupport_action_passes_reader_type_and_discovery_method_to_service() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let action = CardPresentPaymentAction.checkDeviceSupport(siteID: sampleSiteID,
+                                                                 cardReaderType: .chipper,
+                                                                 discoveryMethod: .bluetoothScan,
+                                                                 onCompletion: { _ in })
+
+        cardPresentStore.onAction(action)
+
+        assertEqual(.bluetoothScan, mockCardReaderService.spyCheckSupportDiscoveryMethod)
+        assertEqual(.chipper, mockCardReaderService.spyCheckSupportCardReaderType)
+    }
 }

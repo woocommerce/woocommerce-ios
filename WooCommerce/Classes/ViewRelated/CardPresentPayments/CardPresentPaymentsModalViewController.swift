@@ -71,12 +71,14 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
     private func resetHeightAndWidth() {
         if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
             primaryActionButtonsStackView.axis = .horizontal
+            primaryActionButtonsStackView.distribution = .fillProportionally
 
             mainStackView.distribution = .fillProportionally
             heightConstraint.constant = Constants.modalWidth
             widthConstraint.constant = Constants.modalHeight
         } else {
             primaryActionButtonsStackView.axis = .vertical
+            primaryActionButtonsStackView.distribution = .fill
 
             mainStackView.distribution = .fill
             heightConstraint.constant = Constants.modalHeight

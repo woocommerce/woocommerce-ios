@@ -3,6 +3,19 @@ import Foundation
 // MARK: - MediaAction: Defines media operations (supported by the MediaStore).
 //
 public enum MediaAction: Action {
+
+    /// Site information using which `MediaAction` will be performed
+    ///
+    public enum SiteInfo {
+        // Connects to WordPress.com servers using provided `siteID`
+        //
+        case wpcom(_ siteID: Int64)
+
+        // Connects to the site URL
+        //
+        case wporg(_ siteURL: String)
+    }
+
     /// Retrieves media from the site's WP Media Library.
     ///
     /// - Parameters:

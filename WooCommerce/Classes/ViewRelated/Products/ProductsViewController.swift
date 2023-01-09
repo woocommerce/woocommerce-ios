@@ -9,6 +9,8 @@ import class AutomatticTracks.CrashLogging
 ///
 final class ProductsViewController: UIViewController, GhostableViewController {
 
+    let viewModel: ProductListViewModel = .init()
+
     /// Main TableView
     ///
     @IBOutlet weak var tableView: UITableView!
@@ -274,6 +276,7 @@ private extension ProductsViewController {
     }
 
     @objc func finishBulkEditing() {
+        viewModel.deselectAll()
         tableView.setEditing(false, animated: true)
 
         // Enable pull-to-refresh
@@ -363,7 +366,7 @@ private extension ProductsViewController {
     }
 
     func configureNavigationBarTitleForEditing() {
-        let selectedProducts = tableView.indexPathsForSelectedRows?.count ?? 0
+        let selectedProducts = viewModel.selectedProductsCount
         if selectedProducts == 0 {
             navigationItem.title = Localization.bulkEditingTitle
         } else {
@@ -666,18 +669,28 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard !tableView.isEditing else {
+        let product = resultsController.object(at: indexPath)
+
+        if tableView.isEditing {
+            viewModel.selectProduct(product)
             configureNavigationBarTitleForEditing()
+        } else {
+            tableView.deselectRow(at: indexPath, animated: true)
+
+            ServiceLocator.analytics.track(.productListProductTapped)
+
+            didSelectProduct(product: product)
+        }
+    }
+
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        guard tableView.isEditing else {
             return
         }
 
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        ServiceLocator.analytics.track(.productListProductTapped)
-
         let product = resultsController.object(at: indexPath)
-
-        didSelectProduct(product: product)
+        viewModel.deselectProduct(product)
+        configureNavigationBarTitleForEditing()
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -690,6 +703,14 @@ extension ProductsViewController: UITableViewDelegate {
         // the actual value. AKA no flicker!
         //
         estimatedRowHeights[indexPath] = cell.frame.height
+
+        // Restore cell selection state
+        let product = resultsController.object(at: indexPath)
+        if self.viewModel.productIsSelected(product) {
+            tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+        } else {
+            tableView.deselectRow(at: indexPath, animated: false)
+        }
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

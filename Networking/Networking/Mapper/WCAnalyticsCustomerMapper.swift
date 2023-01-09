@@ -13,8 +13,11 @@ struct WCAnalyticsCustomerMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [.siteID: siteID]
-        let customers = try decoder.decode(WCAnalyticsCustomerEnvelope.self, from: response).customer
-        return customers
+        do {
+            return try decoder.decode(WCAnalyticsCustomerEnvelope.self, from: response).customer
+        } catch {
+            return try decoder.decode([WCAnalyticsCustomer].self, from: response)
+        }
     }
 }
 

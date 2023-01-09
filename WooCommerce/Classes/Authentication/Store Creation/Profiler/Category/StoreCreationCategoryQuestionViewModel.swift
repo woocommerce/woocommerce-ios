@@ -4,14 +4,6 @@ import Foundation
 /// View model for `StoreCreationCategoryQuestionView`, an optional profiler question about store category in the store creation flow.
 @MainActor
 final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
-    /// Contains necessary information about a category.
-    struct Category: Equatable {
-        /// Display name for the category.
-        let name: String
-        /// Value that is sent to the API.
-        let value: String
-    }
-
     let topHeader: String
 
     let title: String = Localization.title
@@ -20,42 +12,6 @@ final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestio
 
     /// Question content.
     /// TODO: 8376 - update values when API is ready.
-    let categories: [Category] = [
-        .init(name: NSLocalizedString("Art & Photography",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Books & Magazines",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Electronics and Software",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Construction & Industrial",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Design & Marketing",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Fashion and Apparel",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Food and Drink",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Arts and Crafts",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Health and Beauty",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Pets Pet Care",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Sports and Recreation",
-                                      comment: "Option in the store creation category question."),
-              value: "")
-    ]
-
     @Published private(set) var selectedCategory: Category?
 
     private let onContinue: (String) -> Void

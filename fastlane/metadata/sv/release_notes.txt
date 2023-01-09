@@ -1,1 +1,1 @@
-Goda nyheter! Vi har lagt till en ny analyssektion i appen. Det är bara att klicka på knappen Se mer under butiksstatistiken om du vill se mer detaljerad information om intäkter och beställningar. Det här är inte allt – fler uppdateringar är på väg under de kommande veckorna!
+Visste du att vi har lagt till en ny analyssektion? Det är nu möjligt att välja anpassade datumintervall när du visar din statistik. Det är bara att klicka på knappen Se mer under butiksstatistiken för att testa.

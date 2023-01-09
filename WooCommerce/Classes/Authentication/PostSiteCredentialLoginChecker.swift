@@ -52,6 +52,10 @@ private extension PostSiteCredentialLoginChecker {
                     let errorUI = applicationPasswordDisabledUI(for: siteURL)
                     navigationController.show(errorUI, sender: nil)
                 }
+            } catch ApplicationPasswordUseCaseError.unauthorizedRequest {
+                await MainActor.run {
+                    self.showAlert(message: Localization.invalidLoginOrAdminURL, in: navigationController)
+                }
             } catch {
                 // show generic error
                 await MainActor.run {
@@ -150,6 +154,12 @@ private extension PostSiteCredentialLoginChecker {
                 onRetry()
             }
             alert.addAction(retryAction)
+        } else {
+            let supportAction = UIAlertAction(title: Localization.contactSupport, style: .default) { _ in
+                navigationController.popViewController(animated: true)
+                ServiceLocator.authenticationManager.presentSupport(from: navigationController, sourceTag: .loginSiteAddress)
+            }
+            alert.addAction(supportAction)
         }
         let restartAction = UIAlertAction(title: Localization.restartLoginButton, style: .cancel) { [weak self] _ in
             self?.stores.deauthenticate()
@@ -186,6 +196,11 @@ private extension PostSiteCredentialLoginChecker {
             "Error checking for the WooCommerce plugin.",
             comment: "Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication"
         )
+        static let invalidLoginOrAdminURL = NSLocalizedString(
+            "Application password cannot be generated due to a custom login or admin URL on your site.",
+            comment: "Message to display when the constructed admin or login URL for the logged-in site is not accessible"
+        )
+        static let contactSupport = NSLocalizedString("Contact Support", comment: "Button to contact support for login")
         static let retryButton = NSLocalizedString("Try Again", comment: "Button to refetch application password for the current site")
         static let restartLoginButton = NSLocalizedString("Log In With Another Account", comment: "Button to restart the login flow.")
     }

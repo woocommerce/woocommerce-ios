@@ -10,10 +10,10 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
                                                                onSkip: {})
 
         // When
-        viewModel.selectCategory(.init(name: "Cool clothing", value: "cool_clothing"))
+        viewModel.selectCategory(.clothingAndAccessories)
 
         // Then
-        XCTAssertEqual(viewModel.selectedCategory, .init(name: "Cool clothing", value: "cool_clothing"))
+        XCTAssertEqual(viewModel.selectedCategory, .clothingAndAccessories)
     }
 
     func test_continueButtonTapped_invokes_onContinue_after_selecting_a_category() throws {
@@ -26,7 +26,7 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
             },
                                                                    onSkip: {})
             // When
-            viewModel.selectCategory(.init(name: "Cool clothing", value: "cool_clothing"))
+            viewModel.selectCategory(.clothingAndAccessories)
             Task { @MainActor in
                 await viewModel.continueButtonTapped()
             }

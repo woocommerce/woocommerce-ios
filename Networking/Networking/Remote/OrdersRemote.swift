@@ -46,7 +46,12 @@ public class OrdersRemote: Remote {
         }()
 
         let path = Constants.ordersPath
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = OrderListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -65,7 +70,12 @@ public class OrdersRemote: Remote {
         ]
 
         let path = "\(Constants.ordersPath)/\(orderID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = OrderMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -80,7 +90,12 @@ public class OrdersRemote: Remote {
     ///
     public func loadOrderNotes(for siteID: Int64, orderID: Int64, completion: @escaping ([OrderNote]?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/\(orderID)/\(Constants.notesPath)/"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = OrderNotesMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -109,7 +124,12 @@ public class OrdersRemote: Remote {
         ]
 
         let path = Constants.ordersPath
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = OrderListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -152,7 +172,12 @@ public class OrdersRemote: Remote {
                 }
             }()
 
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .mark3,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
@@ -172,7 +197,12 @@ public class OrdersRemote: Remote {
         let parameters = [ParameterKeys.statusKey: statusKey.rawValue]
         let mapper = OrderMapper(siteID: siteID)
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         enqueue(request, mapper: mapper, completion: completion)
     }
 
@@ -213,7 +243,12 @@ public class OrdersRemote: Remote {
                 }
             }()
 
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .mark3,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
@@ -237,7 +272,12 @@ public class OrdersRemote: Remote {
                           ParameterKeys.addedByUser: String(true)] // This will always be true when creating notes in-app
         let mapper = OrderNoteMapper()
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         enqueue(request, mapper: mapper, completion: completion)
     }
 
@@ -252,7 +292,12 @@ public class OrdersRemote: Remote {
     public func deleteOrder(for siteID: Int64, orderID: Int64, force: Bool, completion: @escaping (Result<Order, Error>) -> Void) {
         let path = "\(Constants.ordersPath)/\(orderID)"
         let parameters = [ParameterKeys.force: String(force)]
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .delete,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = OrderMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }

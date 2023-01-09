@@ -7,6 +7,9 @@ protocol RequiredStoreCreationProfilerQuestionViewModel {
     /// Called when the continue button is tapped.
     func continueButtonTapped() async
 
+    /// Called when the Help & Support button is tapped.
+    func supportButtonTapped()
+
     /// Whether the continue button is enabled for the user to continue.
     var isContinueButtonEnabled: AnyPublisher<Bool, Never> { get }
 }
@@ -46,6 +49,13 @@ struct RequiredStoreCreationProfilerQuestionView<QuestionContent: View>: View {
             }
             .background(Color(.systemBackground))
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                SupportButton {
+                    viewModel.supportButtonTapped()
+                }
+            }
+        }
         // Disables large title to avoid a large gap below the navigation bar.
         .navigationBarTitleDisplayMode(.inline)
         .onReceive(viewModel.isContinueButtonEnabled) { isContinueButtonEnabled in
@@ -75,6 +85,7 @@ private final class StoreCreationQuestionPreviewViewModel: StoreCreationProfiler
         $isContinueButtonEnabledValue.eraseToAnyPublisher()
     }
     func continueButtonTapped() async {}
+    func supportButtonTapped() {}
 }
 
 struct RequiredStoreCreationProfilerQuestionView_Previews: PreviewProvider {

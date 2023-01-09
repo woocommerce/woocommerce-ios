@@ -619,6 +619,28 @@ private extension ProductVariationsViewController {
         let bottomSheetPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
         bottomSheetPresenter.show(from: self, sourceView: topStackView)
     }
+
+    /// Informs the merchant about errors that happen during the variation generation
+    ///
+    private func presentGenerationError(_ error: ProductVariationsViewModel.GenerationError) {
+        let notice = Notice(title: error.errorTitle, message: error.errorDescription)
+        noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Asks the merchant for confirmation before generating all variations.
+    ///
+    private func presentGenerationConfirmation(numberOfVariations: Int, onCompletion: @escaping (_ confirmed: Bool) -> Void) {
+        let controller = UIAlertController(title: Localization.confirmationTitle,
+                                           message: Localization.confirmationDescription(variationCount: numberOfVariations),
+                                           preferredStyle: .alert)
+        controller.addDefaultActionWithTitle(Localization.ok) { _ in
+            onCompletion(true)
+        }
+        controller.addCancelActionWithTitle(Localization.cancel) { _ in
+            onCompletion(false)
+        }
+        present(controller, animated: true)
+    }
 }
 
 // MARK: - Placeholders
@@ -692,14 +714,28 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
         }
     }
 
-    /// Generates all possible variations for the product attibutes.
+    /// Generates all possible variations for the product attributes.
     ///
     private func generateAllVariations() {
-        viewModel.generateAllVariations(for: product)
-        // TODO:
-        // - Show Loading Indicator
-        // - Alert if there are more than 100 variations to create
-        // - Hide Loading Indicator
+        viewModel.generateAllVariations(for: product) { [weak self] currentState in
+            switch currentState {
+            case .fetching:
+                break // TODO: Show fetching loading Indicator
+            case .confirmation(let variationCount, let onCompletion):
+                self?.presentGenerationConfirmation(numberOfVariations: variationCount, onCompletion: onCompletion)
+            case .creating:
+                break // TODO: Show creating loading Indicator
+            case .canceled:
+                break // TODO: Remove loading indicator
+            case .finished(let variationsCreated):
+                // TODO: Remove loading indicator
+                // TODO: Inform about created variations
+                break
+            case .error(let error):
+                // TODO: Remove loading indicator
+                self?.presentGenerationError(error)
+            }
+        }
     }
 }
 
@@ -806,6 +842,17 @@ private extension ProductVariationsViewController {
         static let generateVariationError = NSLocalizedString("The variation couldn't be generated.",
                                                               comment: "Error title when failing to generate a variation.")
         static let variationCreated = NSLocalizedString("Variation created", comment: "Text for the notice after creating the first variation.")
+
+        static let confirmationTitle = NSLocalizedString("Generate all variations?",
+                                                         comment: "Alert title to allow the user confirm if they want to generate all variations")
+        static func confirmationDescription(variationCount: Int) -> String {
+            let format = NSLocalizedString("This will create a variation for each and every possible combination of variation attributes (%d variations).",
+                                           comment: "Alert description to allow the user confirm if they want to generate all variations")
+            return String.localizedStringWithFormat(format, variationCount)
+        }
+        static let ok = NSLocalizedString("OK", comment: "Button text to confirm that we want to generate all variations")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button text to confirm that we don't want to generate all variations")
+
     }
 
     /// Localizated strings for the  action sheet options

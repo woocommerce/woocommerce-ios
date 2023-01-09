@@ -22,7 +22,7 @@ final class CardPresentModalBuiltInFollowReaderInstructions: CardPresentPayments
         amount
     }
 
-    let image: UIImage = .cardPresentImage
+    let image: UIImage = .preparingBuiltInReader
 
     let primaryButtonTitle: String? = nil
 

@@ -31,18 +31,19 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
     }
 
     func processingTransaction() -> CardPresentPaymentsModalViewModel {
-        CardPresentModalProcessing(name: name, amount: amount, transactionType: .collectPayment)
+        CardPresentModalBuiltInReaderProcessing(name: name, amount: amount)
     }
 
     func success(printReceipt: @escaping () -> Void,
                  emailReceipt: @escaping () -> Void,
                  noReceiptAction: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if MFMailComposeViewController.canSendMail() {
-            return CardPresentModalSuccess(printReceipt: printReceipt,
-                                           emailReceipt: emailReceipt,
-                                           noReceiptAction: noReceiptAction)
+            return CardPresentModalBuiltInSuccess(printReceipt: printReceipt,
+                                                  emailReceipt: emailReceipt,
+                                                  noReceiptAction: noReceiptAction)
         } else {
-            return CardPresentModalSuccessWithoutEmail(printReceipt: printReceipt, noReceiptAction: noReceiptAction)
+            return CardPresentModalBuiltInSuccessWithoutEmail(printReceipt: printReceipt,
+                                                              noReceiptAction: noReceiptAction)
         }
     }
 

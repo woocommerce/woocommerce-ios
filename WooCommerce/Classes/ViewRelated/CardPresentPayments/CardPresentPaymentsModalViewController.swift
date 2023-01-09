@@ -71,22 +71,40 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
     private func resetHeightAndWidth() {
         if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
             primaryActionButtonsStackView.axis = .horizontal
-            imageView.isHidden = true
+            primaryActionButtonsStackView.distribution = .fillProportionally
 
             mainStackView.distribution = .fillProportionally
             heightConstraint.constant = Constants.modalWidth
             widthConstraint.constant = Constants.modalHeight
         } else {
             primaryActionButtonsStackView.axis = .vertical
-            imageView.isHidden = false
+            primaryActionButtonsStackView.distribution = .fill
+
             mainStackView.distribution = .fill
             heightConstraint.constant = Constants.modalHeight
             widthConstraint.constant = Constants.modalWidth
         }
 
+        updateImageAndLoadingVisibility()
+
         heightConstraint.priority = .required
         widthConstraint.priority = .required
         configureSpacer()
+    }
+
+    private func updateImageAndLoadingVisibility() {
+        if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
+            imageView.isHidden = true
+            loadingView?.isHidden = true
+        } else {
+            if viewModel.showLoadingIndicator {
+                imageView.isHidden = true
+                loadingView?.isHidden = false
+            } else {
+                imageView.isHidden = false
+                loadingView?.isHidden = true
+            }
+        }
     }
 }
 
@@ -202,8 +220,6 @@ private extension CardPresentPaymentsModalViewController {
 
         configureImageView()
 
-        configureLoadingIndicator()
-
         if shouldShowActionButtons() {
             configureActionButtonsView()
             styleActionButtons()
@@ -214,6 +230,8 @@ private extension CardPresentPaymentsModalViewController {
         if shouldShowBottomLabels() {
             configureBottomLabels()
         }
+
+        resetHeightAndWidth()
     }
 
     func configureTopTitle() {
@@ -248,11 +266,6 @@ private extension CardPresentPaymentsModalViewController {
 
     func configureImageView() {
         imageView.image = viewModel.image
-        imageView.isHidden = viewModel.showLoadingIndicator
-    }
-
-    func configureLoadingIndicator() {
-        loadingView?.isHidden = !viewModel.showLoadingIndicator
     }
 
     func setButtonsActions() {

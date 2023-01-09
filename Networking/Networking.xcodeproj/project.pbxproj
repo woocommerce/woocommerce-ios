@@ -696,9 +696,9 @@
 		DE42F9632967C8B900D514C2 /* ReportOrderTotalsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42F9622967C8B900D514C2 /* ReportOrderTotalsMapperTests.swift */; };
 		DE42F9652967F34400D514C2 /* refund-single-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE42F9642967F34400D514C2 /* refund-single-without-data.json */; };
 		DE42F9672967F61D00D514C2 /* refunds-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE42F9662967F61D00D514C2 /* refunds-all-without-data.json */; };
-		DE42F96F296BC9A700D514C2 /* countries-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE42F96E296BC9A700D514C2 /* countries-without-data.json */; };
 		DE42F96B296BC23800D514C2 /* customer-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE42F96A296BC23800D514C2 /* customer-without-data.json */; };
 		DE42F96D296BC67E00D514C2 /* wc-analytics-customers-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE42F96C296BC67E00D514C2 /* wc-analytics-customers-without-data.json */; };
+		DE42F96F296BC9A700D514C2 /* countries-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE42F96E296BC9A700D514C2 /* countries-without-data.json */; };
 		DE50295928C5BD0200551736 /* JetpackUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295828C5BD0200551736 /* JetpackUser.swift */; };
 		DE50295B28C5F99700551736 /* DotcomUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295A28C5F99700551736 /* DotcomUser.swift */; };
 		DE50295D28C6068B00551736 /* JetpackUserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295C28C6068B00551736 /* JetpackUserMapper.swift */; };
@@ -714,6 +714,7 @@
 		DE97C3922861B8E20042E973 /* CouponEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE97C3912861B8E20042E973 /* CouponEncoderTests.swift */; };
 		DE9D6BCC270D769C00BA6562 /* shipping-label-address-without-name-validation-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */; };
 		DE9DEEF5291CF1B40070AD7C /* site-plugin-without-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = DE9DEEF4291CF1B40070AD7C /* site-plugin-without-envelope.json */; };
+		DEA6B1C4296C0F45005AA5E9 /* payment-gateway-cod-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA6B1C3296C0F45005AA5E9 /* payment-gateway-cod-without-data.json */; };
 		DEC2961C26BBE764005A056B /* ShippingLabelCustomsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */; };
 		DEC51A95274CDA52009F3DF4 /* SitePluginMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A94274CDA52009F3DF4 /* SitePluginMapper.swift */; };
 		DEC51A97274DD962009F3DF4 /* plugin.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC51A96274DD962009F3DF4 /* plugin.json */; };
@@ -1510,9 +1511,9 @@
 		DE42F9622967C8B900D514C2 /* ReportOrderTotalsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportOrderTotalsMapperTests.swift; sourceTree = "<group>"; };
 		DE42F9642967F34400D514C2 /* refund-single-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "refund-single-without-data.json"; sourceTree = "<group>"; };
 		DE42F9662967F61D00D514C2 /* refunds-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "refunds-all-without-data.json"; sourceTree = "<group>"; };
-		DE42F96E296BC9A700D514C2 /* countries-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "countries-without-data.json"; sourceTree = "<group>"; };
 		DE42F96A296BC23800D514C2 /* customer-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "customer-without-data.json"; sourceTree = "<group>"; };
 		DE42F96C296BC67E00D514C2 /* wc-analytics-customers-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wc-analytics-customers-without-data.json"; sourceTree = "<group>"; };
+		DE42F96E296BC9A700D514C2 /* countries-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "countries-without-data.json"; sourceTree = "<group>"; };
 		DE50295828C5BD0200551736 /* JetpackUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackUser.swift; sourceTree = "<group>"; };
 		DE50295A28C5F99700551736 /* DotcomUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomUser.swift; sourceTree = "<group>"; };
 		DE50295C28C6068B00551736 /* JetpackUserMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackUserMapper.swift; sourceTree = "<group>"; };
@@ -1528,6 +1529,7 @@
 		DE97C3912861B8E20042E973 /* CouponEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponEncoderTests.swift; sourceTree = "<group>"; };
 		DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-address-without-name-validation-success.json"; sourceTree = "<group>"; };
 		DE9DEEF4291CF1B40070AD7C /* site-plugin-without-envelope.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-plugin-without-envelope.json"; sourceTree = "<group>"; };
+		DEA6B1C3296C0F45005AA5E9 /* payment-gateway-cod-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "payment-gateway-cod-without-data.json"; sourceTree = "<group>"; };
 		DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsForm.swift; sourceTree = "<group>"; };
 		DEC51A94274CDA52009F3DF4 /* SitePluginMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginMapper.swift; sourceTree = "<group>"; };
 		DEC51A96274DD962009F3DF4 /* plugin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = plugin.json; sourceTree = "<group>"; };
@@ -2133,6 +2135,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DEA6B1C3296C0F45005AA5E9 /* payment-gateway-cod-without-data.json */,
 				DE42F96E296BC9A700D514C2 /* countries-without-data.json */,
 				DE42F96C296BC67E00D514C2 /* wc-analytics-customers-without-data.json */,
 				DE42F96A296BC23800D514C2 /* customer-without-data.json */,
@@ -3099,6 +3102,7 @@
 				74159623224D2C86003C21CF /* settings-product.json in Resources */,
 				266C7F9225AD3C88006ED243 /* attribute-term.json in Resources */,
 				D865CE6E278CC19A002C8520 /* stripe-location.json in Resources */,
+				DEA6B1C4296C0F45005AA5E9 /* payment-gateway-cod-without-data.json in Resources */,
 				CEC4BF93234E7EE0008D9195 /* refunds-all.json in Resources */,
 				D8FBFF1522D3BE09006E3336 /* order-stats-v4-defaults.json in Resources */,
 				7495AACF225D366D00801A89 /* variation-as-product.json in Resources */,

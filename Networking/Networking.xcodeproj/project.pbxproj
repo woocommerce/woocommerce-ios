@@ -466,6 +466,7 @@
 		A69FE19D2588D70E0059A96B /* order-with-deleted-refunds.json in Resources */ = {isa = PBXBuildFile; fileRef = A69FE19C2588D70E0059A96B /* order-with-deleted-refunds.json */; };
 		AE1950F3296DB2C2004D37D2 /* ProductsBulkUpdateMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1950F2296DB2C2004D37D2 /* ProductsBulkUpdateMapper.swift */; };
 		AE2D6623272A8F6E004A2C3A /* TelemetryRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2D6622272A8F6E004A2C3A /* TelemetryRemoteTests.swift */; };
+		AEA056E4296DBA6E00948D52 /* products-batch-update.json in Resources */ = {isa = PBXBuildFile; fileRef = AEA056E3296DBA6E00948D52 /* products-batch-update.json */; };
 		AED8AEBA272A97B400663FCC /* null-data.json in Resources */ = {isa = PBXBuildFile; fileRef = AE2D6624272A941C004A2C3A /* null-data.json */; };
 		AED8AEBC272A997500663FCC /* IgnoringResponseMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED8AEBB272A997500663FCC /* IgnoringResponseMapperTests.swift */; };
 		AEF94585272974F2001DCCFB /* TelemetryRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF94584272974F2001DCCFB /* TelemetryRemote.swift */; };
@@ -1282,6 +1283,7 @@
 		AE1950F2296DB2C2004D37D2 /* ProductsBulkUpdateMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsBulkUpdateMapper.swift; sourceTree = "<group>"; };
 		AE2D6622272A8F6E004A2C3A /* TelemetryRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryRemoteTests.swift; sourceTree = "<group>"; };
 		AE2D6624272A941C004A2C3A /* null-data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "null-data.json"; sourceTree = "<group>"; };
+		AEA056E3296DBA6E00948D52 /* products-batch-update.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "products-batch-update.json"; sourceTree = "<group>"; };
 		AED8AEBB272A997500663FCC /* IgnoringResponseMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IgnoringResponseMapperTests.swift; sourceTree = "<group>"; };
 		AEF94584272974F2001DCCFB /* TelemetryRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryRemote.swift; sourceTree = "<group>"; };
 		AEF9458A27297FF6001DCCFB /* IgnoringResponseMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IgnoringResponseMapper.swift; sourceTree = "<group>"; };
@@ -2285,6 +2287,7 @@
 				025CA2C7238F4FF400B05C81 /* product-shipping-classes-load-all.json */,
 				020220E123966CD900290165 /* product-shipping-classes-load-one.json */,
 				457FC68B2382B2FD00B41B02 /* product-update.json */,
+				AEA056E3296DBA6E00948D52 /* products-batch-update.json */,
 				45152818257A84A60076B03C /* product-attributes-all.json */,
 				4515281E257A89B90076B03C /* product-attribute-create.json */,
 				45152824257A8B740076B03C /* product-attribute-update.json */,
@@ -2973,6 +2976,7 @@
 				02EF1672292F0D1900D90AD6 /* load-plan-success.json in Resources */,
 				DEA6B1C6296C13FB005AA5E9 /* payment-gateway-list-without-data.json in Resources */,
 				2685C0DE263B5A4200D9EE97 /* add-on-groups.json in Resources */,
+				AEA056E4296DBA6E00948D52 /* products-batch-update.json in Resources */,
 				DEC51A9B274E3206009F3DF4 /* plugin-inactive.json in Resources */,
 				CCF48B382628AEAE0034EA83 /* shipping-label-account-settings-no-payment-methods.json in Resources */,
 				31A451D327863A2E00FE81AA /* stripe-account-complete.json in Resources */,

@@ -172,6 +172,17 @@ private extension MediaStore {
     }
 }
 
+// MARK: Helpers
+//
+private extension MediaStore {
+    func isSiteJetpackJCPConnected(_ siteID: Int64) -> Bool {
+        guard let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
+            return false
+        }
+        return site.isJetpackCPConnected
+    }
+}
+
 public enum MediaActionError: Error {
     case unexpectedMediaCount(count: Int)
     case unknown

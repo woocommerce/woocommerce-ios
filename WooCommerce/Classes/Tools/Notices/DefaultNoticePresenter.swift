@@ -30,6 +30,10 @@ class DefaultNoticePresenter: NoticePresenter {
     ///
     private var keyboardFrameObserver: KeyboardFrameObserver?
 
+    /// Notices are dismissed automatically by default, unless set otherwise
+    ///
+    var shouldDismissAutomatically: Bool? = true
+
     /// Enqueues the specified Notice for display.
     ///
     @discardableResult
@@ -171,7 +175,12 @@ private extension DefaultNoticePresenter {
         }
 
         animatePresentation(fromState: offScreenState, toState: onScreenState, completion: {
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
+            guard let shouldDismissAutomatically = self.shouldDismissAutomatically else {
+                return
+            }
+            if shouldDismissAutomatically {
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
+            }
         })
     }
 

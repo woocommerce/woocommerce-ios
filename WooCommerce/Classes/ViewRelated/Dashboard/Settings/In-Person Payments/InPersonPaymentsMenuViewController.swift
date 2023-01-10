@@ -351,6 +351,7 @@ private extension InPersonPaymentsMenuViewController {
         )
         let noticePresenter = DefaultNoticePresenter()
         noticePresenter.presentingViewController = self
+        noticePresenter.shouldDismissAutomatically = false
         noticePresenter.enqueue(notice: notice)
     }
 

@@ -19,26 +19,26 @@ public enum MediaAction: Action {
     /// Retrieves media from the site's WP Media Library.
     ///
     /// - Parameters:
-    ///   - siteID: Site for which we'll load the media from.
+    ///   - connectUsing: Provides Site ID or Site URL based on the current login method
     ///   - pageNumber: The index of the page of media data to load from, starting from 1.
     ///   - pageSize: The maximum number of media items to return per page.
     ///   - onCompletion: Closure to be executed upon completion.
     ///
-    case retrieveMediaLibrary(siteID: Int64,
+    case retrieveMediaLibrary(connectUsing: SiteInfo,
                               pageNumber: Int,
                               pageSize: Int,
                               onCompletion: (Result<[Media], Error>) -> Void)
 
     /// Uploads an exportable media asset to the site's WP Media Library.
     ///
-    case uploadMedia(siteID: Int64,
+    case uploadMedia(connectUsing: SiteInfo,
                      productID: Int64,
                      mediaAsset: ExportableAsset,
                      onCompletion: (Result<Media, Error>) -> Void)
 
     /// Updates the `parent_id` of the media using the provided `productID`.
     ///
-    case updateProductID(siteID: Int64,
+    case updateProductID(connectUsing: SiteInfo,
                          productID: Int64,
                          mediaID: Int64,
                          onCompletion: (Result<Media, Error>) -> Void)

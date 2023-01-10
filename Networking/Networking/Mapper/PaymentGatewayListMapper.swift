@@ -17,7 +17,11 @@ struct PaymentGatewayListMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID,
         ]
-        return try decoder.decode(PaymentGatewayListEnvelope.self, from: response).paymentGateways
+        do {
+            return try decoder.decode(PaymentGatewayListEnvelope.self, from: response).paymentGateways
+        } catch {
+            return try decoder.decode([PaymentGateway].self, from: response)
+        }
     }
 }
 

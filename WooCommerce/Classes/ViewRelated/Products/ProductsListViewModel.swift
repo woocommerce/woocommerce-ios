@@ -16,9 +16,6 @@ class ProductListViewModel {
 
     func selectProduct(_ selectedProduct: Product) {
         selectedProducts.insert(selectedProduct)
-//        if selectedProducts.contains(selectedProduct) {
-//        } else {
-//        }
     }
 
     func deselectProduct(_ selectedProduct: Product) {

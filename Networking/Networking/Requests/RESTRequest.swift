@@ -97,7 +97,7 @@ struct RESTRequest: Request {
     }
 
     func responseDataValidator() -> ResponseDataValidator {
-        PlaceholderDataValidator()
+        WordPressApiValidator()
     }
 }
 

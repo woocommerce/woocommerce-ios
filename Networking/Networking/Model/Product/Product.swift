@@ -662,3 +662,12 @@ private extension Product {
 enum ProductDecodingError: Error {
     case missingSiteID
 }
+
+// MARK: - Hashable Conformance
+//
+extension Product: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(siteID)
+        hasher.combine(productID)
+    }
+}

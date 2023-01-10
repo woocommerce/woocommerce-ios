@@ -51,26 +51,70 @@ public final class MediaStore: Store {
         }
 
         switch action {
-        case .retrieveMediaLibrary(let siteID, let pageNumber, let pageSize, let onCompletion):
-            retrieveMediaLibrary(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .uploadMedia(let siteID, let productID, let mediaAsset, let onCompletion):
-            uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, onCompletion: onCompletion)
-        case .updateProductID(let siteID,
-                            let productID,
-                             let mediaID,
-                             let onCompletion):
-            updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, onCompletion: onCompletion)
+        case .retrieveMediaLibrary(let connectUsing,
+                                   let pageNumber,
+                                   let pageSize,
+                                   let onCompletion):
+            switch connectUsing {
+            case .wpcom(let siteID):
+                retrieveMediaLibrary(siteID: siteID,
+                                     pageNumber: pageNumber,
+                                     pageSize: pageSize,
+                                     onCompletion: onCompletion)
+            case .wporg(let siteURL):
+                retrieveMediaLibrary(siteURL: siteURL,
+                                     pageNumber: pageNumber,
+                                     pageSize: pageSize,
+                                     onCompletion: onCompletion)
+            }
+        case .uploadMedia(let connectUsing,
+                          let productID,
+                          let mediaAsset,
+                          let onCompletion):
+            uploadMedia(connectUsing: connectUsing,
+                        productID: productID,
+                        mediaAsset: mediaAsset,
+                        onCompletion: onCompletion)
+        case .updateProductID(let connectUsing,
+                              let productID,
+                              let mediaID,
+                              let onCompletion):
+            switch connectUsing {
+            case .wpcom(let siteID):
+                updateProductID(siteID: siteID,
+                                productID: productID,
+                                mediaID: mediaID,
+                                onCompletion: onCompletion)
+            case .wporg(let siteURL):
+                updateProductID(siteURL: siteURL,
+                                productID: productID,
+                                mediaID: mediaID,
+                                onCompletion: onCompletion)
+
+            }
         }
     }
 }
 
+// MARK: Retrieve Media library
+//
 private extension MediaStore {
+    func retrieveMediaLibrary(siteURL: String,
+                              pageNumber: Int,
+                              pageSize: Int,
+                              onCompletion: @escaping (Result<[Media], Error>) -> Void) {
+        remote.loadMediaLibraryUsingRestApi(siteURL: siteURL,
+                                            pageNumber: pageNumber,
+                                            pageSize: pageSize) { result in
+            onCompletion(result.map { $0.map { $0.toMedia() } })
+        }
+    }
+
     func retrieveMediaLibrary(siteID: Int64,
                               pageNumber: Int,
                               pageSize: Int,
                               onCompletion: @escaping (Result<[Media], Error>) -> Void) {
-        let storage = storageManager.viewStorage
-        if let site = storage.loadSite(siteID: siteID)?.toReadOnly(), site.isJetpackCPConnected {
+        if isSiteJetpackJCPConnected(siteID) {
             remote.loadMediaLibraryFromWordPressSite(siteID: siteID,
                                                      pageNumber: pageNumber,
                                                      pageSize: pageSize) { result in
@@ -84,25 +128,68 @@ private extension MediaStore {
                                        completion: onCompletion)
         }
     }
+}
 
+// MARK: Upload Media
+//
+private extension MediaStore {
     /// Uploads an exportable media asset to the site's WP Media Library with 2 steps:
     /// 1) Exports the media asset to a uploadable type
     /// 2) Uploads the exported media file to the server
     ///
-    func uploadMedia(siteID: Int64,
+    func uploadMedia(connectUsing: MediaAction.SiteInfo,
                      productID: Int64,
                      mediaAsset: ExportableAsset,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
         mediaExportService.export(mediaAsset,
                                   onCompletion: { [weak self] (uploadableMedia, error) in
-            guard let uploadableMedia = uploadableMedia, error == nil else {
+            guard let self = self, let uploadableMedia = uploadableMedia, error == nil else {
                 onCompletion(.failure(error ?? MediaActionError.unknown))
                 return
             }
-            self?.uploadMedia(siteID: siteID,
-                              productID: productID,
-                              uploadableMedia: uploadableMedia,
-                              onCompletion: onCompletion)
+            switch connectUsing {
+            case .wpcom(let siteID):
+                self.uploadMedia(siteID: siteID,
+                                 productID: productID,
+                                 uploadableMedia: uploadableMedia,
+                                 onCompletion: onCompletion)
+            case .wporg(let siteURL):
+                self.uploadMedia(siteURL: siteURL,
+                                 productID: productID,
+                                 mediaAsset: mediaAsset,
+                                 onCompletion: onCompletion)
+            }
+        })
+    }
+
+    func uploadMedia(siteURL: String,
+                     productID: Int64,
+                     mediaAsset: ExportableAsset,
+                     onCompletion: @escaping (Result<Media, Error>) -> Void) {
+        mediaExportService.export(mediaAsset,
+                                  onCompletion: { [weak self] (uploadableMedia, error) in
+            guard let self = self, let uploadableMedia = uploadableMedia, error == nil else {
+                onCompletion(.failure(error ?? MediaActionError.unknown))
+                return
+            }
+            self.remote.uploadMediaUsingRestApi(siteURL: siteURL,
+                                                 productID: productID,
+                                                 mediaItems: [uploadableMedia]) { result in
+                // Removes local media after the upload API request.
+                do {
+                    try MediaFileManager().removeLocalMedia(at: uploadableMedia.localURL)
+                } catch {
+                    onCompletion(.failure(error))
+                    return
+                }
+
+                switch result {
+                case .success(let uploadedMedia):
+                    onCompletion(.success(uploadedMedia.toMedia()))
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                }
+            }
         })
     }
 
@@ -110,8 +197,7 @@ private extension MediaStore {
                      productID: Int64,
                      uploadableMedia media: UploadableMedia,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        let storage = storageManager.viewStorage
-        if let site = storage.loadSite(siteID: siteID)?.toReadOnly(), site.isJetpackCPConnected {
+        if isSiteJetpackJCPConnected(siteID) {
             remote.uploadMediaToWordPressSite(siteID: siteID,
                                               productID: productID,
                                               mediaItems: [media]) { result in
@@ -156,13 +242,25 @@ private extension MediaStore {
             }
         }
     }
+}
+
+// MARK: Update Product ID
+//
+private extension MediaStore {
+    func updateProductID(siteURL: String,
+                         productID: Int64,
+                         mediaID: Int64,
+                         onCompletion: @escaping (Result<Media, Error>) -> Void) {
+        remote.updateProductIDUsingRestApi(siteURL: siteURL, productID: productID, mediaID: mediaID) { result in
+            onCompletion(result.map { $0.toMedia() })
+        }
+    }
 
     func updateProductID(siteID: Int64,
                          productID: Int64,
                          mediaID: Int64,
                          onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        let storage = storageManager.viewStorage
-        if let site = storage.loadSite(siteID: siteID)?.toReadOnly(), site.isJetpackCPConnected {
+        if isSiteJetpackJCPConnected(siteID) {
             remote.updateProductIDToWordPressSite(siteID: siteID, productID: productID, mediaID: mediaID) { result in
                 onCompletion(result.map { $0.toMedia() })
             }

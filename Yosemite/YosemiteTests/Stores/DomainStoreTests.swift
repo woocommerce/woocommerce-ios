@@ -33,6 +33,8 @@ final class DomainStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - `loadFreeDomainSuggestions`
+
     func test_loadFreeDomainSuggestions_returns_suggestions_on_success() throws {
         // Given
         remote.whenLoadingDomainSuggestions(thenReturn: .success([.init(name: "freedomaintesting", isFree: false)]))
@@ -61,6 +63,48 @@ final class DomainStoreTests: XCTestCase {
                 promise(result)
             }
             self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, .timeout)
+    }
+
+    // MARK: - `loadDomains`
+
+    func test_loadDomains_returns_domains_on_success() throws {
+        // Given
+        remote.whenLoadingDomains(thenReturn: .success([
+            .init(name: "candy.land", isPrimary: true, renewalDate: .distantFuture),
+            .init(name: "pods.pro", isPrimary: true)
+        ]))
+
+        // When
+        let result: Result<[SiteDomain], Error> = waitFor { promise in
+            self.store.onAction(DomainAction.loadDomains(siteID: 606) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let suggestions = try XCTUnwrap(result.get())
+        XCTAssertEqual(suggestions, [
+            .init(name: "candy.land", isPrimary: true, renewalDate: .distantFuture),
+            .init(name: "pods.pro", isPrimary: true)
+        ])
+    }
+
+    func test_loadDomains_returns_error_on_failure() throws {
+        // Given
+        remote.whenLoadingDomains(thenReturn: .failure(NetworkError.timeout))
+
+        // When
+        let result: Result<[SiteDomain], Error> = waitFor { promise in
+            self.store.onAction(DomainAction.loadDomains(siteID: 606) { result in
+                promise(result)
+            })
         }
 
         // Then

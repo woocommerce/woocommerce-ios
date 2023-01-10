@@ -70,6 +70,42 @@ final class PaymentStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, .timeout)
     }
 
+    // MARK: - `loadSiteCurrentPlan`
+
+    func test_loadSiteCurrentPlan_returns_plan_on_success() throws {
+        // Given
+        remote.whenLoadingSiteCurrentPlan(thenReturn: .success(.init(hasDomainCredit: true)))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(PaymentAction.loadSiteCurrentPlan(siteID: 645) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let plan = try XCTUnwrap(result.get())
+        XCTAssertEqual(plan, .init(hasDomainCredit: true))
+    }
+
+    func test_loadSiteCurrentPlan_returns_failure_on_error() throws {
+        // Given
+        remote.whenLoadingSiteCurrentPlan(thenReturn: .failure(NetworkError.timeout))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(PaymentAction.loadSiteCurrentPlan(siteID: 645) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, .timeout)
+    }
+
     // MARK: - `createCart`
 
     func test_createCart_returns_on_success() throws {

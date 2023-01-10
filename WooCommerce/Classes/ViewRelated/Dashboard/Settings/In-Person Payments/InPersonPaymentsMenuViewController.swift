@@ -346,11 +346,18 @@ private extension InPersonPaymentsMenuViewController {
             actionTitle: Localization.shareFeedbackNoticeBannerButton,
             actionHandler: {
                 print("Button tapped")
+                self.displayFeedbackSurvey()
             }
         )
         let noticePresenter = DefaultNoticePresenter()
         noticePresenter.presentingViewController = self
         noticePresenter.enqueue(notice: notice)
+    }
+
+    private func displayFeedbackSurvey() {
+        // TODO: Different surveys will be shown:
+        let surveyNavigation = SurveyCoordinatingController(survey: .IPPinAppFeedback)
+        self.present(surveyNavigation, animated: true, completion: nil)
     }
 }
 

@@ -4,4 +4,5 @@ import Foundation
 //
 public enum DomainAction: Action {
     case loadFreeDomainSuggestions(query: String, completion: (Result<[FreeDomainSuggestion], Error>) -> Void)
+    case loadDomains(siteID: Int64, completion: (Result<[SiteDomain], Error>) -> Void)
 }

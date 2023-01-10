@@ -149,4 +149,8 @@ public enum FeatureFlag: Int {
     /// Bulk editing of status and price in products list
     ///
     case productsBulkEditing
+
+    /// Whether to enable domain updates from the settings for a WPCOM site.
+    ///
+    case domainSettings
 }

@@ -11,7 +11,7 @@ final class SurveyViewControllerTests: XCTestCase {
 
     func test_it_loads_the_correct_inApp_feedback_survey() throws {
         // Given
-        let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {})
+        let viewController = SurveyViewController(survey: .generalFeedback, onCompletion: {})
 
         // When
         _ = try XCTUnwrap(viewController.view)
@@ -56,7 +56,7 @@ final class SurveyViewControllerTests: XCTestCase {
     func test_it_completes_after_receiving_a_form_submitted_completed_callback_request() throws {
         // Given
         var surveyCompleted = false
-        let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {
+        let viewController = SurveyViewController(survey: .generalFeedback, onCompletion: {
             surveyCompleted = true
         })
 
@@ -77,7 +77,7 @@ final class SurveyViewControllerTests: XCTestCase {
     func test_it_does_not_complete_after_receiving_a_form_submitted_non_completed_callback_request() throws {
         // Given
         var surveyCompleted = false
-        let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {
+        let viewController = SurveyViewController(survey: .generalFeedback, onCompletion: {
             surveyCompleted = true
         })
 
@@ -100,7 +100,7 @@ final class SurveyViewControllerTests: XCTestCase {
     func test_it_does_not_complete_after_receiving_a_form_submitted_empty_callback_request() throws {
         // Given
         var surveyCompleted = false
-        let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {
+        let viewController = SurveyViewController(survey: .generalFeedback, onCompletion: {
             surveyCompleted = true
         })
 
@@ -122,7 +122,7 @@ final class SurveyViewControllerTests: XCTestCase {
 
     func test_it_shows_the_loading_view_when_loading_a_survey() throws {
         // Given
-        let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {})
+        let viewController = SurveyViewController(survey: .generalFeedback, onCompletion: {})
 
         // When
         _ = try XCTUnwrap(viewController.view)
@@ -134,7 +134,7 @@ final class SurveyViewControllerTests: XCTestCase {
 
     func test_it_hides_the_loading_view_after_loading_a_survey() throws {
         // Given
-        let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {})
+        let viewController = SurveyViewController(survey: .generalFeedback, onCompletion: {})
 
         // When
         _ = try XCTUnwrap(viewController.view)

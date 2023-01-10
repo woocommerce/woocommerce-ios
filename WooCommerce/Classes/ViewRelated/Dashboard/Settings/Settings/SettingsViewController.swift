@@ -376,7 +376,7 @@ private extension SettingsViewController {
     }
 
     func presentSurveyForFeedback() {
-        let surveyNavigation = SurveyCoordinatingController(survey: .inAppFeedback)
+        let surveyNavigation = SurveyCoordinatingController(survey: .generalFeedback)
         present(surveyNavigation, animated: true, completion: nil)
     }
 

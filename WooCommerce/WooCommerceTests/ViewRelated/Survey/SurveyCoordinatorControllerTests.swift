@@ -28,7 +28,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
         let factory = MockSurveyViewControllersFactory()
 
         // When
-        let coordinator = SurveyCoordinatingController(survey: .inAppFeedback, viewControllersFactory: factory)
+        let coordinator = SurveyCoordinatingController(survey: .generalFeedback, viewControllersFactory: factory)
 
         // Then
         XCTAssertTrue(coordinator.topViewController is SurveyViewControllerOutputs)
@@ -37,7 +37,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
     func test_it_navigates_to_SurveySubmittedViewController_when_survey_is_submitted() throws {
         // Given
         let factory = MockSurveyViewControllersFactory()
-        let coordinator = SurveyCoordinatingController(survey: .inAppFeedback, viewControllersFactory: factory)
+        let coordinator = SurveyCoordinatingController(survey: .generalFeedback, viewControllersFactory: factory)
 
         // When
         factory.surveyViewController.onCompletion()
@@ -51,7 +51,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
     func test_it_gets_dismissed_on_backToStore_action() throws {
         // Given
         let factory = MockSurveyViewControllersFactory()
-        let coordinator = SurveyCoordinatingController(survey: .inAppFeedback, viewControllersFactory: factory)
+        let coordinator = SurveyCoordinatingController(survey: .generalFeedback, viewControllersFactory: factory)
 
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = UIViewController()
@@ -72,7 +72,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
         // Given
         let zendeskManager = MockZendeskManager()
         let factory = MockSurveyViewControllersFactory()
-        let coordinator = SurveyCoordinatingController(survey: .inAppFeedback, zendeskManager: zendeskManager, viewControllersFactory: factory)
+        let coordinator = SurveyCoordinatingController(survey: .generalFeedback, zendeskManager: zendeskManager, viewControllersFactory: factory)
         assertEmpty(zendeskManager.newRequestIfPossibleInvocations)
 
         // When
@@ -90,7 +90,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
     func test_it_tracks_a_surveyScreen_completed_event_when_the_survey_is_submitted() throws {
         // Given
         let factory = MockSurveyViewControllersFactory()
-        _ = SurveyCoordinatingController(survey: .inAppFeedback,
+        _ = SurveyCoordinatingController(survey: .generalFeedback,
                                          viewControllersFactory: factory,
                                          analytics: analytics)
 
@@ -113,7 +113,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
         let factory = MockSurveyViewControllersFactory()
 
         // When
-        _ = SurveyCoordinatingController(survey: .inAppFeedback,
+        _ = SurveyCoordinatingController(survey: .generalFeedback,
                                          viewControllersFactory: factory,
                                          analytics: analytics)
 
@@ -138,7 +138,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
         window.rootViewController = rootViewController
         window.isHidden = false
 
-        let coordinator = SurveyCoordinatingController(survey: .inAppFeedback,
+        let coordinator = SurveyCoordinatingController(survey: .generalFeedback,
                                                        viewControllersFactory: factory,
                                                        analytics: analytics)
         waitForExpectation { exp in

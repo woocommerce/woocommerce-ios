@@ -77,7 +77,7 @@ private extension InAppFeedbackCardViewController {
                 return
             }
 
-            let surveyNavigation = SurveyCoordinatingController(survey: .inAppFeedback)
+            let surveyNavigation = SurveyCoordinatingController(survey: .generalFeedback)
             self.present(surveyNavigation, animated: true, completion: nil)
             self.onFeedbackGiven?()
             self.analytics.track(event: .appFeedbackPrompt(action: .didntLike))

@@ -252,4 +252,73 @@ final class ProductVariationsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(canceled)
     }
+
+    func test_failing_to_fetch_variations_sends_error_state() {
+        // Given
+        let product = Product.fake().copy(attributes: [
+            ProductAttribute.fake().copy(attributeID: 1, name: "Size", options: ["XS", "S", "M", "L", "XL"]),
+            ProductAttribute.fake().copy(attributeID: 2, name: "Color", options: ["Red", "Green", "Blue", "White", "Black"]),
+        ])
+
+        let stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case .synchronizeAllProductVariations(_, _, let onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            default:
+                break
+            }
+        }
+
+        let viewModel = ProductVariationsViewModel(stores: stores, formType: .edit)
+
+        // When
+        let error = waitFor { promise in
+            viewModel.generateAllVariations(for: product) { state in
+                if case .error(let error) = state {
+                    promise(error)
+                }
+            }
+        }
+
+        // Then
+        XCTAssertEqual(error, .unableToFetchVariations)
+    }
+
+    func test_failing_to_create_variations_sends_error_state() {
+        // Given
+        let product = Product.fake().copy(attributes: [
+            ProductAttribute.fake().copy(attributeID: 1, name: "Size", options: ["XS", "S", "M", "L", "XL"]),
+            ProductAttribute.fake().copy(attributeID: 2, name: "Color", options: ["Red", "Green", "Blue", "White", "Black"]),
+        ])
+
+        let stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case .synchronizeAllProductVariations(_, _, let onCompletion):
+                onCompletion(.success([]))
+            case .createProductVariations(_, _, _, let onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            default:
+                break
+            }
+        }
+
+        let viewModel = ProductVariationsViewModel(stores: stores, formType: .edit)
+
+        // When
+        let error = waitFor { promise in
+            viewModel.generateAllVariations(for: product) { state in
+                if case let .confirmation(_, onCompletion) = state {
+                    onCompletion(true)
+                }
+                if case .error(let error) = state {
+                    promise(error)
+                }
+            }
+        }
+
+        // Then
+        XCTAssertEqual(error, .unableToCreateVariations)
+    }
 }

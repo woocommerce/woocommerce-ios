@@ -70,9 +70,9 @@ final class ProductVariationsViewModel {
                     }
                 }))
 
-            case .failure:
-                // TODO: Log and inform error
-                break
+            case .failure(let error):
+                onStateChanged(.error(.unableToFetchVariations))
+                DDLogError("⛔️ Failed to create variations: \(error)")
             }
         }
     }
@@ -104,9 +104,9 @@ final class ProductVariationsViewModel {
             switch result {
             case .success:
                 onCompletion(.success(()))
-            case .failure:
-                // TODO: Log Error
-                break
+            case .failure(let error):
+                onCompletion(.failure(.unableToCreateVariations))
+                DDLogError("⛔️ Failed to create variations: \(error)")
             }
         })
         stores.dispatch(action)
@@ -161,17 +161,27 @@ extension ProductVariationsViewModel {
     /// Type to represent known generation errors
     ///
     enum GenerationError: LocalizedError, Equatable {
+        case unableToFetchVariations
+        case unableToCreateVariations
         case tooManyVariations(variationCount: Int)
 
         var errorTitle: String {
             switch self {
+            case .unableToFetchVariations:
+                return NSLocalizedString("Unable to fetch variations", comment: "Error title for when we can't fetch existing variations.")
+            case .unableToCreateVariations:
+                return NSLocalizedString("Unable to create variations", comment: "Error title for when we can't create variations remotely.")
             case .tooManyVariations:
-                return NSLocalizedString("Generation limit exceeded", comment: "Error title for for when there are too many variations to generate.")
+                return NSLocalizedString("Generation limit exceeded", comment: "Error title for when there are too many variations to generate.")
             }
         }
 
         var errorDescription: String? {
             switch self {
+            case .unableToFetchVariations:
+                return NSLocalizedString("Something went wrong, please try again later.", comment: "Error message for when we can't fetch existing variations.")
+            case .unableToCreateVariations:
+                return NSLocalizedString("Something went wrong, please try again later.", comment: "Error message for when we can't create variations remotely")
             case .tooManyVariations(let variationCount):
                 let format = NSLocalizedString(
                     "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations.",

@@ -64,7 +64,7 @@ private extension PaymentStore {
     func loadSiteCurrentPlan(siteID: Int64,
                              completion: (Result<WPComSitePlan, Error>) -> Void) {
         // TODO: 8558 - fetch site's current plan
-        completion(.success(.init(plan: .init(productID: 0, name: "", formattedPrice: ""), hasDomainCredit: true)))
+        completion(.success(.init(hasDomainCredit: true)))
     }
 
     func createCart(productID: String,

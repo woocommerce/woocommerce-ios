@@ -30,6 +30,11 @@ extension MockPaymentRemote: PaymentRemoteProtocol {
         return try result.get()
     }
 
+    func loadSiteCurrentPlan(siteID: Int64) async throws -> WPComSitePlan {
+        // TODO: 8558 - Yosemite layer
+        throw NetworkError.notFound
+    }
+
     func createCart(siteID: Int64, productID: Int64) async throws {
         guard let result = createCartResult else {
             XCTFail("Could not find result for creating a cart.")

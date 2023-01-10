@@ -21,4 +21,9 @@ extension MockDomainRemote: DomainRemoteProtocol {
         }
         return try result.get()
     }
+
+    func loadDomains(siteID: Int64) async throws -> [SiteDomain] {
+        // TODO: 8558 - Yosemite layer
+        throw NetworkError.notFound
+    }
 }

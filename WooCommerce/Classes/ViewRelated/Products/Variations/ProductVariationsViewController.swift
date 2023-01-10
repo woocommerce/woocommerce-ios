@@ -674,6 +674,20 @@ private extension ProductVariationsViewController {
             inProgressViewController.dismiss(animated: true)
         }
     }
+
+    /// Informs the merchant that no variations were created.
+    ///
+    private func presentNoGenerationNotice() {
+        let notice = Notice(title: Localization.noVariationsCreatedTitle, message: Localization.noVariationsCreatedDescription)
+        noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Informs the merchant that some variations were created.
+    ///
+    private func presentVariationsCreatedNotice() {
+        let notice = Notice(title: Localization.variationsCreatedTitle)
+        noticePresenter.enqueue(notice: notice)
+    }
 }
 
 // MARK: - Placeholders
@@ -762,7 +776,11 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
                 self?.dismissBlockingIndicator()
             case .finished(let variationsCreated):
                 self?.dismissBlockingIndicator()
-                // TODO: Inform about created variations
+                if variationsCreated {
+                    self?.presentVariationsCreatedNotice()
+                } else {
+                    self?.presentNoGenerationNotice()
+                }
                 break
             case .error(let error):
                 self?.dismissBlockingIndicator()
@@ -889,6 +907,12 @@ private extension ProductVariationsViewController {
                                                           comment: "Blocking indicator text when fetching existing variations prior generating them.")
         static let creatingVariations = NSLocalizedString("Creating Variations...",
                                                           comment: "Blocking indicator text when creating multiple variations remotely.")
+        static let noVariationsCreatedTitle = NSLocalizedString("No variations to generate",
+                                                                comment: "Title for the notice when there were no variations to generate")
+        static let noVariationsCreatedDescription = NSLocalizedString("All variations are already generated.",
+                                                                      comment: "Message for the notice when there were no variations to generate")
+        static let variationsCreatedTitle = NSLocalizedString("Variations created successfully",
+                                                              comment: "Title for the notice when after variations were created")
 
     }
 

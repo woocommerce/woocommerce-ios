@@ -167,6 +167,8 @@ private extension NoticeView {
         if let subtitle = notice.subtitle {
             subtitleLabel.isHidden = false
             subtitleLabel.text = subtitle
+            // TODO: Remove color, just for testing:
+            subtitleLabel.textColor = .red
         } else {
             subtitleLabel.isHidden = true
         }
@@ -193,6 +195,7 @@ private extension NoticeView {
 private extension NoticeView {
 
     @objc private func viewTapped() {
+        notice.noticeTappedHandler?()
         dismissHandler?()
     }
 

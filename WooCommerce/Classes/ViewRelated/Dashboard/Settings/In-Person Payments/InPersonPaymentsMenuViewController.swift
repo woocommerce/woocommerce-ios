@@ -339,16 +339,19 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     private func createIPPFeedbackNoticeBanner() {
-        // TODO: Problem - Disappears after x seconds by default
-        // TODO: Style is different than design requirements
         let notice = Notice(
             title: Localization.feedbackNoticeBannerTitle,
-            actionTitle: Localization.shareFeedbackNoticeBannerButton,
-            actionHandler: {
-                print("Button tapped")
+            subtitle: Localization.shareFeedbackNoticeBannerButton,
+            actionTitle: "x", // Experimenting with dismiss.
+            noticeTappedHandler: {
+                print("Notice tapped")
                 self.displayFeedbackSurvey()
+            },
+            actionHandler: {
+                print("Dismiss tapped")
             }
         )
+
         let noticePresenter = DefaultNoticePresenter()
         noticePresenter.presentingViewController = self
         noticePresenter.shouldDismissAutomatically = false

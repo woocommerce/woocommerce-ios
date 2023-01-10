@@ -31,10 +31,13 @@ struct Notice {
     ///
     let actionTitle: String?
 
+    /// An optional handler closure that will be called when the notice is tapped
+    ///
+    var noticeTappedHandler: (() -> Void)?
+
     /// An optional handler closure that will be called when the action button is tapped, if you've provided an action title
     ///
     let actionHandler: (() -> Void)?
-
 
     /// Designated Initializer
     ///
@@ -44,6 +47,7 @@ struct Notice {
          feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil,
          notificationInfo: NoticeNotificationInfo? = nil,
          actionTitle: String? = nil,
+         noticeTappedHandler: ((() -> Void))? = nil,
          actionHandler: ((() -> Void))? = nil) {
         self.title = title
         self.subtitle = subtitle
@@ -51,6 +55,7 @@ struct Notice {
         self.feedbackType = feedbackType
         self.notificationInfo = notificationInfo
         self.actionTitle = actionTitle
+        self.noticeTappedHandler = noticeTappedHandler
         self.actionHandler = actionHandler
     }
 }

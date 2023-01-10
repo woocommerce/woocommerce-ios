@@ -53,7 +53,7 @@ struct DotcomRequest: Request {
 
     func responseDataValidator() -> ResponseDataValidator {
         switch wordpressApiVersion {
-        case .mark1_1, .mark1_2, .mark1_5:
+        case .mark1_1, .mark1_2, .mark1_3, .mark1_5:
             return DotcomValidator()
         case .wpcomMark2, .wpMark2:
             return WordPressApiValidator()

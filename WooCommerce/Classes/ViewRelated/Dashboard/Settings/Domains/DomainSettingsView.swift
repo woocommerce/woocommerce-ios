@@ -131,10 +131,7 @@ struct DomainSettingsView_Previews: PreviewProvider {
                                     .init(name: "duo.test", isPrimary: true, renewalDate: .now)
                                 ]),
                                 // The site has domain credit.
-                                sitePlanResult: .success(.init(plan: .init(productID: 0,
-                                                                           name: "",
-                                                                           formattedPrice: ""),
-                                                               hasDomainCredit: true)))))
+                                sitePlanResult: .success(.init(hasDomainCredit: true)))))
             }
 
             NavigationView {
@@ -145,10 +142,7 @@ struct DomainSettingsView_Previews: PreviewProvider {
                                 domainsResult: .success([
                                     .init(name: "free.test", isPrimary: true)
                                 ]),
-                                sitePlanResult: .success(.init(plan: .init(productID: 0,
-                                                                           name: "",
-                                                                           formattedPrice: ""),
-                                                               hasDomainCredit: true)))))
+                                sitePlanResult: .success(.init(hasDomainCredit: true)))))
             }
         }
     }

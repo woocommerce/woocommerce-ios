@@ -70,6 +70,9 @@
 		02AF07EA27492DBC00B2D81E /* WordPressMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AF07E927492DBC00B2D81E /* WordPressMedia.swift */; };
 		02AF07EC27492FDD00B2D81E /* media-library-from-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = 02AF07EB27492FDD00B2D81E /* media-library-from-wordpress-site.json */; };
 		02AF07EE27493AE700B2D81E /* media-upload-to-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = 02AF07ED27493AE700B2D81E /* media-upload-to-wordpress-site.json */; };
+		02B41A90296BC85800FE3311 /* site-domains.json in Resources */ = {isa = PBXBuildFile; fileRef = 02B41A8F296BC85800FE3311 /* site-domains.json */; };
+		02B41A92296BEB3000FE3311 /* load-site-current-plan-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02B41A91296BEB3000FE3311 /* load-site-current-plan-success.json */; };
+		02B41A94296C04BC00FE3311 /* load-site-plans-no-current-plan.json in Resources */ = {isa = PBXBuildFile; fileRef = 02B41A93296C04BC00FE3311 /* load-site-plans-no-current-plan.json */; };
 		02BA23C922EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json in Resources */ = {isa = PBXBuildFile; fileRef = 02BA23C722EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json */; };
 		02BA23CA22EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json in Resources */ = {isa = PBXBuildFile; fileRef = 02BA23C822EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json */; };
 		02BDB83523EA98C800BCC63E /* String+HTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BDB83423EA98C800BCC63E /* String+HTML.swift */; };
@@ -882,6 +885,9 @@
 		02AF07E927492DBC00B2D81E /* WordPressMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressMedia.swift; sourceTree = "<group>"; };
 		02AF07EB27492FDD00B2D81E /* media-library-from-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-library-from-wordpress-site.json"; sourceTree = "<group>"; };
 		02AF07ED27493AE700B2D81E /* media-upload-to-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-upload-to-wordpress-site.json"; sourceTree = "<group>"; };
+		02B41A8F296BC85800FE3311 /* site-domains.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-domains.json"; sourceTree = "<group>"; };
+		02B41A91296BEB3000FE3311 /* load-site-current-plan-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "load-site-current-plan-success.json"; sourceTree = "<group>"; };
+		02B41A93296C04BC00FE3311 /* load-site-plans-no-current-plan.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "load-site-plans-no-current-plan.json"; sourceTree = "<group>"; };
 		02BA23C722EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-v4-wcadmin-deactivated.json"; sourceTree = "<group>"; };
 		02BA23C822EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-v4-wcadmin-activated.json"; sourceTree = "<group>"; };
 		02BDB83423EA98C800BCC63E /* String+HTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HTML.swift"; sourceTree = "<group>"; };
@@ -2161,7 +2167,10 @@
 				DE50295F28C609A300551736 /* jetpack-connected-user.json */,
 				DE34051A28BDF12C00CF0D97 /* jetpack-connection-url.json */,
 				DE50296228C609DE00551736 /* jetpack-user-not-connected.json */,
+				02B41A91296BEB3000FE3311 /* load-site-current-plan-success.json */,
+				02B41A93296C04BC00FE3311 /* load-site-plans-no-current-plan.json */,
 				EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */,
+				02B41A8F296BC85800FE3311 /* site-domains.json */,
 				D865CE6D278CC19A002C8520 /* stripe-location-error.json */,
 				D865CE6C278CC19A002C8520 /* stripe-location.json */,
 				D865CE6A278CA266002C8520 /* stripe-payment-intent-error.json */,
@@ -2957,6 +2966,7 @@
 				743E84FC22174CE100FAC9D7 /* restnoroute_error.json in Resources */,
 				CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */,
 				D8FBFF2722D529F2006E3336 /* order-stats-v4-month.json in Resources */,
+				02B41A92296BEB3000FE3311 /* load-site-current-plan-success.json in Resources */,
 				02EF1672292F0D1900D90AD6 /* load-plan-success.json in Resources */,
 				DEA6B1C6296C13FB005AA5E9 /* payment-gateway-list-without-data.json in Resources */,
 				2685C0DE263B5A4200D9EE97 /* add-on-groups.json in Resources */,
@@ -2969,6 +2979,7 @@
 				DE5CA111288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json in Resources */,
 				02DD6492248A3EC00082523E /* product-external.json in Resources */,
 				03DCB7522624B3BE00C8953D /* coupons-all.json in Resources */,
+				02B41A94296C04BC00FE3311 /* load-site-plans-no-current-plan.json in Resources */,
 				028CB716290223CB00331C09 /* create-account-success.json in Resources */,
 				036563E129069D3500D84BFD /* just-in-time-message-list.json in Resources */,
 				45A4B85C25D2FAB500776FB4 /* shipping-label-address-validation-error.json in Resources */,
@@ -3125,6 +3136,7 @@
 				2683D71024456EE4002A1589 /* categories-extra.json in Resources */,
 				A69FE19D2588D70E0059A96B /* order-with-deleted-refunds.json in Resources */,
 				E18152C228F85E0A0011A0EC /* iap-products.json in Resources */,
+				02B41A90296BC85800FE3311 /* site-domains.json in Resources */,
 				EEA658462966C67C00112DF0 /* products-ids-only-without-data.json in Resources */,
 				DE2095C127966EC800171F1C /* coupon-reports.json in Resources */,
 				453305F52459ED2700264E50 /* site-post-update.json in Resources */,

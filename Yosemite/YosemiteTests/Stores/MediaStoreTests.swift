@@ -20,6 +20,10 @@ final class MediaStoreTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 123
 
+    /// Testing Site URL
+    ///
+    private let sampleSiteURL = "http://test.com"
+
     /// Testing Product ID
     ///
     private let sampleProductID: Int64 = 586
@@ -39,9 +43,9 @@ final class MediaStoreTests: XCTestCase {
 
     // MARK: test cases for `MediaAction.retrieveMediaLibrary`
 
-    /// Verifies that `MediaAction.retrieveMediaLibrary` returns the expected response.
+    /// Verifies that `MediaAction.retrieveMediaLibrary` returns the expected response when using WPCOM siteID.
     ///
-    func test_retrieveMediaLibrary_returns_media_list() throws {
+    func test_retrieveMediaLibrary_returns_media_list_when_connect_using_siteID() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
         let expectedMedia = Media(mediaID: 2352,
@@ -61,7 +65,7 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let result: Result<[Media], Error> = waitFor { promise in
-            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+            let action = MediaAction.retrieveMediaLibrary(connectUsing: .wpcom(self.sampleSiteID),
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -73,6 +77,36 @@ final class MediaStoreTests: XCTestCase {
         let mediaItems = try XCTUnwrap(result.get())
         XCTAssertEqual(mediaItems.count, 5)
         XCTAssertEqual(mediaItems.first, expectedMedia)
+    }
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` returns the expected response when using site URL.
+    ///
+    func test_retrieveMediaLibrary_returns_media_list_when_connect_using_siteURL() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library-from-wordpress-site")
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network)
+
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(connectUsing: .wporg(self.sampleSiteURL),
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let mediaItems = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaItems.count, 2)
+        let uploadedMedia = try XCTUnwrap(mediaItems.first)
+        XCTAssertEqual(uploadedMedia.mediaID, 22)
+        XCTAssertEqual(uploadedMedia.date, Date(timeIntervalSince1970: 1637546157))
+        XCTAssertEqual(uploadedMedia.mimeType, "image/jpeg")
+        XCTAssertEqual(uploadedMedia.src, "https://ninja.media/wp-content/uploads/2021/11/img_0111-2-scaled.jpeg")
+        XCTAssertEqual(uploadedMedia.alt, "Floral")
     }
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns the expected response for cases where URLs contain special chars.
@@ -98,7 +132,7 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let result: Result<[Media], Error> = waitFor { promise in
-            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+            let action = MediaAction.retrieveMediaLibrary(connectUsing: .wpcom(self.sampleSiteID),
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -114,7 +148,7 @@ final class MediaStoreTests: XCTestCase {
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is an error response from the backend.
     ///
-    func test_retrieveMediaLibrary_returns_error_upon_response_error() throws {
+    func test_retrieveMediaLibrary_returns_error_upon_response_error_when_connect_using_siteID() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "media", filename: "generic_error")
         let mediaStore = MediaStore(dispatcher: dispatcher,
@@ -123,7 +157,7 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let result: Result<[Media], Error> = waitFor { promise in
-            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+            let action = MediaAction.retrieveMediaLibrary(connectUsing: .wpcom(self.sampleSiteID),
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -136,16 +170,61 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertEqual(error, .unauthorized)
     }
 
+    /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is an error response from the backend.
+    ///
+    func test_retrieveMediaLibrary_returns_error_upon_response_error_when_connect_using_siteURL() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "media", filename: "rest_incorrect_application_password_error")
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network)
+
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(connectUsing: .wporg(self.sampleSiteURL),
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? WordPressApiError)
+        XCTAssertEqual(error, .unknown(code: "incorrect_password", message: "The provided password is an invalid application password."))
+    }
+
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is no backend response.
     ///
-    func test_retrieveMediaLibrary_returns_error_upon_empty_response() {
+    func test_retrieveMediaLibrary_returns_error_upon_empty_response_when_connect_using_siteID() {
         // Given
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network)
         // When
         let result: Result<[Media], Error> = waitFor { promise in
-            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+            let action = MediaAction.retrieveMediaLibrary(connectUsing: .wpcom(self.sampleSiteID),
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is no backend response.
+    ///
+    func test_retrieveMediaLibrary_returns_error_upon_empty_response_when_connect_using_siteURL() {
+        // Given
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network)
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(connectUsing: .wporg(self.sampleSiteURL),
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -169,7 +248,7 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let _: Result<[Media], Error> = waitFor { promise in
-            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+            let action = MediaAction.retrieveMediaLibrary(connectUsing: .wpcom(self.sampleSiteID),
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -227,7 +306,7 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let result: Result<[Media], Error> = waitFor { promise in
-            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+            let action = MediaAction.retrieveMediaLibrary(connectUsing: .wpcom(self.sampleSiteID),
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -256,7 +335,7 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let result: Result<[Media], Error> = waitFor { promise in
-            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+            let action = MediaAction.retrieveMediaLibrary(connectUsing: .wpcom(self.sampleSiteID),
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -271,9 +350,63 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertEqual(error, .unauthorized)
     }
 
+    /// Verifies that `MediaAction.retrieveMediaLibrary` invokes `MediaRemoteProtocol.loadMediaLibraryUsingRestApi` when connect using site URL.
+    func test_retrieveMediaLibrary_invokes_loadMediaLibraryUsingRestApi_remote_call_when_connect_using_site_URL() throws {
+        // Given
+        let remote = MockMediaRemote()
+        remote.whenLoadingMediaLibraryUsingRestApi(siteURL: sampleSiteURL, thenReturn: .success([]))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        // When
+        let _: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(connectUsing: .wporg(self.sampleSiteURL),
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadMediaLibraryUsingRestApi(siteURL: sampleSiteURL)])
+    }
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` using site URL returns error from remote
+    func test_retrieveMediaLibrary_using_site_URL_returns_error_from_MediaRemote() throws {
+        // Given
+        let expectedError = WordPressApiError.unknown(code: "1", message: "Sample message")
+        let remote = MockMediaRemote()
+        remote.whenLoadingMediaLibraryUsingRestApi(siteURL: sampleSiteURL, thenReturn: .failure(expectedError))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        insertJCPSiteToStorage(siteID: sampleSiteID)
+
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(connectUsing: .wporg(self.sampleSiteURL),
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadMediaLibraryUsingRestApi(siteURL: sampleSiteURL)])
+
+        let error = try XCTUnwrap(result.failure as? WordPressApiError)
+        XCTAssertEqual(error, expectedError)
+    }
+
     // MARK: test cases for `MediaAction.uploadMedia`
 
-    func test_uploadMedia_returns_uploaded_media_and_deletes_input_media_file() throws {
+    func test_uploadMedia_returns_uploaded_media_and_deletes_input_media_file_when_connect_using_siteID() throws {
         // Given
         let fileManager = FileManager.default
 
@@ -292,7 +425,7 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let result: Result<Media, Error> = waitFor { promise in
-            let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
+            let action = MediaAction.uploadMedia(connectUsing: .wpcom(self.sampleSiteID),
                                                  productID: self.sampleProductID,
                                                  mediaAsset: asset) { result in
                 promise(result)
@@ -307,7 +440,41 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertFalse(fileManager.fileExists(atPath: targetURL.path))
     }
 
-    func test_uploadMedia_returns_error_upon_response_error() {
+    func test_uploadMedia_returns_uploaded_media_and_deletes_input_media_file_when_connect_using_siteURL() throws {
+        // Given
+        let fileManager = FileManager.default
+
+        // Creates a temporary file to simulate a uploadable media file.
+        let targetURL: URL = {
+            let filename = "test.txt"
+            return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
+        }()
+
+        let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager)
+
+        let path = "media"
+        network.simulateResponse(requestUrlSuffix: path, filename: "media-upload-to-wordpress-site")
+
+        let asset = PHAsset()
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadMedia(connectUsing: .wporg(self.sampleSiteURL),
+                                                 productID: self.sampleProductID,
+                                                 mediaAsset: asset) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        _ = try XCTUnwrap(result.get())
+
+        // Verifies that the temporary file is removed after the media is uploaded.
+        XCTAssertFalse(fileManager.fileExists(atPath: targetURL.path))
+    }
+
+    func test_uploadMedia_returns_error_upon_response_error_when_connect_using_siteID() {
         // Given
         let fileManager = FileManager.default
 
@@ -327,7 +494,42 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let result: Result<Media, Error> = waitFor { promise in
-            let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
+            let action = MediaAction.uploadMedia(connectUsing: .wpcom(self.sampleSiteID),
+                                                 productID: self.sampleProductID,
+                                                 mediaAsset: asset) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+
+        // Verifies that the temporary file is removed after the media is uploaded.
+        XCTAssertFalse(fileManager.fileExists(atPath: targetURL.path))
+    }
+
+    func test_uploadMedia_returns_error_upon_response_error_when_connect_using_siteURL() {
+        // Given
+        let fileManager = FileManager.default
+
+        // Creates a temporary file to simulate a uploadable media file.
+        let targetURL: URL = {
+            let filename = "test.txt"
+            return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
+        }()
+
+        let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager)
+
+        let path = "media"
+
+        network.simulateResponse(requestUrlSuffix: path, filename: "rest_incorrect_application_password_error")
+
+        let asset = PHAsset()
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadMedia(connectUsing: .wporg(self.sampleSiteURL),
                                                  productID: self.sampleProductID,
                                                  mediaAsset: asset) { result in
                 promise(result)
@@ -362,7 +564,7 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let _: Result<Media, Error> = waitFor { promise in
-            let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
+            let action = MediaAction.uploadMedia(connectUsing: .wpcom(self.sampleSiteID),
                                                  productID: self.sampleProductID,
                                                  mediaAsset: asset) { result in
                 promise(result)
@@ -440,7 +642,7 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let result: Result<Media, Error> = waitFor { promise in
-            let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
+            let action = MediaAction.uploadMedia(connectUsing: .wpcom(self.sampleSiteID),
                                                  productID: self.sampleProductID,
                                                  mediaAsset: asset) { result in
                 promise(result)
@@ -480,7 +682,7 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let result: Result<Media, Error> = waitFor { promise in
-            let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
+            let action = MediaAction.uploadMedia(connectUsing: .wpcom(self.sampleSiteID),
                                                  productID: self.sampleProductID,
                                                  mediaAsset: asset) { result in
                 promise(result)
@@ -510,7 +712,7 @@ final class MediaStoreTests: XCTestCase {
                                     remote: remote)
         // When
         let result: Result<Media, Error> = waitFor { promise in
-            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+            let action = MediaAction.updateProductID(connectUsing: .wpcom(self.sampleSiteID),
                                                      productID: self.sampleProductID,
                                                      mediaID: self.sampleMediaID) { result in
                 promise(result)
@@ -536,7 +738,7 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let result: Result<Media, Error> = waitFor { promise in
-            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+            let action = MediaAction.updateProductID(connectUsing: .wpcom(self.sampleSiteID),
                                                      productID: self.sampleProductID,
                                                      mediaID: self.sampleMediaID) { result in
                 promise(result)
@@ -593,7 +795,7 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let result: Result<Media, Error> = waitFor { promise in
-            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+            let action = MediaAction.updateProductID(connectUsing: .wpcom(self.sampleSiteID),
                                                      productID: self.sampleProductID,
                                                      mediaID: self.sampleMediaID) { result in
                 promise(result)
@@ -620,7 +822,7 @@ final class MediaStoreTests: XCTestCase {
 
         // When
         let result: Result<Media, Error> = waitFor { promise in
-            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+            let action = MediaAction.updateProductID(connectUsing: .wpcom(self.sampleSiteID),
                                                      productID: self.sampleProductID,
                                                      mediaID: self.sampleMediaID) { result in
                 promise(result)
@@ -631,6 +833,60 @@ final class MediaStoreTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure as? DotcomError)
         XCTAssertEqual(error, .unauthorized)
+    }
+
+    /// Verifies that `MediaAction.updateProductID` returns the expected response while connecting using Site URL
+    ///
+    func test_updateProductID_returns_media_when_connect_using_siteURL() throws {
+        // Given
+        let remote = MockMediaRemote()
+        let media = WordPressMedia.fake()
+        remote.whenUpdatingProductIDUsingRestApi(siteURL: sampleSiteURL, thenReturn: .success(media))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.updateProductID(connectUsing: .wporg(self.sampleSiteURL),
+                                                     productID: self.sampleProductID,
+                                                     mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let mediaFromResult = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaFromResult, media.toMedia())
+    }
+
+    /// Verifies that `MediaAction.updateProductID`  while connecting using Site URL returns an error whenever there is an error response from the backend.
+    ///
+    func test_updateProductID_returns_error_upon_response_error_when_connect_using_siteURL() throws {
+        // Given
+        let expectedError = WordPressApiError.unknown(code: "1", message: "Sample message")
+        let remote = MockMediaRemote()
+        remote.whenUpdatingProductIDUsingRestApi(siteURL: sampleSiteURL, thenReturn: .failure(expectedError))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.updateProductID(connectUsing: .wporg(self.sampleSiteURL),
+                                                     productID: self.sampleProductID,
+                                                     mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? WordPressApiError)
+        XCTAssertEqual(error, expectedError)
     }
 }
 

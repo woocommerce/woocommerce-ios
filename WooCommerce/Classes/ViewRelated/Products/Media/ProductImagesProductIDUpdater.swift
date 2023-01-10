@@ -37,7 +37,16 @@ private extension ProductImagesProductIDUpdater {
                             siteID: Int64,
                             productID: Int64) async throws -> Media {
         try await withCheckedThrowingContinuation { continuation in
-            let action = MediaAction.updateProductID(siteID: siteID, productID: productID, mediaID: productImageID) { result in
+            let siteInfo: MediaAction.SiteInfo = {
+                if case let .wporg(_, _, siteAddress) = ServiceLocator.stores.sessionManager.defaultCredentials {
+                    return .wporg(siteAddress)
+                } else {
+                    return .wpcom(siteID)
+                }
+            }()
+            let action = MediaAction.updateProductID(connectUsing: siteInfo,
+                                                     productID: productID,
+                                                     mediaID: productImageID) { result in
                 switch result {
                 case .failure(let error):
                     DDLogError("⛔️ Error updating `parent_id` of media with \(productImageID): \(error)")

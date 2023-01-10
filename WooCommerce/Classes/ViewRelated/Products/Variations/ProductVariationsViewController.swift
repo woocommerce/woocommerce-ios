@@ -64,6 +64,7 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
+
     private lazy var stateCoordinator: PaginatedListViewControllerStateCoordinator = {
         let stateCoordinator = PaginatedListViewControllerStateCoordinator(onLeavingState: { [weak self] state in
             self?.didLeave(state: state)
@@ -668,10 +669,18 @@ private extension ProductVariationsViewController {
     }
 
     /// Dismiss any `InProgressViewController` being presented.
+    /// By default retires the dismissal one time to overcome UIKit presentation delays.
     ///
-    private func dismissBlockingIndicator() {
+    private func dismissBlockingIndicator(retry: Bool = true) {
         if let inProgressViewController = self.presentedViewController as? InProgressViewController {
             inProgressViewController.dismiss(animated: true)
+        } else {
+            // When this method is invoked right after `InProgressViewController` is presented, chances are that it won't exists in the view controller
+            // hierarchy yet.
+            // Here we are retrying it with a small delay to give UIKit APIs time to finish its presentation.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.dismissBlockingIndicator(retry: false)
+            }
         }
     }
 

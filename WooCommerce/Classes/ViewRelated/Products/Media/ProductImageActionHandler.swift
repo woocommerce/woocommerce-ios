@@ -212,7 +212,17 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     private func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset, onCompletion: @escaping (Result<Media, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            let action = MediaAction.uploadMedia(siteID: self.siteID, productID: self.productOrVariationID.id, mediaAsset: asset, onCompletion: onCompletion)
+            let siteInfo: MediaAction.SiteInfo = {
+                if case let .wporg(_, _, siteAddress) = ServiceLocator.stores.sessionManager.defaultCredentials {
+                    return .wporg(siteAddress)
+                } else {
+                    return .wpcom(self.siteID)
+                }
+            }()
+            let action = MediaAction.uploadMedia(connectUsing: siteInfo,
+                                                 productID: self.productOrVariationID.id,
+                                                 mediaAsset: asset,
+                                                 onCompletion: onCompletion)
             self.stores.dispatch(action)
         }
     }

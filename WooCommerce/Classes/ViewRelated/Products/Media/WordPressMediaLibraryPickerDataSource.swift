@@ -162,7 +162,14 @@ extension WordPressMediaLibraryPickerDataSource: SyncingCoordinatorDelegate {
 
 private extension WordPressMediaLibraryPickerDataSource {
     func retrieveMedia(pageNumber: Int, pageSize: Int, completion: @escaping (_ mediaItems: [Media], _ error: Error?) -> Void) {
-        let action = MediaAction.retrieveMediaLibrary(siteID: siteID,
+        let siteInfo: MediaAction.SiteInfo = {
+            if case let .wporg(_, _, siteAddress) = ServiceLocator.stores.sessionManager.defaultCredentials {
+                return .wporg(siteAddress)
+            } else {
+                return .wpcom(siteID)
+            }
+        }()
+        let action = MediaAction.retrieveMediaLibrary(connectUsing: siteInfo,
                                                       pageNumber: pageNumber,
                                                       pageSize: pageSize) { result in
             switch result {

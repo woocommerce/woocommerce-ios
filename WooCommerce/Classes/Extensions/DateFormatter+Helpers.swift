@@ -155,18 +155,16 @@ extension DateFormatter {
         ///
         /// start: 2021-01-01
         /// end: 2021-01-31
-        ///
         /// returns: Jan 1 - 31, 2022
         ///
         /// start: 2021-01-01
         /// end: 2022-01-01
-        ///
         /// returns: Jan 1, 2021 - Jan 1, 2022
         ///
-        public static func concatenateAsRange(using start: Date?, and end: Date?, timezone: TimeZone, calendar: Calendar) -> String {
+        public static func formatAsRange(using start: Date?, and end: Date?, timezone: TimeZone, calendar: Calendar) -> String? {
             guard let start = start,
                   let end = end else {
-                return ""
+                return nil
             }
             
             let formattedStart: String

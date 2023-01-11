@@ -13,9 +13,11 @@ struct AnalyticsHubYesterdayRangeData: AnalyticsHubTimeRangeData {
 
     let currentDateStart: Date?
     let currentDateEnd: Date?
+    let formattedCurrentRange: String?
 
     let previousDateStart: Date?
     let previousDateEnd: Date?
+    let formattedPreviousRange: String?
 
     init(referenceDate: Date, timezone: TimeZone, calendar: Calendar) {
         self.referenceDate = referenceDate
@@ -23,9 +25,11 @@ struct AnalyticsHubYesterdayRangeData: AnalyticsHubTimeRangeData {
         let yesterday = calendar.date(byAdding: .day, value: -1, to: referenceDate)
         self.currentDateEnd = yesterday?.endOfDay(timezone: timezone)
         self.currentDateStart = yesterday?.startOfDay(timezone: timezone)
+        self.formattedCurrentRange = DateFormatter.Stats.formatAsRange(using: currentDateStart, and: currentDateEnd, timezone: timezone, calendar: calendar)
 
         let dayBeforeYesterday = calendar.date(byAdding: .day, value: -2, to: referenceDate)
         self.previousDateEnd = dayBeforeYesterday?.endOfDay(timezone: timezone)
         self.previousDateStart = dayBeforeYesterday?.startOfDay(timezone: timezone)
+        self.formattedPreviousRange = DateFormatter.Stats.formatAsRange(using: previousDateStart, and: previousDateEnd, timezone: timezone, calendar: calendar)
     }
 }

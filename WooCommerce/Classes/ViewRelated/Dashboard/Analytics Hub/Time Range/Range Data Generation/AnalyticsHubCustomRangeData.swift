@@ -12,9 +12,11 @@ struct AnalyticsHubCustomRangeData: AnalyticsHubTimeRangeData {
 
     var currentDateStart: Date?
     var currentDateEnd: Date?
+    var formattedCurrentRange: String?
 
     var previousDateStart: Date?
     var previousDateEnd: Date?
+    var formattedPreviousRange: String?
 
     init(start: Date, end: Date, timezone: TimeZone, calendar: Calendar) {
         guard
@@ -26,7 +28,10 @@ struct AnalyticsHubCustomRangeData: AnalyticsHubTimeRangeData {
         self.referenceDate = start
         self.currentDateStart = start.startOfDay(timezone: timezone)
         self.currentDateEnd = end.endOfDay(timezone: timezone)
+        self.formattedCurrentRange = DateFormatter.Stats.formatAsRange(using: currentDateStart, and: currentDateEnd, timezone: timezone, calendar: calendar)
+
         self.previousDateStart = previousStart.startOfDay(timezone: timezone)
         self.previousDateEnd = previousEnd.startOfDay(timezone: timezone)
+        self.formattedPreviousRange = DateFormatter.Stats.formatAsRange(using: previousDateStart, and: previousDateEnd, timezone: timezone, calendar: calendar)
     }
 }

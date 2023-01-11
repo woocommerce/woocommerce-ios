@@ -2,10 +2,14 @@ import Foundation
 
 protocol AnalyticsHubTimeRangeData {
     var referenceDate: Date? { get }
+
     var currentDateStart: Date? { get }
     var currentDateEnd: Date? { get }
+    var formattedCurrentRange: String? { get }
+
     var previousDateStart: Date? { get }
     var previousDateEnd: Date? { get }
+    var formattedPreviousRange: String? { get }
 }
 
 extension AnalyticsHubTimeRangeData {

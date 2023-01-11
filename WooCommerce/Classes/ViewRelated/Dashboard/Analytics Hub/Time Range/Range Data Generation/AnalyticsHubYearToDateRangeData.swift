@@ -13,16 +13,21 @@ struct AnalyticsHubYearToDateRangeData: AnalyticsHubTimeRangeData {
 
     let currentDateStart: Date?
     let currentDateEnd: Date?
+    let formattedCurrentRange: String?
 
     let previousDateStart: Date?
     let previousDateEnd: Date?
+    let formattedPreviousRange: String?
 
     init(referenceDate: Date, timezone: TimeZone, calendar: Calendar) {
         self.referenceDate = referenceDate
         self.currentDateEnd = referenceDate.endOfYear(timezone: timezone)
         self.currentDateStart = referenceDate.startOfYear(timezone: timezone)
+        self.formattedCurrentRange = DateFormatter.Stats.formatAsRange(using: referenceDate, and: currentDateEnd, timezone: timezone, calendar: calendar)
+
         let previousDateEnd = calendar.date(byAdding: .year, value: -1, to: referenceDate)
         self.previousDateEnd = previousDateEnd
         self.previousDateStart = previousDateEnd?.startOfYear(timezone: timezone)
+        self.formattedPreviousRange = DateFormatter.Stats.formatAsRange(using: previousDateStart, and: previousDateEnd, timezone: timezone, calendar: calendar)
     }
 }

@@ -1361,6 +1361,30 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
     }
 
+    // MARK: ProductAction.updateProducts
+
+    /// Verifies that `ProductAction.updateProducts` returns the expected `Products`.
+    ///
+    func test_updateProducts_is_correctly_updating_products() throws {
+        // Given
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products/batch", filename: "products-batch-update")
+        let product = sampleProduct(addOns: [])
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+
+        // When
+        let result = waitFor { promise in
+            let action = ProductAction.updateProducts(siteID: self.sampleSiteID, products: [product]) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let updatedProducts = try result.get()
+        assertEqual(updatedProducts, [product])
+    }
+
     // MARK: - ProductAction.retrieveProducts
 
     /// Verifies that ProductAction.retrieveProducts effectively persists any retrieved products.

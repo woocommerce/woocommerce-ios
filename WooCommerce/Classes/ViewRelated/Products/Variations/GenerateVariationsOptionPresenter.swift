@@ -28,9 +28,8 @@ final class GenerateVariationsOptionsPresenter {
         }
 
         let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.addVariationAction)
-        let command = GenerateVariationsSelectorCommand(selected: nil) { [weak self] option in
-            guard let self else { return }
-            self.baseViewController.dismiss(animated: true)
+        let command = GenerateVariationsSelectorCommand(selected: nil) { [baseViewController] option in
+            baseViewController.dismiss(animated: true)
             switch option {
             case .single:
                 onCompletion(.single)

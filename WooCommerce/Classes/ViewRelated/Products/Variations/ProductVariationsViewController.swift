@@ -445,11 +445,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
 private extension ProductVariationsViewController {
     func createVariationFromEmptyState() {
         if product.attributesForVariations.isNotEmpty {
-            if featureFlagService.isFeatureFlagEnabled(.generateAllVariations) {
-                presentGenerateVariationOptions()
-            } else {
-                createVariation()
-            }
+            presentGenerateVariationOptions()
         } else {
             navigateToAddAttributeViewController()
         }
@@ -609,20 +605,15 @@ private extension ProductVariationsViewController {
     /// Displays a bottom sheet allowing the merchant to choose whether to generate one variation or to generate all variations.
     ///
     private func presentGenerateVariationOptions() {
-        let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.addVariationAction)
-        let command = GenerateVariationsSelectorCommand(selected: nil) { [weak self] option in
-            guard let self else { return }
-            self.dismiss(animated: true)
-            switch option {
+        let presenter = GenerateVariationsOptionsPresenter(baseViewController: self)
+        presenter.presentGenerationOptions(sourceView: topStackView) { [weak self] selectedOption in
+            switch selectedOption {
             case .single:
-                self.createVariation()
+                self?.createVariation()
             case .all:
-                self.generateAllVariations()
+                self?.generateAllVariations()
             }
-
         }
-        let bottomSheetPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
-        bottomSheetPresenter.show(from: self, sourceView: topStackView)
     }
 
     /// Informs the merchant about errors that happen during the variation generation

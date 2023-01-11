@@ -75,7 +75,7 @@ extension Date {
     /// other: nil
     /// returns: Jan 1, 2022
     ///
-    func formatAsRange(with other: Date? = nil, timezone: TimeZone, calendar: Calendar) -> String? {
+    func formatAsRange(with other: Date? = nil, timezone: TimeZone, calendar: Calendar) -> String {
         guard let other = other else {
             return DateFormatter.Stats.createAnalyticsHubDayMonthYearFormatter(timezone: timezone).string(from: self)
         }

@@ -9,13 +9,17 @@ import Foundation
 /// Previous range: Jan 1 until Jul 1, 2022
 ///
 struct AnalyticsHubYearToDateRangeData: AnalyticsHubTimeRangeData {
+    let referenceDate: Date?
+
     let currentDateStart: Date?
     let currentDateEnd: Date?
+
     let previousDateStart: Date?
     let previousDateEnd: Date?
 
     init(referenceDate: Date, timezone: TimeZone, calendar: Calendar) {
-        self.currentDateEnd = referenceDate
+        self.referenceDate = referenceDate
+        self.currentDateEnd = referenceDate.endOfYear(timezone: timezone)
         self.currentDateStart = referenceDate.startOfYear(timezone: timezone)
         let previousDateEnd = calendar.date(byAdding: .year, value: -1, to: referenceDate)
         self.previousDateEnd = previousDateEnd

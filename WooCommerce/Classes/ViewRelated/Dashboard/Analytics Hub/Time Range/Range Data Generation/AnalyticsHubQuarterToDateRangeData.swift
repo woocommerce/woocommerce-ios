@@ -9,13 +9,17 @@ import Foundation
 /// Previous range: Oct 1 until Nov 15, 2021
 ///
 struct AnalyticsHubQuarterToDateRangeData: AnalyticsHubTimeRangeData {
+    let referenceDate: Date?
+
     let currentDateStart: Date?
     let currentDateEnd: Date?
+
     let previousDateStart: Date?
     let previousDateEnd: Date?
 
     init(referenceDate: Date, timezone: TimeZone, calendar: Calendar) {
-        self.currentDateEnd = referenceDate
+        self.referenceDate = referenceDate
+        self.currentDateEnd = referenceDate.endOfQuarter(timezone: timezone, calendar: calendar)
         self.currentDateStart = referenceDate.startOfQuarter(timezone: timezone, calendar: calendar)
         let previousDateEnd = calendar.date(byAdding: .month, value: -3, to: referenceDate)
         self.previousDateEnd = previousDateEnd

@@ -8,6 +8,8 @@ import Foundation
 /// Previous range: Jan 2 - Jan 4, 2022
 ///
 struct AnalyticsHubCustomRangeData: AnalyticsHubTimeRangeData {
+    var referenceDate: Date?
+
     var currentDateStart: Date?
     var currentDateEnd: Date?
 
@@ -21,7 +23,7 @@ struct AnalyticsHubCustomRangeData: AnalyticsHubTimeRangeData {
             let previousStart = calendar.date(byAdding: .day, value: -dayDifference, to: previousEnd) else {
             return
         }
-
+        self.referenceDate = start
         self.currentDateStart = start.startOfDay(timezone: timezone)
         self.currentDateEnd = end.endOfDay(timezone: timezone)
         self.previousDateStart = previousStart.startOfDay(timezone: timezone)

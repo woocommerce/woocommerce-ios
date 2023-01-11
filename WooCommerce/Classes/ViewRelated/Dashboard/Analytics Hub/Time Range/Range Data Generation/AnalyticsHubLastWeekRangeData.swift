@@ -9,12 +9,17 @@ import Foundation
 /// Previous range: Jul 11 until Jul 17, 2022
 ///
 struct AnalyticsHubLastWeekRangeData: AnalyticsHubTimeRangeData {
+    let referenceDate: Date?
+
     let currentDateStart: Date?
     let currentDateEnd: Date?
+
     let previousDateStart: Date?
     let previousDateEnd: Date?
 
     init(referenceDate: Date, timezone: TimeZone, calendar: Calendar) {
+        self.referenceDate = referenceDate
+
         let oneWeekAgo = calendar.date(byAdding: .day, value: -7, to: referenceDate)
         self.currentDateEnd = oneWeekAgo?.endOfWeek(timezone: timezone, calendar: calendar)
         self.currentDateStart = oneWeekAgo?.startOfWeek(timezone: timezone, calendar: calendar)

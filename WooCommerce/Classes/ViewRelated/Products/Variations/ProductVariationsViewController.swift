@@ -445,7 +445,11 @@ extension ProductVariationsViewController: UITableViewDelegate {
 private extension ProductVariationsViewController {
     func createVariationFromEmptyState() {
         if product.attributesForVariations.isNotEmpty {
-            createVariation()
+            if featureFlagService.isFeatureFlagEnabled(.generateAllVariations) {
+                presentGenerateVariationOptions()
+            } else {
+                createVariation()
+            }
         } else {
             navigateToAddAttributeViewController()
         }

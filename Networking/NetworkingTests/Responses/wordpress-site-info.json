@@ -6,4 +6,10 @@
     "gmt_offset": "0",
     "timezone_string": "",
     "authentication": [],
+    "namespaces": [
+        "oembed/1.0",
+        "wp/v2",
+        "wp-site-health/v1",
+        "wp-block-editor/v1"
+      ]
 }

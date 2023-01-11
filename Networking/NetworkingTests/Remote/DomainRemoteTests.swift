@@ -16,6 +16,8 @@ final class DomainRemoteTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - `loadFreeDomainSuggestions`
+
     func test_loadFreeDomainSuggestions_returns_suggestions_on_success() async throws {
         // Given
         let remote = DomainRemote(network: network)
@@ -36,5 +38,33 @@ final class DomainRemoteTests: XCTestCase {
         let remote = DomainRemote(network: network)
 
         await assertThrowsError({_ = try await remote.loadFreeDomainSuggestions(query: "domain")}, errorAssert: { ($0 as? NetworkError) == .notFound })
+    }
+
+    // MARK: - `loadDomains`
+
+    func test_loadDomains_returns_domains_on_success() async throws {
+        // Given
+        let remote = DomainRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "domains", filename: "site-domains")
+
+        // When
+        let domains = try await remote.loadDomains(siteID: 23)
+
+        // Then
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM d, yyyy"
+        let renewalDate = try XCTUnwrap(dateFormatter.date(from: "December 10, 2023"))
+        XCTAssertEqual(domains, [
+            .init(name: "crabparty.wpcomstaging.com", isPrimary: true),
+            .init(name: "crabparty.com", isPrimary: false, renewalDate: renewalDate),
+            .init(name: "crabparty.wordpress.com", isPrimary: false)
+        ])
+    }
+
+    func test_loadDomains_returns_error_on_empty_response() async throws {
+        // Given
+        let remote = DomainRemote(network: network)
+
+        await assertThrowsError({_ = try await remote.loadDomains(siteID: 23)}, errorAssert: { ($0 as? NetworkError) == .notFound })
     }
 }

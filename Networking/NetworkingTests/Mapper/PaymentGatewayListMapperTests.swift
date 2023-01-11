@@ -19,6 +19,18 @@ final class PaymentGatewayListMapperTests: XCTestCase {
         // Then
         assertEqual(expectedGateways, gateways)
     }
+
+    func test_payment_gateway_list_is_decoded_from_json_response_without_data_envelope() throws {
+        // Given
+        let jsonData = try XCTUnwrap(Loader.contentsOf("payment-gateway-list-without-data"))
+        let expectedGateways = [Self.bankTransferGateway, Self.checkGateway, Self.cashGateway, Self.paypalGateway]
+
+        // When
+        let gateways = try PaymentGatewayListMapper(siteID: Self.sampleSiteID).map(response: jsonData)
+
+        // Then
+        assertEqual(expectedGateways, gateways)
+    }
 }
 
 // MARK: Private Helpers

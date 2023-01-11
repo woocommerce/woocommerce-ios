@@ -27,7 +27,11 @@ struct RefundListMapper: Mapper {
             .orderID: orderID
         ]
 
-        return try decoder.decode(RefundsEnvelope.self, from: response).refunds
+        do {
+            return try decoder.decode(RefundsEnvelope.self, from: response).refunds
+        } catch {
+            return try decoder.decode([Refund].self, from: response)
+        }
     }
 }
 

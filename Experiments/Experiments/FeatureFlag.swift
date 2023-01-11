@@ -99,6 +99,10 @@ public enum FeatureFlag: Int {
     ///
     case systemStatusReportInSupportRequest
 
+    /// IPP in-app feedback banner
+    ///
+    case IPPInAppFeedbackBanner
+
     // MARK: - Performance Monitoring
     //
     // These flags are not transient. That is, they are not here to help us rollout a feature,
@@ -141,4 +145,12 @@ public enum FeatureFlag: Int {
     /// Allows merchants to create all variations from a single button
     ///
     case generateAllVariations
+
+    /// Bulk editing of status and price in products list
+    ///
+    case productsBulkEditing
+
+    /// Whether to enable domain updates from the settings for a WPCOM site.
+    ///
+    case domainSettings
 }

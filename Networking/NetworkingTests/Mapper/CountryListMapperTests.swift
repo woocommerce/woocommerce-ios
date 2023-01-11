@@ -21,6 +21,20 @@ class CountryListMapperTests: XCTestCase {
         XCTAssertEqual(countries[1].states.count, 18)
         XCTAssertEqual(countries[1].states.first, StateOfACountry(code: "PY-ASU", name: "Asunción"))
     }
+
+    func test_countries_are_properly_parsed_if_the_response_has_no_data_envelope() {
+        guard let countries = mapCountriesResponseWithoutDataEnvelope() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(countries.count, 3)
+        XCTAssertEqual(countries.first?.states.isEmpty, true)
+        XCTAssertEqual(countries[1].code, "PY")
+        XCTAssertEqual(countries[1].name, "Paraguay")
+        XCTAssertEqual(countries[1].states.count, 18)
+        XCTAssertEqual(countries[1].states.first, StateOfACountry(code: "PY-ASU", name: "Asunción"))
+    }
 }
 
 /// Private Helpers
@@ -37,9 +51,15 @@ private extension CountryListMapperTests {
         return try! CountryListMapper().map(response: response)
     }
 
-    /// Returns the CountryListMapper output upon receiving `countries`
+    /// Returns the [Country] output upon receiving `countries`
     ///
     func mapCountriesResponse() -> [Country]? {
         return mapCountries(from: "countries")
+    }
+
+    /// Returns the [Country] output upon receiving `countries-without-data`
+    ///
+    func mapCountriesResponseWithoutDataEnvelope() -> [Country]? {
+        return mapCountries(from: "countries-without-data")
     }
 }

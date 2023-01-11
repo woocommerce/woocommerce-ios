@@ -134,6 +134,8 @@ private extension SettingsViewController {
             configurePlugins(cell: cell)
         case let cell as HostingTableViewCell<PluginDetailsRowView> where row == .woocommerceDetails:
             configureWooCommmerceDetails(cell: cell)
+        case let cell as BasicTableViewCell where row == .domain:
+            configureDomain(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
@@ -187,6 +189,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.helpAndSupport
+    }
+
+    func configureDomain(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.domain
     }
 
     func configureInstallJetpack(cell: BasicTableViewCell) {
@@ -332,6 +340,18 @@ private extension SettingsViewController {
             fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
         }
         show(viewController, sender: self)
+    }
+
+    func domainWasPressed() {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+
+        // TODO: 8558 - analytics
+
+        let domainSettings = DomainSettingsHostingController(viewModel: .init(siteID: site.siteID))
+        let navigationController = WooNavigationController(rootViewController: domainSettings)
+        present(navigationController, animated: true)
     }
 
     func installJetpackWasPressed() {
@@ -517,6 +537,8 @@ extension SettingsViewController: UITableViewDelegate {
             sitePluginsWasPressed()
         case .support:
             supportWasPressed()
+        case .domain:
+            domainWasPressed()
         case .installJetpack:
             installJetpackWasPressed()
         case .privacy:
@@ -592,6 +614,7 @@ extension SettingsViewController {
         case woocommerceDetails
 
         // Store settings
+        case domain
         case installJetpack
 
         // Help & Feedback
@@ -636,6 +659,8 @@ extension SettingsViewController {
             case .woocommerceDetails:
                 return HostingTableViewCell<PluginDetailsRowView>.self
             case .support:
+                return BasicTableViewCell.self
+            case .domain:
                 return BasicTableViewCell.self
             case .installJetpack:
                 return BasicTableViewCell.self
@@ -700,6 +725,11 @@ private extension SettingsViewController {
         static let inPersonPayments = NSLocalizedString(
             "In-Person Payments",
             comment: "Navigates to In-Person Payments screen"
+        )
+
+        static let domain = NSLocalizedString(
+            "Domain",
+            comment: "Navigates to domain settings screen."
         )
 
         static let installJetpack = NSLocalizedString(

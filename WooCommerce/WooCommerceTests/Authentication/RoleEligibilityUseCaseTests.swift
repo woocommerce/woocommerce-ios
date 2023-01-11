@@ -43,28 +43,6 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         }
     }
 
-    func test_roleEligibilityUseCase_checkEligibility_returns_failure_when_storeID_isInvalid() {
-        // Given
-        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
-        let useCase = RoleEligibilityUseCase(stores: stores)
-        let storeID: Int64 = 0
-
-        // When
-        let result: Result<Void, RoleEligibilityError> = waitFor { promise in
-            useCase.checkEligibility(for: storeID) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        XCTAssertTrue(result.isFailure)
-        guard case let RoleEligibilityError.invalidStoreId(id) = result.failure! else {
-            XCTFail()
-            return
-        }
-        XCTAssertEqual(id, storeID)
-    }
-
     func test_roleEligibilityUseCase_checkEligibility_returns_failure_when_receiving_unknown_errors() {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)

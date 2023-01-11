@@ -21,7 +21,8 @@ public class WCAnalyticsCustomerRemote: Remote {
             method: .get,
             siteID: siteID,
             path: path,
-            parameters: ["search": name]
+            parameters: ["search": name],
+            availableAsRESTRequest: true
         )
 
         let mapper = WCAnalyticsCustomerMapper(siteID: siteID)

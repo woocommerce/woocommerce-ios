@@ -148,6 +148,8 @@ private extension StoreCreationCoordinator {
             }
         } onClose: { [weak self] in
             self?.showDiscardChangesAlert(flow: .native)
+        } onSupport: { [weak self] in
+            self?.showSupport(from: navigationController)
         }
         navigationController.pushViewController(storeNameForm, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .storeName))
@@ -297,6 +299,10 @@ private extension StoreCreationCoordinator {
         // Presents the alert with the presented webview.
         navigationController.presentedViewController?.present(alert, animated: true)
     }
+
+    func showSupport(from navigationController: UINavigationController) {
+        ZendeskProvider.shared.showNewRequestIfPossible(from: navigationController, with: "origin:store-creation")
+    }
 }
 
 // MARK: - Store creation M2
@@ -349,13 +355,15 @@ private extension StoreCreationCoordinator {
                                   planToPurchase: WPComPlanProduct) {
         let questionController = StoreCreationCountryQuestionHostingController(viewModel:
                 .init(storeName: storeName) { [weak self] countryCode in
-            guard let self else { return }
-            self.showDomainSelector(from: navigationController,
-                                    storeName: storeName,
-                                    categoryName: categoryName,
-                                    countryCode: countryCode,
-                                    planToPurchase: planToPurchase)
-        })
+                    guard let self else { return }
+                    self.showDomainSelector(from: navigationController,
+                                            storeName: storeName,
+                                            categoryName: categoryName,
+                                            countryCode: countryCode,
+                                            planToPurchase: planToPurchase)
+                } onSupport: { [weak self] in
+                    self?.showSupport(from: navigationController)
+                })
         navigationController.pushViewController(questionController, animated: true)
         // TODO: analytics
     }
@@ -375,6 +383,8 @@ private extension StoreCreationCoordinator {
                                                             countryCode: countryCode,
                                                             domain: domain,
                                                             planToPurchase: planToPurchase)
+        }, onSupport: { [weak self] in
+            self?.showSupport(from: navigationController)
         })
         navigationController.pushViewController(domainSelector, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .domainPicker))
@@ -426,6 +436,8 @@ private extension StoreCreationCoordinator {
                                planToPurchase: planToPurchase,
                                siteID: result.siteID,
                                siteSlug: result.siteSlug)
+        } onSupport: { [weak self] in
+            self?.showSupport(from: navigationController)
         }
         navigationController.pushViewController(storeSummary, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .storeSummary))

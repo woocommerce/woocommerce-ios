@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-12-14 17:59:43+0000 */
+/* Translation-Revision-Date: 2022-12-22 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -747,6 +747,12 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed in the alert for dismissing all the inbox notes. */
 "Are you sure? Inbox messages will be dismissed forever." = "האם ההחלטה סופית? בחרת להתעלם תמיד מההודעות בתיבת הדואר הנכנס.";
 
+/* Option in the store creation category question. */
+"Art & Photography" = "אמנות וצילום";
+
+/* Option in the store creation category question. */
+"Arts and Crafts" = "אמנות ומלאכה";
+
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "שם המאפיין";
 
@@ -837,6 +843,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "מודגש";
+
+/* Option in the store creation category question. */
+"Books & Magazines" = "ספרים ומגזינים";
 
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "אפשר לקדם את העסק באמצעות שליחה של מבצעים מיוחדים והנחות ללקוחות.";
@@ -1087,6 +1096,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title on the shipping label states of a country selector screen */
 "Choose a State" = "בחר מדינה";
 
+/* Subtitle of the store creation profiler question about the store category. */
+"Choose a category that defines your business the best." = "יש לבחור קטגוריה שמגדירה את העסק שלך בצורה הכי מדויקת.";
+
 /* Title of the domain selector. */
 "Choose a domain" = "לבחור דומיין";
 
@@ -1270,6 +1282,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "מחבר את החנות שלך";
 
+/* Option in the store creation category question. */
+"Construction & Industrial" = "בנייה ועיצוב תעשייתי";
+
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "ליצור קשר עם הלקוח";
 
@@ -1312,6 +1327,7 @@ which should be translated separately and considered part of this sentence. */
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
    Title of the button on the store creation store name form to continue.
+   Title of the button to continue with a profiler question.
    Title of the button to continue with a selected domain. */
 "Continue" = "המשך";
 
@@ -1338,6 +1354,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Conversion stat label on dashboard. */
 "Conversion" = "המרה";
+
+/* Label for the conversion rate (orders per visitor) in the Analytics Hub */
+"Conversion Rate" = "שיעור המרה";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "העתק";
@@ -1520,7 +1539,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "המחירים הנוכחיים כוללים ערכים משתנים.";
 
-/* Name of the section for custom shipment tracking carriers */
+/* Name of the section for custom shipment tracking carriers
+   Title of the Analytics Hub Custom selection range */
 "Custom" = "התאמה אישית";
 
 /* Title text of the row that shows the provided amount when creating a simple payment */
@@ -1634,6 +1654,9 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "תיאור";
+
+/* Option in the store creation category question. */
+"Design & Marketing" = "עיצוב ושיווק";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "ההגדרה קובעת את המיקום של המוצרים בקטלוג. ככל שהערך המספרי נמוך יותר, הפריט יופיע במקום גבוה יותר ברשימת המוצרים. ניתן להשתמש גם בערכים שליליים";
@@ -1891,6 +1914,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit customer note on the New Order screen */
 "Edit customer note" = "לערוך את הערות הלקוח";
+
+/* Option in the store creation category question. */
+"Electronics and Software" = "מוצרי אלקטרוניקה ותוכנות";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "זכאי לאיסוף בחינם";
@@ -2216,6 +2242,9 @@ which should be translated separately and considered part of this sentence. */
 /* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
 "Failed to undo fulfillment of order #%1$d" = "נכשל ביטול ההשלמה של הזמנה #⁦%1$d⁩";
 
+/* Option in the store creation category question. */
+"Fashion and Apparel" = "אופנה ולבוש";
+
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -2312,6 +2341,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* User role badge */
 "Follower" = "עוקב";
+
+/* Option in the store creation category question. */
+"Food and Drink" = "אוכל ומשקאות";
 
 /* Next web page */
 "Forward" = "העבר";
@@ -2483,6 +2515,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* H6 Aztec Style */
 "Heading 6" = "כותרת ברמה 6";
+
+/* Option in the store creation category question. */
+"Health and Beauty" = "בריאות וקוסמטיקה";
 
 /* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Height */
@@ -3369,6 +3404,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Now that you’ve added attributes, you can create your first variation!" = "לאחר הוספת המאפיינים, באפשרותך ליצור את הסוג הראשון שלך!";
 
 /* Alert dismissal title
+   Button title to cancel the alert when the user cannot create a store.
+   Button title to dismiss the alert when the created store never becomes a Jetpack site in the store creation flow.
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
    Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow.
    Button title. An acknowledgement of the message displayed in a prompt.
@@ -3703,6 +3740,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "לסגור את החשבון לצמיתות";
+
+/* Option in the store creation category question. */
+"Pets Pet Care" = "טיפול בחיות מחמד";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -4435,6 +4475,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Post Rich content */
 "Rich Content" = "תוכן עשיר";
 
+/* Title for sessions section in the Analytics Hub */
+"SESSIONS" = "הפעלות";
+
 /* Details section title in the Edit Address Form */
 "SHIPPING ADDRESS" = "כתובת למשלוח";
 
@@ -4890,7 +4933,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Site address must be at least 4 characters." = "כתובת אתר צריכה להכיל לפחות 4 תווים.";
 
 /* The button title on the login onboarding screen to skip to the prologue screen.
-   Title for the button to skip the onboarding step informing the merchant of pending account requirements */
+   Title for the button to skip the onboarding step informing the merchant of pending account requirements
+   Title of the button to skip a profiler question. */
 "Skip" = "דלג";
 
 /* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
@@ -4922,6 +4966,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "משהו השתבש בביצוע ההחזר הכספי. יש לנסות שוב.";
+
+/* Message of the alert when the user cannot create a store because they already created one before. */
+"Sorry, but you can only create one store. Your account is already associated with an active store." = "מצטערים, אבל באפשרותך ליצור חנות אחת בלבד. החשבון שלך כבר מקושר לחנות פעילה.";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "שם המשתמש מכיל ביטוי לא תקני %@.";
@@ -4997,6 +5044,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to select the Spark email app when logging in with magic links */
 "Spark" = "Spark";
 
+/* Option in the store creation category question. */
+"Sports and Recreation" = "פעילויות ספורט ופנאי";
+
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "תעריף סטנדרטי";
 
@@ -5043,6 +5093,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "הגדרות החנות";
+
+/* Title of the alert when the created store never becomes a Jetpack site in the store creation flow. */
+"Store creation still in progress" = "יצירת החנות עדיין בתהליך";
 
 /* Text field prompt on the store name form in the store creation flow. */
 "Store name" = "שם החנות";
@@ -5441,6 +5494,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The message of the alert when another service package has the same name */
 "The new service package name is not unique." = "השם של חבילת השירותים החדשה אינו ייחודי.";
 
+/* Message of the alert when the created store never becomes a Jetpack site in the store creation flow. */
+"The new store will be available soon in the store picker. If you have any issues, please contact support." = "החנות החדשה תהיה זמינה בקרוב דרך בוחר החנויות. אם נתקלת בבעיה, באפשרותך ליצור קשר עם התמיכה.";
+
 /* Message when the presented card does not allow the purchase amount. */
 "The payment amount is not allowed for the card presented. Try another means of payment." = "הסכום לתשלום לא מורשה עבור הכרטיס שהוצג. יש לנסות אמצעי תשלום אחר.";
 
@@ -5449,6 +5505,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "אמצעי התשלום אינו תומך בהחזרים כספיים אוטומטיים. יש להשלים את ההחזר הכספי על-ידי העברה ידנית ללקוח.";
+
+/* Error message when the cancel button on the reader is used. */
+"The payment was canceled on the reader" = "התשלום בוטל דרך הקורא";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "מספר הטלפון לא תקין או שאין לך אפשרות להתקשר ללקוח ממכשיר זה.";
@@ -5968,6 +6027,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text displayed when there is an error loading revenue stats data. */
 "Unable to load revenue analytics" = "לא ניתן לטעון את הנתונים האנליטיים לגבי רווחים";
 
+/* Text displayed when there is an error loading session stats data. */
+"Unable to load session analytics" = "אין אפשרות להעלות את הנתונים האנליטיים של ההפעלה";
+
 /* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "לא ניתן לטעון את המיסים להזמנה";
 
@@ -6323,6 +6385,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* User role badge */
 "Viewer" = "צופה";
 
+/* Label for total store views in the Analytics Hub */
+"Views" = "דפים נצפים";
+
 /* Display label for simple virtual product type. */
 "Virtual" = "וירטואלי";
 
@@ -6436,6 +6501,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "אין אפשרות להתחבר לאתר Jetpack בכתובת URL זו. יש ליצור אתנו קשר לעזרה.";
 
+/* Message of the alert when the user cannot create a store for some reason. */
+"We're sorry, but store creation is not currently available in the app." = "מצטערים, יצירת חנויות לא זמינה כעת דרך האפליקציה.";
+
+/* Message of the alert when the user cannot create a store because their App Store country is not supported. */
+"We're sorry, but store creation is not currently available in your country in the app." = "מצטערים, יצירת חנויות לא זמינה כעת במדינה שלך דרך האפליקציה.";
+
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
 "We're sorry, we couldn't find any order that match %@" = "מצטערים, לא הצלחנו למצוא הזמנות שתואמות אל %@";
 
@@ -6499,6 +6570,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of Whats New Component */
 "What’s New in WooCommerce" = "מה חדש ב-WooCommerce";
+
+/* Title of the store creation profiler question about the store category. */
+"What’s your business about?" = "מה העסק שלך עושה?";
 
 /* Title label on the store name form in the store creation flow. */
 "What’s your store name?" = "מה השם של החנות שלך?";

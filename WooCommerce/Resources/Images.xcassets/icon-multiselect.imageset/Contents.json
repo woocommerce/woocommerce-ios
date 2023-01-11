@@ -1,12 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "temp-woo-tap-on-mobile~universal.pdf",
+      "filename" : "icon-multiselect.pdf",
       "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
   }
 }

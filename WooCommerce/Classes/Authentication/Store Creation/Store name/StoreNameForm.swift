@@ -2,18 +2,12 @@ import SwiftUI
 
 /// Hosting controller that wraps the `StoreNameForm`.
 final class StoreNameFormHostingController: UIHostingController<StoreNameForm> {
-    private let onContinue: (String) -> Void
-    private let onClose: () -> Void
-
     init(onContinue: @escaping (String) -> Void,
-         onClose: @escaping () -> Void) {
-        self.onContinue = onContinue
-        self.onClose = onClose
-        super.init(rootView: StoreNameForm())
-
-        rootView.onContinue = { [weak self] storeName in
-            self?.onContinue(storeName)
-        }
+         onClose: @escaping () -> Void,
+         onSupport: @escaping () -> Void) {
+        super.init(rootView: StoreNameForm(onContinue: onContinue,
+                                           onClose: onClose,
+                                           onSupport: onSupport))
     }
 
     @available(*, unavailable)
@@ -24,38 +18,15 @@ final class StoreNameFormHostingController: UIHostingController<StoreNameForm> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigationBarAppearance()
-    }
-
-    /// Shows a transparent navigation bar without a bottom border and with a close button to dismiss.
-    func configureNavigationBarAppearance() {
-        addCloseNavigationBarButton(title: Localization.cancelButtonTitle,
-                                    target: self,
-                                    action: #selector(closeButtonTapped))
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = .systemBackground
-
-        navigationItem.standardAppearance = appearance
-        navigationItem.scrollEdgeAppearance = appearance
-        navigationItem.compactAppearance = appearance
-    }
-
-    @objc private func closeButtonTapped() {
-        onClose()
-    }
-}
-
-private extension StoreNameFormHostingController {
-    enum Localization {
-        static let cancelButtonTitle = NSLocalizedString("Cancel", comment: "Navigation bar button on the store name form to leave the store creation flow.")
+        configureTransparentNavigationBar()
     }
 }
 
 /// Allows the user to enter a store name during the store creation flow.
 struct StoreNameForm: View {
-    /// Set in the hosting controller.
-    var onContinue: (String) -> Void = { _ in }
+    let onContinue: (String) -> Void
+    let onClose: () -> Void
+    let onSupport: () -> Void
 
     @State private var name: String = ""
 
@@ -104,6 +75,19 @@ struct StoreNameForm: View {
             .buttonStyle(PrimaryButtonStyle())
             .disabled(name.isEmpty)
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(Localization.cancelButtonTitle) {
+                    onClose()
+                }
+                .buttonStyle(TextButtonStyle())
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                SupportButton {
+                    onSupport()
+                }
+            }
+        }
         // Disables large title to avoid a large gap below the navigation bar.
         .navigationBarTitleDisplayMode(.inline)
         // Hides the back button and shows a close button in the hosting controller instead.
@@ -148,11 +132,19 @@ private extension StoreNameForm {
             "Continue",
             comment: "Title of the button on the store creation store name form to continue."
         )
+        static let cancelButtonTitle = NSLocalizedString(
+            "Cancel",
+            comment: "Navigation bar button on the store name form to leave the store creation flow."
+        )
     }
 }
 
 struct StoreNameForm_Previews: PreviewProvider {
     static var previews: some View {
-        StoreNameForm()
+        NavigationView {
+            StoreNameForm(onContinue: { _ in },
+                          onClose: {},
+                          onSupport: {})
+        }
     }
 }

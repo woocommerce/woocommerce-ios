@@ -33,6 +33,8 @@ public final class DomainStore: Store {
         switch action {
         case .loadFreeDomainSuggestions(let query, let completion):
             loadFreeDomainSuggestions(query: query, completion: completion)
+        case .loadDomains(let siteID, let completion):
+            loadDomains(siteID: siteID, completion: completion)
         }
     }
 }
@@ -43,5 +45,10 @@ private extension DomainStore {
             let result = await Result { try await remote.loadFreeDomainSuggestions(query: query) }
             completion(result)
         }
+    }
+
+    func loadDomains(siteID: Int64, completion: @escaping (Result<[SiteDomain], Error>) -> Void) {
+        // TODO: 8558 - fetch a site's domains from the remote.
+        completion(.success([.init(name: "gotrees.wpcomstaging.com", isPrimary: true, renewalDate: nil)]))
     }
 }

@@ -8,6 +8,7 @@ public enum ApplicationPasswordUseCaseError: Error {
     case duplicateName
     case applicationPasswordsDisabled
     case failedToConstructLoginOrAdminURLUsingSiteAddress
+    case unauthorizedRequest
 }
 
 public struct ApplicationPassword {
@@ -138,7 +139,7 @@ private extension DefaultApplicationPasswordUseCase {
         let passwordName = await applicationPasswordName
 
         let parameters = [ParameterKey.name: passwordName]
-        let request = WordPressOrgRequest(baseURL: siteAddress, method: .post, path: Path.applicationPasswords, parameters: parameters)
+        let request = RESTRequest(siteURL: siteAddress, method: .post, path: Path.applicationPasswords, parameters: parameters)
         return try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
                 switch result {
@@ -163,6 +164,8 @@ private extension DefaultApplicationPasswordUseCase {
                         continuation.resume(throwing: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
                     case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.duplicateNameErrorCode)):
                         continuation.resume(throwing: ApplicationPasswordUseCaseError.duplicateName)
+                    case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.unauthorized)):
+                        continuation.resume(throwing: ApplicationPasswordUseCaseError.unauthorizedRequest)
                     default:
                         continuation.resume(throwing: error)
                     }
@@ -179,7 +182,7 @@ private extension DefaultApplicationPasswordUseCase {
 
         let passwordName = await applicationPasswordName
         let parameters = [ParameterKey.name: passwordName]
-        let request = WordPressOrgRequest(baseURL: siteAddress, method: .delete, path: Path.applicationPasswords, parameters: parameters)
+        let request = RESTRequest(siteURL: siteAddress, method: .delete, path: Path.applicationPasswords, parameters: parameters)
 
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
@@ -209,6 +212,7 @@ private extension DefaultApplicationPasswordUseCase {
         static let notFound = 404
         static let applicationPasswordsDisabledErrorCode = 501
         static let duplicateNameErrorCode = 409
+        static let unauthorized = 401
     }
 
     enum Constants {

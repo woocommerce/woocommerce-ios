@@ -59,6 +59,47 @@ final class PaymentRemoteTests: XCTestCase {
         }
     }
 
+    // MARK: - `loadSiteCurrentPlan`
+
+    func test_loadSiteCurrentPlan_returns_site_plan_on_success() async throws {
+        // Given
+        let remote = PaymentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "plans", filename: "load-site-current-plan-success")
+
+        // When
+        let plan = try await remote.loadSiteCurrentPlan(siteID: 134)
+
+        // Then
+        XCTAssertEqual(plan, .init(hasDomainCredit: false))
+    }
+
+    func test_loadSiteCurrentPlan_returns_noCurrentPlan_error_when_response_has_no_current_plan() async throws {
+        // Given
+        let remote = PaymentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "plans", filename: "load-site-plans-no-current-plan")
+
+        // When
+        await assertThrowsError {
+            _ = try await remote.loadSiteCurrentPlan(siteID: 6)
+        } errorAssert: { error in
+            // Then
+            (error as? LoadSiteCurrentPlanError) == LoadSiteCurrentPlanError.noCurrentPlan
+        }
+    }
+
+    func test_loadSiteCurrentPlan_throws_notFound_error_when_no_response() async throws {
+        // Given
+        let remote = PaymentRemote(network: network)
+
+        // When
+        await assertThrowsError {
+            _ = try await remote.loadSiteCurrentPlan(siteID: 6)
+        } errorAssert: { error in
+            // Then
+            (error as? NetworkError) == .notFound
+        }
+    }
+
     // MARK: - `createCart`
 
     func test_createCart_returns_on_success() async throws {

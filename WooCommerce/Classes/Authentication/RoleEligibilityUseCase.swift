@@ -54,12 +54,6 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
             return
         }
 
-        // handle edge case to prevent extra, unnecessary request.
-        guard storeID > 0 else {
-            completion(.failure(.invalidStoreId(id: storeID)))
-            return
-        }
-
         let action = UserAction.retrieveUser(siteID: storeID) { [weak self] result in
             guard let self = self else { return }
             switch result {

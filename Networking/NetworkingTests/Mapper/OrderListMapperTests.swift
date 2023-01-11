@@ -40,6 +40,35 @@ class OrderListMapperTests: XCTestCase {
         XCTAssertEqual(firstOrder.totalTax, "1.20")
     }
 
+    /// Verifies that all of the Order Fields are parsed correctly when the response has no data envelope.
+    ///
+    func test_order_fields_are_properly_parsed_when_the_response_has_no_data_envelope() {
+        let orders = mapLoadAllOrdersResponseWithoutDataEnvelope()
+        XCTAssert(orders.count == 1)
+
+        let firstOrder = orders[0]
+        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:12")
+        let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:14")
+        let datePaid = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:14")
+
+        XCTAssertEqual(firstOrder.orderID, 963)
+        XCTAssertEqual(firstOrder.parentID, 0)
+        XCTAssertEqual(firstOrder.customerID, 11)
+        XCTAssertEqual(firstOrder.number, "963")
+        XCTAssertEqual(firstOrder.status, .processing)
+        XCTAssertEqual(firstOrder.currency, "USD")
+        XCTAssertEqual(firstOrder.customerNote, "")
+        XCTAssertEqual(firstOrder.dateCreated, dateCreated)
+        XCTAssertEqual(firstOrder.dateModified, dateModified)
+        XCTAssertEqual(firstOrder.datePaid, datePaid)
+        XCTAssertEqual(firstOrder.discountTotal, "30.00")
+        XCTAssertEqual(firstOrder.discountTax, "1.20")
+        XCTAssertEqual(firstOrder.shippingTotal, "0.00")
+        XCTAssertEqual(firstOrder.shippingTax, "0.00")
+        XCTAssertEqual(firstOrder.total, "31.20")
+        XCTAssertEqual(firstOrder.totalTax, "1.20")
+    }
+
     /// Verifies that the siteID field is properly set.
     ///
     func test_site_identifier_is_properly_injected_into_every_order() {
@@ -140,7 +169,7 @@ class OrderListMapperTests: XCTestCase {
 ///
 private extension OrderListMapperTests {
 
-    /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the [Order] output upon receiving `filename` (Data Encoded)
     ///
     func mapOrders(from filename: String) -> [Order] {
         guard let response = Loader.contentsOf(filename) else {
@@ -150,19 +179,25 @@ private extension OrderListMapperTests {
         return try! OrderListMapper(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the OrderListMapper output upon receiving `orders-load-all`
+    /// Returns the [Order] output upon receiving `orders-load-all`
     ///
     func mapLoadAllOrdersResponse() -> [Order] {
         return mapOrders(from: "orders-load-all")
     }
 
-    /// Returns the OrderListMapper output upon receiving `broken-order`
+    /// Returns the [Order] output upon receiving `orders-load-all-without-data`
+    ///
+    func mapLoadAllOrdersResponseWithoutDataEnvelope() -> [Order] {
+        return mapOrders(from: "orders-load-all-without-data")
+    }
+
+    /// Returns the [Order] output upon receiving `broken-order`
     ///
     func mapLoadBrokenOrderResponse() -> [Order] {
         return mapOrders(from: "broken-orders")
     }
 
-    /// Returns the OrderListMapper output upon receiving `broken-orders-mark-2`
+    /// Returns the [Order] output upon receiving `broken-orders-mark-2`
     ///
     func mapLoadBrokenOrdersResponseMarkII() -> [Order] {
         return mapOrders(from: "broken-orders-mark-2")

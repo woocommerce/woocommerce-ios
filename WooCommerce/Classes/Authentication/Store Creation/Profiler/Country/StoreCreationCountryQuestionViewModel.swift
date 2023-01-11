@@ -26,12 +26,15 @@ final class StoreCreationCountryQuestionViewModel: StoreCreationProfilerQuestion
     @Published private var isContinueButtonEnabledValue: Bool = false
 
     private let onContinue: (CountryCode) -> Void
+    private let onSupport: () -> Void
 
     init(storeName: String,
          currentLocale: Locale = .current,
-         onContinue: @escaping (CountryCode) -> Void) {
+         onContinue: @escaping (CountryCode) -> Void,
+         onSupport: @escaping () -> Void) {
         self.topHeader = storeName
         self.onContinue = onContinue
+        self.onSupport = onSupport
 
         currentCountryCode = currentLocale.regionCode.map { CountryCode(rawValue: $0) } ?? nil
         selectedCountryCode = currentCountryCode
@@ -64,6 +67,10 @@ extension StoreCreationCountryQuestionViewModel: RequiredStoreCreationProfilerQu
             return
         }
         onContinue(selectedCountryCode)
+    }
+
+    func supportButtonTapped() {
+        onSupport()
     }
 }
 

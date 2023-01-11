@@ -115,7 +115,7 @@ extension DateFormatter {
             yearFormatter
         }
     }
-    
+
     struct Stats {
         /// Date formatter used for creating the properly-formatted date range info. Typically
         /// used when setting the end date on `AnalyticsHubTimeRangeGenerator`.
@@ -146,7 +146,7 @@ extension DateFormatter {
             formatter.dateFormat = "MMM d"
             return formatter
         }
-        
+
         /// Date formatter used for creating a **localized** date range string based on two dates. E.g.
         ///
         /// start: 2021-01-01
@@ -166,7 +166,7 @@ extension DateFormatter {
                   let end = end else {
                 return nil
             }
-            
+
             let formattedStart: String
             if start.isSameYear(as: end, using: calendar) {
                 formattedStart = createAnalyticsHubDayMonthFormatter(timezone: timezone).string(from: start)
@@ -182,6 +182,13 @@ extension DateFormatter {
             }
 
             return "\(formattedStart) - \(formattedEnd)"
+        }
+        
+        public static func unwrapString(from date: Date?) -> String? {
+            if let date = date {
+                return DateFormatter().string(from: date)
+            }
+            return nil
         }
     }
 

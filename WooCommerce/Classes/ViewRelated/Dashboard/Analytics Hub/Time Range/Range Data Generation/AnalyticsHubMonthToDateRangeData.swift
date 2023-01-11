@@ -23,8 +23,8 @@ struct AnalyticsHubMonthToDateRangeData: AnalyticsHubTimeRangeData {
         self.referenceDate = referenceDate
         self.currentDateEnd = referenceDate.endOfMonth(timezone: timezone)
         self.currentDateStart = referenceDate.startOfMonth(timezone: timezone)
-        self.formattedCurrentRange = DateFormatter.Stats.formatAsRange(using: referenceDate, and: currentDateEnd, timezone: timezone, calendar: calendar)
-        
+        self.formattedCurrentRange = DateFormatter.Stats.formatAsRange(using: currentDateStart, and: referenceDate, timezone: timezone, calendar: calendar)
+
         let previousDateEnd = calendar.date(byAdding: .month, value: -1, to: referenceDate)
         self.previousDateEnd = previousDateEnd
         self.previousDateStart = previousDateEnd?.startOfMonth(timezone: timezone)

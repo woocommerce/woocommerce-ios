@@ -20,20 +20,14 @@ struct AnalyticsHubTodayRangeData: AnalyticsHubTimeRangeData {
     let formattedPreviousRange: String?
 
     init(referenceDate: Date, timezone: TimeZone, calendar: Calendar) {
-        let formatter = DateFormatter.Stats.createAnalyticsHubDayMonthYearFormatter(timezone: timezone)
-
         self.referenceDate = referenceDate
         self.currentDateEnd = referenceDate.endOfDay(timezone: timezone)
         self.currentDateStart = referenceDate.startOfDay(timezone: timezone)
-        self.formattedCurrentRange = formatter.string(from: referenceDate)
+        self.formattedCurrentRange = referenceDate.formatAsRange(timezone: timezone, calendar: calendar)
 
         let previousDateEnd = calendar.date(byAdding: .day, value: -1, to: referenceDate)
         self.previousDateEnd = previousDateEnd
         self.previousDateStart = previousDateEnd?.startOfDay(timezone: timezone)
-        if let previousDateEnd = previousDateEnd {
-            self.formattedPreviousRange = formatter.string(from: previousDateEnd)
-        } else {
-            self.formattedPreviousRange = nil
-        }
+        self.formattedPreviousRange = previousDateEnd?.formatAsRange(timezone: timezone, calendar: calendar)
     }
 }

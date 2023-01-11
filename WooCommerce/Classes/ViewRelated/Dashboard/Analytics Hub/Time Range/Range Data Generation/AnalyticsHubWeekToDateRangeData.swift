@@ -23,11 +23,11 @@ struct AnalyticsHubWeekToDateRangeData: AnalyticsHubTimeRangeData {
         self.referenceDate = referenceDate
         self.currentDateEnd = referenceDate.endOfWeek(timezone: timezone)
         self.currentDateStart = referenceDate.startOfWeek(timezone: timezone, calendar: calendar)
-        self.formattedCurrentRange = DateFormatter.Stats.formatAsRange(using: currentDateStart, and: referenceDate, timezone: timezone, calendar: calendar)
+        self.formattedCurrentRange = currentDateStart?.formatAsRange(with: referenceDate, timezone: timezone, calendar: calendar)
 
         let previousDateEnd = calendar.date(byAdding: .day, value: -7, to: referenceDate)
         self.previousDateEnd = previousDateEnd
         self.previousDateStart = previousDateEnd?.startOfWeek(timezone: timezone, calendar: calendar)
-        self.formattedPreviousRange = DateFormatter.Stats.formatAsRange(using: previousDateStart, and: previousDateEnd, timezone: timezone, calendar: calendar)
+        self.formattedPreviousRange = previousDateStart?.formatAsRange(with: previousDateEnd, timezone: timezone, calendar: calendar)
     }
 }

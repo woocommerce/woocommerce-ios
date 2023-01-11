@@ -1373,17 +1373,15 @@ final class ProductStoreTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
         // When
-        var savedResult: Result<[Yosemite.Product], ProductUpdateError>?
-        waitForExpectation { expectation in
-            let action = ProductAction.updateProducts(siteID: sampleSiteID, products: [product]) { result in
-                savedResult = result
-                expectation.fulfill()
+        let result = waitFor { promise in
+            let action = ProductAction.updateProducts(siteID: self.sampleSiteID, products: [product]) { result in
+                promise(result)
             }
             store.onAction(action)
         }
 
         // Then
-        let updatedProducts = try? savedResult?.get()
+        let updatedProducts = try result.get()
         assertEqual(updatedProducts, [product])
     }
 

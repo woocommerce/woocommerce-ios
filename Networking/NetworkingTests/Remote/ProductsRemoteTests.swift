@@ -594,16 +594,14 @@ final class ProductsRemoteTests: XCTestCase {
 
         // When
         let sampleProducts = [sampleProduct()]
-        var updatedProducts: [Product]?
-        waitForExpectation { expectation in
+        let updatedProducts = waitFor { promise in
             remote.updateProducts(siteID: self.sampleSiteID, products: sampleProducts) { result in
                 // Then
                 guard case let .success(products) = result else {
                     XCTFail("Unexpected result: \(result)")
                     return
                 }
-                updatedProducts = products
-                expectation.fulfill()
+                promise(products)
             }
         }
 

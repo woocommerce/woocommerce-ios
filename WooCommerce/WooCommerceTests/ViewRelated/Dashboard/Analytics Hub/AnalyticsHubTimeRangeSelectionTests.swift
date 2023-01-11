@@ -3,12 +3,12 @@ import XCTest
 
 final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
     private var testTimezone: TimeZone = {
-        TimeZone(abbreviation: "UTC") ?? TimeZone.current
+        TimeZone(abbreviation: "PDT") ?? TimeZone.current
     }()
 
     private var testCalendar: Calendar = {
         var calendar = Calendar(identifier: .iso8601)
-        calendar.timeZone = TimeZone(abbreviation: "UTC") ?? TimeZone.current
+        calendar.timeZone = TimeZone(abbreviation: "PDT") ?? TimeZone.current
         return calendar
     }()
 

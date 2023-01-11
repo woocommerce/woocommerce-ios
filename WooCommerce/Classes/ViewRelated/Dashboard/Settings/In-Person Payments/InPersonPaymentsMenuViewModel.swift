@@ -33,15 +33,9 @@ final class InPersonPaymentsMenuViewModel {
         dependencies.analytics
     }
 
-    private var isCODEnabled: Bool {
-        guard let siteID = siteID,
-              let codGateway = dependencies.storage.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: "cod")?.toReadOnly() else {
-            return false
-        }
-        return codGateway.enabled
-    }
+    // MARK: - ResultsControllers
+    private lazy var IPPOrdersResultsController = createIPPOrdersResultsController()
 
-    private lazy var resultsController = createIPPOrdersResultsController()
     private lazy var recentIPPOrdersResultsController = createRecentIPPOrdersResultsController()
 
     // MARK: - Output properties
@@ -50,6 +44,14 @@ final class InPersonPaymentsMenuViewModel {
     // MARK: - Configuration properties
     private var siteID: Int64? {
         return stores.sessionManager.defaultStoreID
+    }
+
+    private var isCODEnabled: Bool {
+        guard let siteID = siteID,
+              let codGateway = dependencies.storage.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: "cod")?.toReadOnly() else {
+            return false
+        }
+        return codGateway.enabled
     }
 
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
@@ -88,22 +90,29 @@ final class InPersonPaymentsMenuViewModel {
     ///
     func displayIPPFeedbackBannerIfEligible() {
         if isCODEnabled {
-            let hasResults = resultsController.fetchedObjects.isEmpty ? false : true
-            let resultsCount = recentIPPOrdersResultsController.fetchedObjects.count
-            let numberOfTransactions = 10
+            let hasResults = IPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
 
-            // Debug: Remove before merging
+            /// In order to filter WCPay transactions processed through IPP within the last 30 days,
+            /// we check if these contain `receipt_url` in their metadata, unlike those processed through a website,
+            /// which doesn't
+            ///
+            let IPPTransactionsFound = recentIPPOrdersResultsController.fetchedObjects.filter({
+                $0.customFields.contains(where: {$0.key == Constants.receiptURLKey }) &&
+                $0.paymentMethodTitle == Constants.paymentMethodTitle})
+            let IPPresultsCount = IPPTransactionsFound.count
+
+            // TODO: Debug. Remove before merging
             print("hasResults? \(hasResults)")
-            print("IPP transactions within 30 days: \(resultsCount)")
+            print("IPP transactions within 30 days: \(IPPresultsCount)")
             print(recentIPPOrdersResultsController.fetchedObjects.map {
-                ("OrderID: \($0.orderID) - PaymentMethodID: \($0.paymentMethodID) - DatePaid: \(String(describing: $0.datePaid))")
+                ("OrderID: \($0.orderID) - PaymentMethodID: \($0.paymentMethodID) (\($0.paymentMethodTitle) - DatePaid: \(String(describing: $0.datePaid))")
             })
 
             if !hasResults {
                 print("0 transactions. Banner 1 shown")
-            } else if resultsCount < numberOfTransactions {
+            } else if IPPresultsCount < Constants.numberOfTransactions {
                 print("< 10 transactions within 30 days. Banner 2 shown")
-            } else if resultsCount >= numberOfTransactions {
+            } else if IPPresultsCount >= Constants.numberOfTransactions {
                 print(">= 10 transactions within 30 days. Banner 3 shown")
             }
         }
@@ -111,8 +120,7 @@ final class InPersonPaymentsMenuViewModel {
 
     private func fetchIPPTransactions() {
         do {
-            try resultsController.performFetch()
-            // TODO: Perform the 2nd fetch only if the first one was successful?
+            try IPPOrdersResultsController.performFetch()
             try recentIPPOrdersResultsController.performFetch()
         } catch {
             DDLogError("Error fetching IPP transactions: \(error)")
@@ -124,19 +132,19 @@ private extension InPersonPaymentsMenuViewModel {
     /// Results controller that fetches any IPP transactions via WooCommerce Payments
     ///
     func createIPPOrdersResultsController() -> ResultsController<StorageOrder> {
-        let paymentGateway = Constants.wcpay
+        let paymentGateway = Constants.paymentMethodID
         let predicate = NSPredicate(
             format: "siteID == %lld AND paymentMethodID == %@",
             argumentArray: [siteID ?? 0, paymentGateway]
-            )
+        )
         return ResultsController<StorageOrder>(storageManager: storage, matching: predicate, sortedBy: [])
     }
 
-    /// Results controller that fetches IPP transactions  via WooCommerce Payments, within the last 30 days
+    /// Results controller that fetches IPP transactions via WooCommerce Payments, within the last 30 days
     ///
     func createRecentIPPOrdersResultsController() -> ResultsController<StorageOrder> {
         let today = Date()
-        let paymentGateway = Constants.wcpay
+        let paymentGateway = Constants.paymentMethodID
         let thirtyDaysBeforeToday = Calendar.current.date(
             byAdding: .day,
             value: -30,
@@ -155,5 +163,8 @@ private extension InPersonPaymentsMenuViewModel {
 private enum Constants {
     static let utmCampaign = "payments_menu_item"
     static let utmSource = "payments_menu"
-    static let wcpay = "woocommerce_payments"
+    static let paymentMethodID = "woocommerce_payments"
+    static let paymentMethodTitle = "WooCommerce In-Person Payments"
+    static let receiptURLKey = "receipt_url"
+    static let numberOfTransactions = 10
 }

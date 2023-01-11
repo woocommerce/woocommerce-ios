@@ -115,6 +115,77 @@ extension DateFormatter {
             yearFormatter
         }
     }
+    
+    struct Stats {
+        /// Date formatter used for creating the properly-formatted date range info. Typically
+        /// used when setting the end date on `AnalyticsHubTimeRangeGenerator`.
+        ///
+        public static func createAnalyticsHubDayMonthYearFormatter(timezone: TimeZone) -> DateFormatter {
+            let formatter = DateFormatter()
+            formatter.timeZone = timezone
+            formatter.dateFormat = "MMM d, yyyy"
+            return formatter
+        }
+
+        /// Date formatter used for creating the properly-formatted date range info. Typically
+        /// used when setting the end date of a same-month range on `AnalyticsHubTimeRangeGenerator`.
+        ///
+        public static func createAnalyticsHubDayYearFormatter(timezone: TimeZone) -> DateFormatter {
+            let formatter = DateFormatter()
+            formatter.timeZone = timezone
+            formatter.dateFormat = "d, yyyy"
+            return formatter
+        }
+
+        /// Date formatter used for creating the properly-formatted date range info. Typically
+        /// used when setting the start date on `AnalyticsHubTimeRangeGenerator`.
+        ///
+        public static func createAnalyticsHubDayMonthFormatter(timezone: TimeZone) -> DateFormatter {
+            let formatter = DateFormatter()
+            formatter.timeZone = timezone
+            formatter.dateFormat = "MMM d"
+            return formatter
+        }
+        
+        /// Date formatter used for creating a **localized** date range string based on two dates. E.g.
+        ///
+        /// start: 2021-01-01
+        /// end: 2022-12-31
+        /// returns: Jan 1, 2021 - Dec 31, 2022
+        ///
+        /// start: 2021-01-01
+        /// end: 2021-01-31
+        ///
+        /// returns: Jan 1 - 31, 2022
+        ///
+        /// start: 2021-01-01
+        /// end: 2022-01-01
+        ///
+        /// returns: Jan 1, 2021 - Jan 1, 2022
+        ///
+        public static func concatenateAsRange(using start: Date?, and end: Date?, timezone: TimeZone, calendar: Calendar) -> String {
+            guard let start = start,
+                  let end = end else {
+                return ""
+            }
+            
+            let formattedStart: String
+            if start.isSameYear(as: end, using: calendar) {
+                formattedStart = createAnalyticsHubDayMonthFormatter(timezone: timezone).string(from: start)
+            } else {
+                formattedStart = createAnalyticsHubDayMonthYearFormatter(timezone: timezone).string(from: start)
+            }
+
+            let formattedEnd: String
+            if start.isSameMonth(as: end, using: calendar) {
+                formattedEnd = createAnalyticsHubDayYearFormatter(timezone: timezone).string(from: end)
+            } else {
+                formattedEnd = createAnalyticsHubDayMonthYearFormatter(timezone: timezone).string(from: end)
+            }
+
+            return "\(formattedStart) - \(formattedEnd)"
+        }
+    }
 
     /// Date formatter used for creating a medium-length **localized** date string to be displayed anywhere.
     ///

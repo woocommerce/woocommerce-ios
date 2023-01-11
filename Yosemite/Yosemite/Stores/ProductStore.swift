@@ -376,7 +376,7 @@ private extension ProductStore {
             case .success(let returnedProducts):
                 self?.upsertStoredProductsInBackground(readOnlyProducts: returnedProducts, siteID: siteID) { [weak self] in
                     guard let storageProducts = self?.storageManager.viewStorage.loadProducts(siteID: siteID,
-                                                                                             productsIDs: returnedProducts.map { $0.productID }) else {
+                                                                                              productsIDs: returnedProducts.map { $0.productID }) else {
                         onCompletion(.failure(.notFoundInStorage))
                         return
                     }

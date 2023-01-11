@@ -9,8 +9,6 @@ import Foundation
 /// Previous range: Jul 18 until Jul 22, 2022
 ///
 struct AnalyticsHubWeekToDateRangeData: AnalyticsHubTimeRangeData {
-    let referenceDate: Date?
-
     let currentDateStart: Date?
     let currentDateEnd: Date?
     let formattedCurrentRange: String?
@@ -20,7 +18,6 @@ struct AnalyticsHubWeekToDateRangeData: AnalyticsHubTimeRangeData {
     let formattedPreviousRange: String?
 
     init(referenceDate: Date, timezone: TimeZone, calendar: Calendar) {
-        self.referenceDate = referenceDate
         self.currentDateEnd = referenceDate.endOfWeek(timezone: timezone)
         self.currentDateStart = referenceDate.startOfWeek(timezone: timezone, calendar: calendar)
         self.formattedCurrentRange = currentDateStart?.formatAsRange(with: referenceDate, timezone: timezone, calendar: calendar)

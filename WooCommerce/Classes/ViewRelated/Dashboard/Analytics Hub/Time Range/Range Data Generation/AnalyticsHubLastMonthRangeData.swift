@@ -9,8 +9,6 @@ import Foundation
 /// Previous range: May 1 until May 31, 2022
 ///
 struct AnalyticsHubLastMonthRangeData: AnalyticsHubTimeRangeData {
-    let referenceDate: Date?
-
     let currentDateStart: Date?
     let currentDateEnd: Date?
     let formattedCurrentRange: String?
@@ -20,8 +18,6 @@ struct AnalyticsHubLastMonthRangeData: AnalyticsHubTimeRangeData {
     let formattedPreviousRange: String?
 
     init(referenceDate: Date, timezone: TimeZone, calendar: Calendar) {
-        self.referenceDate = referenceDate
-
         let oneMonthAgo = calendar.date(byAdding: .month, value: -1, to: referenceDate)
         self.currentDateEnd = oneMonthAgo?.endOfMonth(timezone: timezone)
         self.currentDateStart = oneMonthAgo?.startOfMonth(timezone: timezone)

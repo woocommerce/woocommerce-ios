@@ -1,8 +1,6 @@
 import Foundation
 
 protocol AnalyticsHubTimeRangeData {
-    var referenceDate: Date? { get }
-
     var currentDateStart: Date? { get }
     var currentDateEnd: Date? { get }
     var formattedCurrentRange: String? { get }

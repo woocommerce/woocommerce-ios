@@ -73,6 +73,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
             bottomToolbar.isHidden = true
             bottomToolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
             bottomToolbar.setSubviews(leftViews: [], rightViews: [bulkEditButton])
+            bottomToolbar.addDividerOnTop()
         }
     }
 

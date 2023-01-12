@@ -94,7 +94,7 @@ final class GenerateAllVariationsUseCaseTests: XCTestCase {
         // When
         let variationsGenerated = waitFor { promise in
             useCase.generateAllVariations(for: product) { state in
-                if case .finished(let variationsGenerated) = state {
+                if case .finished(let variationsGenerated, _) = state {
                     promise(variationsGenerated)
                 }
             }

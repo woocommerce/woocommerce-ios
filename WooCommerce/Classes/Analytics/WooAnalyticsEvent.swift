@@ -223,6 +223,7 @@ extension WooAnalyticsEvent {
             static let serverTime = "time"
             static let errorDescription = "error_description"
             static let field = "field"
+            static let variationsCount = "variations_count"
         }
 
         enum BulkUpdateField: String {
@@ -309,6 +310,26 @@ extension WooAnalyticsEvent {
 
         static func bulkUpdateFieldFailed(field: BulkUpdateField, error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldFail, properties: [Keys.field: field.rawValue], error: error)
+        }
+
+        static func productVariationGenerationRequested() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationRequested, properties: [:])
+        }
+
+        static func productVariationGenerationConfirmed(count: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationConfirmed, properties: [Keys.variationsCount: count])
+        }
+
+        static func productVariationGenerationLimitReached(count: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationLimitReached, properties: [Keys.variationsCount: count])
+        }
+
+        static func productVariationGenerationSuccess() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationSuccess, properties: [:])
+        }
+
+        static func productVariationGenerationFailure() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationFailure, properties: [:])
         }
     }
 }

@@ -333,33 +333,15 @@ private extension CollectOrderPaymentUseCase {
 
         trackPaymentFailure(with: error)
 
-        // Inform about the error
-        alertsPresenter.present(
-            viewModel: paymentAlerts.error(error: error,
-                                      tryAgain: { [weak self] in
-
-                                          // Cancel current payment
-                                          self?.paymentOrchestrator.cancelPayment { [weak self] result in
-                                              guard let self = self else { return }
-
-                                              switch result {
-                                              case .success:
-                                                  // Retry payment
-                                                  self.attemptPayment(alertProvider: paymentAlerts,
-                                                                      onCompletion: onCompletion)
-
-                                              case .failure(let cancelError):
-                                                  // Inform that payment can't be retried.
-                                                  self.alertsPresenter.present(
-                                                    viewModel: paymentAlerts.nonRetryableError(error: cancelError) {
-                                                      onCompletion(.failure(error))
-                                                  })
-                                              }
-                                          }
-                                      }, dismissCompletion: {
-                                          onCompletion(.failure(error))
-                                      })
-            )
+        if canRetryPayment(with: error) {
+            presentRetryableError(error: error,
+                                  paymentAlerts: paymentAlerts,
+                                  onCompletion: onCompletion)
+        } else {
+            presentNonRetryableError(error: error,
+                                     paymentAlerts: paymentAlerts,
+                                     onCompletion: onCompletion)
+        }
     }
 
     private func trackPaymentFailure(with error: Error) {
@@ -368,6 +350,72 @@ private extension CollectOrderPaymentUseCase {
                                                                                        error: error,
                                                                                        countryCode: configuration.countryCode,
                                                                                        cardReaderModel: connectedReader?.readerType.model))
+    }
+
+    private func canRetryPayment(with error: Error) -> Bool {
+        guard let serviceError = error as? CardReaderServiceError else {
+            return true
+        }
+        switch serviceError {
+        case .paymentMethodCollection(let underlyingError),
+                .paymentCapture(let underlyingError),
+                .paymentCancellation(let underlyingError):
+            return canRetryPayment(underlyingError: underlyingError)
+        default:
+            return true
+        }
+    }
+
+    private func canRetryPayment(underlyingError: UnderlyingError) -> Bool {
+        switch underlyingError {
+        case .notConnectedToReader,
+                .commandNotAllowedDuringCall,
+                .featureNotAvailableWithConnectedReader:
+            return false
+        default:
+            return true
+        }
+    }
+
+    private func presentRetryableError(error: Error,
+                                       paymentAlerts: CardReaderTransactionAlertsProviding,
+                                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        alertsPresenter.present(
+            viewModel: paymentAlerts.error(error: error,
+                                           tryAgain: { [weak self] in
+
+                                               // Cancel current payment
+                                               self?.paymentOrchestrator.cancelPayment { [weak self] result in
+                                                   guard let self = self else { return }
+
+                                                   switch result {
+                                                   case .success:
+                                                       // Retry payment
+                                                       self.attemptPayment(alertProvider: paymentAlerts,
+                                                                           onCompletion: onCompletion)
+
+                                                   case .failure(let cancelError):
+                                                       // Inform that payment can't be retried.
+                                                       self.alertsPresenter.present(
+                                                        viewModel: paymentAlerts.nonRetryableError(error: cancelError) {
+                                                            onCompletion(.failure(error))
+                                                        })
+                                                   }
+                                               }
+                                           }, dismissCompletion: {
+                                               onCompletion(.failure(error))
+                                           })
+        )
+    }
+
+    private func presentNonRetryableError(error: Error,
+                                          paymentAlerts: CardReaderTransactionAlertsProviding,
+                                          onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        alertsPresenter.present(
+            viewModel: paymentAlerts.nonRetryableError(error: error,
+                                                       dismissCompletion: {
+                                                           onCompletion(.failure(error))
+                                                       }))
     }
 
     /// Cancels payment and record analytics.

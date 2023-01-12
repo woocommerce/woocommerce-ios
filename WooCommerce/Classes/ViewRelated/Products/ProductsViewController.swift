@@ -66,11 +66,39 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     @IBOutlet private weak var toolbar: ToolbarView!
 
+    /// Top toolbar that shows the bulk edit CTA.
+    ///
+    @IBOutlet private weak var bottomToolbar: ToolbarView! {
+        didSet {
+            bottomToolbar.isHidden = true
+            bottomToolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+            bottomToolbar.setSubviews(leftViews: [], rightViews: [bulkEditButton])
+        }
+    }
+
+    /// Bottom placeholder inside StackView to cover the safe area gap below the bottom toolbar.
+    ///
+    @IBOutlet private weak var bottomPlaceholder: UIView! {
+        didSet {
+            bottomPlaceholder.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        }
+    }
+
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
 
     /// The filter CTA in the top toolbar.
     private lazy var filterButton: UIButton = UIButton(frame: .zero)
+
+    /// The bulk edit CTA in the bottom toolbar.
+    private lazy var bulkEditButton: UIButton = {
+        let button = UIButton(frame: .zero)
+        button.setTitle(Localization.bulkEditingToolbarButtonTitle, for: .normal)
+        button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+        button.applyLinkButtonStyle()
+        button.contentEdgeInsets = Constants.toolbarButtonInsets
+        return button
+    }()
 
     /// Container of the top banner that shows that the Products feature is still work in progress.
     ///
@@ -273,6 +301,7 @@ private extension ProductsViewController {
 
         configureNavigationBarForEditing()
         showOrHideToolbar()
+        showBottomToolbar()
     }
 
     @objc func finishBulkEditing() {
@@ -284,6 +313,11 @@ private extension ProductsViewController {
 
         configureNavigationBar()
         showOrHideToolbar()
+        hideBottomToolbar()
+    }
+
+    @objc func openBulkEditingOptions(sender: UIBarButtonItem) {
+        // TODO-8517: show menu with bulk editing options
     }
 }
 
@@ -383,7 +417,7 @@ private extension ProductsViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = .listBackground //.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
     }
 
     func configureTabBarItem() {
@@ -490,6 +524,24 @@ private extension ProductsViewController {
         }
 
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
+    }
+
+    func showBottomToolbar() {
+        tabBarController?.tabBar.isHidden = true
+
+        // trigger safe area update
+        if let tabBarController {
+            let currentFrame = tabBarController.view.frame
+            tabBarController.view.frame = currentFrame.insetBy(dx: 0, dy: 1)
+            tabBarController.view.frame = currentFrame
+        }
+
+        bottomToolbar.isHidden = false
+    }
+
+    func hideBottomToolbar() {
+        tabBarController?.tabBar.isHidden = false
+        bottomToolbar.isHidden = true
     }
 }
 
@@ -1118,6 +1170,11 @@ private extension ProductsViewController {
         static let bulkEditingNavBarButtonHint = NSLocalizedString(
             "Edit status or price for multiple products at once",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to bulk edit products"
+        )
+
+        static let bulkEditingToolbarButtonTitle = NSLocalizedString(
+            "Bulk update",
+            comment: "Title of a button that presents a menu with possible bulk update options"
         )
 
         static let bulkEditingTitle = NSLocalizedString(

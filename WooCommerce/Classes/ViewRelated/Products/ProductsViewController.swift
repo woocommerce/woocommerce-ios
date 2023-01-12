@@ -97,7 +97,9 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         button.setTitle(Localization.bulkEditingToolbarButtonTitle, for: .normal)
         button.addTarget(self, action: #selector(openBulkEditingOptions(sender:)), for: .touchUpInside)
         button.applyLinkButtonStyle()
-        button.contentEdgeInsets = Constants.toolbarButtonInsets
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = Constants.toolbarButtonInsets
+        button.configuration = configuration
         button.isEnabled = false
         return button
     }()
@@ -519,7 +521,9 @@ private extension ProductsViewController {
 
         [sortButton, filterButton].forEach {
             $0.applyLinkButtonStyle()
-            $0.contentEdgeInsets = Constants.toolbarButtonInsets
+            var configuration = UIButton.Configuration.plain()
+            configuration.contentInsets = Constants.toolbarButtonInsets
+            $0.configuration = configuration
         }
 
         toolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
@@ -1187,7 +1191,7 @@ private extension ProductsViewController {
         static let placeholderRowsPerSection = [3]
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        static let toolbarButtonInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
+        static let toolbarButtonInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
     }
 
     enum Localization {

@@ -30,7 +30,7 @@ final class GenerateAllVariationsPresenter {
             presentCreatingIndicator()
         case .canceled:
             dismissBlockingIndicator()
-        case .finished(let variationsCreated):
+        case .finished(let variationsCreated, _):
             dismissBlockingIndicator()
             if variationsCreated {
                 presentVariationsCreatedNotice()

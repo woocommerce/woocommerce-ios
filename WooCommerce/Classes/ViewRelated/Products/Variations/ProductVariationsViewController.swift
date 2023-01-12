@@ -475,7 +475,7 @@ private extension ProductVariationsViewController {
 
         let editAttributesViewModel = EditAttributesViewModel(product: product, allowVariationCreation: allowVariationCreation)
         let editAttributeViewController = EditAttributesViewController(viewModel: editAttributesViewModel)
-        editAttributeViewController.onVariationCreation = { [weak self] (updatedProduct, _) in
+        editAttributeViewController.onVariationCreation = { [weak self] updatedProduct in
             self?.product = updatedProduct
             self?.onFirstVariationCreated()
         }
@@ -508,7 +508,11 @@ private extension ProductVariationsViewController {
     /// Presents a notice alerting that the variation was created and navigates back to the `initialViewController` if possible.
     ///
     private func onFirstVariationCreated() {
-        noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
+        // Only show a notice when one variation is created.
+        // When creating multiple variations, the notice presentation is handled on `GenerateAllVariationsPresenter`
+        if product.variations.count == 1 {
+            noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
+        }
 
         guard let initialViewController = initialViewController else {
             navigationController?.popViewController(animated: true)
@@ -610,13 +614,6 @@ private extension ProductVariationsViewController {
             }
         }
     }
-
-    /// Updates the current product with the up-to-date list of variations IDs.
-    /// This is needed in order to reflect variations count changes back to this and to other screens.
-    ///
-    private func updateProductVariationCount() {
-        self.product = product.copy(variations: resultsController.fetchedObjects.map { $0.productVariationID })
-    }
 }
 
 // MARK: - Placeholders
@@ -700,9 +697,9 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
 
             // Perform other side effects
             switch currentState {
-            case .finished(let variationsCreated):
+            case .finished(let variationsCreated, let updatedProduct):
                 if variationsCreated {
-                    self?.updateProductVariationCount()
+                    self?.product = updatedProduct
                 }
             default: break
             }

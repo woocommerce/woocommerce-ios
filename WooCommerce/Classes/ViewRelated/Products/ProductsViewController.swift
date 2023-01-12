@@ -98,6 +98,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         button.addTarget(self, action: #selector(openBulkEditingOptions(sender:)), for: .touchUpInside)
         button.applyLinkButtonStyle()
         button.contentEdgeInsets = Constants.toolbarButtonInsets
+        button.isEnabled = false
         return button
     }()
 
@@ -317,6 +318,11 @@ private extension ProductsViewController {
         hideBottomToolbar()
     }
 
+    func updatedSelectedItems() {
+        updateNavigationBarTitleForEditing()
+        bulkEditButton.isEnabled = viewModel.bulkEditActionIsEnabled
+    }
+
     @objc func openBulkEditingOptions(sender: UIButton) {
         // TODO-8517: show menu with bulk editing options
     }
@@ -396,11 +402,11 @@ private extension ProductsViewController {
     }
 
     func configureNavigationBarForEditing() {
-        configureNavigationBarTitleForEditing()
+        updateNavigationBarTitleForEditing()
         configureNavigationBarRightButtonItemsForEditing()
     }
 
-    func configureNavigationBarTitleForEditing() {
+    func updateNavigationBarTitleForEditing() {
         let selectedProducts = viewModel.selectedProductsCount
         if selectedProducts == 0 {
             navigationItem.title = Localization.bulkEditingTitle
@@ -726,7 +732,7 @@ extension ProductsViewController: UITableViewDelegate {
 
         if tableView.isEditing {
             viewModel.selectProduct(product)
-            configureNavigationBarTitleForEditing()
+            updatedSelectedItems()
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
 
@@ -743,7 +749,7 @@ extension ProductsViewController: UITableViewDelegate {
 
         let product = resultsController.object(at: indexPath)
         viewModel.deselectProduct(product)
-        configureNavigationBarTitleForEditing()
+        updatedSelectedItems()
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

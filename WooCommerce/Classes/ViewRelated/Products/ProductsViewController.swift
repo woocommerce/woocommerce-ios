@@ -95,7 +95,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private lazy var bulkEditButton: UIButton = {
         let button = UIButton(frame: .zero)
         button.setTitle(Localization.bulkEditingToolbarButtonTitle, for: .normal)
-        button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(openBulkEditingOptions(sender:)), for: .touchUpInside)
         button.applyLinkButtonStyle()
         button.contentEdgeInsets = Constants.toolbarButtonInsets
         return button
@@ -317,7 +317,7 @@ private extension ProductsViewController {
         hideBottomToolbar()
     }
 
-    @objc func openBulkEditingOptions(sender: UIBarButtonItem) {
+    @objc func openBulkEditingOptions(sender: UIButton) {
         // TODO-8517: show menu with bulk editing options
     }
 }

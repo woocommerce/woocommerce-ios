@@ -445,7 +445,7 @@ private extension ProductsViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = .listBackground //.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        view.backgroundColor = .listBackground
     }
 
     func configureTabBarItem() {

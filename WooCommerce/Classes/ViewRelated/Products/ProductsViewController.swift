@@ -324,7 +324,26 @@ private extension ProductsViewController {
     }
 
     @objc func openBulkEditingOptions(sender: UIButton) {
-        // TODO-8517: show menu with bulk editing options
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        let updateStatus = UIAlertAction(title: Localization.bulkEditingStatusOption, style: .default) { _ in
+            // TODO-8519: show UI for status update
+        }
+        let updatePrice = UIAlertAction(title: Localization.bulkEditingPriceOption, style: .default) { _ in
+            // TODO-8520: show UI for price update
+        }
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
+
+        actionSheet.addAction(updateStatus)
+        actionSheet.addAction(updatePrice)
+        actionSheet.addAction(cancelAction)
+
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = sender
+            popoverController.sourceRect = sender.bounds
+        }
+
+        present(actionSheet, animated: true)
     }
 }
 
@@ -1181,8 +1200,11 @@ private extension ProductsViewController {
 
         static let bulkEditingToolbarButtonTitle = NSLocalizedString(
             "Bulk update",
-            comment: "Title of a button that presents a menu with possible bulk update options"
+            comment: "Title of a button that presents a menu with possible products bulk update options"
         )
+        static let bulkEditingStatusOption = NSLocalizedString("Update status", comment: "Title of an option that opens bulk products status update flow")
+        static let bulkEditingPriceOption = NSLocalizedString("Update price", comment: "Title of an option that opens bulk products price update flow")
+        static let cancel = NSLocalizedString("Cancel", comment: "Title of an option to dismiss the bulk edit action sheet")
 
         static let bulkEditingTitle = NSLocalizedString(
             "Select items",

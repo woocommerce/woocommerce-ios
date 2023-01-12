@@ -178,7 +178,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         }
         .store(in: &cancellables)
 
-        preflightController?.start()
+        Task {
+            await preflightController?.start()
+        }
     }
 }
 

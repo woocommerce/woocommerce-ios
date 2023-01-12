@@ -36,7 +36,7 @@ final class GenerateAllVariationsUseCase {
 
                 // Guard for no variations to generate
                 guard variationsToGenerate.count > 0 else {
-                    return onStateChanged(.finished(false))
+                    return onStateChanged(.finished(false, product))
                 }
 
                 // Confirm generation with merchant
@@ -50,8 +50,13 @@ final class GenerateAllVariationsUseCase {
                     onStateChanged(.creating)
                     self.createVariationsRemotely(for: product, variations: variationsToGenerate) { result in
                         switch result {
-                        case .success:
-                            onStateChanged(.finished(true))
+                        case .success(let generatedVariations):
+
+                            // Updates the current product with the up-to-date list of variations IDs.
+                            // This is needed in order to reflect variations count changes back to other screens.
+                            let updatedProduct = product.copy(variations: product.variations + generatedVariations.map { $0.productVariationID })
+                            onStateChanged(.finished(true, updatedProduct))
+
                         case .failure(let error):
                             onStateChanged(.error(error))
                         }
@@ -80,13 +85,13 @@ private extension GenerateAllVariationsUseCase {
     ///
     private func createVariationsRemotely(for product: Product,
                                           variations: [CreateProductVariation],
-                                          onCompletion: @escaping (Result<Void, GenerationError>) -> Void) {
+                                          onCompletion: @escaping (Result<[ProductVariation], GenerationError>) -> Void) {
         let action = ProductVariationAction.createProductVariations(siteID: product.siteID,
                                                                     productID: product.productID,
                                                                     productVariations: variations, onCompletion: { result in
             switch result {
-            case .success:
-                onCompletion(.success(()))
+            case .success(let variations):
+                onCompletion(.success(variations))
             case .failure(let error):
                 onCompletion(.failure(.unableToCreateVariations))
                 DDLogError("⛔️ Failed to create variations: \(error)")
@@ -119,8 +124,9 @@ extension GenerateAllVariationsUseCase {
         case canceled
 
         /// State when the the process is finished. `variationsCreated` indicates if  variations were created or not.
+        /// `updatedProduct` contains the original product with the new generated variation ids in it's variations array.
         ///
-        case finished(_ variationsCreated: Bool)
+        case finished(_ variationsCreated: Bool, _ updatedProduct: Product)
 
         /// Error state in any part of the process.
         ///

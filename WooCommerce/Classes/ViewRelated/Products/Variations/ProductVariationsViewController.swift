@@ -284,8 +284,7 @@ private extension ProductVariationsViewController {
 //
 private extension ProductVariationsViewController {
     func configureTopStackView() {
-        let title = featureFlagService.isFeatureFlagEnabled(.generateAllVariations) ? Localization.addVariationAction : Localization.generateVariationAction
-        addTopButton(title: title,
+        addTopButton(title: Localization.generateVariationAction,
                      insets: .init(top: 16, left: 16, bottom: 8, right: 16),
                      hasBottomBorder: true,
                      actionSelector: #selector(addButtonTapped),

@@ -58,6 +58,16 @@ extension EditAttributesViewModel {
     func productAttributeAtIndex(_ index: Int) -> ProductAttribute {
         return product.attributesForVariations[index]
     }
+
+    /// Generates all missing variations for a product. Up to 100 variations.
+    /// Parameters:
+    /// - `Product`: Product on which we will be creating the variations
+    /// - `onStateChanged`: Closure invoked every time there is a significant state change in the generation process.
+    ///
+    func generateAllVariations(onStateChanged: @escaping (GenerateAllVariationsUseCase.State) -> Void) {
+        let useCase = GenerateAllVariationsUseCase(stores: stores)
+        useCase.generateAllVariations(for: product, onStateChanged: onStateChanged)
+    }
 }
 
 // MARK: Helpers

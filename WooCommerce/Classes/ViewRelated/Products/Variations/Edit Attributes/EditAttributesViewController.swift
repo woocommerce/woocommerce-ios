@@ -110,11 +110,25 @@ extension EditAttributesViewController {
                 details: Localization.attributesAddedInfo,
                 buttonTitle: Localization.generateButtonTitle,
                 onTap: { [weak self] _ in
-                    self?.createVariation()
+                    self?.presentGenerateVariationOptions()
                 }
             ))
         createVariationViewController.title = Localization.generateTitle
         show(createVariationViewController, sender: self)
+    }
+
+    /// Displays a bottom sheet allowing the merchant to choose whether to generate one variation or to generate all variations.
+    ///
+    private func presentGenerateVariationOptions() {
+        let presenter = GenerateVariationsOptionsPresenter(baseViewController: self)
+        presenter.presentGenerationOptions(sourceView: self.view) { [weak self] selectedOption in
+            switch selectedOption {
+            case .single:
+                self?.createVariation()
+            case .all:
+                self?.generateAllVariations()
+            }
+        }
     }
 
     /// Creates a variation and presents a loading screen while it is created.
@@ -160,6 +174,25 @@ extension EditAttributesViewController {
             self.tableView.reloadData()
         }
         show(editViewController, sender: true)
+    }
+
+    /// Generates all possible variations for the product attributes.
+    ///
+    private func generateAllVariations() {
+        let presenter = GenerateAllVariationsPresenter(baseViewController: self)
+        viewModel.generateAllVariations() { [presenter] currentState in
+            // Perform Presentation Actions
+            presenter.handleStateChanges(state: currentState)
+
+            // Perform other side effects
+//            switch currentState {
+//            case .finished(let variationsCreated):
+//                if variationsCreated {
+//                    self?.updateProductVariationCount()
+//                }
+//            default: break
+//            }
+        }
     }
 }
 

@@ -76,22 +76,22 @@ extension Date {
     /// returns: Jan 1, 2022
     ///
     func formatAsRange(with other: Date? = nil, timezone: TimeZone, calendar: Calendar) -> String {
-        guard let other = other else {
-            return DateFormatter.Stats.createAnalyticsHubDayMonthYearFormatter(timezone: timezone).string(from: self)
+        guard let other else {
+            return DateFormatter.Stats.createDayMonthYearFormatter(timezone: timezone).string(from: self)
         }
 
         let formattedStart: String
         if self.isSameYear(as: other, using: calendar) {
-            formattedStart = DateFormatter.Stats.createAnalyticsHubDayMonthFormatter(timezone: timezone).string(from: self)
+            formattedStart = DateFormatter.Stats.createDayMonthFormatter(timezone: timezone).string(from: self)
         } else {
-            formattedStart = DateFormatter.Stats.createAnalyticsHubDayMonthYearFormatter(timezone: timezone).string(from: self)
+            formattedStart = DateFormatter.Stats.createDayMonthYearFormatter(timezone: timezone).string(from: self)
         }
 
         let formattedEnd: String
         if self.isSameMonth(as: other, using: calendar) {
-            formattedEnd = DateFormatter.Stats.createAnalyticsHubDayYearFormatter(timezone: timezone).string(from: other)
+            formattedEnd = DateFormatter.Stats.createDayYearFormatter(timezone: timezone).string(from: other)
         } else {
-            formattedEnd = DateFormatter.Stats.createAnalyticsHubDayMonthYearFormatter(timezone: timezone).string(from: other)
+            formattedEnd = DateFormatter.Stats.createDayMonthYearFormatter(timezone: timezone).string(from: other)
         }
 
         return "\(formattedStart) - \(formattedEnd)"

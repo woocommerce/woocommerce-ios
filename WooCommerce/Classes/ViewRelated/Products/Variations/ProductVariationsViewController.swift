@@ -697,6 +697,13 @@ private extension ProductVariationsViewController {
         let notice = Notice(title: Localization.variationsCreatedTitle)
         noticePresenter.enqueue(notice: notice)
     }
+
+    /// Updates the current product with the up-to-date list of variations IDs.
+    /// This is needed in order to reflect variations count changes back to this and to other screens.
+    ///
+    private func updateProductVariationCount() {
+        self.product = product.copy(variations: resultsController.fetchedObjects.map { $0.productVariationID })
+    }
 }
 
 // MARK: - Placeholders
@@ -786,6 +793,7 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
             case .finished(let variationsCreated):
                 self?.dismissBlockingIndicator()
                 if variationsCreated {
+                    self?.updateProductVariationCount()
                     self?.presentVariationsCreatedNotice()
                 } else {
                     self?.presentNoGenerationNotice()

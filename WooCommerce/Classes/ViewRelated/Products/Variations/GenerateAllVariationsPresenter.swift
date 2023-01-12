@@ -20,7 +20,7 @@ final class GenerateAllVariationsPresenter {
 
     /// Respond to necessary presentation changes.
     ///
-    func handleStateChanges(state: ProductVariationsViewModel.GenerationState) {
+    func handleStateChanges(state: GenerateAllVariationsUseCase.State) {
         switch state {
         case .fetching:
             presentFetchingIndicator()
@@ -50,7 +50,7 @@ final class GenerateAllVariationsPresenter {
 private extension GenerateAllVariationsPresenter {
     /// Informs the merchant about errors that happen during the variation generation
     ///
-    private func presentGenerationError(_ error: ProductVariationsViewModel.GenerationError) {
+    private func presentGenerationError(_ error: GenerateAllVariationsUseCase.GenerationError) {
         let notice = Notice(title: error.errorTitle, message: error.errorDescription)
         noticePresenter.enqueue(notice: notice)
     }

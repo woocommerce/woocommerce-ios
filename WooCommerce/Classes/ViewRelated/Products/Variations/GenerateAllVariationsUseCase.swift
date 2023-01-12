@@ -73,7 +73,8 @@ final class GenerateAllVariationsUseCase {
 
             case .failure(let error):
                 onStateChanged(.error(.unableToFetchVariations))
-                DDLogError("⛔️ Failed to create variations: \(error)")
+                DDLogError("⛔️ Failed to fetch variations: \(error)")
+                analytics.track(event: .Variations.productVariationGenerationFailure())
             }
         }
     }
@@ -96,13 +97,16 @@ private extension GenerateAllVariationsUseCase {
                                           onCompletion: @escaping (Result<[ProductVariation], GenerationError>) -> Void) {
         let action = ProductVariationAction.createProductVariations(siteID: product.siteID,
                                                                     productID: product.productID,
-                                                                    productVariations: variations, onCompletion: { result in
+                                                                    productVariations: variations, onCompletion: { [analytics] result in
             switch result {
             case .success(let variations):
                 onCompletion(.success(variations))
+                analytics.track(event: .Variations.productVariationGenerationSuccess())
+
             case .failure(let error):
                 onCompletion(.failure(.unableToCreateVariations))
                 DDLogError("⛔️ Failed to create variations: \(error)")
+                analytics.track(event: .Variations.productVariationGenerationFailure())
             }
         })
         stores.dispatch(action)

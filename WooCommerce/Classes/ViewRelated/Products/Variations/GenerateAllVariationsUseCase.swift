@@ -9,8 +9,13 @@ final class GenerateAllVariationsUseCase {
     ///
     private let stores: StoresManager
 
-    init(stores: StoresManager) {
+    /// Analytics tracker.
+    ///
+    private let analytics: Analytics
+
+    init(stores: StoresManager, analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
+        self.analytics = analytics
     }
 
     /// Generates all missing variations for a product. Up to 100 variations.
@@ -22,7 +27,7 @@ final class GenerateAllVariationsUseCase {
 
         // Fetch Previous variations
         onStateChanged(.fetching)
-        fetchAllVariations(of: product) { result in
+        fetchAllVariations(of: product) { [analytics] result in
             switch result {
             case .success(let existingVariations):
 
@@ -31,6 +36,7 @@ final class GenerateAllVariationsUseCase {
 
                 // Guard for 100 variation limit
                 guard variationsToGenerate.count <= 100 else {
+                    analytics.track(event: .Variations.productVariationGenerationLimitReached(count: Int64(variationsToGenerate.count)))
                     return onStateChanged(.error(.tooManyVariations(variationCount: variationsToGenerate.count)))
                 }
 
@@ -45,6 +51,8 @@ final class GenerateAllVariationsUseCase {
                     guard confirmed else {
                         return onStateChanged(.canceled)
                     }
+
+                    analytics.track(event: .Variations.productVariationGenerationConfirmed(count: Int64(variationsToGenerate.count)))
 
                     // Create variations remotely
                     onStateChanged(.creating)

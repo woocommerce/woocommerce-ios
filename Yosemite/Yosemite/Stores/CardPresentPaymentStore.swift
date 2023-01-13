@@ -15,7 +15,7 @@ public final class CardPresentPaymentStore: Store {
 
     /// Card reader config provider
     ///
-    private let commonReaderConfigProvider: CommonReaderConfigProvider
+    private let commonReaderConfigProvider: CommonReaderConfigProviding
 
     private var paymentGatewayAccount: PaymentGatewayAccount? {
         didSet {
@@ -51,10 +51,11 @@ public final class CardPresentPaymentStore: Store {
         dispatcher: Dispatcher,
         storageManager: StorageManagerType,
         network: Network,
-        cardReaderService: CardReaderService
+        cardReaderService: CardReaderService,
+        cardReaderConfigProvider: CommonReaderConfigProviding
     ) {
         self.cardReaderService = cardReaderService
-        self.commonReaderConfigProvider = CommonReaderConfigProvider()
+        self.commonReaderConfigProvider = cardReaderConfigProvider
         self.remote = WCPayRemote(network: network)
         self.stripeRemote = StripeRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -368,74 +369,6 @@ private extension CardPresentPaymentStore {
             .eraseToAnyPublisher()
 
         onCompletion(publisher)
-    }
-}
-private extension CardPresentPaymentStore {
-    final class CommonReaderConfigProvider: CardReaderConfigProvider {
-        var siteID: Int64?
-        var readerConfigRemote: CardReaderCapableRemote?
-
-        public func setContext(siteID: Int64, remote: CardReaderCapableRemote) {
-            self.siteID = siteID
-            self.readerConfigRemote = remote
-        }
-
-        public func fetchToken(completion: @escaping(Result<String, Error>) -> Void) {
-            guard let siteID = self.siteID else {
-                return
-            }
-
-            readerConfigRemote?.loadConnectionToken(for: siteID) { result in
-                switch result {
-                case .success(let token):
-                    completion(.success(token.token))
-                case .failure(let error):
-                    if let configError = CardReaderConfigError(error: error) {
-                        completion(.failure(configError))
-                    } else {
-                        completion(.failure(error))
-                    }
-                }
-            }
-        }
-
-        public func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void) {
-            guard let siteID = self.siteID else {
-                return
-            }
-
-            readerConfigRemote?.loadDefaultReaderLocation(for: siteID) { result in
-                switch result {
-                case .success(let location):
-                    let readerLocation = location.toReaderLocation(siteID: siteID)
-                    completion(.success(readerLocation.id))
-                case .failure(let error):
-                    if let configError = CardReaderConfigError(error: error) {
-                        completion(.failure(configError))
-                    } else {
-                        completion(.failure(error))
-                    }
-                }
-            }
-        }
-    }
-}
-
-private extension CardReaderConfigError {
-    init?(error: Error) {
-        guard let dotcomError = error as? DotcomError else {
-            return nil
-        }
-        switch dotcomError {
-        case .unknown("store_address_is_incomplete", let message):
-            self = .incompleteStoreAddress(adminUrl: URL(string: message ?? ""))
-            return
-        case .unknown("postal_code_invalid", _):
-            self = .invalidPostalCode
-            return
-        default:
-            return nil
-        }
     }
 }
 

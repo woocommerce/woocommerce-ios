@@ -32,6 +32,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Mock Card Reader Service: In memory
     private var mockCardReaderService: MockCardReaderService!
 
+    private var mockCardReaderConfigProvider: CommonReaderConfigProviding!
+
     private var cardPresentStore: CardPresentPaymentStore!
 
     /// Dummy Site ID
@@ -72,7 +74,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                    storageManager: storageManager,
                                                    network: network,
-                                                   cardReaderService: mockCardReaderService)
+                                                   cardReaderService: mockCardReaderService,
+                                                   cardReaderConfigProvider: mockCardReaderConfigProvider)
     }
 
     override func tearDown() {

@@ -108,6 +108,8 @@
 		02FF056B23DED3670058E6E7 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 02FF056A23DED3670058E6E7 /* Media.xcassets */; };
 		02FF056D23DEDCB90058E6E7 /* MockImageSourceWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */; };
 		02FF056F23E04F320058E6E7 /* MockMediaExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */; };
+		030C94A62971C73700F7F65D /* MockCommonReaderConfigProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030C94A52971C73700F7F65D /* MockCommonReaderConfigProviding.swift */; };
+		030C94A82971C96F00F7F65D /* CommonReaderConfigProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030C94A72971C96F00F7F65D /* CommonReaderConfigProvider.swift */; };
 		031C1EAA27B1702800298699 /* WCPayCharge+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EA927B1702800298699 /* WCPayCharge+ReadOnlyConvertible.swift */; };
 		031C1EAC27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAB27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift */; };
 		031C1EAE27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAD27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift */; };
@@ -541,6 +543,8 @@
 		02FF056A23DED3670058E6E7 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageSourceWriter.swift; sourceTree = "<group>"; };
 		02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMediaExportService.swift; sourceTree = "<group>"; };
+		030C94A52971C73700F7F65D /* MockCommonReaderConfigProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCommonReaderConfigProviding.swift; sourceTree = "<group>"; };
+		030C94A72971C96F00F7F65D /* CommonReaderConfigProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonReaderConfigProvider.swift; sourceTree = "<group>"; };
 		031C1EA927B1702800298699 /* WCPayCharge+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCharge+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		031C1EAB27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		031C1EAD27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1382,6 +1386,7 @@
 				B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */,
 				B52E002D211A3F5500700FDE /* ReadOnlyType.swift */,
 				0271E1652509CF0100633F7A /* AnyError.swift */,
+				030C94A72971C96F00F7F65D /* CommonReaderConfigProvider.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1727,6 +1732,7 @@
 			isa = PBXGroup;
 			children = (
 				D88303EF25E45E6F00C877F9 /* MockCardReaderService.swift */,
+				030C94A52971C73700F7F65D /* MockCommonReaderConfigProviding.swift */,
 				D87F27DA25E7E8EA006EC8C9 /* MockCardReader.swift */,
 				D8652E4726307A5000350F37 /* MockReceiptPrinterService.swift */,
 			);
@@ -2057,6 +2063,7 @@
 				02124DAE2431C11600980D74 /* Media+ProductImage.swift in Sources */,
 				DEFD6D9526443CA100E51E0D /* SitePluginStore.swift in Sources */,
 				26577517243D5E42003168A5 /* ProductCategoryUpdated.swift in Sources */,
+				030C94A82971C96F00F7F65D /* CommonReaderConfigProvider.swift in Sources */,
 				261CF1F1255B389F0090D8D3 /* PaymentGatewayStore.swift in Sources */,
 				E18FDAFE28F97EB9008519BA /* AppAccountToken.swift in Sources */,
 				02FF055023D983F30058E6E7 /* ExportableAsset.swift in Sources */,
@@ -2300,6 +2307,7 @@
 				B9AECD482851F28E00E78584 /* Order+CardPresentPaymentTests.swift in Sources */,
 				02124DB02431C18700980D74 /* Media+ProductImageTests.swift in Sources */,
 				0248B3672459020500A271A4 /* ResultsController+FilterProductTests.swift in Sources */,
+				030C94A62971C73700F7F65D /* MockCommonReaderConfigProviding.swift in Sources */,
 				B54EAF2121188C470029C35E /* EntityListenerTests.swift in Sources */,
 				02FF056F23E04F320058E6E7 /* MockMediaExportService.swift in Sources */,
 				DE6831DD26445B2B00E88B9E /* SitePluginStoreTests.swift in Sources */,

@@ -58,11 +58,11 @@ final class GenerateAllVariationsUseCase {
                     onStateChanged(.creating)
                     self.createVariationsRemotely(for: product, variations: variationsToGenerate) { result in
                         switch result {
-                        case .success(let generatedVariations):
+                        case .success(let allVariations):
 
                             // Updates the current product with the up-to-date list of variations IDs.
                             // This is needed in order to reflect variations count changes back to other screens.
-                            let updatedProduct = product.copy(variations: product.variations + generatedVariations.map { $0.productVariationID })
+                            let updatedProduct = product.copy(variations: allVariations.map { $0.productVariationID })
                             onStateChanged(.finished(true, updatedProduct))
 
                         case .failure(let error):

@@ -49,6 +49,6 @@ final class GenerateVariationsOptionsPresenter {
 private extension GenerateVariationsOptionsPresenter {
     enum Localization {
         static let addVariationAction = NSLocalizedString("Add Variation",
-                                                          comment: "Title on empty state button when the product has attributes but no variations")
+                                                          comment: "Title on the bottom sheet to choose what variation process to start")
     }
 }

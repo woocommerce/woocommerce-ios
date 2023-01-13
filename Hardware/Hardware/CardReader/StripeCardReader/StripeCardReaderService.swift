@@ -62,8 +62,27 @@ extension StripeCardReaderService: CardReaderService {
 
     // MARK: - CardReaderService conformance. Commands
 
-    public func start(_ configProvider: CardReaderConfigProvider,
-                      discoveryMethod: CardReaderDiscoveryMethod) throws {
+    public func checkSupport(for cardReaderType: CardReaderType,
+                             configProvider: CardReaderConfigProvider,
+                             discoveryMethod: CardReaderDiscoveryMethod) -> Bool {
+        guard let deviceType = cardReaderType.toStripe() else {
+            return false
+        }
+
+        prepare(using: configProvider)
+
+        let result = Terminal.shared.supportsReaders(of: deviceType,
+                                                     discoveryMethod: discoveryMethod.toStripe(),
+                                                     simulated: shouldUseSimulatedCardReader)
+        switch result {
+        case .success:
+            return true
+        case .failure:
+            return false
+        }
+    }
+
+    func prepare(using configProvider: CardReaderConfigProvider) {
         setConfigProvider(configProvider)
 
         Terminal.setLogListener {  message in
@@ -75,6 +94,11 @@ extension StripeCardReaderService: CardReaderService {
             DDLogDebug("💳 [StripeTerminal] \(message)")
         }
         Terminal.shared.logLevel = terminalLogLevel
+    }
+
+    public func start(_ configProvider: CardReaderConfigProvider,
+                      discoveryMethod: CardReaderDiscoveryMethod) throws {
+        prepare(using: configProvider)
 
         if shouldUseSimulatedCardReader {
             // You can test with different reader software update scenarios.

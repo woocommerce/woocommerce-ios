@@ -84,6 +84,11 @@ public final class CardPresentPaymentStore: Store {
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID,
                          onCompletion: onCompletion)
+        case .checkDeviceSupport(let siteID, let cardReaderType, let discoveryMethod, let completion):
+            checkDeviceSupport(siteID: siteID,
+                               cardReaderType: cardReaderType,
+                               discoveryMethod: discoveryMethod,
+                               onCompletion: completion)
         case .startCardReaderDiscovery(let siteID, let discoveryMethod, let onReaderDiscovered, let onError):
             startCardReaderDiscovery(siteID: siteID,
                                      discoveryMethod: discoveryMethod,
@@ -128,19 +133,30 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
-   func startCardReaderDiscovery(siteID: Int64,
-                                 discoveryMethod: CardReaderDiscoveryMethod,
-                                 onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void,
-                                 onError: @escaping (Error) -> Void) {
+    func checkDeviceSupport(siteID: Int64,
+                            cardReaderType: CardReaderType,
+                            discoveryMethod: CardReaderDiscoveryMethod,
+                            onCompletion: (Bool) -> Void) {
+        prepareConfigProvider(siteID: siteID)
+        onCompletion(cardReaderService.checkSupport(for: cardReaderType, configProvider: commonReaderConfigProvider, discoveryMethod: discoveryMethod))
+    }
+
+    func prepareConfigProvider(siteID: Int64) {
+        switch usingBackend {
+        case .wcpay:
+            commonReaderConfigProvider.setContext(siteID: siteID, remote: self.remote)
+        case .stripe:
+            commonReaderConfigProvider.setContext(siteID: siteID, remote: self.stripeRemote)
+        }
+    }
+
+    func startCardReaderDiscovery(siteID: Int64,
+                                  discoveryMethod: CardReaderDiscoveryMethod,
+                                  onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void,
+                                  onError: @escaping (Error) -> Void) {
+        prepareConfigProvider(siteID: siteID)
         do {
-            switch usingBackend {
-            case .wcpay:
-                commonReaderConfigProvider.setContext(siteID: siteID, remote: self.remote)
-                try cardReaderService.start(commonReaderConfigProvider, discoveryMethod: discoveryMethod)
-            case .stripe:
-                commonReaderConfigProvider.setContext(siteID: siteID, remote: self.stripeRemote)
-                try cardReaderService.start(commonReaderConfigProvider, discoveryMethod: discoveryMethod)
-            }
+            try cardReaderService.start(commonReaderConfigProvider, discoveryMethod: discoveryMethod)
         } catch {
             return onError(error)
         }

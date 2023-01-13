@@ -16,8 +16,13 @@ final class GenerateVariationsOptionsPresenter {
     ///
     private let baseViewController: UIViewController
 
-    init(baseViewController: UIViewController) {
+    /// Analytics tracker.
+    ///
+    private let analytics: Analytics
+
+    init(baseViewController: UIViewController, analytics: Analytics = ServiceLocator.analytics) {
         self.baseViewController = baseViewController
+        self.analytics = analytics
     }
 
     /// Displays a bottom sheet allowing the merchant to choose whether to generate one variation or to generate all variations.
@@ -28,13 +33,14 @@ final class GenerateVariationsOptionsPresenter {
         }
 
         let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.addVariationAction)
-        let command = GenerateVariationsSelectorCommand(selected: nil) { [baseViewController] option in
+        let command = GenerateVariationsSelectorCommand(selected: nil) { [analytics, baseViewController] option in
             baseViewController.dismiss(animated: true)
             switch option {
             case .single:
                 onCompletion(.single)
             case .all:
                 onCompletion(.all)
+                analytics.track(event: .Variations.productVariationGenerationRequested())
             }
         }
         let bottomSheetPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)

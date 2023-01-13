@@ -1,9 +1,9 @@
 import Foundation
 @testable import WooCommerce
 
-/// Mock type for `CollectOrderPaymentProtocol`
+/// Mock type for `LegacyCollectOrderPaymentProtocol`
 ///
-struct MockCollectOrderPaymentUseCase: CollectOrderPaymentProtocol {
+struct MockCollectOrderPaymentUseCase: LegacyCollectOrderPaymentProtocol {
 
     /// Assign to be returned on `onCollect` closure.
     ///

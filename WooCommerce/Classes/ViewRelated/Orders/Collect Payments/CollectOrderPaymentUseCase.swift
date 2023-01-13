@@ -22,7 +22,7 @@ protocol CollectOrderPaymentProtocol {
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
     /// - Parameter onCancel: Closure invoked after the flow is cancelled
-    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCancel: @escaping () -> (), onCompleted: @escaping () -> ())
+    func collectPayment(onFailure: @escaping (Error) -> (), onCancel: @escaping () -> (), onCompleted: @escaping () -> ())
 }
 
 /// Use case to collect payments from an order.
@@ -129,15 +129,15 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// 7. Tracks payment analytics
     ///
     ///
-    /// - Parameter onCollect: Closure invoked after the collect process has finished.
+    /// - Parameter onFailure: Closure invoked after the payment process fails.
     /// - Parameter onCancel: Closure invoked after the flow is cancelled
     /// - Parameter onCompleted: Closure invoked after the flow has been totally completed, currently after merchant has handled the receipt.
-    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (),
+    func collectPayment(onFailure: @escaping (Error) -> (),
                         onCancel: @escaping () -> (),
                         onCompleted: @escaping () -> ()) {
         guard isTotalAmountValid() else {
             let error = totalAmountInvalidError()
-            onCollect(.failure(error))
+            onFailure(error)
             return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCancel)
         }
 
@@ -158,16 +158,14 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                     case .failure(CollectOrderPaymentUseCaseError.flowCanceledByUser):
                         self.rootViewController.presentedViewController?.dismiss(animated: true)
                         return onCancel()
-                    default:
-                        onCollect(result.map { _ in () }) // Transforms Result<CardPresentCapturedPaymentData, Error> to Result<Void, Error>
+                    case .failure(let error):
+                        return onFailure(error)
+                    case .success(let paymentData):
+                        // Handle payment receipt
+                        self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters,
+                                                 alertProvider: paymentAlertProvider,
+                                                 onCompleted: onCompleted)
                     }
-                    // Handle payment receipt
-                    guard let paymentData = try? result.get() else {
-                        return onCompleted()
-                    }
-                    self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters,
-                                             alertProvider: paymentAlertProvider,
-                                             onCompleted: onCompleted)
                 })
             case .canceled:
                 self.handlePaymentCancellation()

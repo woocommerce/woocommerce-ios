@@ -52,7 +52,8 @@ public class DomainRemote: Remote, DomainRemoteProtocol {
             ParameterKey.domainProductType: "domains"
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
-        return try await enqueue(request)
+        let productsByName: [String: DomainProduct] = try await enqueue(request)
+        return Array(productsByName.values)
     }
 
     public func loadDomains(siteID: Int64) async throws -> [SiteDomain] {

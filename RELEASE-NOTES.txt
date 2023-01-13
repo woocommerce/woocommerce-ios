@@ -2,7 +2,7 @@
 
 11.9
 -----
-
+- [*] Mobile payments: fixed card reader manuals links. [https://github.com/woocommerce/woocommerce-ios/pull/8628]
 
 11.8
 -----

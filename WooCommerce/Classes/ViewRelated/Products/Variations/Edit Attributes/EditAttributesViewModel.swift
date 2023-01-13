@@ -61,7 +61,6 @@ extension EditAttributesViewModel {
 
     /// Generates all missing variations for a product. Up to 100 variations.
     /// Parameters:
-    /// - `Product`: Product on which we will be creating the variations
     /// - `onStateChanged`: Closure invoked every time there is a significant state change in the generation process.
     ///
     func generateAllVariations(onStateChanged: @escaping (GenerateAllVariationsUseCase.State) -> Void) {

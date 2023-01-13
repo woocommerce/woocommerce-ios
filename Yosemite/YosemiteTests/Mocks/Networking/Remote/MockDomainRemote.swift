@@ -22,6 +22,16 @@ extension MockDomainRemote: DomainRemoteProtocol {
         return try result.get()
     }
 
+    func loadPaidDomainSuggestions(query: String) async throws -> [PaidDomainSuggestion] {
+        // TODO: 8558 - Yosemite layer for paid domains
+        throw NetworkError.notFound
+    }
+
+    func loadDomainProducts() async throws -> [DomainProduct] {
+        // TODO: 8558 - Yosemite layer for paid domains
+        throw NetworkError.notFound
+    }
+
     func loadDomains(siteID: Int64) async throws -> [SiteDomain] {
         // TODO: 8558 - Yosemite layer
         throw NetworkError.notFound

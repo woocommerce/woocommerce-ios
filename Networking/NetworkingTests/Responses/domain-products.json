@@ -1,0 +1,64 @@
+{
+    "dotart_domain": {
+        "product_id": 355,
+        "product_name": ".art Domain Registration",
+        "product_slug": "dotart_domain",
+        "description": "",
+        "product_type": "domain_reg",
+        "available": true,
+        "billing_product_slug": "wp-dot-art-registration",
+        "is_domain_registration": true,
+        "cost_display": "US$2.00",
+        "combined_cost_display": "US$15.00",
+        "cost": 2,
+        "cost_smallest_unit": 200,
+        "currency_code": "USD",
+        "price_tier_list": [],
+        "price_tier_usage_quantity": null,
+        "product_term": "year",
+        "price_tiers": [],
+        "price_tier_slug": "",
+        "tld": "art",
+        "is_privacy_protection_product_purchase_allowed": true,
+        "sale_cost": 3.9,
+        "combined_sale_cost_display": "US$3.90",
+        "sale_coupon": {
+            "start_date": "2022-12-01 00:01:00",
+            "expires": "2023-03-31 00:00:00",
+            "discount": 74,
+            "purchase_types": [
+                3
+            ],
+            "product_ids": [
+                355
+            ],
+            "allowed_for_domain_transfers": false,
+            "allowed_for_renewals": false,
+            "allowed_for_new_purchases": true,
+            "code": "7ea7af1f76879264",
+            "tld_rank": null
+        }
+    },
+    "dotbar_domain": {
+        "product_id": 356,
+        "product_name": ".bar Domain Registration",
+        "product_slug": "dotbar_domain",
+        "description": "",
+        "product_type": "domain_reg",
+        "available": true,
+        "billing_product_slug": "wp-dot-bar-registration",
+        "is_domain_registration": true,
+        "cost_display": "US$47.00",
+        "combined_cost_display": "US$60.00",
+        "cost": 47,
+        "cost_smallest_unit": 4700,
+        "currency_code": "USD",
+        "price_tier_list": [],
+        "price_tier_usage_quantity": null,
+        "product_term": "year",
+        "price_tiers": [],
+        "price_tier_slug": "",
+        "tld": "bar",
+        "is_privacy_protection_product_purchase_allowed": true
+    }
+}

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		020220E223966CD900290165 /* product-shipping-classes-load-one.json in Resources */ = {isa = PBXBuildFile; fileRef = 020220E123966CD900290165 /* product-shipping-classes-load-one.json */; };
 		0205021C27C86B9700FB1C6B /* inbox-note-without-isRead.json in Resources */ = {isa = PBXBuildFile; fileRef = 0205021B27C86B9700FB1C6B /* inbox-note-without-isRead.json */; };
+		02050F57296FE90A00710E63 /* domain-suggestions-paid.json in Resources */ = {isa = PBXBuildFile; fileRef = 02050F56296FE90A00710E63 /* domain-suggestions-paid.json */; };
+		02050F59296FEC5B00710E63 /* domain-products.json in Resources */ = {isa = PBXBuildFile; fileRef = 02050F58296FEC5B00710E63 /* domain-products.json */; };
 		020C907B24C6E108001E2BEB /* product-variation-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 020C907A24C6E108001E2BEB /* product-variation-update.json */; };
 		020C907F24C7D359001E2BEB /* ProductVariationMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020C907E24C7D359001E2BEB /* ProductVariationMapperTests.swift */; };
 		020D07B823D852BB00FD9580 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020D07B723D852BB00FD9580 /* Media.swift */; };
@@ -824,6 +826,8 @@
 /* Begin PBXFileReference section */
 		020220E123966CD900290165 /* product-shipping-classes-load-one.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-shipping-classes-load-one.json"; sourceTree = "<group>"; };
 		0205021B27C86B9700FB1C6B /* inbox-note-without-isRead.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "inbox-note-without-isRead.json"; sourceTree = "<group>"; };
+		02050F56296FE90A00710E63 /* domain-suggestions-paid.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "domain-suggestions-paid.json"; sourceTree = "<group>"; };
+		02050F58296FEC5B00710E63 /* domain-products.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "domain-products.json"; sourceTree = "<group>"; };
 		020C907A24C6E108001E2BEB /* product-variation-update.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation-update.json"; sourceTree = "<group>"; };
 		020C907E24C7D359001E2BEB /* ProductVariationMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationMapperTests.swift; sourceTree = "<group>"; };
 		020D07B723D852BB00FD9580 /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
@@ -2163,7 +2167,9 @@
 				028CB71A290224D700331C09 /* create-account-error-username.json */,
 				028CB712290223CB00331C09 /* create-account-success.json */,
 				02EF166F292F0CF400D90AD6 /* create-cart-success.json */,
+				02050F58296FEC5B00710E63 /* domain-products.json */,
 				0239306C291A973F00B2632F /* domain-suggestions.json */,
+				02050F56296FE90A00710E63 /* domain-suggestions-paid.json */,
 				DE50295F28C609A300551736 /* jetpack-connected-user.json */,
 				DE34051A28BDF12C00CF0D97 /* jetpack-connection-url.json */,
 				DE50296228C609DE00551736 /* jetpack-user-not-connected.json */,
@@ -3108,6 +3114,7 @@
 				02BA23CA22EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json in Resources */,
 				31A451D627863A2E00FE81AA /* stripe-account-unknown-status.json in Resources */,
 				45152819257A84A60076B03C /* product-attributes-all.json in Resources */,
+				02050F59296FEC5B00710E63 /* domain-products.json in Resources */,
 				45AB8B1324AA34CB00B5B36E /* product-tags-deleted.json in Resources */,
 				02698CFC24C1B0CE005337C4 /* product-variations-load-all-first-on-sale-empty-sale-price.json in Resources */,
 				31A451D427863A2E00FE81AA /* stripe-account-rejected-listed.json in Resources */,
@@ -3130,6 +3137,7 @@
 				D8A284F425FBB48D0019A84B /* product-attribute-terms.json in Resources */,
 				74E30951216E8DCE00ABCE4C /* site-visits-alt.json in Resources */,
 				74ABA1C5213F17AA00FFAD30 /* top-performers-day.json in Resources */,
+				02050F57296FE90A00710E63 /* domain-suggestions-paid.json in Resources */,
 				31B8D6B626583970008E3DB2 /* wcpay-account-implicitly-not-eligible.json in Resources */,
 				26B2F74724C55A6E0065CCC8 /* leaderboards-year.json in Resources */,
 				31054714262E2F3B00C5C02B /* wcpay-payment-intent-requires-payment-method.json in Resources */,

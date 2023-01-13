@@ -1,0 +1,30 @@
+[
+    {
+        "domain_name": "color.bar",
+        "relevance": 0.33,
+        "supports_privacy": true,
+        "vendor": "donuts",
+        "match_reasons": [
+            "exact-match"
+        ],
+        "product_id": 356,
+        "product_slug": "dotbar_domain",
+        "cost": "US$60.00",
+        "raw_price": 60,
+        "currency_code": "USD"
+    },
+    {
+        "domain_name": "color.ink",
+        "relevance": 0.33,
+        "supports_privacy": true,
+        "vendor": "donuts",
+        "match_reasons": [
+            "exact-match"
+        ],
+        "product_id": 359,
+        "product_slug": "dotink_domain",
+        "cost": "US$25.00",
+        "raw_price": 25,
+        "currency_code": "USD"
+    }
+]

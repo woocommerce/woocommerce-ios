@@ -9,6 +9,7 @@
 
 @end
 
+#pragma GCC diagnostic ignored "-Wprotocol"
 @implementation CaptureLogs
 
 - (instancetype)init

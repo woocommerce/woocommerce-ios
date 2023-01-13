@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-12-23 08:54:03+0000 */
+/* Translation-Revision-Date: 2023-01-11 10:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -235,6 +235,9 @@ which should be translated separately and considered part of this sentence. */
 /* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
 "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery." = "Dengan pilihan \"Pembayaran Langsung\" saat checkout, Anda dapat menerima pembayaran kartu atau tunai saat pengambilan atau penerimaan barang.";
 
+/* Industry option in the store creation category question. */
+"A C And Heating Contractors" = "Kontraktor Pendingin dan Pemanas Ruangan";
+
 /* Instruction text to explain magic link login step. */
 "A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "Akun WordPress.com terhubung ke kredensial toko Anda. Untuk melanjutkan, kami akan mengirimkan tautan verifikasi ke alamat email di atas.";
 
@@ -298,11 +301,20 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "Akses tarif diskon pengiriman. Saat ini tersedia dengan DHL dan USPS, dan akan segera hadir lebih banyak lagi!";
 
+/* Industry option in the store creation category question. */
+"Accessories" = "Aksesori";
+
+/* Industry option in the store creation category question. */
+"Accessories For Tobacco And Marijuana" = "Aksesori untuk Tembakau dan Marijuana";
+
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "Jenis Akun";
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "Akun terhubung";
+
+/* Industry option in the store creation category question. */
+"Accounting, Auditing, Or Tax Prep" = "Persiapan Akuntansi, Audit, atau Pajak";
 
 /* Title for the section related to actions inside In-Person Payments settings */
 "Actions" = "Tindakan";
@@ -409,9 +421,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "Tambahkan Variasi";
 
-/* Title for the button on the Products onboarding banner */
-"Add a Product" = "Tambahkan Produk";
-
 /* Button title on the store picker for store creation */
 "Add a Store" = "Tambahkan Toko";
 
@@ -429,7 +438,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "Tambahkan harga ke varian agar terlihat di toko Anda";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+   The action to add a product
+   Title for the button on the Products onboarding banner */
 "Add a product" = "Tambahkan produk";
 
 /* Cell text in Add / Edit product when there are no images. */
@@ -468,6 +478,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "Tambahkan tag baru, yang dipisahkan dengan koma.";
+
+/* Title for the option to generate just one variation */
+"Add new variation" = "Tambah variasi baru";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Tambahkan tautan produk";
@@ -527,14 +540,32 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "Menambahkan variasi ke pesanan.";
 
+/* Industry option in the store creation category question. */
+"Adult Content Or Services" = "Konten atau Layanan Dewasa";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Tanda tangan orang dewasa wajib diisi (+%1$@)";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Alat canggih untuk meninjau status aplikasi";
 
+/* Country option for a site address. */
+"Afghanistan" = "Afghanistan";
+
+/* Industry option in the store creation category question. */
+"Airlines And Air Carriers" = "Maskapai Pesawat dan Kapal Induk";
+
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
+
+/* Country option for a site address. */
+"Albania" = "Albania";
+
+/* Industry option in the store creation category question. */
+"Alcohol" = "Alkohol";
+
+/* Country option for a site address. */
+"Algeria" = "Aljazair";
 
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "Semua Pesanan";
@@ -593,6 +624,12 @@ which should be translated separately and considered part of this sentence. */
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Atau:";
 
+/* Option in the store creation selling platforms question. */
+"Amazon" = "Amazon";
+
+/* Country option for a site address. */
+"American Samoa" = "Samoa Amerika";
+
 /* Title of the Amount label on Coupon Details screen */
 "Amount" = "Jumlah";
 
@@ -612,6 +649,9 @@ which should be translated separately and considered part of this sentence. */
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
 "Amount Paid" = "Jumlah yang Dibayarkan";
+
+/* Industry option in the store creation category question. */
+"Amusement Parks, Carnivals, Or Circuses" = "Taman Hiburan, Karnaval, atau Sirkus";
 
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
 "An HTTP error code %i was returned." = "Kode eror HTTP %i.";
@@ -668,6 +708,24 @@ which should be translated separately and considered part of this sentence. */
 /* Message when enabling analytics succeeds */
 "Analytics enabled successfully." = "Analitik berhasil diaktifkan.";
 
+/* Country option for a site address. */
+"Andorra" = "Andorra";
+
+/* Country option for a site address. */
+"Angola" = "Angola";
+
+/* Country option for a site address. */
+"Anguilla" = "Anguilla";
+
+/* Country option for a site address. */
+"Antarctica" = "Antartika";
+
+/* Country option for a site address. */
+"Antigua and Barbuda" = "Antigua dan Barbuda";
+
+/* Industry option in the store creation category question. */
+"Antiques" = "Barang antik";
+
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
    Label for one of the filters in order date range
@@ -691,6 +749,9 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Nama Aplikasi";
 
+/* Message to display when the constructed admin or login URL for the logged-in site is not accessible */
+"Application password cannot be generated due to a custom login or admin URL on your site." = "Kata sandi aplikasi tidak dapat dibuat karena login kustom atau URL admin pada situs Anda.";
+
 /* Apply navigation button in custom range date picker
    Change order status screen - button title to apply selection */
 "Apply" = "Terapkan";
@@ -713,6 +774,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "Menyetujui komentar";
+
+/* Industry option in the store creation category question. */
+"Apps" = "Aplikasi";
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "Apakah Anda yakin ingin mengubah jenis produk?";
@@ -747,11 +811,20 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed in the alert for dismissing all the inbox notes. */
 "Are you sure? Inbox messages will be dismissed forever." = "Apakah Anda yakin? Pesan kotak masuk akan terus diabaikan.";
 
-/* Option in the store creation category question. */
-"Art & Photography" = "Seni & Fotografi";
+/* Country option for a site address. */
+"Argentina" = "Argentina";
 
-/* Option in the store creation category question. */
-"Arts and Crafts" = "Seni dan Kerajinan";
+/* Country option for a site address. */
+"Armenia" = "Armenia";
+
+/* Country option for a site address. */
+"Aruba" = "Aruba";
+
+/* Industry option in the store creation category question. */
+"Assisted Living" = "Hidup Berbantuan";
+
+/* Industry option in the store creation category question. */
+"Attorneys And Lawyers" = "Advokat dan Pengacara";
 
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "Nama atribut";
@@ -763,6 +836,12 @@ which should be translated separately and considered part of this sentence. */
 /* Primary text for the generate first variation screen */
 "Attributes added!" = "Atribut ditambahkan!";
 
+/* Country option for a site address. */
+"Australia" = "Australia";
+
+/* Country option for a site address. */
+"Austria" = "Austria";
+
 /* No comment provided by engineer. */
 "Authenticating" = "Mengotentikasi";
 
@@ -773,6 +852,12 @@ which should be translated separately and considered part of this sentence. */
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "Autentikasi diperlukan untuk host: %@";
 
+/* Industry option in the store creation category question. */
+"Auto Parts And Accessories" = "Suku Cadang dan Aksesori Mobil";
+
+/* Industry option in the store creation category question. */
+"Auto Services" = "Layanan Mobil";
+
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Dikelola secara otomatis di situs ini";
 
@@ -782,6 +867,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Keluarga Automattic";
 
+/* Industry group option in the store creation category question. */
+"Autos (Sales and Service)" = "Mobil (Penjualan dan Layanan)";
+
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "Nilai Pesanan Rata-Rata";
 
@@ -790,6 +878,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
 "Awaiting payment via %@" = "Menunggu pembayaran melalui %@";
+
+/* Country option for a site address. */
+"Azerbaijan" = "Azerbaijan";
 
 /* Details section title in the Edit Address Form */
 "BILLING ADDRESS" = "ALAMAT PENAGIHAN";
@@ -806,7 +897,7 @@ which should be translated separately and considered part of this sentence. */
 "Back to Order" = "Kembali ke Pesanan";
 
 /* Text for the button to dismiss the store picker error screen */
-"Back to Sites" = "Kembali ke Situs";
+"Back to sites" = "Kembali ke Situs";
 
 /* Title of a button to dismiss the survey complete screen */
 "Back to store" = "Kembali ke toko";
@@ -818,8 +909,62 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "Pesanan tunda";
 
+/* Country option for a site address. */
+"Bahamas" = "Bahama";
+
+/* Country option for a site address. */
+"Bahrain" = "Bahrain";
+
+/* Industry option in the store creation category question. */
+"Bail Bonds" = "Agen Jaminan";
+
+/* Country option for a site address. */
+"Bangladesh" = "Bangladesh";
+
+/* Industry option in the store creation category question. */
+"Bankruptcy Services" = "Layanan Kepailitan";
+
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Nomor bar %1$i, %2$@, ";
+
+/* Country option for a site address. */
+"Barbados" = "Barbados";
+
+/* Industry option in the store creation category question. */
+"Bars And Nightclubs" = "Bar dan Klub Malam";
+
+/* Industry option in the store creation category question. */
+"Beauty Products" = "Produk-Produk Kecantikan";
+
+/* Country option for a site address. */
+"Belarus" = "Belarus";
+
+/* Country option for a site address. */
+"Belau" = "Belau";
+
+/* Country option for a site address. */
+"Belgium" = "Belgia";
+
+/* Country option for a site address. */
+"Belize" = "Belize";
+
+/* Country option for a site address. */
+"Benin" = "Benin";
+
+/* Country option for a site address. */
+"Bermuda" = "Bermuda";
+
+/* Industry option in the store creation category question. */
+"Betting Or Fantasy Sports" = "Taruhan atau Olahraga Fantasi";
+
+/* Country option for a site address. */
+"Bhutan" = "Bhutan";
+
+/* Option in the store creation selling platforms question. */
+"Big Cartel" = "Kartel Besar";
+
+/* Option in the store creation selling platforms question. */
+"Big Commerce" = "Perdagangan Besar";
 
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data
@@ -835,17 +980,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's blog */
 "Blog" = "Blog";
 
+/* Industry option in the store creation category question. */
+"Blogs And Written Content" = "Blog dan Konten Tertulis";
+
 /* The button title on the reader type alert, for the user to choose a bluetooth reader. */
 "Bluetooth Reader" = "Pembaca Bluetooth";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "Izin pengaktifan Bluetooth diperlukan";
 
+/* Industry option in the store creation category question. */
+"Boat Sales" = "Penjualan Perahu";
+
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Tebal";
 
-/* Option in the store creation category question. */
-"Books & Magazines" = "Buku & Majalah";
+/* Country option for a site address. */
+"Bolivia" = "Bolivia";
+
+/* Country option for a site address. */
+"Bonaire, Saint Eustatius and Saba" = "Bonaire, Saint Eustatius dan Saba";
+
+/* Industry option in the store creation category question. */
+"Books" = "Buku";
 
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "Tingkatkan penjualan dengan mengirimi pelanggan promosi dan diskon spesial.";
@@ -853,15 +1010,51 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Linked Products announcement banner */
 "Boost your sales with linked products" = "Tingkatkan penjualan Anda dengan produk tertaut";
 
+/* Country option for a site address. */
+"Bosnia and Herzegovina" = "Bosnia dan Herzegovina";
+
+/* Country option for a site address. */
+"Botswana" = "Botswana";
+
+/* Country option for a site address. */
+"Bouvet Island" = "Pulau Bouvet";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Kotak";
+
+/* Country option for a site address. */
+"Brazil" = "Brasil";
+
+/* Country option for a site address. */
+"British Indian Ocean Territory" = "Teritori Inggris di Samudra Hindia";
+
+/* Country option for a site address. */
+"British Virgin Islands" = "Kepulauan Virgin Britania Raya";
+
+/* Country option for a site address. */
+"Brunei" = "Brunei Darussalam";
 
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "Buat katalog dengan menambahkan produk yang ingin Anda jual.";
 
+/* Industry group option in the store creation category question. */
+"Building Services" = "Layanan Pembangunan";
+
+/* Country option for a site address. */
+"Bulgaria" = "Bulgaria";
+
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
 "Bulk Update" = "Pembaruan Massal";
+
+/* Country option for a site address. */
+"Burkina Faso" = "Burkina Faso";
+
+/* Country option for a site address. */
+"Burundi" = "Burundi";
+
+/* Industry option in the store creation category question. */
+"Business And Secretarial Schools" = "Sekolah Bisnis dan Sekretaris";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Teks Tombol";
@@ -885,6 +1078,12 @@ which should be translated separately and considered part of this sentence. */
    Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
 "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "Dengan mengetuk tombol Hubungkan Jetpack, Anda menyetujui %1$@ kami dan bersedia %2$@ dengan WordPress.com.";
 
+/* Header of a list of other countries in the store creation country question. */
+"COUNTRIES" = "NEGARA";
+
+/* Header of the current country in the store creation country question. */
+"CURRENT LOCATION" = "LOKASI SAAT INI";
+
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "PAKET KHUSUS";
 
@@ -894,8 +1093,14 @@ which should be translated separately and considered part of this sentence. */
 /* Call phone number button title */
 "Call" = "Hubungi";
 
+/* Country option for a site address. */
+"Cambodia" = "Kamboja";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "Tangkapan kamera tidak mendukung jenis media: %@";
+
+/* Country option for a site address. */
+"Cameroon" = "Kamerun";
 
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Tidak Dapat Meminta Tautan";
@@ -909,9 +1114,13 @@ which should be translated separately and considered part of this sentence. */
 /* Local notification title when the user encounters an error with WP.com password. */
 "Can't remember your password?" = "Lupa kata sandi Anda?";
 
+/* Country option for a site address. */
+"Canada" = "Kanada";
+
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
+   Button text to confirm that we don't want to generate all variations
    Button title Cancel in Discard Changes Action Sheet
    Button title Cancel in Downloadable File More Options Action Sheet
    Button title Cancel in Downloadable Files More Options Action Sheet
@@ -1010,9 +1219,21 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Tidak dapat memverifikasi instalasi WooCommerce situs Anda.";
 
+/* Country option for a site address. */
+"Cape Verde" = "Cape Verde";
+
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Tangkap ulasan produk kualitas tinggi untuk toko Anda.";
+
+/* Industry option in the store creation category question. */
+"Car Rentals" = "Persewaan Mobil";
+
+/* Industry option in the store creation category question. */
+"Car Sales" = "Penjualan Mobil";
+
+/* Industry option in the store creation category question. */
+"Car Washes" = "Pencucian Mobil";
 
 /* Card method title on the select payment method screen */
 "Card" = "Kartu";
@@ -1031,6 +1252,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "Kartu diambil terlalu cepat - harap coba transaksi lagi";
+
+/* Industry option in the store creation category question. */
+"Carpentry Contractors" = "Kontraktor Pertukangan";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Operator dan Tarif";
@@ -1051,11 +1275,23 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Kategori";
 
+/* Industry option in the store creation category question. */
+"Caterers" = "Jasa Katering";
+
+/* Country option for a site address. */
+"Cayman Islands" = "Kepulauan Cayman";
+
+/* Country option for a site address. */
+"Central African Republic" = "Republik Afrika Tengah";
+
 /* Error message when local validation fails in Shipping Label Address Validation */
 "Certain required fields need attention." = "Kolom wajib tertentu perlu diperhatikan.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Kesalahan sertifikat";
+
+/* Country option for a site address. */
+"Chad" = "Chad";
 
 /* Message title of bottom sheet for selecting a product type */
 "Change product type" = "Ubah jenis produk";
@@ -1068,6 +1304,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the row that has a switch when creating a simple payment */
 "Charge Taxes" = "Kena Pajak";
+
+/* Industry option in the store creation category question. */
+"Charities Or Social Service Organizations" = "Organisasi Amal atau Layanan Sosial";
+
+/* Industry option in the store creation category question. */
+"Check Cashing" = "Pencairan Cek";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Pastikan URL yang dimasukkan sudah valid";
@@ -1086,6 +1328,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the WPCOM checkout web view. */
 "Checkout" = "Checkout";
+
+/* Industry option in the store creation category question. */
+"Child Care Services" = "Layanan Pengasuhan Anak";
+
+/* Country option for a site address. */
+"Chile" = "Chili";
+
+/* Country option for a site address. */
+"China" = "Tiongkok";
+
+/* Industry option in the store creation category question. */
+"Chiropractors" = "Chiropractor";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Pilih Ukuran Kertas";
@@ -1120,12 +1374,18 @@ which should be translated separately and considered part of this sentence. */
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "Pilih metode pembayaran Anda";
 
+/* Country option for a site address. */
+"Christmas Island" = "Pulau Natal";
+
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
 "City" = "Kota";
 
 /* Error showed in Shipping Label Address Validation for the city field */
 "City missing" = "Kota belum diisi";
+
+/* Industry option in the store creation category question. */
+"Civic, Fraternal, Or Social Associations" = "Asosiasi Sipil, Persaudaraan, atau Sosial";
 
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
@@ -1161,6 +1421,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "Menutup akun...";
 
+/* Industry option in the store creation category question. */
+"Clothing And Accessories" = "Pakaian dan Aksesori";
+
+/* Country option for a site address. */
+"Cocos (Keeling) Islands" = "Kepulauan Cocos (Keeling)";
+
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Diciutkan";
 
@@ -1177,8 +1443,23 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the collect payment flow with a user name. */
 "Collect payment from %1$@" = "Terima pembayaran dari %1$@";
 
+/* Industry option in the store creation category question. */
+"Collections Agencies" = "Jasa Penagihan Utang";
+
+/* Industry option in the store creation category question. */
+"Colleges Or Universities" = "Perguruan Tinggi atau Universitas";
+
+/* Country option for a site address. */
+"Colombia" = "Kolombia";
+
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store" = "Segera kembali untuk belajar lebih banyak tips dan wawasan untuk mengembangkan toko Anda";
+
+/* Industry option in the store creation category question. */
+"Commuter Transportation" = "Transportasi Komuter";
+
+/* Country option for a site address. */
+"Comoros" = "Komoro";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1192,6 +1473,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Menulis catatan pesanan baru.";
+
+/* Industry option in the store creation category question. */
+"Computer Repair" = "Perbaikan Komputer";
 
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "Konfigurasi diperbarui";
@@ -1207,6 +1491,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title Discard Changes in Discard Changes Action Sheet */
 "Confirm and leave" = "Konfirmasi lalu keluar";
+
+/* Title of the store creation profiler question about the store country. */
+"Confirm your location" = "Konfirmasi lokasi Anda";
+
+/* Country option for a site address. */
+"Congo (Brazzaville)" = "Kongo (Brazzaville)";
+
+/* Country option for a site address. */
+"Congo (Kinshasa)" = "Kongo (Kinshasa)";
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "Selamat, Anda telah membaca semuanya!";
@@ -1282,8 +1575,8 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "Menyambungkan ke toko Anda";
 
-/* Option in the store creation category question. */
-"Construction & Industrial" = "Konstruksi & Industri";
+/* Industry option in the store creation category question. */
+"Consulting" = "Konsultasi";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Hubungi Pelanggan";
@@ -1295,10 +1588,10 @@ which should be translated separately and considered part of this sentence. */
 "Contact Email" = "Hubungi via Email";
 
 /* Action button to contact support when Jetpack install fails
+   Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
-   The title of the button to contact support in the Error Loading Data banner
    Title of the button to contact support for help accessing a store after Jetpack setup */
 "Contact Support" = "Hubungi Dukungan";
 
@@ -1306,7 +1599,8 @@ which should be translated separately and considered part of this sentence. */
 "Contact WooCommerce Payments Support" = "Hubungi Dukungan Pembayaran WooCommerce";
 
 /* Action button to contact support on enable analytics screen
-   Local notification action to contact support. */
+   Local notification action to contact support.
+   The title of the button to contact support in the Error Loading Data banner */
 "Contact support" = "Hubungi dukungan";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
@@ -1331,14 +1625,14 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to continue with a selected domain. */
 "Continue" = "Lanjutkan";
 
-/* Call to Action to finish the setup of In-Person Payments in the Menu */
-"Continue Setup" = "Lanjutkan Pengaturan";
-
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "Lanjutkan Dengan WordPress.com";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Lanjutkan membaca";
+
+/* Call to Action to finish the setup of In-Person Payments in the Menu */
+"Continue setup" = "Lanjutkan Pengaturan";
 
 /* Title of the button on the store creation summary view to continue to payment. */
 "Continue to Payment" = "Lanjutkan ke Pembayaran";
@@ -1352,11 +1646,17 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Melanjutkan dengan Apple";
 
+/* Industry option in the store creation category question. */
+"Convenience Stores" = "Toko Serba Ada";
+
 /* Conversion stat label on dashboard. */
 "Conversion" = "Konversi";
 
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "Angka Konversi";
+
+/* Country option for a site address. */
+"Cook Islands" = "Kepulauan Cook";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Salin";
@@ -1372,6 +1672,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
 "Copy tracking number" = "Salin nomor pelacakan";
+
+/* Country option for a site address. */
+"Costa Rica" = "Kosta Rika";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "Bisa Lebih Baik";
@@ -1403,10 +1706,16 @@ which should be translated separately and considered part of this sentence. */
 /* Error title displayed when unable to close user account. */
 "Couldn’t close account automatically" = "Tidak dapat menutup akun secara otomatis";
 
+/* Industry option in the store creation category question. */
+"Counseling Services" = "Layanan Konseling";
+
 /* Text field country in Edit Address Form
    Text field country in Shipping Label Address Validation
    Title to select country from the edit address screen */
 "Country" = "Negara";
+
+/* Industry option in the store creation category question. */
+"Country Clubs" = "Country Club";
 
 /* Error showed in Shipping Label Address Validation for the country field */
 "Country missing" = "Negara belum diisi";
@@ -1444,6 +1753,9 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "Kupon";
+
+/* Industry option in the store creation category question. */
+"Courier Services" = "Layanan Kurir";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Crash Menu Debug";
@@ -1499,6 +1811,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Buat paket baru";
 
+/* Description for the option to generate just one variation */
+"Create one new variation. Manually set which attributes belong to the variable product." = "Buat satu variasi baru. Menetapkan atribut yang termasuk dalam produk variabel secara manual.";
+
 /* Title of the banner notice in the Orders tab */
 "Create orders!" = "Buat pesanan!";
 
@@ -1508,11 +1823,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Buat variasi pertama Anda";
 
+/* Description for the option to generate all possible variations */
+"Creates variations for all combinations of your attributes." = "Membuat variasi untuk semua kombinasi atribut Anda.";
+
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "Membuat Produk Templat...";
 
 /* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
 "Creating your store" = "Membuat toko Anda";
+
+/* Industry option in the store creation category question. */
+"Credit Counseling Or Credit Repair" = "Konseling Kredit atau Pemulihan Kredit";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "Kartu Kredit";
@@ -1523,9 +1844,27 @@ which should be translated separately and considered part of this sentence. */
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "Kartu kredit diambil dari akun WordPress.com berikut: %1$@ <%2$@>";
 
+/* Country option for a site address. */
+"Croatia" = "Kroasia";
+
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "Cross-sells";
+
+/* Industry option in the store creation category question. */
+"Cruise Lines" = "Maskapai Kapal Pesiar";
+
+/* Industry option in the store creation category question. */
+"Cryptocurrencies" = "Mata Uang Kripto";
+
+/* Country option for a site address. */
+"Cuba" = "Kuba";
+
+/* Country option for a site address. */
+"Curacao" = "Curacao";
+
+/* Industry option in the store creation category question. */
+"Currency Exchanges" = "Penukaran Mata Uang";
 
 /* Cell title: the current date. */
 "Current" = "Saat ini";
@@ -1538,6 +1877,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "Harga saat ini berbeda-beda.";
+
+/* Error description for when there are too many variations to generate. */
+"Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Saat ini, pembuatan mendukung maksimal 100 variasi. Pembuatan variasi untuk produk ini akan membuat %d variasi.";
 
 /* Name of the section for custom shipment tracking carriers
    Title of the Analytics Hub Custom selection range */
@@ -1609,6 +1951,12 @@ which should be translated separately and considered part of this sentence. */
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Tak perlu antre saat di kantor pos dengan mencetak label pengiriman di rumah dari perangkat seluler dengan harga diskon!";
 
+/* Country option for a site address. */
+"Cyprus" = "Siprus";
+
+/* Country option for a site address. */
+"Czech Republic" = "Republik Ceko";
+
 /* Details section title in the Edit Address Form */
 "DETAILS" = "RINCIAN";
 
@@ -1630,6 +1978,12 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Tanggal: Terlama ke Terbaru";
 
+/* Industry option in the store creation category question. */
+"Dating Services" = "Layanan Kencan";
+
+/* Industry option in the store creation category question. */
+"Debt Reduction Services" = "Layanan Pengurangan Utang";
+
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Asal";
 
@@ -1644,6 +1998,12 @@ which should be translated separately and considered part of this sentence. */
 /* Delete tracking button title */
 "Delete Tracking" = "Hapus Pelacakan";
 
+/* Country option for a site address. */
+"Denmark" = "Denmark";
+
+/* Industry option in the store creation category question. */
+"Dentists And Orthodontists" = "Dokter Gigi dan Ortodontis";
+
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Deskripsikan produk Anda";
 
@@ -1655,14 +2015,23 @@ which should be translated separately and considered part of this sentence. */
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Deskripsi";
 
-/* Option in the store creation category question. */
-"Design & Marketing" = "Desain & Pemasaran";
+/* Industry option in the store creation category question. */
+"Designer Products" = "Produk-produk Perancang";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Menentukan posisi produk di katalog. Semakin rendah nilai angka, semakin posisi tinggi item di daftar produk. Anda juga dapat menggunakan nilai negatif";
 
 /* Instructions after a Magic Link was sent, but email is incorrect. */
 "Didn't mean to create a new account? Go back to re-enter your email address." = "Tidak ingin membuat akun baru? Silakan kembali dan masukkan lagi alamat email Anda.";
+
+/* Industry option in the store creation category question. */
+"Digital Marketing" = "Pemasaran Digital";
+
+/* Industry group option in the store creation category question. */
+"Digital Products" = "Produk Digital";
+
+/* Industry option in the store creation category question. */
+"Digital Wallets" = "Dompet Digital";
 
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
 "Dimensions: %1$@ x %2$@ %3$@" = "Dimensi: %1$@ x %2$@%3$@";
@@ -1732,6 +2101,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "Abaikan semua pesan";
 
+/* Country option for a site address. */
+"Djibouti" = "Djibouti";
+
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "Jangan izinkan";
 
@@ -1744,8 +2116,17 @@ which should be translated separately and considered part of this sentence. */
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Ingin memindahkan produk ini ke Tempat Sampah?";
 
+/* Industry option in the store creation category question. */
+"Doctors And Physicians" = "Dokter dan Tenaga Medis";
+
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Dokumen";
+
+/* Country option for a site address. */
+"Dominica" = "Dominika";
+
+/* Country option for a site address. */
+"Dominican Republic" = "Republik Dominika";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Belum memiliki akun? _Daftar_";
@@ -1868,8 +2249,14 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Kenali produk Anda dengan mudah dengan kode unik";
 
+/* Option in the store creation selling platforms question. */
+"Ebay" = "eBay";
+
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Ecommerce reports" = "Laporan eCommerce";
+
+/* Country option for a site address. */
+"Ecuador" = "Ekuador";
 
 /* Button to edit a customer on the New Order screen
    Button to edit an order on Order Details screen
@@ -1915,8 +2302,29 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit customer note on the New Order screen */
 "Edit customer note" = "Sunting catatan pelanggan";
 
-/* Option in the store creation category question. */
-"Electronics and Software" = "Elektronik dan Perangkat Lunak";
+/* Action to start bulk editing of products */
+"Edit products" = "Edit produk";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
+"Edit status or price for multiple products at once" = "Edit status atau harga untuk lebih dari satu produk pada saat bersamaan";
+
+/* Industry group option in the store creation category question. */
+"Education" = "Pendidikan";
+
+/* Industry option in the store creation category question. */
+"Educational Services" = "Layanan Pendidikan";
+
+/* Country option for a site address. */
+"Egypt" = "Mesir";
+
+/* Country option for a site address. */
+"El Salvador" = "El Salvador";
+
+/* Industry option in the store creation category question. */
+"Electrical Contractors" = "Kontraktor Listrik";
+
+/* Industry option in the store creation category question. */
+"Elementary Or Secondary Schools" = "Sekolah Dasar atau Menengah Pertama";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "Memenuhi syarat untuk penjemputan gratis";
@@ -1948,6 +2356,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "Email: %@";
+
+/* Industry option in the store creation category question. */
+"Employment Agencies" = "Agensi Ketenagakerjaan";
 
 /* Accessibility text for Unit Input cell */
 "Empty" = "Kosong";
@@ -2088,9 +2499,6 @@ which should be translated separately and considered part of this sentence. */
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "Masukkan informasi akun Anda untuk %@.";
 
-/* Sign in instructions on the 'log in using WordPress.com account' screen. */
-"Enter your email address to get started." = "Masukkan alamat email Anda untuk memulai.";
-
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "Masukkan alamat email Anda untuk login atau membuat akun WordPress.com.";
 
@@ -2107,8 +2515,17 @@ which should be translated separately and considered part of this sentence. */
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
 "Enter your store credentials for %@." = "Masukkan kredensial toko Anda untuk %@.";
 
+/* Industry group option in the store creation category question. */
+"Entertainment And Recreation" = "Hiburan dan Rekreasi";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Amplop";
+
+/* Country option for a site address. */
+"Equatorial Guinea" = "Guinea Ekuatorial";
+
+/* Country option for a site address. */
+"Eritrea" = "Eritrea";
 
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "Error";
@@ -2119,14 +2536,23 @@ which should be translated separately and considered part of this sentence. */
 /* Error title when Jetpack connection fails */
 "Error authorizing connection to Jetpack" = "Terjadi error saat memberi izin penyambungan ke Jetpack";
 
+/* Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication */
+"Error checking for the WooCommerce plugin." = "Error saat memeriksa plugin WooCommerce.";
+
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "Kode error %1$d";
 
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "Terjadi error saat mengaktifkan analitik. Silakan coba lagi.";
 
+/* Error message displayed when application password cannot be fetched after authentication. */
+"Error fetching application password for your site." = "Error saat mengambil kata sandi aplikasi untuk situs Anda.";
+
 /* Title for the error alert when fetching system status report fails */
 "Error fetching report" = "Terjadi error saat memuat laporan";
+
+/* Error message displayed when user information cannot be fetched after authentication. */
+"Error fetching user information." = "Error saat mengambil informasi pengguna.";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Terjadi error saat mencari alamat di Apple Maps";
@@ -2152,6 +2578,18 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "Error saat memperbarui Pesanan #%1$d";
 
+/* Country option for a site address. */
+"Estonia" = "Estonia";
+
+/* Country option for a site address. */
+"Ethiopia" = "Etiopia";
+
+/* Option in the store creation selling platforms question. */
+"Etsy" = "Etsy";
+
+/* Industry option in the store creation category question. */
+"Event Ticketing" = "Penjualan Tiket Acara";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Semua orang suka promo";
@@ -2174,8 +2612,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action button to add excluded product categories on Coupon Usage Restrictions screen. The number of selected items is mentioned between the brackets. Reads like: Exclude Product Categories (4) */
 "Exclude Product Categories (%1$d)" = "Kecualikan Kategori Produk (%1$d)";
 
-/* Title for the screen to exclude products for a coupon
-   Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
+/* Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
 "Exclude Products" = "Kecualikan Produk";
 
 /* Title of the action button to add excluded products on Coupon Usage Restrictions screen. The number of selected items is included between the brackets. Reads like: Exclude Products (2) */
@@ -2186,6 +2623,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Exclude Categories screen */
 "Exclude categories" = "Kecualikan kategori";
+
+/* Title for the screen to exclude products for a coupon */
+"Exclude products" = "Kecualikan produk";
 
 /* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
 "Excludes sale items" = "Mengecualikan barang obral";
@@ -2218,6 +2658,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Eksternal\/Afiliasi";
 
+/* Option in the store creation selling platforms question. */
+"Facebook Marketplace" = "Marketplace Facebook";
+
 /* Display label for failed order status. */
 "Failed" = "Gagal";
 
@@ -2242,8 +2685,14 @@ which should be translated separately and considered part of this sentence. */
 /* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
 "Failed to undo fulfillment of order #%1$d" = "Gagal membatalkan pemenuhan pesanan #%1$d";
 
-/* Option in the store creation category question. */
-"Fashion and Apparel" = "Fesyen dan Pakaian";
+/* Country option for a site address. */
+"Falkland Islands" = "Kepulauan Falkland";
+
+/* Country option for a site address. */
+"Faroe Islands" = "Kepulauan Faroe";
+
+/* Industry option in the store creation category question. */
+"Fast Food Restaurants" = "Restoran Cepat Saji";
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
@@ -2270,6 +2719,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info message shown when the order contains multiple fee lines */
 "Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "Biaya belum lengkap.\nUntuk mengedit semua biaya, lihat pesanan di admin toko WooCommerce Anda.";
+
+/* Country option for a site address. */
+"Fiji" = "Fiji";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2309,6 +2761,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title format for filtering a list of products with filters applied. */
 "Filters (%ld)" = "Penyaring (%ld)";
 
+/* Industry option in the store creation category question. */
+"Financial Information And Research" = "Informasi dan Penelitian Keuangan";
+
+/* Industry group option in the store creation category question. */
+"Financial Services" = "Layanan Keuangan";
+
 /* Button linking to webview explaining how to find your connected emailPresented when logging in with a store address that does not match the account entered */
 "Find your connected email" = "Temukan email Anda yang terhubung";
 
@@ -2324,6 +2782,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "Selesaikan penyiapan %1$@ di admin toko Anda";
 
+/* Country option for a site address. */
+"Finland" = "Finlandia";
+
 /* Text field name in Edit Address Form */
 "First name" = "Nama depan";
 
@@ -2336,17 +2797,38 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Diskon Produk Tetap";
 
+/* Industry option in the store creation category question. */
+"Flowers" = "Bunga";
+
 /* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
 "Follow reader instructions to pay" = "Ikuti instruksi pembaca untuk membayar";
 
 /* User role badge */
 "Follower" = "Pengikut";
 
-/* Option in the store creation category question. */
-"Food and Drink" = "Makanan dan Minuman";
+/* Industry group option in the store creation category question. */
+"Food And Drink" = "Makanan dan Minuman";
+
+/* Industry option in the store creation category question. */
+"Fortune Tellers" = "Peramal";
 
 /* Next web page */
 "Forward" = "Teruskan";
+
+/* Country option for a site address. */
+"France" = "Prancis";
+
+/* Industry option in the store creation category question. */
+"Freight Forwarders" = "Perusahaan Ekspedisi";
+
+/* Country option for a site address. */
+"French Guiana" = "Guyana Prancis";
+
+/* Country option for a site address. */
+"French Polynesia" = "Polinesia Prancis";
+
+/* Country option for a site address. */
+"French Southern Territories" = "Wilayah Prancis Selatan";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "Dari";
@@ -2357,11 +2839,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "Dari perangkat";
 
+/* Industry option in the store creation category question. */
+"Fuel Dispensers" = "Dispenser Bahan Bakar";
+
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "Penuhi pesanan Anda dengan WooCommerce Shipping";
 
+/* Industry option in the store creation category question. */
+"Funeral Services" = "Layanan Pemakaman";
+
+/* Country option for a site address. */
+"Gabon" = "Gabon";
+
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Dapatkan informasi mengenai performa produk di toko Anda";
+
+/* Country option for a site address. */
+"Gambia" = "Gambia";
+
+/* Industry option in the store creation category question. */
+"Games" = "Game";
+
+/* Industry option in the store creation category question. */
+"General Contractors" = "Kontraktor Umum";
 
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "Buat Variasi Baru";
@@ -2369,8 +2869,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action to generate the first variation */
 "Generate Variation" = "Buat Variasi";
 
+/* Title for the option to generate all possible variations */
+"Generate all variations" = "Buat semua variasi";
+
+/* Alert title to allow the user confirm if they want to generate all variations */
+"Generate all variations?" = "Buat semua variasi?";
+
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Membuat Variasi";
+
+/* Error title for for when there are too many variations to generate. */
+"Generation limit exceeded" = "Melebihi batas pembuatan";
+
+/* Country option for a site address. */
+"Georgia" = "Georgia";
+
+/* Country option for a site address. */
+"Germany" = "Jerman";
 
 /* Button displayed on the prologue screen of the simplified login flow to create a new store
    Title of install action in the Jetpack Install view.
@@ -2420,16 +2935,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented with a spinner while the reader is being prepared */
 "Getting ready to collect payment" = "Bersiap untuk menerima pembayaran";
 
+/* Country option for a site address. */
+"Ghana" = "Ghana";
+
+/* Country option for a site address. */
+"Gibraltar" = "Gibraltar";
+
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "Hadiah";
-
-/* Title of the feedback action button on the coupon list screen */
-"Give Feedback" = "Berikan Masukan";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
    Title of the button to give feedback about the Orders features
+   Title of the feedback action button on the coupon list screen
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Berikan masukan";
 
@@ -2442,8 +2961,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button to navigate to the home screen after Jetpack setup completes */
 "Go to Store" = "Kunjungi Toko";
 
+/* Option in the store creation selling platforms question. */
+"Google Shopping" = "Google Shopping";
+
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Pendaftaran Google gagal.";
+
+/* Industry option in the store creation category question. */
+"Government Services" = "Layanan Pemerintah";
+
+/* Country option for a site address. */
+"Greece" = "Yunani";
+
+/* Country option for a site address. */
+"Greenland" = "Greenland";
+
+/* Country option for a site address. */
+"Grenada" = "Grenada";
+
+/* Industry option in the store creation category question. */
+"Grocery Stores" = "Toko Swalayan";
 
 /* Display label for grouped product type. */
 "Grouped" = "Dikelompokkan";
@@ -2457,9 +2994,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Produk yang dikelompokkan";
 
+/* Country option for a site address. */
+"Guadeloupe" = "Guadeloupe";
+
+/* Country option for a site address. */
+"Guam" = "Guam";
+
+/* Country option for a site address. */
+"Guatemala" = "Guatemala";
+
+/* Country option for a site address. */
+"Guernsey" = "Guernsey";
+
 /* In Order Details, the name of the billed person when there are no name and last name.
    In Order List, the name of the billed person when there are no first and last name. */
 "Guest" = "Tamu";
+
+/* Country option for a site address. */
+"Guinea" = "Guinea";
+
+/* Country option for a site address. */
+"Guinea-Bissau" = "Guinea-Bissau";
+
+/* Country option for a site address. */
+"Guyana" = "Guyana";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "APA YANG DAPAT KAMI BANTU?";
@@ -2476,6 +3034,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "Konten HTML";
+
+/* Country option for a site address. */
+"Haiti" = "Haiti";
+
+/* Industry option in the store creation category question. */
+"Hardware Stores" = "Toko Perangkat Keras";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Siapkan kredensial toko Anda.";
@@ -2516,8 +3080,14 @@ which should be translated separately and considered part of this sentence. */
 /* H6 Aztec Style */
 "Heading 6" = "Penajukan 6";
 
-/* Option in the store creation category question. */
-"Health and Beauty" = "Kesehatan dan Kecantikan";
+/* Industry option in the store creation category question. */
+"Health And Beauty Spas" = "Spa Kesehatan dan Kecantikan";
+
+/* Industry option in the store creation category question. */
+"Health And Wellness Coaching" = "Bimbingan Kesehatan dan Kebugaran";
+
+/* Country option for a site address. */
+"Heard Island and McDonald Islands" = "Pulau Heard dan Kepulauan McDonald";
 
 /* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Height */
@@ -2536,7 +3106,8 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > Help and Feedback settings section title */
 "Help & Feedback" = "Bantuan & Umpan Balik";
 
-/* Contact Support Action */
+/* Accessibility label for the Help & Support image navigation bar button in the store creation flow.
+   Contact Support Action */
 "Help & Support" = "Bantuan & Dukungan";
 
 /* Browse our help documentation website title */
@@ -2549,14 +3120,44 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's catalog visibility */
 "Hidden" = "Tersembunyi";
 
+/* Industry option in the store creation category question. */
+"Home Electronics" = "Barang Elektronik Rumah";
+
+/* Industry option in the store creation category question. */
+"Home Goods And Furniture" = "Barang-barang dan Perabot Rumah";
+
+/* Country option for a site address. */
+"Honduras" = "Honduras";
+
+/* Country option for a site address. */
+"Hong Kong" = "Hong Kong";
+
+/* Industry option in the store creation category question. */
+"Hospitals" = "Rumah Sakit";
+
+/* Industry option in the store creation category question. */
+"Hotels, Inns, Or Motels" = "Hotel, Penginapan, atau Motel";
+
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Bagaimana kami dapat meningkatkan layanan?";
 
 /* Message subtitle of bottom sheet for selecting a template or manual product */
 "How do you want to start?" = "Bagaimana Anda ingin memulai?";
 
+/* Country option for a site address. */
+"Hungary" = "Hungaria";
+
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "Saya Menyukainya";
+
+/* Option in the store creation selling status question. */
+"I am already selling online" = "Saya sudah berdagang secara online";
+
+/* Option in the store creation selling status question. */
+"I am just starting to sell" = "Saya baru memulai berdagang";
+
+/* Option in the store creation selling status question. */
+"I am selling offline" = "Saya berdagang secara offline";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "ITEM YANG PERLU DIISI";
@@ -2569,6 +3170,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
 "ITN is required for shipping items valued over $2,500 per tariff number" = "ITN diperlukan untuk pengiriman item dengan nilai lebih dari $2.500 per nomor tarif";
+
+/* Country option for a site address. */
+"Iceland" = "Islandia";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Jika dinonaktifkan, catatan akan diatur sebagai pribadi";
@@ -2598,6 +3202,9 @@ which should be translated separately and considered part of this sentence. */
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "Tersedia";
 
+/* Title of the store creation profiler question about the store selling platforms. */
+"In which platform are you currently selling?" = "Di platform manakah Anda berdagang saat ini?";
+
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Di admin situs, Anda bisa menemukan email yang digunakan untuk terhubung ke WordPress.com dari Dasbor Jetpack di bagian Koneksi > Koneksi Akun";
 
@@ -2609,9 +3216,6 @@ which should be translated separately and considered part of this sentence. */
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "Pembayaran Langsung";
 
-/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
-"In-Person Payments Setup is incomplete." = "Pengaturan Pembayaran Langsung belum lengkap.";
-
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Pembayaran Langsung dapat diproses melalui penyedia pembayaran berikut. Penyedia mana yang ingin Anda gunakan?";
 
@@ -2622,6 +3226,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "Pembayaran Langsung tidak tersedia untuk toko ini";
+
+/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
+"In-Person Payments setup is incomplete." = "Pengaturan Pembayaran Langsung belum lengkap.";
 
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "Pembelian dalam aplikasi";
@@ -2658,6 +3265,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "Tingkatkan penjualan dengan upsell dan cross-sell";
 
+/* Country option for a site address. */
+"India" = "India";
+
 /* Title for the individual use only row in coupon usage restrictions screen. */
 "Individual Use Only" = "Hanya untuk penggunaan individu";
 
@@ -2666,6 +3276,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "Item yang dikirim terpisah";
+
+/* Country option for a site address. */
+"Indonesia" = "Indonesia";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "Sisipkan";
@@ -2721,6 +3334,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "Menginstal Jetpack";
 
+/* Industry option in the store creation category question. */
+"Insurance" = "Asuransi";
+
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
 "Insurance (%1$@)" = "Asuransi (%1$@)";
 
@@ -2771,6 +3387,24 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Persediaan";
 
+/* Industry option in the store creation category question. */
+"Investment Services" = "Layanan Investasi";
+
+/* Country option for a site address. */
+"Iran" = "Iran";
+
+/* Country option for a site address. */
+"Iraq" = "Irak";
+
+/* Country option for a site address. */
+"Ireland" = "Irlandia";
+
+/* Country option for a site address. */
+"Isle of Man" = "Pulau Man";
+
+/* Country option for a site address. */
+"Israel" = "Israel";
+
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Minta Pengembalian Biaya";
 
@@ -2796,11 +3430,17 @@ which should be translated separately and considered part of this sentence. */
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Sepertinya Anda memasukkan kata sandi yang salah. Ingin mencoba lagi?";
 
+/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
+"It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "Sepertinya Kata Sandi Aplikasi situs Anda, %@, dalam kondisi nonaktif. Aktifkan Kata Sandi untuk menggunakan aplikasi WooCommerce";
+
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "Sepertinya situs %@ Anda adalah situs WordPress.com sederhana yang tidak dapat menginstal plugin. Upgrade paket Anda untuk dapat menggunakan WooCommerce.";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Miring";
+
+/* Country option for a site address. */
+"Italy" = "Italia";
 
 /* Error message for missing value in Description row in Customs screen of Shipping Label flow */
 "Item description is required" = "Keterangan item wajib diisi";
@@ -2818,6 +3458,18 @@ which should be translated separately and considered part of this sentence. */
    Title for the items sold column on the products card on the analytics hub screen. */
 "Items Sold" = "Item Terjual";
 
+/* Country option for a site address. */
+"Ivory Coast" = "Pantai Gading";
+
+/* Country option for a site address. */
+"Jamaica" = "Jamaika";
+
+/* Country option for a site address. */
+"Japan" = "Jepang";
+
+/* Country option for a site address. */
+"Jersey" = "Jersey";
+
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "Penyiapan Jetpack";
 
@@ -2830,6 +3482,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Bergabunglah dari mana saja";
 
+/* Country option for a site address. */
+"Jordan" = "Yordania";
+
+/* Country option for a site address. */
+"Kazakhstan" = "Kazakhstan";
+
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Tetap Menyunting";
 
@@ -2839,11 +3497,29 @@ which should be translated separately and considered part of this sentence. */
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "Harap perhatikan bahwa ini bukan tiket dukungan, kami tidak dapat merespons umpan balik secara perorangan";
 
+/* Country option for a site address. */
+"Kenya" = "Kenya";
+
+/* Country option for a site address. */
+"Kiribati" = "Kiribati";
+
+/* Country option for a site address. */
+"Kuwait" = "Kuwait";
+
+/* Country option for a site address. */
+"Kyrgyzstan" = "Kyrgyzstan";
+
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "Label (4 x 6 inci)";
 
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "Opsi Format Label";
+
+/* Industry option in the store creation category question. */
+"Landscaping Services" = "Layanan Pertamanan";
+
+/* Country option for a site address. */
+"Laos" = "Laos";
 
 /* Label for one of the filters in order date range */
 "Last 2 Days" = "2 Hari Terakhir";
@@ -2875,8 +3551,17 @@ which should be translated separately and considered part of this sentence. */
 /* Text field name in Edit Address Form */
 "Last name" = "Nama belakang";
 
+/* Country option for a site address. */
+"Latvia" = "Latvia";
+
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Luncurkan debug Wormholy";
+
+/* Industry option in the store creation category question. */
+"Laundry Or Cleaning Services" = "Layanan Penatu atau Kebersihan";
+
+/* Industry option in the store creation category question. */
+"Lead Generation" = "Lead Generation";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -2897,14 +3582,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Pelajari selengkapnya tentang Jetpack";
 
-/* Title of button in the simplified login prologue screen for learning more about WooCommerce. */
-"Learn more about WooCommerce" = "Pelajari selengkapnya tentang WooCommerce";
-
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "Pelajari selengkapnya tentang membuat label menggunakan perangkat seluler";
 
 /* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "Pelajari lebih lanjut tentang peran dan izin";
+
+/* Country option for a site address. */
+"Lebanon" = "Lebanon";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 inci)";
@@ -2916,8 +3601,20 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Shipping Settings > Length */
 "Length" = "Panjang";
 
+/* Country option for a site address. */
+"Lesotho" = "Lesotho";
+
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8,5 x 11 inci)";
+
+/* Country option for a site address. */
+"Liberia" = "Liberia";
+
+/* Country option for a site address. */
+"Libya" = "Libya";
+
+/* Country option for a site address. */
+"Liechtenstein" = "Liechtenstein";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Batasi Penggunaan hingga X Barang";
@@ -2957,6 +3654,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Daftar gambar produk";
 
+/* Country option for a site address. */
+"Lithuania" = "Lituania";
+
 /* Accessibility label for loading indicator (spinner) at the bottom of a list */
 "Loading" = "Sedang memuat";
 
@@ -2978,8 +3678,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Loading. Verb */
 "Loading..." = "Memuat...";
 
-/* Button title in the simplified login prologue screen. Takes the user to the login flow.
-   Button title.  Tapping takes the user to the login form.
+/* Industry option in the store creation category question. */
+"Loans Or Lending" = "Kredit atau Pinjaman";
+
+/* Button title.  Tapping takes the user to the login form.
    Log In button label.
    View title during the log in process. */
 "Log In" = "Masuk";
@@ -2988,6 +3690,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled.
+   Button to restart the login flow.
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "Login Dengan Akun Lain";
 
@@ -3049,6 +3753,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button. */
 "Lost your password?" = "Lupa sandi Anda?";
 
+/* Industry option in the store creation category question. */
+"Lotteries" = "Lotre";
+
+/* Country option for a site address. */
+"Luxembourg" = "Luksemburg";
+
+/* Country option for a site address. */
+"Macao S.A.R., China" = "Macau S.A.R., Tiongkok";
+
+/* Country option for a site address. */
+"Macedonia" = "Makedonia";
+
+/* Country option for a site address. */
+"Madagascar" = "Madagaskar";
+
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Dibuat dengan penuh cinta oleh Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">Kami membuka lowongan!<\/a>";
 
@@ -3063,6 +3782,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "Buat produk Anda lebih mudah ditemukan dengan tag";
+
+/* Country option for a site address. */
+"Malawi" = "Malawi";
+
+/* Country option for a site address. */
+"Malaysia" = "Malaysia";
+
+/* Country option for a site address. */
+"Maldives" = "Maladewa";
+
+/* Country option for a site address. */
+"Mali" = "Mali";
+
+/* Country option for a site address. */
+"Malta" = "Malta";
 
 /* Card reader settings screen title
    Settings > Manage Card Reader > Title for the no-reader-connected screen in settings.
@@ -3093,6 +3827,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Domain Dipetakan";
 
+/* Industry option in the store creation category question. */
+"Marijuana Dispensaries" = "Apotek Marijuana";
+
+/* Industry option in the store creation category question. */
+"Marijuana-related Products" = "Produk-produk Terkait Marijuana";
+
 /* Title for the swipe order action to mark it as completed */
 "Mark Completed" = "Tandai Selesai";
 
@@ -3118,14 +3858,50 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Tandai pesanan ini selesai dan kirim pemberitahuan ke pelanggan";
 
+/* Country option for a site address. */
+"Marshall Islands" = "Kepulauan Marshall";
+
+/* Country option for a site address. */
+"Martinique" = "Martinik";
+
+/* Industry option in the store creation category question. */
+"Massage Parlors" = "Panti Pijat";
+
+/* Country option for a site address. */
+"Mauritania" = "Mauritania";
+
+/* Country option for a site address. */
+"Mauritius" = "Mauritius";
+
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "Maks. Belanja %1$@";
 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "Belanja maksimum %1$@";
 
+/* Country option for a site address. */
+"Mayotte" = "Mayotte";
+
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media tidak memiliki file yang dikaitkan untuk diunggah.";
+
+/* Industry option in the store creation category question. */
+"Medical Devices" = "Perangkat Medis";
+
+/* Industry option in the store creation category question. */
+"Medical Laboratories" = "Laboratorium Medis";
+
+/* Industry option in the store creation category question. */
+"Medical Organizations" = "Organisasi Medis";
+
+/* Industry group option in the store creation category question. */
+"Medical Services" = "Layanan Medis";
+
+/* Industry group option in the store creation category question. */
+"Membership Organizations" = "Organisasi Keanggotaan";
+
+/* Industry option in the store creation category question. */
+"Mental Health Services" = "Layanan Kesehatan Mental";
 
 /* Title of the Menu tab */
 "Menu" = "Menu";
@@ -3146,6 +3922,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message phone number button title */
 "Message" = "Pesan";
 
+/* Country option for a site address. */
+"Mexico" = "Meksiko";
+
+/* Country option for a site address. */
+"Micronesia" = "Mikronesia";
+
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
@@ -3161,11 +3943,32 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
 "Mixed" = "Campuran";
 
+/* Country option for a site address. */
+"Moldova" = "Moldova";
+
+/* Country option for a site address. */
+"Monaco" = "Monako";
+
+/* Industry option in the store creation category question. */
+"Money Orders" = "Wesel";
+
+/* Industry option in the store creation category question. */
+"Money Services Or Transmission" = "Layanan atau Transmisi Uang";
+
+/* Country option for a site address. */
+"Mongolia" = "Mongolia";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "Pantau dan setujui ulasan produk Anda";
 
+/* Country option for a site address. */
+"Montenegro" = "Montenegro";
+
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "Awal Bulan hingga Saat Ini";
+
+/* Country option for a site address. */
+"Montserrat" = "Montserrat";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -3177,6 +3980,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "Pilihan lainnya";
+
+/* Country option for a site address. */
+"Morocco" = "Maroko";
+
+/* Industry option in the store creation category question. */
+"Mortgage Consulting Services" = "Layanan Konsultasi Penggadaian";
 
 /* Button on each order item of the Package Details screen in Shipping Labels flow. */
 "Move" = "Pindahkan";
@@ -3193,11 +4002,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "Pindahkan komentar ke Tempat Sampah";
 
+/* Industry option in the store creation category question. */
+"Movie Theaters" = "Bioskop";
+
+/* Country option for a site address. */
+"Mozambique" = "Mozambik";
+
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
 "Multiple Contactless Cards Detected" = "Beberapa Kartu Nirsentuh Terdeteksi";
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Berbagai pilihan pembayaran";
+
+/* Industry option in the store creation category question. */
+"Music Or Other Media" = "Musik atau Media Lainnya";
+
+/* Industry option in the store creation category question. */
+"Musicians, Bands, Or Orchestras" = "Musisi, Band, atau Orkestra";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "Toko Saya";
@@ -3209,6 +4030,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the store creation summary screen. */
 "My store" = "Toko saya";
 
+/* Country option for a site address. */
+"Myanmar" = "Myanmar";
+
 /* Name text field placeholder
    Text field name in Shipping Label Address Validation
    Title for the name field on the Shipping Line Details screen during order creation */
@@ -3216,6 +4040,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "Nama belum diisi";
+
+/* Country option for a site address. */
+"Namibia" = "Namibia";
+
+/* Country option for a site address. */
+"Nauru" = "Nauru";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "Perlu label pengiriman?";
@@ -3240,6 +4070,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
 "Need some help? %1$@" = "Perlu bantuan? %1$@";
 
+/* Country option for a site address. */
+"Nepal" = "Nepal";
+
 /* The title for the net amount paid cell */
 "Net Payment" = "Pembayaran Bersih";
 
@@ -3250,6 +4083,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Top performers — label for the total sales of a product */
 "Net sales: %@" = "Penjualan bersih: %@";
 
+/* Country option for a site address. */
+"Netherlands" = "Belanda";
+
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Plugin Aktif Jaringan";
 
@@ -3259,8 +4095,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Nama Atribut Baru";
 
+/* Country option for a site address. */
+"New Caledonia" = "Kaledonia Baru";
+
 /* Title for the order creation screen */
 "New Order" = "Pesanan Baru";
+
+/* Country option for a site address. */
+"New Zealand" = "Selandia Baru";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "Tampilan analitik baru memungkinkan Anda melihat pengunjung, laporan, dan lain sebagainya.";
@@ -3283,6 +4125,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of a button. The text should be capitalized.
    Title of the next button in the issue refund screen */
 "Next" = "Selanjutnya";
+
+/* Country option for a site address. */
+"Nicaragua" = "Nikaragua";
+
+/* Country option for a site address. */
+"Niger" = "Niger";
+
+/* Country option for a site address. */
+"Nigeria" = "Nigeria";
+
+/* Country option for a site address. */
+"Niue" = "Niue";
 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "Tidak Ada Pembatasan";
@@ -3383,6 +4237,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Value for fields in Coupon Usage Restrictions screen when no value is set */
 "None" = "Tidak Ada";
 
+/* Country option for a site address. */
+"Norfolk Island" = "Pulau Norfolk";
+
+/* Country option for a site address. */
+"North Korea" = "Korea Utara";
+
+/* Country option for a site address. */
+"Northern Mariana Islands" = "Kepulauan Mariana Utara";
+
+/* Country option for a site address. */
+"Norway" = "Norwegia";
+
 /* Action title to dismiss enabling Analytics for a store
    Button in the CTA View for installing WCShip extension for dismissing the view
    Title of dismiss action in the Jetpack benefits view. */
@@ -3403,7 +4269,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Karena Anda telah menambahkan atribut, Anda sekarang bisa membuat variasi pertama Anda!";
 
+/* Industry option in the store creation category question. */
+"Nursing Or Personal Care Facilities" = "Fasilitas Perawatan Pribadi atau Perawat";
+
 /* Alert dismissal title
+   Button text to confirm that we want to generate all variations
    Button title to cancel the alert when the user cannot create a store.
    Button title to dismiss the alert when the created store never becomes a Jetpack site in the store creation flow.
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
@@ -3445,6 +4315,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Weeks Section Header */
 "Older than a Week" = "Lebih dari satu Minggu";
 
+/* Country option for a site address. */
+"Oman" = "Oman";
+
 /* Spoken label to indicate switch control is turned on */
 "On" = "Menyala";
 
@@ -3453,6 +4326,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for on hold order status. */
 "On hold" = "Ditangguhkan";
+
+/* Industry option in the store creation category question. */
+"Online Gambling" = "Perjudian Online";
 
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "Foto yang dapat ditampilkan hanya satu per variasi.";
@@ -3502,6 +4378,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint to open web page in Safari */
 "Opens the web page in Safari" = "Buka halaman web di Safari";
 
+/* Industry option in the store creation category question. */
+"Opticians And Eyeglasses" = "Ahli Kacamata dan Kacamata";
+
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Nama pilihan";
 
@@ -3518,6 +4397,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "Opsi-opsi";
+
+/* Industry option in the store creation category question. */
+"Optometrists and Ophthalmologists" = "Optometrist dan Dokter Mata";
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "Atau";
@@ -3583,14 +4465,56 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "Kemasan asli";
 
+/* Industry option in the store creation category question. */
+"Osteopaths" = "Osteopati";
+
 /* Generic name of non-default discount types
    My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Lainnya";
 
+/* Industry option in the store creation category question. */
+"Other Building Services" = "Layanan Pembangunan Lainnya";
+
+/* Industry option in the store creation category question. */
+"Other Business Services" = "Layanan Bisnis Lainnya";
+
+/* Industry option in the store creation category question. */
+"Other Digital Goods" = "Barang Digital Lainnya";
+
+/* Industry option in the store creation category question. */
+"Other Entertainment And Recreation" = "Hiburan dan Rekreasi Lainnya";
+
+/* Industry option in the store creation category question. */
+"Other Financial Institutions" = "Lembaga Keuangan Lainnya";
+
+/* Industry option in the store creation category question. */
+"Other Food And Dining" = "Rumah Makan dan Restoran Lainnya";
+
+/* Industry option in the store creation category question. */
+"Other Marketing Services" = "Layanan Pemasaran Lainnya";
+
+/* Industry option in the store creation category question. */
+"Other Medical Services" = "Layanan Medis Lainnya";
+
+/* Industry option in the store creation category question. */
+"Other Membership Organizations" = "Organisasi Keanggotaan Lainnya";
+
+/* Industry option in the store creation category question. */
+"Other Merchandise" = "Barang Dagangan Lainnya";
+
+/* Industry option in the store creation category question. */
+"Other Personal Services" = "Layanan Pribadi Lainnya";
+
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "Situs Lainnya";
+
+/* Industry option in the store creation category question. */
+"Other Transportation Services" = "Layanan Transportasi Lainnya";
+
+/* Industry option in the store creation category question. */
+"Other Travel And Lodging" = "Perjalanan dan Penginapan Lainnya";
 
 /* Display label for the product's inventory stock status */
 "Out of stock" = "Tidak ada stok";
@@ -3637,11 +4561,29 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title for the customer payment cell */
 "Paid" = "Berbayar";
 
+/* Country option for a site address. */
+"Pakistan" = "Pakistan";
+
+/* Country option for a site address. */
+"Palestinian Territory" = "Wilayah Palestina";
+
+/* Country option for a site address. */
+"Panama" = "Panama";
+
 /* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "Ukuran Kertas";
 
+/* Country option for a site address. */
+"Papua New Guinea" = "Papua Nugini";
+
+/* Country option for a site address. */
+"Paraguay" = "Paraguay";
+
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "Kategori Induk";
+
+/* Industry option in the store creation category question. */
+"Parking Lots" = "Tempat Parkir";
 
 /* Title of the banner when the order is not editable */
 "Parts of this order are not currently editable" = "Beberapa bagian dalam pesanan ini tidak dapat diedit";
@@ -3741,8 +4683,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "Tutup Akun Permanen";
 
-/* Option in the store creation category question. */
-"Pets Pet Care" = "Perawatan Hewan Peliharaan";
+/* Industry option in the store creation category question. */
+"Personal Fundraising Or Crowdfunding" = "Pengumpulan Uang Pribadi atau Penggalangan Dana";
+
+/* Industry group option in the store creation category question. */
+"Personal Services" = "Layanan Pribadi";
+
+/* Country option for a site address. */
+"Peru" = "Peru";
+
+/* Industry option in the store creation category question. */
+"Pharmacies Or Pharmaceuticals" = "Apotek atau Farmasi";
+
+/* Country option for a site address. */
+"Philippines" = "Filipina";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -3750,6 +4704,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Nomor telepon: %@";
+
+/* Industry option in the store creation category question. */
+"Photography Studios" = "Studio Fotografi";
 
 /* Product images (Product images page title) */
 "Photos" = "Foto";
@@ -3762,6 +4719,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Pick up an order, then just pay, print, package, and post." = "Terima pesanan, kemudian cukup bayar, cetak, kemas, lalu kirim.";
+
+/* Option in the store creation selling platforms question. */
+"Pinterest" = "Pinterest";
+
+/* Country option for a site address. */
+"Pitcairn" = "Pitcairn";
 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Memindahkan produk Anda ke tempat sampah...";
@@ -3848,6 +4811,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "Silahkan isi semua ruas";
+
+/* Message explaining that the site entered doesn't have WooCommerce installed or activated. */
+"Please install and activate WooCommerce plugin on your site to use the app." = "Instal dan aktifkan plugin WooCommerce pada situs Anda untuk menggunakan aplikasi.";
 
 /* Error message on the Jetpack setup required screen. */
 "Please install the free Jetpack plugin to access your store on this app." = "Instal plugin Jetpack gratis untuk mengakses toko Anda di aplikasi ini.";
@@ -3958,6 +4924,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the Plugin List screen */
 "Plugins" = "Plugin";
 
+/* Industry option in the store creation category question. */
+"Podiatrists and Chiropodists" = "Podiatris dan Chiropodis";
+
+/* Country option for a site address. */
+"Poland" = "Polandia";
+
+/* Industry option in the store creation category question. */
+"Political Organizations" = "Organisasi Politik";
+
+/* Country option for a site address. */
+"Portugal" = "Portugal";
+
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
 "Postcode" = "Kode pos";
@@ -4040,6 +5018,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of in-progress modal when requesting document with multiple shipping labels for printing */
 "Printing Labels" = "Mencetak Label";
+
+/* Industry option in the store creation category question. */
+"Printing and Publishing" = "Percetakan dan Publikasi";
 
 /* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "Pemberitahuan Privasi untuk Pengguna di California";
@@ -4148,6 +5129,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "Produk yang dipromosikan alih-alih produk yang sedang dilihat (mis. produk yang lebih menguntungkan)";
 
+/* Industry group option in the store creation category question. */
+"Professional Services" = "Layanan Profesional";
+
+/* Industry option in the store creation category question. */
+"Property Rentals" = "Persewaan Properti";
+
+/* Industry option in the store creation category question. */
+"Protective Or Security Services" = "Layanan Perlindungan atau Keamanan";
+
 /* One of the possible options in Product Visibility */
 "Public" = "Publik";
 
@@ -4163,8 +5153,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "Publikasikan produk Anda...";
 
-/* Title for the button on the feature announcement banner intended to upsell card readers
-   Title for the WebView opened to upsell card readers */
+/* Country option for a site address. */
+"Puerto Rico" = "Puerto Riko";
+
+/* Title for the WebView opened to upsell card readers */
 "Purchase Card Reader" = "Beli Pembaca Kartu";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
@@ -4177,6 +5169,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Purchase note label in Product Settings */
 "Purchase Note" = "Catatan Pembelian";
 
+/* Title for the button on the feature announcement banner intended to upsell card readers */
+"Purchase card reader" = "Beli Pembaca Kartu";
+
 /* Title for purchase note alert. */
 "Purchase note" = "Catatan pembelian";
 
@@ -4188,6 +5183,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Quantity abbreviation for section title */
 "QTY" = "JML";
+
+/* Country option for a site address. */
+"Qatar" = "Qatar";
 
 /* Quantity abbreviation for section title */
 "Qty" = "Jml";
@@ -4248,6 +5246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "Tanda terima dari %1$@";
+
+/* Industry option in the store creation category question. */
+"Recreational Camps" = "Kamp Rekreasi";
 
 /* Button label to refresh a web page */
 "Refresh" = "Muat ulang";
@@ -4328,6 +5329,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Harga normal: %@";
+
+/* Industry group option in the store creation category question. */
+"Regulated And Age-Restricted Products" = "Produk-Produk yang Diregulasi dan Dibatasi Usia";
+
+/* Industry option in the store creation category question. */
+"Religious Organizations" = "Organisasi Keagamaan";
 
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time */
 "Remind me later" = "Ingatkan saya nanti";
@@ -4413,6 +5420,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Reset kata sandi";
 
+/* Industry option in the store creation category question. */
+"Restaurants And Nightlife" = "Restoran dan Hiburan Malam";
+
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "Hanya untuk pelanggan dengan email: %1$@";
 
@@ -4421,6 +5431,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Restriction Type row in Customs screen of Shipping Label flow */
 "Restriction Type" = "Tipe Batasan";
+
+/* Industry group option in the store creation category question. */
+"Retail" = "Ritel";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search coupons. */
 "Retrieves a list of coupons that contain a given keyword." = "Mengambil daftar kupon yang mengandung kata kunci tertentu.";
@@ -4456,6 +5469,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Kembalikan ke pengirim jika paket tidak dapat dikirimkan";
 
+/* Country option for a site address. */
+"Reunion" = "Reunion";
+
 /* Revenue stat label on dashboard. */
 "Revenue" = "Pendapatan";
 
@@ -4474,6 +5490,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Post Rich content */
 "Rich Content" = "Konten Kaya";
+
+/* Industry option in the store creation category question. */
+"Ridesharing" = "Ridesharing";
+
+/* Country option for a site address. */
+"Romania" = "Rumania";
+
+/* Country option for a site address. */
+"Russia" = "Rusia";
+
+/* Country option for a site address. */
+"Rwanda" = "Rwanda";
 
 /* Title for sessions section in the Analytics Hub */
 "SESSIONS" = "SESI";
@@ -4507,6 +5535,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button label to open web page in Safari */
 "Safari" = "Safari";
 
+/* Country option for a site address. */
+"Saint Barthélemy" = "Saint Barthélemy";
+
+/* Country option for a site address. */
+"Saint Helena" = "Saint Helena";
+
+/* Country option for a site address. */
+"Saint Kitts and Nevis" = "Saint Kitts dan Nevis";
+
+/* Country option for a site address. */
+"Saint Lucia" = "Saint Lucia";
+
+/* Country option for a site address. */
+"Saint Martin (Dutch part)" = "Saint Martin (Belanda)";
+
+/* Country option for a site address. */
+"Saint Martin (French part)" = "Saint Martin (Prancis)";
+
+/* Country option for a site address. */
+"Saint Pierre and Miquelon" = "Saint Pierre dan Miquelon";
+
+/* Country option for a site address. */
+"Saint Vincent and the Grenadines" = "Saint Vincent dan Grenadines";
+
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "Tanggal obral: %@";
 
@@ -4525,11 +5577,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Sales channels" = "Kanal penjualan";
 
+/* Industry option in the store creation category question. */
+"Salons Or Barbers" = "Salon atau Pemangkas Rambut";
+
+/* Country option for a site address. */
+"Samoa" = "Samoa";
+
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "Contoh";
 
+/* Country option for a site address. */
+"San Marino" = "San Marino";
+
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary \/ Phytosanitary Inspection" = "Pemeriksaan Sanitasi\/Fitosanitasi";
+
+/* Country option for a site address. */
+"Saudi Arabia" = "Arab Saudi";
 
 /* Action for saving a Coupon remotely
    Action for saving a Product remotely
@@ -4615,6 +5679,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Hanya hasil penelusuran";
 
+/* Industry option in the store creation category question. */
+"Security Brokers Or Dealers" = "Makelar atau Pedagang Sekuritas";
+
 /* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
    Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "Lihat Toko yang Terhubung";
@@ -4652,9 +5719,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to select specific categories applicable for a coupon in the view for adding or editing a coupon. */
 "Select Product Categories" = "Pilih Kategori Produk";
 
-/* Title for the screen to select products for a coupon */
-"Select Products" = "Pilih produk";
-
 /* Page title for the select a different store screen */
 "Select Store" = "Pilih Toko";
 
@@ -4681,6 +5745,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Pilih gaya paragraf";
+
+/* Title for the screen to select products for a coupon */
+"Select products" = "Pilih produk";
 
 /* The title for the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Select reader type" = "Pilih tipe pembaca";
@@ -4712,6 +5779,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title. Sends a email verification link (Magin link) for signing in. */
 "Send email verification link" = "Kirim tautan verifikasi email";
 
+/* Country option for a site address. */
+"Senegal" = "Senegal";
+
+/* Country option for a site address. */
+"Serbia" = "Serbia";
+
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "Paket Layanan";
 
@@ -4737,6 +5810,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "Ditemukan beberapa pembaca";
+
+/* Country option for a site address. */
+"Seychelles" = "Seychelles";
 
 /* Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
@@ -4809,6 +5885,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping method title for customer info section */
 "Shipping Method" = "Metode Pengiriman";
 
+/* Industry option in the store creation category question. */
+"Shipping Or Forwarding" = "Pengiriman atau Pengalihan";
+
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "Pengembalian Biaya Pengiriman";
 
@@ -4842,11 +5921,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's tax status setting option */
 "Shipping only" = "Hanya pengiriman";
 
+/* Industry option in the store creation category question. */
+"Shoes" = "Sepatu";
+
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "Hasil penelusuran dan toko";
 
 /* Display label for the product's catalog visibility */
 "Shop only" = "Hanya Toko";
+
+/* Option in the store creation selling platforms question. */
+"Shopify" = "Shopify";
 
 /* The navigation bar title of the edit short description screen.
    Title of the product form bottom sheet action for editing short description.
@@ -4890,6 +5975,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Menampilkan lebih banyak pilihan.";
 
+/* Country option for a site address. */
+"Sierra Leone" = "Sierra Leone";
+
 /* View title during the sign up process. */
 "Sign Up" = "Mendaftar";
 
@@ -4923,6 +6011,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
 "Simple virtual product" = "Produk virtual sederhana";
 
+/* Country option for a site address. */
+"Singapore" = "Singapura";
+
 /* Describes a site redirect domain */
 "Site Redirect" = "Pengalihan Situs";
 
@@ -4940,13 +6031,31 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
 "Skip for now" = "Lewati sekarang";
 
+/* Country option for a site address. */
+"Slovakia" = "Slovakia";
+
+/* Country option for a site address. */
+"Slovenia" = "Slovenia";
+
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "Slug";
 
+/* Industry option in the store creation category question. */
+"Software" = "Perangkat lunak";
+
+/* Industry option in the store creation category question. */
+"Software As A Service" = "Perangkat Lunak Sebagai Layanan";
+
 /* Dialog title that displays when a software update just finished installing */
 "Software updated" = "Perangkat lunak diperbarui";
+
+/* Country option for a site address. */
+"Solomon Islands" = "Kepulauan Solomon";
+
+/* Country option for a site address. */
+"Somalia" = "Somalia";
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "Beberapa alamat email tidak valid.";
@@ -5037,6 +6146,21 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the toolbar button to sort products in different ways. */
 "Sort by" = "Urutkan berdasarkan";
 
+/* Country option for a site address. */
+"South Africa" = "Afrika Selatan";
+
+/* Country option for a site address. */
+"South Georgia\/Sandwich Islands" = "Georgia Selatan\/Kepulauan Sandwich Selatan";
+
+/* Country option for a site address. */
+"South Korea" = "Korea Selatan";
+
+/* Country option for a site address. */
+"South Sudan" = "Sudan Selatan";
+
+/* Country option for a site address. */
+"Spain" = "Spanyol";
+
 /* Display label for the review's spam status
    Verb, spam a comment */
 "Spam" = "Spam";
@@ -5044,8 +6168,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to select the Spark email app when logging in with magic links */
 "Spark" = "Spark";
 
-/* Option in the store creation category question. */
-"Sports and Recreation" = "Olahraga dan Rekreasi";
+/* Industry option in the store creation category question. */
+"Special Trade Contractors" = "Kontraktor Perdagangan Khusus";
+
+/* Industry option in the store creation category question. */
+"Sports Forecasting Or Prediction Services" = "Layanan Ramalan atau Prediksi Pertandingan Olahraga";
+
+/* Option in the store creation selling platforms question. */
+"Square" = "Persegi";
+
+/* Option in the store creation selling platforms question. */
+"Squarespace" = "Squarespace";
+
+/* Country option for a site address. */
+"Sri Lanka" = "Sri Lanka";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Tarif standar";
@@ -5133,6 +6269,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice text after updating the order successfully */
 "Successfully updated" = "Berhasil diperbarui.";
 
+/* Country option for a site address. */
+"Sudan" = "Sudan";
+
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "Jumlah produk dan berat kemasan";
 
@@ -5141,6 +6280,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
 "Summary: Order #%1$@" = "Ringkasan: Pesanan #%1$@";
+
+/* Industry option in the store creation category question. */
+"Supplements Or Nutraceuticals" = "Suplemen atau Nutrasetikal";
+
+/* Country option for a site address. */
+"Suriname" = "Suriname";
+
+/* Country option for a site address. */
+"Svalbard and Jan Mayen" = "Svalbard dan Jan Mayen";
+
+/* Country option for a site address. */
+"Swaziland" = "Swaziland";
+
+/* Country option for a site address. */
+"Sweden" = "Swedia";
 
 /* Message from the in-person payment card reader prompting user to swipe their card */
 "Swipe Card" = "Gesek Kartu";
@@ -5175,6 +6329,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "Beralih ke Ukuran Font asal";
 
+/* Country option for a site address. */
+"Switzerland" = "Swiss";
+
+/* Country option for a site address. */
+"Syria" = "Suriah";
+
 /* Navigation title of system status report screen
    View system status report cell title on Help screen */
 "System Status Report" = "Laporan Status Sistem";
@@ -5185,10 +6345,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when attempting to pay for a live transaction with a test card. */
 "System test cards are not permitted for payment. Try another means of payment" = "Kartu pengujian sistem tidak boleh digunakan untuk pembayaran. Coba gunakan metode pembayaran lainnya";
 
+/* Country option for a site address. */
+"São Tomé and Príncipe" = "São Tomé dan Príncipe";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
 "Tags" = "Tag";
+
+/* Country option for a site address. */
+"Taiwan" = "Taiwan";
+
+/* Country option for a site address. */
+"Tajikistan" = "Tajikistan";
 
 /* Title for the simple payments screen */
 "Take Payment" = "Terima Pembayaran";
@@ -5202,6 +6371,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "Membawa Anda kembali untuk menerima pembayaran";
+
+/* Country option for a site address. */
+"Tanzania" = "Tanzania";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap card to pay" = "Ketuk kartu untuk membayar";
@@ -5325,6 +6497,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "Pajak dihitung otomatis berdasarkan alamat toko Anda.";
 
+/* Industry option in the store creation category question. */
+"Taxis And Limos" = "Taksi dan Limusin";
+
+/* Industry option in the store creation category question. */
+"Telecom Equipment" = "Peralatan Telekomunikasi";
+
+/* Industry option in the store creation category question. */
+"Telecom Services" = "Layanan Telekomunikasi";
+
+/* Industry option in the store creation category question. */
+"Telemarketing" = "Pemasaran Jarak Jauh";
+
+/* Industry option in the store creation category question. */
+"Telemedicine And Telehealth" = "Layanan Kedokteran dan Kesehatan Jarak Jauh";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Beri tahu kami selengkapnya tentang %1$@...";
 
@@ -5349,9 +6536,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "Uji coba fitur melihat Add-on Pesanan menjelang peluncuran";
 
+/* Industry option in the store creation category question. */
+"Testing Laboratories" = "Laboratorium Percobaan";
+
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
 "Text me a code instead" = "Kirimi saya kode saja";
+
+/* Country option for a site address. */
+"Thailand" = "Thailand";
 
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "Terima kasih telah berbagi pendapat Anda dengan kami";
@@ -5748,8 +6941,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "Akun pengguna berikut tidak dapat ditutup jika memiliki langganan aktif.";
 
+/* Alert description to allow the user confirm if they want to generate all variations */
+"This will create a variation for each and every possible combination of variation attributes (%d variations)." = "Ini akan membuat variasi untuk setiap kemungkinan kombinasi atribut variasi (%d variasi).";
+
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Pesanan akan ditandai sebagai selesai jika Anda telah menerima (total) tanpa melalui WooCommerce";
+
+/* Industry option in the store creation category question. */
+"Timeshares" = "Timeshare";
+
+/* Country option for a site address. */
+"Timor-Leste" = "Timor Leste";
 
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "Tips";
@@ -5801,8 +7003,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "Untuk melanjutkan dengan akun ini, harap login terlebih dahulu dengan kata sandi WordPress.com Anda. Hal ini hanya akan ditanyakan sekali.";
 
+/* Subtitle of the store creation profiler question about the store selling status. */
+"To speed things up, we’ll tailor your WooCommerce experience for you based on your response." = "Untuk mempercepat segalanya, kami akan menyesuaikan pengalaman WooCommerce untuk Anda, berdasarkan tanggapan Anda.";
+
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Untuk menggunakan aplikasi ini untuk %@ Anda perlu menginstal dan menghubungkan plugin Jetpack ke toko Anda.";
+
+/* Industry option in the store creation category question. */
+"Tobacco Or Cigars" = "Tembakau atau Cerutu";
 
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
@@ -5823,6 +7031,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Identifier for the Aztec Unordered List Style */
 "Toggles the unordered list style" = "Mengaktifkan dan menonaktifkan gaya daftar yang tidak diurutkan";
 
+/* Country option for a site address. */
+"Togo" = "Togo";
+
+/* Country option for a site address. */
+"Tokelau" = "Tokelau";
+
+/* Country option for a site address. */
+"Tonga" = "Tonga";
+
 /* Header label for Top Performers section of My Store tab. */
 "Top Performers" = "Produk dengan Performa Tertinggi";
 
@@ -5840,6 +7057,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight */
 "Total package weight: %1$@" = "Total berat paket: %1$@";
+
+/* Industry option in the store creation category question. */
+"Tourist Attractions" = "Daya Tarik Wisata";
+
+/* Industry option in the store creation category question. */
+"Towing Services" = "Layanan Mobil Derek";
 
 /* Track shipment button title */
 "Track Shipment" = "Lacak Pengiriman";
@@ -5864,12 +7087,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Nomor pelacakan %@";
 
+/* Industry option in the store creation category question. */
+"Trailer Parks and Campgrounds" = "Kawasan Karavan dan Bumi Perkemahan";
+
+/* Industry group option in the store creation category question. */
+"Transportation" = "Transportasi";
+
 /* Display label for the review's trash status
    Move a comment to the trash */
 "Trash" = "Buang";
 
+/* Industry option in the store creation category question. */
+"Travel Agencies" = "Agensi Perjalanan";
+
+/* Industry group option in the store creation category question. */
+"Travel And Lodging" = "Perjalanan dan Penginapan";
+
+/* Country option for a site address. */
+"Trinidad and Tobago" = "Trinidad dan Tobago";
+
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "Pecahkan masalah";
+
+/* Industry option in the store creation category question. */
+"Truck Stop" = "Pangkalan Truk";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Percayai";
@@ -5878,6 +7119,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Activating Again" = "Coba Aktifkan Ulang";
 
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
+   Button to refetch application password for the current site
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
    Button to try again. Presented to users after a failure occurs
@@ -5926,6 +7168,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when a card is declined due to a potentially temporary problem. */
 "Trying again may succeed, or try another means of payment" = "Anda dapat mencoba lagi atau mencoba metode pembayaran lainnya.";
 
+/* Country option for a site address. */
+"Tunisia" = "Tunisia";
+
+/* Country option for a site address. */
+"Turkey" = "Turki";
+
+/* Country option for a site address. */
+"Turkmenistan" = "Turkmenistan";
+
+/* Country option for a site address. */
+"Turks and Caicos Islands" = "Kepulauan Turks dan Caicos";
+
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Aktifkan pembaca kartu dan pasang di sebelah perangkat seluler";
 
@@ -5937,6 +7191,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "Aktifkan ini jika kupon tidak berlaku untuk barang obral. Kupon per item hanya dapat digunakan jika barang tidak diobral. Kupon per keranjang hanya dapat digunakan jika ada barang di keranjang yang tidak diobral.";
+
+/* Country option for a site address. */
+"Tuvalu" = "Tuvalu";
 
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "Twitter";
@@ -5954,6 +7211,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "URL";
+
+/* Country option for a site address. */
+"Uganda" = "Uganda";
+
+/* Country option for a site address. */
+"Ukraine" = "Ukraina";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "Tidak Dapat Terhubung";
@@ -6118,6 +7381,21 @@ This part is the link to the website, and forms part of a longer sentence which 
    The message of the alert when there is an unexpected error updating the product */
 "Unexpected error" = "Kesalahan tak terduga";
 
+/* Country option for a site address. */
+"United Arab Emirates" = "Uni Emirat Arab";
+
+/* Country option for a site address. */
+"United Kingdom" = "Britania Raya";
+
+/* Country option for a site address. */
+"United States" = "Amerika Serikat";
+
+/* Country option for a site address. */
+"United States Minor Outlying Islands" = "United States Minor Outlying Islands";
+
+/* Country option for a site address. */
+"United States Virgin Islands" = "Kepulauan Virgin Amerika Serikat";
+
 /* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
@@ -6234,6 +7512,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "Upsell";
 
+/* Country option for a site address. */
+"Uruguay" = "Uruguai";
+
 /* Header of the section usage details in the view for adding or editing a coupon. */
 "Usage Details" = "Detail Penggunaan";
 
@@ -6243,12 +7524,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the usage limit per user row in coupon usage restrictions screen. */
 "Usage Limit Per User" = "Batas Penggunaan per Pengguna";
 
-/* Field in the view for adding or editing a coupon.
-   Title for the usage restrictions section on coupon usage restrictions screen */
+/* Field in the view for adding or editing a coupon. */
 "Usage Restrictions" = "Pembatasan Penggunaan";
 
 /* Title of the Usage details row in Coupon Details screen */
 "Usage details" = "Detail penggunaan";
+
+/* Title for the usage restrictions section on coupon usage restrictions screen */
+"Usage restrictions" = "Pembatasan Penggunaan";
 
 /* Action to use the address in Shipping Label Suggested screen as entered placeholder */
 "Use Address Entered" = "Gunakan Alamat yang Dimasukkan";
@@ -6287,11 +7570,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "Nama pengguna harus sekurangnya 4 karakter.";
 
+/* Industry option in the store creation category question. */
+"Utilities" = "Perlengkapan";
+
+/* Country option for a site address. */
+"Uzbekistan" = "Uzbekistan";
+
 /* Message to be displayed when a Jetpack connection is being authorized */
 "Validating" = "Memvalidasi";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "Nilai (%1$@ per unit)";
+
+/* Country option for a site address. */
+"Vanuatu" = "Vanuatu";
+
+/* Industry option in the store creation category question. */
+"Vapes, E-cigarettes, E-juice Or Related Products" = "Vape, Rokok Elektronik, E-juice, atau Produk-produk Terkait";
 
 /* Display label for variable product type. */
 "Variable" = "Variabel";
@@ -6316,6 +7611,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "Berbagai informasi sistem terkait situs Anda";
 
+/* Country option for a site address. */
+"Vatican" = "Vatikan";
+
+/* Country option for a site address. */
+"Venezuela" = "Venezuela";
+
 /* two factor code placeholder */
 "Verification code" = "Kode verifikasi";
 
@@ -6330,6 +7631,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Displays the connected reader software version */
 "Version: %1$@" = "Versi: %1$@";
+
+/* Industry option in the store creation category question. */
+"Veterinary Services" = "Layanan Dokter Hewan";
+
+/* Country option for a site address. */
+"Vietnam" = "Vietnam";
 
 /* Action title in an in-app notification to view more details.
    Title of the action to view product details from a notice about an image upload failure in the background. */
@@ -6391,6 +7698,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for simple virtual product type. */
 "Virtual" = "Virtual";
 
+/* Industry option in the store creation category question. */
+"Virtual Currencies" = "Mata Uang Virtual";
+
 /* Virtual Product label in Product Settings */
 "Virtual Product" = "Produk Virtual";
 
@@ -6400,6 +7710,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "Pengunjung";
+
+/* Industry option in the store creation category question. */
+"Vocational Schools And Trade Schools" = "Sekolah Vokasi dan Sekolah Kejuruan";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "TULIS CATATAN";
@@ -6412,6 +7725,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* View title during the Google auth process. */
 "Waiting..." = "Menunggu...";
+
+/* Country option for a site address. */
+"Wallis and Futuna" = "Wallis dan Futuna";
+
+/* Industry option in the store creation category question. */
+"Warranty Services" = "Layanan Garansi";
 
 /* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
 "We are getting ready for your store creation" = "Kami sedang mempersiapkan pembuatan toko Anda.";
@@ -6525,6 +7844,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Kami telah mengirimi Anda email berisi tautan pendaftaran untuk membuat akun WordPress.com baru. Periksa email Anda di perangkat ini, dan ketuk tautan dalam email yang Anda terima dari WordPress.com";
 
+/* Industry option in the store creation category question. */
+"Weapons Or Munitions" = "Persenjataan";
+
 /* Title of a button linking to the app's website */
 "Website" = "Situs web";
 
@@ -6543,11 +7865,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Berat: %1$@%2$@";
 
+/* Country option for a site address. */
+"Western Sahara" = "Sahara Barat";
+
+/* Subtitle of the store creation profiler question about the store country. */
+"We’ll use this information to get a head start on setting up payments, shipping, and taxes." = "Kami akan menggunakan informasi ini untuk memulai pengaturan pembayaran, pengiriman, dan pajak.";
+
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "Kini Anda dapat melihat dan mengedit kupon dengan perangkat Anda!";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Email apa yang saya gunakan untuk masuk?";
+
+/* Button that will navigate to a web page explaining Application Password */
+"What is Application Password?" = "Apa itu Kata Sandi Aplikasi?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
@@ -6580,6 +7911,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Shipping Labels: info description about WooCommerce Services discount */
 "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "Jika membeli label pengiriman dengan WooCommerce, Anda dapat memperoleh harga diskon.";
 
+/* Title of the store creation profiler question about the store selling status. */
+"Where are you on your commerce journey?" = "Di mana posisi Anda dalam perjalanan perdagangan Anda?";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "Ups, terjadi kesalahan dan Anda tidak dapat login. Coba lagi!";
 
@@ -6589,6 +7923,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the row to enter the package width on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Width */
 "Width" = "Lebar";
+
+/* Industry option in the store creation category question. */
+"Wire Transfers" = "Transfer Wire";
+
+/* Option in the store creation selling platforms question. */
+"Wix" = "Wix";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
@@ -6617,6 +7957,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Caption displayed in the simplified prologue screen */
 "WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce adalah platform eCommerce open-source yang dapat disesuaikan dan dibuat berdasarkan WordPress.";
 
+/* Option in the store creation selling platforms question. */
+"WordPress" = "WordPress";
+
 /* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "WordPress API Error: [%1$@] %2$@" = "Error API WordPress: [%1$@] %2$@";
 
@@ -6639,6 +7982,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Year to Date selection range */
 "Year to Date" = "Awal Tahun hingga Saat Ini";
 
+/* Country option for a site address. */
+"Yemen" = "Yaman";
+
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Ya, ubah";
 
@@ -6648,6 +7994,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "Anda tidak memiliki izin untuk mengakses toko ini.";
+
+/* Subtitle of the store creation profiler question about the store selling platforms. */
+"You can choose multiple ones." = "Anda dapat memilih lebih dari satu.";
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Anda dapat menyunting add-on produk di dasbor web.";
@@ -6751,6 +8100,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
 "You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "Hampir jadi! Harap selesaikan penyiapan %1$@ untuk mulai menerima Pembayaran Langsung.";
+
+/* Country option for a site address. */
+"Zambia" = "Zambia";
+
+/* Country option for a site address. */
+"Zimbabwe" = "Zimbabwe";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[KOMENTAR]";
@@ -6914,6 +8269,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Login dengan Google.";
+
+/* Country option for a site address. */
+"Åland Islands" = "Kepulauan Åland";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Pesanan Selesai";

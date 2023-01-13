@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-12-23 08:54:03+0000 */
+/* Translation-Revision-Date: 2023-01-11 10:54:17+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -235,6 +235,9 @@ which should be translated separately and considered part of this sentence. */
 /* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
 "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery." = "通过在结账时使用“现场付款”选项，您可在到货或配送时接受银行卡或现金付款。";
 
+/* Industry option in the store creation category question. */
+"A C And Heating Contractors" = "空调和暖气承包商";
+
 /* Instruction text to explain magic link login step. */
 "A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "WordPress.com 账户已关联您的商店凭据。 要继续，我们将向上述电子邮件地址发送一个验证链接。";
 
@@ -298,11 +301,20 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "访问折扣运费。 目前可通过 DHL 和 USPS 运输，即将推出更多！";
 
+/* Industry option in the store creation category question. */
+"Accessories" = "配件";
+
+/* Industry option in the store creation category question. */
+"Accessories For Tobacco And Marijuana" = "烟草和大麻配件";
+
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "账户类型";
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "已连接的账户";
+
+/* Industry option in the store creation category question. */
+"Accounting, Auditing, Or Tax Prep" = "会计、审计或税务筹划";
 
 /* Title for the section related to actions inside In-Person Payments settings */
 "Actions" = "操作";
@@ -409,9 +421,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "添加变体";
 
-/* Title for the button on the Products onboarding banner */
-"Add a Product" = "添加产品";
-
 /* Button title on the store picker for store creation */
 "Add a Store" = "添加商店";
 
@@ -429,7 +438,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "为您的变体添加价格，以在商店中显示";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+   The action to add a product
+   Title for the button on the Products onboarding banner */
 "Add a product" = "添加产品";
 
 /* Cell text in Add / Edit product when there are no images. */
@@ -468,6 +478,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "添加新标签（以逗号分隔）。";
+
+/* Title for the option to generate just one variation */
+"Add new variation" = "添加新变体";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "添加产品链接";
@@ -527,14 +540,32 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "将变体添加到订单。";
 
+/* Industry option in the store creation category question. */
+"Adult Content Or Services" = "成人内容或服务";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "必需由成年人签收 (+%1$@)";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "用于查看应用程序状态的高级工具";
 
+/* Country option for a site address. */
+"Afghanistan" = "阿富汗";
+
+/* Industry option in the store creation category question. */
+"Airlines And Air Carriers" = "航空公司和空运承运人";
+
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
+
+/* Country option for a site address. */
+"Albania" = "阿尔巴尼亚";
+
+/* Industry option in the store creation category question. */
+"Alcohol" = "酒精";
+
+/* Country option for a site address. */
+"Algeria" = "阿尔及利亚";
 
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "所有订单";
@@ -593,6 +624,12 @@ which should be translated separately and considered part of this sentence. */
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "其他方式：";
 
+/* Option in the store creation selling platforms question. */
+"Amazon" = "Amazon";
+
+/* Country option for a site address. */
+"American Samoa" = "美属萨摩亚";
+
 /* Title of the Amount label on Coupon Details screen */
 "Amount" = "金额";
 
@@ -612,6 +649,9 @@ which should be translated separately and considered part of this sentence. */
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
 "Amount Paid" = "已付金额";
+
+/* Industry option in the store creation category question. */
+"Amusement Parks, Carnivals, Or Circuses" = "游乐园、狂欢节或马戏团";
 
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
 "An HTTP error code %i was returned." = "返回了 HTTP 错误代码 %i。";
@@ -668,6 +708,24 @@ which should be translated separately and considered part of this sentence. */
 /* Message when enabling analytics succeeds */
 "Analytics enabled successfully." = "已成功启用分析。";
 
+/* Country option for a site address. */
+"Andorra" = "安道尔";
+
+/* Country option for a site address. */
+"Angola" = "安哥拉";
+
+/* Country option for a site address. */
+"Anguilla" = "安圭拉";
+
+/* Country option for a site address. */
+"Antarctica" = "南极洲";
+
+/* Country option for a site address. */
+"Antigua and Barbuda" = "安提瓜和巴布达";
+
+/* Industry option in the store creation category question. */
+"Antiques" = "古玩";
+
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
    Label for one of the filters in order date range
@@ -691,6 +749,9 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "应用程序名称";
 
+/* Message to display when the constructed admin or login URL for the logged-in site is not accessible */
+"Application password cannot be generated due to a custom login or admin URL on your site." = "由于您的站点上有自定义登录或管理员 URL，无法生成应用程序密码。";
+
 /* Apply navigation button in custom range date picker
    Change order status screen - button title to apply selection */
 "Apply" = "应用";
@@ -713,6 +774,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "批准评论";
+
+/* Industry option in the store creation category question. */
+"Apps" = "应用";
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "是否确定要更改产品类型？";
@@ -747,11 +811,20 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed in the alert for dismissing all the inbox notes. */
 "Are you sure? Inbox messages will be dismissed forever." = "是否确定？ 收件箱中的消息将被永久删除。";
 
-/* Option in the store creation category question. */
-"Art & Photography" = "艺术和摄影";
+/* Country option for a site address. */
+"Argentina" = "阿根廷";
 
-/* Option in the store creation category question. */
-"Arts and Crafts" = "工艺美术";
+/* Country option for a site address. */
+"Armenia" = "亚美尼亚";
+
+/* Country option for a site address. */
+"Aruba" = "阿鲁巴";
+
+/* Industry option in the store creation category question. */
+"Assisted Living" = "赡养院";
+
+/* Industry option in the store creation category question. */
+"Attorneys And Lawyers" = "律师";
 
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "属性名";
@@ -763,6 +836,12 @@ which should be translated separately and considered part of this sentence. */
 /* Primary text for the generate first variation screen */
 "Attributes added!" = "已添加属性！";
 
+/* Country option for a site address. */
+"Australia" = "澳大利亚";
+
+/* Country option for a site address. */
+"Austria" = "奥地利";
+
 /* No comment provided by engineer. */
 "Authenticating" = "正在验证";
 
@@ -773,6 +852,12 @@ which should be translated separately and considered part of this sentence. */
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "需要对主机进行验证：%@";
 
+/* Industry option in the store creation category question. */
+"Auto Parts And Accessories" = "汽车零件和附件";
+
+/* Industry option in the store creation category question. */
+"Auto Services" = "汽车服务";
+
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "已自动托管在此站点上";
 
@@ -782,6 +867,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic 系列";
 
+/* Industry group option in the store creation category question. */
+"Autos (Sales and Service)" = "汽车（销售和服务）";
+
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "平均订单价值";
 
@@ -790,6 +878,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
 "Awaiting payment via %@" = "等待通过 %@ 支付";
+
+/* Country option for a site address. */
+"Azerbaijan" = "阿塞拜疆";
 
 /* Details section title in the Edit Address Form */
 "BILLING ADDRESS" = "账单地址";
@@ -806,7 +897,7 @@ which should be translated separately and considered part of this sentence. */
 "Back to Order" = "返回订单";
 
 /* Text for the button to dismiss the store picker error screen */
-"Back to Sites" = "返回站点";
+"Back to sites" = "返回站点";
 
 /* Title of a button to dismiss the survey complete screen */
 "Back to store" = "返回商店";
@@ -818,8 +909,62 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "缺货";
 
+/* Country option for a site address. */
+"Bahamas" = "巴哈马";
+
+/* Country option for a site address. */
+"Bahrain" = "巴林";
+
+/* Industry option in the store creation category question. */
+"Bail Bonds" = "保释金";
+
+/* Country option for a site address. */
+"Bangladesh" = "孟加拉国";
+
+/* Industry option in the store creation category question. */
+"Bankruptcy Services" = "破产服务";
+
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "%2$@ 栏号 %1$i";
+
+/* Country option for a site address. */
+"Barbados" = "巴巴多斯";
+
+/* Industry option in the store creation category question. */
+"Bars And Nightclubs" = "酒吧和夜总会";
+
+/* Industry option in the store creation category question. */
+"Beauty Products" = "美妆产品";
+
+/* Country option for a site address. */
+"Belarus" = "白俄罗斯";
+
+/* Country option for a site address. */
+"Belau" = "贝劳";
+
+/* Country option for a site address. */
+"Belgium" = "比利时";
+
+/* Country option for a site address. */
+"Belize" = "伯利兹";
+
+/* Country option for a site address. */
+"Benin" = "贝宁";
+
+/* Country option for a site address. */
+"Bermuda" = "百慕大";
+
+/* Industry option in the store creation category question. */
+"Betting Or Fantasy Sports" = "博彩或梦幻体育";
+
+/* Country option for a site address. */
+"Bhutan" = "不丹";
+
+/* Option in the store creation selling platforms question. */
+"Big Cartel" = "大卡特尔";
+
+/* Option in the store creation selling platforms question. */
+"Big Commerce" = "大型商务";
 
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data
@@ -835,17 +980,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's blog */
 "Blog" = "博客";
 
+/* Industry option in the store creation category question. */
+"Blogs And Written Content" = "博客和书面内容";
+
 /* The button title on the reader type alert, for the user to choose a bluetooth reader. */
 "Bluetooth Reader" = "蓝牙读卡器";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "所需蓝牙权限";
 
+/* Industry option in the store creation category question. */
+"Boat Sales" = "船舶销售";
+
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "粗体";
 
-/* Option in the store creation category question. */
-"Books & Magazines" = "书籍和杂志";
+/* Country option for a site address. */
+"Bolivia" = "玻利维亚";
+
+/* Country option for a site address. */
+"Bonaire, Saint Eustatius and Saba" = "博内尔岛，圣尤斯特修斯和萨巴";
+
+/* Industry option in the store creation category question. */
+"Books" = "书籍";
 
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "通过向客户发送特别优惠和折扣来推动您的业务发展。";
@@ -853,15 +1010,51 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Linked Products announcement banner */
 "Boost your sales with linked products" = "借助链接的产品提高您的销售额";
 
+/* Country option for a site address. */
+"Bosnia and Herzegovina" = "波斯尼亚和黑塞哥维那";
+
+/* Country option for a site address. */
+"Botswana" = "博茨瓦纳";
+
+/* Country option for a site address. */
+"Bouvet Island" = "布维岛";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "包装箱";
+
+/* Country option for a site address. */
+"Brazil" = "巴西";
+
+/* Country option for a site address. */
+"British Indian Ocean Territory" = "英属印度洋领地";
+
+/* Country option for a site address. */
+"British Virgin Islands" = "英属维尔京群岛";
+
+/* Country option for a site address. */
+"Brunei" = "文莱";
 
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "通过添加您想要销售的内容，构建目录。";
 
+/* Industry group option in the store creation category question. */
+"Building Services" = "建筑服务";
+
+/* Country option for a site address. */
+"Bulgaria" = "保加利亚";
+
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
 "Bulk Update" = "批量更新";
+
+/* Country option for a site address. */
+"Burkina Faso" = "布基纳法索";
+
+/* Country option for a site address. */
+"Burundi" = "布隆迪";
+
+/* Industry option in the store creation category question. */
+"Business And Secretarial Schools" = "商业和秘书学校";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "按钮文本";
@@ -885,6 +1078,12 @@ which should be translated separately and considered part of this sentence. */
    Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
 "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "点击“连接 Jetpack”按钮，即表示您同意我们的%1$@并与 WordPress.com %2$@。";
 
+/* Header of a list of other countries in the store creation country question. */
+"COUNTRIES" = "国家\/地区";
+
+/* Header of the current country in the store creation country question. */
+"CURRENT LOCATION" = "当前位置";
+
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "定制包裹";
 
@@ -894,8 +1093,14 @@ which should be translated separately and considered part of this sentence. */
 /* Call phone number button title */
 "Call" = "致电";
 
+/* Country option for a site address. */
+"Cambodia" = "柬埔寨";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "照相机拍摄不应支持媒体类型：%@";
+
+/* Country option for a site address. */
+"Cameroon" = "喀麦隆";
 
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "无法请求链接";
@@ -909,9 +1114,13 @@ which should be translated separately and considered part of this sentence. */
 /* Local notification title when the user encounters an error with WP.com password. */
 "Can't remember your password?" = "忘记密码？";
 
+/* Country option for a site address. */
+"Canada" = "加拿大";
+
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
+   Button text to confirm that we don't want to generate all variations
    Button title Cancel in Discard Changes Action Sheet
    Button title Cancel in Downloadable File More Options Action Sheet
    Button title Cancel in Downloadable Files More Options Action Sheet
@@ -1010,9 +1219,21 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "无法验证您站点的 WooCommerce 安装信息。";
 
+/* Country option for a site address. */
+"Cape Verde" = "佛得角";
+
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "为您的店铺获取高质量的产品评论。";
+
+/* Industry option in the store creation category question. */
+"Car Rentals" = "汽车出租";
+
+/* Industry option in the store creation category question. */
+"Car Sales" = "汽车销售";
+
+/* Industry option in the store creation category question. */
+"Car Washes" = "洗车";
 
 /* Card method title on the select payment method screen */
 "Card" = "卡片";
@@ -1031,6 +1252,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "银行卡取出速度过快，请重新尝试交易";
+
+/* Industry option in the store creation category question. */
+"Carpentry Contractors" = "木工承包商";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "承运商和费率";
@@ -1051,11 +1275,23 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "分类";
 
+/* Industry option in the store creation category question. */
+"Caterers" = "宴会负责人";
+
+/* Country option for a site address. */
+"Cayman Islands" = "开曼群岛";
+
+/* Country option for a site address. */
+"Central African Republic" = "中非共和国";
+
 /* Error message when local validation fails in Shipping Label Address Validation */
 "Certain required fields need attention." = "需要注意某些必填字段。";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "证书错误";
+
+/* Country option for a site address. */
+"Chad" = "乍得";
 
 /* Message title of bottom sheet for selecting a product type */
 "Change product type" = "更改产品类型";
@@ -1068,6 +1304,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the row that has a switch when creating a simple payment */
 "Charge Taxes" = "收取税费";
+
+/* Industry option in the store creation category question. */
+"Charities Or Social Service Organizations" = "慈善机构或社会服务组织";
+
+/* Industry option in the store creation category question. */
+"Check Cashing" = "支票兑现";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "请检查输入的 URL 是否有效";
@@ -1086,6 +1328,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the WPCOM checkout web view. */
 "Checkout" = "结账";
+
+/* Industry option in the store creation category question. */
+"Child Care Services" = "儿童保育服务";
+
+/* Country option for a site address. */
+"Chile" = "智利";
+
+/* Country option for a site address. */
+"China" = "中国";
+
+/* Industry option in the store creation category question. */
+"Chiropractors" = "脊椎按摩师";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "选择纸张尺寸";
@@ -1120,12 +1374,18 @@ which should be translated separately and considered part of this sentence. */
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "选择付款方式";
 
+/* Country option for a site address. */
+"Christmas Island" = "圣诞岛";
+
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
 "City" = "城市";
 
 /* Error showed in Shipping Label Address Validation for the city field */
 "City missing" = "缺少城市";
+
+/* Industry option in the store creation category question. */
+"Civic, Fraternal, Or Social Associations" = "市政、兄弟会或社团";
 
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
@@ -1161,6 +1421,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "正在关闭账户…";
 
+/* Industry option in the store creation category question. */
+"Clothing And Accessories" = "服装和饰品";
+
+/* Country option for a site address. */
+"Cocos (Keeling) Islands" = "科科斯（基林）群岛";
+
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "已折叠";
 
@@ -1177,8 +1443,23 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the collect payment flow with a user name. */
 "Collect payment from %1$@" = "收取来自 %1$@ 的付款";
 
+/* Industry option in the store creation category question. */
+"Collections Agencies" = "收款机构";
+
+/* Industry option in the store creation category question. */
+"Colleges Or Universities" = "学院或大学";
+
+/* Country option for a site address. */
+"Colombia" = "哥伦比亚";
+
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store" = "稍后回来获取更多关于发展您商店的贴士和数据分析";
+
+/* Industry option in the store creation category question. */
+"Commuter Transportation" = "通勤交通";
+
+/* Country option for a site address. */
+"Comoros" = "科摩罗";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1192,6 +1473,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "撰写新的订单备注。";
+
+/* Industry option in the store creation category question. */
+"Computer Repair" = "电脑维修";
 
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "配置已更新";
@@ -1207,6 +1491,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title Discard Changes in Discard Changes Action Sheet */
 "Confirm and leave" = "确认并离开";
+
+/* Title of the store creation profiler question about the store country. */
+"Confirm your location" = "确认您的位置";
+
+/* Country option for a site address. */
+"Congo (Brazzaville)" = "刚果（布）";
+
+/* Country option for a site address. */
+"Congo (Kinshasa)" = "刚果（金）";
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "恭喜您，已全部阅读！";
@@ -1282,8 +1575,8 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "连接您的商店";
 
-/* Option in the store creation category question. */
-"Construction & Industrial" = "建筑和工业";
+/* Industry option in the store creation category question. */
+"Consulting" = "咨询";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "联系客户";
@@ -1295,10 +1588,10 @@ which should be translated separately and considered part of this sentence. */
 "Contact Email" = "联系电子邮件地址";
 
 /* Action button to contact support when Jetpack install fails
+   Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
-   The title of the button to contact support in the Error Loading Data banner
    Title of the button to contact support for help accessing a store after Jetpack setup */
 "Contact Support" = "联系支持人员";
 
@@ -1306,7 +1599,8 @@ which should be translated separately and considered part of this sentence. */
 "Contact WooCommerce Payments Support" = "联系 WooCommerce Payments 支持人员";
 
 /* Action button to contact support on enable analytics screen
-   Local notification action to contact support. */
+   Local notification action to contact support.
+   The title of the button to contact support in the Error Loading Data banner */
 "Contact support" = "联系支持";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
@@ -1331,14 +1625,14 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to continue with a selected domain. */
 "Continue" = "继续";
 
-/* Call to Action to finish the setup of In-Person Payments in the Menu */
-"Continue Setup" = "继续设置";
-
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "继续使用 WordPress.com";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "继续阅读";
+
+/* Call to Action to finish the setup of In-Person Payments in the Menu */
+"Continue setup" = "继续设置";
 
 /* Title of the button on the store creation summary view to continue to payment. */
 "Continue to Payment" = "继续付款";
@@ -1352,11 +1646,17 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "继续使用 Apple";
 
+/* Industry option in the store creation category question. */
+"Convenience Stores" = "便利店";
+
 /* Conversion stat label on dashboard. */
 "Conversion" = "转化";
 
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "转化率";
+
+/* Country option for a site address. */
+"Cook Islands" = "库克群岛";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "复制";
@@ -1372,6 +1672,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
 "Copy tracking number" = "复制跟踪编号";
+
+/* Country option for a site address. */
+"Costa Rica" = "哥斯达黎加";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "还可以更好";
@@ -1403,10 +1706,16 @@ which should be translated separately and considered part of this sentence. */
 /* Error title displayed when unable to close user account. */
 "Couldn’t close account automatically" = "无法自动关闭帐户";
 
+/* Industry option in the store creation category question. */
+"Counseling Services" = "咨询服务";
+
 /* Text field country in Edit Address Form
    Text field country in Shipping Label Address Validation
    Title to select country from the edit address screen */
 "Country" = "国家\/地区";
+
+/* Industry option in the store creation category question. */
+"Country Clubs" = "乡村俱乐部";
 
 /* Error showed in Shipping Label Address Validation for the country field */
 "Country missing" = "缺少国家\/地区";
@@ -1444,6 +1753,9 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "优惠券";
+
+/* Industry option in the store creation category question. */
+"Courier Services" = "快递服务";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "崩溃调试菜单";
@@ -1499,6 +1811,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "创建新包裹";
 
+/* Description for the option to generate just one variation */
+"Create one new variation. Manually set which attributes belong to the variable product." = "创建一个新变体。 手动设置属于可变产品的属性。";
+
 /* Title of the banner notice in the Orders tab */
 "Create orders!" = "创建订单！";
 
@@ -1508,11 +1823,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "创建您的第一个变体";
 
+/* Description for the option to generate all possible variations */
+"Creates variations for all combinations of your attributes." = "为属性的所有组合创建变体。";
+
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "正在创建模板产品...";
 
 /* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
 "Creating your store" = "正在创建您的商店";
+
+/* Industry option in the store creation category question. */
+"Credit Counseling Or Credit Repair" = "信用咨询或信用修复";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "信用卡";
@@ -1523,9 +1844,27 @@ which should be translated separately and considered part of this sentence. */
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "从以下 WordPress.com 帐户检索信用卡：%1$@ <%2$@>";
 
+/* Country option for a site address. */
+"Croatia" = "克罗地亚";
+
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "交叉销售";
+
+/* Industry option in the store creation category question. */
+"Cruise Lines" = "巡航线路";
+
+/* Industry option in the store creation category question. */
+"Cryptocurrencies" = "加密货币";
+
+/* Country option for a site address. */
+"Cuba" = "古巴";
+
+/* Country option for a site address. */
+"Curacao" = "库拉索";
+
+/* Industry option in the store creation category question. */
+"Currency Exchanges" = "货币兑换";
 
 /* Cell title: the current date. */
 "Current" = "当前";
@@ -1538,6 +1877,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "当前价格参差不齐。";
+
+/* Error description for when there are too many variations to generate. */
+"Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "目前最多支持创建 100 个变体。 为此产品生成变体会创建 %d 个变体。";
 
 /* Name of the section for custom shipment tracking carriers
    Title of the Analytics Hub Custom selection range */
@@ -1609,6 +1951,12 @@ which should be translated separately and considered part of this sentence. */
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "在家中使用移动设备以折扣价打印配送标签，节省在邮局处理的时间！";
 
+/* Country option for a site address. */
+"Cyprus" = "塞浦路斯";
+
+/* Country option for a site address. */
+"Czech Republic" = "捷克共和国";
+
 /* Details section title in the Edit Address Form */
 "DETAILS" = "详细信息";
 
@@ -1630,6 +1978,12 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "日期：最旧到最新";
 
+/* Industry option in the store creation category question. */
+"Dating Services" = "交友服务";
+
+/* Industry option in the store creation category question. */
+"Debt Reduction Services" = "债务减免服务";
+
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "默认";
 
@@ -1644,6 +1998,12 @@ which should be translated separately and considered part of this sentence. */
 /* Delete tracking button title */
 "Delete Tracking" = "删除跟踪信息";
 
+/* Country option for a site address. */
+"Denmark" = "丹麦";
+
+/* Industry option in the store creation category question. */
+"Dentists And Orthodontists" = "牙科医生和牙齿矫正医师";
+
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "描述您的产品";
 
@@ -1655,14 +2015,23 @@ which should be translated separately and considered part of this sentence. */
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "描述";
 
-/* Option in the store creation category question. */
-"Design & Marketing" = "设计和市场营销";
+/* Industry option in the store creation category question. */
+"Designer Products" = "设计师产品";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "确定产品在目录中的位置。数值越低，相关产品在产品列表中的位置越靠前。您还可以使用负数";
 
 /* Instructions after a Magic Link was sent, but email is incorrect. */
 "Didn't mean to create a new account? Go back to re-enter your email address." = "不打算创建新帐户？ 返回以重新输入您的电子邮件地址。";
+
+/* Industry option in the store creation category question. */
+"Digital Marketing" = "数字化营销";
+
+/* Industry group option in the store creation category question. */
+"Digital Products" = "数字产品";
+
+/* Industry option in the store creation category question. */
+"Digital Wallets" = "数字钱包";
 
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
 "Dimensions: %1$@ x %2$@ %3$@" = "尺寸：%1$@ x %2$@%3$@";
@@ -1732,6 +2101,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "忽略全部消息";
 
+/* Country option for a site address. */
+"Djibouti" = "吉布提";
+
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "不允许";
 
@@ -1744,8 +2116,17 @@ which should be translated separately and considered part of this sentence. */
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "您要将此产品移至回收站吗？";
 
+/* Industry option in the store creation category question. */
+"Doctors And Physicians" = "医生";
+
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "文档";
+
+/* Country option for a site address. */
+"Dominica" = "多米尼加";
+
+/* Country option for a site address. */
+"Dominican Republic" = "多米尼加共和国";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "还没有帐户？_注册_";
@@ -1868,8 +2249,14 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "使用唯一代码轻松识别您的产品";
 
+/* Option in the store creation selling platforms question. */
+"Ebay" = "Ebay";
+
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Ecommerce reports" = "电子商务报告";
+
+/* Country option for a site address. */
+"Ecuador" = "厄瓜多尔";
 
 /* Button to edit a customer on the New Order screen
    Button to edit an order on Order Details screen
@@ -1915,8 +2302,29 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit customer note on the New Order screen */
 "Edit customer note" = "编辑客户备注";
 
-/* Option in the store creation category question. */
-"Electronics and Software" = "电子产品和软件";
+/* Action to start bulk editing of products */
+"Edit products" = "编辑产品";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
+"Edit status or price for multiple products at once" = "一次编辑多个商品的状态或价格";
+
+/* Industry group option in the store creation category question. */
+"Education" = "教育";
+
+/* Industry option in the store creation category question. */
+"Educational Services" = "教育机构";
+
+/* Country option for a site address. */
+"Egypt" = "埃及";
+
+/* Country option for a site address. */
+"El Salvador" = "萨尔瓦多";
+
+/* Industry option in the store creation category question. */
+"Electrical Contractors" = "电气承包商";
+
+/* Industry option in the store creation category question. */
+"Elementary Or Secondary Schools" = "小学或中学";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "适用于免费自提";
@@ -1948,6 +2356,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "电子邮件：%@";
+
+/* Industry option in the store creation category question. */
+"Employment Agencies" = "职业介绍所";
 
 /* Accessibility text for Unit Input cell */
 "Empty" = "清空";
@@ -2088,9 +2499,6 @@ which should be translated separately and considered part of this sentence. */
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "输入您的 %@ 帐户信息。";
 
-/* Sign in instructions on the 'log in using WordPress.com account' screen. */
-"Enter your email address to get started." = "请输入您的电子邮箱地址以开始。";
-
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "输入您的电子邮件地址以登录或创建 WordPress.com 帐户。";
 
@@ -2107,8 +2515,17 @@ which should be translated separately and considered part of this sentence. */
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
 "Enter your store credentials for %@." = "输入 %@ 的商店凭据。";
 
+/* Industry group option in the store creation category question. */
+"Entertainment And Recreation" = "娱乐和消遣";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "信封";
+
+/* Country option for a site address. */
+"Equatorial Guinea" = "赤道几内亚";
+
+/* Country option for a site address. */
+"Eritrea" = "厄立特里亚";
 
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "错误";
@@ -2119,14 +2536,23 @@ which should be translated separately and considered part of this sentence. */
 /* Error title when Jetpack connection fails */
 "Error authorizing connection to Jetpack" = "授权连接 Jetpack 时发生错误";
 
+/* Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication */
+"Error checking for the WooCommerce plugin." = "检查 WooCommerce 插件时出错。";
+
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "错误代码 %1$d";
 
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "启用分析时出现错误。 请重试。";
 
+/* Error message displayed when application password cannot be fetched after authentication. */
+"Error fetching application password for your site." = "获取站点的应用程序密码时出错。";
+
 /* Title for the error alert when fetching system status report fails */
 "Error fetching report" = "获取报告时出错";
+
+/* Error message displayed when user information cannot be fetched after authentication. */
+"Error fetching user information." = "获取用户信息时出错。";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "在 Apple Maps 上查找地址时出现错误";
@@ -2152,6 +2578,18 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "更新订单 #%1$d 时出错";
 
+/* Country option for a site address. */
+"Estonia" = "爱沙尼亚";
+
+/* Country option for a site address. */
+"Ethiopia" = "埃塞俄比亚";
+
+/* Option in the store creation selling platforms question. */
+"Etsy" = "Etsy";
+
+/* Industry option in the store creation category question. */
+"Event Ticketing" = "活动票务";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "每个人都喜欢优惠";
@@ -2174,8 +2612,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action button to add excluded product categories on Coupon Usage Restrictions screen. The number of selected items is mentioned between the brackets. Reads like: Exclude Product Categories (4) */
 "Exclude Product Categories (%1$d)" = "排除以下商品分类 (%1$d)";
 
-/* Title for the screen to exclude products for a coupon
-   Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
+/* Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
 "Exclude Products" = "不含以下商品";
 
 /* Title of the action button to add excluded products on Coupon Usage Restrictions screen. The number of selected items is included between the brackets. Reads like: Exclude Products (2) */
@@ -2186,6 +2623,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Exclude Categories screen */
 "Exclude categories" = "排除分类";
+
+/* Title for the screen to exclude products for a coupon */
+"Exclude products" = "不含以下产品";
 
 /* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
 "Excludes sale items" = "不含促销商品";
@@ -2218,6 +2658,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "外部\/关联";
 
+/* Option in the store creation selling platforms question. */
+"Facebook Marketplace" = "Facebook Marketplace";
+
 /* Display label for failed order status. */
 "Failed" = "失败";
 
@@ -2242,8 +2685,14 @@ which should be translated separately and considered part of this sentence. */
 /* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
 "Failed to undo fulfillment of order #%1$d" = "未能撤销订单 #%1$d 的履约";
 
-/* Option in the store creation category question. */
-"Fashion and Apparel" = "时尚和服饰";
+/* Country option for a site address. */
+"Falkland Islands" = "福克兰群岛";
+
+/* Country option for a site address. */
+"Faroe Islands" = "法罗群岛";
+
+/* Industry option in the store creation category question. */
+"Fast Food Restaurants" = "快餐店";
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
@@ -2270,6 +2719,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info message shown when the order contains multiple fee lines */
 "Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "费用不完整。\n要编辑所有费用，请在 WooCommerce 商店管理中查看订单。";
+
+/* Country option for a site address. */
+"Fiji" = "斐济";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2309,6 +2761,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title format for filtering a list of products with filters applied. */
 "Filters (%ld)" = "筛选条件 (%ld)";
 
+/* Industry option in the store creation category question. */
+"Financial Information And Research" = "财务信息和研究";
+
+/* Industry group option in the store creation category question. */
+"Financial Services" = "金融服务";
+
 /* Button linking to webview explaining how to find your connected emailPresented when logging in with a store address that does not match the account entered */
 "Find your connected email" = "找到您的关联电子邮件";
 
@@ -2324,6 +2782,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "在您的商店管理中完成 %1$@ 设置";
 
+/* Country option for a site address. */
+"Finland" = "芬兰";
+
 /* Text field name in Edit Address Form */
 "First name" = "名字";
 
@@ -2336,17 +2797,38 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "固定的产品折扣";
 
+/* Industry option in the store creation category question. */
+"Flowers" = "花";
+
 /* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
 "Follow reader instructions to pay" = "按照读卡器说明进行付款";
 
 /* User role badge */
 "Follower" = "粉丝";
 
-/* Option in the store creation category question. */
-"Food and Drink" = "食品和饮料";
+/* Industry group option in the store creation category question. */
+"Food And Drink" = "食品和饮料";
+
+/* Industry option in the store creation category question. */
+"Fortune Tellers" = "算命先生";
 
 /* Next web page */
 "Forward" = "转发";
+
+/* Country option for a site address. */
+"France" = "法国";
+
+/* Industry option in the store creation category question. */
+"Freight Forwarders" = "货运代理人";
+
+/* Country option for a site address. */
+"French Guiana" = "法属圭亚那";
+
+/* Country option for a site address. */
+"French Polynesia" = "法属波利尼西亚";
+
+/* Country option for a site address. */
+"French Southern Territories" = "法国南部领土";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "开始日期";
@@ -2357,11 +2839,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "从设备";
 
+/* Industry option in the store creation category question. */
+"Fuel Dispensers" = "燃油分配器";
+
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "使用 WooCommerce Shipping 履行您的订单";
 
+/* Industry option in the store creation category question. */
+"Funeral Services" = "殡葬服务";
+
+/* Country option for a site address. */
+"Gabon" = "加蓬";
+
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "深入了解商店中产品的销售情况";
+
+/* Country option for a site address. */
+"Gambia" = "冈比亚";
+
+/* Industry option in the store creation category question. */
+"Games" = "游戏";
+
+/* Industry option in the store creation category question. */
+"General Contractors" = "一般承包商";
 
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "生成新变体";
@@ -2369,8 +2869,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action to generate the first variation */
 "Generate Variation" = "生成变体";
 
+/* Title for the option to generate all possible variations */
+"Generate all variations" = "生成所有变体";
+
+/* Alert title to allow the user confirm if they want to generate all variations */
+"Generate all variations?" = "生成所有变体？";
+
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "正在生成变量";
+
+/* Error title for for when there are too many variations to generate. */
+"Generation limit exceeded" = "超出了生成限制";
+
+/* Country option for a site address. */
+"Georgia" = "格鲁吉亚";
+
+/* Country option for a site address. */
+"Germany" = "德国";
 
 /* Button displayed on the prologue screen of the simplified login flow to create a new store
    Title of install action in the Jetpack Install view.
@@ -2420,16 +2935,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented with a spinner while the reader is being prepared */
 "Getting ready to collect payment" = "准备收款";
 
+/* Country option for a site address. */
+"Ghana" = "加纳";
+
+/* Country option for a site address. */
+"Gibraltar" = "直布罗陀";
+
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "礼品";
-
-/* Title of the feedback action button on the coupon list screen */
-"Give Feedback" = "提供反馈";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
    Title of the button to give feedback about the Orders features
+   Title of the feedback action button on the coupon list screen
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "提供反馈";
 
@@ -2442,8 +2961,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button to navigate to the home screen after Jetpack setup completes */
 "Go to Store" = "前往商店";
 
+/* Option in the store creation selling platforms question. */
+"Google Shopping" = "Google 购物";
+
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google 注册失败。";
+
+/* Industry option in the store creation category question. */
+"Government Services" = "政府服务";
+
+/* Country option for a site address. */
+"Greece" = "希腊";
+
+/* Country option for a site address. */
+"Greenland" = "格陵兰";
+
+/* Country option for a site address. */
+"Grenada" = "格林纳达";
+
+/* Industry option in the store creation category question. */
+"Grocery Stores" = "杂货店";
 
 /* Display label for grouped product type. */
 "Grouped" = "已分组";
@@ -2457,9 +2994,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "分组产品";
 
+/* Country option for a site address. */
+"Guadeloupe" = "瓜德罗普岛";
+
+/* Country option for a site address. */
+"Guam" = "关岛";
+
+/* Country option for a site address. */
+"Guatemala" = "危地马拉";
+
+/* Country option for a site address. */
+"Guernsey" = "根西岛";
+
 /* In Order Details, the name of the billed person when there are no name and last name.
    In Order List, the name of the billed person when there are no first and last name. */
 "Guest" = "访客";
+
+/* Country option for a site address. */
+"Guinea" = "几内亚";
+
+/* Country option for a site address. */
+"Guinea-Bissau" = "几内亚比绍";
+
+/* Country option for a site address. */
+"Guyana" = "圭亚那";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "您希望我们如何为您提供帮助？";
@@ -2476,6 +3034,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "HTML 内容";
+
+/* Country option for a site address. */
+"Haiti" = "海地";
+
+/* Industry option in the store creation category question. */
+"Hardware Stores" = "硬件存储";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "准备好您的商店凭据。";
@@ -2516,8 +3080,14 @@ which should be translated separately and considered part of this sentence. */
 /* H6 Aztec Style */
 "Heading 6" = "六级标题";
 
-/* Option in the store creation category question. */
-"Health and Beauty" = "卫生和美容";
+/* Industry option in the store creation category question. */
+"Health And Beauty Spas" = "卫生和美容 SPA";
+
+/* Industry option in the store creation category question. */
+"Health And Wellness Coaching" = "卫生与健康辅导";
+
+/* Country option for a site address. */
+"Heard Island and McDonald Islands" = "赫德岛和麦克唐纳群岛";
 
 /* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Height */
@@ -2536,7 +3106,8 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > Help and Feedback settings section title */
 "Help & Feedback" = "帮助和反馈";
 
-/* Contact Support Action */
+/* Accessibility label for the Help & Support image navigation bar button in the store creation flow.
+   Contact Support Action */
 "Help & Support" = "帮助与支持";
 
 /* Browse our help documentation website title */
@@ -2549,14 +3120,44 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's catalog visibility */
 "Hidden" = "已隐藏";
 
+/* Industry option in the store creation category question. */
+"Home Electronics" = "家用电子产品";
+
+/* Industry option in the store creation category question. */
+"Home Goods And Furniture" = "家居用品和家具";
+
+/* Country option for a site address. */
+"Honduras" = "洪都拉斯";
+
+/* Country option for a site address. */
+"Hong Kong" = "中国香港";
+
+/* Industry option in the store creation category question. */
+"Hospitals" = "医院";
+
+/* Industry option in the store creation category question. */
+"Hotels, Inns, Or Motels" = "酒店、旅店或汽车旅馆";
+
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "我们应该如何改善？";
 
 /* Message subtitle of bottom sheet for selecting a template or manual product */
 "How do you want to start?" = "您想如何开始？";
 
+/* Country option for a site address. */
+"Hungary" = "匈牙利";
+
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "我喜欢";
+
+/* Option in the store creation selling status question. */
+"I am already selling online" = "我已在网上销售";
+
+/* Option in the store creation selling status question. */
+"I am just starting to sell" = "我刚刚开始销售";
+
+/* Option in the store creation selling status question. */
+"I am selling offline" = "我在线下销售";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "要履单的商品";
@@ -2569,6 +3170,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
 "ITN is required for shipping items valued over $2,500 per tariff number" = "运输每个关税编号价值超过 2500 美元的物品需要 ITN";
+
+/* Country option for a site address. */
+"Iceland" = "冰岛";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "如果禁用，备注将不会公开";
@@ -2598,6 +3202,9 @@ which should be translated separately and considered part of this sentence. */
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "有货";
 
+/* Title of the store creation profiler question about the store selling platforms. */
+"In which platform are you currently selling?" = "您目前在哪个平台销售？";
+
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "进行站点管理时，您可以在 Jetpack 控制面板中找到用于连接 WordPress.com 的电子邮件，具体位于“连接”>“帐户连接”下";
 
@@ -2609,9 +3216,6 @@ which should be translated separately and considered part of this sentence. */
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "现场付款";
 
-/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
-"In-Person Payments Setup is incomplete." = "现场付款设置未完成。";
-
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "现场付款可以通过这些付款提供商中的任何一个进行处理。 您想使用哪个提供商？";
 
@@ -2622,6 +3226,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "此商店不支持现场付款";
+
+/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
+"In-Person Payments setup is incomplete." = "现场付款设置未完成。";
 
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "应用内购买";
@@ -2658,6 +3265,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "通过追加销售和交叉销售增加销售额";
 
+/* Country option for a site address. */
+"India" = "印度";
+
 /* Title for the individual use only row in coupon usage restrictions screen. */
 "Individual Use Only" = "仅限单独使用";
 
@@ -2666,6 +3276,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "单独发运的商品";
+
+/* Country option for a site address. */
+"Indonesia" = "印度尼西亚";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "插入";
@@ -2721,6 +3334,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "正在安装 Jetpack";
 
+/* Industry option in the store creation category question. */
+"Insurance" = "保险";
+
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
 "Insurance (%1$@)" = "保险 (%1$@)";
 
@@ -2771,6 +3387,24 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "库存";
 
+/* Industry option in the store creation category question. */
+"Investment Services" = "投资服务";
+
+/* Country option for a site address. */
+"Iran" = "伊朗";
+
+/* Country option for a site address. */
+"Iraq" = "伊拉克";
+
+/* Country option for a site address. */
+"Ireland" = "爱尔兰";
+
+/* Country option for a site address. */
+"Isle of Man" = "马恩岛";
+
+/* Country option for a site address. */
+"Israel" = "以色列";
+
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "发放退款";
 
@@ -2796,11 +3430,17 @@ which should be translated separately and considered part of this sentence. */
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "您可能输入了错误的密码。是否想重试？";
 
+/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
+"It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "您的站点 %@ 似乎已禁用应用程序密码。 请启用以使用 WooCommerce 应用。";
+
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "您的站点 %@ 似乎是简单的 WordPress.com 站点，无法安装插件。 请升级您的套餐来使用 WooCommerce。";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜体";
+
+/* Country option for a site address. */
+"Italy" = "意大利";
 
 /* Error message for missing value in Description row in Customs screen of Shipping Label flow */
 "Item description is required" = "项目描述是必填项";
@@ -2818,6 +3458,18 @@ which should be translated separately and considered part of this sentence. */
    Title for the items sold column on the products card on the analytics hub screen. */
 "Items Sold" = "已售项目";
 
+/* Country option for a site address. */
+"Ivory Coast" = "象牙海岸";
+
+/* Country option for a site address. */
+"Jamaica" = "牙买加";
+
+/* Country option for a site address. */
+"Japan" = "日本";
+
+/* Country option for a site address. */
+"Jersey" = "泽西岛";
+
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "Jetpack 设置";
 
@@ -2830,6 +3482,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "随时随地加入";
 
+/* Country option for a site address. */
+"Jordan" = "约旦";
+
+/* Country option for a site address. */
+"Kazakhstan" = "哈萨克斯坦";
+
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "继续编辑";
 
@@ -2839,11 +3497,29 @@ which should be translated separately and considered part of this sentence. */
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "请注意，这不是支持请求，我们将无法处理个人反馈";
 
+/* Country option for a site address. */
+"Kenya" = "肯尼亚";
+
+/* Country option for a site address. */
+"Kiribati" = "基里巴斯";
+
+/* Country option for a site address. */
+"Kuwait" = "科威特";
+
+/* Country option for a site address. */
+"Kyrgyzstan" = "吉尔吉斯斯坦";
+
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "标签（4 x 6 英寸）";
 
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "标签格式选项";
+
+/* Industry option in the store creation category question. */
+"Landscaping Services" = "园林绿化服务";
+
+/* Country option for a site address. */
+"Laos" = "老挝";
 
 /* Label for one of the filters in order date range */
 "Last 2 Days" = "最近 2 天";
@@ -2875,8 +3551,17 @@ which should be translated separately and considered part of this sentence. */
 /* Text field name in Edit Address Form */
 "Last name" = "姓氏";
 
+/* Country option for a site address. */
+"Latvia" = "拉脱维亚";
+
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "启动 Wormholy 调试";
+
+/* Industry option in the store creation category question. */
+"Laundry Or Cleaning Services" = "洗衣或清洁服务";
+
+/* Industry option in the store creation category question. */
+"Lead Generation" = "潜在客户开发";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -2897,14 +3582,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "详细了解 Jetpack";
 
-/* Title of button in the simplified login prologue screen for learning more about WooCommerce. */
-"Learn more about WooCommerce" = "详细了解 WooCommerce";
-
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "详细了解如何使用移动设备创建配送标签";
 
 /* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "了解更多关于角色和权限的信息";
+
+/* Country option for a site address. */
+"Lebanon" = "黎巴嫩";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal（8.5 x 14 英寸）";
@@ -2916,8 +3601,20 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Shipping Settings > Length */
 "Length" = "长度";
 
+/* Country option for a site address. */
+"Lesotho" = "莱索托";
+
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter（8.5 x 11 英寸）";
+
+/* Country option for a site address. */
+"Liberia" = "利比里亚";
+
+/* Country option for a site address. */
+"Libya" = "利比亚";
+
+/* Country option for a site address. */
+"Liechtenstein" = "列支敦士登";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "限制 X 个物品的使用";
@@ -2957,6 +3654,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "产品图片列表";
 
+/* Country option for a site address. */
+"Lithuania" = "立陶宛";
+
 /* Accessibility label for loading indicator (spinner) at the bottom of a list */
 "Loading" = "正在加载";
 
@@ -2978,8 +3678,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Loading. Verb */
 "Loading..." = "正在载入...";
 
-/* Button title in the simplified login prologue screen. Takes the user to the login flow.
-   Button title.  Tapping takes the user to the login form.
+/* Industry option in the store creation category question. */
+"Loans Or Lending" = "贷款或借贷";
+
+/* Button title.  Tapping takes the user to the login form.
    Log In button label.
    View title during the log in process. */
 "Log In" = "登录";
@@ -2988,6 +3690,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled.
+   Button to restart the login flow.
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "使用其他帐户登录";
 
@@ -3049,6 +3753,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button. */
 "Lost your password?" = "忘记密码？";
 
+/* Industry option in the store creation category question. */
+"Lotteries" = "彩票";
+
+/* Country option for a site address. */
+"Luxembourg" = "卢森堡";
+
+/* Country option for a site address. */
+"Macao S.A.R., China" = "中国澳门";
+
+/* Country option for a site address. */
+"Macedonia" = "马其顿";
+
+/* Country option for a site address. */
+"Madagascar" = "马达加斯加";
+
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Automattic 用爱心打造。<a href=\"https:\/\/automattic.com\/work-with-us\/\">我们正在招贤纳士！<\/a>";
 
@@ -3063,6 +3782,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "通过标签让您的产品更容易查找";
+
+/* Country option for a site address. */
+"Malawi" = "马拉维";
+
+/* Country option for a site address. */
+"Malaysia" = "马来西亚";
+
+/* Country option for a site address. */
+"Maldives" = "马尔代夫";
+
+/* Country option for a site address. */
+"Mali" = "马里";
+
+/* Country option for a site address. */
+"Malta" = "马耳他";
 
 /* Card reader settings screen title
    Settings > Manage Card Reader > Title for the no-reader-connected screen in settings.
@@ -3093,6 +3827,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "已映射的域";
 
+/* Industry option in the store creation category question. */
+"Marijuana Dispensaries" = "大麻药房";
+
+/* Industry option in the store creation category question. */
+"Marijuana-related Products" = "大麻相关产品";
+
 /* Title for the swipe order action to mark it as completed */
 "Mark Completed" = "标为“已完成”";
 
@@ -3118,14 +3858,50 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "将订单标注为已完成并通知客户";
 
+/* Country option for a site address. */
+"Marshall Islands" = "马绍尔群岛";
+
+/* Country option for a site address. */
+"Martinique" = "马提尼克";
+
+/* Industry option in the store creation category question. */
+"Massage Parlors" = "按摩院";
+
+/* Country option for a site address. */
+"Mauritania" = "毛里塔尼亚";
+
+/* Country option for a site address. */
+"Mauritius" = "毛里求斯";
+
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "最高 消费 (%1$@)";
 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "最高消费金额：%1$@";
 
+/* Country option for a site address. */
+"Mayotte" = "马约特岛";
+
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "媒体没有可上传的关联文件。";
+
+/* Industry option in the store creation category question. */
+"Medical Devices" = "医疗设备";
+
+/* Industry option in the store creation category question. */
+"Medical Laboratories" = "医学实验室";
+
+/* Industry option in the store creation category question. */
+"Medical Organizations" = "医疗组织";
+
+/* Industry group option in the store creation category question. */
+"Medical Services" = "医疗服务";
+
+/* Industry group option in the store creation category question. */
+"Membership Organizations" = "会员组织";
+
+/* Industry option in the store creation category question. */
+"Mental Health Services" = "心理健康服务";
 
 /* Title of the Menu tab */
 "Menu" = "菜单";
@@ -3146,6 +3922,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message phone number button title */
 "Message" = "邮件";
 
+/* Country option for a site address. */
+"Mexico" = "墨西哥";
+
+/* Country option for a site address. */
+"Micronesia" = "密克罗尼西亚";
+
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
@@ -3161,11 +3943,32 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
 "Mixed" = "组合";
 
+/* Country option for a site address. */
+"Moldova" = "摩尔多瓦";
+
+/* Country option for a site address. */
+"Monaco" = "摩纳哥";
+
+/* Industry option in the store creation category question. */
+"Money Orders" = "货币订单";
+
+/* Industry option in the store creation category question. */
+"Money Services Or Transmission" = "货币服务或转账";
+
+/* Country option for a site address. */
+"Mongolia" = "蒙古";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "监控和批准您的产品评价";
 
+/* Country option for a site address. */
+"Montenegro" = "黑山共和国";
+
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "月初至今";
+
+/* Country option for a site address. */
+"Montserrat" = "蒙特塞拉特";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -3177,6 +3980,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "更多选项";
+
+/* Country option for a site address. */
+"Morocco" = "摩洛哥";
+
+/* Industry option in the store creation category question. */
+"Mortgage Consulting Services" = "按揭咨询服务";
 
 /* Button on each order item of the Package Details screen in Shipping Labels flow. */
 "Move" = "移动";
@@ -3193,11 +4002,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "将评论移动至回收站";
 
+/* Industry option in the store creation category question. */
+"Movie Theaters" = "电影院";
+
+/* Country option for a site address. */
+"Mozambique" = "莫桑比克";
+
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
 "Multiple Contactless Cards Detected" = "检测到多张非接触式卡";
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "多种付款选项";
+
+/* Industry option in the store creation category question. */
+"Music Or Other Media" = "音乐或其他媒体";
+
+/* Industry option in the store creation category question. */
+"Musicians, Bands, Or Orchestras" = "音乐家、乐队或乐团";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "我的商店";
@@ -3209,6 +4030,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the store creation summary screen. */
 "My store" = "我的商店";
 
+/* Country option for a site address. */
+"Myanmar" = "缅甸";
+
 /* Name text field placeholder
    Text field name in Shipping Label Address Validation
    Title for the name field on the Shipping Line Details screen during order creation */
@@ -3216,6 +4040,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "缺少名称";
+
+/* Country option for a site address. */
+"Namibia" = "纳米比亚";
+
+/* Country option for a site address. */
+"Nauru" = "瑙鲁";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "是否需要货运标签？";
@@ -3240,6 +4070,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
 "Need some help? %1$@" = "需要帮助？%1$@";
 
+/* Country option for a site address. */
+"Nepal" = "尼泊尔";
+
 /* The title for the net amount paid cell */
 "Net Payment" = "净付款";
 
@@ -3250,6 +4083,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Top performers — label for the total sales of a product */
 "Net sales: %@" = "净销售额：%@";
 
+/* Country option for a site address. */
+"Netherlands" = "荷兰";
+
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "网络活动插件";
 
@@ -3259,8 +4095,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "新属性名称";
 
+/* Country option for a site address. */
+"New Caledonia" = "新喀里多尼亚";
+
 /* Title for the order creation screen */
 "New Order" = "新订单";
+
+/* Country option for a site address. */
+"New Zealand" = "新西兰";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "新的分析视图，让您可查看访客、报告等。";
@@ -3283,6 +4125,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of a button. The text should be capitalized.
    Title of the next button in the issue refund screen */
 "Next" = "下一步";
+
+/* Country option for a site address. */
+"Nicaragua" = "尼加拉瓜";
+
+/* Country option for a site address. */
+"Niger" = "尼日尔";
+
+/* Country option for a site address. */
+"Nigeria" = "尼日利亚";
+
+/* Country option for a site address. */
+"Niue" = "纽埃";
 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "无限制";
@@ -3383,6 +4237,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Value for fields in Coupon Usage Restrictions screen when no value is set */
 "None" = "无";
 
+/* Country option for a site address. */
+"Norfolk Island" = "诺福克岛";
+
+/* Country option for a site address. */
+"North Korea" = "朝鲜";
+
+/* Country option for a site address. */
+"Northern Mariana Islands" = "北马里亚纳群岛";
+
+/* Country option for a site address. */
+"Norway" = "挪威";
+
 /* Action title to dismiss enabling Analytics for a store
    Button in the CTA View for installing WCShip extension for dismissing the view
    Title of dismiss action in the Jetpack benefits view. */
@@ -3403,7 +4269,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "添加属性后，即可创建您的第一个变体了。";
 
+/* Industry option in the store creation category question. */
+"Nursing Or Personal Care Facilities" = "护理或个人护理机构";
+
 /* Alert dismissal title
+   Button text to confirm that we want to generate all variations
    Button title to cancel the alert when the user cannot create a store.
    Button title to dismiss the alert when the created store never becomes a Jetpack site in the store creation flow.
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
@@ -3445,6 +4315,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Weeks Section Header */
 "Older than a Week" = "超过 1 周";
 
+/* Country option for a site address. */
+"Oman" = "阿曼";
+
 /* Spoken label to indicate switch control is turned on */
 "On" = "打开";
 
@@ -3453,6 +4326,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for on hold order status. */
 "On hold" = "保留";
+
+/* Industry option in the store creation category question. */
+"Online Gambling" = "网上赌博";
 
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "变体仅能显示一张照片";
@@ -3502,6 +4378,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint to open web page in Safari */
 "Opens the web page in Safari" = "在 Safari 中打开网页";
 
+/* Industry option in the store creation category question. */
+"Opticians And Eyeglasses" = "眼镜商和眼镜";
+
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "选项名称";
 
@@ -3518,6 +4397,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "选项";
+
+/* Industry option in the store creation category question. */
+"Optometrists and Ophthalmologists" = "验光师和眼科医师";
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "或";
@@ -3583,14 +4465,56 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "原包裹";
 
+/* Industry option in the store creation category question. */
+"Osteopaths" = "整骨疗法家";
+
 /* Generic name of non-default discount types
    My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "其他";
 
+/* Industry option in the store creation category question. */
+"Other Building Services" = "其他建筑服务";
+
+/* Industry option in the store creation category question. */
+"Other Business Services" = "其他商业服务";
+
+/* Industry option in the store creation category question. */
+"Other Digital Goods" = "其他数字商品";
+
+/* Industry option in the store creation category question. */
+"Other Entertainment And Recreation" = "其他娱乐和消遣";
+
+/* Industry option in the store creation category question. */
+"Other Financial Institutions" = "其他金融机构";
+
+/* Industry option in the store creation category question. */
+"Other Food And Dining" = "其他美食和餐饮";
+
+/* Industry option in the store creation category question. */
+"Other Marketing Services" = "其他营销服务";
+
+/* Industry option in the store creation category question. */
+"Other Medical Services" = "其他医疗服务";
+
+/* Industry option in the store creation category question. */
+"Other Membership Organizations" = "其他会员组织";
+
+/* Industry option in the store creation category question. */
+"Other Merchandise" = "其他商品";
+
+/* Industry option in the store creation category question. */
+"Other Personal Services" = "其他个人服务";
+
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "其他站点";
+
+/* Industry option in the store creation category question. */
+"Other Transportation Services" = "其他运输服务";
+
+/* Industry option in the store creation category question. */
+"Other Travel And Lodging" = "其他旅行和住宿";
 
 /* Display label for the product's inventory stock status */
 "Out of stock" = "缺货";
@@ -3637,11 +4561,29 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title for the customer payment cell */
 "Paid" = "已付";
 
+/* Country option for a site address. */
+"Pakistan" = "巴基斯坦";
+
+/* Country option for a site address. */
+"Palestinian Territory" = "巴勒斯坦领土";
+
+/* Country option for a site address. */
+"Panama" = "巴拿马";
+
 /* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "纸张尺寸";
 
+/* Country option for a site address. */
+"Papua New Guinea" = "巴布亚新几内亚";
+
+/* Country option for a site address. */
+"Paraguay" = "巴拉圭";
+
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "父级分类目录";
+
+/* Industry option in the store creation category question. */
+"Parking Lots" = "停车场";
 
 /* Title of the banner when the order is not editable */
 "Parts of this order are not currently editable" = "此订单的部分内容当前不可编辑";
@@ -3741,8 +4683,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "永久关闭账户";
 
-/* Option in the store creation category question. */
-"Pets Pet Care" = "宠物护理";
+/* Industry option in the store creation category question. */
+"Personal Fundraising Or Crowdfunding" = "个人筹款或众筹";
+
+/* Industry group option in the store creation category question. */
+"Personal Services" = "个人服务";
+
+/* Country option for a site address. */
+"Peru" = "秘鲁";
+
+/* Industry option in the store creation category question. */
+"Pharmacies Or Pharmaceuticals" = "药房或药品";
+
+/* Country option for a site address. */
+"Philippines" = "菲律宾";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -3750,6 +4704,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "电话号码：%@";
+
+/* Industry option in the store creation category question. */
+"Photography Studios" = "摄影工作室";
 
 /* Product images (Product images page title) */
 "Photos" = "照片";
@@ -3762,6 +4719,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Pick up an order, then just pay, print, package, and post." = "选择订单，然后只需付款，打印，包装和邮寄。";
+
+/* Option in the store creation selling platforms question. */
+"Pinterest" = "Pinterest";
+
+/* Country option for a site address. */
+"Pitcairn" = "皮特凯恩";
 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "将产品放入回收站...";
@@ -3848,6 +4811,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "请填写所有表单项";
+
+/* Message explaining that the site entered doesn't have WooCommerce installed or activated. */
+"Please install and activate WooCommerce plugin on your site to use the app." = "请在您的站点上安装并激活 WooCommerce 插件以使用该应用。";
 
 /* Error message on the Jetpack setup required screen. */
 "Please install the free Jetpack plugin to access your store on this app." = "请安装免费 Jetpack 插件以在此应用程序上访问您的商店。";
@@ -3958,6 +4924,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the Plugin List screen */
 "Plugins" = "插件";
 
+/* Industry option in the store creation category question. */
+"Podiatrists and Chiropodists" = "手足病医生";
+
+/* Country option for a site address. */
+"Poland" = "波兰";
+
+/* Industry option in the store creation category question. */
+"Political Organizations" = "政治组织";
+
+/* Country option for a site address. */
+"Portugal" = "葡萄牙";
+
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
 "Postcode" = "邮编";
@@ -4040,6 +5018,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of in-progress modal when requesting document with multiple shipping labels for printing */
 "Printing Labels" = "打印标签";
+
+/* Industry option in the store creation category question. */
+"Printing and Publishing" = "印刷和出版";
 
 /* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "面向加州用户的隐私声明";
@@ -4148,6 +5129,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "促销产品而非当前浏览的产品（即利润更高的产品）";
 
+/* Industry group option in the store creation category question. */
+"Professional Services" = "专业服务";
+
+/* Industry option in the store creation category question. */
+"Property Rentals" = "房地产租赁";
+
+/* Industry option in the store creation category question. */
+"Protective Or Security Services" = "保护或安全服务";
+
 /* One of the possible options in Product Visibility */
 "Public" = "公开";
 
@@ -4163,8 +5153,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "正在发布您的产品…";
 
-/* Title for the button on the feature announcement banner intended to upsell card readers
-   Title for the WebView opened to upsell card readers */
+/* Country option for a site address. */
+"Puerto Rico" = "波多黎各";
+
+/* Title for the WebView opened to upsell card readers */
 "Purchase Card Reader" = "购买读卡器";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
@@ -4177,6 +5169,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Purchase note label in Product Settings */
 "Purchase Note" = "购买备注";
 
+/* Title for the button on the feature announcement banner intended to upsell card readers */
+"Purchase card reader" = "购买读卡器";
+
 /* Title for purchase note alert. */
 "Purchase note" = "购买备注";
 
@@ -4188,6 +5183,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Quantity abbreviation for section title */
 "QTY" = "数量";
+
+/* Country option for a site address. */
+"Qatar" = "卡塔尔";
 
 /* Quantity abbreviation for section title */
 "Qty" = "数量";
@@ -4248,6 +5246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "来自 %1$@ 的收据";
+
+/* Industry option in the store creation category question. */
+"Recreational Camps" = "娱乐营地";
 
 /* Button label to refresh a web page */
 "Refresh" = "刷新";
@@ -4328,6 +5329,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "正常价格：%@";
+
+/* Industry group option in the store creation category question. */
+"Regulated And Age-Restricted Products" = "受管制和有年龄限制的产品";
+
+/* Industry option in the store creation category question. */
+"Religious Organizations" = "宗教组织";
 
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time */
 "Remind me later" = "稍后提醒我";
@@ -4413,6 +5420,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "重置密码";
 
+/* Industry option in the store creation category question. */
+"Restaurants And Nightlife" = "餐厅和夜生活";
+
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "仅限使用电子邮件的客户：%1$@";
 
@@ -4421,6 +5431,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Restriction Type row in Customs screen of Shipping Label flow */
 "Restriction Type" = "限制类型";
+
+/* Industry group option in the store creation category question. */
+"Retail" = "零售";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search coupons. */
 "Retrieves a list of coupons that contain a given keyword." = "检索包含给定关键字的优惠券列表。";
@@ -4456,6 +5469,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "如果包裹无法送达，请退回给寄件人";
 
+/* Country option for a site address. */
+"Reunion" = "留尼旺岛";
+
 /* Revenue stat label on dashboard. */
 "Revenue" = "收益";
 
@@ -4474,6 +5490,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Post Rich content */
 "Rich Content" = "丰富的内容";
+
+/* Industry option in the store creation category question. */
+"Ridesharing" = "拼车";
+
+/* Country option for a site address. */
+"Romania" = "罗马尼亚";
+
+/* Country option for a site address. */
+"Russia" = "俄罗斯";
+
+/* Country option for a site address. */
+"Rwanda" = "卢旺达";
 
 /* Title for sessions section in the Analytics Hub */
 "SESSIONS" = "会话";
@@ -4507,6 +5535,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button label to open web page in Safari */
 "Safari" = "Safari";
 
+/* Country option for a site address. */
+"Saint Barthélemy" = "圣巴泰勒米";
+
+/* Country option for a site address. */
+"Saint Helena" = "圣赫勒拿";
+
+/* Country option for a site address. */
+"Saint Kitts and Nevis" = "圣基茨和尼维斯";
+
+/* Country option for a site address. */
+"Saint Lucia" = "圣卢西亚";
+
+/* Country option for a site address. */
+"Saint Martin (Dutch part)" = "圣马丁（荷兰部分）";
+
+/* Country option for a site address. */
+"Saint Martin (French part)" = "圣马丁（法国部分）";
+
+/* Country option for a site address. */
+"Saint Pierre and Miquelon" = "圣皮埃尔和密克隆";
+
+/* Country option for a site address. */
+"Saint Vincent and the Grenadines" = "圣文森特和格林纳丁斯";
+
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "促销日期：%@";
 
@@ -4525,11 +5577,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Sales channels" = "销售渠道";
 
+/* Industry option in the store creation category question. */
+"Salons Or Barbers" = "美发沙龙或理发店";
+
+/* Country option for a site address. */
+"Samoa" = "萨摩亚";
+
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "样品";
 
+/* Country option for a site address. */
+"San Marino" = "圣马力诺";
+
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary \/ Phytosanitary Inspection" = "卫生\/植物检疫检查";
+
+/* Country option for a site address. */
+"Saudi Arabia" = "沙特阿拉伯";
 
 /* Action for saving a Coupon remotely
    Action for saving a Product remotely
@@ -4615,6 +5679,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's catalog visibility */
 "Search results only" = "仅在搜索结果中显示";
 
+/* Industry option in the store creation category question. */
+"Security Brokers Or Dealers" = "证券经纪人或经销商";
+
 /* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
    Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "查看已关联的商店";
@@ -4652,9 +5719,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to select specific categories applicable for a coupon in the view for adding or editing a coupon. */
 "Select Product Categories" = "选择商品分类";
 
-/* Title for the screen to select products for a coupon */
-"Select Products" = "选择产品";
-
 /* Page title for the select a different store screen */
 "Select Store" = "选择商店";
 
@@ -4681,6 +5745,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "选择段落样式";
+
+/* Title for the screen to select products for a coupon */
+"Select products" = "选择产品";
 
 /* The title for the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Select reader type" = "选择读卡器类型";
@@ -4712,6 +5779,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title. Sends a email verification link (Magin link) for signing in. */
 "Send email verification link" = "发送电子邮件验证链接";
 
+/* Country option for a site address. */
+"Senegal" = "塞内加尔";
+
+/* Country option for a site address. */
+"Serbia" = "塞尔维亚";
+
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "服务包";
 
@@ -4737,6 +5810,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "找到多个读卡器";
+
+/* Country option for a site address. */
+"Seychelles" = "塞舌尔";
 
 /* Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
@@ -4809,6 +5885,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping method title for customer info section */
 "Shipping Method" = "配送方式";
 
+/* Industry option in the store creation category question. */
+"Shipping Or Forwarding" = "配送或转递";
+
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "配送费用退款";
 
@@ -4842,11 +5921,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's tax status setting option */
 "Shipping only" = "仅限运费";
 
+/* Industry option in the store creation category question. */
+"Shoes" = "鞋";
+
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "在店铺和搜索结果中显示";
 
 /* Display label for the product's catalog visibility */
 "Shop only" = "仅在店铺中显示";
+
+/* Option in the store creation selling platforms question. */
+"Shopify" = "Shopify";
 
 /* The navigation bar title of the edit short description screen.
    Title of the product form bottom sheet action for editing short description.
@@ -4890,6 +5975,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "显示更多选项。";
 
+/* Country option for a site address. */
+"Sierra Leone" = "塞拉利昂";
+
 /* View title during the sign up process. */
 "Sign Up" = "注册";
 
@@ -4923,6 +6011,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
 "Simple virtual product" = "简单的虚拟产品";
 
+/* Country option for a site address. */
+"Singapore" = "新加坡";
+
 /* Describes a site redirect domain */
 "Site Redirect" = "站点重定向";
 
@@ -4940,13 +6031,31 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
 "Skip for now" = "暂时跳过";
 
+/* Country option for a site address. */
+"Slovakia" = "斯洛伐克";
+
+/* Country option for a site address. */
+"Slovenia" = "斯洛文尼亚";
+
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "数据域";
 
+/* Industry option in the store creation category question. */
+"Software" = "软件";
+
+/* Industry option in the store creation category question. */
+"Software As A Service" = "软件即服务";
+
 /* Dialog title that displays when a software update just finished installing */
 "Software updated" = "软件已更新";
+
+/* Country option for a site address. */
+"Solomon Islands" = "所罗门群岛";
+
+/* Country option for a site address. */
+"Somalia" = "索马里";
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "某些电子邮件地址无效。";
@@ -5037,6 +6146,21 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the toolbar button to sort products in different ways. */
 "Sort by" = "排序方式";
 
+/* Country option for a site address. */
+"South Africa" = "南非";
+
+/* Country option for a site address. */
+"South Georgia\/Sandwich Islands" = "南乔治亚\/南桑威奇群岛";
+
+/* Country option for a site address. */
+"South Korea" = "韩国";
+
+/* Country option for a site address. */
+"South Sudan" = "南苏丹";
+
+/* Country option for a site address. */
+"Spain" = "西班牙";
+
 /* Display label for the review's spam status
    Verb, spam a comment */
 "Spam" = "发表垃圾评论";
@@ -5044,8 +6168,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to select the Spark email app when logging in with magic links */
 "Spark" = "Spark";
 
-/* Option in the store creation category question. */
-"Sports and Recreation" = "体育和娱乐";
+/* Industry option in the store creation category question. */
+"Special Trade Contractors" = "特殊贸易承包商";
+
+/* Industry option in the store creation category question. */
+"Sports Forecasting Or Prediction Services" = "体育预测或预报服务";
+
+/* Option in the store creation selling platforms question. */
+"Square" = "实心方块";
+
+/* Option in the store creation selling platforms question. */
+"Squarespace" = "Squarespace";
+
+/* Country option for a site address. */
+"Sri Lanka" = "斯里兰卡";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "标准税率";
@@ -5133,6 +6269,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice text after updating the order successfully */
 "Successfully updated" = "更新成功";
 
+/* Country option for a site address. */
+"Sudan" = "苏丹";
+
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "产品和包裹的总重量";
 
@@ -5141,6 +6280,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
 "Summary: Order #%1$@" = "摘要：订单 #%1$@";
+
+/* Industry option in the store creation category question. */
+"Supplements Or Nutraceuticals" = "补品或营养品";
+
+/* Country option for a site address. */
+"Suriname" = "苏里南";
+
+/* Country option for a site address. */
+"Svalbard and Jan Mayen" = "斯瓦尔巴岛和扬马延岛";
+
+/* Country option for a site address. */
+"Swaziland" = "斯威士兰";
+
+/* Country option for a site address. */
+"Sweden" = "瑞典";
 
 /* Message from the in-person payment card reader prompting user to swipe their card */
 "Swipe Card" = "刷卡";
@@ -5175,6 +6329,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "切换为默认字体大小";
 
+/* Country option for a site address. */
+"Switzerland" = "瑞士";
+
+/* Country option for a site address. */
+"Syria" = "叙利亚";
+
 /* Navigation title of system status report screen
    View system status report cell title on Help screen */
 "System Status Report" = "系统状态报告";
@@ -5185,10 +6345,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when attempting to pay for a live transaction with a test card. */
 "System test cards are not permitted for payment. Try another means of payment" = "不允许使用系统测试卡付款。 请尝试其他付款方式";
 
+/* Country option for a site address. */
+"São Tomé and Príncipe" = "圣多美和普林西比";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
 "Tags" = "标签";
+
+/* Country option for a site address. */
+"Taiwan" = "中国台湾";
+
+/* Country option for a site address. */
+"Tajikistan" = "塔吉克斯坦";
 
 /* Title for the simple payments screen */
 "Take Payment" = "收款";
@@ -5202,6 +6371,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "返回收取付款";
+
+/* Country option for a site address. */
+"Tanzania" = "坦桑尼亚";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap card to pay" = "点击卡以付款";
@@ -5325,6 +6497,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "税款会根据您的店铺地址自动计算。";
 
+/* Industry option in the store creation category question. */
+"Taxis And Limos" = "出租车和豪华轿车";
+
+/* Industry option in the store creation category question. */
+"Telecom Equipment" = "电信设备";
+
+/* Industry option in the store creation category question. */
+"Telecom Services" = "电信服务";
+
+/* Industry option in the store creation category question. */
+"Telemarketing" = "电话营销";
+
+/* Industry option in the store creation category question. */
+"Telemedicine And Telehealth" = "远程医疗和远程保健";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "告知我们更多有关 %1$@ 的信息…";
 
@@ -5349,9 +6536,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "当我们准备发布时，测试查看订单加载项";
 
+/* Industry option in the store creation category question. */
+"Testing Laboratories" = "检测实验室";
+
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
 "Text me a code instead" = "通过短信向我发送代码";
+
+/* Country option for a site address. */
+"Thailand" = "泰国";
 
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "感谢您与我们分享您的想法";
@@ -5748,8 +6941,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "这个用户账户在有活动订阅时不能被关闭。";
 
+/* Alert description to allow the user confirm if they want to generate all variations */
+"This will create a variation for each and every possible combination of variation attributes (%d variations)." = "这将为每一个可能的变体属性组合创建一个变体产品（%d 个变体）。";
+
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "如果您在 WooCommerce 之外收到（全部）订单，那么系统会将订单标记为完成";
+
+/* Industry option in the store creation category question. */
+"Timeshares" = "分时度假";
+
+/* Country option for a site address. */
+"Timor-Leste" = "东帝汶";
 
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "提示";
@@ -5801,8 +7003,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "要继续使用此账户，请先使用您的 WordPress.com 密码登录。 此要求只会出现一次。";
 
+/* Subtitle of the store creation profiler question about the store selling status. */
+"To speed things up, we’ll tailor your WooCommerce experience for you based on your response." = "为了加快速度，我们将根据您的回复为您量身定制 WooCommerce 体验。";
+
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "若要为 %@ 使用此应用程序，您需要在商店内安装并连接 Jetpack 插件。";
+
+/* Industry option in the store creation category question. */
+"Tobacco Or Cigars" = "烟草或雪茄";
 
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
@@ -5823,6 +7031,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Identifier for the Aztec Unordered List Style */
 "Toggles the unordered list style" = "切换无序的列表样式";
 
+/* Country option for a site address. */
+"Togo" = "多哥";
+
+/* Country option for a site address. */
+"Tokelau" = "托克劳";
+
+/* Country option for a site address. */
+"Tonga" = "汤加";
+
 /* Header label for Top Performers section of My Store tab. */
 "Top Performers" = "热销产品";
 
@@ -5840,6 +7057,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight */
 "Total package weight: %1$@" = "包裹总重量：%1$@";
+
+/* Industry option in the store creation category question. */
+"Tourist Attractions" = "旅游景点";
+
+/* Industry option in the store creation category question. */
+"Towing Services" = "牵引服务";
 
 /* Track shipment button title */
 "Track Shipment" = "跟踪配送";
@@ -5864,12 +7087,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "跟踪编号 %@";
 
+/* Industry option in the store creation category question. */
+"Trailer Parks and Campgrounds" = "拖车停车场及露营场地";
+
+/* Industry group option in the store creation category question. */
+"Transportation" = "交通";
+
 /* Display label for the review's trash status
    Move a comment to the trash */
 "Trash" = "移到回收站";
 
+/* Industry option in the store creation category question. */
+"Travel Agencies" = "旅行社";
+
+/* Industry group option in the store creation category question. */
+"Travel And Lodging" = "旅行和住宿";
+
+/* Country option for a site address. */
+"Trinidad and Tobago" = "特里尼达和多巴哥";
+
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "故障排除";
+
+/* Industry option in the store creation category question. */
+"Truck Stop" = "卡车停车场";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信任";
@@ -5878,6 +7119,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Activating Again" = "再次尝试启用";
 
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
+   Button to refetch application password for the current site
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
    Button to try again. Presented to users after a failure occurs
@@ -5926,6 +7168,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when a card is declined due to a potentially temporary problem. */
 "Trying again may succeed, or try another means of payment" = "重试可能会成功，或者您可以使用其他付款方式";
 
+/* Country option for a site address. */
+"Tunisia" = "突尼斯";
+
+/* Country option for a site address. */
+"Turkey" = "土耳其";
+
+/* Country option for a site address. */
+"Turkmenistan" = "土库曼斯坦";
+
+/* Country option for a site address. */
+"Turks and Caicos Islands" = "特克斯和凯科斯群岛";
+
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "打开读卡器并将其放在移动设备旁边";
 
@@ -5937,6 +7191,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "如果优惠券不适用于促销商品，请开启此选项。 基于商品应用的优惠券仅在该商品不促销时可用。 基于购物车应用的优惠券仅在购物车内无促销商品时可用。";
+
+/* Country option for a site address. */
+"Tuvalu" = "图瓦卢";
 
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "Twitter";
@@ -5954,6 +7211,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "URL";
+
+/* Country option for a site address. */
+"Uganda" = "乌干达";
+
+/* Country option for a site address. */
+"Ukraine" = "乌克兰";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "无法连接";
@@ -6118,6 +7381,21 @@ This part is the link to the website, and forms part of a longer sentence which 
    The message of the alert when there is an unexpected error updating the product */
 "Unexpected error" = "意外错误";
 
+/* Country option for a site address. */
+"United Arab Emirates" = "阿拉伯联合酋长国";
+
+/* Country option for a site address. */
+"United Kingdom" = "英国";
+
+/* Country option for a site address. */
+"United States" = "美国";
+
+/* Country option for a site address. */
+"United States Minor Outlying Islands" = "美国本土外小岛屿";
+
+/* Country option for a site address. */
+"United States Virgin Islands" = "美属维尔京群岛";
+
 /* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
@@ -6234,6 +7512,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "追加销售";
 
+/* Country option for a site address. */
+"Uruguay" = "乌拉圭";
+
 /* Header of the section usage details in the view for adding or editing a coupon. */
 "Usage Details" = "使用详情";
 
@@ -6243,12 +7524,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the usage limit per user row in coupon usage restrictions screen. */
 "Usage Limit Per User" = "每个用户的使用次数限制";
 
-/* Field in the view for adding or editing a coupon.
-   Title for the usage restrictions section on coupon usage restrictions screen */
+/* Field in the view for adding or editing a coupon. */
 "Usage Restrictions" = "使用限制";
 
 /* Title of the Usage details row in Coupon Details screen */
 "Usage details" = "使用详情";
+
+/* Title for the usage restrictions section on coupon usage restrictions screen */
+"Usage restrictions" = "使用限制";
 
 /* Action to use the address in Shipping Label Suggested screen as entered placeholder */
 "Use Address Entered" = "使用输入的地址";
@@ -6287,11 +7570,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "用户名至少要求4位。";
 
+/* Industry option in the store creation category question. */
+"Utilities" = "实用程序";
+
+/* Country option for a site address. */
+"Uzbekistan" = "乌兹别克斯坦";
+
 /* Message to be displayed when a Jetpack connection is being authorized */
 "Validating" = "正在验证";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "值（每单位 %1$@）";
+
+/* Country option for a site address. */
+"Vanuatu" = "瓦努阿图";
+
+/* Industry option in the store creation category question. */
+"Vapes, E-cigarettes, E-juice Or Related Products" = "电子烟、电子香烟、电子果汁或相关产品";
 
 /* Display label for variable product type. */
 "Variable" = "变量";
@@ -6316,6 +7611,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "有关您站点的各种系统信息";
 
+/* Country option for a site address. */
+"Vatican" = "梵蒂冈";
+
+/* Country option for a site address. */
+"Venezuela" = "委内瑞拉";
+
 /* two factor code placeholder */
 "Verification code" = "验证码";
 
@@ -6330,6 +7631,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Displays the connected reader software version */
 "Version: %1$@" = "版本：%1$@";
+
+/* Industry option in the store creation category question. */
+"Veterinary Services" = "兽医服务";
+
+/* Country option for a site address. */
+"Vietnam" = "越南";
 
 /* Action title in an in-app notification to view more details.
    Title of the action to view product details from a notice about an image upload failure in the background. */
@@ -6391,6 +7698,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for simple virtual product type. */
 "Virtual" = "虚拟";
 
+/* Industry option in the store creation category question. */
+"Virtual Currencies" = "虚拟货币";
+
 /* Virtual Product label in Product Settings */
 "Virtual Product" = "虚拟产品";
 
@@ -6400,6 +7710,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "访客";
+
+/* Industry option in the store creation category question. */
+"Vocational Schools And Trade Schools" = "职业学校和贸易学校";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "写备注";
@@ -6412,6 +7725,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* View title during the Google auth process. */
 "Waiting..." = "正在等待…";
+
+/* Country option for a site address. */
+"Wallis and Futuna" = "瓦利斯群岛和富图纳群岛";
+
+/* Industry option in the store creation category question. */
+"Warranty Services" = "保修服务";
 
 /* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
 "We are getting ready for your store creation" = "我们正在为您的商店创建做准备";
@@ -6525,6 +7844,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "我们已通过电子邮件向您发送了注册链接，供您创建新的 WordPress.com 帐户。 请在此设备上查看电子邮件，并轻点您从 WordPress.com 收到的电子邮件中的链接。";
 
+/* Industry option in the store creation category question. */
+"Weapons Or Munitions" = "武器或弹药";
+
 /* Title of a button linking to the app's website */
 "Website" = "网站";
 
@@ -6543,11 +7865,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "重量：%1$@%2$@";
 
+/* Country option for a site address. */
+"Western Sahara" = "西撒哈拉";
+
+/* Subtitle of the store creation profiler question about the store country. */
+"We’ll use this information to get a head start on setting up payments, shipping, and taxes." = "我们将使用此信息抢先开始设置付款、运费和税费。";
+
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "我们一直致力于不断改进，让您能够从设备上也可以查看并编辑优惠券！";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "我用什么电子邮件登录？";
+
+/* Button that will navigate to a web page explaining Application Password */
+"What is Application Password?" = "什么是应用程序密码？";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
@@ -6580,6 +7911,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Shipping Labels: info description about WooCommerce Services discount */
 "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "使用 WooCommerce 购买配送标签时，可以享受商业价格折扣。";
 
+/* Title of the store creation profiler question about the store selling status. */
+"Where are you on your commerce journey?" = "您处于商务之旅的什么阶段？";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "糟糕，出问题了，您无法登录。请重试！";
 
@@ -6589,6 +7923,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the row to enter the package width on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Width */
 "Width" = "宽度";
+
+/* Industry option in the store creation category question. */
+"Wire Transfers" = "电汇";
+
+/* Option in the store creation selling platforms question. */
+"Wix" = "Wix";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
@@ -6617,6 +7957,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Caption displayed in the simplified prologue screen */
 "WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce 是一个依托 WordPress 打造的可定制开源电子商务平台。";
 
+/* Option in the store creation selling platforms question. */
+"WordPress" = "WordPress";
+
 /* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "WordPress API Error: [%1$@] %2$@" = "WordPress API 错误：[%1$@] %2$@";
 
@@ -6639,6 +7982,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Year to Date selection range */
 "Year to Date" = "年初至今";
 
+/* Country option for a site address. */
+"Yemen" = "也门";
+
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "是的，更改";
 
@@ -6648,6 +7994,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "您无权访问此商店。";
+
+/* Subtitle of the store creation profiler question about the store selling platforms. */
+"You can choose multiple ones." = "您可以选择多个答案。";
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "您可以在 Web 仪表盘中编辑产品加载项。";
@@ -6751,6 +8100,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
 "You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "您即将大功告成！ 请完成 %1$@ 设置，然后才能进行现场付款。";
+
+/* Country option for a site address. */
+"Zambia" = "赞比亚";
+
+/* Country option for a site address. */
+"Zimbabwe" = "津巴布韦";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[评论]";
@@ -6914,6 +8269,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} 使用 Google 登录。";
+
+/* Country option for a site address. */
+"Åland Islands" = "奥兰群岛";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 订单已完成";

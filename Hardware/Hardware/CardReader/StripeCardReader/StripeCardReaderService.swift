@@ -511,6 +511,7 @@ private extension StripeCardReaderService {
             ///
             parameters.metadata?[Constants.readerIDMetadataKey] = self?.readerIDForIntent()
             parameters.metadata?[Constants.readerModelMetadataKey] = self?.readerModelForIntent()
+            parameters.metadata?[Constants.platformMetadataKey] = Constants.platform
 
             Terminal.shared.createPaymentIntent(parameters) { (intent, error) in
                 if let error = error {
@@ -921,6 +922,8 @@ private extension StripeCardReaderService {
         ///
         static let readerIDMetadataKey = "reader_ID"
         static let readerModelMetadataKey = "reader_model"
+        static let platformMetadataKey = "platform"
+        static let platform = "ios"
     }
 }
 

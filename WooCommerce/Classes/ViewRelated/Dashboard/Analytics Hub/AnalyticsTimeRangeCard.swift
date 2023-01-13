@@ -125,7 +125,7 @@ private extension AnalyticsTimeRangeCard {
     ///
     struct DatesFormatter: RangedDateTextFormatter {
         func format(start: Date, end: Date) -> String {
-            AnalyticsHubTimeRange(start: start, end: end).formatToString(simplified: false, timezone: .current, calendar: Locale.current.calendar)
+            start.formatAsRange(with: end, timezone: .current, calendar: Locale.current.calendar)
         }
     }
 }

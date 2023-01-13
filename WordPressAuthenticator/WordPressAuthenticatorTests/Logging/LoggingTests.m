@@ -9,6 +9,10 @@
 
 @end
 
+// We are leaving some protocol methods intentionally unimplemented to then test that calling them
+// will not cause a crash.
+//
+// See https://github.com/wordpress-mobile/WordPressAuthenticator-iOS/pull/720#issuecomment-1374952619
 #pragma GCC diagnostic ignored "-Wprotocol"
 @implementation CaptureLogs
 

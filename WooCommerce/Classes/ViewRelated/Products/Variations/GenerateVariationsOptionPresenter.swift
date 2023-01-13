@@ -28,10 +28,6 @@ final class GenerateVariationsOptionsPresenter {
     /// Displays a bottom sheet allowing the merchant to choose whether to generate one variation or to generate all variations.
     ///
     func presentGenerationOptions(sourceView: UIView, onCompletion: @escaping (_ selectedOption: Option) -> Void) {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.generateAllVariations) else {
-            return onCompletion(.single)
-        }
-
         let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.addVariationAction)
         let command = GenerateVariationsSelectorCommand(selected: nil) { [analytics, baseViewController] option in
             baseViewController.dismiss(animated: true)

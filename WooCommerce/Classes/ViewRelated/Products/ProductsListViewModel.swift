@@ -10,6 +10,10 @@ class ProductListViewModel {
         selectedProducts.count
     }
 
+    var bulkEditActionIsEnabled: Bool {
+        !selectedProducts.isEmpty
+    }
+
     func productIsSelected(_ productToCheck: Product) -> Bool {
         return selectedProducts.contains(productToCheck)
     }

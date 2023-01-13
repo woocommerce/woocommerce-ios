@@ -66,11 +66,43 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     @IBOutlet private weak var toolbar: ToolbarView!
 
+    /// Top toolbar that shows the bulk edit CTA.
+    ///
+    @IBOutlet private weak var bottomToolbar: ToolbarView! {
+        didSet {
+            bottomToolbar.isHidden = true
+            bottomToolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+            bottomToolbar.setSubviews(leftViews: [], rightViews: [bulkEditButton])
+            bottomToolbar.addDividerOnTop()
+        }
+    }
+
+    /// Bottom placeholder inside StackView to cover the safe area gap below the bottom toolbar.
+    ///
+    @IBOutlet private weak var bottomPlaceholder: UIView! {
+        didSet {
+            bottomPlaceholder.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        }
+    }
+
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
 
     /// The filter CTA in the top toolbar.
     private lazy var filterButton: UIButton = UIButton(frame: .zero)
+
+    /// The bulk edit CTA in the bottom toolbar.
+    private lazy var bulkEditButton: UIButton = {
+        let button = UIButton(frame: .zero)
+        button.setTitle(Localization.bulkEditingToolbarButtonTitle, for: .normal)
+        button.addTarget(self, action: #selector(openBulkEditingOptions(sender:)), for: .touchUpInside)
+        button.applyLinkButtonStyle()
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = Constants.toolbarButtonInsets
+        button.configuration = configuration
+        button.isEnabled = false
+        return button
+    }()
 
     /// Container of the top banner that shows that the Products feature is still work in progress.
     ///
@@ -273,6 +305,7 @@ private extension ProductsViewController {
 
         configureNavigationBarForEditing()
         showOrHideToolbar()
+        showBottomToolbar()
     }
 
     @objc func finishBulkEditing() {
@@ -284,6 +317,35 @@ private extension ProductsViewController {
 
         configureNavigationBar()
         showOrHideToolbar()
+        hideBottomToolbar()
+    }
+
+    func updatedSelectedItems() {
+        updateNavigationBarTitleForEditing()
+        bulkEditButton.isEnabled = viewModel.bulkEditActionIsEnabled
+    }
+
+    @objc func openBulkEditingOptions(sender: UIButton) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        let updateStatus = UIAlertAction(title: Localization.bulkEditingStatusOption, style: .default) { _ in
+            // TODO-8519: show UI for status update
+        }
+        let updatePrice = UIAlertAction(title: Localization.bulkEditingPriceOption, style: .default) { _ in
+            // TODO-8520: show UI for price update
+        }
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
+
+        actionSheet.addAction(updateStatus)
+        actionSheet.addAction(updatePrice)
+        actionSheet.addAction(cancelAction)
+
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = sender
+            popoverController.sourceRect = sender.bounds
+        }
+
+        present(actionSheet, animated: true)
     }
 }
 
@@ -361,11 +423,11 @@ private extension ProductsViewController {
     }
 
     func configureNavigationBarForEditing() {
-        configureNavigationBarTitleForEditing()
+        updateNavigationBarTitleForEditing()
         configureNavigationBarRightButtonItemsForEditing()
     }
 
-    func configureNavigationBarTitleForEditing() {
+    func updateNavigationBarTitleForEditing() {
         let selectedProducts = viewModel.selectedProductsCount
         if selectedProducts == 0 {
             navigationItem.title = Localization.bulkEditingTitle
@@ -459,7 +521,9 @@ private extension ProductsViewController {
 
         [sortButton, filterButton].forEach {
             $0.applyLinkButtonStyle()
-            $0.contentEdgeInsets = Constants.toolbarButtonInsets
+            var configuration = UIButton.Configuration.plain()
+            configuration.contentInsets = Constants.toolbarButtonInsets
+            $0.configuration = configuration
         }
 
         toolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
@@ -490,6 +554,24 @@ private extension ProductsViewController {
         }
 
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
+    }
+
+    func showBottomToolbar() {
+        tabBarController?.tabBar.isHidden = true
+
+        // trigger safe area update
+        if let tabBarController {
+            let currentFrame = tabBarController.view.frame
+            tabBarController.view.frame = currentFrame.insetBy(dx: 0, dy: 1)
+            tabBarController.view.frame = currentFrame
+        }
+
+        bottomToolbar.isHidden = false
+    }
+
+    func hideBottomToolbar() {
+        tabBarController?.tabBar.isHidden = false
+        bottomToolbar.isHidden = true
     }
 }
 
@@ -673,7 +755,7 @@ extension ProductsViewController: UITableViewDelegate {
 
         if tableView.isEditing {
             viewModel.selectProduct(product)
-            configureNavigationBarTitleForEditing()
+            updatedSelectedItems()
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
 
@@ -690,7 +772,7 @@ extension ProductsViewController: UITableViewDelegate {
 
         let product = resultsController.object(at: indexPath)
         viewModel.deselectProduct(product)
-        configureNavigationBarTitleForEditing()
+        updatedSelectedItems()
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -1109,7 +1191,7 @@ private extension ProductsViewController {
         static let placeholderRowsPerSection = [3]
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        static let toolbarButtonInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
+        static let toolbarButtonInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
     }
 
     enum Localization {
@@ -1119,6 +1201,14 @@ private extension ProductsViewController {
             "Edit status or price for multiple products at once",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to bulk edit products"
         )
+
+        static let bulkEditingToolbarButtonTitle = NSLocalizedString(
+            "Bulk update",
+            comment: "Title of a button that presents a menu with possible products bulk update options"
+        )
+        static let bulkEditingStatusOption = NSLocalizedString("Update status", comment: "Title of an option that opens bulk products status update flow")
+        static let bulkEditingPriceOption = NSLocalizedString("Update price", comment: "Title of an option that opens bulk products price update flow")
+        static let cancel = NSLocalizedString("Cancel", comment: "Title of an option to dismiss the bulk edit action sheet")
 
         static let bulkEditingTitle = NSLocalizedString(
             "Select items",

@@ -29,7 +29,7 @@ extension CardReaderType {
         case .wisepad3:
             return "WISEPAD_3"
         case .appleBuiltIn:
-            return "BUILT_IN"
+            return "COTS_DEVICE"
         default:
             return "UNKNOWN"
         }

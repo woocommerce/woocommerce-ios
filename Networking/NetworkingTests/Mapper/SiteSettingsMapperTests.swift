@@ -45,7 +45,7 @@ class SiteSettingsMapperTests: XCTestCase {
     /// Verifies the SiteSetting fields are parsed correctly when response has no data envelope.
     ///
     func test_SiteSetting_fields_are_properly_parsed_when_response_has_no_data_envelope() {
-        let settings = mapLoadGeneralSiteSettingsResponseWithoutData()
+        let settings = mapLoadGeneralSiteSettingsResponseWithoutDataEnvelope()
         XCTAssertEqual(settings.count, 20)
 
         let firstSetting = settings[0]

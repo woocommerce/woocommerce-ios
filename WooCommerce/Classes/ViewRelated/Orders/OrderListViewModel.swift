@@ -60,6 +60,10 @@ final class OrderListViewModel {
         return codGateway.enabled
     }
 
+    private var isIPPSupportedCountry: Bool {
+        CardPresentConfigurationLoader().configuration.isSupportedCountry
+    }
+
     /// Results controller that fetches any IPP transactions via WooCommerce Payments
     ///
     private lazy var IPPOrdersResultsController: ResultsController<StorageOrder> = {
@@ -240,7 +244,7 @@ final class OrderListViewModel {
     }
 
     func displayIPPFeedbackBannerIfEligible() {
-        if isCODEnabled {
+        if isCODEnabled && isIPPSupportedCountry {
             let hasResults = IPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
 
             /// In order to filter WCPay transactions processed through IPP within the last 30 days,
@@ -253,6 +257,7 @@ final class OrderListViewModel {
             let IPPresultsCount = IPPTransactionsFound.count
 
             // TODO: Debug. Remove before merging
+            print("COD enabled? \(isCODEnabled) - Eligible Country? \(isIPPSupportedCountry)")
             print("hasResults? \(hasResults)")
             print("IPP transactions within 30 days: \(IPPresultsCount)")
             print(recentIPPOrdersResultsController.fetchedObjects.map {

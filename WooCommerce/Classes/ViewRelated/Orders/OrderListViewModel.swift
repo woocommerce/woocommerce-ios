@@ -166,7 +166,10 @@ final class OrderListViewModel {
         observeForegroundRemoteNotifications()
         bindTopBannerState()
         loadOrdersBannerVisibility()
-        fetchIPPTransactions()
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            fetchIPPTransactions()
+        }
     }
 
     func dismissOrdersBanner() {

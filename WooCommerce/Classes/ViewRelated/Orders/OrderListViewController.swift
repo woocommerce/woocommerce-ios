@@ -797,16 +797,16 @@ private extension OrderListViewController {
         let giveIPPFeedbackAction = TopBannerViewModel.ActionButton(title: "Share feedback", action: { _ in
             self.displayIPPFeedbackBannerSurvey()
         })
-        let dismissIPPFeedbackAction = TopBannerViewModel.ActionButton(title: "X", action: { _ in
-            self.dismissIPPFeedbackBannerSurvey()
-        })
+
         let viewModel = TopBannerViewModel(
             title: "Let us know what you think",
             infoText: "Rate your in-person payment experience.",
-            icon: UIImage.gridicon(.crossSmall),
+            icon: UIImage.gridicon(.comment),
             isExpanded: true,
-            topButton: .chevron(handler: {}),
-            actionButtons: [giveIPPFeedbackAction, dismissIPPFeedbackAction]
+            topButton: .dismiss(handler: {
+                self.dismissIPPFeedbackBannerSurvey()
+            }),
+            actionButtons: [giveIPPFeedbackAction]
         )
         let topBannerView = TopBannerView(viewModel: viewModel)
         topBannerView.translatesAutoresizingMaskIntoConstraints = false
@@ -814,11 +814,13 @@ private extension OrderListViewController {
     }
 
     private func displayIPPFeedbackBannerSurvey() {
-        print("displayIPPFeedbackBannerSurvey")
+        // TODO: Survey will change based on conditions
+        print("Sharing feedback")
     }
 
     private func dismissIPPFeedbackBannerSurvey() {
-        print("dismissIPPFeedbackBannerSurvey")
+        // TODO: Dismissal logic to not show the banner again for X days/never
+        print("Dismissing feedback")
     }
 }
 

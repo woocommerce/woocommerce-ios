@@ -239,7 +239,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertFalse(resynchronizeRequested)
     }
 
-    func test_when_having_no_error__and_orders_banner_should_not_be_shown_shows_nothing() {
+    func test_when_having_no_error_and_orders_banner_should_not_be_shown_shows_nothing() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -255,8 +255,14 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Then
-        waitUntil {
-            viewModel.topBanner == .none
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            waitUntil {
+                viewModel.topBanner == .IPPFeedback
+            }
+        } else {
+            waitUntil {
+                viewModel.topBanner == .none
+            }
         }
     }
 
@@ -298,8 +304,14 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Then
-        waitUntil {
-            viewModel.topBanner == .none
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            waitUntil {
+                viewModel.topBanner == .IPPFeedback
+            }
+        } else {
+            waitUntil {
+                viewModel.topBanner == .none
+            }
         }
     }
 

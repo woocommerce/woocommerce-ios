@@ -10,9 +10,11 @@ import Foundation
 struct AnalyticsHubCustomRangeData: AnalyticsHubTimeRangeData {
     var currentDateStart: Date?
     var currentDateEnd: Date?
+    var formattedCurrentRange: String?
 
     var previousDateStart: Date?
     var previousDateEnd: Date?
+    var formattedPreviousRange: String?
 
     init(start: Date, end: Date, timezone: TimeZone, calendar: Calendar) {
         guard
@@ -21,10 +23,12 @@ struct AnalyticsHubCustomRangeData: AnalyticsHubTimeRangeData {
             let previousStart = calendar.date(byAdding: .day, value: -dayDifference, to: previousEnd) else {
             return
         }
-
         self.currentDateStart = start.startOfDay(timezone: timezone)
         self.currentDateEnd = end.endOfDay(timezone: timezone)
+        self.formattedCurrentRange = currentDateStart?.formatAsRange(with: currentDateEnd, timezone: timezone, calendar: calendar)
+
         self.previousDateStart = previousStart.startOfDay(timezone: timezone)
         self.previousDateEnd = previousEnd.startOfDay(timezone: timezone)
+        self.formattedPreviousRange = previousDateStart?.formatAsRange(with: previousDateEnd, timezone: timezone, calendar: calendar)
     }
 }

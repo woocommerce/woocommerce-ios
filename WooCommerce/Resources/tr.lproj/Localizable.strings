@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-12-22 20:54:04+0000 */
+/* Translation-Revision-Date: 2023-01-11 23:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -235,6 +235,9 @@ which should be translated separately and considered part of this sentence. */
 /* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
 "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery." = "Ödeme sayfanızdaki \"Şahsen Öde\" seçeneği, tahsilat veya teslimatta kart veya nakit ödemeleri kabul etmenizi sağlar.";
 
+/* Industry option in the store creation category question. */
+"A C And Heating Contractors" = "Klima ve Isıtma Yüklenicileri";
+
 /* Instruction text to explain magic link login step. */
 "A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "Bir WordPress.com hesabı mağaza kimlik bilgilerinize bağlandı. Devam etmek için yukarıdaki e-posta adresine bir doğrulama bağlantısı göndereceğiz.";
 
@@ -298,11 +301,20 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "İndirimli gönderim ücretlerine erişin. Şu anda DHL ve USPS kullanılabilir, yakında daha fazlası da gelecek!";
 
+/* Industry option in the store creation category question. */
+"Accessories" = "Aksesuarlar";
+
+/* Industry option in the store creation category question. */
+"Accessories For Tobacco And Marijuana" = "Tütün ve Esrar Aksesuarları";
+
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "Hesap Türü";
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "Hesap bağlandı";
+
+/* Industry option in the store creation category question. */
+"Accounting, Auditing, Or Tax Prep" = "Muhasebe, Denetim veya Vergi Hazırlığı";
 
 /* Title for the section related to actions inside In-Person Payments settings */
 "Actions" = "Eylemler";
@@ -409,9 +421,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "Varyasyon Ekle";
 
-/* Title for the button on the Products onboarding banner */
-"Add a Product" = "Ürün Ekle";
-
 /* Button title on the store picker for store creation */
 "Add a Store" = "Mağaza Ekle";
 
@@ -429,7 +438,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "Mağazanızda görünmesi için varyasyonunuza bir fiyat ekleyin";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+   The action to add a product
+   Title for the button on the Products onboarding banner */
 "Add a product" = "Ürün ekleyin";
 
 /* Cell text in Add / Edit product when there are no images. */
@@ -468,6 +478,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "Virgülle ayırarak yeni etiketler ekleyin.";
+
+/* Title for the option to generate just one variation */
+"Add new variation" = "Yeni varyasyon ekle";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Ürün bağlantısı ekle";
@@ -527,14 +540,32 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "Siparişe varyasyon ekler.";
 
+/* Industry option in the store creation category question. */
+"Adult Content Or Services" = "Yetişkinlere Uygun İçerik veya Hizmetler";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Yetişkin imzası gerekli (+%1$@)";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Uygulama durumunu incelemek için gelişmiş araç";
 
+/* Country option for a site address. */
+"Afghanistan" = "Afganistan";
+
+/* Industry option in the store creation category question. */
+"Airlines And Air Carriers" = "Havayolları ve Hava Taşıyıcıları";
+
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
+
+/* Country option for a site address. */
+"Albania" = "Arnavutluk";
+
+/* Industry option in the store creation category question. */
+"Alcohol" = "Alkol";
+
+/* Country option for a site address. */
+"Algeria" = "Cezayir";
 
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "Tüm Siparişler";
@@ -593,6 +624,12 @@ which should be translated separately and considered part of this sentence. */
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Alternatif olarak:";
 
+/* Option in the store creation selling platforms question. */
+"Amazon" = "Amazon";
+
+/* Country option for a site address. */
+"American Samoa" = "Amerikan Samoası";
+
 /* Title of the Amount label on Coupon Details screen */
 "Amount" = "Miktar";
 
@@ -612,6 +649,9 @@ which should be translated separately and considered part of this sentence. */
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
 "Amount Paid" = "Ödenen Miktar";
+
+/* Industry option in the store creation category question. */
+"Amusement Parks, Carnivals, Or Circuses" = "Eğlence Parkları, Karnavallar veya Sirkler";
 
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
 "An HTTP error code %i was returned." = "%i HTTP hata kodu döndürüldü.";
@@ -668,6 +708,24 @@ which should be translated separately and considered part of this sentence. */
 /* Message when enabling analytics succeeds */
 "Analytics enabled successfully." = "Analytics başarıyla etkinleştirildi.";
 
+/* Country option for a site address. */
+"Andorra" = "Andora";
+
+/* Country option for a site address. */
+"Angola" = "Angola";
+
+/* Country option for a site address. */
+"Anguilla" = "Anguilla";
+
+/* Country option for a site address. */
+"Antarctica" = "Antarktika";
+
+/* Country option for a site address. */
+"Antigua and Barbuda" = "Antigua ve Barbuda";
+
+/* Industry option in the store creation category question. */
+"Antiques" = "Antikalar";
+
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
    Label for one of the filters in order date range
@@ -691,6 +749,9 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Uygulama Adı";
 
+/* Message to display when the constructed admin or login URL for the logged-in site is not accessible */
+"Application password cannot be generated due to a custom login or admin URL on your site." = "Sitenizdeki özel bir giriş veya yönetici URL'si nedeniyle uygulama şifresi oluşturulamıyor.";
+
 /* Apply navigation button in custom range date picker
    Change order status screen - button title to apply selection */
 "Apply" = "Uygula";
@@ -713,6 +774,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "Yorumu onaylar";
+
+/* Industry option in the store creation category question. */
+"Apps" = "Uygulamalar";
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "Ürün türünü değiştirmek istediğinizden emin misiniz?";
@@ -747,11 +811,20 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed in the alert for dismissing all the inbox notes. */
 "Are you sure? Inbox messages will be dismissed forever." = "Emin misiniz? Gelen kutusu mesajları artık her zaman kapatılacak.";
 
-/* Option in the store creation category question. */
-"Art & Photography" = "Sanat ve Fotoğrafçılık";
+/* Country option for a site address. */
+"Argentina" = "Arjantin";
 
-/* Option in the store creation category question. */
-"Arts and Crafts" = "Sanat ve El Sanatları";
+/* Country option for a site address. */
+"Armenia" = "Ermenistan";
+
+/* Country option for a site address. */
+"Aruba" = "Aruba";
+
+/* Industry option in the store creation category question. */
+"Assisted Living" = "Destekli Yaşam";
+
+/* Industry option in the store creation category question. */
+"Attorneys And Lawyers" = "Avukatlar";
 
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "Nitelik ismi";
@@ -763,6 +836,12 @@ which should be translated separately and considered part of this sentence. */
 /* Primary text for the generate first variation screen */
 "Attributes added!" = "Özellikler eklendi.";
 
+/* Country option for a site address. */
+"Australia" = "Avustralya";
+
+/* Country option for a site address. */
+"Austria" = "Avusturya";
+
 /* No comment provided by engineer. */
 "Authenticating" = "Doğrulanıyor";
 
@@ -773,6 +852,12 @@ which should be translated separately and considered part of this sentence. */
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "Şu adres için doğrulama gerekli: %@";
 
+/* Industry option in the store creation category question. */
+"Auto Parts And Accessories" = "Otomobil Parçaları ve Aksesuarları";
+
+/* Industry option in the store creation category question. */
+"Auto Services" = "Oto Servisleri";
+
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Bu sitede otomatik yönetiliyor";
 
@@ -782,6 +867,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic ailesi";
 
+/* Industry group option in the store creation category question. */
+"Autos (Sales and Service)" = "Otomobiller (Satış ve Servis)";
+
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "Ortalama sipariş değeri";
 
@@ -790,6 +878,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
 "Awaiting payment via %@" = "%@ üzerinden ödeme bekleniyor";
+
+/* Country option for a site address. */
+"Azerbaijan" = "Azerbaycan";
 
 /* Details section title in the Edit Address Form */
 "BILLING ADDRESS" = "FATURA ADRESİ";
@@ -806,7 +897,7 @@ which should be translated separately and considered part of this sentence. */
 "Back to Order" = "Siparişe Geri Dön";
 
 /* Text for the button to dismiss the store picker error screen */
-"Back to Sites" = "Sitelere Geri Dön";
+"Back to sites" = "Sitelere Geri Dön";
 
 /* Title of a button to dismiss the survey complete screen */
 "Back to store" = "Mağazaya dön";
@@ -818,8 +909,62 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "Geri dönen siparişler";
 
+/* Country option for a site address. */
+"Bahamas" = "Bahamalar";
+
+/* Country option for a site address. */
+"Bahrain" = "Bahreyn";
+
+/* Industry option in the store creation category question. */
+"Bail Bonds" = "Kefalet Senetleri";
+
+/* Country option for a site address. */
+"Bangladesh" = "Bangladeş";
+
+/* Industry option in the store creation category question. */
+"Bankruptcy Services" = "İflas Hizmetleri";
+
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Barkod numarası %1$i, %2$@, ";
+
+/* Country option for a site address. */
+"Barbados" = "Barbados";
+
+/* Industry option in the store creation category question. */
+"Bars And Nightclubs" = "Barlar ve Gece Kulüpleri";
+
+/* Industry option in the store creation category question. */
+"Beauty Products" = "Güzellik Ürünleri";
+
+/* Country option for a site address. */
+"Belarus" = "Beyaz Rusya";
+
+/* Country option for a site address. */
+"Belau" = "Belau";
+
+/* Country option for a site address. */
+"Belgium" = "Belçika";
+
+/* Country option for a site address. */
+"Belize" = "Belize";
+
+/* Country option for a site address. */
+"Benin" = "Benin";
+
+/* Country option for a site address. */
+"Bermuda" = "Bermuda";
+
+/* Industry option in the store creation category question. */
+"Betting Or Fantasy Sports" = "Bahis veya Fantezi Sporları";
+
+/* Country option for a site address. */
+"Bhutan" = "Butan";
+
+/* Option in the store creation selling platforms question. */
+"Big Cartel" = "Büyük Kartel";
+
+/* Option in the store creation selling platforms question. */
+"Big Commerce" = "Büyük Ticaret";
 
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data
@@ -835,17 +980,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's blog */
 "Blog" = "Blog";
 
+/* Industry option in the store creation category question. */
+"Blogs And Written Content" = "Bloglar ve Yazılı İçerik";
+
 /* The button title on the reader type alert, for the user to choose a bluetooth reader. */
 "Bluetooth Reader" = "Bluetooth Okuyucu";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "Bluetooth izni gerekli";
 
+/* Industry option in the store creation category question. */
+"Boat Sales" = "Tekne Satışı";
+
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Kalın";
 
-/* Option in the store creation category question. */
-"Books & Magazines" = "Kitaplar ve Dergiler";
+/* Country option for a site address. */
+"Bolivia" = "Bolivya";
+
+/* Country option for a site address. */
+"Bonaire, Saint Eustatius and Saba" = "Bonaire, Saint Eustatius and Saba";
+
+/* Industry option in the store creation category question. */
+"Books" = "Kitaplar";
 
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "Müşterilere özel teklifler ve indirimler göndererek işletmenizi güçlendirin.";
@@ -853,15 +1010,51 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Linked Products announcement banner */
 "Boost your sales with linked products" = "Bağlantılı ürünlerle satışlarınızı artırın";
 
+/* Country option for a site address. */
+"Bosnia and Herzegovina" = "Bosna Hersek";
+
+/* Country option for a site address. */
+"Botswana" = "Botsvana";
+
+/* Country option for a site address. */
+"Bouvet Island" = "Bouvet Adası";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Kutu";
+
+/* Country option for a site address. */
+"Brazil" = "Brezilya";
+
+/* Country option for a site address. */
+"British Indian Ocean Territory" = "İngiliz Hint Okyanusu Bölgesi";
+
+/* Country option for a site address. */
+"British Virgin Islands" = "Britanya Virjin Adaları";
+
+/* Country option for a site address. */
+"Brunei" = "Brunei";
 
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "Satmak istediklerinizi ekleyerek kataloğunuzu oluşturun.";
 
+/* Industry group option in the store creation category question. */
+"Building Services" = "Bina Hizmetleri";
+
+/* Country option for a site address. */
+"Bulgaria" = "Bulgaristan";
+
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
 "Bulk Update" = "Toplu Güncelleme";
+
+/* Country option for a site address. */
+"Burkina Faso" = "Burkina Faso";
+
+/* Country option for a site address. */
+"Burundi" = "Burundi";
+
+/* Industry option in the store creation category question. */
+"Business And Secretarial Schools" = "İşletme ve Sekreterlik Okulları";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Düğme Metni";
@@ -885,6 +1078,12 @@ which should be translated separately and considered part of this sentence. */
    Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
 "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "Jetpack'i Bağla düğmesine dokunarak, %1$@ ve WordPress.com ile %2$@ kabul etmiş olursunuz.";
 
+/* Header of a list of other countries in the store creation country question. */
+"COUNTRIES" = "ÜLKELER";
+
+/* Header of the current country in the store creation country question. */
+"CURRENT LOCATION" = "MEVCUT KONUM";
+
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "ÖZEL PAKETLER";
 
@@ -894,8 +1093,14 @@ which should be translated separately and considered part of this sentence. */
 /* Call phone number button title */
 "Call" = "Ara";
 
+/* Country option for a site address. */
+"Cambodia" = "Kamboçya";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "Kamera çekimi şu medya türünü desteklemez: %@";
+
+/* Country option for a site address. */
+"Cameroon" = "Kamerun";
 
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Bağlantı istenemiyor";
@@ -909,9 +1114,13 @@ which should be translated separately and considered part of this sentence. */
 /* Local notification title when the user encounters an error with WP.com password. */
 "Can't remember your password?" = "Şifrenizi hatırlamıyor musunuz?";
 
+/* Country option for a site address. */
+"Canada" = "Kanada";
+
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
+   Button text to confirm that we don't want to generate all variations
    Button title Cancel in Discard Changes Action Sheet
    Button title Cancel in Downloadable File More Options Action Sheet
    Button title Cancel in Downloadable Files More Options Action Sheet
@@ -1010,9 +1219,21 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Sitenizin WooCommerce kurulumu doğrulanamıyor.";
 
+/* Country option for a site address. */
+"Cape Verde" = "Kapo Verde";
+
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Mağazanız için yüksek kalitede ürün yorumları alın.";
+
+/* Industry option in the store creation category question. */
+"Car Rentals" = "Araba Kiralama";
+
+/* Industry option in the store creation category question. */
+"Car Sales" = "Araba Satışı";
+
+/* Industry option in the store creation category question. */
+"Car Washes" = "Oto Yıkama Yerleri";
 
 /* Card method title on the select payment method screen */
 "Card" = "Kart";
@@ -1031,6 +1252,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "Kart çok erken çıkarıldı - lütfen işlemi tekrar deneyin";
+
+/* Industry option in the store creation category question. */
+"Carpentry Contractors" = "Ahşap İşleri Yüklenicileri";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Kargo Şirketi ve Ücretler";
@@ -1051,11 +1275,23 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Kategoriler";
 
+/* Industry option in the store creation category question. */
+"Caterers" = "Hazır Yemek Firmaları";
+
+/* Country option for a site address. */
+"Cayman Islands" = "Cayman Adaları";
+
+/* Country option for a site address. */
+"Central African Republic" = "Orta Afrika Cumhuriyeti";
+
 /* Error message when local validation fails in Shipping Label Address Validation */
 "Certain required fields need attention." = "Bazı zorunlu alanlara dikkat edilmesi gerekiyor.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Sertifika hatası";
+
+/* Country option for a site address. */
+"Chad" = "Çad";
 
 /* Message title of bottom sheet for selecting a product type */
 "Change product type" = "Ürün türünü değiştir";
@@ -1068,6 +1304,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the row that has a switch when creating a simple payment */
 "Charge Taxes" = "Vergileri Al";
+
+/* Industry option in the store creation category question. */
+"Charities Or Social Service Organizations" = "Hayır Kurumları veya Sosyal Hizmet Kuruluşları";
+
+/* Industry option in the store creation category question. */
+"Check Cashing" = "Çek Bozdurma";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Girilen URL'nin geçerli olup olmadığını kontrol edin";
@@ -1086,6 +1328,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the WPCOM checkout web view. */
 "Checkout" = "Ödeme";
+
+/* Industry option in the store creation category question. */
+"Child Care Services" = "Çocuk Bakım Hizmetleri";
+
+/* Country option for a site address. */
+"Chile" = "Şili";
+
+/* Country option for a site address. */
+"China" = "Çin";
+
+/* Industry option in the store creation category question. */
+"Chiropractors" = "Masörler";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Kağıt Boyutu Seç";
@@ -1120,12 +1374,18 @@ which should be translated separately and considered part of this sentence. */
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "Ödeme yönteminizi seçin";
 
+/* Country option for a site address. */
+"Christmas Island" = "Christmas Adaları";
+
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
 "City" = "Şehir";
 
 /* Error showed in Shipping Label Address Validation for the city field */
 "City missing" = "Şehir eksik";
+
+/* Industry option in the store creation category question. */
+"Civic, Fraternal, Or Social Associations" = "Kentsel Kurumlar, Hayır Kurumları veya Sosyal Dernekler";
 
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
@@ -1161,6 +1421,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "Hesap kapatılıyor…";
 
+/* Industry option in the store creation category question. */
+"Clothing And Accessories" = "Giyim ve Aksesuarlar";
+
+/* Country option for a site address. */
+"Cocos (Keeling) Islands" = "Kokos (Keeling) Adaları";
+
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Daraltılmış";
 
@@ -1177,8 +1443,23 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the collect payment flow with a user name. */
 "Collect payment from %1$@" = "%1$@ kaynağından ödeme al";
 
+/* Industry option in the store creation category question. */
+"Collections Agencies" = "Tahsilat Acenteleri";
+
+/* Industry option in the store creation category question. */
+"Colleges Or Universities" = "Yüksekokul veya Üniversiteler";
+
+/* Country option for a site address. */
+"Colombia" = "Kolombiya";
+
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store" = "Mağazanızı büyütmekle ilgili daha fazla ipucu ve bilgi için kısa süre sonra tekrar gelin";
+
+/* Industry option in the store creation category question. */
+"Commuter Transportation" = "Banliyö Taşımacılığı";
+
+/* Country option for a site address. */
+"Comoros" = "Komorlar";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1192,6 +1473,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Yeni bir sipariş notu oluşturur.";
+
+/* Industry option in the store creation category question. */
+"Computer Repair" = "Bilgisayar Tamiri";
 
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "Yapılandırma güncellendi";
@@ -1207,6 +1491,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title Discard Changes in Discard Changes Action Sheet */
 "Confirm and leave" = "Onaylayın ve çıkın";
+
+/* Title of the store creation profiler question about the store country. */
+"Confirm your location" = "Konumunuzu onaylayın";
+
+/* Country option for a site address. */
+"Congo (Brazzaville)" = "Kongo (Brazzaville)";
+
+/* Country option for a site address. */
+"Congo (Kinshasa)" = "Kongo (Kinshasa)";
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "Tebrikler, her şeyi okudunuz!";
@@ -1282,8 +1575,8 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "Mağazanızı bağlama";
 
-/* Option in the store creation category question. */
-"Construction & Industrial" = "İnşaat ve Endüstriyel";
+/* Industry option in the store creation category question. */
+"Consulting" = "Danışmanlık";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Müşteri İle İletişime Geç";
@@ -1295,10 +1588,10 @@ which should be translated separately and considered part of this sentence. */
 "Contact Email" = "İletişim E-postası";
 
 /* Action button to contact support when Jetpack install fails
+   Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
-   The title of the button to contact support in the Error Loading Data banner
    Title of the button to contact support for help accessing a store after Jetpack setup */
 "Contact Support" = "Destek Birimine Başvurun";
 
@@ -1306,7 +1599,8 @@ which should be translated separately and considered part of this sentence. */
 "Contact WooCommerce Payments Support" = "WooCommerce Payments Desteği ile iletişime geçin";
 
 /* Action button to contact support on enable analytics screen
-   Local notification action to contact support. */
+   Local notification action to contact support.
+   The title of the button to contact support in the Error Loading Data banner */
 "Contact support" = "Destek ile iletişim kur";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
@@ -1331,14 +1625,14 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to continue with a selected domain. */
 "Continue" = "Devam et";
 
-/* Call to Action to finish the setup of In-Person Payments in the Menu */
-"Continue Setup" = "Kuruluma Devam Et";
-
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "WordPress.com ile devam et";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Okumaya devam et";
+
+/* Call to Action to finish the setup of In-Person Payments in the Menu */
+"Continue setup" = "Kuruluma Devam Et";
 
 /* Title of the button on the store creation summary view to continue to payment. */
 "Continue to Payment" = "Ödeme Adımına Geç";
@@ -1352,11 +1646,17 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Apple ile devam ediliyor";
 
+/* Industry option in the store creation category question. */
+"Convenience Stores" = "Bakkallar";
+
 /* Conversion stat label on dashboard. */
 "Conversion" = "Dönüşüm";
 
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "Dönüşüm Oranı";
+
+/* Country option for a site address. */
+"Cook Islands" = "Cook Adaları";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Kopyala";
@@ -1372,6 +1672,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
 "Copy tracking number" = "Takip numarasını kopyala";
+
+/* Country option for a site address. */
+"Costa Rica" = "Kostarika";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "Daha iyi olabilir";
@@ -1403,10 +1706,16 @@ which should be translated separately and considered part of this sentence. */
 /* Error title displayed when unable to close user account. */
 "Couldn’t close account automatically" = "Hesap otomatik olarak kapatılamadı";
 
+/* Industry option in the store creation category question. */
+"Counseling Services" = "Danışmanlık Hizmetleri";
+
 /* Text field country in Edit Address Form
    Text field country in Shipping Label Address Validation
    Title to select country from the edit address screen */
 "Country" = "Ülke";
+
+/* Industry option in the store creation category question. */
+"Country Clubs" = "Golf Kulüpleri";
 
 /* Error showed in Shipping Label Address Validation for the country field */
 "Country missing" = "Ülke eksik";
@@ -1444,6 +1753,9 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "Kuponlar";
+
+/* Industry option in the store creation category question. */
+"Courier Services" = "Kurye Hizmetleri";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Kilitlenme Hata Ayıklama Menüsü";
@@ -1499,6 +1811,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Yeni paket oluştur";
 
+/* Description for the option to generate just one variation */
+"Create one new variation. Manually set which attributes belong to the variable product." = "Yeni bir varyasyon oluşturun. Hangi niteliklerin değişken ürüne ait olduğunu manuel olarak ayarlayın.";
+
 /* Title of the banner notice in the Orders tab */
 "Create orders!" = "Sipariş oluşturun!";
 
@@ -1508,11 +1823,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "İlk varyasyonunuzu oluşturun";
 
+/* Description for the option to generate all possible variations */
+"Creates variations for all combinations of your attributes." = "Niteliklerinizin tüm kombinasyonları için varyasyonlar oluşturur.";
+
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "Şablon Ürün Oluşturuluyor...";
 
 /* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
 "Creating your store" = "Mağazanız oluşturuluyor";
+
+/* Industry option in the store creation category question. */
+"Credit Counseling Or Credit Repair" = "Kredi Danışmanlığı veya Kredi İyileştirme";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "Kredi kartı";
@@ -1523,9 +1844,27 @@ which should be translated separately and considered part of this sentence. */
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "Kredi kartları şu WordPress.com hesabından alınır: %1$@ <%2$@>";
 
+/* Country option for a site address. */
+"Croatia" = "Hırvatistan";
+
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "Çapraz satışlar";
+
+/* Industry option in the store creation category question. */
+"Cruise Lines" = "Gemi Turu Şirketleri";
+
+/* Industry option in the store creation category question. */
+"Cryptocurrencies" = "Kripto Para Birimleri";
+
+/* Country option for a site address. */
+"Cuba" = "Küba";
+
+/* Country option for a site address. */
+"Curacao" = "Kurasao";
+
+/* Industry option in the store creation category question. */
+"Currency Exchanges" = "Döviz Alım Satımları";
 
 /* Cell title: the current date. */
 "Current" = "Geçerli";
@@ -1538,6 +1877,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "Geçerli fiyatlar karışık.";
+
+/* Error description for when there are too many variations to generate. */
+"Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Şu anda oluşturma en fazla 100 varyasyon için desteklenmektedir. Bu ürün için varyasyon oluşturmak %d varyasyon oluşturur.";
 
 /* Name of the section for custom shipment tracking carriers
    Title of the Analytics Hub Custom selection range */
@@ -1609,6 +1951,12 @@ which should be translated separately and considered part of this sentence. */
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Mobil cihazınızla evde indirimli fiyatlara gönderim etiketleri yazdırarak postane ile olan bağınızı koparın.";
 
+/* Country option for a site address. */
+"Cyprus" = "Kıbrıs";
+
+/* Country option for a site address. */
+"Czech Republic" = "Çek Cumhuriyeti";
+
 /* Details section title in the Edit Address Form */
 "DETAILS" = "AYRINTILAR";
 
@@ -1630,6 +1978,12 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Tarih: Eskiden Yeniye";
 
+/* Industry option in the store creation category question. */
+"Dating Services" = "Flört Hizmetleri";
+
+/* Industry option in the store creation category question. */
+"Debt Reduction Services" = "Borç İndirimi Hizmetleri";
+
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Varsayılan";
 
@@ -1644,6 +1998,12 @@ which should be translated separately and considered part of this sentence. */
 /* Delete tracking button title */
 "Delete Tracking" = "Takibi Sil";
 
+/* Country option for a site address. */
+"Denmark" = "Danimarka";
+
+/* Industry option in the store creation category question. */
+"Dentists And Orthodontists" = "Diş Hekimleri ve Ortodontistler";
+
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Ürününü tanımla";
 
@@ -1655,14 +2015,23 @@ which should be translated separately and considered part of this sentence. */
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Tanım";
 
-/* Option in the store creation category question. */
-"Design & Marketing" = "Tasarım ve Pazarlama";
+/* Industry option in the store creation category question. */
+"Designer Products" = "Tasarım Ürünleri";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Ürünlerin katalogdaki konumlandırmasını belirler. Sayı ne kadar küçükse öğe, ürün listesinde o kadar üstte olacaktır. Negatif değerler de kullanabilirsiniz";
 
 /* Instructions after a Magic Link was sent, but email is incorrect. */
 "Didn't mean to create a new account? Go back to re-enter your email address." = "Yeni bir hesap oluşturmak istemediniz mi? E-posta adresinizi yeniden girmek için geri dönün.";
+
+/* Industry option in the store creation category question. */
+"Digital Marketing" = "Dijital Pazarlama";
+
+/* Industry group option in the store creation category question. */
+"Digital Products" = "Dijital Ürünler";
+
+/* Industry option in the store creation category question. */
+"Digital Wallets" = "Dijital Cüzdanlar";
 
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
 "Dimensions: %1$@ x %2$@ %3$@" = "Ölçüler: %1$@ x %2$@%3$@";
@@ -1732,6 +2101,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "Tüm mesajları önemseme";
 
+/* Country option for a site address. */
+"Djibouti" = "Cibuti";
+
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "İzin verme";
 
@@ -1744,8 +2116,17 @@ which should be translated separately and considered part of this sentence. */
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Bu ürünü Çöp Kutusu'na taşımak istiyor musunuz?";
 
+/* Industry option in the store creation category question. */
+"Doctors And Physicians" = "Doktorlar ve Hekimler";
+
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Belgeler";
+
+/* Country option for a site address. */
+"Dominica" = "Dominika";
+
+/* Country option for a site address. */
+"Dominican Republic" = "Dominik Cumhuriyeti";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Hesabınız yok mu? _Kaydol_";
@@ -1868,8 +2249,14 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Ürünlerinizi benzersiz kodlarla kolayca tanımlayın";
 
+/* Option in the store creation selling platforms question. */
+"Ebay" = "Ebay";
+
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Ecommerce reports" = "E-ticaret raporları";
+
+/* Country option for a site address. */
+"Ecuador" = "Ekvador";
 
 /* Button to edit a customer on the New Order screen
    Button to edit an order on Order Details screen
@@ -1915,8 +2302,29 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit customer note on the New Order screen */
 "Edit customer note" = "Müşteri notunu düzenle";
 
-/* Option in the store creation category question. */
-"Electronics and Software" = "Elektronik ve Yazılım";
+/* Action to start bulk editing of products */
+"Edit products" = "Ürünleri düzenle";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
+"Edit status or price for multiple products at once" = "Tek seferde birden fazla ürün için durum veya fiyat düzenle";
+
+/* Industry group option in the store creation category question. */
+"Education" = "Eğitim";
+
+/* Industry option in the store creation category question. */
+"Educational Services" = "Eğitim Hizmetleri";
+
+/* Country option for a site address. */
+"Egypt" = "Mısır";
+
+/* Country option for a site address. */
+"El Salvador" = "El Salvador";
+
+/* Industry option in the store creation category question. */
+"Electrical Contractors" = "Elektrik Yüklenicileri";
+
+/* Industry option in the store creation category question. */
+"Elementary Or Secondary Schools" = "İlk veya Ortaokullar";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "Ücretsiz teslim almaya uygun";
@@ -1948,6 +2356,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "E-posta: %@";
+
+/* Industry option in the store creation category question. */
+"Employment Agencies" = "İş ve İşçi Bulma Kurumları";
 
 /* Accessibility text for Unit Input cell */
 "Empty" = "Boş";
@@ -2088,9 +2499,6 @@ which should be translated separately and considered part of this sentence. */
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "%@ ile igili hesap bilgilerinizi girin.";
 
-/* Sign in instructions on the 'log in using WordPress.com account' screen. */
-"Enter your email address to get started." = "İşe koyulmak için e-posta adresinizi girin.";
-
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "Oturum açmak veya bir WordPress.com hesabı oluşturmak için e-posta adresinizi girin.";
 
@@ -2107,8 +2515,17 @@ which should be translated separately and considered part of this sentence. */
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
 "Enter your store credentials for %@." = "%@ için mağaza kimlik bilgilerinizi girin.";
 
+/* Industry group option in the store creation category question. */
+"Entertainment And Recreation" = "Eğlence ve Rekreasyon";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Zarf";
+
+/* Country option for a site address. */
+"Equatorial Guinea" = "Ekvator Ginesi";
+
+/* Country option for a site address. */
+"Eritrea" = "Eritre";
 
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "Hata";
@@ -2119,14 +2536,23 @@ which should be translated separately and considered part of this sentence. */
 /* Error title when Jetpack connection fails */
 "Error authorizing connection to Jetpack" = "Jetpack'e bağlantı yetkisi verilirken hata oluştu";
 
+/* Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication */
+"Error checking for the WooCommerce plugin." = "WooCommerce eklentisi denetlenirken hata oluştu.";
+
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "Hata kodu %1$d";
 
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "Analytics etkinleştirilirken hata oluştu. Lütfen tekrar deneyin.";
 
+/* Error message displayed when application password cannot be fetched after authentication. */
+"Error fetching application password for your site." = "Siteniz için uygulama şifresi alınırken hata oluştu.";
+
 /* Title for the error alert when fetching system status report fails */
 "Error fetching report" = "Rapor alınırken hata oluştu";
+
+/* Error message displayed when user information cannot be fetched after authentication. */
+"Error fetching user information." = "Kullanıcı bilgileri alınırken hata oluştu.";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Haritalar'da adres bulunurken hata oluştu";
@@ -2152,6 +2578,18 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "%1$d numaralı sipariş güncellenirken hata oluştu";
 
+/* Country option for a site address. */
+"Estonia" = "Estonya";
+
+/* Country option for a site address. */
+"Ethiopia" = "Etiyopya";
+
+/* Option in the store creation selling platforms question. */
+"Etsy" = "Etsy";
+
+/* Industry option in the store creation category question. */
+"Event Ticketing" = "Etkinlik Bilet Satışı";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Herkes iyi alışverişi sever";
@@ -2174,8 +2612,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action button to add excluded product categories on Coupon Usage Restrictions screen. The number of selected items is mentioned between the brackets. Reads like: Exclude Product Categories (4) */
 "Exclude Product Categories (%1$d)" = "Ürün Kategorilerini Hariç Tut (%1$d)";
 
-/* Title for the screen to exclude products for a coupon
-   Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
+/* Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
 "Exclude Products" = "Ürünleri Hariç Tut";
 
 /* Title of the action button to add excluded products on Coupon Usage Restrictions screen. The number of selected items is included between the brackets. Reads like: Exclude Products (2) */
@@ -2186,6 +2623,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Exclude Categories screen */
 "Exclude categories" = "Kategorileri hariç tut";
+
+/* Title for the screen to exclude products for a coupon */
+"Exclude products" = "Ürünleri hariç tut";
 
 /* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
 "Excludes sale items" = "Satılan ürünleri hariç tutar";
@@ -2218,6 +2658,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Harici\/İş Ortağı";
 
+/* Option in the store creation selling platforms question. */
+"Facebook Marketplace" = "Facebook Marketplace";
+
 /* Display label for failed order status. */
 "Failed" = "Başarısız";
 
@@ -2242,8 +2685,14 @@ which should be translated separately and considered part of this sentence. */
 /* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
 "Failed to undo fulfillment of order #%1$d" = "%1$d numaralı siparişin yerine getirilmesi geri alınamadı";
 
-/* Option in the store creation category question. */
-"Fashion and Apparel" = "Moda ve Giyim";
+/* Country option for a site address. */
+"Falkland Islands" = "Falkland Adaları";
+
+/* Country option for a site address. */
+"Faroe Islands" = "Faroe Adaları";
+
+/* Industry option in the store creation category question. */
+"Fast Food Restaurants" = "Fast Food Restoranları";
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
@@ -2270,6 +2719,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info message shown when the order contains multiple fee lines */
 "Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "Ücretler eksik.\nTüm ücretleri düzenlemek için siparişi WooCommerce mağaza yöneticinizde görüntüleyin.";
+
+/* Country option for a site address. */
+"Fiji" = "Fiji";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2309,6 +2761,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title format for filtering a list of products with filters applied. */
 "Filters (%ld)" = "Filtreler (%ld)";
 
+/* Industry option in the store creation category question. */
+"Financial Information And Research" = "Finansal Bilgiler ve Araştırma";
+
+/* Industry group option in the store creation category question. */
+"Financial Services" = "Finansal Hizmetler";
+
 /* Button linking to webview explaining how to find your connected emailPresented when logging in with a store address that does not match the account entered */
 "Find your connected email" = "Bağlı e-postanızı bulun";
 
@@ -2324,6 +2782,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "Mağaza yöneticinizde %1$@ kurulumunu tamamlayın";
 
+/* Country option for a site address. */
+"Finland" = "Finlandiya";
+
 /* Text field name in Edit Address Form */
 "First name" = "İsim";
 
@@ -2336,17 +2797,38 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Sabit Ürün İndirimi";
 
+/* Industry option in the store creation category question. */
+"Flowers" = "Çiçek";
+
 /* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
 "Follow reader instructions to pay" = "Ödeme için okuyucu talimatlarını takip edin";
 
 /* User role badge */
 "Follower" = "Takipçi";
 
-/* Option in the store creation category question. */
-"Food and Drink" = "Yiyecek ve İçecek";
+/* Industry group option in the store creation category question. */
+"Food And Drink" = "Yiyecek ve İçecek";
+
+/* Industry option in the store creation category question. */
+"Fortune Tellers" = "Falcılar";
 
 /* Next web page */
 "Forward" = "Yönlendir";
+
+/* Country option for a site address. */
+"France" = "Fransa";
+
+/* Industry option in the store creation category question. */
+"Freight Forwarders" = "Nakliye Aracıları";
+
+/* Country option for a site address. */
+"French Guiana" = "Fransız Guyanası";
+
+/* Country option for a site address. */
+"French Polynesia" = "Fransız Polinezyası";
+
+/* Country option for a site address. */
+"French Southern Territories" = "Fransız Güney Toprakları";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "Kimden";
@@ -2357,11 +2839,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "Cihazdan";
 
+/* Industry option in the store creation category question. */
+"Fuel Dispensers" = "Yakıt Dispenserleri";
+
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "WooCommerce Shipping ile siparişlerinizi yerine getirin";
 
+/* Industry option in the store creation category question. */
+"Funeral Services" = "Cenaze Hizmetleri";
+
+/* Country option for a site address. */
+"Gabon" = "Gabon";
+
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Ürünlerin mağazanızdaki performansına dair içgörüler edinin";
+
+/* Country option for a site address. */
+"Gambia" = "Gambiya";
+
+/* Industry option in the store creation category question. */
+"Games" = "Oyunlar";
+
+/* Industry option in the store creation category question. */
+"General Contractors" = "Genel Yükleniciler";
 
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "Yeni Varyasyon Oluştur";
@@ -2369,8 +2869,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action to generate the first variation */
 "Generate Variation" = "Varyasyon Oluştur";
 
+/* Title for the option to generate all possible variations */
+"Generate all variations" = "Tüm varyasyonları oluştur";
+
+/* Alert title to allow the user confirm if they want to generate all variations */
+"Generate all variations?" = "Tüm varyasyonlar oluşturulsun mu?";
+
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Varyasyon Oluşturma";
+
+/* Error title for for when there are too many variations to generate. */
+"Generation limit exceeded" = "Oluşturma sınırı aşıldı";
+
+/* Country option for a site address. */
+"Georgia" = "Gürcistan";
+
+/* Country option for a site address. */
+"Germany" = "Almanya";
 
 /* Button displayed on the prologue screen of the simplified login flow to create a new store
    Title of install action in the Jetpack Install view.
@@ -2420,16 +2935,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented with a spinner while the reader is being prepared */
 "Getting ready to collect payment" = "Ödeme almaya hazırlanıyor";
 
+/* Country option for a site address. */
+"Ghana" = "Gana";
+
+/* Country option for a site address. */
+"Gibraltar" = "Cebelitarık";
+
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "Hediye";
-
-/* Title of the feedback action button on the coupon list screen */
-"Give Feedback" = "Geri Bildirim Ver";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
    Title of the button to give feedback about the Orders features
+   Title of the feedback action button on the coupon list screen
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Görüşlerinizi paylaşın";
 
@@ -2442,8 +2961,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button to navigate to the home screen after Jetpack setup completes */
 "Go to Store" = "Mağazaya Git";
 
+/* Option in the store creation selling platforms question. */
+"Google Shopping" = "Google Alışveriş";
+
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google oturum açma başarısız oldu.";
+
+/* Industry option in the store creation category question. */
+"Government Services" = "Devlet Hizmetleri";
+
+/* Country option for a site address. */
+"Greece" = "Yunanistan";
+
+/* Country option for a site address. */
+"Greenland" = "Grönland";
+
+/* Country option for a site address. */
+"Grenada" = "Grenada";
+
+/* Industry option in the store creation category question. */
+"Grocery Stores" = "Marketler";
 
 /* Display label for grouped product type. */
 "Grouped" = "Gruplanmış";
@@ -2457,9 +2994,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Gruplanmış ürünler";
 
+/* Country option for a site address. */
+"Guadeloupe" = "Guadeloupe";
+
+/* Country option for a site address. */
+"Guam" = "Guam";
+
+/* Country option for a site address. */
+"Guatemala" = "Guatemala";
+
+/* Country option for a site address. */
+"Guernsey" = "Guernsey";
+
 /* In Order Details, the name of the billed person when there are no name and last name.
    In Order List, the name of the billed person when there are no first and last name. */
 "Guest" = "Misafir";
+
+/* Country option for a site address. */
+"Guinea" = "Gine";
+
+/* Country option for a site address. */
+"Guinea-Bissau" = "Gine-Bissau";
+
+/* Country option for a site address. */
+"Guyana" = "Guyana";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "NASIL YARDIMCI OLABİLİRİZ?";
@@ -2476,6 +3034,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "HTML içerik";
+
+/* Country option for a site address. */
+"Haiti" = "Haiti";
+
+/* Industry option in the store creation category question. */
+"Hardware Stores" = "Donanım Mağazaları";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Mağaza kimlik bilgilerinizi hazırlayın.";
@@ -2516,8 +3080,14 @@ which should be translated separately and considered part of this sentence. */
 /* H6 Aztec Style */
 "Heading 6" = "Başlık 6";
 
-/* Option in the store creation category question. */
-"Health and Beauty" = "Sağlık ve Güzellik";
+/* Industry option in the store creation category question. */
+"Health And Beauty Spas" = "Sağlık ve Güzellik Spaları";
+
+/* Industry option in the store creation category question. */
+"Health And Wellness Coaching" = "Sağlık ve Zindelik Koçluğu";
+
+/* Country option for a site address. */
+"Heard Island and McDonald Islands" = "Heard Adası ve McDonald Adaları";
 
 /* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Height */
@@ -2536,7 +3106,8 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > Help and Feedback settings section title */
 "Help & Feedback" = "Yardım ve Geri Bildirim";
 
-/* Contact Support Action */
+/* Accessibility label for the Help & Support image navigation bar button in the store creation flow.
+   Contact Support Action */
 "Help & Support" = "Yardım ve Destek";
 
 /* Browse our help documentation website title */
@@ -2549,14 +3120,44 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's catalog visibility */
 "Hidden" = "Gizli";
 
+/* Industry option in the store creation category question. */
+"Home Electronics" = "Ev Elektroniği";
+
+/* Industry option in the store creation category question. */
+"Home Goods And Furniture" = "Ev Eşyaları ve Mobilya";
+
+/* Country option for a site address. */
+"Honduras" = "Honduras";
+
+/* Country option for a site address. */
+"Hong Kong" = "Hong Kong";
+
+/* Industry option in the store creation category question. */
+"Hospitals" = "Hastaneler";
+
+/* Industry option in the store creation category question. */
+"Hotels, Inns, Or Motels" = "Oteller, Misafirhaneler veya Moteller";
+
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Nasıl iyileştirebiliriz?";
 
 /* Message subtitle of bottom sheet for selecting a template or manual product */
 "How do you want to start?" = "Nasıl başlamak istiyorsunuz?";
 
+/* Country option for a site address. */
+"Hungary" = "Macaristan";
+
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "Beğendim";
+
+/* Option in the store creation selling status question. */
+"I am already selling online" = "Zaten internetten satış yapıyorum";
+
+/* Option in the store creation selling status question. */
+"I am just starting to sell" = "Satış yapmaya yeni başladım";
+
+/* Option in the store creation selling status question. */
+"I am selling offline" = "Çevrimdışı satış yapıyorum";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "TAMAMLANACAK ÖĞELER";
@@ -2569,6 +3170,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
 "ITN is required for shipping items valued over $2,500 per tariff number" = "Tarife numarasına göre değeri 2.500 ABD Dolarının üzerindeki gönderiler için ITN gereklidir";
+
+/* Country option for a site address. */
+"Iceland" = "İzlanda";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Devre dışıysa not gizli olur";
@@ -2598,6 +3202,9 @@ which should be translated separately and considered part of this sentence. */
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "Stokta";
 
+/* Title of the store creation profiler question about the store selling platforms. */
+"In which platform are you currently selling?" = "Şu anda hangi platformda satış yapıyorsunuz?";
+
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Site yöneticinizde, Bağlantılar > Hesap bağlantısı bölümünde yer alan Jetpack Yönetim Panelinden WordPress.com'a bağlanmak için kullandığınız e-postayı bulabilirsiniz.";
 
@@ -2609,9 +3216,6 @@ which should be translated separately and considered part of this sentence. */
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "Şahsen Ödemeler";
 
-/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
-"In-Person Payments Setup is incomplete." = "Şahsen Ödemeler Kurulumu tamamlanmadı.";
-
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Şahsen Ödemeler bu ödeme sağlayıcılarından herhangi biri aracılığıyla işlenebilir. Hangi sağlayıcıyı kullanmak istiyorsunuz?";
 
@@ -2622,6 +3226,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "Bu mağazada Şahsen Ödemeler kullanılamıyor";
+
+/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
+"In-Person Payments setup is incomplete." = "Şahsen Ödemeler Kurulumu tamamlanmadı.";
 
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "Uygulama içi satın alma işlemleri";
@@ -2658,6 +3265,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "Yukarı satış ve çapraz satış ile satışları artırın";
 
+/* Country option for a site address. */
+"India" = "Hindistan";
+
 /* Title for the individual use only row in coupon usage restrictions screen. */
 "Individual Use Only" = "Sadece Bireysel Kullanım";
 
@@ -2666,6 +3276,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "Tek başına gönderilen öğe";
+
+/* Country option for a site address. */
+"Indonesia" = "Endonezya";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "Ekle";
@@ -2721,6 +3334,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "Jetpack kuruluyor";
 
+/* Industry option in the store creation category question. */
+"Insurance" = "Sigorta";
+
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
 "Insurance (%1$@)" = "Sigorta (%1$@)";
 
@@ -2771,6 +3387,24 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Stok";
 
+/* Industry option in the store creation category question. */
+"Investment Services" = "Yatırım Hizmetleri";
+
+/* Country option for a site address. */
+"Iran" = "İran";
+
+/* Country option for a site address. */
+"Iraq" = "Irak";
+
+/* Country option for a site address. */
+"Ireland" = "İrlanda";
+
+/* Country option for a site address. */
+"Isle of Man" = "Man Adası";
+
+/* Country option for a site address. */
+"Israel" = "İsrail";
+
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Geri Ödeme Yap";
 
@@ -2796,11 +3430,17 @@ which should be translated separately and considered part of this sentence. */
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Yanış bir parola girmişsiniz gibi görünüyor. Yeniden denemek ister misiniz?";
 
+/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
+"It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "%@ sitenizde Uygulama Şifresi devre dışı bırakılmış görünüyor. WooCommerce uygulamasını kullanmak için lütfen Uygulama Şifresini etkinleştirin.";
+
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "Görünüşe göre %@ siteniz, eklenti yüklenemeyen basit bir Wordpress.com sitesi. WooCommerce kullanabilmek için lütfen paketinizi yükseltin.";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "İtalik";
+
+/* Country option for a site address. */
+"Italy" = "İtalya";
 
 /* Error message for missing value in Description row in Customs screen of Shipping Label flow */
 "Item description is required" = "Öğe açıklaması gereklidir";
@@ -2818,6 +3458,18 @@ which should be translated separately and considered part of this sentence. */
    Title for the items sold column on the products card on the analytics hub screen. */
 "Items Sold" = "Satılan ürünler";
 
+/* Country option for a site address. */
+"Ivory Coast" = "Fildişi Sahilleri";
+
+/* Country option for a site address. */
+"Jamaica" = "Jamaika";
+
+/* Country option for a site address. */
+"Japan" = "Japonya";
+
+/* Country option for a site address. */
+"Jersey" = "Jersey";
+
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "Jetpack Kurulumu";
 
@@ -2830,6 +3482,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "İstediğiniz yerden katılın";
 
+/* Country option for a site address. */
+"Jordan" = "Ürdün";
+
+/* Country option for a site address. */
+"Kazakhstan" = "Kazakistan";
+
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Düzenlemeye Devam Et";
 
@@ -2839,11 +3497,29 @@ which should be translated separately and considered part of this sentence. */
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "Bunun bir destek bileti olmadığını ve bireysel geri bildirimleri ele alamayacağımızı unutmayın";
 
+/* Country option for a site address. */
+"Kenya" = "Kenya";
+
+/* Country option for a site address. */
+"Kiribati" = "Kiribati";
+
+/* Country option for a site address. */
+"Kuwait" = "Kuveyt";
+
+/* Country option for a site address. */
+"Kyrgyzstan" = "Kırgızistan";
+
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "Etiket (4 x 6 inç)";
 
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "Etiket Biçimi Seçenekleri";
+
+/* Industry option in the store creation category question. */
+"Landscaping Services" = "Peyzaj Hizmetleri";
+
+/* Country option for a site address. */
+"Laos" = "Laos";
 
 /* Label for one of the filters in order date range */
 "Last 2 Days" = " Son 2 Gün";
@@ -2875,8 +3551,17 @@ which should be translated separately and considered part of this sentence. */
 /* Text field name in Edit Address Form */
 "Last name" = "Soyad";
 
+/* Country option for a site address. */
+"Latvia" = "Letonya";
+
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Wormholy hata bulmayı başlat";
+
+/* Industry option in the store creation category question. */
+"Laundry Or Cleaning Services" = "Çamaşır veya Temizlik Hizmetleri";
+
+/* Industry option in the store creation category question. */
+"Lead Generation" = "Potansiyel Müşteri Oluşturma";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -2897,14 +3582,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Jetpack hakkında daha fazlasını öğrenin";
 
-/* Title of button in the simplified login prologue screen for learning more about WooCommerce. */
-"Learn more about WooCommerce" = "WooCommerce hakkında daha fazla bilgi edinin";
-
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "Mobil cihazınızla etiket oluşturma hakkında daha fazla bilgi edinin";
 
 /* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "Roller ve izinler hakkında daha fazla bilgi edinin";
+
+/* Country option for a site address. */
+"Lebanon" = "Lübnan";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 inç)";
@@ -2916,8 +3601,20 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Shipping Settings > Length */
 "Length" = "Uzunluk";
 
+/* Country option for a site address. */
+"Lesotho" = "Lesoto";
+
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8,5 x 11 inç)";
+
+/* Country option for a site address. */
+"Liberia" = "Liberya";
+
+/* Country option for a site address. */
+"Libya" = "Libya";
+
+/* Country option for a site address. */
+"Liechtenstein" = "Lihtenştayn";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Kullanımı X Öğe ile Sınırla";
@@ -2957,6 +3654,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Ürüne ait görsellerin listesi";
 
+/* Country option for a site address. */
+"Lithuania" = "Litvanya";
+
 /* Accessibility label for loading indicator (spinner) at the bottom of a list */
 "Loading" = "Yükleniyor";
 
@@ -2978,8 +3678,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Loading. Verb */
 "Loading..." = "Yükleniyor...";
 
-/* Button title in the simplified login prologue screen. Takes the user to the login flow.
-   Button title.  Tapping takes the user to the login form.
+/* Industry option in the store creation category question. */
+"Loans Or Lending" = "Krediler veya Borç Verme";
+
+/* Button title.  Tapping takes the user to the login form.
    Log In button label.
    View title during the log in process. */
 "Log In" = "Giriş yap";
@@ -2988,6 +3690,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled.
+   Button to restart the login flow.
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "Başka Bir Hesapla Oturum Açın";
 
@@ -3049,6 +3753,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button. */
 "Lost your password?" = "Parolanızı mı unuttunuz?";
 
+/* Industry option in the store creation category question. */
+"Lotteries" = "Piyangolar";
+
+/* Country option for a site address. */
+"Luxembourg" = "Lüksemburg";
+
+/* Country option for a site address. */
+"Macao S.A.R., China" = "Makao, Çin";
+
+/* Country option for a site address. */
+"Macedonia" = "Makedonya";
+
+/* Country option for a site address. */
+"Madagascar" = "Madagaskar";
+
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Automattic tarafından sevgiyle yapıldı. <a href=\"https:\/\/automattic.com\/work-with-us\/\">Yeni çalışma arkadaşları arıyoruz!<\/a>";
 
@@ -3063,6 +3782,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "Etiket kullanarak ürünlerinizin bulunmasını kolaylaştırın";
+
+/* Country option for a site address. */
+"Malawi" = "Malavi";
+
+/* Country option for a site address. */
+"Malaysia" = "Malezya";
+
+/* Country option for a site address. */
+"Maldives" = "Maldivler";
+
+/* Country option for a site address. */
+"Mali" = "Mali";
+
+/* Country option for a site address. */
+"Malta" = "Malta";
 
 /* Card reader settings screen title
    Settings > Manage Card Reader > Title for the no-reader-connected screen in settings.
@@ -3093,6 +3827,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Alan adını yönet";
 
+/* Industry option in the store creation category question. */
+"Marijuana Dispensaries" = "Esrar Dispanserleri";
+
+/* Industry option in the store creation category question. */
+"Marijuana-related Products" = "Esrarla İlgili Ürünler";
+
 /* Title for the swipe order action to mark it as completed */
 "Mark Completed" = "Tamamlandı Olarak İşaretle";
 
@@ -3118,14 +3858,50 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Bu siparişi tamamlandı olarak işaretleyin ve müşteriyi bilgilendirin";
 
+/* Country option for a site address. */
+"Marshall Islands" = "Marshall Adaları";
+
+/* Country option for a site address. */
+"Martinique" = "Martinik";
+
+/* Industry option in the store creation category question. */
+"Massage Parlors" = "Masaj Salonları";
+
+/* Country option for a site address. */
+"Mauritania" = "Moritanya";
+
+/* Country option for a site address. */
+"Mauritius" = "Morityus";
+
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "Maks. Harcama (%1$@)";
 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "Maksimum %1$@ tutarında harcama";
 
+/* Country option for a site address. */
+"Mayotte" = "Mayotte";
+
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Medyada karşıya yüklenecek ilişkili dosya bulunmuyor.";
+
+/* Industry option in the store creation category question. */
+"Medical Devices" = "Tıbbi Cihazlar";
+
+/* Industry option in the store creation category question. */
+"Medical Laboratories" = "Tıbbi Laboratuvarlar";
+
+/* Industry option in the store creation category question. */
+"Medical Organizations" = "Tıbbi Kuruluşlar";
+
+/* Industry group option in the store creation category question. */
+"Medical Services" = "Tıbbi Hizmetler";
+
+/* Industry group option in the store creation category question. */
+"Membership Organizations" = "Üyelik Kuruluşları";
+
+/* Industry option in the store creation category question. */
+"Mental Health Services" = "Ruh Sağlığı Hizmetleri";
 
 /* Title of the Menu tab */
 "Menu" = "Menü";
@@ -3146,6 +3922,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message phone number button title */
 "Message" = "Mesaj";
 
+/* Country option for a site address. */
+"Mexico" = "Meksika";
+
+/* Country option for a site address. */
+"Micronesia" = "Mikronezya";
+
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
@@ -3161,11 +3943,32 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
 "Mixed" = "Karışık";
 
+/* Country option for a site address. */
+"Moldova" = "Moldova";
+
+/* Country option for a site address. */
+"Monaco" = "Monako";
+
+/* Industry option in the store creation category question. */
+"Money Orders" = "Para Havaleleri";
+
+/* Industry option in the store creation category question. */
+"Money Services Or Transmission" = "Para Hizmetleri veya Para Aktarma";
+
+/* Country option for a site address. */
+"Mongolia" = "Moğolistan";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "Ürün incelemelerinizi izleyin ve onaylayın";
 
+/* Country option for a site address. */
+"Montenegro" = "Karadağ";
+
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "Aydan tarihe";
+
+/* Country option for a site address. */
+"Montserrat" = "Montserat";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -3177,6 +3980,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "Diğer seçenekler";
+
+/* Country option for a site address. */
+"Morocco" = "Fas";
+
+/* Industry option in the store creation category question. */
+"Mortgage Consulting Services" = "Mortgage Danışmanlık Hizmetleri";
 
 /* Button on each order item of the Package Details screen in Shipping Labels flow. */
 "Move" = "Taşı";
@@ -3193,11 +4002,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "Yorumu Çöp Kutusu'na taşır";
 
+/* Industry option in the store creation category question. */
+"Movie Theaters" = "Sinema Salonları";
+
+/* Country option for a site address. */
+"Mozambique" = "Mozambik";
+
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
 "Multiple Contactless Cards Detected" = "Birden Fazla Temassız Kart Algılandı";
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Çoklu ödeme seçenekleri";
+
+/* Industry option in the store creation category question. */
+"Music Or Other Media" = "Müzik veya Diğer Medya";
+
+/* Industry option in the store creation category question. */
+"Musicians, Bands, Or Orchestras" = "Müzisyenler, Gruplar veya Orkestralar";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "Mağazam";
@@ -3209,6 +4030,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the store creation summary screen. */
 "My store" = "Mağazam";
 
+/* Country option for a site address. */
+"Myanmar" = "Myanmar";
+
 /* Name text field placeholder
    Text field name in Shipping Label Address Validation
    Title for the name field on the Shipping Line Details screen during order creation */
@@ -3216,6 +4040,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "Ad eksik";
+
+/* Country option for a site address. */
+"Namibia" = "Namibya";
+
+/* Country option for a site address. */
+"Nauru" = "Nauru";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "Bir gönderim etiketine mi ihtiyacınız var?";
@@ -3240,6 +4070,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
 "Need some help? %1$@" = "Biraz yardıma mı ihtiyacınız var? %1$@";
 
+/* Country option for a site address. */
+"Nepal" = "Nepal";
+
 /* The title for the net amount paid cell */
 "Net Payment" = "Net ödeme";
 
@@ -3250,6 +4083,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Top performers — label for the total sales of a product */
 "Net sales: %@" = "Net satışlar: %@";
 
+/* Country option for a site address. */
+"Netherlands" = "Hollanda";
+
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Ağ Etkin Eklentileri";
 
@@ -3259,8 +4095,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Yeni Özellik Adı";
 
+/* Country option for a site address. */
+"New Caledonia" = "Yeni Kaledonya";
+
 /* Title for the order creation screen */
 "New Order" = "Yeni Sipariş";
+
+/* Country option for a site address. */
+"New Zealand" = "Yeni Zelanda";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "Yeni analiz görünümleri, ziyaretçileri, raporları ve daha fazlasını görmenizi sağlar.";
@@ -3283,6 +4125,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of a button. The text should be capitalized.
    Title of the next button in the issue refund screen */
 "Next" = "Sonraki";
+
+/* Country option for a site address. */
+"Nicaragua" = "Nikaragua";
+
+/* Country option for a site address. */
+"Niger" = "Nijer";
+
+/* Country option for a site address. */
+"Nigeria" = "Nijerya";
+
+/* Country option for a site address. */
+"Niue" = "Niue";
 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "Kısıtlama Yok";
@@ -3383,6 +4237,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Value for fields in Coupon Usage Restrictions screen when no value is set */
 "None" = "Hiçbiri";
 
+/* Country option for a site address. */
+"Norfolk Island" = "Norfolk Adası";
+
+/* Country option for a site address. */
+"North Korea" = "Kuzey Kore";
+
+/* Country option for a site address. */
+"Northern Mariana Islands" = "Kuzey Mariana Adaları";
+
+/* Country option for a site address. */
+"Norway" = "Norveç";
+
 /* Action title to dismiss enabling Analytics for a store
    Button in the CTA View for installing WCShip extension for dismissing the view
    Title of dismiss action in the Jetpack benefits view. */
@@ -3403,7 +4269,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Nitelikleri eklediğinize göre ilk varyasyonunuzu oluşturabilirsiniz.";
 
+/* Industry option in the store creation category question. */
+"Nursing Or Personal Care Facilities" = "Hasta Bakımı veya Kişisel Bakım Tesisleri";
+
 /* Alert dismissal title
+   Button text to confirm that we want to generate all variations
    Button title to cancel the alert when the user cannot create a store.
    Button title to dismiss the alert when the created store never becomes a Jetpack site in the store creation flow.
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
@@ -3445,6 +4315,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Weeks Section Header */
 "Older than a Week" = "Bir haftadan daha eski";
 
+/* Country option for a site address. */
+"Oman" = "Umman";
+
 /* Spoken label to indicate switch control is turned on */
 "On" = "Açık";
 
@@ -3453,6 +4326,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for on hold order status. */
 "On hold" = "Beklemede";
+
+/* Industry option in the store creation category question. */
+"Online Gambling" = "Çevrimiçi Kumar";
 
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "Varyasyon başına yalnızca bir fotoğraf görüntülenebilir";
@@ -3502,6 +4378,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint to open web page in Safari */
 "Opens the web page in Safari" = "Web sayfasını Safari'de açar";
 
+/* Industry option in the store creation category question. */
+"Opticians And Eyeglasses" = "Gözlükçüler ve Gözlükler";
+
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Seçenek adı";
 
@@ -3518,6 +4397,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "Seçenekler";
+
+/* Industry option in the store creation category question. */
+"Optometrists and Ophthalmologists" = "Optometri Uzmanları ve Göz Doktorları";
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "Veya";
@@ -3583,14 +4465,56 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "Orijinal paket";
 
+/* Industry option in the store creation category question. */
+"Osteopaths" = "Osteopatlar";
+
 /* Generic name of non-default discount types
    My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Diğer";
 
+/* Industry option in the store creation category question. */
+"Other Building Services" = "Diğer Bina Hizmetleri";
+
+/* Industry option in the store creation category question. */
+"Other Business Services" = "Diğer İş Dünyası Hizmetleri";
+
+/* Industry option in the store creation category question. */
+"Other Digital Goods" = "Diğer Dijital Ürünler";
+
+/* Industry option in the store creation category question. */
+"Other Entertainment And Recreation" = "Diğer Eğlence ve Rekreasyon";
+
+/* Industry option in the store creation category question. */
+"Other Financial Institutions" = "Diğer Finansal Kuruluşlar";
+
+/* Industry option in the store creation category question. */
+"Other Food And Dining" = "Diğer Yiyecek ve Yemek";
+
+/* Industry option in the store creation category question. */
+"Other Marketing Services" = "Diğer Pazarlama Hizmetleri";
+
+/* Industry option in the store creation category question. */
+"Other Medical Services" = "Diğer Tıbbi Hizmetler";
+
+/* Industry option in the store creation category question. */
+"Other Membership Organizations" = "Diğer Üyelik Kuruluşları";
+
+/* Industry option in the store creation category question. */
+"Other Merchandise" = "Diğer Ürünler";
+
+/* Industry option in the store creation category question. */
+"Other Personal Services" = "Diğer Kişisel Hizmetler";
+
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "Diğer siteler";
+
+/* Industry option in the store creation category question. */
+"Other Transportation Services" = "Diğer Ulaşım Hizmetleri";
+
+/* Industry option in the store creation category question. */
+"Other Travel And Lodging" = "Diğer Seyahat ve Konaklama";
 
 /* Display label for the product's inventory stock status */
 "Out of stock" = "Stokta kalmadı";
@@ -3637,11 +4561,29 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title for the customer payment cell */
 "Paid" = "Ödendi";
 
+/* Country option for a site address. */
+"Pakistan" = "Pakistan";
+
+/* Country option for a site address. */
+"Palestinian Territory" = "Filistin";
+
+/* Country option for a site address. */
+"Panama" = "Panama";
+
 /* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "Kağıt Boyutu";
 
+/* Country option for a site address. */
+"Papua New Guinea" = "Papua Yeni Gine";
+
+/* Country option for a site address. */
+"Paraguay" = "Paraguay";
+
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "Üst kategori";
+
+/* Industry option in the store creation category question. */
+"Parking Lots" = "Otoparklar";
 
 /* Title of the banner when the order is not editable */
 "Parts of this order are not currently editable" = "Bu siparişin bazı bölümleri şu anda düzenlenemez";
@@ -3741,8 +4683,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "Hesabı Kalıcı Olarak Kapat";
 
-/* Option in the store creation category question. */
-"Pets Pet Care" = "Evcil Hayvanlar Evcil Hayvan Bakımı";
+/* Industry option in the store creation category question. */
+"Personal Fundraising Or Crowdfunding" = "Kişisel Bağış Toplama veya Kitlesel Fon";
+
+/* Industry group option in the store creation category question. */
+"Personal Services" = "Kişisel Hizmetler";
+
+/* Country option for a site address. */
+"Peru" = "Peru";
+
+/* Industry option in the store creation category question. */
+"Pharmacies Or Pharmaceuticals" = "Eczaneler veya İlaçlar";
+
+/* Country option for a site address. */
+"Philippines" = "Filipinler";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -3750,6 +4704,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Telefon numarası: %@";
+
+/* Industry option in the store creation category question. */
+"Photography Studios" = "Fotoğraf Stüdyoları";
 
 /* Product images (Product images page title) */
 "Photos" = "Fotoğraflar";
@@ -3762,6 +4719,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Pick up an order, then just pay, print, package, and post." = "Bir sipariş alın, ardından ödeme yapın, yazdırın, paketleyin ve gönderin.";
+
+/* Option in the store creation selling platforms question. */
+"Pinterest" = "Pinterest";
+
+/* Country option for a site address. */
+"Pitcairn" = "Pitcairn";
 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Ürününüz çöp kutusuna atılıyor... ";
@@ -3848,6 +4811,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "Lütfen tüm alanları doldurunuz";
+
+/* Message explaining that the site entered doesn't have WooCommerce installed or activated. */
+"Please install and activate WooCommerce plugin on your site to use the app." = "Uygulamayı kullanmak için lütfen sitenize WooCommerce eklentisini yükleyin ve etkinleştirin.";
 
 /* Error message on the Jetpack setup required screen. */
 "Please install the free Jetpack plugin to access your store on this app." = "Bu uygulamada mağazanıza erişmek için lütfen ücretsiz Jetpack eklentisini yükleyin.";
@@ -3958,6 +4924,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the Plugin List screen */
 "Plugins" = "Eklentiler";
 
+/* Industry option in the store creation category question. */
+"Podiatrists and Chiropodists" = "El ve Ayak Hastalıkları Uzmanları";
+
+/* Country option for a site address. */
+"Poland" = "Polonya";
+
+/* Industry option in the store creation category question. */
+"Political Organizations" = "Siyasi Kuruluşlar";
+
+/* Country option for a site address. */
+"Portugal" = "Portekiz";
+
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
 "Postcode" = "Posta Kodu";
@@ -4040,6 +5018,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of in-progress modal when requesting document with multiple shipping labels for printing */
 "Printing Labels" = "Etiketleri Yazdırma";
+
+/* Industry option in the store creation category question. */
+"Printing and Publishing" = "Basım ve Yayıncılık";
 
 /* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "Kaliforniya'daki Kullanıcılar için Gizlilik Bildirimi";
@@ -4148,6 +5129,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "Şu anda görüntülenen ürün yerine tanıtılan ürünler (yani daha kârlı ürünler)";
 
+/* Industry group option in the store creation category question. */
+"Professional Services" = "Profesyonel Hizmetler";
+
+/* Industry option in the store creation category question. */
+"Property Rentals" = "Gayrimenkul Kiralama";
+
+/* Industry option in the store creation category question. */
+"Protective Or Security Services" = "Koruyucu veya Güvenlik Hizmetleri";
+
 /* One of the possible options in Product Visibility */
 "Public" = "Herkese Açık";
 
@@ -4163,8 +5153,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "Ürününüz yayımlanıyor...";
 
-/* Title for the button on the feature announcement banner intended to upsell card readers
-   Title for the WebView opened to upsell card readers */
+/* Country option for a site address. */
+"Puerto Rico" = "Porto Riko";
+
+/* Title for the WebView opened to upsell card readers */
 "Purchase Card Reader" = "Kart Okuyucu Satın Alın";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
@@ -4177,6 +5169,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Purchase note label in Product Settings */
 "Purchase Note" = "Satın Alma Notu";
 
+/* Title for the button on the feature announcement banner intended to upsell card readers */
+"Purchase card reader" = "Kart Okuyucu Satın Alın";
+
 /* Title for purchase note alert. */
 "Purchase note" = "Satın alma notu";
 
@@ -4188,6 +5183,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Quantity abbreviation for section title */
 "QTY" = "QTY";
+
+/* Country option for a site address. */
+"Qatar" = "Katar";
 
 /* Quantity abbreviation for section title */
 "Qty" = "Qty";
@@ -4248,6 +5246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "%1$@ kaynağından makbuz";
+
+/* Industry option in the store creation category question. */
+"Recreational Camps" = "Eğlence Kampları";
 
 /* Button label to refresh a web page */
 "Refresh" = "Yenile";
@@ -4328,6 +5329,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Normal fiyat: %@";
+
+/* Industry group option in the store creation category question. */
+"Regulated And Age-Restricted Products" = "Yasal Düzenlemelere Tabi ve Yaş Sınırlaması Olan Ürünler";
+
+/* Industry option in the store creation category question. */
+"Religious Organizations" = "Dini Kuruluşlar";
 
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time */
 "Remind me later" = "Daha sonra hatırlat";
@@ -4413,6 +5420,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Parolanızı sıfırlayın";
 
+/* Industry option in the store creation category question. */
+"Restaurants And Nightlife" = "Restoranlar ve Gece Hayatı";
+
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "E-postaları olan müşterilerle sınırlıdır: %1$@n ";
 
@@ -4421,6 +5431,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Restriction Type row in Customs screen of Shipping Label flow */
 "Restriction Type" = "Kısıtlama Türü";
+
+/* Industry group option in the store creation category question. */
+"Retail" = "Perakende";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search coupons. */
 "Retrieves a list of coupons that contain a given keyword." = "Belirli bir anahtar sözcüğü içeren kuponları listeler.";
@@ -4456,6 +5469,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Paket teslim edilemezse gönderene iade et";
 
+/* Country option for a site address. */
+"Reunion" = "Reunion Adası";
+
 /* Revenue stat label on dashboard. */
 "Revenue" = "Kazanç";
 
@@ -4474,6 +5490,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Post Rich content */
 "Rich Content" = "Zengin içerik";
+
+/* Industry option in the store creation category question. */
+"Ridesharing" = "Araç Paylaşımı";
+
+/* Country option for a site address. */
+"Romania" = "Romanya";
+
+/* Country option for a site address. */
+"Russia" = "Rusya";
+
+/* Country option for a site address. */
+"Rwanda" = "Ruanda";
 
 /* Title for sessions section in the Analytics Hub */
 "SESSIONS" = "OTURUMLAR";
@@ -4507,6 +5535,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button label to open web page in Safari */
 "Safari" = "Safari";
 
+/* Country option for a site address. */
+"Saint Barthélemy" = "Saint Barthélemy";
+
+/* Country option for a site address. */
+"Saint Helena" = "Santa Helena";
+
+/* Country option for a site address. */
+"Saint Kitts and Nevis" = "Saint Kitts ve Nevis";
+
+/* Country option for a site address. */
+"Saint Lucia" = "Santa Luçia";
+
+/* Country option for a site address. */
+"Saint Martin (Dutch part)" = "Santa Martin (Hollanda bölümü)";
+
+/* Country option for a site address. */
+"Saint Martin (French part)" = "Santa Martin (Fransa bölümü)";
+
+/* Country option for a site address. */
+"Saint Pierre and Miquelon" = "Saint Pierre ve Miquelon";
+
+/* Country option for a site address. */
+"Saint Vincent and the Grenadines" = "Saint Vincent ve Grenadines";
+
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "İndirim tarihleri: %@";
 
@@ -4525,11 +5577,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Sales channels" = "Satış kanalları";
 
+/* Industry option in the store creation category question. */
+"Salons Or Barbers" = "Kuaförler veya Berberler";
+
+/* Country option for a site address. */
+"Samoa" = "Samoa";
+
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "Örnek";
 
+/* Country option for a site address. */
+"San Marino" = "San Marino";
+
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary \/ Phytosanitary Inspection" = "Sağlık\/Bitki Sağlığı denetimi";
+
+/* Country option for a site address. */
+"Saudi Arabia" = "Suudi Arabistan";
 
 /* Action for saving a Coupon remotely
    Action for saving a Product remotely
@@ -4615,6 +5679,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Yalnızca arama sonuçları";
 
+/* Industry option in the store creation category question. */
+"Security Brokers Or Dealers" = "Menkul Kıymet Aracıları veya Satıcıları";
+
 /* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
    Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "Bağlı Mağazaları Görün";
@@ -4652,9 +5719,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to select specific categories applicable for a coupon in the view for adding or editing a coupon. */
 "Select Product Categories" = "Ürün Kategorileri Seç";
 
-/* Title for the screen to select products for a coupon */
-"Select Products" = "Ürün seç";
-
 /* Page title for the select a different store screen */
 "Select Store" = "Mağaza Seç";
 
@@ -4681,6 +5745,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Paragraf stilini seçin";
+
+/* Title for the screen to select products for a coupon */
+"Select products" = "Ürün seç";
 
 /* The title for the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Select reader type" = "Okuyucu türünü seçin";
@@ -4712,6 +5779,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title. Sends a email verification link (Magin link) for signing in. */
 "Send email verification link" = "E-posta doğrulama bağlantısı gönder";
 
+/* Country option for a site address. */
+"Senegal" = "Senegal";
+
+/* Country option for a site address. */
+"Serbia" = "Sırbistan";
+
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "Hizmet Paketi";
 
@@ -4737,6 +5810,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "Birkaç okuyucu bulundu";
+
+/* Country option for a site address. */
+"Seychelles" = "Seyşeller";
 
 /* Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
@@ -4809,6 +5885,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping method title for customer info section */
 "Shipping Method" = "Gönderi Yöntemi";
 
+/* Industry option in the store creation category question. */
+"Shipping Or Forwarding" = "Kargo veya Nakliyat";
+
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "Kargo İadesi";
 
@@ -4842,11 +5921,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's tax status setting option */
 "Shipping only" = "Sadece kargo";
 
+/* Industry option in the store creation category question. */
+"Shoes" = "Ayakkabılar";
+
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "Alışveriş ve arama sonuçları";
 
 /* Display label for the product's catalog visibility */
 "Shop only" = "Yalnızca alışveriş";
+
+/* Option in the store creation selling platforms question. */
+"Shopify" = "Shopify";
 
 /* The navigation bar title of the edit short description screen.
    Title of the product form bottom sheet action for editing short description.
@@ -4890,6 +5975,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Diğer seçenekleri gösterir.";
 
+/* Country option for a site address. */
+"Sierra Leone" = "Sierra Leone";
+
 /* View title during the sign up process. */
 "Sign Up" = "Üye ol";
 
@@ -4923,6 +6011,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
 "Simple virtual product" = "Basit sanal ürün";
 
+/* Country option for a site address. */
+"Singapore" = "Singapur";
+
 /* Describes a site redirect domain */
 "Site Redirect" = "Site yönlendirme";
 
@@ -4940,13 +6031,31 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
 "Skip for now" = "Şimdilik atla";
 
+/* Country option for a site address. */
+"Slovakia" = "Slovakya";
+
+/* Country option for a site address. */
+"Slovenia" = "Slovenya";
+
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "Kısaltma";
 
+/* Industry option in the store creation category question. */
+"Software" = "Yazılım";
+
+/* Industry option in the store creation category question. */
+"Software As A Service" = "Hizmet Olarak Yazılım";
+
 /* Dialog title that displays when a software update just finished installing */
 "Software updated" = "Yazılım güncellendi";
+
+/* Country option for a site address. */
+"Solomon Islands" = "Solomon Adaları";
+
+/* Country option for a site address. */
+"Somalia" = "Somali";
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "Bir e-posta adresi geçerli değil.";
@@ -5037,6 +6146,21 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the toolbar button to sort products in different ways. */
 "Sort by" = "Sırala";
 
+/* Country option for a site address. */
+"South Africa" = "Güney Afrika";
+
+/* Country option for a site address. */
+"South Georgia\/Sandwich Islands" = "Güney Georgia\/Sandviç Adaları";
+
+/* Country option for a site address. */
+"South Korea" = "Güney Kore";
+
+/* Country option for a site address. */
+"South Sudan" = "Güney Sudan";
+
+/* Country option for a site address. */
+"Spain" = "İspanya";
+
 /* Display label for the review's spam status
    Verb, spam a comment */
 "Spam" = "İstenmeyen";
@@ -5044,8 +6168,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to select the Spark email app when logging in with magic links */
 "Spark" = "Spark";
 
-/* Option in the store creation category question. */
-"Sports and Recreation" = "Spor ve Rekreasyon";
+/* Industry option in the store creation category question. */
+"Special Trade Contractors" = "Özel Ticaret Yüklenicileri";
+
+/* Industry option in the store creation category question. */
+"Sports Forecasting Or Prediction Services" = "Spor Tahmini veya Tahmin Hizmetleri";
+
+/* Option in the store creation selling platforms question. */
+"Square" = "Kare";
+
+/* Option in the store creation selling platforms question. */
+"Squarespace" = "Squarespace";
+
+/* Country option for a site address. */
+"Sri Lanka" = "Sri Lanka";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standart oran";
@@ -5133,6 +6269,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice text after updating the order successfully */
 "Successfully updated" = "Başarıyla güncellendi";
 
+/* Country option for a site address. */
+"Sudan" = "Sudan";
+
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "Ürünlerin toplamı ve paket ağırlığı";
 
@@ -5141,6 +6280,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
 "Summary: Order #%1$@" = "Özet: %1$@ numaralı sipariş";
+
+/* Industry option in the store creation category question. */
+"Supplements Or Nutraceuticals" = "Takviyeler veya Nutrasötikler";
+
+/* Country option for a site address. */
+"Suriname" = "Surinam";
+
+/* Country option for a site address. */
+"Svalbard and Jan Mayen" = "Svalbard ve Jan Mayen";
+
+/* Country option for a site address. */
+"Swaziland" = "Svaziland";
+
+/* Country option for a site address. */
+"Sweden" = "İsveç";
 
 /* Message from the in-person payment card reader prompting user to swipe their card */
 "Swipe Card" = "Kartı Geçirin";
@@ -5175,6 +6329,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "Varsayılan Yazı Tipi Boyutuna geçer";
 
+/* Country option for a site address. */
+"Switzerland" = "İsviçre";
+
+/* Country option for a site address. */
+"Syria" = "Suriye";
+
 /* Navigation title of system status report screen
    View system status report cell title on Help screen */
 "System Status Report" = "Sistem Durum Raporu";
@@ -5185,10 +6345,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when attempting to pay for a live transaction with a test card. */
 "System test cards are not permitted for payment. Try another means of payment" = "Sistem test kartlarına ödeme yapılmasına izin verilmiyor. Başka bir ödeme yöntemi deneyin";
 
+/* Country option for a site address. */
+"São Tomé and Príncipe" = "São Tomé ve Príncipe";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
 "Tags" = "Etiketler";
+
+/* Country option for a site address. */
+"Taiwan" = "Tayvan";
+
+/* Country option for a site address. */
+"Tajikistan" = "Tacikistan";
 
 /* Title for the simple payments screen */
 "Take Payment" = "Ödeme Al";
@@ -5202,6 +6371,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "Bir ödeme almak için sizi geri yönlendiriliyorsunuz";
+
+/* Country option for a site address. */
+"Tanzania" = "Tanzanya";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap card to pay" = "Ödemek için karta dokunun";
@@ -5325,6 +6497,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "Vergiler, mağaza adresinize göre otomatik olarak hesaplanır.";
 
+/* Industry option in the store creation category question. */
+"Taxis And Limos" = "Taksiler ve Limuzinler";
+
+/* Industry option in the store creation category question. */
+"Telecom Equipment" = "Telekominikasyon Ekipmanları";
+
+/* Industry option in the store creation category question. */
+"Telecom Services" = "Telekominikasyon Hizmetleri";
+
+/* Industry option in the store creation category question. */
+"Telemarketing" = "Tele Pazarlama";
+
+/* Industry option in the store creation category question. */
+"Telemedicine And Telehealth" = "Teletıp ve Telesağlık";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Bize %1$@ ile ilgili daha fazla bilgi verin...";
 
@@ -5349,9 +6536,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "Biz lansmana hazırlanırken, Sipariş Eklentilerini görüntüleme işlevini test edin";
 
+/* Industry option in the store creation category question. */
+"Testing Laboratories" = "Test Laboratuvarları";
+
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
 "Text me a code instead" = "Bunun yerine bana kodu mesaj olarak gönderin";
+
+/* Country option for a site address. */
+"Thailand" = "Tayland";
 
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "Düşüncelerinizi bizimle paylaştığınız için teşekkür ederiz";
@@ -5748,8 +6941,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "Aktif abonelikleri olduğundan, kullanıcı hesabı kapatılamadı.";
 
+/* Alert description to allow the user confirm if they want to generate all variations */
+"This will create a variation for each and every possible combination of variation attributes (%d variations)." = "Bu işlem, varyasyon niteliklerinin her olası kombinasyonu için bir varyasyon oluşturur. (%d varyasyon)";
+
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Bu, WooCommerce dışından aldıysanız (toplam), siparişinizi tamamlandı olarak işaretleyecektir.";
+
+/* Industry option in the store creation category question. */
+"Timeshares" = "Devre Mülkler";
+
+/* Country option for a site address. */
+"Timor-Leste" = "Doğu Timor";
 
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "İpucu";
@@ -5801,8 +7003,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "Bu hesapla devam etmek için lütfen önce WordPress.com şifrenizle oturum açın. Bu yalnızca bir kez sorulur.";
 
+/* Subtitle of the store creation profiler question about the store selling status. */
+"To speed things up, we’ll tailor your WooCommerce experience for you based on your response." = "İşleri hızlandırmak için yanıtınıza göre WooCommerce deneyiminizi size göre uyarlarız.";
+
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Bu uygulamayı %@ için kullanabilmek Jetpack eklentisinin yüklenip mağazanıza bağlanmasını gerektirir.";
+
+/* Industry option in the store creation category question. */
+"Tobacco Or Cigars" = "Tütün veya Purolar";
 
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
@@ -5823,6 +7031,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Identifier for the Aztec Unordered List Style */
 "Toggles the unordered list style" = "Sıralanmamış liste stilini değiştirir";
 
+/* Country option for a site address. */
+"Togo" = "Togo";
+
+/* Country option for a site address. */
+"Tokelau" = "Tokelau";
+
+/* Country option for a site address. */
+"Tonga" = "Tonga";
+
 /* Header label for Top Performers section of My Store tab. */
 "Top Performers" = "En Yüksek Performans Gösterenler";
 
@@ -5840,6 +7057,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight */
 "Total package weight: %1$@" = "Toplam paket ağırlığı: %1$@";
+
+/* Industry option in the store creation category question. */
+"Tourist Attractions" = "Turistik Yerler";
+
+/* Industry option in the store creation category question. */
+"Towing Services" = "Çekici Hizmetleri";
 
 /* Track shipment button title */
 "Track Shipment" = "Gönderim Takibi";
@@ -5864,12 +7087,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Takip numarası: %@";
 
+/* Industry option in the store creation category question. */
+"Trailer Parks and Campgrounds" = "Karavan Parkları ve Kamp Alanları";
+
+/* Industry group option in the store creation category question. */
+"Transportation" = "Toplu Taşıma";
+
 /* Display label for the review's trash status
    Move a comment to the trash */
 "Trash" = "Çöp Kutusu";
 
+/* Industry option in the store creation category question. */
+"Travel Agencies" = "Seyahat Acenteleri";
+
+/* Industry group option in the store creation category question. */
+"Travel And Lodging" = "Seyahat ve Konaklama";
+
+/* Country option for a site address. */
+"Trinidad and Tobago" = "Trinidad ve Tobago";
+
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "Sorun giderme";
+
+/* Industry option in the store creation category question. */
+"Truck Stop" = "Kamyon Parkı";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Güven";
@@ -5878,6 +7119,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Activating Again" = "Tekrar Etkinleştirmeyi Deneyin";
 
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
+   Button to refetch application password for the current site
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
    Button to try again. Presented to users after a failure occurs
@@ -5926,6 +7168,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when a card is declined due to a potentially temporary problem. */
 "Trying again may succeed, or try another means of payment" = "Tekrar denerseniz başarılı olabilir veya başka bir ödeme yöntemini deneyebilirsiniz";
 
+/* Country option for a site address. */
+"Tunisia" = "Tunus";
+
+/* Country option for a site address. */
+"Turkey" = "Türkiye";
+
+/* Country option for a site address. */
+"Turkmenistan" = "Türkmenistan";
+
+/* Country option for a site address. */
+"Turks and Caicos Islands" = "Turks ve Caicos Adaları";
+
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Kart okuyucuyu çalıştırın ve mobil cihazın yanına koyun";
 
@@ -5937,6 +7191,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "Kupon indirimdeki ürünler için geçerli değilse bunu açın. Ürün kuponları yalnızca ürün satışta değilse çalışır. Sepet kuponları yalnızca sepette satışta olmayan ürünler varsa çalışır.";
+
+/* Country option for a site address. */
+"Tuvalu" = "Tuvalu";
 
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "Twitter";
@@ -5954,6 +7211,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "Adres";
+
+/* Country option for a site address. */
+"Uganda" = "Uganda";
+
+/* Country option for a site address. */
+"Ukraine" = "Ukrayna";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "Bağlanılamıyor";
@@ -6118,6 +7381,21 @@ This part is the link to the website, and forms part of a longer sentence which 
    The message of the alert when there is an unexpected error updating the product */
 "Unexpected error" = "Beklenmedik hata";
 
+/* Country option for a site address. */
+"United Arab Emirates" = "Birleşik Arap Emirlikleri";
+
+/* Country option for a site address. */
+"United Kingdom" = "Birleşik Krallık";
+
+/* Country option for a site address. */
+"United States" = "Amerika Birleşik Devletleri";
+
+/* Country option for a site address. */
+"United States Minor Outlying Islands" = "Amerika Birleşik Devletleri Küçük Dış Adaları";
+
+/* Country option for a site address. */
+"United States Virgin Islands" = "Amerika Birleşik Devletleri Virjin Adaları";
+
 /* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
@@ -6234,6 +7512,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "Yukarı satışlar";
 
+/* Country option for a site address. */
+"Uruguay" = "Uruguay";
+
 /* Header of the section usage details in the view for adding or editing a coupon. */
 "Usage Details" = "Kullanım Bilgileri";
 
@@ -6243,12 +7524,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the usage limit per user row in coupon usage restrictions screen. */
 "Usage Limit Per User" = "Kullanıcı Başına Kullanım Sınırı";
 
-/* Field in the view for adding or editing a coupon.
-   Title for the usage restrictions section on coupon usage restrictions screen */
+/* Field in the view for adding or editing a coupon. */
 "Usage Restrictions" = "Kullanım Kısıtlamaları";
 
 /* Title of the Usage details row in Coupon Details screen */
 "Usage details" = "Kullanım bilgileri";
+
+/* Title for the usage restrictions section on coupon usage restrictions screen */
+"Usage restrictions" = "Kullanım Kısıtlamaları";
 
 /* Action to use the address in Shipping Label Suggested screen as entered placeholder */
 "Use Address Entered" = "Girilen Adresi Kullan";
@@ -6287,11 +7570,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "Kullanıcı adı en az dört karakter olmalıdır. ";
 
+/* Industry option in the store creation category question. */
+"Utilities" = "Araçlar";
+
+/* Country option for a site address. */
+"Uzbekistan" = "Özbekistan";
+
 /* Message to be displayed when a Jetpack connection is being authorized */
 "Validating" = "Doğrulanıyor";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "Değer (birim başına %1$@)";
+
+/* Country option for a site address. */
+"Vanuatu" = "Vanuatu";
+
+/* Industry option in the store creation category question. */
+"Vapes, E-cigarettes, E-juice Or Related Products" = "Elektronik sigaralar, E-sigaralar, Likit Sigaralar veya İlgili Ürünler";
 
 /* Display label for variable product type. */
 "Variable" = "Değişken";
@@ -6316,6 +7611,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "Sitenizle ilgili çeşitli sistem bilgileri";
 
+/* Country option for a site address. */
+"Vatican" = "Vatikan";
+
+/* Country option for a site address. */
+"Venezuela" = "Venezuela";
+
 /* two factor code placeholder */
 "Verification code" = "Doğrulama kodu";
 
@@ -6330,6 +7631,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Displays the connected reader software version */
 "Version: %1$@" = "Sürüm: %1$@";
+
+/* Industry option in the store creation category question. */
+"Veterinary Services" = "Veteriner Hizmetleri";
+
+/* Country option for a site address. */
+"Vietnam" = "Vietnam";
 
 /* Action title in an in-app notification to view more details.
    Title of the action to view product details from a notice about an image upload failure in the background. */
@@ -6391,6 +7698,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for simple virtual product type. */
 "Virtual" = "Sanal";
 
+/* Industry option in the store creation category question. */
+"Virtual Currencies" = "Sanal Para Birimleri";
+
 /* Virtual Product label in Product Settings */
 "Virtual Product" = "Sanal Ürün";
 
@@ -6400,6 +7710,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "Ziyaretçiler";
+
+/* Industry option in the store creation category question. */
+"Vocational Schools And Trade Schools" = "Meslek Yüksekokulları ve Ticaret Okulları";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "NOT YAZIN";
@@ -6412,6 +7725,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* View title during the Google auth process. */
 "Waiting..." = "Bekliyor...";
+
+/* Country option for a site address. */
+"Wallis and Futuna" = "Wallis ve Futuna";
+
+/* Industry option in the store creation category question. */
+"Warranty Services" = "Garanti Hizmetleri";
 
 /* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
 "We are getting ready for your store creation" = "Mağaza oluşturmak için hazırlanıyoruz";
@@ -6525,6 +7844,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Yeni WordPress.com hesabınızı oluşturmanız için size e-postayla bir kayıt bağlantısı gönderdik. Bu cihazda e-postanızı kontrol edin ve WordPress.com'dan aldığınız e-postadaki bağlantıya dokunun.";
 
+/* Industry option in the store creation category question. */
+"Weapons Or Munitions" = "Silahlar veya Mühimmatlar";
+
 /* Title of a button linking to the app's website */
 "Website" = "Web sitesi";
 
@@ -6543,11 +7865,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Ağırlık: %1$@%2$@";
 
+/* Country option for a site address. */
+"Western Sahara" = "Batı Sahra";
+
+/* Subtitle of the store creation profiler question about the store country. */
+"We’ll use this information to get a head start on setting up payments, shipping, and taxes." = "Ödemeleri, teslimatı ve vergileri ayarlamaya bir adım önde başlamak için bu bilgileri kullanacağız.";
+
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "Kuponları cihazınızdan görüntüleyip düzenleyebilmeniz için çalışıyoruz!";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Giriş yapmak için hangi e-postayı kullanmam gerek?";
+
+/* Button that will navigate to a web page explaining Application Password */
+"What is Application Password?" = "Uygulama Şifresi Nedir?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
@@ -6580,6 +7911,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Shipping Labels: info description about WooCommerce Services discount */
 "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "WooCommerce ile gönderi etiketleri satın alırken indirimli ticari fiyatlara erişebilirsiniz.";
 
+/* Title of the store creation profiler question about the store selling status. */
+"Where are you on your commerce journey?" = "Ticaret yolculuğunuzun neresindesiniz?";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "Amanın, bir şeyler yanlış gitti ve giriş yapmanızı sağlayamadık. Lütfen tekrar deneyin!";
 
@@ -6589,6 +7923,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the row to enter the package width on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Width */
 "Width" = "Genişlik";
+
+/* Industry option in the store creation category question. */
+"Wire Transfers" = "Banka Havaleleri";
+
+/* Option in the store creation selling platforms question. */
+"Wix" = "Wix";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
@@ -6617,6 +7957,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Caption displayed in the simplified prologue screen */
 "WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce; WordPress için oluşturulmuş özelleştirilebilir, açık kaynaklı bir e-ticaret platformudur.";
 
+/* Option in the store creation selling platforms question. */
+"WordPress" = "WordPress";
+
 /* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "WordPress API Error: [%1$@] %2$@" = "WordPress API Hatası: [%1$@] %2$@";
 
@@ -6639,6 +7982,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Year to Date selection range */
 "Year to Date" = "Sene başından tarihe";
 
+/* Country option for a site address. */
+"Yemen" = "Yemen";
+
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Evet, değiştir";
 
@@ -6648,6 +7994,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "Bu mağazaya erişme yetkiniz yok.";
+
+/* Subtitle of the store creation profiler question about the store selling platforms. */
+"You can choose multiple ones." = "Birden çok seçebilirsiniz.";
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Ürün eklentilerini web panosunda düzenleyebilirsiniz.";
@@ -6751,6 +8100,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
 "You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "Çok az kaldı! Şahsen Ödemeleri kabul etmeye başlamak için lütfen %1$@ kurulumunu tamamlayın.";
+
+/* Country option for a site address. */
+"Zambia" = "Zambiya";
+
+/* Country option for a site address. */
+"Zimbabwe" = "Zimbabve";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[YORUM]";
@@ -6914,6 +8269,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Google ile giriş yap.";
+
+/* Country option for a site address. */
+"Åland Islands" = "Åland Adaları";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Sipariş Tamamlandı";

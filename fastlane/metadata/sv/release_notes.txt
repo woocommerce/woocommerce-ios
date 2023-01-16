@@ -1,1 +1,1 @@
-Visste du att vi har lagt till en ny analyssektion? Det är nu möjligt att välja anpassade datumintervall när du visar din statistik. Det är bara att klicka på knappen Se mer under butiksstatistiken för att testa.
+Du kommer att märka att appens utseende har fått några snygga visuella förändringar. Ta en titt och dela med dig av din feedback – fler uppdateringar är på gång under de kommande veckorna.

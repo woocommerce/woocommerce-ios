@@ -50,6 +50,12 @@ final class MockCardReaderService: CardReaderService {
     /// The publisher to return in `capturePayment`.
     private var capturePaymentPublisher: AnyPublisher<PaymentIntent, Error>?
 
+
+    var didCheckSupport = false
+    var spyCheckSupportCardReaderType: CardReaderType? = nil
+    var spyCheckSupportConfigProvider: CardReaderConfigProvider? = nil
+    var spyCheckSupportDiscoveryMethod: CardReaderDiscoveryMethod? = nil
+
     /// The future to return in `waitForInsertedCardToBeRemoved`.
     private var waitForInsertedCardToBeRemovedFuture: Future<Void, Never>?
 
@@ -59,6 +65,17 @@ final class MockCardReaderService: CardReaderService {
 
     init() {
 
+    }
+
+    func checkSupport(for cardReaderType: Hardware.CardReaderType,
+                      configProvider: Hardware.CardReaderConfigProvider,
+                      discoveryMethod: Hardware.CardReaderDiscoveryMethod) -> Bool {
+        didCheckSupport = true
+        spyCheckSupportCardReaderType = cardReaderType
+        spyCheckSupportConfigProvider = configProvider
+        spyCheckSupportDiscoveryMethod = discoveryMethod
+
+        return true
     }
 
     func start(_ configProvider: Hardware.CardReaderConfigProvider, discoveryMethod: Hardware.CardReaderDiscoveryMethod) throws {

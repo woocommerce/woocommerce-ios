@@ -62,9 +62,11 @@ private extension PaymentStore {
     }
 
     func loadSiteCurrentPlan(siteID: Int64,
-                             completion: (Result<WPComSitePlan, Error>) -> Void) {
-        // TODO: 8558 - fetch site's current plan
-        completion(.success(.init(hasDomainCredit: true)))
+                             completion: @escaping (Result<WPComSitePlan, Error>) -> Void) {
+        Task { @MainActor in
+            let result = await Result { try await remote.loadSiteCurrentPlan(siteID: siteID) }
+            completion(result)
+        }
     }
 
     func createCart(productID: String,

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-12-23 08:54:03+0000 */
+/* Translation-Revision-Date: 2023-01-11 10:54:18+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -235,6 +235,9 @@ which should be translated separately and considered part of this sentence. */
 /* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
 "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery." = "購入手続きの「直接支払い」オプションでは、集荷または配送時にカードまたは現金での支払いを受けることができます。";
 
+/* Industry option in the store creation category question. */
+"A C And Heating Contractors" = "空調・暖房設備業者";
+
 /* Instruction text to explain magic link login step. */
 "A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "WordPress.com アカウントはストアのログイン情報に連携されています。 続行する場合は、上のメールアドレスに認証リンクが届きます。";
 
@@ -298,11 +301,20 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "配送料金を割引価格でご利用いただけます。 現在は DHL と USPS で適用されますが、今後さらに追加される予定です。";
 
+/* Industry option in the store creation category question. */
+"Accessories" = "アクセサリ";
+
+/* Industry option in the store creation category question. */
+"Accessories For Tobacco And Marijuana" = "タバコ・マリファナ関連商品";
+
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "アカウントの種類";
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "アカウントが連携されました";
+
+/* Industry option in the store creation category question. */
+"Accounting, Auditing, Or Tax Prep" = "会計、監査、確定申告";
 
 /* Title for the section related to actions inside In-Person Payments settings */
 "Actions" = "操作";
@@ -409,9 +421,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "バリエーションを追加";
 
-/* Title for the button on the Products onboarding banner */
-"Add a Product" = "商品を追加";
-
 /* Button title on the store picker for store creation */
 "Add a Store" = "ストアを追加";
 
@@ -429,7 +438,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "バリエーションの価格を追加してストアで表示";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+   The action to add a product
+   Title for the button on the Products onboarding banner */
 "Add a product" = "商品を追加";
 
 /* Cell text in Add / Edit product when there are no images. */
@@ -468,6 +478,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "カンマで区切って新しいタグを追加します。";
+
+/* Title for the option to generate just one variation */
+"Add new variation" = "新しいバリエーションを追加";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "商品へのリンクを追加";
@@ -527,14 +540,32 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "注文にバリエーションを追加します。";
 
+/* Industry option in the store creation category question. */
+"Adult Content Or Services" = "アダルトコンテンツ \/ サービス";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "成人の方の署名が必要 (+%1$@)";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Advanced tool to review the app status";
 
+/* Country option for a site address. */
+"Afghanistan" = "アフガニスタン";
+
+/* Industry option in the store creation category question. */
+"Airlines And Air Carriers" = "航空会社、空輸会社";
+
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
+
+/* Country option for a site address. */
+"Albania" = "アルバニア";
+
+/* Industry option in the store creation category question. */
+"Alcohol" = "アルコール";
+
+/* Country option for a site address. */
+"Algeria" = "アルジェリア";
 
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "すべての注文";
@@ -593,6 +624,12 @@ which should be translated separately and considered part of this sentence. */
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "もしくは、";
 
+/* Option in the store creation selling platforms question. */
+"Amazon" = "Amazon";
+
+/* Country option for a site address. */
+"American Samoa" = "アメリカ領サモア";
+
 /* Title of the Amount label on Coupon Details screen */
 "Amount" = "合計";
 
@@ -612,6 +649,9 @@ which should be translated separately and considered part of this sentence. */
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
 "Amount Paid" = "支払額";
+
+/* Industry option in the store creation category question. */
+"Amusement Parks, Carnivals, Or Circuses" = "遊園地、移動遊園地、サーカス";
 
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
 "An HTTP error code %i was returned." = "HTTP エラーコード %i が返されました。";
@@ -668,6 +708,24 @@ which should be translated separately and considered part of this sentence. */
 /* Message when enabling analytics succeeds */
 "Analytics enabled successfully." = "分析が正常に有効化されました。";
 
+/* Country option for a site address. */
+"Andorra" = "アンドラ";
+
+/* Country option for a site address. */
+"Angola" = "アンゴラ";
+
+/* Country option for a site address. */
+"Anguilla" = "アンギラ";
+
+/* Country option for a site address. */
+"Antarctica" = "南極";
+
+/* Country option for a site address. */
+"Antigua and Barbuda" = "アンティグア・バーブーダ";
+
+/* Industry option in the store creation category question. */
+"Antiques" = "骨董品";
+
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
    Label for one of the filters in order date range
@@ -691,6 +749,9 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "アプリケーション名";
 
+/* Message to display when the constructed admin or login URL for the logged-in site is not accessible */
+"Application password cannot be generated due to a custom login or admin URL on your site." = "サイトのカスタムログインまたは管理 URL が原因で、アプリケーションパスワードを生成できません。";
+
 /* Apply navigation button in custom range date picker
    Change order status screen - button title to apply selection */
 "Apply" = "適用";
@@ -713,6 +774,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "コメントを承認する";
+
+/* Industry option in the store creation category question. */
+"Apps" = "アプリ";
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "商品タイプを変更してもよろしいですか ?";
@@ -747,11 +811,20 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed in the alert for dismissing all the inbox notes. */
 "Are you sure? Inbox messages will be dismissed forever." = "本当に実行しますか ? 今後受信トレイのメッセージが表示されなくなります。";
 
-/* Option in the store creation category question. */
-"Art & Photography" = "アート・写真";
+/* Country option for a site address. */
+"Argentina" = "アルゼンチン";
 
-/* Option in the store creation category question. */
-"Arts and Crafts" = "アート・工芸品";
+/* Country option for a site address. */
+"Armenia" = "アルメニア";
+
+/* Country option for a site address. */
+"Aruba" = "アルバ";
+
+/* Industry option in the store creation category question. */
+"Assisted Living" = "介護付き住宅";
+
+/* Industry option in the store creation category question. */
+"Attorneys And Lawyers" = "弁護士";
 
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "属性名";
@@ -763,6 +836,12 @@ which should be translated separately and considered part of this sentence. */
 /* Primary text for the generate first variation screen */
 "Attributes added!" = "属性を追加しました";
 
+/* Country option for a site address. */
+"Australia" = "オーストラリア";
+
+/* Country option for a site address. */
+"Austria" = "オーストリア";
+
 /* No comment provided by engineer. */
 "Authenticating" = "認証中";
 
@@ -773,6 +852,12 @@ which should be translated separately and considered part of this sentence. */
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "ホストに必要な認証:%@";
 
+/* Industry option in the store creation category question. */
+"Auto Parts And Accessories" = "自動車部品・付属品";
+
+/* Industry option in the store creation category question. */
+"Auto Services" = "自動車サービス";
+
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "このサイトで自動管理";
 
@@ -782,6 +867,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic ファミリー";
 
+/* Industry group option in the store creation category question. */
+"Autos (Sales and Service)" = "自動車 (販売、サービス)";
+
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "平均注文金額";
 
@@ -790,6 +878,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
 "Awaiting payment via %@" = "%@ による決済待ち";
+
+/* Country option for a site address. */
+"Azerbaijan" = "アゼルバイジャン";
 
 /* Details section title in the Edit Address Form */
 "BILLING ADDRESS" = "請求先住所";
@@ -806,7 +897,7 @@ which should be translated separately and considered part of this sentence. */
 "Back to Order" = "注文に戻る";
 
 /* Text for the button to dismiss the store picker error screen */
-"Back to Sites" = "サイトに戻る";
+"Back to sites" = "サイトに戻る";
 
 /* Title of a button to dismiss the survey complete screen */
 "Back to store" = "ストアに戻る";
@@ -818,8 +909,62 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "入荷待ち";
 
+/* Country option for a site address. */
+"Bahamas" = "バハマ";
+
+/* Country option for a site address. */
+"Bahrain" = "バーレーン";
+
+/* Industry option in the store creation category question. */
+"Bail Bonds" = "保釈保証";
+
+/* Country option for a site address. */
+"Bangladesh" = "バングラデシュ";
+
+/* Industry option in the store creation category question. */
+"Bankruptcy Services" = "破産サービス";
+
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "バー番号%1$i、%2$@、";
+
+/* Country option for a site address. */
+"Barbados" = "バルバドス";
+
+/* Industry option in the store creation category question. */
+"Bars And Nightclubs" = "バー、ナイトクラブ";
+
+/* Industry option in the store creation category question. */
+"Beauty Products" = "美容製品";
+
+/* Country option for a site address. */
+"Belarus" = "ベラルーシ";
+
+/* Country option for a site address. */
+"Belau" = "ベラウ";
+
+/* Country option for a site address. */
+"Belgium" = "ベルギー";
+
+/* Country option for a site address. */
+"Belize" = "ベリーズ";
+
+/* Country option for a site address. */
+"Benin" = "ベナン";
+
+/* Country option for a site address. */
+"Bermuda" = "バミューダ島";
+
+/* Industry option in the store creation category question. */
+"Betting Or Fantasy Sports" = "賭博、ファンタジースポーツ";
+
+/* Country option for a site address. */
+"Bhutan" = "ブータン";
+
+/* Option in the store creation selling platforms question. */
+"Big Cartel" = "Big Cartel";
+
+/* Option in the store creation selling platforms question. */
+"Big Commerce" = "Big Commerce";
 
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data
@@ -835,17 +980,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's blog */
 "Blog" = "ブログ";
 
+/* Industry option in the store creation category question. */
+"Blogs And Written Content" = "ブログ、テキストコンテンツ";
+
 /* The button title on the reader type alert, for the user to choose a bluetooth reader. */
 "Bluetooth Reader" = "Bluetooth リーダー";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "Bluetooth の権限が必要";
 
+/* Industry option in the store creation category question. */
+"Boat Sales" = "船舶販売";
+
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "太字";
 
-/* Option in the store creation category question. */
-"Books & Magazines" = "書籍・マガジン";
+/* Country option for a site address. */
+"Bolivia" = "ボリビア";
+
+/* Country option for a site address. */
+"Bonaire, Saint Eustatius and Saba" = "ボネール、シント・ユースタティウスおよびサバ";
+
+/* Industry option in the store creation category question. */
+"Books" = "本";
 
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "顧客に特別オファーや割引を提供して売上を向上";
@@ -853,15 +1010,51 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Linked Products announcement banner */
 "Boost your sales with linked products" = "リンク付き商品で売り上げを伸ばす";
 
+/* Country option for a site address. */
+"Bosnia and Herzegovina" = "ボスニア・ヘルツェゴビナ";
+
+/* Country option for a site address. */
+"Botswana" = "ボツワナ";
+
+/* Country option for a site address. */
+"Bouvet Island" = "ブーベ島";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "ボックス";
+
+/* Country option for a site address. */
+"Brazil" = "ブラジル";
+
+/* Country option for a site address. */
+"British Indian Ocean Territory" = "イギリス領インド洋地域";
+
+/* Country option for a site address. */
+"British Virgin Islands" = "イギリス領ヴァージン諸島";
+
+/* Country option for a site address. */
+"Brunei" = "ブルネイ";
 
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "販売する商品を追加してカタログを作成しましょう。";
 
+/* Industry group option in the store creation category question. */
+"Building Services" = "建築サービス";
+
+/* Country option for a site address. */
+"Bulgaria" = "ブルガリア";
+
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
 "Bulk Update" = "一括更新";
+
+/* Country option for a site address. */
+"Burkina Faso" = "ブルキナファソ";
+
+/* Country option for a site address. */
+"Burundi" = "ブルンジ";
+
+/* Industry option in the store creation category question. */
+"Business And Secretarial Schools" = "ビジネス \/ 秘書スクール";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "ボタンテキスト";
@@ -885,6 +1078,12 @@ which should be translated separately and considered part of this sentence. */
    Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
 "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "「Jetpack に連携」ボタンをタップすると、当社の%1$@および WordPress.com に%2$@ことに同意したものとみなされます。";
 
+/* Header of a list of other countries in the store creation country question. */
+"COUNTRIES" = "国";
+
+/* Header of the current country in the store creation country question. */
+"CURRENT LOCATION" = "現在の位置";
+
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "カスタム荷物";
 
@@ -894,8 +1093,14 @@ which should be translated separately and considered part of this sentence. */
 /* Call phone number button title */
 "Call" = "通話";
 
+/* Country option for a site address. */
+"Cambodia" = "カンボジア";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "カメラのキャプチャ機能は次のメディアタイプに対応していません ：%@";
+
+/* Country option for a site address. */
+"Cameroon" = "カメルーン";
 
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "リンクをリクエストできません";
@@ -909,9 +1114,13 @@ which should be translated separately and considered part of this sentence. */
 /* Local notification title when the user encounters an error with WP.com password. */
 "Can't remember your password?" = "パスワードを忘れた場合";
 
+/* Country option for a site address. */
+"Canada" = "カナダ";
+
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
+   Button text to confirm that we don't want to generate all variations
    Button title Cancel in Discard Changes Action Sheet
    Button title Cancel in Downloadable File More Options Action Sheet
    Button title Cancel in Downloadable Files More Options Action Sheet
@@ -1010,9 +1219,21 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "サイトの WooCommerce インストールを確認できません。";
 
+/* Country option for a site address. */
+"Cape Verde" = "カーボベルデ";
+
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "ストアに対する高品質な製品レビューを取得しましょう。";
+
+/* Industry option in the store creation category question. */
+"Car Rentals" = "レンタカー";
+
+/* Industry option in the store creation category question. */
+"Car Sales" = "自動車販売";
+
+/* Industry option in the store creation category question. */
+"Car Washes" = "洗車場";
 
 /* Card method title on the select payment method screen */
 "Card" = "カード";
@@ -1031,6 +1252,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "カードの取り外しが早すぎました。取引をもう一度お試しください。";
+
+/* Industry option in the store creation category question. */
+"Carpentry Contractors" = "請負大工";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "配送業者と金額";
@@ -1051,11 +1275,23 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "カテゴリー";
 
+/* Industry option in the store creation category question. */
+"Caterers" = "給食業者";
+
+/* Country option for a site address. */
+"Cayman Islands" = "ケイマン諸島";
+
+/* Country option for a site address. */
+"Central African Republic" = "中央アフリカ共和国";
+
 /* Error message when local validation fails in Shipping Label Address Validation */
 "Certain required fields need attention." = "特定の必須フィールドには注意が必要です。";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "証明書エラー";
+
+/* Country option for a site address. */
+"Chad" = "チャド";
 
 /* Message title of bottom sheet for selecting a product type */
 "Change product type" = "商品タイプを変更";
@@ -1068,6 +1304,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the row that has a switch when creating a simple payment */
 "Charge Taxes" = "税金を請求";
+
+/* Industry option in the store creation category question. */
+"Charities Or Social Service Organizations" = "慈善 \/ 社会福祉団体";
+
+/* Industry option in the store creation category question. */
+"Check Cashing" = "小切手換金";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "入力した URL が正しいかどうかを確認してください";
@@ -1086,6 +1328,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the WPCOM checkout web view. */
 "Checkout" = "購入手続き";
+
+/* Industry option in the store creation category question. */
+"Child Care Services" = "保育サービス";
+
+/* Country option for a site address. */
+"Chile" = "チリ";
+
+/* Country option for a site address. */
+"China" = "中国";
+
+/* Industry option in the store creation category question. */
+"Chiropractors" = "カイロプラクター";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "用紙サイズを選択";
@@ -1120,12 +1374,18 @@ which should be translated separately and considered part of this sentence. */
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "支払い方法を選択";
 
+/* Country option for a site address. */
+"Christmas Island" = "クリスマス島";
+
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
 "City" = "市区町村";
 
 /* Error showed in Shipping Label Address Validation for the city field */
 "City missing" = "市区町村がありません";
+
+/* Industry option in the store creation category question. */
+"Civic, Fraternal, Or Social Associations" = "市民 \/ 友愛 \/ 社会団体";
 
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
@@ -1161,6 +1421,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "アカウントを閉鎖しています…";
 
+/* Industry option in the store creation category question. */
+"Clothing And Accessories" = "服飾雑貨";
+
+/* Country option for a site address. */
+"Cocos (Keeling) Islands" = "ココス (キーリング) 諸島";
+
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "折りたたみ表示";
 
@@ -1177,8 +1443,23 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the collect payment flow with a user name. */
 "Collect payment from %1$@" = "%1$@ から支払いを受け取る";
 
+/* Industry option in the store creation category question. */
+"Collections Agencies" = "債権回収機関";
+
+/* Industry option in the store creation category question. */
+"Colleges Or Universities" = "短大、大学";
+
+/* Country option for a site address. */
+"Colombia" = "コロンビア";
+
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store" = "ストアの成長に役立つその他のヒントやインサイトは今後も増えていきので、ぜひまた訪問してください";
+
+/* Industry option in the store creation category question. */
+"Commuter Transportation" = "通勤輸送";
+
+/* Country option for a site address. */
+"Comoros" = "コモロ";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1192,6 +1473,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "新しい注文メモを作成します。";
+
+/* Industry option in the store creation category question. */
+"Computer Repair" = "コンピューター修理";
 
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "設定を更新しました";
@@ -1207,6 +1491,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title Discard Changes in Discard Changes Action Sheet */
 "Confirm and leave" = "確認してページを離れる";
+
+/* Title of the store creation profiler question about the store country. */
+"Confirm your location" = "場所を確認";
+
+/* Country option for a site address. */
+"Congo (Brazzaville)" = "コンゴ (ブラザビル)";
+
+/* Country option for a site address. */
+"Congo (Kinshasa)" = "コンゴ (キンシャサ)";
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "すべて読み終えました !";
@@ -1282,8 +1575,8 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "ストアを接続しています";
 
-/* Option in the store creation category question. */
-"Construction & Industrial" = "建設・工業";
+/* Industry option in the store creation category question. */
+"Consulting" = "コンサルティング";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "顧客に連絡";
@@ -1295,10 +1588,10 @@ which should be translated separately and considered part of this sentence. */
 "Contact Email" = "連絡先メールアドレス";
 
 /* Action button to contact support when Jetpack install fails
+   Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
-   The title of the button to contact support in the Error Loading Data banner
    Title of the button to contact support for help accessing a store after Jetpack setup */
 "Contact Support" = "サポートに問い合わせる";
 
@@ -1306,7 +1599,8 @@ which should be translated separately and considered part of this sentence. */
 "Contact WooCommerce Payments Support" = "WooCommerce Payments サポートに連絡";
 
 /* Action button to contact support on enable analytics screen
-   Local notification action to contact support. */
+   Local notification action to contact support.
+   The title of the button to contact support in the Error Loading Data banner */
 "Contact support" = "サポートに問い合わせる";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
@@ -1331,14 +1625,14 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to continue with a selected domain. */
 "Continue" = "次へ";
 
-/* Call to Action to finish the setup of In-Person Payments in the Menu */
-"Continue Setup" = "セットアップを続行";
-
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "WordPress.com で続ける";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "続きを読む";
+
+/* Call to Action to finish the setup of In-Person Payments in the Menu */
+"Continue setup" = "セットアップを続行";
 
 /* Title of the button on the store creation summary view to continue to payment. */
 "Continue to Payment" = "支払いに進む";
@@ -1352,11 +1646,17 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Apple 製品で続ける";
 
+/* Industry option in the store creation category question. */
+"Convenience Stores" = "コンビニエンスストア";
+
 /* Conversion stat label on dashboard. */
 "Conversion" = "コンバージョン";
 
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "コンバージョン率";
+
+/* Country option for a site address. */
+"Cook Islands" = "クック諸島";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "コピー";
@@ -1372,6 +1672,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
 "Copy tracking number" = "追跡番号をコピー";
+
+/* Country option for a site address. */
+"Costa Rica" = "コスタリカ";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "不満がある";
@@ -1403,10 +1706,16 @@ which should be translated separately and considered part of this sentence. */
 /* Error title displayed when unable to close user account. */
 "Couldn’t close account automatically" = "アカウントを自動的にクローズできませんでした";
 
+/* Industry option in the store creation category question. */
+"Counseling Services" = "カウンセリングサービス";
+
 /* Text field country in Edit Address Form
    Text field country in Shipping Label Address Validation
    Title to select country from the edit address screen */
 "Country" = "国";
+
+/* Industry option in the store creation category question. */
+"Country Clubs" = "カントリークラブ";
 
 /* Error showed in Shipping Label Address Validation for the country field */
 "Country missing" = "国がありません";
@@ -1444,6 +1753,9 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "クーポン";
+
+/* Industry option in the store creation category question. */
+"Courier Services" = "クーリエサービス";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "クラッシュのデバッグメニュー";
@@ -1499,6 +1811,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "新しい荷物を作成する";
 
+/* Description for the option to generate just one variation */
+"Create one new variation. Manually set which attributes belong to the variable product." = "新しいバリエーションを1つ作成します。 バリエーションのある商品の属性を手動で設定します。";
+
 /* Title of the banner notice in the Orders tab */
 "Create orders!" = "注文を作成 !";
 
@@ -1508,11 +1823,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "最初のバリエーションを作成";
 
+/* Description for the option to generate all possible variations */
+"Creates variations for all combinations of your attributes." = "属性のすべての組み合わせについてバリエーションを作成します。";
+
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "テンプレート商品を作成しています...";
 
 /* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
 "Creating your store" = "ストアを作成しています";
+
+/* Industry option in the store creation category question. */
+"Credit Counseling Or Credit Repair" = "クレジット相談、信用回復";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "クレジットカード";
@@ -1523,9 +1844,27 @@ which should be translated separately and considered part of this sentence. */
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "クレジットカードが次の WordPress.com アカウントから読み込まれました: %1$@ <%2$@>";
 
+/* Country option for a site address. */
+"Croatia" = "クロアチア";
+
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "クロスセル";
+
+/* Industry option in the store creation category question. */
+"Cruise Lines" = "船旅会社";
+
+/* Industry option in the store creation category question. */
+"Cryptocurrencies" = "暗号通貨";
+
+/* Country option for a site address. */
+"Cuba" = "キューバ";
+
+/* Country option for a site address. */
+"Curacao" = "キュラソー";
+
+/* Industry option in the store creation category question. */
+"Currency Exchanges" = "両替所";
 
 /* Cell title: the current date. */
 "Current" = "Current";
@@ -1538,6 +1877,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "現在、さまざまな価格が混在しています。";
+
+/* Error description for when there are too many variations to generate. */
+"Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "現在、作成がサポートされているのは、最大100件のバリエーションです。 この商品のバリエーションを生成すると、%d件のバリエーションが作成されます。";
 
 /* Name of the section for custom shipment tracking carriers
    Title of the Analytics Hub Custom selection range */
@@ -1609,6 +1951,12 @@ which should be translated separately and considered part of this sentence. */
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "自宅でモバイルデバイスを使い、割引料金で配送ラベルを印刷して、郵便局での待ち時間をカット !";
 
+/* Country option for a site address. */
+"Cyprus" = "キプロス";
+
+/* Country option for a site address. */
+"Czech Republic" = "チェコ共和国";
+
 /* Details section title in the Edit Address Form */
 "DETAILS" = "詳細";
 
@@ -1630,6 +1978,12 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "日付 :投稿日時 (古い記事を優先)";
 
+/* Industry option in the store creation category question. */
+"Dating Services" = "結婚相談所";
+
+/* Industry option in the store creation category question. */
+"Debt Reduction Services" = "債務整理サービス";
+
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "デフォルト";
 
@@ -1644,6 +1998,12 @@ which should be translated separately and considered part of this sentence. */
 /* Delete tracking button title */
 "Delete Tracking" = "追跡を削除";
 
+/* Country option for a site address. */
+"Denmark" = "デンマーク";
+
+/* Industry option in the store creation category question. */
+"Dentists And Orthodontists" = "歯科医、歯科矯正医";
+
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "商品を説明";
 
@@ -1655,14 +2015,23 @@ which should be translated separately and considered part of this sentence. */
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "説明";
 
-/* Option in the store creation category question. */
-"Design & Marketing" = "デザイン・マーケティング";
+/* Industry option in the store creation category question. */
+"Designer Products" = "デザイナー商品";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "カタログ内の製品の位置を決定します。数字の値が小さいほど、アイテムは商品リストの上の方に表示されます。マイナスの値も利用できます";
 
 /* Instructions after a Magic Link was sent, but email is incorrect. */
 "Didn't mean to create a new account? Go back to re-enter your email address." = "新しいアカウントを作成しない場合は、 戻ってメールアドレスを再度入力してください。";
+
+/* Industry option in the store creation category question. */
+"Digital Marketing" = "デジタルマーケティング";
+
+/* Industry group option in the store creation category question. */
+"Digital Products" = "デジタル商品";
+
+/* Industry option in the store creation category question. */
+"Digital Wallets" = "デジタルウォレット";
 
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
 "Dimensions: %1$@ x %2$@ %3$@" = "サイズ :%1$@ x %2$@%3$@";
@@ -1732,6 +2101,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "メッセージをすべて非表示にする";
 
+/* Country option for a site address. */
+"Djibouti" = "ジブチ";
+
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "許可しない";
 
@@ -1744,8 +2116,17 @@ which should be translated separately and considered part of this sentence. */
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "この商品をゴミ箱に移動しますか ?";
 
+/* Industry option in the store creation category question. */
+"Doctors And Physicians" = "医師";
+
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "文書";
+
+/* Country option for a site address. */
+"Dominica" = "ドミニカ";
+
+/* Country option for a site address. */
+"Dominican Republic" = "ドミニカ共和国";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "アカウントをお持ちでない場合は_登録_してください。";
@@ -1868,8 +2249,14 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "一意のコードで商品を簡単に特定";
 
+/* Option in the store creation selling platforms question. */
+"Ebay" = "eBay";
+
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Ecommerce reports" = "eコマースレポート";
+
+/* Country option for a site address. */
+"Ecuador" = "エクアドル";
 
 /* Button to edit a customer on the New Order screen
    Button to edit an order on Order Details screen
@@ -1915,8 +2302,29 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit customer note on the New Order screen */
 "Edit customer note" = "注文メモを編集";
 
-/* Option in the store creation category question. */
-"Electronics and Software" = "電子製品・ソフトウェア";
+/* Action to start bulk editing of products */
+"Edit products" = "商品を編集";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
+"Edit status or price for multiple products at once" = "複数の商品のステータスまたは価格を一括編集する";
+
+/* Industry group option in the store creation category question. */
+"Education" = "教育";
+
+/* Industry option in the store creation category question. */
+"Educational Services" = "教育サービス";
+
+/* Country option for a site address. */
+"Egypt" = "エジプト";
+
+/* Country option for a site address. */
+"El Salvador" = "エルサルバドル";
+
+/* Industry option in the store creation category question. */
+"Electrical Contractors" = "電気工事請負業者";
+
+/* Industry option in the store creation category question. */
+"Elementary Or Secondary Schools" = "小学校、中等学校";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "無料の受け取りを利用可能";
@@ -1948,6 +2356,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "メール:%@";
+
+/* Industry option in the store creation category question. */
+"Employment Agencies" = "職業紹介所";
 
 /* Accessibility text for Unit Input cell */
 "Empty" = "空にする";
@@ -2088,9 +2499,6 @@ which should be translated separately and considered part of this sentence. */
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "%@ のアカウント情報を入力してください。";
 
-/* Sign in instructions on the 'log in using WordPress.com account' screen. */
-"Enter your email address to get started." = "メールアドレスを入力して開始します。";
-
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "メールアドレスを入力してログインするか、WordPress.com アカウントを作成します。";
 
@@ -2107,8 +2515,17 @@ which should be translated separately and considered part of this sentence. */
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
 "Enter your store credentials for %@." = "%@ のストアのログイン情報を入力してください。";
 
+/* Industry group option in the store creation category question. */
+"Entertainment And Recreation" = "娯楽、レクリエーション";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "封筒";
+
+/* Country option for a site address. */
+"Equatorial Guinea" = "赤道ギニア";
+
+/* Country option for a site address. */
+"Eritrea" = "エリトリア";
 
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "エラー";
@@ -2119,14 +2536,23 @@ which should be translated separately and considered part of this sentence. */
 /* Error title when Jetpack connection fails */
 "Error authorizing connection to Jetpack" = "Jetpack との連携を認証する際にエラーが発生しました";
 
+/* Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication */
+"Error checking for the WooCommerce plugin." = "WooCommerce プラグインの確認中にエラーが発生しました。";
+
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "エラーコード %1$d";
 
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "分析の有効化中にエラーが発生しました。 もう一度やり直してください。";
 
+/* Error message displayed when application password cannot be fetched after authentication. */
+"Error fetching application password for your site." = "サイトのアプリケーションパスワード取得中にエラーが発生しました。";
+
 /* Title for the error alert when fetching system status report fails */
 "Error fetching report" = "レポートを取得する際にエラーが発生しました";
+
+/* Error message displayed when user information cannot be fetched after authentication. */
+"Error fetching user information." = "ユーザー情報取得中にエラーが発生しました。";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Maps で住所の検索中に発生したエラー";
@@ -2152,6 +2578,18 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "注文番号%1$dの更新中にエラーが発生しました";
 
+/* Country option for a site address. */
+"Estonia" = "エストニア";
+
+/* Country option for a site address. */
+"Ethiopia" = "エチオピア";
+
+/* Option in the store creation selling platforms question. */
+"Etsy" = "Etsy";
+
+/* Industry option in the store creation category question. */
+"Event Ticketing" = "イベントチケット発券";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "誰もがお得な情報を求めています";
@@ -2174,8 +2612,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action button to add excluded product categories on Coupon Usage Restrictions screen. The number of selected items is mentioned between the brackets. Reads like: Exclude Product Categories (4) */
 "Exclude Product Categories (%1$d)" = "商品カテゴリー (%1$d件) を除外";
 
-/* Title for the screen to exclude products for a coupon
-   Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
+/* Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
 "Exclude Products" = "商品を除外";
 
 /* Title of the action button to add excluded products on Coupon Usage Restrictions screen. The number of selected items is included between the brackets. Reads like: Exclude Products (2) */
@@ -2186,6 +2623,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Exclude Categories screen */
 "Exclude categories" = "カテゴリーを除外";
+
+/* Title for the screen to exclude products for a coupon */
+"Exclude products" = "商品を除外";
 
 /* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
 "Excludes sale items" = "セール品を除外";
@@ -2218,6 +2658,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "外部 \/ アフィリエイト";
 
+/* Option in the store creation selling platforms question. */
+"Facebook Marketplace" = "Facebook Marketplace";
+
 /* Display label for failed order status. */
 "Failed" = "失敗";
 
@@ -2242,8 +2685,14 @@ which should be translated separately and considered part of this sentence. */
 /* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
 "Failed to undo fulfillment of order #%1$d" = "注文番号%1$dの履行を取り消せませんでした";
 
-/* Option in the store creation category question. */
-"Fashion and Apparel" = "ファッション・アパレル";
+/* Country option for a site address. */
+"Falkland Islands" = "フォークランド諸島";
+
+/* Country option for a site address. */
+"Faroe Islands" = "フェロー諸島";
+
+/* Industry option in the store creation category question. */
+"Fast Food Restaurants" = "ファストフード店";
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
@@ -2270,6 +2719,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info message shown when the order contains multiple fee lines */
 "Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "料金が未完了です。\nすべての料金を編集するには、WooCommerce ストア管理で注文を表示します。";
+
+/* Country option for a site address. */
+"Fiji" = "フィジー";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2309,6 +2761,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title format for filtering a list of products with filters applied. */
 "Filters (%ld)" = "Filters (%ld)";
 
+/* Industry option in the store creation category question. */
+"Financial Information And Research" = "金融情報、金融調査";
+
+/* Industry group option in the store creation category question. */
+"Financial Services" = "金融サービス";
+
 /* Button linking to webview explaining how to find your connected emailPresented when logging in with a store address that does not match the account entered */
 "Find your connected email" = "連携済みのメールアドレスを検索";
 
@@ -2324,6 +2782,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "ストア管理で %1$@ の設定を完了する";
 
+/* Country option for a site address. */
+"Finland" = "フィンランド";
+
 /* Text field name in Edit Address Form */
 "First name" = "名";
 
@@ -2336,17 +2797,38 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "商品毎に割引";
 
+/* Industry option in the store creation category question. */
+"Flowers" = "花";
+
 /* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
 "Follow reader instructions to pay" = "リーダーの支払い手順に従います";
 
 /* User role badge */
 "Follower" = "フォロワー";
 
-/* Option in the store creation category question. */
-"Food and Drink" = "食品・飲料";
+/* Industry group option in the store creation category question. */
+"Food And Drink" = "食品・飲料";
+
+/* Industry option in the store creation category question. */
+"Fortune Tellers" = "占い師";
 
 /* Next web page */
 "Forward" = "前へ";
+
+/* Country option for a site address. */
+"France" = "フランス";
+
+/* Industry option in the store creation category question. */
+"Freight Forwarders" = "貨物運送業者";
+
+/* Country option for a site address. */
+"French Guiana" = "フランス領ギアナ";
+
+/* Country option for a site address. */
+"French Polynesia" = "フランス領ポリネシア";
+
+/* Country option for a site address. */
+"French Southern Territories" = "フランス領南方・南極地域";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "送信元";
@@ -2357,11 +2839,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "端末から";
 
+/* Industry option in the store creation category question. */
+"Fuel Dispensers" = "燃料ディスペンサー";
+
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "WooCommerce Shipping で注文を処理";
 
+/* Industry option in the store creation category question. */
+"Funeral Services" = "葬儀サービス";
+
+/* Country option for a site address. */
+"Gabon" = "ガボン";
+
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "ストアでの商品売り上げ状況の統計概要をチェック";
+
+/* Country option for a site address. */
+"Gambia" = "ガンビア";
+
+/* Industry option in the store creation category question. */
+"Games" = "ゲーム";
+
+/* Industry option in the store creation category question. */
+"General Contractors" = "総合建設業者";
 
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "新しいバリエーションを生成";
@@ -2369,8 +2869,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action to generate the first variation */
 "Generate Variation" = "バリエーションを生成";
 
+/* Title for the option to generate all possible variations */
+"Generate all variations" = "すべてのバリエーションを生成";
+
+/* Alert title to allow the user confirm if they want to generate all variations */
+"Generate all variations?" = "すべてのバリエーションを生成しますか ?";
+
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "バリエーションを生成しています";
+
+/* Error title for for when there are too many variations to generate. */
+"Generation limit exceeded" = "生成の上限を超えました";
+
+/* Country option for a site address. */
+"Georgia" = "ジョージア";
+
+/* Country option for a site address. */
+"Germany" = "ドイツ";
 
 /* Button displayed on the prologue screen of the simplified login flow to create a new store
    Title of install action in the Jetpack Install view.
@@ -2420,16 +2935,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented with a spinner while the reader is being prepared */
 "Getting ready to collect payment" = "支払いを受け取る準備をしています";
 
+/* Country option for a site address. */
+"Ghana" = "ガーナ";
+
+/* Country option for a site address. */
+"Gibraltar" = "ジブラルタル";
+
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "ギフト";
-
-/* Title of the feedback action button on the coupon list screen */
-"Give Feedback" = "フィードバックを残す";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
    Title of the button to give feedback about the Orders features
+   Title of the feedback action button on the coupon list screen
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "フィードバックを残す";
 
@@ -2442,8 +2961,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button to navigate to the home screen after Jetpack setup completes */
 "Go to Store" = "ストアに移動";
 
+/* Option in the store creation selling platforms question. */
+"Google Shopping" = "Google ショッピング";
+
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google の登録に失敗しました。";
+
+/* Industry option in the store creation category question. */
+"Government Services" = "行政サービス";
+
+/* Country option for a site address. */
+"Greece" = "ギリシャ";
+
+/* Country option for a site address. */
+"Greenland" = "グリーンランド";
+
+/* Country option for a site address. */
+"Grenada" = "グレナダ";
+
+/* Industry option in the store creation category question. */
+"Grocery Stores" = "食料品店";
 
 /* Display label for grouped product type. */
 "Grouped" = "グループ化";
@@ -2457,9 +2994,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "セット販売商品";
 
+/* Country option for a site address. */
+"Guadeloupe" = "グアドループ";
+
+/* Country option for a site address. */
+"Guam" = "グアム";
+
+/* Country option for a site address. */
+"Guatemala" = "グアテマラ";
+
+/* Country option for a site address. */
+"Guernsey" = "ガーンジー";
+
 /* In Order Details, the name of the billed person when there are no name and last name.
    In Order List, the name of the billed person when there are no first and last name. */
 "Guest" = "ゲスト";
+
+/* Country option for a site address. */
+"Guinea" = "ギニア";
+
+/* Country option for a site address. */
+"Guinea-Bissau" = "ギニアビサウ";
+
+/* Country option for a site address. */
+"Guyana" = "ガイアナ";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "どのようなサポートをお求めですか ?";
@@ -2476,6 +3034,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "HTML コンテンツ";
+
+/* Country option for a site address. */
+"Haiti" = "ハイチ";
+
+/* Industry option in the store creation category question. */
+"Hardware Stores" = "ハードウェアストア";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "ストアのログイン情報を用意してください。";
@@ -2516,8 +3080,14 @@ which should be translated separately and considered part of this sentence. */
 /* H6 Aztec Style */
 "Heading 6" = "見出し6";
 
-/* Option in the store creation category question. */
-"Health and Beauty" = "健康・美容";
+/* Industry option in the store creation category question. */
+"Health And Beauty Spas" = "健康・美容スパ";
+
+/* Industry option in the store creation category question. */
+"Health And Wellness Coaching" = "健康・福祉指導";
+
+/* Country option for a site address. */
+"Heard Island and McDonald Islands" = "ハード島とマクドナルド諸島";
 
 /* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Height */
@@ -2536,7 +3106,8 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > Help and Feedback settings section title */
 "Help & Feedback" = "ヘルプ & フィードバック";
 
-/* Contact Support Action */
+/* Accessibility label for the Help & Support image navigation bar button in the store creation flow.
+   Contact Support Action */
 "Help & Support" = "ヘルプ & サポート";
 
 /* Browse our help documentation website title */
@@ -2549,14 +3120,44 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's catalog visibility */
 "Hidden" = "非表示";
 
+/* Industry option in the store creation category question. */
+"Home Electronics" = "家電製品";
+
+/* Industry option in the store creation category question. */
+"Home Goods And Furniture" = "家庭用品、家具";
+
+/* Country option for a site address. */
+"Honduras" = "ホンジュラス";
+
+/* Country option for a site address. */
+"Hong Kong" = "香港";
+
+/* Industry option in the store creation category question. */
+"Hospitals" = "病院";
+
+/* Industry option in the store creation category question. */
+"Hotels, Inns, Or Motels" = "ホテル、旅館、モーテル";
+
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "改善すべき点をお聞かせください";
 
 /* Message subtitle of bottom sheet for selecting a template or manual product */
 "How do you want to start?" = "どのように始めますか ?";
 
+/* Country option for a site address. */
+"Hungary" = "ハンガリー";
+
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "満足している";
+
+/* Option in the store creation selling status question. */
+"I am already selling online" = "オンラインですでに販売している";
+
+/* Option in the store creation selling status question. */
+"I am just starting to sell" = "これから販売する";
+
+/* Option in the store creation selling status question. */
+"I am selling offline" = "オフラインで販売している";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "処理するアイテム";
@@ -2569,6 +3170,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
 "ITN is required for shipping items valued over $2,500 per tariff number" = "出荷品目の価値が HS コードあたり $2,500を超える荷物の出荷には ITN が必要です";
+
+/* Country option for a site address. */
+"Iceland" = "アイスランド";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "無効の場合はメモが非公開になります";
@@ -2598,6 +3202,9 @@ which should be translated separately and considered part of this sentence. */
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "在庫あり";
 
+/* Title of the store creation profiler question about the store selling platforms. */
+"In which platform are you currently selling?" = "現在どのプラットフォームで販売していますか ?";
+
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "サイト管理画面で、Jetpack ダッシュボードの「接続」>「アカウント接続」から WordPress.com への接続に使用したメールアドレスを確認できます。";
 
@@ -2609,9 +3216,6 @@ which should be translated separately and considered part of this sentence. */
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "オフラインでの支払い";
 
-/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
-"In-Person Payments Setup is incomplete." = "直接支払いのセットアップが完了していません。";
-
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "オフラインでの支払いはこのいずれかの決済サービス業者が処理できます。 どの決済サービス業者をご利用になりますか ?";
 
@@ -2622,6 +3226,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "このストアではオフラインでの支払いを使用できません";
+
+/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
+"In-Person Payments setup is incomplete." = "直接支払いのセットアップが完了していません。";
 
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "アプリ内購入";
@@ -2658,6 +3265,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "アップセルとクロスセルで販売を伸ばしましょう";
 
+/* Country option for a site address. */
+"India" = "インド";
+
 /* Title for the individual use only row in coupon usage restrictions screen. */
 "Individual Use Only" = "併用不可";
 
@@ -2666,6 +3276,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "個別に配送した商品";
+
+/* Country option for a site address. */
+"Indonesia" = "インドネシア";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "挿入";
@@ -2721,6 +3334,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "Jetpack をインストール";
 
+/* Industry option in the store creation category question. */
+"Insurance" = "保険";
+
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
 "Insurance (%1$@)" = "保険 (%1$@)";
 
@@ -2771,6 +3387,24 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "在庫";
 
+/* Industry option in the store creation category question. */
+"Investment Services" = "投資サービス";
+
+/* Country option for a site address. */
+"Iran" = "イラン";
+
+/* Country option for a site address. */
+"Iraq" = "イラク";
+
+/* Country option for a site address. */
+"Ireland" = "アイルランド";
+
+/* Country option for a site address. */
+"Isle of Man" = "マン島";
+
+/* Country option for a site address. */
+"Israel" = "イスラエル";
+
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "返金を実行";
 
@@ -2796,11 +3430,17 @@ which should be translated separately and considered part of this sentence. */
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "入力したパスワードが正しくないようです。もう一度試しますか ?";
 
+/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
+"It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "サイト %@ のアプリケーションパスワードが無効になっているようです。 WooCommerce アプリを使用するには、アプリケーションパスワードを有効にしてください。";
+
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "ご利用のサイト %@ は、プラグインをインストールできない簡易版の WordPress.com サイトのようです。 WooCommerce を使用するには、プランをアップグレードしてください。";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜体";
+
+/* Country option for a site address. */
+"Italy" = "イタリア";
 
 /* Error message for missing value in Description row in Customs screen of Shipping Label flow */
 "Item description is required" = "アイテムの説明は必須です";
@@ -2818,6 +3458,18 @@ which should be translated separately and considered part of this sentence. */
    Title for the items sold column on the products card on the analytics hub screen. */
 "Items Sold" = "販売済み商品";
 
+/* Country option for a site address. */
+"Ivory Coast" = "コートジボワール";
+
+/* Country option for a site address. */
+"Jamaica" = "ジャマイカ";
+
+/* Country option for a site address. */
+"Japan" = "日本";
+
+/* Country option for a site address. */
+"Jersey" = "ジャージー島";
+
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "Jetpack のセットアップ";
 
@@ -2830,6 +3482,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "どこからでも参加可能";
 
+/* Country option for a site address. */
+"Jordan" = "ヨルダン";
+
+/* Country option for a site address. */
+"Kazakhstan" = "カザフスタン";
+
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "編集を続行";
 
@@ -2839,11 +3497,29 @@ which should be translated separately and considered part of this sentence. */
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "これはサポートチケットではありませんので、個別のフィードバックには対応いたしかねます";
 
+/* Country option for a site address. */
+"Kenya" = "ケニア";
+
+/* Country option for a site address. */
+"Kiribati" = "キリバス";
+
+/* Country option for a site address. */
+"Kuwait" = "クウェート";
+
+/* Country option for a site address. */
+"Kyrgyzstan" = "キルギスタン";
+
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "ラベル (4 x 6インチ)";
 
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "ラベルの書式設定オプション";
+
+/* Industry option in the store creation category question. */
+"Landscaping Services" = "造園サービス";
+
+/* Country option for a site address. */
+"Laos" = "ラオス";
 
 /* Label for one of the filters in order date range */
 "Last 2 Days" = "過去2日間";
@@ -2875,8 +3551,17 @@ which should be translated separately and considered part of this sentence. */
 /* Text field name in Edit Address Form */
 "Last name" = "姓";
 
+/* Country option for a site address. */
+"Latvia" = "ラトビア";
+
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Wormholy デバッグを起動";
+
+/* Industry option in the store creation category question. */
+"Laundry Or Cleaning Services" = "ランドリー \/ 清掃サービス";
+
+/* Industry option in the store creation category question. */
+"Lead Generation" = "リードジェネレーション";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -2897,14 +3582,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Jetpack についてさらに詳しく";
 
-/* Title of button in the simplified login prologue screen for learning more about WooCommerce. */
-"Learn more about WooCommerce" = "WooCommerce の詳細";
-
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "モバイルデバイスでのラベル作成に関する詳細はこちら";
 
 /* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "権限グループと権限の詳細";
+
+/* Country option for a site address. */
+"Lebanon" = "レバノン";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "リーガル (8.5 x 14インチ)";
@@ -2916,8 +3601,20 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Shipping Settings > Length */
 "Length" = "長さ";
 
+/* Country option for a site address. */
+"Lesotho" = "レソト";
+
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "レター (8.5 x 11インチ)";
+
+/* Country option for a site address. */
+"Liberia" = "リベリア";
+
+/* Country option for a site address. */
+"Libya" = "リビア";
+
+/* Country option for a site address. */
+"Liechtenstein" = "リヒテンシュタイン";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "X個に利用を制限";
@@ -2957,6 +3654,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "商品画像のリスト";
 
+/* Country option for a site address. */
+"Lithuania" = "リトアニア";
+
 /* Accessibility label for loading indicator (spinner) at the bottom of a list */
 "Loading" = "読み込み中";
 
@@ -2978,8 +3678,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Loading. Verb */
 "Loading..." = "読み込み中…";
 
-/* Button title in the simplified login prologue screen. Takes the user to the login flow.
-   Button title.  Tapping takes the user to the login form.
+/* Industry option in the store creation category question. */
+"Loans Or Lending" = "ローン、貸付";
+
+/* Button title.  Tapping takes the user to the login form.
    Log In button label.
    View title during the log in process. */
 "Log In" = "ログイン";
@@ -2988,6 +3690,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled.
+   Button to restart the login flow.
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "別のアカウントでログイン";
 
@@ -3049,6 +3753,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button. */
 "Lost your password?" = "パスワードをお忘れですか ?";
 
+/* Industry option in the store creation category question. */
+"Lotteries" = "宝くじ";
+
+/* Country option for a site address. */
+"Luxembourg" = "ルクセンブルク";
+
+/* Country option for a site address. */
+"Macao S.A.R., China" = "マカオ (中国)";
+
+/* Country option for a site address. */
+"Macedonia" = "マケドニア";
+
+/* Country option for a site address. */
+"Madagascar" = "マダガスカル";
+
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Automattic が思いを込めて作りました。<a href=\"https:\/\/automattic.com\/work-with-us\/\">社員を募集中です。<\/a>";
 
@@ -3063,6 +3782,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "タグを使用して商品を見つけやすくする";
+
+/* Country option for a site address. */
+"Malawi" = "マラウイ";
+
+/* Country option for a site address. */
+"Malaysia" = "マレーシア";
+
+/* Country option for a site address. */
+"Maldives" = "モルディブ";
+
+/* Country option for a site address. */
+"Mali" = "マリ";
+
+/* Country option for a site address. */
+"Malta" = "マルタ";
 
 /* Card reader settings screen title
    Settings > Manage Card Reader > Title for the no-reader-connected screen in settings.
@@ -3093,6 +3827,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "マッピング済みドメイン";
 
+/* Industry option in the store creation category question. */
+"Marijuana Dispensaries" = "マリファナ販売店";
+
+/* Industry option in the store creation category question. */
+"Marijuana-related Products" = "マリファナ関連製品";
+
 /* Title for the swipe order action to mark it as completed */
 "Mark Completed" = "完了としてマークされました";
 
@@ -3118,14 +3858,50 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "この注文に完了のマークを付けてお客様に通知";
 
+/* Country option for a site address. */
+"Marshall Islands" = "マーシャル諸島";
+
+/* Country option for a site address. */
+"Martinique" = "マルティニーク";
+
+/* Industry option in the store creation category question. */
+"Massage Parlors" = "マッサージ店";
+
+/* Country option for a site address. */
+"Mauritania" = "モーリタニア";
+
+/* Country option for a site address. */
+"Mauritius" = "モーリシャス";
+
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "最大 利用額 (%1$@)";
 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "最大利用額: %1$@";
 
+/* Country option for a site address. */
+"Mayotte" = "マヨット";
+
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "メディアにはアップロードする関連したファイルはありません。";
+
+/* Industry option in the store creation category question. */
+"Medical Devices" = "医療装置";
+
+/* Industry option in the store creation category question. */
+"Medical Laboratories" = "医療研究所";
+
+/* Industry option in the store creation category question. */
+"Medical Organizations" = "医療機関";
+
+/* Industry group option in the store creation category question. */
+"Medical Services" = "医療サービス";
+
+/* Industry group option in the store creation category question. */
+"Membership Organizations" = "会員制団体";
+
+/* Industry option in the store creation category question. */
+"Mental Health Services" = "メンタルヘルスサービス";
 
 /* Title of the Menu tab */
 "Menu" = "メニュー";
@@ -3146,6 +3922,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message phone number button title */
 "Message" = "メッセージ";
 
+/* Country option for a site address. */
+"Mexico" = "メキシコ";
+
+/* Country option for a site address. */
+"Micronesia" = "ミクロネシア";
+
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
@@ -3161,11 +3943,32 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
 "Mixed" = "混合";
 
+/* Country option for a site address. */
+"Moldova" = "モルドバ";
+
+/* Country option for a site address. */
+"Monaco" = "モナコ";
+
+/* Industry option in the store creation category question. */
+"Money Orders" = "為替";
+
+/* Industry option in the store creation category question. */
+"Money Services Or Transmission" = "金融サービス、送金";
+
+/* Country option for a site address. */
+"Mongolia" = "モンゴル";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "商品レビューを監視、承認";
 
+/* Country option for a site address. */
+"Montenegro" = "モンテネグロ";
+
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "今月の現在まで";
+
+/* Country option for a site address. */
+"Montserrat" = "モントセラート";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -3177,6 +3980,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "追加オプション";
+
+/* Country option for a site address. */
+"Morocco" = "モロッコ";
+
+/* Industry option in the store creation category question. */
+"Mortgage Consulting Services" = "住宅ローン相談サービス";
 
 /* Button on each order item of the Package Details screen in Shipping Labels flow. */
 "Move" = "移動";
@@ -3193,11 +4002,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "コメントをゴミ箱に移動する";
 
+/* Industry option in the store creation category question. */
+"Movie Theaters" = "映画館";
+
+/* Country option for a site address. */
+"Mozambique" = "モザンビーク";
+
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
 "Multiple Contactless Cards Detected" = "複数の非接触型カードが検出されました";
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "複数の支払いオプション";
+
+/* Industry option in the store creation category question. */
+"Music Or Other Media" = "音楽、その他のメディア";
+
+/* Industry option in the store creation category question. */
+"Musicians, Bands, Or Orchestras" = "ミュージシャン、バンド、オーケストラ";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "自分のストア";
@@ -3209,6 +4030,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the store creation summary screen. */
 "My store" = "自分のストア";
 
+/* Country option for a site address. */
+"Myanmar" = "ミャンマー";
+
 /* Name text field placeholder
    Text field name in Shipping Label Address Validation
    Title for the name field on the Shipping Line Details screen during order creation */
@@ -3216,6 +4040,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "氏名がありません";
+
+/* Country option for a site address. */
+"Namibia" = "ナミビア";
+
+/* Country option for a site address. */
+"Nauru" = "ナウル";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "配送ラベルが必要な場合";
@@ -3240,6 +4070,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
 "Need some help? %1$@" = "サポートが必要な場合: %1$@";
 
+/* Country option for a site address. */
+"Nepal" = "ネパール";
+
 /* The title for the net amount paid cell */
 "Net Payment" = "支払額 (正味)";
 
@@ -3250,6 +4083,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Top performers — label for the total sales of a product */
 "Net sales: %@" = "純売上高: %@";
 
+/* Country option for a site address. */
+"Netherlands" = "オランダ";
+
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "ネットワークが有効なプラグイン";
 
@@ -3259,8 +4095,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "新規属性名";
 
+/* Country option for a site address. */
+"New Caledonia" = "ニューカレドニア";
+
 /* Title for the order creation screen */
 "New Order" = "新しい注文";
+
+/* Country option for a site address. */
+"New Zealand" = "ニュージーランド";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "新しいアナリティクスビューでは、訪問者やレポートなどを確認できます。";
@@ -3283,6 +4125,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of a button. The text should be capitalized.
    Title of the next button in the issue refund screen */
 "Next" = "次へ";
+
+/* Country option for a site address. */
+"Nicaragua" = "ニカラグア";
+
+/* Country option for a site address. */
+"Niger" = "ニジェール";
+
+/* Country option for a site address. */
+"Nigeria" = "ナイジェリア";
+
+/* Country option for a site address. */
+"Niue" = "ニウエ";
 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "制限なし";
@@ -3383,6 +4237,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Value for fields in Coupon Usage Restrictions screen when no value is set */
 "None" = "なし";
 
+/* Country option for a site address. */
+"Norfolk Island" = "ノーフォーク島";
+
+/* Country option for a site address. */
+"North Korea" = "北朝鮮";
+
+/* Country option for a site address. */
+"Northern Mariana Islands" = "北マリアナ諸島";
+
+/* Country option for a site address. */
+"Norway" = "ノルウェー";
+
 /* Action title to dismiss enabling Analytics for a store
    Button in the CTA View for installing WCShip extension for dismissing the view
    Title of dismiss action in the Jetpack benefits view. */
@@ -3403,7 +4269,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "属性の追加が完了しました。最初のバリエーションを作成してください。";
 
+/* Industry option in the store creation category question. */
+"Nursing Or Personal Care Facilities" = "介護施設";
+
 /* Alert dismissal title
+   Button text to confirm that we want to generate all variations
    Button title to cancel the alert when the user cannot create a store.
    Button title to dismiss the alert when the created store never becomes a Jetpack site in the store creation flow.
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
@@ -3445,6 +4315,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Weeks Section Header */
 "Older than a Week" = "1週間以上前";
 
+/* Country option for a site address. */
+"Oman" = "オマーン";
+
 /* Spoken label to indicate switch control is turned on */
 "On" = "オン";
 
@@ -3453,6 +4326,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for on hold order status. */
 "On hold" = "保留中";
+
+/* Industry option in the store creation category question. */
+"Online Gambling" = "オンラインギャンブル";
 
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "表示できる写真はバリエーションごとに1点のみです";
@@ -3502,6 +4378,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint to open web page in Safari */
 "Opens the web page in Safari" = "Safari で Web ページを開く";
 
+/* Industry option in the store creation category question. */
+"Opticians And Eyeglasses" = "眼鏡技師、眼鏡";
+
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "オプション名";
 
@@ -3518,6 +4397,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "オプション";
+
+/* Industry option in the store creation category question. */
+"Optometrists and Ophthalmologists" = "検眼士、眼科医";
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "OR";
@@ -3583,14 +4465,56 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "初期の梱包";
 
+/* Industry option in the store creation category question. */
+"Osteopaths" = "整骨医";
+
 /* Generic name of non-default discount types
    My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "その他";
 
+/* Industry option in the store creation category question. */
+"Other Building Services" = "その他の建築サービス";
+
+/* Industry option in the store creation category question. */
+"Other Business Services" = "その他のビジネスサービス";
+
+/* Industry option in the store creation category question. */
+"Other Digital Goods" = "その他のデジタル商品";
+
+/* Industry option in the store creation category question. */
+"Other Entertainment And Recreation" = "その他の娯楽、レクリエーション";
+
+/* Industry option in the store creation category question. */
+"Other Financial Institutions" = "その他の金融機関";
+
+/* Industry option in the store creation category question. */
+"Other Food And Dining" = "その他の食品、食事";
+
+/* Industry option in the store creation category question. */
+"Other Marketing Services" = "その他のマーケティングサービス";
+
+/* Industry option in the store creation category question. */
+"Other Medical Services" = "その他の医療サービス";
+
+/* Industry option in the store creation category question. */
+"Other Membership Organizations" = "その他の会員制団体";
+
+/* Industry option in the store creation category question. */
+"Other Merchandise" = "その他の品物";
+
+/* Industry option in the store creation category question. */
+"Other Personal Services" = "その他のパーソナルサービス";
+
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "他のサイト";
+
+/* Industry option in the store creation category question. */
+"Other Transportation Services" = "その他の輸送サービス";
+
+/* Industry option in the store creation category question. */
+"Other Travel And Lodging" = "その他の旅行、宿泊";
 
 /* Display label for the product's inventory stock status */
 "Out of stock" = "在庫なし";
@@ -3637,11 +4561,29 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title for the customer payment cell */
 "Paid" = "支払済み";
 
+/* Country option for a site address. */
+"Pakistan" = "パキスタン";
+
+/* Country option for a site address. */
+"Palestinian Territory" = "パレスチナ自治区";
+
+/* Country option for a site address. */
+"Panama" = "パナマ";
+
 /* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "用紙サイズ";
 
+/* Country option for a site address. */
+"Papua New Guinea" = "パプアニューギニア";
+
+/* Country option for a site address. */
+"Paraguay" = "パラグアイ";
+
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "親カテゴリー";
+
+/* Industry option in the store creation category question. */
+"Parking Lots" = "駐車場";
 
 /* Title of the banner when the order is not editable */
 "Parts of this order are not currently editable" = "この注文の一部は現在編集できません";
@@ -3741,8 +4683,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "アカウントを完全に閉鎖";
 
-/* Option in the store creation category question. */
-"Pets Pet Care" = "ペット・ペットケア";
+/* Industry option in the store creation category question. */
+"Personal Fundraising Or Crowdfunding" = "個人的な資金調達 \/ クラウドファンディング";
+
+/* Industry group option in the store creation category question. */
+"Personal Services" = "パーソナルサービス";
+
+/* Country option for a site address. */
+"Peru" = "ペルー";
+
+/* Industry option in the store creation category question. */
+"Pharmacies Or Pharmaceuticals" = "薬局、医薬";
+
+/* Country option for a site address. */
+"Philippines" = "フィリピン";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -3750,6 +4704,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "電話番号: %@";
+
+/* Industry option in the store creation category question. */
+"Photography Studios" = "撮影スタジオ";
 
 /* Product images (Product images page title) */
 "Photos" = "写真";
@@ -3762,6 +4719,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Pick up an order, then just pay, print, package, and post." = "注文を選んだら、支払いし、印刷、梱包、そして投函するだけです。";
+
+/* Option in the store creation selling platforms question. */
+"Pinterest" = "Pinterest";
+
+/* Country option for a site address. */
+"Pitcairn" = "ピトケアン諸島";
 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "商品をゴミ箱に移動しています...";
@@ -3848,6 +4811,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "すべての欄に記入してください";
+
+/* Message explaining that the site entered doesn't have WooCommerce installed or activated. */
+"Please install and activate WooCommerce plugin on your site to use the app." = "アプリを使用するには、サイトに WooCommerce プラグインをインストールして有効化してください。";
 
 /* Error message on the Jetpack setup required screen. */
 "Please install the free Jetpack plugin to access your store on this app." = "このアプリでストアにアクセスするには、無料の Jetpack プラグインをインストールしてください。";
@@ -3958,6 +4924,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the Plugin List screen */
 "Plugins" = "プラグイン";
 
+/* Industry option in the store creation category question. */
+"Podiatrists and Chiropodists" = "ポダイアトリスト (足病医)";
+
+/* Country option for a site address. */
+"Poland" = "ポーランド";
+
+/* Industry option in the store creation category question. */
+"Political Organizations" = "政治団体";
+
+/* Country option for a site address. */
+"Portugal" = "ポルトガル";
+
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
 "Postcode" = "郵便番号";
@@ -4040,6 +5018,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of in-progress modal when requesting document with multiple shipping labels for printing */
 "Printing Labels" = "ラベルを印刷中";
+
+/* Industry option in the store creation category question. */
+"Printing and Publishing" = "印刷、出版";
 
 /* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "カリフォルニア州のユーザーへのプライバシー通知";
@@ -4148,6 +5129,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "現在表示中の商品の代わりに宣伝される商品です (より安価な商品など)";
 
+/* Industry group option in the store creation category question. */
+"Professional Services" = "専門的なサービス";
+
+/* Industry option in the store creation category question. */
+"Property Rentals" = "不動産賃貸";
+
+/* Industry option in the store creation category question. */
+"Protective Or Security Services" = "保護 \/ セキュリティサービス";
+
 /* One of the possible options in Product Visibility */
 "Public" = "公開";
 
@@ -4163,8 +5153,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "商品を公開しています...";
 
-/* Title for the button on the feature announcement banner intended to upsell card readers
-   Title for the WebView opened to upsell card readers */
+/* Country option for a site address. */
+"Puerto Rico" = "プエルトリコ";
+
+/* Title for the WebView opened to upsell card readers */
 "Purchase Card Reader" = "カードリーダーを購入";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
@@ -4177,6 +5169,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Purchase note label in Product Settings */
 "Purchase Note" = "注意事項";
 
+/* Title for the button on the feature announcement banner intended to upsell card readers */
+"Purchase card reader" = "カードリーダーを購入";
+
 /* Title for purchase note alert. */
 "Purchase note" = "注意事項";
 
@@ -4188,6 +5183,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Quantity abbreviation for section title */
 "QTY" = "数量";
+
+/* Country option for a site address. */
+"Qatar" = "カタール";
 
 /* Quantity abbreviation for section title */
 "Qty" = "数量";
@@ -4248,6 +5246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "%1$@からのレシート";
+
+/* Industry option in the store creation category question. */
+"Recreational Camps" = "キャンプ";
 
 /* Button label to refresh a web page */
 "Refresh" = "更新";
@@ -4328,6 +5329,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "標準価格 :%@";
+
+/* Industry group option in the store creation category question. */
+"Regulated And Age-Restricted Products" = "規制対象および年齢制限製品";
+
+/* Industry option in the store creation category question. */
+"Religious Organizations" = "宗教団体";
 
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time */
 "Remind me later" = "後で再通知";
@@ -4413,6 +5420,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "パスワードをリセット";
 
+/* Industry option in the store creation category question. */
+"Restaurants And Nightlife" = "レストラン、ナイトライフ";
+
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "次のメールアドレスを持つ顧客に限定: %1$@";
 
@@ -4421,6 +5431,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Restriction Type row in Customs screen of Shipping Label flow */
 "Restriction Type" = "制限の種類";
+
+/* Industry group option in the store creation category question. */
+"Retail" = "小売業";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search coupons. */
 "Retrieves a list of coupons that contain a given keyword." = "特定のキーワードを含むクーポン一覧を検索します。";
@@ -4456,6 +5469,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "荷物を配達できなかった場合、荷送人に差し戻す";
 
+/* Country option for a site address. */
+"Reunion" = "レユニオン";
+
 /* Revenue stat label on dashboard. */
 "Revenue" = "収益";
 
@@ -4474,6 +5490,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Post Rich content */
 "Rich Content" = "リッチコンテンツ";
+
+/* Industry option in the store creation category question. */
+"Ridesharing" = "ライドシェア";
+
+/* Country option for a site address. */
+"Romania" = "ルーマニア";
+
+/* Country option for a site address. */
+"Russia" = "ロシア";
+
+/* Country option for a site address. */
+"Rwanda" = "ルワンダ";
 
 /* Title for sessions section in the Analytics Hub */
 "SESSIONS" = "セッション";
@@ -4507,6 +5535,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button label to open web page in Safari */
 "Safari" = "Safari";
 
+/* Country option for a site address. */
+"Saint Barthélemy" = "サン・バルテルミー";
+
+/* Country option for a site address. */
+"Saint Helena" = "セントヘレナ島";
+
+/* Country option for a site address. */
+"Saint Kitts and Nevis" = "セントクリストファー・ネイビス";
+
+/* Country option for a site address. */
+"Saint Lucia" = "セントルシア";
+
+/* Country option for a site address. */
+"Saint Martin (Dutch part)" = "シント・マールテン (オランダ領)";
+
+/* Country option for a site address. */
+"Saint Martin (French part)" = "サン・マルタン (フランス領)";
+
+/* Country option for a site address. */
+"Saint Pierre and Miquelon" = "サンピエール島およびミクロン島";
+
+/* Country option for a site address. */
+"Saint Vincent and the Grenadines" = "セントビンセントおよびグレナディーン諸島";
+
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "セール期間 :%@";
 
@@ -4525,11 +5577,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Sales channels" = "販売経路";
 
+/* Industry option in the store creation category question. */
+"Salons Or Barbers" = "サロン、理髪店";
+
+/* Country option for a site address. */
+"Samoa" = "サモア";
+
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "サンプル";
 
+/* Country option for a site address. */
+"San Marino" = "サンマリノ";
+
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary \/ Phytosanitary Inspection" = "検疫 \/ 植物検疫検査";
+
+/* Country option for a site address. */
+"Saudi Arabia" = "サウジアラビア";
 
 /* Action for saving a Coupon remotely
    Action for saving a Product remotely
@@ -4615,6 +5679,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's catalog visibility */
 "Search results only" = "検索結果のみ";
 
+/* Industry option in the store creation category question. */
+"Security Brokers Or Dealers" = "証券会社、証券ディーラー";
+
 /* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
    Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "連携ストアを表示";
@@ -4652,9 +5719,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to select specific categories applicable for a coupon in the view for adding or editing a coupon. */
 "Select Product Categories" = "商品カテゴリーを選択";
 
-/* Title for the screen to select products for a coupon */
-"Select Products" = "商品を選択";
-
 /* Page title for the select a different store screen */
 "Select Store" = "ストアを選択";
 
@@ -4681,6 +5745,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "段落スタイルを選択";
+
+/* Title for the screen to select products for a coupon */
+"Select products" = "商品を選択";
 
 /* The title for the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Select reader type" = "リーダーの種類を選択";
@@ -4712,6 +5779,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title. Sends a email verification link (Magin link) for signing in. */
 "Send email verification link" = "メール認証リンクを送信";
 
+/* Country option for a site address. */
+"Senegal" = "セネガル";
+
+/* Country option for a site address. */
+"Serbia" = "セルビア";
+
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "サービスパッケージ";
 
@@ -4737,6 +5810,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "複数の Reader が見つかりました";
+
+/* Country option for a site address. */
+"Seychelles" = "セーシェル共和国";
 
 /* Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
@@ -4809,6 +5885,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping method title for customer info section */
 "Shipping Method" = "配送方法";
 
+/* Industry option in the store creation category question. */
+"Shipping Or Forwarding" = "配送、運送";
+
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "配送料の返金";
 
@@ -4842,11 +5921,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's tax status setting option */
 "Shipping only" = "配送対象";
 
+/* Industry option in the store creation category question. */
+"Shoes" = "靴";
+
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "ショップおよび検索結果";
 
 /* Display label for the product's catalog visibility */
 "Shop only" = "ショップのみ";
+
+/* Option in the store creation selling platforms question. */
+"Shopify" = "Shopify";
 
 /* The navigation bar title of the edit short description screen.
    Title of the product form bottom sheet action for editing short description.
@@ -4890,6 +5975,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "オプションをさらに表示します。";
 
+/* Country option for a site address. */
+"Sierra Leone" = "シエラレオネ共和国国";
+
 /* View title during the sign up process. */
 "Sign Up" = "登録";
 
@@ -4923,6 +6011,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
 "Simple virtual product" = "シンプルな物理的商品";
 
+/* Country option for a site address. */
+"Singapore" = "シンガポール";
+
 /* Describes a site redirect domain */
 "Site Redirect" = "サイト転送";
 
@@ -4940,13 +6031,31 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
 "Skip for now" = "今はスキップ";
 
+/* Country option for a site address. */
+"Slovakia" = "スロバキア";
+
+/* Country option for a site address. */
+"Slovenia" = "スロベニア";
+
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "スラッグ";
 
+/* Industry option in the store creation category question. */
+"Software" = "ソフトウェア";
+
+/* Industry option in the store creation category question. */
+"Software As A Service" = "SaaS";
+
 /* Dialog title that displays when a software update just finished installing */
 "Software updated" = "ソフトウェアが更新されました";
+
+/* Country option for a site address. */
+"Solomon Islands" = "ソロモン諸島";
+
+/* Country option for a site address. */
+"Somalia" = "ソマリア";
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "一部のメールアドレスが無効です。";
@@ -5037,6 +6146,21 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the toolbar button to sort products in different ways. */
 "Sort by" = "並び順";
 
+/* Country option for a site address. */
+"South Africa" = "南アフリカ";
+
+/* Country option for a site address. */
+"South Georgia\/Sandwich Islands" = "サウスジョージア \/ サウスサンドイッチ諸島";
+
+/* Country option for a site address. */
+"South Korea" = "韓国";
+
+/* Country option for a site address. */
+"South Sudan" = "南スーダン";
+
+/* Country option for a site address. */
+"Spain" = "スペイン";
+
 /* Display label for the review's spam status
    Verb, spam a comment */
 "Spam" = "スパム";
@@ -5044,8 +6168,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to select the Spark email app when logging in with magic links */
 "Spark" = "Spark";
 
-/* Option in the store creation category question. */
-"Sports and Recreation" = "スポーツ・レクリエーション";
+/* Industry option in the store creation category question. */
+"Special Trade Contractors" = "専門請負業者";
+
+/* Industry option in the store creation category question. */
+"Sports Forecasting Or Prediction Services" = "スポーツ予測サービス";
+
+/* Option in the store creation selling platforms question. */
+"Square" = "Square";
+
+/* Option in the store creation selling platforms question. */
+"Squarespace" = "Squarespace";
+
+/* Country option for a site address. */
+"Sri Lanka" = "スリランカ";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "標準税率";
@@ -5133,6 +6269,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice text after updating the order successfully */
 "Successfully updated" = "正常に更新されました";
 
+/* Country option for a site address. */
+"Sudan" = "スーダン";
+
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "商品と荷物の重量の合計";
 
@@ -5141,6 +6280,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
 "Summary: Order #%1$@" = "ご注文内容: 注文番号%1$@";
+
+/* Industry option in the store creation category question. */
+"Supplements Or Nutraceuticals" = "サプリメント、栄養補強食品";
+
+/* Country option for a site address. */
+"Suriname" = "スリナム";
+
+/* Country option for a site address. */
+"Svalbard and Jan Mayen" = "スヴァーバル諸島・ヤンマイエン島";
+
+/* Country option for a site address. */
+"Swaziland" = "スワジランド";
+
+/* Country option for a site address. */
+"Sweden" = "スウェーデン";
 
 /* Message from the in-person payment card reader prompting user to swipe their card */
 "Swipe Card" = "カードをスワイプしてください";
@@ -5175,6 +6329,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "デフォルトのフォントサイズに変更する";
 
+/* Country option for a site address. */
+"Switzerland" = "スイス";
+
+/* Country option for a site address. */
+"Syria" = "シリア";
+
 /* Navigation title of system status report screen
    View system status report cell title on Help screen */
 "System Status Report" = "システムステータスレポート";
@@ -5185,10 +6345,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when attempting to pay for a live transaction with a test card. */
 "System test cards are not permitted for payment. Try another means of payment" = "システムテストカードは支払いを許可されていません。 別の支払方法をお試しください";
 
+/* Country option for a site address. */
+"São Tomé and Príncipe" = "サントメ・プリンシペ";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
 "Tags" = "タグ";
+
+/* Country option for a site address. */
+"Taiwan" = "台湾";
+
+/* Country option for a site address. */
+"Tajikistan" = "タジキスタン";
 
 /* Title for the simple payments screen */
 "Take Payment" = "支払いを受け取る";
@@ -5202,6 +6371,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "戻って支払いを受け取る";
+
+/* Country option for a site address. */
+"Tanzania" = "タンザニア";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap card to pay" = "カードをタップして支払う";
@@ -5325,6 +6497,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "税金は店舗の住所に基づいて自動的に計算されます。";
 
+/* Industry option in the store creation category question. */
+"Taxis And Limos" = "タクシー、リムジン";
+
+/* Industry option in the store creation category question. */
+"Telecom Equipment" = "通信機器";
+
+/* Industry option in the store creation category question. */
+"Telecom Services" = "テレコミュニケーションサービス";
+
+/* Industry option in the store creation category question. */
+"Telemarketing" = "テレマーケティング";
+
+/* Industry option in the store creation category question. */
+"Telemedicine And Telehealth" = "遠隔医療";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@ についてもう少しお聞かせください...";
 
@@ -5349,9 +6536,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "起動の準備ができたら、注文アドオンの表示をテストします";
 
+/* Industry option in the store creation category question. */
+"Testing Laboratories" = "試験機関";
+
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
 "Text me a code instead" = "代わりに SMS でコードを送信する";
+
+/* Country option for a site address. */
+"Thailand" = "タイ";
 
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "ご意見をお聞かせいただきありがとうございます";
@@ -5748,8 +6941,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "有効になっているサブスクリプションがあるため、このユーザーアカウントを閉鎖できません。";
 
+/* Alert description to allow the user confirm if they want to generate all variations */
+"This will create a variation for each and every possible combination of variation attributes (%d variations)." = "この操作を行うと、可能な限りすべてのバリエーション属性の組み合わせ (%d件のバリエーション) につきひとつのバリエーションが作成されます。";
+
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "WooCommerce 外部で (合計) を受け取った場合は、注文が完了済みとしてマークされます";
+
+/* Industry option in the store creation category question. */
+"Timeshares" = "タイムシェア";
+
+/* Country option for a site address. */
+"Timor-Leste" = "東ティモール";
 
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "ヒント";
@@ -5801,8 +7003,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "このアカウントで先に進むには、最初に WordPress.com パスワードを使用してログインしてください。 これは一度しか尋ねられません。";
 
+/* Subtitle of the store creation profiler question about the store selling status. */
+"To speed things up, we’ll tailor your WooCommerce experience for you based on your response." = "作業がスピードアップするように、回答いただいた内容に基づき WooCommerce を自動的にカスタマイズします。";
+
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "﻿%@ にこのアプリを使用するには、Jetpack プラグインをインストールし、ストアと連携する必要があります。";
+
+/* Industry option in the store creation category question. */
+"Tobacco Or Cigars" = "タバコ、葉巻";
 
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
@@ -5823,6 +7031,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Identifier for the Aztec Unordered List Style */
 "Toggles the unordered list style" = "順序なしリストスタイルを切り替える";
 
+/* Country option for a site address. */
+"Togo" = "トーゴ";
+
+/* Country option for a site address. */
+"Tokelau" = "トケラウ";
+
+/* Country option for a site address. */
+"Tonga" = "トンガ";
+
 /* Header label for Top Performers section of My Store tab. */
 "Top Performers" = "上位パフォーマンス";
 
@@ -5840,6 +7057,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight */
 "Total package weight: %1$@" = "荷物の総重量: %1$@";
+
+/* Industry option in the store creation category question. */
+"Tourist Attractions" = "観光名所";
+
+/* Industry option in the store creation category question. */
+"Towing Services" = "レッカーサービス";
 
 /* Track shipment button title */
 "Track Shipment" = "発送を追跡";
@@ -5864,12 +7087,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "追跡番号: %@";
 
+/* Industry option in the store creation category question. */
+"Trailer Parks and Campgrounds" = "トレーラーパーク、キャンプ場";
+
+/* Industry group option in the store creation category question. */
+"Transportation" = "交通機関";
+
 /* Display label for the review's trash status
    Move a comment to the trash */
 "Trash" = "ゴミ箱";
 
+/* Industry option in the store creation category question. */
+"Travel Agencies" = "旅行代理店";
+
+/* Industry group option in the store creation category question. */
+"Travel And Lodging" = "旅行、宿泊";
+
+/* Country option for a site address. */
+"Trinidad and Tobago" = "トリニダード・トバゴ";
+
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "トラブルシューティング";
+
+/* Industry option in the store creation category question. */
+"Truck Stop" = "トラックストップ";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信用する";
@@ -5878,6 +7119,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Activating Again" = "有効化を再試行";
 
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
+   Button to refetch application password for the current site
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
    Button to try again. Presented to users after a failure occurs
@@ -5926,6 +7168,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when a card is declined due to a potentially temporary problem. */
 "Trying again may succeed, or try another means of payment" = "もう一度試すか、別の支払方法をお試しください";
 
+/* Country option for a site address. */
+"Tunisia" = "チュニジア";
+
+/* Country option for a site address. */
+"Turkey" = "トルコ";
+
+/* Country option for a site address. */
+"Turkmenistan" = "トルクメニスタン";
+
+/* Country option for a site address. */
+"Turks and Caicos Islands" = "タークス・カイコス諸島";
+
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "カードリーダーをオンにしてモバイルデバイスの横に配置";
 
@@ -5937,6 +7191,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "セール価格商品へのクーポンの適用を禁止する場合は、この機能をオンにします。 商品単位で適用されるクーポンは、その商品がセール価格商品でない場合にのみ有効になります。 お買い物カゴ単位で適用されるクーポンは、お買い物カゴにセール価格商品ではない商品が含まれる場合にのみ有効になります。";
+
+/* Country option for a site address. */
+"Tuvalu" = "ツバル";
 
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "Twitter";
@@ -5954,6 +7211,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "URL";
+
+/* Country option for a site address. */
+"Uganda" = "ウガンダ";
+
+/* Country option for a site address. */
+"Ukraine" = "ウクライナ";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "接続できない";
@@ -6118,6 +7381,21 @@ This part is the link to the website, and forms part of a longer sentence which 
    The message of the alert when there is an unexpected error updating the product */
 "Unexpected error" = "予期しないエラー";
 
+/* Country option for a site address. */
+"United Arab Emirates" = "アラブ首長国連邦";
+
+/* Country option for a site address. */
+"United Kingdom" = "イギリス";
+
+/* Country option for a site address. */
+"United States" = "米国";
+
+/* Country option for a site address. */
+"United States Minor Outlying Islands" = "アメリカ合衆国外諸島";
+
+/* Country option for a site address. */
+"United States Virgin Islands" = "アメリカ領ヴァージン諸島";
+
 /* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
@@ -6234,6 +7512,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "アップセル";
 
+/* Country option for a site address. */
+"Uruguay" = "ウルグアイ";
+
 /* Header of the section usage details in the view for adding or editing a coupon. */
 "Usage Details" = "利用状況の詳細";
 
@@ -6243,12 +7524,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the usage limit per user row in coupon usage restrictions screen. */
 "Usage Limit Per User" = "ユーザー毎の利用数制限";
 
-/* Field in the view for adding or editing a coupon.
-   Title for the usage restrictions section on coupon usage restrictions screen */
+/* Field in the view for adding or editing a coupon. */
 "Usage Restrictions" = "利用制限";
 
 /* Title of the Usage details row in Coupon Details screen */
 "Usage details" = "利用状況の詳細";
+
+/* Title for the usage restrictions section on coupon usage restrictions screen */
+"Usage restrictions" = "利用制限";
 
 /* Action to use the address in Shipping Label Suggested screen as entered placeholder */
 "Use Address Entered" = "入力した住所を使用";
@@ -6287,11 +7570,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "ユーザー名は4文字以上にしてください。";
 
+/* Industry option in the store creation category question. */
+"Utilities" = "ユーティリティ";
+
+/* Country option for a site address. */
+"Uzbekistan" = "ウズベキスタン";
+
 /* Message to be displayed when a Jetpack connection is being authorized */
 "Validating" = "検証中";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "価値 (%1$@\/ 個)";
+
+/* Country option for a site address. */
+"Vanuatu" = "バヌアツ";
+
+/* Industry option in the store creation category question. */
+"Vapes, E-cigarettes, E-juice Or Related Products" = "ベイプ、電子タバコ、E ジュースなど";
 
 /* Display label for variable product type. */
 "Variable" = "変数";
@@ -6316,6 +7611,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "自分のサイトに関するさまざまなシステム情報";
 
+/* Country option for a site address. */
+"Vatican" = "バチカン";
+
+/* Country option for a site address. */
+"Venezuela" = "ベネズエラ";
+
 /* two factor code placeholder */
 "Verification code" = "認証コード";
 
@@ -6330,6 +7631,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Displays the connected reader software version */
 "Version: %1$@" = "バージョン: %1$@";
+
+/* Industry option in the store creation category question. */
+"Veterinary Services" = "動物医療サービス";
+
+/* Country option for a site address. */
+"Vietnam" = "ベトナム";
 
 /* Action title in an in-app notification to view more details.
    Title of the action to view product details from a notice about an image upload failure in the background. */
@@ -6391,6 +7698,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for simple virtual product type. */
 "Virtual" = "バーチャル";
 
+/* Industry option in the store creation category question. */
+"Virtual Currencies" = "仮想通貨";
+
 /* Virtual Product label in Product Settings */
 "Virtual Product" = "仮想商品";
 
@@ -6400,6 +7710,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "訪問者";
+
+/* Industry option in the store creation category question. */
+"Vocational Schools And Trade Schools" = "専門学校、職業訓練校";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "メモを入力";
@@ -6412,6 +7725,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* View title during the Google auth process. */
 "Waiting..." = "待機中";
+
+/* Country option for a site address. */
+"Wallis and Futuna" = "ウォリス・フツナ";
+
+/* Industry option in the store creation category question. */
+"Warranty Services" = "保証サービス";
 
 /* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
 "We are getting ready for your store creation" = "ストア作成の準備を進めています";
@@ -6525,6 +7844,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "新しい WordPress.com アカウントを作成するための登録リンクをメールでお送りしました。 このデバイスでメールをチェックして、WordPress.com から届いたメールにあるリンクをタップしてください。";
 
+/* Industry option in the store creation category question. */
+"Weapons Or Munitions" = "武器、軍需品";
+
 /* Title of a button linking to the app's website */
 "Website" = "サイト";
 
@@ -6543,11 +7865,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "重量 :%1$@%2$@";
 
+/* Country option for a site address. */
+"Western Sahara" = "西サハラ";
+
+/* Subtitle of the store creation profiler question about the store country. */
+"We’ll use this information to get a head start on setting up payments, shipping, and taxes." = "この情報を使用して、支払い、配送、税金の設定を一足先に開始します。";
+
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "デバイスからクーポンを表示、編集できる機能を開発中です !";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "サインインにはどのメールアドレスを使用すればよいですか ?";
+
+/* Button that will navigate to a web page explaining Application Password */
+"What is Application Password?" = "アプリケーションパスワードとは";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
@@ -6580,6 +7911,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Shipping Labels: info description about WooCommerce Services discount */
 "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "WooCommerce で配送ラベルを購入する際には、業務用価格の割引が適用されます。";
 
+/* Title of the store creation profiler question about the store selling status. */
+"Where are you on your commerce journey?" = "現在、ストア販売プロセスのどの段階ですか ?";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "エラーが発生し、ログインできませんでした。もう一度お試しください。";
 
@@ -6589,6 +7923,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the row to enter the package width on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Width */
 "Width" = "横幅";
+
+/* Industry option in the store creation category question. */
+"Wire Transfers" = "電信送金";
+
+/* Option in the store creation selling platforms question. */
+"Wix" = "Wix";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
@@ -6617,6 +7957,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Caption displayed in the simplified prologue screen */
 "WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce は WordPress に構築された、カスタマイズ可能かつオープンソースの eコマースプラットフォームです。";
 
+/* Option in the store creation selling platforms question. */
+"WordPress" = "WordPress";
+
 /* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "WordPress API Error: [%1$@] %2$@" = "WordPress API エラー: [%1$@] %2$@";
 
@@ -6639,6 +7982,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Year to Date selection range */
 "Year to Date" = "今年の現在まで";
 
+/* Country option for a site address. */
+"Yemen" = "イエメン";
+
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "変更する";
 
@@ -6648,6 +7994,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "このストアにアクセスする権限がありません。";
+
+/* Subtitle of the store creation profiler question about the store selling platforms. */
+"You can choose multiple ones." = "複数選択できます。";
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "ウェブダッシュボードで製品アドオンを編集できます。";
@@ -6751,6 +8100,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
 "You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "あともう少しです。 オフラインでの支払いを開始するには、%1$@ のセットアップを完了してください。";
+
+/* Country option for a site address. */
+"Zambia" = "ザンビア";
+
+/* Country option for a site address. */
+"Zimbabwe" = "ジンバブエ";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[コメント]";
@@ -6914,6 +8269,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Google アカウントでログイン。";
+
+/* Country option for a site address. */
+"Åland Islands" = "オーランド諸島";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 注文完了";

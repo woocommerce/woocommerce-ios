@@ -2,7 +2,8 @@
 
 11.9
 -----
-
+- [**] Now you can generate all possible variations for a product's attributes [https://github.com/woocommerce/woocommerce-ios/pull/8619]
+- [*] Mobile payments: fixed card reader manuals links. [https://github.com/woocommerce/woocommerce-ios/pull/8628]
 
 11.8
 -----

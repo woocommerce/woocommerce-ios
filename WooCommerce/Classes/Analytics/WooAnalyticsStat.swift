@@ -672,6 +672,12 @@ public enum WooAnalyticsStat: String {
     case editProductVariationAttributeOptionsRowTapped = "edit_product_variation_attribute_options_row_tapped"
     case editProductVariationAttributeOptionsDoneButtonTapped = "edit_product_variation_attribute_options_done_button_tapped"
 
+    case productVariationGenerationRequested = "product_variation_generation_requested"
+    case productVariationGenerationLimitReached = "product_variation_generation_limit_reached"
+    case productVariationGenerationConfirmed = "product_variation_generation_confirmed"
+    case productVariationGenerationSuccess = "product_variation_generation_success"
+    case productVariationGenerationFailure = "product_variation_generation_failure"
+
     // MARK: What's New Component events
     //
     case featureAnnouncementShown = "feature_announcement_shown"

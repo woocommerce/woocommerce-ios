@@ -64,6 +64,7 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
+
     private lazy var stateCoordinator: PaginatedListViewControllerStateCoordinator = {
         let stateCoordinator = PaginatedListViewControllerStateCoordinator(onLeavingState: { [weak self] state in
             self?.didLeave(state: state)
@@ -283,8 +284,7 @@ private extension ProductVariationsViewController {
 //
 private extension ProductVariationsViewController {
     func configureTopStackView() {
-        let title = featureFlagService.isFeatureFlagEnabled(.generateAllVariations) ? Localization.addVariationAction : Localization.generateVariationAction
-        addTopButton(title: title,
+        addTopButton(title: Localization.generateVariationAction,
                      insets: .init(top: 16, left: 16, bottom: 8, right: 16),
                      hasBottomBorder: true,
                      actionSelector: #selector(addButtonTapped),
@@ -444,7 +444,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
 private extension ProductVariationsViewController {
     func createVariationFromEmptyState() {
         if product.attributesForVariations.isNotEmpty {
-            createVariation()
+            presentGenerateVariationOptions()
         } else {
             navigateToAddAttributeViewController()
         }
@@ -474,7 +474,7 @@ private extension ProductVariationsViewController {
 
         let editAttributesViewModel = EditAttributesViewModel(product: product, allowVariationCreation: allowVariationCreation)
         let editAttributeViewController = EditAttributesViewController(viewModel: editAttributesViewModel)
-        editAttributeViewController.onVariationCreation = { [weak self] (updatedProduct, _) in
+        editAttributeViewController.onVariationCreation = { [weak self] updatedProduct in
             self?.product = updatedProduct
             self?.onFirstVariationCreated()
         }
@@ -507,7 +507,11 @@ private extension ProductVariationsViewController {
     /// Presents a notice alerting that the variation was created and navigates back to the `initialViewController` if possible.
     ///
     private func onFirstVariationCreated() {
-        noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
+        // Only show a notice when one variation is created.
+        // When creating multiple variations, the notice presentation is handled on `GenerateAllVariationsPresenter`
+        if product.variations.count == 1 {
+            noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
+        }
 
         guard let initialViewController = initialViewController else {
             navigationController?.popViewController(animated: true)
@@ -564,12 +568,7 @@ private extension ProductVariationsViewController {
 
     @objc func addButtonTapped() {
         analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
-
-        if featureFlagService.isFeatureFlagEnabled(.generateAllVariations) {
-            presentGenerateVariationOptions()
-        } else {
-            createVariation()
-        }
+        presentGenerateVariationOptions()
     }
 
     /// More Options Action Sheet
@@ -604,42 +603,15 @@ private extension ProductVariationsViewController {
     /// Displays a bottom sheet allowing the merchant to choose whether to generate one variation or to generate all variations.
     ///
     private func presentGenerateVariationOptions() {
-        let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.addVariationAction)
-        let command = GenerateVariationsSelectorCommand(selected: nil) { [weak self] option in
-            guard let self else { return }
-            self.dismiss(animated: true)
-            switch option {
+        let presenter = GenerateVariationsOptionsPresenter(baseViewController: self)
+        presenter.presentGenerationOptions(sourceView: topStackView) { [weak self] selectedOption in
+            switch selectedOption {
             case .single:
-                self.createVariation()
+                self?.createVariation()
             case .all:
-                self.generateAllVariations()
+                self?.generateAllVariations()
             }
-
         }
-        let bottomSheetPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
-        bottomSheetPresenter.show(from: self, sourceView: topStackView)
-    }
-
-    /// Informs the merchant about errors that happen during the variation generation
-    ///
-    private func presentGenerationError(_ error: ProductVariationsViewModel.GenerationError) {
-        let notice = Notice(title: error.errorTitle, message: error.errorDescription)
-        noticePresenter.enqueue(notice: notice)
-    }
-
-    /// Asks the merchant for confirmation before generating all variations.
-    ///
-    private func presentGenerationConfirmation(numberOfVariations: Int, onCompletion: @escaping (_ confirmed: Bool) -> Void) {
-        let controller = UIAlertController(title: Localization.confirmationTitle,
-                                           message: Localization.confirmationDescription(variationCount: numberOfVariations),
-                                           preferredStyle: .alert)
-        controller.addDefaultActionWithTitle(Localization.ok) { _ in
-            onCompletion(true)
-        }
-        controller.addCancelActionWithTitle(Localization.cancel) { _ in
-            onCompletion(false)
-        }
-        present(controller, animated: true)
     }
 }
 
@@ -717,23 +689,18 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
     /// Generates all possible variations for the product attributes.
     ///
     private func generateAllVariations() {
-        viewModel.generateAllVariations(for: product) { [weak self] currentState in
+        let presenter = GenerateAllVariationsPresenter(baseViewController: self)
+        viewModel.generateAllVariations(for: product) { [weak self, presenter] currentState in
+            // Perform Presentation Actions
+            presenter.handleStateChanges(state: currentState)
+
+            // Perform other side effects
             switch currentState {
-            case .fetching:
-                break // TODO: Show fetching loading Indicator
-            case .confirmation(let variationCount, let onCompletion):
-                self?.presentGenerationConfirmation(numberOfVariations: variationCount, onCompletion: onCompletion)
-            case .creating:
-                break // TODO: Show creating loading Indicator
-            case .canceled:
-                break // TODO: Remove loading indicator
-            case .finished(let variationsCreated):
-                // TODO: Remove loading indicator
-                // TODO: Inform about created variations
-                break
-            case .error(let error):
-                // TODO: Remove loading indicator
-                self?.presentGenerationError(error)
+            case .finished(let variationsCreated, let updatedProduct):
+                if variationsCreated {
+                    self?.product = updatedProduct
+                }
+            default: break
             }
         }
     }
@@ -842,17 +809,6 @@ private extension ProductVariationsViewController {
         static let generateVariationError = NSLocalizedString("The variation couldn't be generated.",
                                                               comment: "Error title when failing to generate a variation.")
         static let variationCreated = NSLocalizedString("Variation created", comment: "Text for the notice after creating the first variation.")
-
-        static let confirmationTitle = NSLocalizedString("Generate all variations?",
-                                                         comment: "Alert title to allow the user confirm if they want to generate all variations")
-        static func confirmationDescription(variationCount: Int) -> String {
-            let format = NSLocalizedString("This will create a variation for each and every possible combination of variation attributes (%d variations).",
-                                           comment: "Alert description to allow the user confirm if they want to generate all variations")
-            return String.localizedStringWithFormat(format, variationCount)
-        }
-        static let ok = NSLocalizedString("OK", comment: "Button text to confirm that we want to generate all variations")
-        static let cancel = NSLocalizedString("Cancel", comment: "Button text to confirm that we don't want to generate all variations")
-
     }
 
     /// Localizated strings for the  action sheet options

@@ -129,7 +129,7 @@ final class OrderListViewModel {
     /// If true, no orders banner will be shown as the user has told us that they are not interested in this information.
     /// It is persisted through app sessions.
     ///
-    @Published var hideOrdersBanners: Bool = true
+    @Published var hideOrdersBanners: Bool = false // TODO: Switch back to true
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -143,6 +143,10 @@ final class OrderListViewModel {
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            topBanner = .IPPFeedback
+        }
     }
 
     deinit {
@@ -165,7 +169,9 @@ final class OrderListViewModel {
 
         observeForegroundRemoteNotifications()
         bindTopBannerState()
-        loadOrdersBannerVisibility()
+        // TODO: Uncomment. Currently, commenting this method out the banner appear, as I'm reusing the OrdersBanner component.
+        // Combined with setting the Published hideOrdersBanners property to false
+        //loadOrdersBannerVisibility()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
             fetchIPPTransactions()
@@ -206,6 +212,10 @@ final class OrderListViewModel {
         }
 
         stores.dispatch(action)
+    }
+
+    private func loadIPPFeedbackBannerVisibility() {
+        // TODO: Implement SettingsAction to remember the merchant selection
     }
 
     @objc private func handleAppDeactivation() {
@@ -376,7 +386,11 @@ extension OrderListViewModel {
                     return .none
                 }
 
-                return .orderCreation
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+                    return .IPPFeedback
+                } else {
+                    return .orderCreation
+                }
             }
             .assign(to: &$topBanner)
     }
@@ -419,6 +433,7 @@ extension OrderListViewModel {
     enum TopBanner {
         case error
         case orderCreation
+        case IPPFeedback
         case none
     }
 }

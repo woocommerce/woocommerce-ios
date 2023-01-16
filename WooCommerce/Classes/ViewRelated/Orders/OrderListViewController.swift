@@ -254,6 +254,8 @@ private extension OrderListViewController {
                     self.setErrorTopBanner()
                 case .orderCreation:
                     self.setOrderCreationTopBanner()
+                case .IPPFeedback:
+                    self.setIPPFeedbackTopBanner()
                 }
             }
             .store(in: &cancellables)
@@ -774,6 +776,22 @@ private extension OrderListViewController {
     ///
     func setOrderCreationTopBanner() {
         topBannerView = OrdersTopBannerFactory.createOrdersBanner(onTopButtonPressed: { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        }, onDismissButtonPressed: { [weak self] in
+            self?.viewModel.dismissOrdersBanner()
+        }, onGiveFeedbackButtonPressed: { [weak self] in
+            let surveyNavigation = SurveyCoordinatingController(survey: .orderCreation)
+            self?.present(surveyNavigation, animated: true, completion: nil)
+        })
+        showTopBannerView()
+    }
+
+    /// Sets the `topBannerView` property to an IPP feedback banner.
+    ///
+    func setIPPFeedbackTopBanner() {
+        // TODO: Implement the specific banner similar to OrdersTopBannerFactory
+        topBannerView = OrdersTopBannerFactory.createOrdersBanner(
+            onTopButtonPressed: { [weak self] in
             self?.tableView.updateHeaderHeight()
         }, onDismissButtonPressed: { [weak self] in
             self?.viewModel.dismissOrdersBanner()

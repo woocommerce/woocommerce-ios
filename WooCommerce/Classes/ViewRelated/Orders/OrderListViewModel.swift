@@ -199,10 +199,8 @@ final class OrderListViewModel {
     }
 
     func dismissIPPFeedbackBanner() {
-        print("dismiss tapped")
         let action = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .dismissed, onCompletion: { _ in
             self.hideIPPFeedbackBanner = true
-            print("hideIPPFeedbackBanner? \(self.hideIPPFeedbackBanner)")
         })
         stores.dispatch(action)
     }

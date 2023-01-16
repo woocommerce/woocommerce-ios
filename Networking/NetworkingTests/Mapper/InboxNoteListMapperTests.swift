@@ -14,6 +14,13 @@ final class InboxNoteListMapperTests: XCTestCase {
         XCTAssertEqual(inboxNotes.count, 24)
     }
 
+    /// Verifies that the whole list is parsed when response has no data envelope.
+    ///
+    func test_InboxNoteListMapper_parses_all_InboxNotes_in_response_without_data_envelope() throws {
+        let inboxNotes = try mapLoadInboxNoteListResponseWithoutDataEnvelope()
+        XCTAssertEqual(inboxNotes.count, 2)
+    }
+
     /// Verifies that the `siteID` is added in the mapper, to all results, because it's not provided by the API endpoint.
     ///
     func test_InboxNoteListMapper_includes_siteID_in_parsed_results() throws {
@@ -76,5 +83,11 @@ private extension InboxNoteListMapperTests {
     ///
     func mapLoadInboxNoteListResponse() throws -> [InboxNote] {
         return try mapInboxNoteList(from: "inbox-note-list")
+    }
+
+    /// Returns the InboxNoteListMapper output from `inbox-note-list-without-data.json`
+    ///
+    func mapLoadInboxNoteListResponseWithoutDataEnvelope() throws -> [InboxNote] {
+        return try mapInboxNoteList(from: "inbox-note-list-without-data")
     }
 }

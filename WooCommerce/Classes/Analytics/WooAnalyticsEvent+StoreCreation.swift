@@ -9,6 +9,8 @@ extension WooAnalyticsEvent {
             static let errorType = "error_type"
             static let flow = "flow"
             static let step = "step"
+            static let category = "industry"
+            static let categoryGroup = "industry_group"
         }
 
         /// Tracked when the user taps on the CTA in store picker (logged in to WPCOM) to create a store.
@@ -52,6 +54,15 @@ extension WooAnalyticsEvent {
         /// Tracked when tapping on the “Manage my store” button on the store creation success screen.
         static func siteCreationManageStoreTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationManageStoreTapped, properties: [:])
+        }
+
+        /// Tracked when completing the last profiler question during the store creation flow.
+        static func siteCreationProfilerData(category: StoreCreationCategoryAnswer?) -> WooAnalyticsEvent {
+            let properties = [
+                Key.category: category?.value,
+                Key.categoryGroup: category?.groupValue
+            ].compactMapValues({ $0 })
+            return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
         }
 
         /// Tracked when the user taps on the CTA in login prologue (logged out) to create a store.

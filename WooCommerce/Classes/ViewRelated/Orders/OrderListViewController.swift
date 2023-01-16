@@ -789,17 +789,36 @@ private extension OrderListViewController {
     /// Sets the `topBannerView` property to an IPP feedback banner.
     ///
     func setIPPFeedbackTopBanner() {
-        // TODO: Implement the specific banner similar to OrdersTopBannerFactory
-        topBannerView = OrdersTopBannerFactory.createOrdersBanner(
-            onTopButtonPressed: { [weak self] in
-            self?.tableView.updateHeaderHeight()
-        }, onDismissButtonPressed: { [weak self] in
-            self?.viewModel.dismissOrdersBanner()
-        }, onGiveFeedbackButtonPressed: { [weak self] in
-            let surveyNavigation = SurveyCoordinatingController(survey: .orderCreation)
-            self?.present(surveyNavigation, animated: true, completion: nil)
-        })
+        topBannerView = createIPPFeedbackTopBanner()
         showTopBannerView()
+    }
+
+    private func createIPPFeedbackTopBanner() -> TopBannerView {
+        let giveIPPFeedbackAction = TopBannerViewModel.ActionButton(title: "Share feedback", action: { _ in
+            self.displayIPPFeedbackBannerSurvey()
+        })
+        let dismissIPPFeedbackAction = TopBannerViewModel.ActionButton(title: "X", action: { _ in
+            self.dismissIPPFeedbackBannerSurvey()
+        })
+        let viewModel = TopBannerViewModel(
+            title: "Let us know what you think",
+            infoText: "Rate your in-person payment experience.",
+            icon: UIImage.gridicon(.crossSmall),
+            isExpanded: true,
+            topButton: .chevron(handler: {}),
+            actionButtons: [giveIPPFeedbackAction, dismissIPPFeedbackAction]
+        )
+        let topBannerView = TopBannerView(viewModel: viewModel)
+        topBannerView.translatesAutoresizingMaskIntoConstraints = false
+        return topBannerView
+    }
+
+    private func displayIPPFeedbackBannerSurvey() {
+        print("displayIPPFeedbackBannerSurvey")
+    }
+
+    private func dismissIPPFeedbackBannerSurvey() {
+        print("dismissIPPFeedbackBannerSurvey")
     }
 }
 

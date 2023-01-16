@@ -57,9 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v11.8-whats-new"
+msgctxt "v11.9-whats-new"
 msgid ""
-"You’ll notice some nice visual changes to the look of the app! Take a look and please share your feedback – more updates to come in the next few weeks!\n"
+"We've made it so you can generate all possible variations for a product's attributes!\n"
+"\n"
+"For mobile payments, we fixed the card reader manual links so you can have the resources you need when using a card reader.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

@@ -53,6 +53,36 @@ final class OrderListViewModel {
     ///
     private var isAppActive: Bool = true
 
+    /// Results controller that fetches any IPP transactions via WooCommerce Payments
+    ///
+    private lazy var IPPOrdersResultsController: ResultsController<StorageOrder> = {
+        let paymentGateway = Constants.paymentMethodID
+        let predicate = NSPredicate(
+            format: "siteID == %lld AND paymentMethodID == %@",
+            argumentArray: [siteID, paymentGateway]
+        )
+        return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    /// Results controller that fetches IPP transactions via WooCommerce Payments, within the last 30 days
+    ///
+    private lazy var recentIPPOrdersResultsController: ResultsController<StorageOrder> = {
+        let today = Date()
+        let paymentGateway = Constants.paymentMethodID
+        let thirtyDaysBeforeToday = Calendar.current.date(
+            byAdding: .day,
+            value: -30,
+            to: today
+        )! // TODO: Remove force-unwrap
+
+        let predicate = NSPredicate(
+            format: "siteID == %lld AND paymentMethodID == %@ AND datePaid >= %@",
+            argumentArray: [siteID, paymentGateway, thirtyDaysBeforeToday]
+        )
+
+        return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
     ///
     /// The `OrderStatus` data is fetched from the API by `OrdersTabbedViewModel`.
@@ -335,5 +365,15 @@ extension OrderListViewModel {
         case error
         case orderCreation
         case none
+    }
+}
+
+// MARK: IPP feedback constants
+private extension OrderListViewModel {
+    enum Constants {
+        static let paymentMethodID = "woocommerce_payments"
+        static let paymentMethodTitle = "WooCommerce In-Person Payments"
+        static let receiptURLKey = "receipt_url"
+        static let numberOfTransactions = 10
     }
 }

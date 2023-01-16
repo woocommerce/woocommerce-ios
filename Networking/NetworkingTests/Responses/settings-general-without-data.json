@@ -1,0 +1,462 @@
+[
+    {
+        "id": "woocommerce_store_address",
+        "label": "Address line 1",
+        "description": "The street address for your business location.",
+        "type": "text",
+        "default": "",
+        "tip": "The street address for your business location.",
+        "value": "60 29th Street #343",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_store_address"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_store_address_2",
+        "label": "Address line 2",
+        "description": "An additional, optional address line for your business location.",
+        "type": "text",
+        "default": "",
+        "tip": "An additional, optional address line for your business location.",
+        "value": "",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_store_address_2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_store_city",
+        "label": "City",
+        "description": "The city in which your business is located.",
+        "type": "text",
+        "default": "",
+        "tip": "The city in which your business is located.",
+        "value": "Auburn",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_store_city"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_default_country",
+        "label": "Country / State",
+        "description": "The country and state or province, if any, in which your business is located.",
+        "type": "select",
+        "default": "GB",
+        "tip": "The country and state or province, if any, in which your business is located.",
+        "value": "US:NY",
+        "options": {
+            "AX": "&#197;land Islands",
+            "AF": "Afghanistan"
+        },
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_default_country"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_store_postcode",
+        "label": "Postcode / ZIP",
+        "description": "The postal code, if any, in which your business is located.",
+        "type": "text",
+        "default": "",
+        "tip": "The postal code, if any, in which your business is located.",
+        "value": "13021",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_store_postcode"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_allowed_countries",
+        "label": "Selling location(s)",
+        "description": "This option lets you limit which countries you are willing to sell to.",
+        "type": "select",
+        "default": "all",
+        "options": {
+            "all": "Sell to all countries",
+            "all_except": "Sell to all countries, except for&hellip;",
+            "specific": "Sell to specific countries"
+        },
+        "tip": "This option lets you limit which countries you are willing to sell to.",
+        "value": "all",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_allowed_countries"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_all_except_countries",
+        "label": "Sell to all countries, except for&hellip;",
+        "description": "",
+        "type": "multiselect",
+        "default": "",
+        "value": [],
+        "options": {
+            "ZW": "Zimbabwe"
+        },
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_all_except_countries"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_specific_allowed_countries",
+        "label": "Sell to specific countries",
+        "description": "",
+        "type": "multiselect",
+        "default": "",
+        "value": [],
+        "options": {
+            "VN": "Vietnam",
+            "WF": "Wallis and Futuna",
+            "EH": "Western Sahara",
+            "YE": "Yemen"
+        },
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_specific_allowed_countries"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_ship_to_countries",
+        "label": "Shipping location(s)",
+        "description": "Choose which countries you want to ship to, or choose to ship to all locations you sell to.",
+        "type": "select",
+        "default": "",
+        "options": {
+            "all": "Ship to all countries",
+            "specific": "Ship to specific countries only",
+            "disabled": "Disable shipping &amp; shipping calculations"
+        },
+        "tip": "Choose which countries you want to ship to, or choose to ship to all locations you sell to.",
+        "value": "all",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_ship_to_countries"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_specific_ship_to_countries",
+        "label": "Ship to specific countries",
+        "description": "",
+        "type": "multiselect",
+        "default": "",
+        "value": [],
+        "options": {
+            "VN": "Vietnam",
+            "WF": "Wallis and Futuna",
+            "EH": "Western Sahara",
+            "YE": "Yemen"
+        },
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_specific_ship_to_countries"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_default_customer_address",
+        "label": "Default customer location",
+        "description": "",
+        "type": "select",
+        "default": "geolocation",
+        "options": {
+            "base": "Shop base address",
+            "geolocation": "Geolocate",
+            "geolocation_ajax": "Geolocate (with page caching support)"
+        },
+        "tip": "This option determines a customers default location. The MaxMind GeoLite Database will be periodically downloaded to your wp-content directory if using geolocation.",
+        "value": "geolocation",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_default_customer_address"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_calc_taxes",
+        "label": "Enable taxes",
+        "description": "Enable tax rates and calculations",
+        "type": "checkbox",
+        "default": "no",
+        "tip": "Rates will be configurable and taxes will be calculated during checkout.",
+        "value": "yes",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_calc_taxes"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_enable_coupons",
+        "label": "Enable coupons",
+        "description": "Enable the use of coupon codes",
+        "type": "checkbox",
+        "default": "yes",
+        "tip": "Coupons can be applied from the cart and checkout pages.",
+        "value": "yes",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_enable_coupons"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_calc_discounts_sequentially",
+        "label": "",
+        "description": "Calculate coupon discounts sequentially",
+        "type": "checkbox",
+        "default": "no",
+        "tip": "When applying multiple coupons, apply the first coupon to the full price and the second coupon to the discounted price and so on.",
+        "value": "no",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_calc_discounts_sequentially"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_currency",
+        "label": "Currency",
+        "description": "This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.",
+        "type": "select",
+        "default": "GBP",
+        "options": {
+            "GBP": "Pound sterling (&pound;)",
+            "USD": "United States (US) dollar (&#36;)"
+        },
+        "tip": "This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.",
+        "value": "USD",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_currency"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_currency_pos",
+        "label": "Currency position",
+        "description": "This controls the position of the currency symbol.",
+        "type": "select",
+        "default": "left",
+        "options": {
+            "left": "Left",
+            "right": "Right",
+            "left_space": "Left with space",
+            "right_space": "Right with space"
+        },
+        "tip": "This controls the position of the currency symbol.",
+        "value": "left",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_currency_pos"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_price_thousand_sep",
+        "label": "Thousand separator",
+        "description": "This sets the thousand separator of displayed prices.",
+        "type": "text",
+        "default": ",",
+        "tip": "This sets the thousand separator of displayed prices.",
+        "value": ",",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_price_thousand_sep"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_price_decimal_sep",
+        "label": "Decimal separator",
+        "description": "This sets the decimal separator of displayed prices.",
+        "type": "text",
+        "default": ".",
+        "tip": "This sets the decimal separator of displayed prices.",
+        "value": ".",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_price_decimal_sep"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_price_num_decimals",
+        "label": "Number of decimals",
+        "description": "This sets the number of decimal points shown in displayed prices.",
+        "type": "number",
+        "default": "2",
+        "tip": "This sets the number of decimal points shown in displayed prices.",
+        "value": "2",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_price_num_decimals"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_bookings_tz_calculation",
+        "label": "Enable Bookings Timezone calculation",
+        "description": "Schedule Bookings events, such as reminder emails and auto-completions of bookings, using your site’s configured timezone.",
+        "type": "checkbox",
+        "default": "no",
+        "value": "no",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_bookings_tz_calculation"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    }
+]

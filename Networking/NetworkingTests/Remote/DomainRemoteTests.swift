@@ -78,8 +78,8 @@ final class DomainRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(products, [
-            .init(productID: 355, cost: "US$15.00", saleCost: "US$3.90"),
-            .init(productID: 356, cost: "US$60.00", saleCost: nil)
+            .init(productID: 355, term: "year", cost: "US$15.00", saleCost: "US$3.90"),
+            .init(productID: 356, term: "year", cost: "US$60.00", saleCost: nil)
         ])
     }
 

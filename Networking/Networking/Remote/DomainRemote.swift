@@ -88,7 +88,7 @@ public struct PaidDomainSuggestion: Decodable, Equatable {
     public let name: String
     /// WPCOM product ID.
     public let productID: Int64
-    /// Whether there is privacy support.
+    /// Whether there is privacy support. Used when creating a cart with a domain product.
     public let supportsPrivacy: Bool
 
     private enum CodingKeys: String, CodingKey {
@@ -102,6 +102,8 @@ public struct PaidDomainSuggestion: Decodable, Equatable {
 public struct DomainProduct: Decodable, Equatable {
     /// WPCOM product ID.
     public let productID: Int64
+    /// The duration of the product (e.g. "year").
+    public let term: String
     /// Cost string including the currency.
     public let cost: String
     /// Optional sale cost string including the currency.
@@ -109,6 +111,7 @@ public struct DomainProduct: Decodable, Equatable {
 
     private enum CodingKeys: String, CodingKey {
         case productID = "product_id"
+        case term = "product_term"
         case cost = "combined_cost_display"
         case saleCost = "combined_sale_cost_display"
     }

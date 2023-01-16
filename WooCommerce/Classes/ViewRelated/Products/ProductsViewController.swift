@@ -1,6 +1,7 @@
 import UIKit
 import WordPressUI
 import Yosemite
+import Combine
 
 import class AutomatticTracks.CrashLogging
 
@@ -194,6 +195,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     private var hasErrorLoadingData: Bool = false
 
+    private var subscriptions: Set<AnyCancellable> = []
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -349,17 +352,28 @@ private extension ProductsViewController {
     }
 
     func showStatusBulkEditingModal() {
-        let command = ProductStatusSettingListSelectorCommand(selected: viewModel.commonStatusForSelectedProducts)
+        let initialStatus = viewModel.commonStatusForSelectedProducts
+        let command = ProductStatusSettingListSelectorCommand(selected: initialStatus)
         let listSelectorViewController = ListSelectorViewController(command: command) { _ in
             // view dismiss callback - no-op
         }
         listSelectorViewController.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
                                                                                       target: self,
                                                                                       action: #selector(dismissModal))
-        listSelectorViewController.navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.bulkEditingApply,
-                                                                                       style: .plain,
-                                                                                       target: self,
-                                                                                       action: #selector(applyBulkEditingStatus))
+
+        let applyButton = UIBarButtonItem(title: Localization.bulkEditingApply)
+        applyButton.on(call: { [weak self] _ in
+            self?.applyBulkEditingStatus(newStatus: command.selected)
+        })
+        command.$selected.sink { newStatus in
+            if let newStatus, newStatus != initialStatus {
+                applyButton.isEnabled = true
+            } else {
+                applyButton.isEnabled = false
+            }
+        }.store(in: &subscriptions)
+        listSelectorViewController.navigationItem.rightBarButtonItem = applyButton
+
         self.present(WooNavigationController(rootViewController: listSelectorViewController), animated: true)
     }
 
@@ -367,7 +381,9 @@ private extension ProductsViewController {
         dismiss(animated: true)
     }
 
-    @objc func applyBulkEditingStatus() {
+    func applyBulkEditingStatus(newStatus: ProductStatus?) {
+        guard let newStatus else { return }
+
         dismiss(animated: true)
     }
 }

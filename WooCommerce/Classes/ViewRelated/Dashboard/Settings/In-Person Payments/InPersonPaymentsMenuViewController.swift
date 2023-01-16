@@ -67,7 +67,6 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         runCardPresentPaymentsOnboardingIfPossible()
         configureWebViewPresentation()
         viewModel.viewDidLoad()
-        viewModel.displayIPPFeedbackBannerIfEligible()
     }
 }
 

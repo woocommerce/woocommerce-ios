@@ -328,8 +328,8 @@ private extension ProductsViewController {
     @objc func openBulkEditingOptions(sender: UIButton) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
-        let updateStatus = UIAlertAction(title: Localization.bulkEditingStatusOption, style: .default) { _ in
-            // TODO-8519: show UI for status update
+        let updateStatus = UIAlertAction(title: Localization.bulkEditingStatusOption, style: .default) { [weak self] _ in
+            self?.showStatusBulkEditingModal()
         }
         let updatePrice = UIAlertAction(title: Localization.bulkEditingPriceOption, style: .default) { _ in
             // TODO-8520: show UI for price update
@@ -346,6 +346,29 @@ private extension ProductsViewController {
         }
 
         present(actionSheet, animated: true)
+    }
+
+    func showStatusBulkEditingModal() {
+        let command = ProductStatusSettingListSelectorCommand(selected: viewModel.commonStatusForSelectedProducts)
+        let listSelectorViewController = ListSelectorViewController(command: command) { _ in
+            // view dismiss callback - no-op
+        }
+        listSelectorViewController.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                                                      target: self,
+                                                                                      action: #selector(dismissModal))
+        listSelectorViewController.navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.bulkEditingApply,
+                                                                                       style: .plain,
+                                                                                       target: self,
+                                                                                       action: #selector(applyBulkEditingStatus))
+        self.present(WooNavigationController(rootViewController: listSelectorViewController), animated: true)
+    }
+
+    @objc func dismissModal() {
+        dismiss(animated: true)
+    }
+
+    @objc func applyBulkEditingStatus() {
+        dismiss(animated: true)
     }
 }
 
@@ -1218,5 +1241,7 @@ private extension ProductsViewController {
             "%1$@ selected",
             comment: "Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected"
         )
+
+        static let bulkEditingApply = NSLocalizedString("Apply", comment: "Title for the button to apply bulk editing changes to selected products.")
     }
 }

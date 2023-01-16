@@ -29,4 +29,13 @@ class ProductListViewModel {
     func deselectAll() {
         selectedProducts.removeAll()
     }
+
+    var commonStatusForSelectedProducts: ProductStatus? {
+        let status = selectedProducts.first?.productStatus
+        if selectedProducts.allSatisfy({ $0.productStatus == status }) {
+            return status
+        } else {
+            return nil
+        }
+    }
 }

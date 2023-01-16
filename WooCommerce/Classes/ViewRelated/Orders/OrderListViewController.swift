@@ -821,7 +821,7 @@ private extension OrderListViewController {
 
     private func dismissIPPFeedbackBannerSurvey() {
         // TODO: Dismissal logic to not show the banner again for X days/never
-        print("Dismissing feedback")
+        viewModel.dismissIPPFeedbackBanner()
     }
 }
 

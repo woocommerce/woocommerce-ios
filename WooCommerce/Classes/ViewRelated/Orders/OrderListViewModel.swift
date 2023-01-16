@@ -131,6 +131,11 @@ final class OrderListViewModel {
     ///
     @Published var hideOrdersBanners: Bool = false // TODO: Switch back to true
 
+    /// If true, no IPP feedback banner will be shown as the user has told us that they are not interested in this information.
+    /// It is persisted through app sessions.
+    /// 
+    @Published var hideIPPFeedbackBanner: Bool = false
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -191,6 +196,15 @@ final class OrderListViewModel {
         stores.dispatch(action)
     }
 
+    func dismissIPPFeedbackBanner() {
+        print("dismiss tapped")
+        let action = AppSettingsAction.updateFeedbackStatus(type: .IPPFeedback, status: .dismissed, onCompletion: { _ in
+            self.hideIPPFeedbackBanner = true
+            print("hideIPPFeedbackBanner? \(self.hideIPPFeedbackBanner)")
+        })
+        stores.dispatch(action)
+    }
+
     /// Starts the snapshotsProvider, logging any errors.
     private func startReceivingSnapshots() {
         do {
@@ -212,10 +226,6 @@ final class OrderListViewModel {
         }
 
         stores.dispatch(action)
-    }
-
-    private func loadIPPFeedbackBannerVisibility() {
-        // TODO: Implement SettingsAction to remember the merchant selection
     }
 
     @objc private func handleAppDeactivation() {

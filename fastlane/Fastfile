@@ -321,17 +321,7 @@ platform :ios do
 
     ios_finalize_prechecks(options)
 
-    UI.message('Checking app strings translation status...')
-    check_translation_progress(
-      glotpress_url: GLOTPRESS_APP_STRINGS_PROJECT_URL,
-      abort_on_violations: false
-    )
-
-    UI.message('Checking release notes strings translation status...')
-    check_translation_progress(
-      glotpress_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
-      abort_on_violations: false
-    )
+    check_all_translations
 
     download_localized_strings_and_metadata_from_glotpress
     lint_localizations
@@ -346,6 +336,27 @@ platform :ios do
 
     # Start the build
     trigger_release_build(branch_to_build: "release/#{version}")
+  end
+
+  lane :check_all_translations do
+    check_translation_progress_strings
+    check_translation_progress_release_notes
+  end
+
+  lane :check_translation_progress_strings do
+    UI.message('Checking app strings translation status...')
+    check_translation_progress(
+      glotpress_url: GLOTPRESS_APP_STRINGS_PROJECT_URL,
+      abort_on_violations: false
+    )
+  end
+
+  lane :check_translation_progress_release_notes do
+    UI.message('Checking release notes strings translation status...')
+    check_translation_progress(
+      glotpress_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
+      abort_on_violations: false
+    )
   end
 
   #####################################################################################

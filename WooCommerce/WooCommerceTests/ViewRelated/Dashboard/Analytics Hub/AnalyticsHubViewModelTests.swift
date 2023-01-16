@@ -1,5 +1,6 @@
 import XCTest
 import Yosemite
+import WooFoundation
 @testable import WooCommerce
 
 final class AnalyticsHubViewModelTests: XCTestCase {
@@ -14,6 +15,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         eventEmitter = StoreStatsUsageTracksEventEmitter(analytics: analytics)
+        ServiceLocator.setCurrencySettings(CurrencySettings()) // Default is US
     }
 
     func test_cards_viewmodels_show_correct_data_after_updating_from_network() async {

@@ -16,7 +16,7 @@ final class InProgressViewController: UIViewController {
     @IBOutlet private weak var activityIndicatorView: UIActivityIndicatorView!
     @IBOutlet private weak var messageLabel: UILabel!
 
-    private let viewProperties: InProgressViewProperties
+    private var viewProperties: InProgressViewProperties
     private let hidesNavigationBar: Bool
 
     /// - Parameters:
@@ -43,6 +43,7 @@ final class InProgressViewController: UIViewController {
         configureTitle()
         configureActivityIndicator()
         configureMessage()
+        configureViewsValues()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -61,6 +62,13 @@ final class InProgressViewController: UIViewController {
         }
 
         super.viewWillDisappear(animated)
+    }
+
+    /// Assign new values for the view to render.
+    ///
+    func updateViewProperties(_ viewProperties: InProgressViewProperties) {
+        self.viewProperties = viewProperties
+        configureViewsValues()
     }
 }
 
@@ -82,8 +90,6 @@ private extension InProgressViewController {
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 0
-
-        titleLabel.text = viewProperties.title
     }
 
     func configureActivityIndicator() {
@@ -96,7 +102,10 @@ private extension InProgressViewController {
         messageLabel.textColor = .gray(.shade10)
         messageLabel.textAlignment = .center
         messageLabel.numberOfLines = 0
+    }
 
+    func configureViewsValues() {
+        titleLabel.text = viewProperties.title
         messageLabel.text = viewProperties.message
     }
 }

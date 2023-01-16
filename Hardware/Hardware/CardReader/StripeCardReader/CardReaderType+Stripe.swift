@@ -19,5 +19,20 @@ extension CardReaderType {
             return .other
         }
     }
+
+    func toStripe() -> DeviceType? {
+        switch self {
+        case .chipper:
+            return .chipper2X
+        case .stripeM2:
+            return .stripeM2
+        case .wisepad3:
+            return .wisePad3
+        case .appleBuiltIn:
+            return .appleBuiltIn
+        case .other:
+            return nil
+        }
+    }
 }
 #endif

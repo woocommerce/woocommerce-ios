@@ -196,6 +196,10 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
+    func updateProducts(siteID: Int64, products: [Product], completion: @escaping (Result<[Product], Error>) -> Void) {
+        // no-op
+    }
+
     func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Int64], Error>) -> Void) {
         // no-op
     }

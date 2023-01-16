@@ -96,6 +96,8 @@ public class ProductStore: Store {
             updateProduct(product: product, onCompletion: onCompletion)
         case .updateProductImages(let siteID, let productID, let images, let onCompletion):
             updateProductImages(siteID: siteID, productID: productID, images: images, onCompletion: onCompletion)
+        case .updateProducts(let siteID, let products, let onCompletion):
+            updateProducts(siteID: siteID, products: products, onCompletion: onCompletion)
         case .validateProductSKU(let sku, let siteID, let onCompletion):
             validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         case let .replaceProductLocally(product, onCompletion):
@@ -361,6 +363,24 @@ private extension ProductStore {
                         return onCompletion(.failure(.notFoundInStorage))
                     }
                     onCompletion(.success(storageProduct.toReadOnly()))
+                }
+            }
+        }
+    }
+
+    func updateProducts(siteID: Int64, products: [Product], onCompletion: @escaping (Result<[Product], ProductUpdateError>) -> Void) {
+        remote.updateProducts(siteID: siteID, products: products) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(ProductUpdateError(error: error)))
+            case .success(let returnedProducts):
+                self?.upsertStoredProductsInBackground(readOnlyProducts: returnedProducts, siteID: siteID) { [weak self] in
+                    guard let storageProducts = self?.storageManager.viewStorage.loadProducts(siteID: siteID,
+                                                                                              productsIDs: returnedProducts.map { $0.productID }) else {
+                        onCompletion(.failure(.notFoundInStorage))
+                        return
+                    }
+                    onCompletion(.success(storageProducts.map { $0.toReadOnly() }))
                 }
             }
         }

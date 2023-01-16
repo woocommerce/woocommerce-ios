@@ -9,6 +9,8 @@ import class AutomatticTracks.CrashLogging
 ///
 final class ProductsViewController: UIViewController, GhostableViewController {
 
+    let viewModel: ProductListViewModel = .init()
+
     /// Main TableView
     ///
     @IBOutlet weak var tableView: UITableView!
@@ -64,11 +66,43 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     @IBOutlet private weak var toolbar: ToolbarView!
 
+    /// Top toolbar that shows the bulk edit CTA.
+    ///
+    @IBOutlet private weak var bottomToolbar: ToolbarView! {
+        didSet {
+            bottomToolbar.isHidden = true
+            bottomToolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+            bottomToolbar.setSubviews(leftViews: [], rightViews: [bulkEditButton])
+            bottomToolbar.addDividerOnTop()
+        }
+    }
+
+    /// Bottom placeholder inside StackView to cover the safe area gap below the bottom toolbar.
+    ///
+    @IBOutlet private weak var bottomPlaceholder: UIView! {
+        didSet {
+            bottomPlaceholder.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        }
+    }
+
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
 
     /// The filter CTA in the top toolbar.
     private lazy var filterButton: UIButton = UIButton(frame: .zero)
+
+    /// The bulk edit CTA in the bottom toolbar.
+    private lazy var bulkEditButton: UIButton = {
+        let button = UIButton(frame: .zero)
+        button.setTitle(Localization.bulkEditingToolbarButtonTitle, for: .normal)
+        button.addTarget(self, action: #selector(openBulkEditingOptions(sender:)), for: .touchUpInside)
+        button.applyLinkButtonStyle()
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = Constants.toolbarButtonInsets
+        button.configuration = configuration
+        button.isEnabled = false
+        return button
+    }()
 
     /// Container of the top banner that shows that the Products feature is still work in progress.
     ///
@@ -264,7 +298,54 @@ private extension ProductsViewController {
     }
 
     @objc func startBulkEditing() {
-        // TODO-8517: implement selection state
+        tableView.setEditing(true, animated: true)
+
+        // Disable pull-to-refresh while editing
+        refreshControl.removeFromSuperview()
+
+        configureNavigationBarForEditing()
+        showOrHideToolbar()
+        showBottomToolbar()
+    }
+
+    @objc func finishBulkEditing() {
+        viewModel.deselectAll()
+        tableView.setEditing(false, animated: true)
+
+        // Enable pull-to-refresh
+        tableView.addSubview(refreshControl)
+
+        configureNavigationBar()
+        showOrHideToolbar()
+        hideBottomToolbar()
+    }
+
+    func updatedSelectedItems() {
+        updateNavigationBarTitleForEditing()
+        bulkEditButton.isEnabled = viewModel.bulkEditActionIsEnabled
+    }
+
+    @objc func openBulkEditingOptions(sender: UIButton) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        let updateStatus = UIAlertAction(title: Localization.bulkEditingStatusOption, style: .default) { _ in
+            // TODO-8519: show UI for status update
+        }
+        let updatePrice = UIAlertAction(title: Localization.bulkEditingPriceOption, style: .default) { _ in
+            // TODO-8520: show UI for price update
+        }
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
+
+        actionSheet.addAction(updateStatus)
+        actionSheet.addAction(updatePrice)
+        actionSheet.addAction(cancelAction)
+
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = sender
+            popoverController.sourceRect = sender.bounds
+        }
+
+        present(actionSheet, animated: true)
     }
 }
 
@@ -330,12 +411,8 @@ private extension ProductsViewController {
                                              target: self,
                                              action: #selector(startBulkEditing))
                 button.accessibilityTraits = .button
-                button.accessibilityLabel = NSLocalizedString("Edit products",
-                                                              comment: "Action to start bulk editing of products")
-                button.accessibilityHint = NSLocalizedString(
-                    "Edit status or price for multiple products at once",
-                    comment: "VoiceOver accessibility hint, informing the user the button can be used to bulk edit products"
-                )
+                button.accessibilityLabel = Localization.bulkEditingNavBarButtonTitle
+                button.accessibilityHint = Localization.bulkEditingNavBarButtonHint
 
                 return button
             }()
@@ -343,6 +420,26 @@ private extension ProductsViewController {
         }
 
         navigationItem.rightBarButtonItems = rightBarButtonItems
+    }
+
+    func configureNavigationBarForEditing() {
+        updateNavigationBarTitleForEditing()
+        configureNavigationBarRightButtonItemsForEditing()
+    }
+
+    func updateNavigationBarTitleForEditing() {
+        let selectedProducts = viewModel.selectedProductsCount
+        if selectedProducts == 0 {
+            navigationItem.title = Localization.bulkEditingTitle
+        } else {
+            navigationItem.title = String.localizedStringWithFormat(Localization.bulkEditingItemsTitle, String(selectedProducts))
+        }
+    }
+
+    func configureNavigationBarRightButtonItemsForEditing() {
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                              target: self,
+                                                              action: #selector(finishBulkEditing))]
     }
 
     /// Apply Woo styles.
@@ -370,6 +467,8 @@ private extension ProductsViewController {
         tableView.backgroundColor = .listBackground
         tableView.tableFooterView = footerSpinnerView
         tableView.separatorStyle = .none
+
+        tableView.allowsMultipleSelectionDuringEditing = true
 
         // Adds the refresh control to table view manually so that the refresh control always appears below the navigation bar title in
         // large or normal size to be consistent with Dashboard and Orders tab with large titles workaround.
@@ -422,7 +521,9 @@ private extension ProductsViewController {
 
         [sortButton, filterButton].forEach {
             $0.applyLinkButtonStyle()
-            $0.contentEdgeInsets = Constants.toolbarButtonInsets
+            var configuration = UIButton.Configuration.plain()
+            configuration.contentInsets = Constants.toolbarButtonInsets
+            $0.configuration = configuration
         }
 
         toolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
@@ -447,7 +548,30 @@ private extension ProductsViewController {
     /// if there is 1 or more products, toolbar will be visible
     ///
     func showOrHideToolbar() {
+        guard !tableView.isEditing else {
+            toolbar.isHidden = true
+            return
+        }
+
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
+    }
+
+    func showBottomToolbar() {
+        tabBarController?.tabBar.isHidden = true
+
+        // trigger safe area update
+        if let tabBarController {
+            let currentFrame = tabBarController.view.frame
+            tabBarController.view.frame = currentFrame.insetBy(dx: 0, dy: 1)
+            tabBarController.view.frame = currentFrame
+        }
+
+        bottomToolbar.isHidden = false
+    }
+
+    func hideBottomToolbar() {
+        tabBarController?.tabBar.isHidden = false
+        bottomToolbar.isHidden = true
     }
 }
 
@@ -627,13 +751,28 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        ServiceLocator.analytics.track(.productListProductTapped)
-
         let product = resultsController.object(at: indexPath)
 
-        didSelectProduct(product: product)
+        if tableView.isEditing {
+            viewModel.selectProduct(product)
+            updatedSelectedItems()
+        } else {
+            tableView.deselectRow(at: indexPath, animated: true)
+
+            ServiceLocator.analytics.track(.productListProductTapped)
+
+            didSelectProduct(product: product)
+        }
+    }
+
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        guard tableView.isEditing else {
+            return
+        }
+
+        let product = resultsController.object(at: indexPath)
+        viewModel.deselectProduct(product)
+        updatedSelectedItems()
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -646,6 +785,14 @@ extension ProductsViewController: UITableViewDelegate {
         // the actual value. AKA no flicker!
         //
         estimatedRowHeights[indexPath] = cell.frame.height
+
+        // Restore cell selection state
+        let product = resultsController.object(at: indexPath)
+        if self.viewModel.productIsSelected(product) {
+            tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+        } else {
+            tableView.deselectRow(at: indexPath, animated: false)
+        }
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -1044,6 +1191,32 @@ private extension ProductsViewController {
         static let placeholderRowsPerSection = [3]
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        static let toolbarButtonInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
+        static let toolbarButtonInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+    }
+
+    enum Localization {
+
+        static let bulkEditingNavBarButtonTitle = NSLocalizedString("Edit products", comment: "Action to start bulk editing of products")
+        static let bulkEditingNavBarButtonHint = NSLocalizedString(
+            "Edit status or price for multiple products at once",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to bulk edit products"
+        )
+
+        static let bulkEditingToolbarButtonTitle = NSLocalizedString(
+            "Bulk update",
+            comment: "Title of a button that presents a menu with possible products bulk update options"
+        )
+        static let bulkEditingStatusOption = NSLocalizedString("Update status", comment: "Title of an option that opens bulk products status update flow")
+        static let bulkEditingPriceOption = NSLocalizedString("Update price", comment: "Title of an option that opens bulk products price update flow")
+        static let cancel = NSLocalizedString("Cancel", comment: "Title of an option to dismiss the bulk edit action sheet")
+
+        static let bulkEditingTitle = NSLocalizedString(
+            "Select items",
+            comment: "Title that appears on top of the Product List screen when bulk editing starts."
+        )
+        static let bulkEditingItemsTitle = NSLocalizedString(
+            "%1$@ selected",
+            comment: "Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected"
+        )
     }
 }

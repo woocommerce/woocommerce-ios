@@ -3,8 +3,7 @@ import XCTest
 
 public final class SingleOrderScreen: ScreenObject {
 
-    // TODO: Remove force `try` once `ScreenObject` migration is completed
-    let tabBar = try! TabNavComponent()
+    let tabBar: TabNavComponent
 
     private let editOrderButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["order-details-edit-button"]
@@ -23,6 +22,8 @@ public final class SingleOrderScreen: ScreenObject {
     private var collectPaymentButton: XCUIElement { collectPaymentButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
+        tabBar = try TabNavComponent(app: app)
+
         try super.init(
             expectedElementGetters: [ summaryCellGetter, editOrderButtonGetter ],
             app: app

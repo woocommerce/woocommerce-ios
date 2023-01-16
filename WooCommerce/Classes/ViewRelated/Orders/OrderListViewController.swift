@@ -156,6 +156,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         configureViewModel()
         configureSyncingCoordinator()
+
+        viewModel.displayIPPFeedbackBannerIfEligible()
     }
 
     override func viewWillAppear(_ animated: Bool) {

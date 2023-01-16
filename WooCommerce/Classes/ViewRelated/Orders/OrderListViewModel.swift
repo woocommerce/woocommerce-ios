@@ -53,6 +53,13 @@ final class OrderListViewModel {
     ///
     private var isAppActive: Bool = true
 
+    private var isCODEnabled: Bool {
+        guard let codGateway = storageManager.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: "cod")?.toReadOnly() else {
+            return false
+        }
+        return codGateway.enabled
+    }
+
     /// Results controller that fetches any IPP transactions via WooCommerce Payments
     ///
     private lazy var IPPOrdersResultsController: ResultsController<StorageOrder> = {
@@ -155,6 +162,7 @@ final class OrderListViewModel {
         observeForegroundRemoteNotifications()
         bindTopBannerState()
         loadOrdersBannerVisibility()
+        fetchIPPTransactions()
     }
 
     func dismissOrdersBanner() {
@@ -220,6 +228,45 @@ final class OrderListViewModel {
                                  pageSize: pageSize,
                                  reason: reason,
                                  completionHandler: completionHandler)
+    }
+
+    private func fetchIPPTransactions() {
+        do {
+            try IPPOrdersResultsController.performFetch()
+            try recentIPPOrdersResultsController.performFetch()
+        } catch {
+            DDLogError("Error fetching IPP transactions: \(error)")
+        }
+    }
+
+    func displayIPPFeedbackBannerIfEligible() {
+        if isCODEnabled {
+            let hasResults = IPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
+
+            /// In order to filter WCPay transactions processed through IPP within the last 30 days,
+            /// we check if these contain `receipt_url` in their metadata, unlike those processed through a website,
+            /// which doesn't
+            ///
+            let IPPTransactionsFound = recentIPPOrdersResultsController.fetchedObjects.filter({
+                $0.customFields.contains(where: {$0.key == Constants.receiptURLKey }) &&
+                $0.paymentMethodTitle == Constants.paymentMethodTitle})
+            let IPPresultsCount = IPPTransactionsFound.count
+
+            // TODO: Debug. Remove before merging
+            print("hasResults? \(hasResults)")
+            print("IPP transactions within 30 days: \(IPPresultsCount)")
+            print(recentIPPOrdersResultsController.fetchedObjects.map {
+                ("OrderID: \($0.orderID) - PaymentMethodID: \($0.paymentMethodID) (\($0.paymentMethodTitle) - DatePaid: \(String(describing: $0.datePaid))")
+            })
+
+            if !hasResults {
+                 print("0 transactions. Banner 1 shown")
+             } else if IPPresultsCount < Constants.numberOfTransactions {
+                 print("< 10 transactions within 30 days. Banner 2 shown")
+             } else if IPPresultsCount >= Constants.numberOfTransactions {
+                 print(">= 10 transactions within 30 days. Banner 3 shown")
+             }
+        }
     }
 
     private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {

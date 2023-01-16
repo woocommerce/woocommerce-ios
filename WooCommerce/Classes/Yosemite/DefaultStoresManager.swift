@@ -352,7 +352,8 @@ private extension DefaultStoresManager {
         dispatch(productSettingsAction)
 
         /// skips synchronizing site plan if logged in with WPOrg credentials
-        if siteID != WooConstants.placeholderStoreID {
+        /// because this requires a WPCom endpoint.
+        if isAuthenticatedWithoutWPCom {
             group.enter()
             let sitePlanAction = AccountAction.synchronizeSitePlan(siteID: siteID) { result in
                 if case let .failure(error) = result {

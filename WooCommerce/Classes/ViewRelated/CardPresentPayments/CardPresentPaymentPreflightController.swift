@@ -7,7 +7,7 @@ import ProximityReader
 
 enum CardReaderConnectionResult {
     case connected(CardReader)
-    case canceled
+    case canceled(WooAnalyticsEvent.InPersonPayments.CancellationSource)
 }
 
 final class CardPresentPaymentPreflightController {
@@ -117,7 +117,7 @@ final class CardPresentPaymentPreflightController {
             cancelAction: { [weak self] in
                 guard let self = self else { return }
                 self.alertsPresenter.dismiss()
-                self.handleConnectionResult(.success(.canceled))
+                self.handleConnectionResult(.success(.canceled(.selectReaderType)))
             }))
     }
 
@@ -135,13 +135,10 @@ final class CardPresentPaymentPreflightController {
 
     private func handleConnectionResult(_ result: Result<CardReaderConnectionResult, Error>) {
         let connectionResult = result.map { connection in
-            switch connection {
-            case .connected(let reader):
+            if case .connected(let reader) = connection {
                 self.connectedReader = reader
-                return CardReaderConnectionResult.connected(reader)
-            case .canceled:
-                return CardReaderConnectionResult.canceled
             }
+            return connection
         }
 
         switch connectionResult {

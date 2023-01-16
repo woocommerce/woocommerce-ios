@@ -167,8 +167,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                                                  onCompleted: onCompleted)
                     }
                 })
-            case .canceled:
-                self.handlePaymentCancellation()
+            case .canceled(let cancellationSource):
+                self.handlePaymentCancellation(from: cancellationSource)
                 onCancel()
             case .none:
                 break
@@ -247,9 +247,9 @@ private extension CollectOrderPaymentUseCase {
             stripeSmallestCurrencyUnitMultiplier: configuration.stripeSmallestCurrencyUnitMultiplier,
             onPreparingReader: { [weak self] in
                 self?.alertsPresenter.present(viewModel: paymentAlerts.preparingReader(onCancel: {
-                    self?.cancelPayment(onCompleted: {
+                    self?.cancelPayment(from: .paymentPreparingReader) {
                         onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-                    })
+                    }
                 }))
             },
             onWaitingForInput: { [weak self] inputMethods in
@@ -260,7 +260,7 @@ private extension CollectOrderPaymentUseCase {
                         amount: self.formattedAmount,
                         inputMethods: inputMethods,
                         onCancel: { [weak self] in
-                            self?.cancelPayment {
+                            self?.cancelPayment(from: .paymentWaitingForInput) {
                                 onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
                             }
                         })
@@ -285,7 +285,7 @@ private extension CollectOrderPaymentUseCase {
                     case .reader:
                         self?.handlePaymentCancellationFromReader(alertProvider: paymentAlerts)
                     default:
-                        self?.handlePaymentCancellation()
+                        self?.handlePaymentCancellation(from: .other)
                     }
                 case .failure(let error):
                     self?.handlePaymentFailureAndRetryPayment(error, alertProvider: paymentAlerts, onCompletion: onCompletion)
@@ -309,13 +309,13 @@ private extension CollectOrderPaymentUseCase {
         onCompletion(.success(capturedPaymentData))
     }
 
-    func handlePaymentCancellation() {
-        trackPaymentCancelation()
+    func handlePaymentCancellation(from cancellationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
+        trackPaymentCancelation(cancelationSource: cancellationSource)
         alertsPresenter.dismiss()
     }
 
     func handlePaymentCancellationFromReader(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding) {
-        trackPaymentCancelation()
+        trackPaymentCancelation(cancelationSource: .reader)
         guard let dismissedOnReaderAlert = paymentAlerts.cancelledOnReader() else {
             return alertsPresenter.dismiss()
         }
@@ -383,7 +383,7 @@ private extension CollectOrderPaymentUseCase {
                                            tryAgain: { [weak self] in
 
                                                // Cancel current payment
-                                               self?.paymentOrchestrator.cancelPayment { [weak self] result in
+                                               self?.paymentOrchestrator.cancelPayment() { [weak self] result in
                                                    guard let self = self else { return }
 
                                                    switch result {
@@ -418,17 +418,19 @@ private extension CollectOrderPaymentUseCase {
 
     /// Cancels payment and record analytics.
     ///
-    func cancelPayment(onCompleted: @escaping () -> ()) {
+    func cancelPayment(from cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource,
+                       onCompleted: @escaping () -> ()) {
         paymentOrchestrator.cancelPayment { [weak self] _ in
-            self?.trackPaymentCancelation()
+            self?.trackPaymentCancelation(cancelationSource: cancelationSource)
             onCompleted()
         }
     }
 
-    func trackPaymentCancelation() {
+    func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                                          countryCode: configuration.countryCode,
-                                                                                         cardReaderModel: connectedReader?.readerType.model ?? ""))
+                                                                                         cardReaderModel: connectedReader?.readerType.model ?? "",
+                                                                                         cancellationSource: cancelationSource))
     }
 
     /// Allow merchants to print or email the payment receipt.

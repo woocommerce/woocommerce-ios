@@ -48,7 +48,9 @@ private extension DomainStore {
     }
 
     func loadDomains(siteID: Int64, completion: @escaping (Result<[SiteDomain], Error>) -> Void) {
-        // TODO: 8558 - fetch a site's domains from the remote.
-        completion(.success([.init(name: "gotrees.wpcomstaging.com", isPrimary: true, renewalDate: nil)]))
+        Task { @MainActor in
+            let result = await Result { try await remote.loadDomains(siteID: siteID) }
+            completion(result)
+        }
     }
 }

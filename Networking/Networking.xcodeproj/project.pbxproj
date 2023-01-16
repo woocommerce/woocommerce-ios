@@ -734,6 +734,7 @@
 		DEC51AF92769A212009F3DF4 /* SystemStatus+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AF82769A212009F3DF4 /* SystemStatus+Settings.swift */; };
 		DEC51AFB2769C66B009F3DF4 /* SystemStatusMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */; };
 		DEC51B02276AFB35009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */; };
+		DEEDA4442975003800F845AB /* settings-general-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEEDA4432975003800F845AB /* settings-general-without-data.json */; };
 		DEF13C5029629EEA0024A02B /* user-complete-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEF13C4F29629EEA0024A02B /* user-complete-without-data.json */; };
 		DEF13C562965689F0024A02B /* LeaderboardListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF13C552965689F0024A02B /* LeaderboardListMapperTests.swift */; };
 		DEF13C5A296571150024A02B /* leaderboards-year-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEF13C59296571150024A02B /* leaderboards-year-without-data.json */; };
@@ -1552,6 +1553,7 @@
 		DEC51AF82769A212009F3DF4 /* SystemStatus+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+Settings.swift"; sourceTree = "<group>"; };
 		DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusMapperTests.swift; sourceTree = "<group>"; };
 		DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+DropinMustUsePlugin.swift"; sourceTree = "<group>"; };
+		DEEDA4432975003800F845AB /* settings-general-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "settings-general-without-data.json"; sourceTree = "<group>"; };
 		DEF13C4F29629EEA0024A02B /* user-complete-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "user-complete-without-data.json"; sourceTree = "<group>"; };
 		DEF13C552965689F0024A02B /* LeaderboardListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardListMapperTests.swift; sourceTree = "<group>"; };
 		DEF13C59296571150024A02B /* leaderboards-year-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "leaderboards-year-without-data.json"; sourceTree = "<group>"; };
@@ -2141,6 +2143,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DEEDA4432975003800F845AB /* settings-general-without-data.json */,
 				DEA6B1C8296D0E8A005AA5E9 /* systemStatus-without-data.json */,
 				DEA6B1C7296D0E8A005AA5E9 /* systemStatusWithPluginsOnly-without-data.json */,
 				DEA6B1C5296C13FB005AA5E9 /* payment-gateway-list-without-data.json */,
@@ -3148,6 +3151,7 @@
 				02616F902921336C0095BC00 /* site-creation-success.json in Resources */,
 				CC0786632678F79500BA9AC1 /* shipping-label-purchase-success.json in Resources */,
 				7497376A2141F2BE0008C490 /* top-performers-week-alt.json in Resources */,
+				DEEDA4442975003800F845AB /* settings-general-without-data.json in Resources */,
 				D865CE61278CA1AE002C8520 /* stripe-payment-intent-processing.json in Resources */,
 				743E84F222172D0A00FAC9D7 /* shipment_tracking_plugin_not_active.json in Resources */,
 				68CB801628D8A39700E169F8 /* customer.json in Resources */,

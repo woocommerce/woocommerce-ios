@@ -375,13 +375,19 @@ private extension BuiltInCardReaderConnectionController {
                     self.returnSuccess(result: .connected(reader))
                 }
             case .failure(let error):
-                ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID,
-                                                                                         error: error,
-                                                                                         countryCode: self.configuration.countryCode,
-                                                                                         cardReaderModel: candidateReader.readerType.model)
-                )
-                self.state = .connectingFailed(error)
+                // The TOS acceptance flow happens during connection, not discovery, and cancelations from Apple's
+                // screen are returned as failures here.
+                if case .connection(.appleBuiltInReaderTOSAcceptanceCanceled) = error as? CardReaderServiceError {
+                    return self.state = .cancel
+                } else {
+                    ServiceLocator.analytics.track(
+                        event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID,
+                                                                                             error: error,
+                                                                                             countryCode: self.configuration.countryCode,
+                                                                                             cardReaderModel: candidateReader.readerType.model)
+                    )
+                    self.state = .connectingFailed(error)
+                }
             }
         }
         stores.dispatch(action)

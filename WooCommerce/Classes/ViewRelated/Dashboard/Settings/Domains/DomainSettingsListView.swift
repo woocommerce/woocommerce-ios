@@ -13,15 +13,12 @@ struct DomainSettingsListView: View {
                 .captionStyle()
 
             ForEach(domains, id: \.name) { domain in
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(domain.name)
-                        if let renewalDate = domain.autoRenewalDate {
-                            Text(String(format: Localization.renewalDateFormat, renewalDate.toString(dateStyle: .medium, timeStyle: .none)))
-                                .foregroundColor(Color(.secondaryLabel))
-                        }
+                VStack(alignment: .leading) {
+                    Text(domain.name)
+                    if let renewalDate = domain.autoRenewalDate {
+                        Text(String(format: Localization.renewalDateFormat, renewalDate.toString(dateStyle: .medium, timeStyle: .none)))
+                            .foregroundColor(Color(.secondaryLabel))
                     }
-                    Spacer()
                 }
                 .padding(Layout.domainPadding)
                 Divider()

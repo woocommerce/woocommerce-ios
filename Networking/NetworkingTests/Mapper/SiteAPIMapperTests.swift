@@ -32,6 +32,18 @@ class SiteAPIMapperTests: XCTestCase {
 
     /// Verifies the SiteSetting fields are parsed correctly.
     ///
+    func test_SiteSetting_fields_are_properly_parsed_when_response_has_no_data_envelope() {
+        let apiSettings = mapLoadSiteAPIResponseWithoutDataEnvelope()
+
+        XCTAssertNotNil(apiSettings)
+        XCTAssertEqual(apiSettings?.siteID, dummySiteID)
+        XCTAssertNotNil(apiSettings?.namespaces)
+        XCTAssertEqual(apiSettings?.namespaces, dummyNamespaces)
+        XCTAssertEqual(apiSettings?.highestWooVersion, WooAPIVersion.mark3)
+    }
+
+    /// Verifies the SiteSetting fields are parsed correctly.
+    ///
     func test_broken_SiteSetting_fields_are_properly_parsed() {
         let apiSettings = mapLoadBrokenSiteAPIResponse()
 
@@ -62,6 +74,12 @@ private extension SiteAPIMapperTests {
     ///
     func mapLoadSiteAPIResponse() -> SiteAPI? {
         return mapSiteAPIData(from: "site-api")
+    }
+
+    /// Returns the SiteAPIMapper output upon receiving `site-api-without-data`
+    ///
+    func mapLoadSiteAPIResponseWithoutDataEnvelope() -> SiteAPI? {
+        return mapSiteAPIData(from: "site-api-without-data")
     }
 
     /// Returns the SiteAPIMapper output upon receiving `site-api`

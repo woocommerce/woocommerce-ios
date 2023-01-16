@@ -721,6 +721,8 @@
 		DE9DEEF5291CF1B40070AD7C /* site-plugin-without-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = DE9DEEF4291CF1B40070AD7C /* site-plugin-without-envelope.json */; };
 		DEA6B1C4296C0F45005AA5E9 /* payment-gateway-cod-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA6B1C3296C0F45005AA5E9 /* payment-gateway-cod-without-data.json */; };
 		DEA6B1C6296C13FB005AA5E9 /* payment-gateway-list-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA6B1C5296C13FB005AA5E9 /* payment-gateway-list-without-data.json */; };
+		DEA6B1C9296D0E8B005AA5E9 /* systemStatusWithPluginsOnly-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA6B1C7296D0E8A005AA5E9 /* systemStatusWithPluginsOnly-without-data.json */; };
+		DEA6B1CA296D0E8B005AA5E9 /* systemStatus-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA6B1C8296D0E8A005AA5E9 /* systemStatus-without-data.json */; };
 		DEC2961C26BBE764005A056B /* ShippingLabelCustomsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */; };
 		DEC51A95274CDA52009F3DF4 /* SitePluginMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A94274CDA52009F3DF4 /* SitePluginMapper.swift */; };
 		DEC51A97274DD962009F3DF4 /* plugin.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC51A96274DD962009F3DF4 /* plugin.json */; };
@@ -1542,6 +1544,8 @@
 		DE9DEEF4291CF1B40070AD7C /* site-plugin-without-envelope.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-plugin-without-envelope.json"; sourceTree = "<group>"; };
 		DEA6B1C3296C0F45005AA5E9 /* payment-gateway-cod-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "payment-gateway-cod-without-data.json"; sourceTree = "<group>"; };
 		DEA6B1C5296C13FB005AA5E9 /* payment-gateway-list-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "payment-gateway-list-without-data.json"; sourceTree = "<group>"; };
+		DEA6B1C7296D0E8A005AA5E9 /* systemStatusWithPluginsOnly-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "systemStatusWithPluginsOnly-without-data.json"; sourceTree = "<group>"; };
+		DEA6B1C8296D0E8A005AA5E9 /* systemStatus-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "systemStatus-without-data.json"; sourceTree = "<group>"; };
 		DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsForm.swift; sourceTree = "<group>"; };
 		DEC51A94274CDA52009F3DF4 /* SitePluginMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginMapper.swift; sourceTree = "<group>"; };
 		DEC51A96274DD962009F3DF4 /* plugin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = plugin.json; sourceTree = "<group>"; };
@@ -2147,6 +2151,8 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DEA6B1C8296D0E8A005AA5E9 /* systemStatus-without-data.json */,
+				DEA6B1C7296D0E8A005AA5E9 /* systemStatusWithPluginsOnly-without-data.json */,
 				DEA6B1C5296C13FB005AA5E9 /* payment-gateway-list-without-data.json */,
 				DEA6B1C3296C0F45005AA5E9 /* payment-gateway-cod-without-data.json */,
 				DE42F96E296BC9A700D514C2 /* countries-without-data.json */,
@@ -2959,6 +2965,7 @@
 				02AF07EC27492FDD00B2D81E /* media-library-from-wordpress-site.json in Resources */,
 				CC9A253C26442C71005DE56E /* shipping-label-eligibility-success.json in Resources */,
 				B5A24179217F98F600595DEF /* notifications-load-all.json in Resources */,
+				DEA6B1C9296D0E8B005AA5E9 /* systemStatusWithPluginsOnly-without-data.json in Resources */,
 				314EDF2927C02CC100A56B6F /* stripe-account-complete-empty-descriptor.json in Resources */,
 				028CB71F2902589E00331C09 /* create-account-error-invalid-email.json in Resources */,
 				E137619929151C7400FD098F /* error-wp-rest-forbidden.json in Resources */,
@@ -3021,6 +3028,7 @@
 				02BA23C922EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json in Resources */,
 				CCB2CAA226209A1200285CA0 /* generic_success_data.json in Resources */,
 				45150AA2268373F8006922EA /* countries.json in Resources */,
+				DEA6B1CA296D0E8B005AA5E9 /* systemStatus-without-data.json in Resources */,
 				743E84F422172D0A00FAC9D7 /* shipment_tracking_multiple.json in Resources */,
 				02698CF624C17FC1005337C4 /* product-alternative-types.json in Resources */,
 				03EB99962907F03000F06A39 /* empty-data-array.json in Resources */,

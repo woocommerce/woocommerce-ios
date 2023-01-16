@@ -16,7 +16,12 @@ public class SystemStatusRemote: Remote {
         let parameters = [
             ParameterKeys.fields: [ParameterValues.activePlugins, ParameterValues.inactivePlugins]
         ]
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = SystemPluginMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -31,7 +36,12 @@ public class SystemStatusRemote: Remote {
     public func fetchSystemStatusReport(for siteID: Int64,
                                         completion: @escaping (Result<SystemStatus, Error>) -> Void) {
         let path = Constants.systemStatusPath
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = SystemStatusMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }

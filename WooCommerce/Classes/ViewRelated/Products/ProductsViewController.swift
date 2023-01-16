@@ -10,7 +10,7 @@ import class AutomatticTracks.CrashLogging
 ///
 final class ProductsViewController: UIViewController, GhostableViewController {
 
-    let viewModel: ProductListViewModel = .init()
+    let viewModel: ProductListViewModel
 
     /// Main TableView
     ///
@@ -205,6 +205,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     init(siteID: Int64) {
         self.siteID = siteID
+        self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         configureTabBarItem()
@@ -388,12 +389,18 @@ private extension ProductsViewController {
     func applyBulkEditingStatus(newStatus: ProductStatus?, modalVC: UIViewController) {
         guard let newStatus else { return }
 
-        viewModel.updateSelectedProducts(with: newStatus)
+        displayProductsSavingInProgressView(on: modalVC)
+        viewModel.updateSelectedProducts(with: newStatus) { [weak self] result in
+            guard let self else { return }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
-            self?.finishBulkEditing()
-            self?.presentProductsSavedAlert(title: Localization.statusUpdatedNotice)
+            self.dismiss(animated: true, completion: nil)
+            switch result {
+            case .success:
+                self.finishBulkEditing()
+                self.presentNotice(title: Localization.statusUpdatedNotice)
+            case .failure:
+                self.presentNotice(title: Localization.updateErrorNotice)
+            }
         }
     }
 
@@ -405,7 +412,7 @@ private extension ProductsViewController {
         vc.present(inProgressViewController, animated: true, completion: nil)
     }
 
-    func presentProductsSavedAlert(title: String) {
+    func presentNotice(title: String) {
         let contextNoticePresenter: NoticePresenter = {
             let noticePresenter = DefaultNoticePresenter()
             noticePresenter.presentingViewController = self
@@ -1294,5 +1301,7 @@ private extension ProductsViewController {
 
         static let statusUpdatedNotice = NSLocalizedString("Status updated",
                                                            comment: "Title of the notice when a user updated status for selected products")
+        static let updateErrorNotice = NSLocalizedString("Cannot update products",
+                                                         comment: "Title of the notice when there is an error updating selected products")
     }
 }

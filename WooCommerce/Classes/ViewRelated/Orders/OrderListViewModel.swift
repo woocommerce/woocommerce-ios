@@ -84,7 +84,7 @@ final class OrderListViewModel {
             byAdding: .day,
             value: -30,
             to: today
-        )! // TODO: Remove force-unwrap
+        ) ?? Date()
 
         let predicate = NSPredicate(
             format: "siteID == %lld AND paymentMethodID == %@ AND datePaid >= %@",

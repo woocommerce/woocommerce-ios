@@ -299,7 +299,11 @@ private extension ProductsViewController {
         }
         coordinatingController.start()
     }
+}
 
+// MARK: - Bulk Editing flows
+//
+private extension ProductsViewController {
     @objc func startBulkEditing() {
         tableView.setEditing(true, animated: true)
 
@@ -363,7 +367,7 @@ private extension ProductsViewController {
 
         let applyButton = UIBarButtonItem(title: Localization.bulkEditingApply)
         applyButton.on(call: { [weak self] _ in
-            self?.applyBulkEditingStatus(newStatus: command.selected)
+            self?.applyBulkEditingStatus(newStatus: command.selected, modalVC: listSelectorViewController)
         })
         command.$selected.sink { newStatus in
             if let newStatus, newStatus != initialStatus {
@@ -381,10 +385,33 @@ private extension ProductsViewController {
         dismiss(animated: true)
     }
 
-    func applyBulkEditingStatus(newStatus: ProductStatus?) {
+    func applyBulkEditingStatus(newStatus: ProductStatus?, modalVC: UIViewController) {
         guard let newStatus else { return }
 
-        dismiss(animated: true)
+        viewModel.updateSelectedProducts(with: newStatus)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+            self?.finishBulkEditing()
+            self?.presentProductsSavedAlert(title: Localization.statusUpdatedNotice)
+        }
+    }
+
+    func displayProductsSavingInProgressView(on vc: UIViewController) {
+        let viewProperties = InProgressViewProperties(title: Localization.productsSavingTitle, message: Localization.productsSavingMessage)
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+        inProgressViewController.modalPresentationStyle = .fullScreen
+
+        vc.present(inProgressViewController, animated: true, completion: nil)
+    }
+
+    func presentProductsSavedAlert(title: String) {
+        let contextNoticePresenter: NoticePresenter = {
+            let noticePresenter = DefaultNoticePresenter()
+            noticePresenter.presentingViewController = self
+            return noticePresenter
+        }()
+        contextNoticePresenter.enqueue(notice: .init(title: title))
     }
 }
 
@@ -1259,5 +1286,13 @@ private extension ProductsViewController {
         )
 
         static let bulkEditingApply = NSLocalizedString("Apply", comment: "Title for the button to apply bulk editing changes to selected products.")
+
+        static let productsSavingTitle = NSLocalizedString("Updating your products...",
+                                                          comment: "Title of the in-progress UI while bulk updating selected products remotely")
+        static let productsSavingMessage = NSLocalizedString("Please wait while we update these products on your store",
+                                                            comment: "Message of the in-progress UI while bulk updating selected products remotely")
+
+        static let statusUpdatedNotice = NSLocalizedString("Status updated",
+                                                           comment: "Title of the notice when a user updated status for selected products")
     }
 }

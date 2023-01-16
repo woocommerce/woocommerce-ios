@@ -7,10 +7,17 @@ final class InboxNoteMapperTests: XCTestCase {
     ///
     private let dummySiteID: Int64 = 12983476
 
-    /// Verifies that the whole list is parsed.
+    /// Verifies that the inbox note is parsed.
     ///
     func test_InboxNoteMapper_parses_the_InboxNote_in_response() throws {
         let inboxNote = try mapLoadInboxNoteResponse()
+        XCTAssertNotNil(inboxNote)
+    }
+
+    /// Verifies that the inbox note is parsed when response has no data envelope.
+    ///
+    func test_InboxNoteMapper_parses_the_InboxNote_in_response_without_data_envelope() throws {
+        let inboxNote = try mapLoadInboxNoteResponseWithoutDataEnvelope()
         XCTAssertNotNil(inboxNote)
     }
 
@@ -81,6 +88,12 @@ private extension InboxNoteMapperTests {
     ///
     func mapLoadInboxNoteResponse() throws -> InboxNote? {
         return try mapInboxNote(from: "inbox-note")
+    }
+
+    /// Returns the InboxNoteMapper output from `inbox-note-without-data.json`
+    ///
+    func mapLoadInboxNoteResponseWithoutDataEnvelope() throws -> InboxNote? {
+        return try mapInboxNote(from: "inbox-note-without-data")
     }
 
     /// Returns the InboxNoteMapper output from `inbox-note-without-isRead.json`

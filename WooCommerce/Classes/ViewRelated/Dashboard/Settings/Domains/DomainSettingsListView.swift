@@ -64,7 +64,6 @@ private extension DomainSettingsListView {
         static let domainPadding: EdgeInsets = .init(top: 10, leading: 16, bottom: 10, trailing: 16)
         static let actionButtonPadding: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 23)
         static let dividerPadding: EdgeInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 0)
-        static let dividerHeight: CGFloat = 1
     }
 }
 

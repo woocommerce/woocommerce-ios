@@ -33,6 +33,7 @@ struct DomainSettingsView: View {
                         FreeStagingDomainView(domain: freeDomain)
                         Spacer()
                     }
+                    .padding(.horizontal, insets: Layout.defaultHorizontalPadding)
                 }
 
                 if viewModel.hasDomainCredit {
@@ -40,7 +41,9 @@ struct DomainSettingsView: View {
                 }
 
                 if viewModel.domains.isNotEmpty {
-                    // TODO: 8558 - show domain list with search domain action
+                    DomainSettingsListView(domains: viewModel.domains) {
+                        // TODO: 8558 - search domain action
+                    }
                 }
             }
             .padding(Layout.contentPadding)
@@ -82,7 +85,8 @@ private extension DomainSettingsView {
     enum Layout {
         static let dividerHeight: CGFloat = 1
         static let bottomContentPadding: EdgeInsets = .init(top: 10, leading: 16, bottom: 10, trailing: 16)
-        static let contentPadding: EdgeInsets = .init(top: 39, leading: 16, bottom: 16, trailing: 16)
+        static let contentPadding: EdgeInsets = .init(top: 39, leading: 0, bottom: 16, trailing: 0)
+        static let defaultHorizontalPadding: EdgeInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
         static let contentSpacing: CGFloat = 36
     }
 }

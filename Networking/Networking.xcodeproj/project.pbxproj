@@ -699,6 +699,8 @@
 		DE42F96B296BC23800D514C2 /* customer-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE42F96A296BC23800D514C2 /* customer-without-data.json */; };
 		DE42F96D296BC67E00D514C2 /* wc-analytics-customers-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE42F96C296BC67E00D514C2 /* wc-analytics-customers-without-data.json */; };
 		DE42F96F296BC9A700D514C2 /* countries-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE42F96E296BC9A700D514C2 /* countries-without-data.json */; };
+		DE4F2A3F29750EF400B0701C /* inbox-note-list-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE4F2A3D29750EF400B0701C /* inbox-note-list-without-data.json */; };
+		DE4F2A4029750EF400B0701C /* inbox-note-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE4F2A3E29750EF400B0701C /* inbox-note-without-data.json */; };
 		DE50295928C5BD0200551736 /* JetpackUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295828C5BD0200551736 /* JetpackUser.swift */; };
 		DE50295B28C5F99700551736 /* DotcomUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295A28C5F99700551736 /* DotcomUser.swift */; };
 		DE50295D28C6068B00551736 /* JetpackUserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295C28C6068B00551736 /* JetpackUserMapper.swift */; };
@@ -1518,6 +1520,8 @@
 		DE42F96A296BC23800D514C2 /* customer-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "customer-without-data.json"; sourceTree = "<group>"; };
 		DE42F96C296BC67E00D514C2 /* wc-analytics-customers-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wc-analytics-customers-without-data.json"; sourceTree = "<group>"; };
 		DE42F96E296BC9A700D514C2 /* countries-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "countries-without-data.json"; sourceTree = "<group>"; };
+		DE4F2A3D29750EF400B0701C /* inbox-note-list-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "inbox-note-list-without-data.json"; sourceTree = "<group>"; };
+		DE4F2A3E29750EF400B0701C /* inbox-note-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "inbox-note-without-data.json"; sourceTree = "<group>"; };
 		DE50295828C5BD0200551736 /* JetpackUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackUser.swift; sourceTree = "<group>"; };
 		DE50295A28C5F99700551736 /* DotcomUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomUser.swift; sourceTree = "<group>"; };
 		DE50295C28C6068B00551736 /* JetpackUserMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackUserMapper.swift; sourceTree = "<group>"; };
@@ -2143,6 +2147,8 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DE4F2A3D29750EF400B0701C /* inbox-note-list-without-data.json */,
+				DE4F2A3E29750EF400B0701C /* inbox-note-without-data.json */,
 				DEEDA4432975003800F845AB /* settings-general-without-data.json */,
 				DEA6B1C8296D0E8A005AA5E9 /* systemStatus-without-data.json */,
 				DEA6B1C7296D0E8A005AA5E9 /* systemStatusWithPluginsOnly-without-data.json */,
@@ -2936,6 +2942,7 @@
 				09885C8027C3FFD200910A62 /* product-variations-bulk-update.json in Resources */,
 				31054734262E36AB00C5C02B /* wcpay-payment-intent-error.json in Resources */,
 				02AF07EE27493AE700B2D81E /* media-upload-to-wordpress-site.json in Resources */,
+				DE4F2A4029750EF400B0701C /* inbox-note-without-data.json in Resources */,
 				45ED4F12239E8C57004F1BE3 /* taxes-classes.json in Resources */,
 				B5A2417B217F98FC00595DEF /* broken-notifications.json in Resources */,
 				3158A4A32729F42500C3CFA8 /* wcpay-account-dev-test.json in Resources */,
@@ -3150,6 +3157,7 @@
 				02698CFA24C188E9005337C4 /* product-variations-load-all-alternative-types.json in Resources */,
 				02616F902921336C0095BC00 /* site-creation-success.json in Resources */,
 				CC0786632678F79500BA9AC1 /* shipping-label-purchase-success.json in Resources */,
+				DE4F2A3F29750EF400B0701C /* inbox-note-list-without-data.json in Resources */,
 				7497376A2141F2BE0008C490 /* top-performers-week-alt.json in Resources */,
 				DEEDA4442975003800F845AB /* settings-general-without-data.json in Resources */,
 				D865CE61278CA1AE002C8520 /* stripe-payment-intent-processing.json in Resources */,

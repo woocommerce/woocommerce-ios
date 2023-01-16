@@ -129,7 +129,7 @@ final class OrderListViewModel {
     /// If true, no orders banner will be shown as the user has told us that they are not interested in this information.
     /// It is persisted through app sessions.
     ///
-    @Published var hideOrdersBanners: Bool = false // TODO: Switch back to true
+    @Published var hideOrdersBanners: Bool = true
 
     /// If true, no IPP feedback banner will be shown as the user has told us that they are not interested in this information.
     /// It is persisted through app sessions.
@@ -150,6 +150,8 @@ final class OrderListViewModel {
         self.filters = filters
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            // TODO: Remove. Temporarily set to false so we can debug the IPPFeedback banner easily.
+            hideOrdersBanners = false
             topBanner = .IPPFeedback
         }
     }
@@ -174,12 +176,12 @@ final class OrderListViewModel {
 
         observeForegroundRemoteNotifications()
         bindTopBannerState()
-        // TODO: Uncomment. Currently, commenting this method out the banner appear, as I'm reusing the OrdersBanner component.
-        // Combined with setting the Published hideOrdersBanners property to false
-        //loadOrdersBannerVisibility()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            loadIPPFeedbackBannerVisibility()
             fetchIPPTransactions()
+        } else {
+            loadOrdersBannerVisibility()
         }
     }
 
@@ -225,6 +227,19 @@ final class OrderListViewModel {
             }
         }
 
+        stores.dispatch(action)
+    }
+
+    private func loadIPPFeedbackBannerVisibility() {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .IPPFeedback) { [weak self] result in
+            switch result {
+            case .success(let visible):
+                self?.hideIPPFeedbackBanner = !visible
+            case .failure(let error):
+                self?.hideIPPFeedbackBanner = true
+                ServiceLocator.crashLogging.logError(error)
+            }
+        }
         stores.dispatch(action)
     }
 

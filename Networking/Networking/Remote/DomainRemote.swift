@@ -102,7 +102,7 @@ public struct PaidDomainSuggestion: Decodable, Equatable {
 public struct DomainProduct: Decodable, Equatable {
     /// WPCOM product ID.
     public let productID: Int64
-    /// The duration of the product (e.g. "year").
+    /// The duration of the product, localized on the backend (e.g. "year").
     public let term: String
     /// Cost string including the currency.
     public let cost: String

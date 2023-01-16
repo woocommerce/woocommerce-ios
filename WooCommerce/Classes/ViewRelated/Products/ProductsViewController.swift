@@ -415,7 +415,7 @@ private extension ProductsViewController {
     func presentNotice(title: String) {
         let contextNoticePresenter: NoticePresenter = {
             let noticePresenter = DefaultNoticePresenter()
-            noticePresenter.presentingViewController = self
+            noticePresenter.presentingViewController = tabBarController
             return noticePresenter
         }()
         contextNoticePresenter.enqueue(notice: .init(title: title))

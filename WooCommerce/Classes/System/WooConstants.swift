@@ -155,8 +155,10 @@ extension WooConstants {
         ///
 #if DEBUG
         case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-test-survey"
+        case IPPFeedback = "https://automattic.survey.fm/woo-app-ipp-in-app-feedback-testing"
 #else
         case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
+        case IPPFeedback = "https://automattic.survey.fm/woo-app-ipp-in-app-feedback-testing"
 #endif
 
         /// URL for the products feedback survey

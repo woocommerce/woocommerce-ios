@@ -1,7 +1,7 @@
 import Alamofire
 import Foundation
 
-public class CookieNonceAuthenticator: RequestRetrier & RequestAdapter {
+final class CookieNonceAuthenticator: RequestRetrier & RequestAdapter {
     private let username: String
     private let password: String
     private let loginURL: URL
@@ -13,7 +13,7 @@ public class CookieNonceAuthenticator: RequestRetrier & RequestAdapter {
     private var isAuthenticating = false
     private var requestsToRetry = [RequestRetryCompletion]()
 
-    public init(configuration: CookieNonceAuthenticatorConfiguration) {
+    init(configuration: CookieNonceAuthenticatorConfiguration) {
         self.username = configuration.username
         self.password = configuration.password
         self.loginURL = configuration.loginURL
@@ -22,7 +22,7 @@ public class CookieNonceAuthenticator: RequestRetrier & RequestAdapter {
 
     // MARK: Request Adapter
 
-    public func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
+    func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
         guard let nonce = nonce else {
             return urlRequest
         }
@@ -32,7 +32,7 @@ public class CookieNonceAuthenticator: RequestRetrier & RequestAdapter {
     }
 
     // MARK: Retrier
-    public func should(_ manager: SessionManager, retry request: Alamofire.Request, with error: Swift.Error, completion: @escaping RequestRetryCompletion) {
+    func should(_ manager: SessionManager, retry request: Alamofire.Request, with error: Swift.Error, completion: @escaping RequestRetryCompletion) {
         guard
             canRetry,
             // Only retry once

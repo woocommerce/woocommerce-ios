@@ -156,6 +156,10 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         configureViewModel()
         configureSyncingCoordinator()
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            viewModel.displayIPPFeedbackBannerIfEligible()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

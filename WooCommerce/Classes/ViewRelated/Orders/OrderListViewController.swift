@@ -803,9 +803,7 @@ private extension OrderListViewController {
             infoText: Localization.feedbackBannerContent,
             icon: UIImage.gridicon(.comment),
             isExpanded: true,
-            topButton: .dismiss(handler: {
-                self.dismissIPPFeedbackBannerSurvey()
-            }),
+            topButton: .dismiss(handler: {  }),
             actionButtons: [shareIPPFeedbackAction]
         )
         let topBannerView = TopBannerView(viewModel: viewModel)
@@ -817,11 +815,6 @@ private extension OrderListViewController {
         // TODO: Survey will change based on conditions
         let surveyNavigation = SurveyCoordinatingController(survey: .IPPFeedback)
         self.present(surveyNavigation, animated: true, completion: nil)
-    }
-
-    private func dismissIPPFeedbackBannerSurvey() {
-        // TODO: Dismissal logic to not show the banner again for X days/never
-        viewModel.dismissIPPFeedbackBanner()
     }
 }
 

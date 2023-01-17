@@ -200,13 +200,6 @@ final class OrderListViewModel {
         stores.dispatch(action)
     }
 
-    func dismissIPPFeedbackBanner() {
-        let action = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .dismissed, onCompletion: { _ in
-            self.hideIPPFeedbackBanner = true
-        })
-        stores.dispatch(action)
-    }
-
     /// Starts the snapshotsProvider, logging any errors.
     private func startReceivingSnapshots() {
         do {

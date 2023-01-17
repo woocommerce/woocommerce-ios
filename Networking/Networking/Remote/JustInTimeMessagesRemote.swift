@@ -35,7 +35,8 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
                                      locale: locale,
                                      path: Path.jitm,
                                      parameters: getParameters(messagePath: messagePath,
-                                                               query: query))
+                                                               query: query),
+                                     availableAsRESTRequest: true)
 
         let mapper = JustInTimeMessageListMapper(siteID: siteID)
 
@@ -97,7 +98,8 @@ public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemotePro
                                      method: .post,
                                      siteID: siteID,
                                      path: Path.jitm,
-                                     parameters: parameters)
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
 
         return try await enqueue(request, mapper: DataBoolMapper())
     }

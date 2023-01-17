@@ -97,6 +97,11 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             guard let self = self else {
                 return
             }
+
+            if readers.first(where: { $0.readerType == .appleBuiltIn }) != nil {
+                self.disconnect()
+            }
+
             self.readerUpdateError = nil
             self.didGetConnectedReaders = true
             self.connectedReaders = readers
@@ -146,10 +151,6 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     private func updateProperties() {
-        if let connectedReader = connectedReaders.first,
-           connectedReader.readerType == .appleBuiltIn {
-            return disconnect()
-        }
         updateReaderID()
         updateBatteryLevel()
         updateSoftwareVersion()

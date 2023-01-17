@@ -76,9 +76,9 @@ private extension CookieNonceAuthenticator {
                     throw CookieNonceAuthenticator.Error.missingNonce
                 }
                 self.nonce = nonce
-                self.successfulLoginSequence()
+                successfulLoginSequence()
             } catch let error as CookieNonceAuthenticator.Error {
-                self.invalidateLoginSequence(error: error)
+                invalidateLoginSequence(error: error)
             } catch {
                 DDLogError("⛔️ Cookie nonce authenticator failed with uncaught error: \(error)")
             }

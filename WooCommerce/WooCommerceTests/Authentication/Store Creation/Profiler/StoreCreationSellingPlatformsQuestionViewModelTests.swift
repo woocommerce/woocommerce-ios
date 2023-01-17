@@ -79,7 +79,7 @@ final class StoreCreationSellingPlatformsQuestionViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(answer, .init(sellingStatus: .alreadySellingOnline, sellingPlatforms: nil))
+        XCTAssertEqual(answer, .init(sellingStatus: .alreadySellingOnline, sellingPlatforms: []))
     }
 
     func test_skipButtonTapped_invokes_onSkip() throws {

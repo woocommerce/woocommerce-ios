@@ -407,7 +407,8 @@ private extension StoreCreationCoordinator {
                                               planToPurchase: WPComPlanProduct) async {
         let result = await createStore(name: name, domain: domain)
         analytics.track(event: .StoreCreation.siteCreationProfilerData(category: category,
-                                                                      sellingStatus: sellingStatus))
+                                                                       sellingStatus: sellingStatus,
+                                                                       countryCode: countryCode))
         switch result {
         case .success(let siteResult):
             showStoreSummary(from: navigationController,

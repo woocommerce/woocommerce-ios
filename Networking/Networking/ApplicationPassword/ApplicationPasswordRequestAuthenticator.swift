@@ -3,7 +3,7 @@ enum RequestAuthenticatorError: Error {
     case applicationPasswordNotAvailable
 }
 
-protocol RequestAuthenticator {
+protocol ApplicationPasswordRequestAuthenticator {
     /// Credentials to authenticate the URLRequest
     ///
     var credentials: Credentials? { get }
@@ -26,7 +26,7 @@ protocol RequestAuthenticator {
 
 /// Authenticates request
 ///
-public struct DefaultRequestAuthenticator: RequestAuthenticator {
+public struct DefaultRequestAuthenticator: ApplicationPasswordRequestAuthenticator {
     /// Credentials to authenticate the URLRequest
     ///
     let credentials: Credentials?

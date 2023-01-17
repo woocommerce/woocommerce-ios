@@ -8,9 +8,9 @@ final class ApplicationPasswordRequestProcessor {
 
     private var isAuthenticating = false
 
-    private let requestAuthenticator: RequestAuthenticator
+    private let requestAuthenticator: ApplicationPasswordRequestAuthenticator
 
-    init(requestAuthenticator: RequestAuthenticator) {
+    init(requestAuthenticator: ApplicationPasswordRequestAuthenticator) {
         self.requestAuthenticator = requestAuthenticator
     }
 }

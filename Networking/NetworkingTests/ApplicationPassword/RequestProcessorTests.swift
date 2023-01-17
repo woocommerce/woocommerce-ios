@@ -221,7 +221,7 @@ private class MockTaskConvertible: TaskConvertible {
     }
 }
 
-private class MockRequestAuthenticator: RequestAuthenticator {
+private class MockRequestAuthenticator: ApplicationPasswordRequestAuthenticator {
     var mockedShouldRetryValue: Bool?
 
     private(set) var authenticateCalled = false

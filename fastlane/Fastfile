@@ -924,34 +924,23 @@ platform :ios do
   ########################################################################
   # Configure Lanes
   ########################################################################
-  #####################################################################################
-  # update_certs_and_profiles
-  # -----------------------------------------------------------------------------------
-  # This lane downloads all the required certs and profiles and,
-  # if not run on CI it creates the missing ones.
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane update_certs_and_profiles
+
+  # Downloads all the required certificates and profiles for both production and internal distribution builds.
+  # Optionally, it can create any new necessary certificate or profile.
   #
-  # Example:
-  # bundle exec fastlane update_certs_and_profiles
-  #####################################################################################
-  lane :update_certs_and_profiles do
-    alpha_code_signing
-    appstore_code_signing
+  # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
+  lane :update_certs_and_profiles do |options|
+    alpha_code_signing(options)
+    appstore_code_signing(options)
   end
 
-  ########################################################################
-  # Fastlane match code signing
-  ########################################################################
-  private_lane :alpha_code_signing do
+  # Downloads all the required certificates and profiles the enterprise build.
+  # Optionally, it can create any new necessary certificate or profile.
+  #
+  # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
+  private_lane :alpha_code_signing do |options|
     api_key_path = ASC_KEY_PATH
-
-    # We could implement a more refined ENV to boolean conversion to support
-    # 1, yes, etc. but for the moment and given the limited scope of this tool
-    # and feature, we can implicitly expect CODE_SIGNING_READONLY to be a
-    # 'true' or 'false' string.
-    readonly = ENV.fetch('CODE_SIGNING_READONLY', 'true').to_s.downcase == 'true'
+    readonly = options.fetch(:readonly, true)
 
     unless readonly
       # The Enterprise account APIs do not support authentication via API key.
@@ -972,12 +961,16 @@ platform :ios do
     )
   end
 
-  private_lane :appstore_code_signing do
+  # Downloads all the required certificates and profiles the production build.
+  # Optionally, it can create any new necessary certificate or profile.
+  #
+  # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
+  private_lane :appstore_code_signing do |options|
     match(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
-      readonly: false,
+      readonly: options.fetch(:readonly, true),
       api_key_path: ASC_KEY_PATH
     )
   end

@@ -8,8 +8,15 @@ class WCPayChargeMapperTests: XCTestCase {
 
     /// Verifies that the WCPayCharge is parsed.
     ///
-    func test_WCPayCharge_map_parses_all_coupons_in_response() throws {
+    func test_WCPayCharge_map_parses_data_in_response() throws {
         let wcpayCharge = try mapRetrieveWCPayChargeResponse()
+        XCTAssertNotNil(wcpayCharge)
+    }
+
+    /// Verifies that the WCPayCharge is parsed.
+    ///
+    func test_WCPayCharge_map_parses_data_in_response_without_data_envelope() throws {
+        let wcpayCharge = try mapRetrieveWCPayChargeResponse(responseName: .cardPresentWithoutDataEnvelope)
         XCTAssertNotNil(wcpayCharge)
     }
 
@@ -173,6 +180,7 @@ private extension WCPayChargeMapperTests {
 
     enum ChargeResponse: String {
         case cardPresent = "wcpay-charge-card-present"
+        case cardPresentWithoutDataEnvelope = "wcpay-charge-card-present-without-data"
         case cardPresentMinimal = "wcpay-charge-card-present-minimal"
         case card = "wcpay-charge-card"
         case interacPresent = "wcpay-charge-interac-present"

@@ -398,14 +398,18 @@ extension OrderListViewModel {
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
 
-        Publishers.CombineLatest(errorState, $hideOrdersBanners)
-            .map { hasError, hasDismissedOrdersBanners  -> TopBanner in
+        Publishers.CombineLatest3(errorState, $hideOrdersBanners, $hideIPPFeedbackBanner)
+            .map { hasError, hasDismissedOrdersBanners, hasDismissedIPPBanner  -> TopBanner in
 
                 if hasError {
                     return .error
                 }
 
                 if hasDismissedOrdersBanners {
+                    return .none
+                }
+
+                if hasDismissedIPPBanner {
                     return .none
                 }
 

@@ -2,7 +2,7 @@ import Combine
 import Foundation
 
 /// Necessary data from the answer of the store creation category question.
-struct StoreCreationCategoryAnswer {
+struct StoreCreationCategoryAnswer: Equatable {
     /// Display name of the selected category.
     let name: String
     /// Raw value of the category (industry) to be sent to the backend.

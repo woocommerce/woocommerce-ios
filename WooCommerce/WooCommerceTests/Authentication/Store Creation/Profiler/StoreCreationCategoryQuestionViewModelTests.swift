@@ -17,12 +17,11 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
     }
 
     func test_continueButtonTapped_invokes_onContinue_after_selecting_a_category() throws {
-        waitFor { promise in
+        let answer = waitFor { promise in
             // Given
             let viewModel = StoreCreationCategoryQuestionViewModel(storeName: "store",
-                                                                   onContinue: { _ in
-                // Then
-                promise(())
+                                                                   onContinue: { answer in
+                promise(answer)
             },
                                                                    onSkip: {})
             // When
@@ -31,6 +30,11 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
                 await viewModel.continueButtonTapped()
             }
         }
+
+        // Then
+        XCTAssertEqual(answer, .init(name: StoreCreationCategoryQuestionViewModel.Category.clothingAndAccessories.name,
+                                     value: "clothing_and_accessories",
+                                     groupValue: "retail"))
     }
 
     func test_continueButtonTapped_invokes_onSkip_without_selecting_a_category() throws {

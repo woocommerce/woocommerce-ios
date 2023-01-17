@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Necessary data from the answer to the store creation selling status question.
-struct StoreCreationSellingStatusAnswer {
+struct StoreCreationSellingStatusAnswer: Equatable {
     /// The status of the merchant's eCommerce experience.
     let sellingStatus: StoreCreationSellingStatusQuestionViewModel.SellingStatus
     /// The eCommerce platforms that the merchant is already selling on.

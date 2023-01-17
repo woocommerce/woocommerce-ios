@@ -42,6 +42,32 @@ public struct WordPressSite: Decodable, Equatable {
         self.gmtOffset = gmtOffset
         self.namespaces = namespaces
     }
+
+    /// Decodable Conformance.
+    ///
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let name = try container.decode(String.self, forKey: .name)
+        let description = try container.decode(String.self, forKey: .description)
+        let url = try container.decode(String.self, forKey: .url)
+        let timezone = try container.decode(String.self, forKey: .timezone)
+        let gmtOffset: String = try {
+            do {
+                return try container.decode(String.self, forKey: .gmtOffset)
+            } catch {
+                let double = try container.decode(Double.self, forKey: .gmtOffset)
+                return double.description
+            }
+        }()
+        let namespaces = try container.decode([String].self, forKey: .namespaces)
+
+        self.init(name: name,
+                  description: description,
+                  url: url,
+                  timezone: timezone,
+                  gmtOffset: gmtOffset,
+                  namespaces: namespaces)
+    }
 }
 
 public extension WordPressSite {
@@ -79,7 +105,7 @@ private extension WordPressSite {
     }
 
     enum Constants {
-        static let adminPath = "/wp-admin"
+        static let adminPath = "/wp-admin/"
         static let loginPath = "/wp-login.php"
         static let wooNameSpace = "wc/"
     }

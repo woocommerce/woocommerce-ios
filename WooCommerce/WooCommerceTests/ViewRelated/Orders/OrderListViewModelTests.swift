@@ -239,6 +239,48 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertFalse(resynchronizeRequested)
     }
 
+    func test_when_having_no_error_and_IPP_banner_should_be_shown_shows_IPP_banner() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(.IPP, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.activate()
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .IPPFeedback
+        }
+    }
+
+    func test_when_having_no_error_and_IPP_banner_should_not_be_shown_and_orders_banner_should_be_shown_shows_orders_banner() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(.IPP, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.activate()
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .orderCreation
+        }
+    }
+
     func test_when_having_no_error_and_orders_banner_should_not_be_shown_shows_nothing() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
@@ -255,23 +297,19 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Then
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            waitUntil {
-                viewModel.topBanner == .IPPFeedback
-            }
-        } else {
-            waitUntil {
-                viewModel.topBanner == .none
-            }
+        waitUntil {
+            viewModel.topBanner == .none
         }
     }
 
-    func test_when_having_no_error_and_orders_banner_should_be_shown_shows_orders_banner() {
+    func test_when_having_no_error_and_orders_banner_or_IPP_banner_should_be_shown_shows_correct_banner() {
         // Given
+        let isIPPFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner)
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case let .loadFeedbackVisibility(_, onCompletion):
+            case let .loadFeedbackVisibility(.ordersCreation, onCompletion):
                 onCompletion(.success(true))
             default:
                 break
@@ -282,8 +320,14 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Then
-        waitUntil {
-            viewModel.topBanner == .orderCreation
+        if isIPPFeatureFlagEnabled {
+            waitUntil {
+                viewModel.topBanner == .IPPFeedback
+            }
+        } else {
+            waitUntil {
+                viewModel.topBanner == .orderCreation
+            }
         }
     }
 
@@ -304,14 +348,8 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Then
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            waitUntil {
-                viewModel.topBanner == .IPPFeedback
-            }
-        } else {
-            waitUntil {
-                viewModel.topBanner == .none
-            }
+        waitUntil {
+            viewModel.topBanner == .none
         }
     }
 
@@ -331,6 +369,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_dismissing_orders_banners_does_not_show_banners() {
         // Given
+        let isIPPFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner)
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
 
         // When
@@ -338,8 +377,14 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.hideOrdersBanners = true
 
         // Then
-        waitUntil {
-            viewModel.topBanner == .none
+        if isIPPFeatureFlagEnabled {
+            waitUntil {
+                viewModel.topBanner == .IPPFeedback
+            }
+        } else {
+            waitUntil {
+                viewModel.topBanner == .none
+            }
         }
     }
 

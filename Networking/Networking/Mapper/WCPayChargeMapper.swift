@@ -16,7 +16,11 @@ struct WCPayChargeMapper: Mapper {
         /// can cross that bridge when we need those decoded.
         decoder.dateDecodingStrategy = .secondsSince1970
 
-        return try decoder.decode(WCPayChargeEnvelope.self, from: response).charge
+        do {
+            return try decoder.decode(WCPayChargeEnvelope.self, from: response).charge
+        } catch {
+            return try decoder.decode(WCPayCharge.self, from: response)
+        }
     }
 }
 

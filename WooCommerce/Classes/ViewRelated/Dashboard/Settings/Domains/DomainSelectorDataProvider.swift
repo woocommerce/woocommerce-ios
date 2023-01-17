@@ -33,13 +33,12 @@ final class FreeDomainSelectorDataProvider: DomainSelectorDataProvider {
     @MainActor
     func loadDomainSuggestions(query: String) async throws -> [FreeDomainSuggestionViewModel] {
         try await withCheckedThrowingContinuation { continuation in
-            let action = DomainAction.loadFreeDomainSuggestions(query: query) { result in
+            stores.dispatch(DomainAction.loadFreeDomainSuggestions(query: query) { result in
                 continuation.resume(with: result.map { $0
                     .filter { $0.isFree }
                     .map { FreeDomainSuggestionViewModel(domainSuggestion: $0) }
                 })
-            }
-            stores.dispatch(action)
+            })
         }
     }
 }
@@ -53,8 +52,8 @@ struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable 
 
     init(domainSuggestion: PaidDomainSuggestion) {
         self.name = domainSuggestion.name
-        // TODO
-        self.attributedDetail = .init("\(domainSuggestion.saleCost ?? "none") / \(domainSuggestion.cost) / \(domainSuggestion.term)")
+        // TODO: 8558 - attributed price info
+        self.attributedDetail = .init("\(domainSuggestion.saleCost ?? "no sale") / \(domainSuggestion.cost) / \(domainSuggestion.term)")
         self.productID = domainSuggestion.productID
     }
 }
@@ -70,10 +69,9 @@ final class PaidDomainSelectorDataProvider: DomainSelectorDataProvider {
     @MainActor
     func loadDomainSuggestions(query: String) async throws -> [PaidDomainSuggestionViewModel] {
         try await withCheckedThrowingContinuation { continuation in
-            let action = DomainAction.loadPaidDomainSuggestions(query: query) { result in
+            stores.dispatch(DomainAction.loadPaidDomainSuggestions(query: query) { result in
                 continuation.resume(with: result.map { $0.map { PaidDomainSuggestionViewModel(domainSuggestion: $0) } })
-            }
-            stores.dispatch(action)
+            })
         }
     }
 }

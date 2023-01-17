@@ -1,8 +1,6 @@
 import Combine
 import UIKit
 import Yosemite
-import protocol Experiments.FeatureFlagService
-import protocol Storage.StorageManagerType
 
 /// Coordinates navigation for domain settings flow.
 final class DomainSettingsCoordinator: Coordinator {
@@ -45,7 +43,7 @@ private extension DomainSettingsCoordinator {
         let domainSelector = PaidDomainSelectorHostingController(viewModel: viewModel) { domain in
             print("\(domain) - \(domain.productID)")
         } onSupport: {
-            print("support")
+            // TODO: 8558 - remove support action
         }
         navigationController.show(domainSelector, sender: nil)
     }

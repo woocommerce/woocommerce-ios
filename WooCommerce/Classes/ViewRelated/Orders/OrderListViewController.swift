@@ -826,7 +826,7 @@ private extension OrderListViewController {
         let actionSheet = UIAlertController(
             title: Localization.dismissTitle,
             message: Localization.dismissMessage,
-            preferredStyle: .actionSheet
+            preferredStyle: .alert
         )
 
         let remindMeLaterAction = UIAlertAction( title: Localization.remindMeLater, style: .default) { [weak self] _ in

@@ -66,7 +66,7 @@ private extension ApplicationPasswordRequestProcessor {
 
     func shouldRetry(_ error: Error) -> Bool {
         // Need to generate application password
-        if .applicationPasswordNotAvailable == error as? RequestAuthenticatorError {
+        if .applicationPasswordNotAvailable == error as? ApplicationPasswordRequestAuthenticatorError {
             return true
         }
 

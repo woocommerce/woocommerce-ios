@@ -1,4 +1,4 @@
-enum RequestAuthenticatorError: Error {
+enum ApplicationPasswordRequestAuthenticatorError: Error {
     case applicationPasswordUseCaseNotAvailable
     case applicationPasswordNotAvailable
 }
@@ -71,7 +71,7 @@ public struct DefaultApplicationPasswordRequestAuthenticator: ApplicationPasswor
     ///
     func generateApplicationPassword() async throws {
         guard let applicationPasswordUseCase else {
-            throw RequestAuthenticatorError.applicationPasswordUseCaseNotAvailable
+            throw ApplicationPasswordRequestAuthenticatorError.applicationPasswordUseCaseNotAvailable
         }
         let _ = try await applicationPasswordUseCase.generateNewPassword()
         return
@@ -110,7 +110,7 @@ private extension DefaultApplicationPasswordRequestAuthenticator {
     ///
     func authenticateUsingApplicationPasswordIfPossible(_ urlRequest: URLRequest) throws -> URLRequest {
         guard let applicationPassword = applicationPasswordUseCase?.applicationPassword else {
-            throw RequestAuthenticatorError.applicationPasswordNotAvailable
+            throw ApplicationPasswordRequestAuthenticatorError.applicationPasswordNotAvailable
         }
 
         return AuthenticatedRESTRequest(applicationPassword: applicationPassword, request: urlRequest).asURLRequest()

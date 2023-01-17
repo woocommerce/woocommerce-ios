@@ -29,23 +29,15 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
         assertEqual(credentials.adminURL, "https://test.com/wp-admin")
     }
 
-    func test_version_is_correct() {
-        // Given
-        let credentials = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
-
-        // Then
-        assertEqual(credentials.version, "5.3.1")
-    }
-
-    func test_authenticator_is_created_correctly() {
+    func test_configuration_is_created_correctly() {
         // Given
         let credentials = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
 
         // When
-        let authenticator = credentials.makeCookieNonceAuthenticator()
+        let configuration = credentials.makeCookieNonceAuthenticatorConfig()
 
         // Then
-        XCTAssertNotNil(authenticator)
+        XCTAssertNotNil(configuration)
     }
 
 }

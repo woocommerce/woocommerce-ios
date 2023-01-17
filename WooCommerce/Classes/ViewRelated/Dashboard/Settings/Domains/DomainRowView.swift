@@ -40,17 +40,17 @@ struct DomainRowView: View {
     let viewModel: DomainRowViewModel
 
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
+        HStack {
+            VStack(alignment: .leading, spacing: Layout.spacingBetweenNameAndDetail) {
                 Text(viewModel.attributedName)
-                if viewModel.isSelected {
-                    Spacer()
-                    Image(uiImage: .checkmarkImage)
-                        .foregroundColor(Color(.brand))
+                if let attributedDetail = viewModel.attributedDetail {
+                    Text(attributedDetail)
                 }
             }
-            if let attributedDetail = viewModel.attributedDetail {
-                Text(attributedDetail)
+            if viewModel.isSelected {
+                Spacer()
+                Image(uiImage: .checkmarkImage)
+                    .foregroundColor(Color(.brand))
             }
         }
         .padding(Layout.insets)
@@ -60,6 +60,7 @@ struct DomainRowView: View {
 private extension DomainRowView {
     enum Layout {
         static let insets: EdgeInsets = .init(top: 10, leading: 16, bottom: 10, trailing: 16)
+        static let spacingBetweenNameAndDetail: CGFloat = 4
     }
 }
 

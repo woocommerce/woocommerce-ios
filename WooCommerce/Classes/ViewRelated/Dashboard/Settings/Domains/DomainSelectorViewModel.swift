@@ -3,14 +3,36 @@ import SwiftUI
 import Yosemite
 import enum Networking.DotcomError
 
+/// Properties that are necessary for displaying a domain suggestion in the UI.
+protocol DomainSuggestionViewProperties {
+    /// Domain name.
+    var name: String { get }
+    /// Optional attributed detail, e.g. price info for paid domains.
+    var attributedDetail: AttributedString? { get }
+}
+
 /// View model for `DomainSelectorView`.
-final class DomainSelectorViewModel: ObservableObject {
+final class DomainSelectorViewModel<DataProvider: DomainSelectorDataProvider,
+                                    DomainSuggestion: Equatable & DomainSuggestionViewProperties>: ObservableObject
+where DataProvider.DomainSuggestion == DomainSuggestion {
+    /// The state of the main view below the fixed header.
+    enum ViewState: Equatable {
+        /// When loading domain suggestions.
+        case loading
+        /// Shown when the search query is empty.
+        case placeholder
+        /// When there is an error loading domain suggestions.
+        case error(message: String)
+        /// When domain suggestions are displayed.
+        case results(domains: [DomainSuggestion])
+    }
+
     /// Current search term entered by the user.
     /// Each update will trigger a remote call for domain suggestions.
     @Published var searchTerm: String = ""
 
     /// Domain names after domain suggestions are loaded remotely.
-    @Published private var domains: [String] = []
+    @Published private var domains: [DomainSuggestion] = []
 
     /// Error message from loading domain suggestions.
     @Published private var errorMessage: String?
@@ -19,18 +41,18 @@ final class DomainSelectorViewModel: ObservableObject {
     @Published private(set) var isLoadingDomainSuggestions: Bool = false
 
     /// The state of the main domain selector view based on the search query and loading state.
-    @Published private(set) var state: DomainSelectorView.ViewState = .placeholder
+    @Published private(set) var state: ViewState = .placeholder
 
     /// Subscription for search query changes for domain search.
     private var searchQuerySubscription: AnyCancellable?
 
-    private let stores: StoresManager
+    private let dataProvider: DataProvider
     private let debounceDuration: Double
 
     init(initialSearchTerm: String = "",
-         stores: StoresManager = ServiceLocator.stores,
+         dataProvider: DataProvider,
          debounceDuration: Double = Constants.fieldDebounceDuration) {
-        self.stores = stores
+        self.dataProvider = dataProvider
         self.debounceDuration = debounceDuration
 
         // Sets the initial search term after related subscriptions are set up
@@ -66,9 +88,8 @@ private extension DomainSelectorViewModel {
                     self.isLoadingDomainSuggestions = true
 
                     do {
-                        let suggestions = try await self.loadFreeDomainSuggestions(query: searchTerm)
+                        self.domains = try await self.loadDomainSuggestions(query: searchTerm)
                         self.isLoadingDomainSuggestions = false
-                        self.handleFreeDomainSuggestions(suggestions, query: searchTerm)
                     } catch {
                         self.isLoadingDomainSuggestions = false
                         self.handleError(error)
@@ -94,28 +115,14 @@ private extension DomainSelectorViewModel {
     }
 
     @MainActor
-    func loadFreeDomainSuggestions(query: String) async throws -> [FreeDomainSuggestion] {
-        try await withCheckedThrowingContinuation { continuation in
-            let action = DomainAction.loadFreeDomainSuggestions(query: searchTerm) { result in
-                continuation.resume(with: result)
-            }
-            stores.dispatch(action)
-        }
-    }
-
-    @MainActor
-    func handleFreeDomainSuggestions(_ suggestions: [FreeDomainSuggestion], query: String) {
-        domains = suggestions
-            .filter { $0.isFree }
-            .map {
-                $0.name
-            }
+    func loadDomainSuggestions(query: String) async throws -> [DomainSuggestion] {
+        try await dataProvider.loadDomainSuggestions(query: query)
     }
 
     @MainActor
     func handleError(_ error: Error) {
         if let dotcomError = error as? DotcomError,
-            case let .unknown(_, message) = dotcomError {
+           case let .unknown(_, message) = dotcomError {
             errorMessage = message
         } else {
             errorMessage = Localization.defaultErrorMessage
@@ -126,14 +133,17 @@ private extension DomainSelectorViewModel {
 
 private extension DomainSelectorViewModel {
     enum Constants {
-        static let fieldDebounceDuration = 0.3
+        static var fieldDebounceDuration: Double {
+            0.3
+        }
     }
 }
 
 extension DomainSelectorViewModel {
     enum Localization {
-        static let defaultErrorMessage =
-        NSLocalizedString("Please try another query.",
-                          comment: "Default message when there is an unexpected error loading domain suggestions on the domain selector.")
+        static var defaultErrorMessage: String {
+            NSLocalizedString("Please try another query.",
+                              comment: "Default message when there is an unexpected error loading domain suggestions on the domain selector.")
+        }
     }
 }

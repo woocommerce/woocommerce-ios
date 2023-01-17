@@ -20,4 +20,12 @@ public struct PaidDomainSuggestion: Equatable {
     public let cost: String
     /// Optional sale cost string including the currency.
     public let saleCost: String?
+
+    public init(productID: Int64, name: String, term: String, cost: String, saleCost: String? = nil) {
+        self.productID = productID
+        self.name = name
+        self.term = term
+        self.cost = cost
+        self.saleCost = saleCost
+    }
 }

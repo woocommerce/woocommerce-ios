@@ -6,11 +6,14 @@ struct DomainRowViewModel {
     let name: String
     /// Attributed name to be displayed in the row.
     let attributedName: AttributedString
+    /// Attributed detail to be displayed in the row.
+    let attributedDetail: AttributedString?
     /// Whether the domain is selected.
     let isSelected: Bool
 
-    init(domainName: String, searchQuery: String, isSelected: Bool) {
+    init(domainName: String, attributedDetail: AttributedString?, searchQuery: String, isSelected: Bool) {
         self.name = domainName
+        self.attributedDetail = attributedDetail
         self.isSelected = isSelected
         self.attributedName = {
             var attributedName = AttributedString(domainName)
@@ -37,12 +40,17 @@ struct DomainRowView: View {
     let viewModel: DomainRowViewModel
 
     var body: some View {
-        HStack {
-            Text(viewModel.attributedName)
-            if viewModel.isSelected {
-                Spacer()
-                Image(uiImage: .checkmarkImage)
-                    .foregroundColor(Color(.brand))
+        VStack(alignment: .leading) {
+            HStack {
+                Text(viewModel.attributedName)
+                if viewModel.isSelected {
+                    Spacer()
+                    Image(uiImage: .checkmarkImage)
+                        .foregroundColor(Color(.brand))
+                }
+            }
+            if let attributedDetail = viewModel.attributedDetail {
+                Text(attributedDetail)
             }
         }
         .padding(Layout.insets)
@@ -58,8 +66,14 @@ private extension DomainRowView {
 struct DomainRowView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(alignment: .leading) {
-            DomainRowView(viewModel: .init(domainName: "whitechristmastrees.mywc.mysite", searchQuery: "White Christmas Trees", isSelected: true))
-            DomainRowView(viewModel: .init(domainName: "whitechristmastrees.mywc.mysite", searchQuery: "White Christmas", isSelected: false))
+            DomainRowView(viewModel: .init(domainName: "whitechristmastrees.mywc.mysite",
+                                           attributedDetail: nil,
+                                           searchQuery: "White Christmas Trees",
+                                           isSelected: true))
+            DomainRowView(viewModel: .init(domainName: "whitechristmastrees.mywc.mysite",
+                                           attributedDetail: nil,
+                                           searchQuery: "White Christmas",
+                                           isSelected: false))
         }
     }
 }

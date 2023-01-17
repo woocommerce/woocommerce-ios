@@ -374,14 +374,14 @@ private extension StoreCreationCoordinator {
                             categoryName: String?,
                             countryCode: SiteAddress.CountryCode?,
                             planToPurchase: WPComPlanProduct) {
-        let domainSelector = DomainSelectorHostingController(viewModel: .init(initialSearchTerm: storeName),
-                                                             onDomainSelection: { [weak self] domain in
+        let domainSelector = FreeDomainSelectorHostingController(viewModel: .init(initialSearchTerm: storeName, dataProvider: FreeDomainSelectorDataProvider()),
+                                                                 onDomainSelection: { [weak self] domain in
             guard let self else { return }
             await self.createStoreAndContinueToStoreSummary(from: navigationController,
                                                             name: storeName,
                                                             categoryName: categoryName,
                                                             countryCode: countryCode,
-                                                            domain: domain,
+                                                            domain: domain.name,
                                                             planToPurchase: planToPurchase)
         }, onSupport: { [weak self] in
             self?.showSupport(from: navigationController)

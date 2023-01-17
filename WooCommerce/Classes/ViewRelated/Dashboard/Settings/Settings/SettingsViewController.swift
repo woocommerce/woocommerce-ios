@@ -29,6 +29,8 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
+    private var domainSettingsCoordinator: DomainSettingsCoordinator?
+
     private lazy var closeAccountCoordinator: CloseAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
         guard let self = self else { throw CloseAccountError.presenterDeallocated }
@@ -343,15 +345,15 @@ private extension SettingsViewController {
     }
 
     func domainWasPressed() {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite, let navigationController else {
             return
         }
 
         // TODO: 8558 - analytics
 
-        let domainSettings = DomainSettingsHostingController(viewModel: .init(siteID: site.siteID))
-        let navigationController = WooNavigationController(rootViewController: domainSettings)
-        present(navigationController, animated: true)
+        let coordinator = DomainSettingsCoordinator(source: .settings, site: site, navigationController: navigationController)
+        domainSettingsCoordinator = coordinator
+        coordinator.start()
     }
 
     func installJetpackWasPressed() {

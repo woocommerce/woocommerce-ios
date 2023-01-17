@@ -11,6 +11,8 @@ extension WooAnalyticsEvent {
             static let step = "step"
             static let category = "industry"
             static let categoryGroup = "industry_group"
+            static let sellingStatus = "user_commerce_journey"
+            static let sellingPlatforms = "ecommerce_platforms"
         }
 
         /// Tracked when the user taps on the CTA in store picker (logged in to WPCOM) to create a store.
@@ -57,10 +59,13 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when completing the last profiler question during the store creation flow.
-        static func siteCreationProfilerData(category: StoreCreationCategoryAnswer?) -> WooAnalyticsEvent {
+        static func siteCreationProfilerData(category: StoreCreationCategoryAnswer?,
+                                             sellingStatus: StoreCreationSellingStatusAnswer?) -> WooAnalyticsEvent {
             let properties = [
                 Key.category: category?.value,
-                Key.categoryGroup: category?.groupValue
+                Key.categoryGroup: category?.groupValue,
+                Key.sellingStatus: sellingStatus?.sellingStatus.rawValue,
+                Key.sellingPlatforms: sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ",")
             ].compactMapValues({ $0 })
             return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
         }

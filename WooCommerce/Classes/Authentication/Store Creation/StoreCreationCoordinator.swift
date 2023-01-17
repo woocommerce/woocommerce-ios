@@ -143,6 +143,7 @@ private extension StoreCreationCoordinator {
                 self?.showDomainSelector(from: navigationController,
                                          storeName: storeName,
                                          category: nil,
+                                         sellingStatus: nil,
                                          countryCode: nil,
                                          planToPurchase: planToPurchase)
             }
@@ -330,11 +331,12 @@ private extension StoreCreationCoordinator {
                                    storeName: String,
                                    category: StoreCreationCategoryAnswer?,
                                    planToPurchase: WPComPlanProduct) {
-        let questionController = StoreCreationSellingStatusQuestionHostingController(storeName: storeName) { [weak self] in
+        let questionController = StoreCreationSellingStatusQuestionHostingController(storeName: storeName) { [weak self] sellingStatus in
             guard let self else { return }
             self.showStoreCountryQuestion(from: navigationController,
                                           storeName: storeName,
                                           category: category,
+                                          sellingStatus: sellingStatus,
                                           planToPurchase: planToPurchase)
         } onSkip: { [weak self] in
             // TODO: analytics
@@ -342,6 +344,7 @@ private extension StoreCreationCoordinator {
             self.showStoreCountryQuestion(from: navigationController,
                                           storeName: storeName,
                                           category: category,
+                                          sellingStatus: nil,
                                           planToPurchase: planToPurchase)
         }
         navigationController.pushViewController(questionController, animated: true)
@@ -352,6 +355,7 @@ private extension StoreCreationCoordinator {
     func showStoreCountryQuestion(from navigationController: UINavigationController,
                                   storeName: String,
                                   category: StoreCreationCategoryAnswer?,
+                                  sellingStatus: StoreCreationSellingStatusAnswer?,
                                   planToPurchase: WPComPlanProduct) {
         let questionController = StoreCreationCountryQuestionHostingController(viewModel:
                 .init(storeName: storeName) { [weak self] countryCode in
@@ -359,6 +363,7 @@ private extension StoreCreationCoordinator {
                     self.showDomainSelector(from: navigationController,
                                             storeName: storeName,
                                             category: category,
+                                            sellingStatus: sellingStatus,
                                             countryCode: countryCode,
                                             planToPurchase: planToPurchase)
                 } onSupport: { [weak self] in
@@ -372,6 +377,7 @@ private extension StoreCreationCoordinator {
     func showDomainSelector(from navigationController: UINavigationController,
                             storeName: String,
                             category: StoreCreationCategoryAnswer?,
+                            sellingStatus: StoreCreationSellingStatusAnswer?,
                             countryCode: SiteAddress.CountryCode?,
                             planToPurchase: WPComPlanProduct) {
         let domainSelector = DomainSelectorHostingController(viewModel: .init(initialSearchTerm: storeName),
@@ -380,6 +386,7 @@ private extension StoreCreationCoordinator {
             await self.createStoreAndContinueToStoreSummary(from: navigationController,
                                                             name: storeName,
                                                             category: category,
+                                                            sellingStatus: sellingStatus,
                                                             countryCode: countryCode,
                                                             domain: domain,
                                                             planToPurchase: planToPurchase)
@@ -394,11 +401,13 @@ private extension StoreCreationCoordinator {
     func createStoreAndContinueToStoreSummary(from navigationController: UINavigationController,
                                               name: String,
                                               category: StoreCreationCategoryAnswer?,
+                                              sellingStatus: StoreCreationSellingStatusAnswer?,
                                               countryCode: SiteAddress.CountryCode?,
                                               domain: String,
                                               planToPurchase: WPComPlanProduct) async {
         let result = await createStore(name: name, domain: domain)
-        analytics.track(event: .StoreCreation.siteCreationProfilerData(category: category))
+        analytics.track(event: .StoreCreation.siteCreationProfilerData(category: category,
+                                                                      sellingStatus: sellingStatus))
         switch result {
         case .success(let siteResult):
             showStoreSummary(from: navigationController,

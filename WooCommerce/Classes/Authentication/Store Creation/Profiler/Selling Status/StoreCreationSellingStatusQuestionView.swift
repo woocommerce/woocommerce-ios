@@ -30,7 +30,7 @@ struct StoreCreationSellingStatusQuestionView: View {
 struct StoreCreationSellingStatusQuestionView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            StoreCreationSellingStatusQuestionView(viewModel: .init(storeName: "New Year Store", onContinue: {}, onSkip: {}))
+            StoreCreationSellingStatusQuestionView(viewModel: .init(storeName: "New Year Store", onContinue: { _ in }, onSkip: {}))
         }
     }
 }

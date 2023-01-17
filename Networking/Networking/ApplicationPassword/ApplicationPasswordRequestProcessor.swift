@@ -8,9 +8,9 @@ final class ApplicationPasswordRequestProcessor {
 
     private var isAuthenticating = false
 
-    private let requestAuthenticator: ApplicationPasswordRequestAuthenticator
+    private let requestAuthenticator: ApplicationPasswordAuthenticator
 
-    init(requestAuthenticator: ApplicationPasswordRequestAuthenticator) {
+    init(requestAuthenticator: ApplicationPasswordAuthenticator) {
         self.requestAuthenticator = requestAuthenticator
     }
 }
@@ -66,7 +66,7 @@ private extension ApplicationPasswordRequestProcessor {
 
     func shouldRetry(_ error: Error) -> Bool {
         // Need to generate application password
-        if .applicationPasswordNotAvailable == error as? ApplicationPasswordRequestAuthenticatorError {
+        if .applicationPasswordNotAvailable == error as? ApplicationPasswordAuthenticatorError {
             return true
         }
 

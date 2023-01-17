@@ -50,7 +50,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         request.retryCount = 0
         let shouldRetry = waitFor { promise in
-            let error = ApplicationPasswordRequestAuthenticatorError.applicationPasswordNotAvailable
+            let error = ApplicationPasswordAuthenticatorError.applicationPasswordNotAvailable
             self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
                 promise(shouldRetry)
             }
@@ -68,7 +68,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         request.retryCount = 1
         let shouldRetry = waitFor { promise in
-            let error = ApplicationPasswordRequestAuthenticatorError.applicationPasswordNotAvailable
+            let error = ApplicationPasswordAuthenticatorError.applicationPasswordNotAvailable
             self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
                 promise(shouldRetry)
             }
@@ -88,7 +88,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         mockRequestAuthenticator.mockedShouldRetryValue = true
         let shouldRetry = waitFor { promise in
-            let error = ApplicationPasswordRequestAuthenticatorError.applicationPasswordNotAvailable
+            let error = ApplicationPasswordAuthenticatorError.applicationPasswordNotAvailable
             self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
                 promise(shouldRetry)
             }
@@ -106,7 +106,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         mockRequestAuthenticator.mockedShouldRetryValue = false
         let shouldRetry = waitFor { promise in
-            let error = ApplicationPasswordRequestAuthenticatorError.applicationPasswordNotAvailable
+            let error = ApplicationPasswordAuthenticatorError.applicationPasswordNotAvailable
             self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
                 promise(shouldRetry)
             }
@@ -124,7 +124,7 @@ final class RequestProcessorTests: XCTestCase {
         let request = try mockRequest()
 
         // When
-        let error = ApplicationPasswordRequestAuthenticatorError.applicationPasswordNotAvailable
+        let error = ApplicationPasswordAuthenticatorError.applicationPasswordNotAvailable
         let shouldRetry = waitFor { promise in
             self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
                 promise(shouldRetry)
@@ -177,7 +177,7 @@ final class RequestProcessorTests: XCTestCase {
         let request = try mockRequest()
 
         // When
-        let error = ApplicationPasswordRequestAuthenticatorError.applicationPasswordNotAvailable
+        let error = ApplicationPasswordAuthenticatorError.applicationPasswordNotAvailable
         waitFor { promise in
             self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
                 promise(())
@@ -196,7 +196,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         mockRequestAuthenticator.mockedShouldRetryValue = false
         waitFor { promise in
-            let error = ApplicationPasswordRequestAuthenticatorError.applicationPasswordNotAvailable
+            let error = ApplicationPasswordAuthenticatorError.applicationPasswordNotAvailable
             self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
                 promise(())
             }
@@ -226,7 +226,7 @@ private class MockTaskConvertible: TaskConvertible {
     }
 }
 
-private class MockRequestAuthenticator: ApplicationPasswordRequestAuthenticator {
+private class MockRequestAuthenticator: ApplicationPasswordAuthenticator {
     var mockedShouldRetryValue: Bool?
 
     private(set) var authenticateCalled = false

@@ -618,13 +618,7 @@ platform :ios do
     # We're about to use `add_development_certificates_to_provisioning_profiles` and `add_all_devices_to_provisioning_profiles`.
     # These actions use Developer Portal APIs that don't yet support authentication via API key (-.-').
     # Let's preemptively ask for and set the email here to avoid being asked twice for it if not set.
-
-    require 'credentials_manager'
-
-    # If Fastlane cannot instantiate a user, it will ask the caller for the email.
-    # Once we have it, we can set it as `FASTLANE_USER` in the environment (which has lifecycle limited to this call) so that the next commands will already have access to it.
-    # Note that if the user is already available to `AccountManager`, setting it in the environment is redundant, but Fastlane doesn't provide a way to check it so we have to do it anyway.
-    ENV['FASTLANE_USER'] = CredentialsManager::AccountManager.new.user
+    prompt_user_for_app_store_connect_credentials
 
     # Add all development certificates to the provisioning profiles (just in case – this is an easy step to miss)
     add_development_certificates_to_provisioning_profiles(
@@ -951,11 +945,30 @@ platform :ios do
   # Fastlane match code signing
   ########################################################################
   private_lane :alpha_code_signing do
+    api_key_path = ASC_KEY_PATH
+
+    # We could implement a more refined ENV to boolean conversion to support
+    # 1, yes, etc. but for the moment and given the limited scope of this tool
+    # and feature, we can implicitly expect CODE_SIGNING_READONLY to be a
+    # 'true' or 'false' string.
+    readonly = ENV.fetch('CODE_SIGNING_READONLY', 'true').to_s.downcase == 'true'
+
+    unless readonly
+      # The Enterprise account APIs do not support authentication via API key.
+      # If we want to modify data (readonly = false) we need to authenticate
+      # manually.
+      prompt_user_for_app_store_connect_credentials
+      # We also need to pass no API key path, otherwise Fastlane will give
+      # precedence to that authentication mode.
+      api_key_path = nil
+    end
+
     match(
       type: 'enterprise',
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
       app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
-      readonly: true
+      readonly: readonly,
+      api_key_path: api_key_path
     )
   end
 
@@ -964,7 +977,8 @@ platform :ios do
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
-      readonly: true
+      readonly: false,
+      api_key_path: ASC_KEY_PATH
     )
   end
 
@@ -1170,6 +1184,15 @@ end
 
 def buildkite_ci?
   ENV.fetch('BUILDKITE', false)
+end
+
+def prompt_user_for_app_store_connect_credentials
+  require 'credentials_manager'
+
+  # If Fastlane cannot instantiate a user, it will ask the caller for the email.
+  # Once we have it, we can set it as `FASTLANE_USER` in the environment (which has lifecycle limited to this call) so that the next commands will already have access to it.
+  # Note that if the user is already available to `AccountManager`, setting it in the environment is redundant, but Fastlane doesn't provide a way to check it so we have to do it anyway.
+  ENV['FASTLANE_USER'] = CredentialsManager::AccountManager.new.user
 end
 
 # https://buildkite.com/docs/test-analytics/ci-environments

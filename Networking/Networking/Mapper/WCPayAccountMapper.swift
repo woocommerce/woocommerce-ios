@@ -18,9 +18,15 @@ struct WCPayAccountMapper: Mapper {
         /// indicating that the plugin was active but the merchant had not on-boarded (and therefore has no account.)
         if let _ = try? decoder.decode(WCPayNullAccountEnvelope.self, from: response) {
             return WCPayAccount.noAccount
+        } else if let _ = try? decoder.decode([String].self, from: response) {
+            return WCPayAccount.noAccount
         }
 
-        return try decoder.decode(WCPayAccountEnvelope.self, from: response).account
+        do {
+            return try decoder.decode(WCPayAccountEnvelope.self, from: response).account
+        } catch {
+            return try decoder.decode(WCPayAccount.self, from: response)
+        }
     }
 }
 

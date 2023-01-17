@@ -6,7 +6,7 @@ import XCTest
 ///
 final class RequestProcessorTests: XCTestCase {
     private var mockRequestAuthenticator: MockRequestAuthenticator!
-    private var sut: RequestProcessor!
+    private var sut: ApplicationPasswordRequestProcessor!
     private var sessionManager: Alamofire.SessionManager!
 
     private let url = URL(string: "https://test.com/")!
@@ -16,7 +16,7 @@ final class RequestProcessorTests: XCTestCase {
 
         sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
         mockRequestAuthenticator = MockRequestAuthenticator()
-        sut = RequestProcessor(requestAuthenticator: mockRequestAuthenticator)
+        sut = ApplicationPasswordRequestProcessor(requestAuthenticator: mockRequestAuthenticator)
     }
 
     override func tearDown() {

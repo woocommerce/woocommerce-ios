@@ -528,7 +528,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         // Then
-        XCTAssertNotNil(mockStoresManager.recievedActions.first(where: { action in
+        XCTAssertNotNil(mockStoresManager.receivedActions.first(where: { action in
             switch action {
             case .disconnect(_):
                 return true

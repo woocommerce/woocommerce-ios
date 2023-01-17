@@ -19,7 +19,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var softwareUpdateSubject: CurrentValueSubject<CardReaderSoftwareUpdateState, Never> = .init(.none)
     private var paymentExtension: CardPresentPaymentGatewayExtension
 
-    var recievedActions: [CardPresentPaymentAction] = []
+    var receivedActions: [CardPresentPaymentAction] = []
 
     init(connectedReaders: [CardReader],
          discoveredReaders: [CardReader],
@@ -49,7 +49,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     }
 
     private func onCardPresentPaymentAction(action: CardPresentPaymentAction) {
-        recievedActions.append(action)
+        receivedActions.append(action)
         switch action {
         case .observeConnectedReaders(let onCompletion):
             onCompletion(connectedReaders)

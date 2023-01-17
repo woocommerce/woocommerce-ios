@@ -150,10 +150,7 @@ final class OrderListViewModel {
         self.filters = filters
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) && !hideIPPFeedbackBanner {
-            hideOrdersBanners = false
             topBanner = .IPPFeedback
-        } else {
-            hideOrdersBanners = true
         }
     }
 

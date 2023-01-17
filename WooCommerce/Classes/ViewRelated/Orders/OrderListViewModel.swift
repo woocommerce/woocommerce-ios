@@ -198,12 +198,17 @@ final class OrderListViewModel {
         stores.dispatch(action)
     }
 
-    func dismissIPPFeedbackBanner() {
-        let action = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .dismissed, onCompletion: { _ in
-        print("dismiss tapped")
+    func dismissIPPFeedbackBanner(remindLater: Bool) {
+        //  Updates the IPP feedback banner status as dismissed
+        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .dismissed, onCompletion: { _ in
             self.hideIPPFeedbackBanner = true
         })
-        stores.dispatch(action)
+        stores.dispatch(updateFeedbackStatus)
+
+        //  Updates the IPP feedback banner status to be reminded later, or never
+        let updateBannerVisibility = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .IPP, remindLater: remindLater, onCompletion: nil)
+        stores.dispatch(updateBannerVisibility)
+        
     }
 
     /// Starts the snapshotsProvider, logging any errors.

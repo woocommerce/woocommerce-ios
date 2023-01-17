@@ -820,9 +820,6 @@ private extension OrderListViewController {
     }
 
     private func dismissIPPFeedbackBannerSurvey() {
-        // TODO: Dismissal logic to not show the banner again for X days/never
-        viewModel.dismissIPPFeedbackBanner()
-
         let actionSheet = UIAlertController(
             title: Localization.dismissTitle,
             message: Localization.dismissMessage,
@@ -830,23 +827,24 @@ private extension OrderListViewController {
         )
 
         let remindMeLaterAction = UIAlertAction( title: Localization.remindMeLater, style: .default) { [weak self] _ in
-            self?.remindMeLater()
+            self?.remindMeLaterTapped()
         }
         actionSheet.addAction(remindMeLaterAction)
 
         let dontShowAgainAction = UIAlertAction( title: Localization.dontShowAgain, style: .default) { [weak self] _ in
-            self?.dontShowAgain()
+            self?.dontShowAgainTapped()
         }
         actionSheet.addAction(dontShowAgainAction)
 
         self.present(actionSheet, animated: true)
     }
 
-    private func remindMeLater() {
-        print("Remind me later tapped")
+    private func remindMeLaterTapped() {
+        viewModel.dismissIPPFeedbackBanner(remindLater: true)
     }
-    private func dontShowAgain() {
-        print("Don't show again tapped")
+
+    private func dontShowAgainTapped() {
+        viewModel.dismissIPPFeedbackBanner(remindLater: false)
     }
 }
 

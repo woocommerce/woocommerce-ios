@@ -15,6 +15,14 @@ final class JustInTimeMessageListMapperTests: XCTestCase {
         assertEqual(1, justInTimeMessages?.count)
     }
 
+    /// Verifies that the message is parsed.
+    ///
+    func test_JustInTimeMessageListMapper_parses_the_JustInTimeMessage_in_response_without_data_envelope() throws {
+        let justInTimeMessages = try mapLoadJustInTimeMessageListResponseWithoutDataEnvelope()
+        XCTAssertNotNil(justInTimeMessages)
+        assertEqual(1, justInTimeMessages?.count)
+    }
+
     /// Verifies that the fields are all parsed correctly.
     ///
     func test_JustInTimeMessageListMapper_parses_all_fields_in_result() throws {
@@ -54,5 +62,11 @@ private extension JustInTimeMessageListMapperTests {
     ///
     func mapLoadJustInTimeMessageListResponse() throws -> [JustInTimeMessage]? {
         return try mapJustInTimeMessageList(from: "just-in-time-message-list")
+    }
+
+    /// Returns the JustInTimeMessageListMapper output from `just-in-time-message-list-without-data.json`
+    ///
+    func mapLoadJustInTimeMessageListResponseWithoutDataEnvelope() throws -> [JustInTimeMessage]? {
+        return try mapJustInTimeMessageList(from: "just-in-time-message-list-without-data")
     }
 }

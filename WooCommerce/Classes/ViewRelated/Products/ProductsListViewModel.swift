@@ -43,6 +43,8 @@ class ProductListViewModel {
         selectedProducts.removeAll()
     }
 
+    /// Check if selected products share the same common ProductStatus. Returns `nil` otherwise.
+    ///
     var commonStatusForSelectedProducts: ProductStatus? {
         let status = selectedProducts.first?.productStatus
         if selectedProducts.allSatisfy({ $0.productStatus == status }) {
@@ -52,6 +54,8 @@ class ProductListViewModel {
         }
     }
 
+    /// Update selected products with new ProductStatus and trigger Network action to save the change remotely.
+    ///
     func updateSelectedProducts(with newStatus: ProductStatus, completion: @escaping (Result<Void, Error>) -> Void ) {
         guard selectedProductsCount > 0 else {
             completion(.failure(BulkEditError.noProductsSelected))

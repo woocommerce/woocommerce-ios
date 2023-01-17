@@ -1,0 +1,21 @@
+{
+    "namespaces": [
+        "oembed\/1.0",
+        "akismet\/v1",
+        "jetpack\/v4",
+        "wpcom\/v2",
+        "wc\/v1",
+        "wc\/v2",
+        "wc\/v3",
+        "wc-pb\/v3",
+        "wp\/v2"
+    ],
+    "authentication": [],
+    "_links": {
+        "help": [
+            {
+                "href": "http:\/\/v2.wp-api.org\/"
+            }
+        ]
+    }
+}

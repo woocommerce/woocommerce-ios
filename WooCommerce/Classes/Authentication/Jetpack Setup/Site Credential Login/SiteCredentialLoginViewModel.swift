@@ -1,9 +1,8 @@
 import Foundation
 import Yosemite
-import WordPressKit
 import WordPressAuthenticator
 import enum Alamofire.AFError
-import class Networking.UserAgent
+import struct Networking.CookieNonceAuthenticatorConfiguration
 import class Networking.WordPressOrgNetwork
 
 /// View model for `SiteCredentialLoginView`.
@@ -78,13 +77,11 @@ private extension SiteCredentialLoginViewModel {
             return
         }
         // Prepares the authenticator with username and password
-        let authenticator = CookieNonceAuthenticator(username: username,
-                                                     password: password,
-                                                     loginURL: loginURL,
-                                                     adminURL: adminURL,
-                                                     version: Constants.defaultWPVersion,
-                                                     nonce: nil)
-        let network = WordPressOrgNetwork(authenticator: authenticator)
+        let config = CookieNonceAuthenticatorConfiguration(username: username,
+                                                           password: password,
+                                                           loginURL: loginURL,
+                                                           adminURL: adminURL)
+        let network = WordPressOrgNetwork(configuration: config)
         let authenticationAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
         stores.dispatch(authenticationAction)
     }
@@ -141,6 +138,5 @@ extension SiteCredentialLoginViewModel {
     enum Constants {
         static let loginPath = "/wp-login.php"
         static let adminPath = "/wp-admin/"
-        static let defaultWPVersion = "5.6.0" // a default version that supports Ajax nonce retrieval
     }
 }

@@ -84,13 +84,11 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
             }
             // Prepares the authenticator with username and password
-            let authenticator = CookieNonceAuthenticator(username: username,
-                                                         password: password,
-                                                         loginURL: loginURL,
-                                                         adminURL: adminURL,
-                                                         version: Constants.defaultWPVersion,
-                                                         nonce: nil)
-            self.network = WordPressOrgNetwork(authenticator: authenticator)
+            let config = CookieNonceAuthenticatorConfiguration(username: username,
+                                                               password: password,
+                                                               loginURL: loginURL,
+                                                               adminURL: adminURL)
+            self.network = WordPressOrgNetwork(configuration: config)
         }
     }
 
@@ -218,6 +216,5 @@ private extension DefaultApplicationPasswordUseCase {
     enum Constants {
         static let loginPath = "/wp-login.php"
         static let adminPath = "/wp-admin/"
-        static let defaultWPVersion = "5.6.0" // a default version that supports Ajax nonce retrieval
     }
 }

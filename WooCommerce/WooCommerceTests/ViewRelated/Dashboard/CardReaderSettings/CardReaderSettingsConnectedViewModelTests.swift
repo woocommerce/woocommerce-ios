@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 @testable import Yosemite
 @testable import WooCommerce
 
@@ -486,6 +487,55 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(viewModel.connectedReaderModel)
+    }
+
+    func test_when_connected_to_a_built_in_reader_it_isnt_displayed() {
+        // Given
+        mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.appleBuiltIn()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        // When
+        let shouldShow = waitFor { promise in
+            self.viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: { promise($0) },
+                                                                  configuration: Mocks.configuration,
+                                                                  analyticsTracker: .init(configuration: Mocks.configuration,
+                                                                                          stores: self.mockStoresManager),
+                                                                  delayToShowUpdateSuccessMessage: .milliseconds(1))
+        }
+
+        // Then
+        assertEqual(.isFalse, shouldShow)
+    }
+
+    func test_when_connected_to_a_built_in_reader_it_disconnects() {
+        // Given
+        mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.appleBuiltIn()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        // When
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         configuration: Mocks.configuration,
+                                                         analyticsTracker: .init(configuration: Mocks.configuration,
+                                                                                 stores: mockStoresManager),
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
+
+        // Then
+        XCTAssertNotNil(mockStoresManager.recievedActions.first(where: { action in
+            switch action {
+            case .disconnect(_):
+                return true
+            default:
+                return false
+            }
+        }))
     }
 }
 

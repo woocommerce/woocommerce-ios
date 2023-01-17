@@ -146,10 +146,19 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     private func updateProperties() {
+        if let connectedReader = connectedReaders.first,
+           connectedReader.readerType == .appleBuiltIn {
+            return disconnect()
+        }
         updateReaderID()
         updateBatteryLevel()
         updateSoftwareVersion()
         didUpdate?()
+    }
+
+    private func disconnect() {
+        let action = CardPresentPaymentAction.disconnect { _ in }
+        ServiceLocator.stores.dispatch(action)
     }
 
     private func updateReaderID() {
@@ -248,6 +257,8 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         if !didGetConnectedReaders {
             newShouldShow = .isUnknown
         } else if connectedReaders.isEmpty {
+            newShouldShow = .isFalse
+        } else if connectedReaders.first(where: { $0.readerType == .appleBuiltIn }) != nil {
             newShouldShow = .isFalse
         } else {
             newShouldShow = .isTrue

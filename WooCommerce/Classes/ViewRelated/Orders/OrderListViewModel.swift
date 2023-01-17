@@ -200,6 +200,7 @@ final class OrderListViewModel {
 
     func dismissIPPFeedbackBanner() {
         let action = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .dismissed, onCompletion: { _ in
+        print("dismiss tapped")
             self.hideIPPFeedbackBanner = true
         })
         stores.dispatch(action)
@@ -410,7 +411,8 @@ extension OrderListViewModel {
                 }
 
                 if hasDismissedIPPBanner {
-                    return .none
+                    //return .none // TODO: Fix. This works only once.
+                    return .IPPFeedback
                 }
 
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {

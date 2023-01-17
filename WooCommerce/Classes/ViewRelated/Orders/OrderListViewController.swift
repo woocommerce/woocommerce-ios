@@ -822,6 +822,31 @@ private extension OrderListViewController {
     private func dismissIPPFeedbackBannerSurvey() {
         // TODO: Dismissal logic to not show the banner again for X days/never
         viewModel.dismissIPPFeedbackBanner()
+
+        let actionSheet = UIAlertController(
+            title: Localization.dismissTitle,
+            message: Localization.dismissMessage,
+            preferredStyle: .actionSheet
+        )
+
+        let remindMeLaterAction = UIAlertAction( title: Localization.remindMeLater, style: .default) { [weak self] _ in
+            self?.remindMeLater()
+        }
+        actionSheet.addAction(remindMeLaterAction)
+
+        let dontShowAgainAction = UIAlertAction( title: Localization.dontShowAgain, style: .default) { [weak self] _ in
+            self?.dontShowAgain()
+        }
+        actionSheet.addAction(dontShowAgainAction)
+
+        self.present(actionSheet, animated: true)
+    }
+
+    private func remindMeLater() {
+        print("Remind me later tapped")
+    }
+    private func dontShowAgain() {
+        print("Don't show again tapped")
     }
 }
 
@@ -852,6 +877,16 @@ private extension OrderListViewController {
         static let shareFeedbackButton = NSLocalizedString("Share feedback",
                                                            comment: "Title of the feedback action button on the In-Person Payments feedback banner"
         )
+
+        static let dismissTitle = NSLocalizedString("Give feedback",
+                                                    comment: "Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed")
+
+        static let dismissMessage = NSLocalizedString("No worries! You can always go to Settings in the Menu to send us feedback.",
+            comment: "Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed")
+
+        static let remindMeLater = NSLocalizedString("Remind me later", comment: "")
+
+        static let dontShowAgain = NSLocalizedString("Don't show again", comment: "")
 
         static func markCompletedNoticeTitle(orderID: Int64) -> String {
             let format = NSLocalizedString(

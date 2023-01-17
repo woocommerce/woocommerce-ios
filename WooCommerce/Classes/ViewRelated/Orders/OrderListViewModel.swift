@@ -149,10 +149,11 @@ final class OrderListViewModel {
         self.notificationCenter = notificationCenter
         self.filters = filters
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            // TODO: Remove. Temporarily set to false so we can debug the IPPFeedback banner easily.
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) && !hideIPPFeedbackBanner {
             hideOrdersBanners = false
             topBanner = .IPPFeedback
+        } else {
+            hideOrdersBanners = true
         }
     }
 
@@ -179,6 +180,7 @@ final class OrderListViewModel {
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
             loadIPPFeedbackBannerVisibility()
+            loadOrdersBannerVisibility()
             fetchIPPTransactions()
         } else {
             loadOrdersBannerVisibility()
@@ -398,22 +400,18 @@ extension OrderListViewModel {
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
 
-        Publishers.CombineLatest(errorState, $hideOrdersBanners)
-            .map { hasError, hasDismissedOrdersBanners  -> TopBanner in
+        Publishers.CombineLatest3(errorState, $hideOrdersBanners, $hideIPPFeedbackBanner)
+            .map { hasError, hasDismissedOrdersBanners, hasDismissedIPPFeedbackBanner  -> TopBanner in
 
-                if hasError {
+                guard !hasError else {
                     return .error
                 }
 
-                if hasDismissedOrdersBanners {
-                    return .none
+                guard hasDismissedIPPFeedbackBanner else {
+                    return .IPPFeedback
                 }
 
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-                    return .IPPFeedback
-                } else {
-                    return .orderCreation
-                }
+                return hasDismissedOrdersBanners ? .none : .orderCreation
             }
             .assign(to: &$topBanner)
     }

@@ -1,9 +1,9 @@
-enum RequestAuthenticatorError: Error {
+enum ApplicationPasswordAuthenticatorError: Error {
     case applicationPasswordUseCaseNotAvailable
     case applicationPasswordNotAvailable
 }
 
-protocol RequestAuthenticator {
+protocol ApplicationPasswordAuthenticator {
     /// Credentials to authenticate the URLRequest
     ///
     var credentials: Credentials? { get }
@@ -26,7 +26,7 @@ protocol RequestAuthenticator {
 
 /// Authenticates request
 ///
-public struct DefaultRequestAuthenticator: RequestAuthenticator {
+public struct DefaultApplicationPasswordAuthenticator: ApplicationPasswordAuthenticator {
     /// Credentials to authenticate the URLRequest
     ///
     let credentials: Credentials?
@@ -71,7 +71,7 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
     ///
     func generateApplicationPassword() async throws {
         guard let applicationPasswordUseCase else {
-            throw RequestAuthenticatorError.applicationPasswordUseCaseNotAvailable
+            throw ApplicationPasswordAuthenticatorError.applicationPasswordUseCaseNotAvailable
         }
         let _ = try await applicationPasswordUseCase.generateNewPassword()
         return
@@ -84,7 +84,7 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
     }
 }
 
-private extension DefaultRequestAuthenticator {
+private extension DefaultApplicationPasswordAuthenticator {
     /// To check whether the given URLRequest is a REST API request
     /// 
     func isRestAPIRequest(_ urlRequest: URLRequest) -> Bool {
@@ -110,7 +110,7 @@ private extension DefaultRequestAuthenticator {
     ///
     func authenticateUsingApplicationPasswordIfPossible(_ urlRequest: URLRequest) throws -> URLRequest {
         guard let applicationPassword = applicationPasswordUseCase?.applicationPassword else {
-            throw RequestAuthenticatorError.applicationPasswordNotAvailable
+            throw ApplicationPasswordAuthenticatorError.applicationPasswordNotAvailable
         }
 
         return AuthenticatedRESTRequest(applicationPassword: applicationPassword, request: urlRequest).asURLRequest()

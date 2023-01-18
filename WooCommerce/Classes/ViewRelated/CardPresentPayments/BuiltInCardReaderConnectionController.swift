@@ -52,7 +52,7 @@ final class BuiltInCardReaderConnectionController {
         /// will be called with a `success` `Bool` `False` result. The view controller passed to `searchAndConnect` will be
         /// dereferenced and the state set to `idle`
         ///
-        case cancel
+        case cancel(WooAnalyticsEvent.InPersonPayments.CancellationSource)
 
         /// A failure occurred. The completion passed to `searchAndConnect`
         /// will be called with a `failure` result. The view controller passed to `searchAndConnect` will be
@@ -163,8 +163,8 @@ private extension BuiltInCardReaderConnectionController {
             onSearching()
         case .retry:
             onRetry()
-        case .cancel:
-            onCancel()
+        case .cancel(let cancellationSource):
+            onCancel(from: cancellationSource)
         case .connectToReader:
             onConnectToReader()
         case .connectingFailed(let error):
@@ -269,7 +269,7 @@ private extension BuiltInCardReaderConnectionController {
         /// stay in this state
         ///
         alertsPresenter.present(viewModel: alertsProvider.scanningForReader(cancel: {
-            self.state = .cancel
+            self.state = .cancel(.searchingForReader)
         }))
     }
 
@@ -279,7 +279,7 @@ private extension BuiltInCardReaderConnectionController {
         let cancel = softwareUpdateCancelable.map { cancelable in
             return { [weak self] in
                 guard let self = self else { return }
-                self.state = .cancel
+                self.state = .cancel(.searchingForReader)
                 self.analyticsTracker.cardReaderSoftwareUpdateCancelTapped()
                 cancelable.cancel { [weak self] result in
                     if case .failure(let error) = result {
@@ -309,9 +309,9 @@ private extension BuiltInCardReaderConnectionController {
 
     /// End the search for a card reader
     ///
-    func onCancel() {
+    func onCancel(from cancellationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
-            self?.returnSuccess(result: .canceled)
+            self?.returnSuccess(result: .canceled(cancellationSource))
         }
         stores.dispatch(action)
     }
@@ -375,13 +375,19 @@ private extension BuiltInCardReaderConnectionController {
                     self.returnSuccess(result: .connected(reader))
                 }
             case .failure(let error):
-                ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID,
-                                                                                         error: error,
-                                                                                         countryCode: self.configuration.countryCode,
-                                                                                         cardReaderModel: candidateReader.readerType.model)
-                )
-                self.state = .connectingFailed(error)
+                // The TOS acceptance flow happens during connection, not discovery, and cancelations from Apple's
+                // screen are returned as failures here.
+                if case .connection(.appleBuiltInReaderTOSAcceptanceCanceled) = error as? CardReaderServiceError {
+                    return self.state = .cancel(.appleTOSAcceptance)
+                } else {
+                    ServiceLocator.analytics.track(
+                        event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID,
+                                                                                             error: error,
+                                                                                             countryCode: self.configuration.countryCode,
+                                                                                             cardReaderModel: candidateReader.readerType.model)
+                    )
+                    self.state = .connectingFailed(error)
+                }
             }
         }
         stores.dispatch(action)
@@ -441,7 +447,7 @@ private extension BuiltInCardReaderConnectionController {
         }
 
         let cancelSearch = {
-            self.state = .cancel
+            self.state = .cancel(.connectionError)
         }
 
         guard case CardReaderServiceError.connection(let underlyingError) = error else {

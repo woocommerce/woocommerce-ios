@@ -37,10 +37,7 @@ private extension ProductImagesProductIDUpdater {
                             siteID: Int64,
                             productID: Int64) async throws -> Media {
         try await withCheckedThrowingContinuation { continuation in
-            let action = MediaAction.updateProductID(forceWPOrgRestAPI: ServiceLocator.stores.isAuthenticatedWithoutWPCom,
-                                                     siteID: siteID,
-                                                     productID: productID,
-                                                     mediaID: productImageID) { result in
+            let action = MediaAction.updateProductID(siteID: siteID, productID: productID, mediaID: productImageID) { result in
                 switch result {
                 case .failure(let error):
                     DDLogError("⛔️ Error updating `parent_id` of media with \(productImageID): \(error)")

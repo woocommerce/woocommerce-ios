@@ -51,47 +51,26 @@ public final class MediaStore: Store {
         }
 
         switch action {
-        case .retrieveMediaLibrary(let forceWPOrgRestAPI,
-                                   let siteID,
-                                   let pageNumber,
-                                   let pageSize,
-                                   let onCompletion):
-            retrieveMediaLibrary(forceWPOrgRestAPI: forceWPOrgRestAPI,
-                                 siteID: siteID,
-                                 pageNumber: pageNumber,
-                                 pageSize: pageSize,
-                                 onCompletion: onCompletion)
-        case .uploadMedia(let forceWPOrgRestAPI,
-                          let siteID,
-                          let productID,
-                          let mediaAsset,
-                          let onCompletion):
-            uploadMedia(forceWPOrgRestAPI: forceWPOrgRestAPI,
-                        siteID: siteID,
-                        productID: productID,
-                        mediaAsset: mediaAsset,
-                        onCompletion: onCompletion)
-        case .updateProductID(let forceWPOrgRestAPI,
-                              let siteID,
-                              let productID,
-                              let mediaID,
-                              let onCompletion):
-            updateProductID(forceWPOrgRestAPI: forceWPOrgRestAPI,
-                            siteID: siteID,
-                            productID: productID,
-                            mediaID: mediaID,
-                            onCompletion: onCompletion)
+        case .retrieveMediaLibrary(let siteID, let pageNumber, let pageSize, let onCompletion):
+            retrieveMediaLibrary(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .uploadMedia(let siteID, let productID, let mediaAsset, let onCompletion):
+            uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, onCompletion: onCompletion)
+        case .updateProductID(let siteID,
+                            let productID,
+                             let mediaID,
+                             let onCompletion):
+            updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, onCompletion: onCompletion)
         }
     }
 }
 
 private extension MediaStore {
-    func retrieveMediaLibrary(forceWPOrgRestAPI: Bool,
-                              siteID: Int64,
+    func retrieveMediaLibrary(siteID: Int64,
                               pageNumber: Int,
                               pageSize: Int,
                               onCompletion: @escaping (Result<[Media], Error>) -> Void) {
-        if forceWPOrgRestAPI || isSiteJetpackJCPConnected(siteID) {
+        let storage = storageManager.viewStorage
+        if let site = storage.loadSite(siteID: siteID)?.toReadOnly(), site.isJetpackCPConnected {
             remote.loadMediaLibraryFromWordPressSite(siteID: siteID,
                                                      pageNumber: pageNumber,
                                                      pageSize: pageSize) { result in
@@ -110,8 +89,7 @@ private extension MediaStore {
     /// 1) Exports the media asset to a uploadable type
     /// 2) Uploads the exported media file to the server
     ///
-    func uploadMedia(forceWPOrgRestAPI: Bool,
-                     siteID: Int64,
+    func uploadMedia(siteID: Int64,
                      productID: Int64,
                      mediaAsset: ExportableAsset,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
@@ -121,20 +99,19 @@ private extension MediaStore {
                 onCompletion(.failure(error ?? MediaActionError.unknown))
                 return
             }
-            self?.uploadMedia(forceWPOrgRestAPI: forceWPOrgRestAPI,
-                              siteID: siteID,
+            self?.uploadMedia(siteID: siteID,
                               productID: productID,
                               uploadableMedia: uploadableMedia,
                               onCompletion: onCompletion)
         })
     }
 
-    func uploadMedia(forceWPOrgRestAPI: Bool,
-                     siteID: Int64,
+    func uploadMedia(siteID: Int64,
                      productID: Int64,
                      uploadableMedia media: UploadableMedia,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        if forceWPOrgRestAPI || isSiteJetpackJCPConnected(siteID) {
+        let storage = storageManager.viewStorage
+        if let site = storage.loadSite(siteID: siteID)?.toReadOnly(), site.isJetpackCPConnected {
             remote.uploadMediaToWordPressSite(siteID: siteID,
                                               productID: productID,
                                               mediaItems: [media]) { result in
@@ -180,29 +157,18 @@ private extension MediaStore {
         }
     }
 
-    func updateProductID(forceWPOrgRestAPI: Bool,
-                         siteID: Int64,
+    func updateProductID(siteID: Int64,
                          productID: Int64,
                          mediaID: Int64,
                          onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        if forceWPOrgRestAPI || isSiteJetpackJCPConnected(siteID) {
+        let storage = storageManager.viewStorage
+        if let site = storage.loadSite(siteID: siteID)?.toReadOnly(), site.isJetpackCPConnected {
             remote.updateProductIDToWordPressSite(siteID: siteID, productID: productID, mediaID: mediaID) { result in
                 onCompletion(result.map { $0.toMedia() })
             }
         } else {
             remote.updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, completion: onCompletion)
         }
-    }
-}
-
-// MARK: Helpers
-//
-private extension MediaStore {
-    func isSiteJetpackJCPConnected(_ siteID: Int64) -> Bool {
-        guard let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
-            return false
-        }
-        return site.isJetpackCPConnected
     }
 }
 

@@ -212,11 +212,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     private func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset, onCompletion: @escaping (Result<Media, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            let action = MediaAction.uploadMedia(forceWPOrgRestAPI: ServiceLocator.stores.isAuthenticatedWithoutWPCom,
-                                                 siteID: self.siteID,
-                                                 productID: self.productOrVariationID.id,
-                                                 mediaAsset: asset,
-                                                 onCompletion: onCompletion)
+            let action = MediaAction.uploadMedia(siteID: self.siteID, productID: self.productOrVariationID.id, mediaAsset: asset, onCompletion: onCompletion)
             self.stores.dispatch(action)
         }
     }

@@ -68,6 +68,7 @@ extension SurveyViewController {
         case addOnsI1
         case orderCreation
         case couponManagement
+        case IPPFeedback
 
         fileprivate var url: URL {
             switch self {
@@ -102,6 +103,11 @@ extension SurveyViewController {
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
+            case .IPPFeedback:
+                return WooConstants.URLs.IPPFeedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
             }
         }
 
@@ -109,7 +115,7 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return Localization.title
-            case .productsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .orderCreation, .couponManagement:
+            case .productsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .orderCreation, .couponManagement, .IPPFeedback:
                 return Localization.giveFeedback
             }
         }
@@ -117,7 +123,7 @@ extension SurveyViewController {
         /// The corresponding `FeedbackContext` for event tracking purposes.
         var feedbackContextForEvents: WooAnalyticsEvent.FeedbackContext {
             switch self {
-            case .inAppFeedback:
+            case .inAppFeedback, .IPPFeedback:
                 return .general
             case .productsFeedback:
                 return .productsGeneral

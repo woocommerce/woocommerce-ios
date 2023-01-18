@@ -254,6 +254,8 @@ private extension OrderListViewController {
                     self.setErrorTopBanner()
                 case .orderCreation:
                     self.setOrderCreationTopBanner()
+                case .IPPFeedback:
+                    self.setIPPFeedbackTopBanner()
                 }
             }
             .store(in: &cancellables)
@@ -783,6 +785,37 @@ private extension OrderListViewController {
         })
         showTopBannerView()
     }
+
+    /// Sets the `topBannerView` property to an IPP feedback banner.
+    ///
+    func setIPPFeedbackTopBanner() {
+        topBannerView = createIPPFeedbackTopBanner()
+        showTopBannerView()
+    }
+
+    private func createIPPFeedbackTopBanner() -> TopBannerView {
+        let shareIPPFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.shareFeedbackButton, action: { _ in
+            self.displayIPPFeedbackBannerSurvey()
+        })
+
+        let viewModel = TopBannerViewModel(
+            title: Localization.feedbackBannerTitle,
+            infoText: Localization.feedbackBannerContent,
+            icon: UIImage.gridicon(.comment),
+            isExpanded: true,
+            topButton: .dismiss(handler: {  }),
+            actionButtons: [shareIPPFeedbackAction]
+        )
+        let topBannerView = TopBannerView(viewModel: viewModel)
+        topBannerView.translatesAutoresizingMaskIntoConstraints = false
+        return topBannerView
+    }
+
+    private func displayIPPFeedbackBannerSurvey() {
+        // TODO: Survey will change based on conditions
+        let surveyNavigation = SurveyCoordinatingController(survey: .IPPFeedback)
+        self.present(surveyNavigation, animated: true, completion: nil)
+    }
 }
 
 // MARK: - Constants
@@ -800,6 +833,18 @@ private extension OrderListViewController {
                                  comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
 
         static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
+
+        static let feedbackBannerTitle = NSLocalizedString("Let us know what you think",
+                                                           comment: "Title of the In-Person Payments feedback banner in the Orders tab"
+        )
+
+        static let feedbackBannerContent = NSLocalizedString("Rate your In-Person Payment experience.",
+                                                             comment: "Content of the In-Person Payments feedback banner in the Orders tab"
+        )
+
+        static let shareFeedbackButton = NSLocalizedString("Share feedback",
+                                                           comment: "Title of the feedback action button on the In-Person Payments feedback banner"
+        )
 
         static func markCompletedNoticeTitle(orderID: Int64) -> String {
             let format = NSLocalizedString(

@@ -281,7 +281,7 @@ final class OrderListViewModel {
         }
     }
 
-    func displayIPPFeedbackBannerIfEligible() {
+    func displayIPPFeedbackBannerIfEligible() -> (Bool, SurveyViewController.Source?) {
         if isCODEnabled && isIPPSupportedCountry {
             let hasResults = IPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
 
@@ -303,13 +303,17 @@ final class OrderListViewModel {
             })
 
             if !hasResults {
-                 print("0 transactions. Banner 1 shown")
-             } else if IPPresultsCount < Constants.numberOfTransactions {
-                 print("< 10 transactions within 30 days. Banner 2 shown")
-             } else if IPPresultsCount >= Constants.numberOfTransactions {
-                 print(">= 10 transactions within 30 days. Banner 3 shown")
-             }
+                print("0 transactions. Banner 1 shown")
+                return (true, .IPP_COD)
+            } else if IPPresultsCount < Constants.numberOfTransactions {
+                print("< 10 transactions within 30 days. Banner 2 shown")
+                return (true, .IPP_firstTransaction)
+            } else if IPPresultsCount >= Constants.numberOfTransactions {
+                print(">= 10 transactions within 30 days. Banner 3 shown")
+                return (true, .IPP_powerUsers)
+            }
         }
+        return (false, nil)
     }
 
     private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {

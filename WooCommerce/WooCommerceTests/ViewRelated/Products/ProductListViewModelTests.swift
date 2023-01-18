@@ -142,6 +142,28 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.commonStatusForSelectedProducts)
     }
 
+    func test_common_price_works_correctly() {
+        // Given
+        let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
+        let sampleProduct1 = Product.fake().copy(productID: 1, regularPrice: "100")
+        let sampleProduct2 = Product.fake().copy(productID: 2, regularPrice: "100")
+        let sampleProduct3 = Product.fake().copy(productID: 3, regularPrice: "200")
+        XCTAssertEqual(viewModel.commonPriceForSelectedProducts, .none)
+
+        // When
+        viewModel.selectProduct(sampleProduct1)
+        viewModel.selectProduct(sampleProduct2)
+
+        // Then
+        XCTAssertEqual(viewModel.commonPriceForSelectedProducts, .value("100"))
+
+        // When
+        viewModel.selectProduct(sampleProduct3)
+
+        // Then
+        XCTAssertEqual(viewModel.commonPriceForSelectedProducts, .mixed)
+    }
+
     func test_updating_products_with_status_sets_correct_status() throws {
         // Given
         let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
@@ -165,6 +187,37 @@ final class ProductListViewModelTests: XCTestCase {
         viewModel.selectProduct(sampleProduct3)
         let result = waitFor { promise in
             viewModel.updateSelectedProducts(with: .published) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_updating_products_with_price_sets_correct_price() throws {
+        // Given
+        let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
+        let sampleProduct1 = Product.fake().copy(productID: 1, regularPrice: "100")
+        let sampleProduct2 = Product.fake().copy(productID: 2, regularPrice: "100")
+        let sampleProduct3 = Product.fake().copy(productID: 3, regularPrice: "200")
+
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProducts(_, products, completion):
+                XCTAssertTrue(products.allSatisfy { $0.regularPrice == "150" })
+                completion(.success(products))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.selectProduct(sampleProduct1)
+        viewModel.selectProduct(sampleProduct2)
+        viewModel.selectProduct(sampleProduct3)
+        let result = waitFor { promise in
+            viewModel.updateSelectedProducts(with: "150") { result in
                 promise(result)
             }
         }

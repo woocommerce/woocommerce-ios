@@ -79,6 +79,8 @@ final class ServiceLocator {
     private static var _cardReader: CardReaderService = NoOpCardReaderService()
     #endif
 
+    private static var _cardReaderConfigProvider: CommonReaderConfigProviding = CommonReaderConfigProvider()
+
     /// Support for printing receipts
     ///
     private static var _receiptPrinter: PrinterService = AirPrintReceiptPrinterService()
@@ -205,6 +207,10 @@ final class ServiceLocator {
     /// - Returns: An implementation of the CardReaderService protocol.
     static var cardReaderService: CardReaderService {
         _cardReader
+    }
+
+    static var cardReaderConfigProvider: CommonReaderConfigProviding {
+        _cardReaderConfigProvider
     }
 
     /// Provides the access point to the ReceiptPrinterService.
@@ -334,6 +340,14 @@ extension ServiceLocator {
         #if !targetEnvironment(macCatalyst)
         _cardReader = mock
         #endif
+    }
+
+    static func setCardReaderConfigProvider(_ mock: CommonReaderConfigProviding) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _cardReaderConfigProvider = mock
     }
 
     static func setReceiptPrinter(_ mock: PrinterService) {

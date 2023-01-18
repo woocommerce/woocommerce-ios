@@ -862,11 +862,11 @@ private extension StripeCardReaderService {
 
 private extension StripeCardReaderService {
     private func setConfigProvider(_ configProvider: CardReaderConfigProvider) {
-        readerLocationProvider = configProvider
-
-        let tokenProvider = DefaultConnectionTokenProvider(provider: configProvider)
-
         if !Terminal.hasTokenProvider() {
+            readerLocationProvider = configProvider
+
+            let tokenProvider = DefaultConnectionTokenProvider(provider: configProvider)
+
             Terminal.setTokenProvider(tokenProvider)
         }
     }

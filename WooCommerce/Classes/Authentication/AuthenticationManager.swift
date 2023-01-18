@@ -339,7 +339,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             let authenticationResult: WordPressAuthenticatorResult = .presentEmailController
             onCompletion(authenticationResult)
         case (true, false):
-            let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: false)
+            let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: true)
             onCompletion(authenticationResult)
         }
     }

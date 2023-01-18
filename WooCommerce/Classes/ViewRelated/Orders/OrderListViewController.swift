@@ -800,8 +800,8 @@ private extension OrderListViewController {
             self.displayIPPFeedbackBannerSurvey(survey: survey)
         })
 
-        var bannerTitle = "" // Dynamic
-        var bannerText = "" // Dynamic
+        var bannerTitle = ""
+        var bannerText = ""
 
         switch survey {
         case .IPP_COD :
@@ -814,7 +814,6 @@ private extension OrderListViewController {
             bannerTitle = Localization.feedbackBannerTitle3
             bannerTitle = Localization.feedbackBannerContent3
         default:
-            // Non-IPP-feedback cases, do nothing.
             break
         }
 
@@ -832,7 +831,6 @@ private extension OrderListViewController {
     }
 
     private func displayIPPFeedbackBannerSurvey(survey: SurveyViewController.Source) {
-        // TODO: Survey will change based on conditions
         let surveyNavigation = SurveyCoordinatingController(survey: survey)
         self.present(surveyNavigation, animated: true, completion: nil)
     }
@@ -858,17 +856,25 @@ private extension OrderListViewController {
                                                            comment: "Title of the In-Person Payments feedback banner in the Orders tab"
         )
 
-        static let feedbackBannerTitle2 = NSLocalizedString("This is the title 2", comment: "Testing")
+        static let feedbackBannerTitle2 = NSLocalizedString("Title 2. TBD.",
+                                                            comment: "Title of the In-Person Payments feedback banner in the Orders tab"
+        )
 
-        static let feedbackBannerTitle3 = NSLocalizedString("This is the title 3", comment: "Testing")
+        static let feedbackBannerTitle3 = NSLocalizedString("Title 3. TBD.",
+                                                            comment: "Title of the In-Person Payments feedback banner in the Orders tab"
+        )
 
         static let feedbackBannerContent = NSLocalizedString("Rate your In-Person Payment experience.",
                                                              comment: "Content of the In-Person Payments feedback banner in the Orders tab"
         )
 
-        static let feedbackBannerContent2 = NSLocalizedString("This is the content text 2", comment: "Testing")
+        static let feedbackBannerContent2 = NSLocalizedString("Content 2. TBD.",
+                                                              comment: "Content of the In-Person Payments feedback banner in the Orders tab"
+        )
 
-        static let feedbackBannerContent3 = NSLocalizedString("This is the content text 3", comment: "Testing")
+        static let feedbackBannerContent3 = NSLocalizedString("Content 3. TBD.",
+                                                              comment: "Content of the In-Person Payments feedback banner in the Orders tab"
+        )
 
         static let shareFeedbackButton = NSLocalizedString("Share feedback",
                                                            comment: "Title of the feedback action button on the In-Person Payments feedback banner"

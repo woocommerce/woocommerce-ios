@@ -48,7 +48,7 @@ final class StoreCreationSellingStatusQuestionViewModelTests: XCTestCase {
 
     func test_continueButtonTapped_does_not_invoke_onContinue_after_selecting_alreadySellingOnline_status() throws {
         // Given
-        let viewModel = StoreCreationSellingStatusQuestionViewModel(storeName: "store") { answer in
+        let viewModel = StoreCreationSellingStatusQuestionViewModel(storeName: "store") { _ in
             XCTFail("onContinue should not be invoked after selecting alreadySellingOnline status.")
         } onSkip: {}
 

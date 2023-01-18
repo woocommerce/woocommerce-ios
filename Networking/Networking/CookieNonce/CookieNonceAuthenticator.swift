@@ -11,8 +11,7 @@ final class CookieNonceAuthenticator: RequestRetrier & RequestAdapter {
     private let loginURL: URL
     private let adminURL: URL
     private var nonce: String?
-    // If we can't get this to work once, don't retry for the same site
-    // It is likely that there is something preventing us from extracting a nonce
+
     private var canRetry = true
     private var isAuthenticating = false
     private var requestsToRetry = [RequestRetryCompletion]()

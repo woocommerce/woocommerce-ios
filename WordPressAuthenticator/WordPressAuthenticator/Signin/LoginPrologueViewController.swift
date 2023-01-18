@@ -288,9 +288,9 @@ class LoginPrologueViewController: LoginViewController {
                        createSiteButton]
         } else if configuration.enableWPComLoginOnlyInPrologue {
             buttons = [continueWithWPButton]
-        } else if configuration.enableWPComLoginOnlyInPrologue && configuration.enableSiteCreation {
+        } else if configuration.enableSiteAddressLoginOnlyInPrologue && configuration.enableSiteCreation {
             buttons = [enterYourSiteAddressButton, createSiteButton]
-        } else if configuration.enableWPComLoginOnlyInPrologue {
+        } else if configuration.enableSiteAddressLoginOnlyInPrologue {
             buttons = [enterYourSiteAddressButton]
         } else if configuration.enableSiteCreation {
             let createSiteButtonForBottomStackView = StackedButton(using: createSiteButton,

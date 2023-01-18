@@ -17,7 +17,11 @@ struct ShippingLabelAccountSettingsMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(ShippingLabelAccountSettingsMapperEnvelope.self, from: response).data
+        do {
+            return try decoder.decode(ShippingLabelAccountSettingsMapperEnvelope.self, from: response).data
+        } catch {
+            return try decoder.decode(ShippingLabelAccountSettings.self, from: response)
+        }
     }
 }
 

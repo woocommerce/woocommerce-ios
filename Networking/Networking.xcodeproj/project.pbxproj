@@ -724,6 +724,8 @@
 		DE66C55B2977C1A000DAA978 /* order-shipping-labels-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C55A2977C1A000DAA978 /* order-shipping-labels-without-data.json */; };
 		DE66C55D2977C35A00DAA978 /* shipping-label-packages-success-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C55C2977C35A00DAA978 /* shipping-label-packages-success-without-data.json */; };
 		DE66C55F2977C67D00DAA978 /* shipping-label-account-settings-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C55E2977C67D00DAA978 /* shipping-label-account-settings-without-data.json */; };
+		DE66C5612977CB5F00DAA978 /* shipping-label-eligibility-success-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C5602977CB5F00DAA978 /* shipping-label-eligibility-success-without-data.json */; };
+		DE66C5632977CBC700DAA978 /* shipping-label-eligibility-failure-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C5622977CBC700DAA978 /* shipping-label-eligibility-failure-without-data.json */; };
 		DE6F308727966FEF004E1C9A /* CouponReportListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */; };
 		DE74F29A27E08F5A0002FE59 /* SiteSettingMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */; };
 		DE74F29C27E0A1D00002FE59 /* setting-coupon.json in Resources */ = {isa = PBXBuildFile; fileRef = DE74F29B27E0A1D00002FE59 /* setting-coupon.json */; };
@@ -1561,6 +1563,8 @@
 		DE66C55A2977C1A000DAA978 /* order-shipping-labels-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-shipping-labels-without-data.json"; sourceTree = "<group>"; };
 		DE66C55C2977C35A00DAA978 /* shipping-label-packages-success-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-packages-success-without-data.json"; sourceTree = "<group>"; };
 		DE66C55E2977C67D00DAA978 /* shipping-label-account-settings-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-account-settings-without-data.json"; sourceTree = "<group>"; };
+		DE66C5602977CB5F00DAA978 /* shipping-label-eligibility-success-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-eligibility-success-without-data.json"; sourceTree = "<group>"; };
+		DE66C5622977CBC700DAA978 /* shipping-label-eligibility-failure-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-eligibility-failure-without-data.json"; sourceTree = "<group>"; };
 		DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapperTests.swift; sourceTree = "<group>"; };
 		DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSettingMapper.swift; sourceTree = "<group>"; };
 		DE74F29B27E0A1D00002FE59 /* setting-coupon.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "setting-coupon.json"; sourceTree = "<group>"; };
@@ -2180,6 +2184,8 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DE66C5622977CBC700DAA978 /* shipping-label-eligibility-failure-without-data.json */,
+				DE66C5602977CB5F00DAA978 /* shipping-label-eligibility-success-without-data.json */,
 				DE66C55E2977C67D00DAA978 /* shipping-label-account-settings-without-data.json */,
 				DE66C55C2977C35A00DAA978 /* shipping-label-packages-success-without-data.json */,
 				DE66C55A2977C1A000DAA978 /* order-shipping-labels-without-data.json */,
@@ -3039,6 +3045,7 @@
 				DEC51A9B274E3206009F3DF4 /* plugin-inactive.json in Resources */,
 				CCF48B382628AEAE0034EA83 /* shipping-label-account-settings-no-payment-methods.json in Resources */,
 				31A451D327863A2E00FE81AA /* stripe-account-complete.json in Resources */,
+				DE66C5632977CBC700DAA978 /* shipping-label-eligibility-failure-without-data.json in Resources */,
 				DE42F96F296BC9A700D514C2 /* countries-without-data.json in Resources */,
 				EECB7EE8286555180028C888 /* media-update-product-id.json in Resources */,
 				D88D5A43230BC668007B6E01 /* reviews-single.json in Resources */,
@@ -3046,6 +3053,7 @@
 				02DD6492248A3EC00082523E /* product-external.json in Resources */,
 				03DCB7522624B3BE00C8953D /* coupons-all.json in Resources */,
 				02B41A94296C04BC00FE3311 /* load-site-plans-no-current-plan.json in Resources */,
+				DE66C5612977CB5F00DAA978 /* shipping-label-eligibility-success-without-data.json in Resources */,
 				028CB716290223CB00331C09 /* create-account-success.json in Resources */,
 				036563E129069D3500D84BFD /* just-in-time-message-list.json in Resources */,
 				45A4B85C25D2FAB500776FB4 /* shipping-label-address-validation-error.json in Resources */,

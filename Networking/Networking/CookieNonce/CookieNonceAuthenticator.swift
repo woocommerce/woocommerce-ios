@@ -163,10 +163,7 @@ private extension CookieNonceAuthenticator {
     }
 
     func readNonceFromAjaxAction(html: String) -> String? {
-        guard !html.isEmpty else {
-            return nil
-        }
-        return html
+        html.isEmpty ? nil : html
     }
 
     func buildNonceRequestURL(base: URL) -> URL? {

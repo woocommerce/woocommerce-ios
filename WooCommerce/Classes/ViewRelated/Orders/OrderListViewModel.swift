@@ -249,7 +249,7 @@ final class OrderListViewModel {
     func displayIPPFeedbackBannerIfEligible() {
         if isCODEnabled && isIPPSupportedCountry {
             let hasResults = IPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
-            let resultsCount = IPPOrdersResultsController.fetchedObjects.count
+            let IPPresultsCount = IPPOrdersResultsController.fetchedObjects.count
 
             /// In order to filter WCPay transactions processed through IPP within the last 30 days,
             /// we check if these contain `receipt_url` in their metadata, unlike those processed through a website,
@@ -263,7 +263,7 @@ final class OrderListViewModel {
             // TODO: Debug. Remove before merging
             print("COD enabled? \(isCODEnabled) - Eligible Country? \(isIPPSupportedCountry)")
             print("hasResults? \(hasResults)")
-            print("IPP transactions (all): \(resultsCount)")
+            print("IPP transactions (all): \(IPPresultsCount)")
             print("IPP transactions within 30 days: \(recentIPPresultsCount)")
             print(recentIPPOrdersResultsController.fetchedObjects.map {
                 ("OrderID: \($0.orderID) - PaymentMethodID: \($0.paymentMethodID) (\($0.paymentMethodTitle) - DatePaid: \(String(describing: $0.datePaid))")
@@ -271,7 +271,7 @@ final class OrderListViewModel {
 
             if !hasResults {
                  print("0 transactions. Banner 1 shown")
-             } else if resultsCount < Constants.numberOfTransactions {
+             } else if IPPresultsCount < Constants.numberOfTransactions {
                  print("< 10 transactions (all). Banner 2 shown")
              } else if recentIPPresultsCount >= Constants.numberOfTransactions {
                  print(">= 10 transactions within 30 days. Banner 3 shown")

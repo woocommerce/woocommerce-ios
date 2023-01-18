@@ -2,26 +2,46 @@ import Foundation
 
 extension URL {
 
-    // TODO: This is incomplete
-    static func googleSignInAuthURL(clientId: String) throws -> URL {
-        let baseURL = "https://accounts.google.com/o/oauth2/v2/auth"
+    // It's acceptable to force-unwrap here because, for this call to fail we'd need a developer
+    // error, which we would catch because the unit tests would crash.
+    static var googleSignInBaseURL = URL(string: "https://accounts.google.com/o/oauth2/v2/auth")!
 
+    static func googleSignInAuthURL(clientId: String, pkce: ProofKeyForCodeExchange) throws -> URL {
         let queryItems = [
             ("client_id", clientId),
+            ("code_challenge", pkce.codeCallenge),
+            ("code_challenge_method", pkce.method.urlQueryParameterValue),
             ("redirect_uri", redirectURI(from: clientId)),
-            ("response_type", "code")
+            ("response_type", "code"),
+            // TODO: We might want to add some of these or them configurable
+            //
+            // The request we make with the SDK asks for:
+            //
+            // - email
+            // - profile
+            // - https://www.googleapis.com/auth/userinfo.email
+            // - https://www.googleapis.com/auth/userinfo.profile
+            // - openid
+            //
+            // See https://developers.google.com/identity/protocols/oauth2/scopes
+            ("scope", "https://www.googleapis.com/auth/userinfo.email")
         ].map { URLQueryItem(name: $0.0, value: $0.1) }
 
         if #available(iOS 16.0, *) {
-            return URL(string: baseURL)!.appending(queryItems: queryItems)
+            return googleSignInBaseURL.appending(queryItems: queryItems)
         } else {
-            var components = URLComponents(string: baseURL)!
+            // Given `googleSignInBaseURL` is assumed as a valid URL, a `URLComponents` instance
+            // should always be available.
+            var components = URLComponents(url: googleSignInBaseURL, resolvingAgainstBaseURL: false)!
             components.queryItems = queryItems
-            return try components.asURL()
+            // Likewise, we can as long as the given `queryItems` are valid, we can assume `url` to
+            // not be nil. If `queryItems` are invalid, a developer error has been committed, and
+            // crashing is appropriate.
+            return components.url!
         }
     }
 
-    private static func redirectURI(from clientId: String) -> String {
+    static func redirectURI(from clientId: String) -> String {
         // Google's client id is in the form: 123-abc245def.apps.googleusercontent.com
         // The redirect URI uses the reverse-DNS notation.
         let reverseDNSClientId = clientId.split(separator: ".").reversed().joined(separator: ".")

@@ -4,7 +4,11 @@ import XCTest
 class URLGoogleSignInTests: XCTestCase {
 
     func testGoogleSignInAuthURL() throws {
-        let url = try URL.googleSignInAuthURL(clientId: "123-abc245def.apps.googleusercontent.com")
+        let pkce = ProofKeyForCodeExchange(codeVerifier: "test", method: .plain)
+        let url = try URL.googleSignInAuthURL(
+            clientId: "123-abc245def.apps.googleusercontent.com",
+            pkce: pkce
+        )
 
         assert(url, matchesBaseURL: "https://accounts.google.com/o/oauth2/v2/auth")
         assertQueryItems(
@@ -14,11 +18,25 @@ class URLGoogleSignInTests: XCTestCase {
         )
         assertQueryItems(
             for: url,
+            includeItemNamed: "code_challenge",
+            withValue: pkce.codeCallenge
+        )
+        assertQueryItems(
+            for: url,
+            includeItemNamed: "code_challenge_method",
+            withValue: pkce.method.urlQueryParameterValue
+        )
+        assertQueryItems(
+            for: url,
             includeItemNamed: "redirect_uri",
             withValue: "com.googleusercontent.apps.123-abc245def:/oauth2callback"
         )
+        assertQueryItems(
+            for: url,
+            includeItemNamed: "scope",
+            withValue: "https://www.googleapis.com/auth/userinfo.email"
+        )
         assertQueryItems(for: url, includeItemNamed: "response_type", withValue: "code")
-        // TODO: need to check more parameters
     }
 }
 

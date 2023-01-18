@@ -20,6 +20,13 @@
 		3F550D4E23DA429B007E5897 /* AppSelectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F550D4D23DA429B007E5897 /* AppSelectorTests.swift */; };
 		3F550D5123DA4A9C007E5897 /* LinkMailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F550D5023DA4A9C007E5897 /* LinkMailPresenter.swift */; };
 		3F550D5323DA4AC6007E5897 /* URLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F550D5223DA4AC6007E5897 /* URLHandler.swift */; };
+		3F879FD5293A3AB6005C2B48 /* OAuthTokenRequestBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FD4293A3AB6005C2B48 /* OAuthTokenRequestBody.swift */; };
+		3F879FD7293A44F2005C2B48 /* OAuthTokenRequestBodyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FD6293A44F2005C2B48 /* OAuthTokenRequestBodyTests.swift */; };
+		3F879FD9293A48B2005C2B48 /* OAuthTokenResponseBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FD8293A48B2005C2B48 /* OAuthTokenResponseBody.swift */; };
+		3F879FDD293A500D005C2B48 /* URLRequest+OAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FDC293A500D005C2B48 /* URLRequest+OAuth.swift */; };
+		3F879FDF293A501D005C2B48 /* URLRequest+OAuthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FDE293A501D005C2B48 /* URLRequest+OAuthTests.swift */; };
+		3F879FE2293A53F5005C2B48 /* OAuthRequestBody+GoogleSignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FE0293A53CB005C2B48 /* OAuthRequestBody+GoogleSignIn.swift */; };
+		3F879FE4293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FE3293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift */; };
 		3F9439BE27D6F9B60067183A /* LoginPrologueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9439BD27D6F9B60067183A /* LoginPrologueViewController.swift */; };
 		3FE8071529364C410088420C /* Result+ConvenienceInitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE8071429364C410088420C /* Result+ConvenienceInitTests.swift */; };
 		3FE80717293650190088420C /* Result+ConvenienceInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE80716293650190088420C /* Result+ConvenienceInit.swift */; };
@@ -27,6 +34,8 @@
 		3FE8071D293652BB0088420C /* OAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE8071C293652BB0088420C /* OAuthError.swift */; };
 		3FE8071F2936558F0088420C /* URL+GoogleSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE8071E2936558F0088420C /* URL+GoogleSignInTests.swift */; };
 		3FE8072129365F6D0088420C /* URL+GoogleSignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE8072029365F6D0088420C /* URL+GoogleSignIn.swift */; };
+		3FEC44F7293A0E4600EBDECF /* ProofKeyForCodeExchange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FEC44F6293A0E4600EBDECF /* ProofKeyForCodeExchange.swift */; };
+		3FEC44F9293A0F2900EBDECF /* ProofKeyForCodeExchangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FEC44F8293A0F2900EBDECF /* ProofKeyForCodeExchangeTests.swift */; };
 		3FFF2FC123D7ED7C00D38C77 /* EmailClients.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3FFF2FC023D7ED7C00D38C77 /* EmailClients.plist */; };
 		3FFF2FC323D7F53200D38C77 /* AppSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FFF2FC223D7F53200D38C77 /* AppSelector.swift */; };
 		4A1DEF4A29341B1F00322608 /* LoggingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A1DEF4829341B1F00322608 /* LoggingTests.m */; };
@@ -236,6 +245,13 @@
 		3F550D4D23DA429B007E5897 /* AppSelectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelectorTests.swift; sourceTree = "<group>"; };
 		3F550D5023DA4A9C007E5897 /* LinkMailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkMailPresenter.swift; sourceTree = "<group>"; };
 		3F550D5223DA4AC6007E5897 /* URLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLHandler.swift; sourceTree = "<group>"; };
+		3F879FD4293A3AB6005C2B48 /* OAuthTokenRequestBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenRequestBody.swift; sourceTree = "<group>"; };
+		3F879FD6293A44F2005C2B48 /* OAuthTokenRequestBodyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenRequestBodyTests.swift; sourceTree = "<group>"; };
+		3F879FD8293A48B2005C2B48 /* OAuthTokenResponseBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenResponseBody.swift; sourceTree = "<group>"; };
+		3F879FDC293A500D005C2B48 /* URLRequest+OAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+OAuth.swift"; sourceTree = "<group>"; };
+		3F879FDE293A501D005C2B48 /* URLRequest+OAuthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+OAuthTests.swift"; sourceTree = "<group>"; };
+		3F879FE0293A53CB005C2B48 /* OAuthRequestBody+GoogleSignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OAuthRequestBody+GoogleSignIn.swift"; sourceTree = "<group>"; };
+		3F879FE3293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OAuthRequestBody+GoogleSignInTests.swift"; sourceTree = "<group>"; };
 		3F9439BD27D6F9B60067183A /* LoginPrologueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPrologueViewController.swift; sourceTree = "<group>"; };
 		3FE8071429364C410088420C /* Result+ConvenienceInitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+ConvenienceInitTests.swift"; sourceTree = "<group>"; };
 		3FE80716293650190088420C /* Result+ConvenienceInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+ConvenienceInit.swift"; sourceTree = "<group>"; };
@@ -243,6 +259,8 @@
 		3FE8071C293652BB0088420C /* OAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthError.swift; sourceTree = "<group>"; };
 		3FE8071E2936558F0088420C /* URL+GoogleSignInTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+GoogleSignInTests.swift"; sourceTree = "<group>"; };
 		3FE8072029365F6D0088420C /* URL+GoogleSignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+GoogleSignIn.swift"; sourceTree = "<group>"; };
+		3FEC44F6293A0E4600EBDECF /* ProofKeyForCodeExchange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProofKeyForCodeExchange.swift; sourceTree = "<group>"; };
+		3FEC44F8293A0F2900EBDECF /* ProofKeyForCodeExchangeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProofKeyForCodeExchangeTests.swift; sourceTree = "<group>"; };
 		3FFF2FC023D7ED7C00D38C77 /* EmailClients.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = EmailClients.plist; sourceTree = "<group>"; };
 		3FFF2FC223D7F53200D38C77 /* AppSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelector.swift; sourceTree = "<group>"; };
 		4A1DEF4829341B1F00322608 /* LoggingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoggingTests.m; sourceTree = "<group>"; };
@@ -480,7 +498,11 @@
 			children = (
 				3FE8071A2936515F0088420C /* ASWebAuthenticationSession+Utils.swift .swift */,
 				3FE8071C293652BB0088420C /* OAuthError.swift */,
+				3F879FD4293A3AB6005C2B48 /* OAuthTokenRequestBody.swift */,
+				3F879FD8293A48B2005C2B48 /* OAuthTokenResponseBody.swift */,
+				3FEC44F6293A0E4600EBDECF /* ProofKeyForCodeExchange.swift */,
 				3FE80716293650190088420C /* Result+ConvenienceInit.swift */,
+				3F879FDC293A500D005C2B48 /* URLRequest+OAuth.swift */,
 			);
 			path = OAuth;
 			sourceTree = "<group>";
@@ -488,7 +510,10 @@
 		3FE807192936504F0088420C /* OAuth */ = {
 			isa = PBXGroup;
 			children = (
+				3F879FD6293A44F2005C2B48 /* OAuthTokenRequestBodyTests.swift */,
+				3FEC44F8293A0F2900EBDECF /* ProofKeyForCodeExchangeTests.swift */,
 				3FE8071429364C410088420C /* Result+ConvenienceInitTests.swift */,
+				3F879FDE293A501D005C2B48 /* URLRequest+OAuthTests.swift */,
 			);
 			path = OAuth;
 			sourceTree = "<group>";
@@ -496,6 +521,7 @@
 		3FE8072229365F740088420C /* GoogleSignIn */ = {
 			isa = PBXGroup;
 			children = (
+				3F879FE0293A53CB005C2B48 /* OAuthRequestBody+GoogleSignIn.swift */,
 				3FE8072029365F6D0088420C /* URL+GoogleSignIn.swift */,
 			);
 			path = GoogleSignIn;
@@ -504,6 +530,7 @@
 		3FE8072329365FC20088420C /* GoogleSignIn */ = {
 			isa = PBXGroup;
 			children = (
+				3F879FE3293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift */,
 				3FE8071E2936558F0088420C /* URL+GoogleSignInTests.swift */,
 			);
 			path = GoogleSignIn;
@@ -1295,6 +1322,7 @@
 			files = (
 				CE73475624B77A3800A22660 /* SiteCredentialsViewController.swift in Sources */,
 				EE633D02287560E50002DE03 /* UITableView+Helpers.swift in Sources */,
+				3F879FD5293A3AB6005C2B48 /* OAuthTokenRequestBody.swift in Sources */,
 				982C8E7923021C20003F1BA0 /* LoginPrologueLoginMethodViewController.swift in Sources */,
 				B5609144208A563800399AE4 /* LoginPrologueSignupMethodViewController.swift in Sources */,
 				B56090D1208A4F5400399AE4 /* NUXViewController.swift in Sources */,
@@ -1304,6 +1332,7 @@
 				CE1B18C920EEC2C200BECC3F /* SocialService.swift in Sources */,
 				F12F9FB424D8A68E00771BCE /* AuthenticatorAnalyticsTracker.swift in Sources */,
 				988AD8A324CB839900BD045E /* TwoFAViewController.swift in Sources */,
+				3F879FD9293A48B2005C2B48 /* OAuthTokenResponseBody.swift in Sources */,
 				CE6BCD2E24A3A235001BCDC5 /* TextLabelTableViewCell.swift in Sources */,
 				B56090D3208A4F5400399AE4 /* NUXLinkAuthViewController.swift in Sources */,
 				B5609120208A555E00399AE4 /* SignupNavigationController.swift in Sources */,
@@ -1313,6 +1342,7 @@
 				02A526CF28A3A35D00FD1812 /* PasswordCoordinator.swift in Sources */,
 				98ED483624802F8F00992B2D /* GoogleAuthViewController.swift in Sources */,
 				F5C817E72582B2F300BD5A3B /* UIPasteboard+Detect.swift in Sources */,
+				3FEC44F7293A0E4600EBDECF /* ProofKeyForCodeExchange.swift in Sources */,
 				B56090EA208A51D000399AE4 /* LoginFields+Validation.swift in Sources */,
 				F1DE08CC24F4266A007AE6B3 /* StoredCredentialsAuthenticator.swift in Sources */,
 				CE1B18CC20EEC32400BECC3F /* WordPressComCredentials.swift in Sources */,
@@ -1335,6 +1365,7 @@
 				3FE8071D293652BB0088420C /* OAuthError.swift in Sources */,
 				B5609119208A555600399AE4 /* SiteInfoHeaderView.swift in Sources */,
 				B560913E208A563800399AE4 /* SigninEditingState.swift in Sources */,
+				3F879FDD293A500D005C2B48 /* URLRequest+OAuth.swift in Sources */,
 				CE2D03E024E5DD4500D18942 /* UnifiedSignupViewController.swift in Sources */,
 				98CF18F7248725370047B66C /* GoogleSignupConfirmationViewController.swift in Sources */,
 				1A21EE9822832BC300C940C6 /* WordPressComOAuthClientFacade+Swift.swift in Sources */,
@@ -1355,6 +1386,7 @@
 				B56090F9208A533200399AE4 /* WordPressAuthenticator+Events.swift in Sources */,
 				CEDE0D93242011E000CB3345 /* NSObject+Helpers.swift in Sources */,
 				020DEF6428AA091100C85D51 /* MagicLinkRequester.swift in Sources */,
+				3F879FE2293A53F5005C2B48 /* OAuthRequestBody+GoogleSignIn.swift in Sources */,
 				020BE74A23B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift in Sources */,
 				B560913A208A563800399AE4 /* LoginLinkRequestViewController.swift in Sources */,
 				B560910C208A54F800399AE4 /* WordPressComOAuthClientFacade.m in Sources */,
@@ -1423,6 +1455,7 @@
 				B501C045208FC68700D1E58F /* LoginFieldsValidationTests.swift in Sources */,
 				BA53D64824DFDF97001F1ABF /* WordPressSourceTagTests.swift in Sources */,
 				4A1DEF4B29341B1F00322608 /* LoggingTests.swift in Sources */,
+				3F879FDF293A501D005C2B48 /* URLRequest+OAuthTests.swift in Sources */,
 				D8610CEC2570A60C00A5DF27 /* NavigationToRootTests.swift in Sources */,
 				BA53D64D24DFE4E6001F1ABF /* ModalViewControllerPresentingSpy.swift in Sources */,
 				BA53D64624DFDE1D001F1ABF /* CredentialsTests.swift in Sources */,
@@ -1430,14 +1463,17 @@
 				3F550D4E23DA429B007E5897 /* AppSelectorTests.swift in Sources */,
 				BA53D64B24DFE07D001F1ABF /* WordpressAuthenticatorProvider.swift in Sources */,
 				4A1DEF4A29341B1F00322608 /* LoggingTests.m in Sources */,
+				3FEC44F9293A0F2900EBDECF /* ProofKeyForCodeExchangeTests.swift in Sources */,
 				CE16177821B70C1A00B82A47 /* WordPressAuthenticatorDisplayTextTests.swift in Sources */,
 				B501C048208FC79C00D1E58F /* LoginFacadeTests.m in Sources */,
+				3F879FD7293A44F2005C2B48 /* OAuthTokenRequestBodyTests.swift in Sources */,
 				3108613125AFA4830022F75E /* PasteboardTests.swift in Sources */,
 				3FE8071F2936558F0088420C /* URL+GoogleSignInTests.swift in Sources */,
 				D85C36F0256E118D00D56E34 /* NavigationToEnterAccountTests.swift in Sources */,
 				D85C36E6256E0DDE00D56E34 /* NavigationToEnterSiteTests.swift in Sources */,
 				D85C3882256E3FEC00D56E34 /* WordPressComSiteInfoTests.swift in Sources */,
 				D8611A672576236800A5DF27 /* NavigateBackTests.swift in Sources */,
+				3F879FE4293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift in Sources */,
 				F12F9FB824D8A7FC00771BCE /* AnalyticsTrackerTests.swift in Sources */,
 				B501C046208FC6A700D1E58F /* WordPressAuthenticatorTests.swift in Sources */,
 			);

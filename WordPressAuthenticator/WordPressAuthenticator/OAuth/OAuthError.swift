@@ -1,5 +1,6 @@
 enum OAuthError: LocalizedError {
 
+    // ASWebAuthenticationSession
     case inconsistentWebAuthenticationSessionCompletion
 
     var errorDescription: String {

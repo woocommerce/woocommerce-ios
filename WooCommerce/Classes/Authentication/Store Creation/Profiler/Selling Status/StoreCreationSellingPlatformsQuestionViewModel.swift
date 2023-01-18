@@ -9,14 +9,14 @@ import Foundation
 final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
     /// Other online platforms that the user might be selling. Source of truth:
     /// https://github.com/Automattic/woocommerce.com/blob/trunk/themes/woo/start/config/options.json
-    enum Platform: Equatable, CaseIterable {
+    enum Platform: String, CaseIterable {
         case amazon
-        case bigCartel
-        case bigCommerce
-        case eBay
+        case bigCartel = "big-cartel"
+        case bigCommerce = "big-commerce"
+        case eBay = "ebay"
         case etsy
-        case facebookMarketplace
-        case googleShopping
+        case facebookMarketplace = "facebook-marketplace"
+        case googleShopping = "google-shopping"
         case pinterest
         case shopify
         case square
@@ -37,11 +37,11 @@ final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfile
 
     @Published private(set) var selectedPlatforms: Set<Platform> = []
 
-    private let onContinue: () -> Void
+    private let onContinue: (StoreCreationSellingStatusAnswer?) -> Void
     private let onSkip: () -> Void
 
     init(storeName: String,
-         onContinue: @escaping () -> Void,
+         onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void,
          onSkip: @escaping () -> Void) {
         self.topHeader = storeName
         self.onContinue = onContinue
@@ -52,7 +52,7 @@ final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfile
 extension StoreCreationSellingPlatformsQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
     func continueButtonTapped() async {
         // TODO: submission API.
-        onContinue()
+        onContinue(.init(sellingStatus: .alreadySellingOnline, sellingPlatforms: selectedPlatforms))
     }
 
     func skipButtonTapped() {

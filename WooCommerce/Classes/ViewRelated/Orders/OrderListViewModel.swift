@@ -249,29 +249,31 @@ final class OrderListViewModel {
     func displayIPPFeedbackBannerIfEligible() {
         if isCODEnabled && isIPPSupportedCountry {
             let hasResults = IPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
+            let resultsCount = IPPOrdersResultsController.fetchedObjects.count
 
             /// In order to filter WCPay transactions processed through IPP within the last 30 days,
             /// we check if these contain `receipt_url` in their metadata, unlike those processed through a website,
             /// which doesn't
             ///
-            let IPPTransactionsFound = recentIPPOrdersResultsController.fetchedObjects.filter({
+            let recentIPPTransactionsFound = recentIPPOrdersResultsController.fetchedObjects.filter({
                 $0.customFields.contains(where: {$0.key == Constants.receiptURLKey }) &&
                 $0.paymentMethodTitle == Constants.paymentMethodTitle})
-            let IPPresultsCount = IPPTransactionsFound.count
+            let recentIPPresultsCount = recentIPPTransactionsFound.count
 
             // TODO: Debug. Remove before merging
             print("COD enabled? \(isCODEnabled) - Eligible Country? \(isIPPSupportedCountry)")
             print("hasResults? \(hasResults)")
-            print("IPP transactions within 30 days: \(IPPresultsCount)")
+            print("IPP transactions (all): \(resultsCount)")
+            print("IPP transactions within 30 days: \(recentIPPresultsCount)")
             print(recentIPPOrdersResultsController.fetchedObjects.map {
                 ("OrderID: \($0.orderID) - PaymentMethodID: \($0.paymentMethodID) (\($0.paymentMethodTitle) - DatePaid: \(String(describing: $0.datePaid))")
             })
 
             if !hasResults {
                  print("0 transactions. Banner 1 shown")
-             } else if IPPresultsCount < Constants.numberOfTransactions {
-                 print("< 10 transactions within 30 days. Banner 2 shown")
-             } else if IPPresultsCount >= Constants.numberOfTransactions {
+             } else if resultsCount < Constants.numberOfTransactions {
+                 print("< 10 transactions (all). Banner 2 shown")
+             } else if recentIPPresultsCount >= Constants.numberOfTransactions {
                  print(">= 10 transactions within 30 days. Banner 3 shown")
              }
         }

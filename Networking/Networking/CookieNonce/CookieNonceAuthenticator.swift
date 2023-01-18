@@ -1,6 +1,10 @@
 import Alamofire
 import Foundation
 
+/// An authenticator to handle cookie-nonce authentication.
+/// This differs from WordPressKit's version by handling the nonce retrieval as a separate request
+/// instead of a redirect from the login request - to fix issues with Pressable sites.
+///
 final class CookieNonceAuthenticator: RequestRetrier & RequestAdapter {
     private let username: String
     private let password: String

@@ -26,7 +26,7 @@ final class CookieNonceAuthenticator: RequestRetrier & RequestAdapter {
     // MARK: Request Adapter
 
     func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
-        guard let nonce = nonce else {
+        guard let nonce else {
             return urlRequest
         }
         var adaptedRequest = urlRequest

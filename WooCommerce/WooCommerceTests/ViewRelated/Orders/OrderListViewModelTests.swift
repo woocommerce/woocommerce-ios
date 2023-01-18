@@ -275,6 +275,7 @@ final class OrderListViewModelTests: XCTestCase {
 
         // When
         viewModel.activate()
+        viewModel.hideIPPFeedbackBanner = false
 
         // Then
         waitUntil {
@@ -323,6 +324,7 @@ final class OrderListViewModelTests: XCTestCase {
 
         // Then
         if isIPPFeatureFlagEnabled {
+            viewModel.hideIPPFeedbackBanner = false
             waitUntil {
                 viewModel.topBanner == .IPPFeedback
             }

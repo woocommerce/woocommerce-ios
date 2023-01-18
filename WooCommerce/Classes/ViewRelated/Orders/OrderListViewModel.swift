@@ -134,7 +134,7 @@ final class OrderListViewModel {
     /// If true, no IPP feedback banner will be shown as the user has told us that they are not interested in this information.
     /// It is persisted through app sessions.
     /// 
-    @Published var hideIPPFeedbackBanner: Bool = false
+    @Published var hideIPPFeedbackBanner: Bool = true
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -176,8 +176,8 @@ final class OrderListViewModel {
         bindTopBannerState()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            loadIPPFeedbackBannerVisibility()
             loadOrdersBannerVisibility()
+            loadIPPFeedbackBannerVisibility()
             fetchIPPTransactions()
         } else {
             loadOrdersBannerVisibility()
@@ -224,7 +224,7 @@ final class OrderListViewModel {
         let action = AppSettingsAction.loadFeedbackVisibility(type: .IPP) { [weak self] result in
             switch result {
             case .success(let visible):
-                self?.hideIPPFeedbackBanner = !visible
+                self?.hideIPPFeedbackBanner = visible
             case .failure(let error):
                 self?.hideIPPFeedbackBanner = true
                 ServiceLocator.crashLogging.logError(error)
@@ -390,8 +390,8 @@ extension OrderListViewModel {
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
 
-        Publishers.CombineLatest3(errorState, $hideOrdersBanners, $hideIPPFeedbackBanner)
-            .map { hasError, hasDismissedOrdersBanners, hasDismissedIPPFeedbackBanner  -> TopBanner in
+        Publishers.CombineLatest3(errorState, $hideIPPFeedbackBanner, $hideOrdersBanners)
+            .map { hasError, hasDismissedIPPFeedbackBanner, hasDismissedOrdersBanners -> TopBanner in
 
                 guard !hasError else {
                     return .error

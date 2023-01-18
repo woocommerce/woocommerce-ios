@@ -47,6 +47,40 @@ class ShippingLabelStatusMapperTests: XCTestCase {
         XCTAssertEqual(shippingLabel?.productNames, ["WordPress Pennant"])
     }
 
+    func test_ShippingLabelStatusPollingResponse_is_properly_parsed_for_purchased_label_when_response_has_no_data_envelope() {
+        // Given
+        guard let shippingLabelList = mapLoadShippingLabelStatusWithoutDataEnvelope(),
+              let shippingLabelResponse = shippingLabelList.first else {
+            XCTFail()
+            return
+        }
+
+        // Assert
+        XCTAssertEqual(shippingLabelResponse.status, .purchased)
+
+        // Then
+        let shippingLabel = shippingLabelResponse.getPurchasedLabel()
+
+        // Assert
+        XCTAssertEqual(shippingLabel?.siteID, sampleSiteID)
+        XCTAssertEqual(shippingLabel?.orderID, sampleOrderID)
+        XCTAssertEqual(shippingLabel?.shippingLabelID, 1825)
+        XCTAssertEqual(shippingLabel?.carrierID, "usps")
+        XCTAssertEqual(shippingLabel?.dateCreated, Date(timeIntervalSince1970: 1623764362.682))
+        XCTAssertEqual(shippingLabel?.packageName, "Small Flat Rate Box")
+        XCTAssertEqual(shippingLabel?.rate, 7.9)
+        XCTAssertEqual(shippingLabel?.currency, "USD")
+        XCTAssertEqual(shippingLabel?.trackingNumber, "9405500205309072644962")
+        XCTAssertEqual(shippingLabel?.serviceName, "USPS - Priority Mail")
+        XCTAssertEqual(shippingLabel?.refundableAmount, 7.9)
+        XCTAssertEqual(shippingLabel?.status, ShippingLabelStatus.purchased)
+        XCTAssertNil(shippingLabel?.refund)
+        XCTAssertEqual(shippingLabel?.originAddress, ShippingLabelAddress.fake())
+        XCTAssertEqual(shippingLabel?.destinationAddress, ShippingLabelAddress.fake())
+        XCTAssertEqual(shippingLabel?.productIDs, [89])
+        XCTAssertEqual(shippingLabel?.productNames, ["WordPress Pennant"])
+    }
+
     /// Verifies that the Shipping Label Status Polling Response is parsed correctly when it receives a pending shipping label purchase.
     ///
     func test_ShippingLabelStatusPollingResponse_is_properly_parsed_for_pending_label_purchase() {
@@ -79,6 +113,12 @@ private extension ShippingLabelStatusMapperTests {
     ///
     func mapLoadShippingLabelStatus() -> [ShippingLabelStatusPollingResponse]? {
         return mapShippingLabelStatus(from: "shipping-label-status-success")
+    }
+
+    /// Returns the ShippingLabelStatusMapper output upon receiving `shipping-label-status-success-without-data`
+    ///
+    func mapLoadShippingLabelStatusWithoutDataEnvelope() -> [ShippingLabelStatusPollingResponse]? {
+        return mapShippingLabelStatus(from: "shipping-label-status-success-without-data")
     }
 
     /// Returns the ShippingLabelStatusMapper output upon receiving `shipping-label-purchase-success`

@@ -60,7 +60,7 @@ struct PaymentMethodsView: View {
                             Divider()
 
                             MethodRow(icon: .creditCardImage, title: Localization.card, accessibilityID: Accessibility.cardMethod) {
-                                viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                                viewModel.collectPayment(on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
                         }
 

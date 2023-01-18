@@ -464,10 +464,11 @@ private extension GetStartedViewController {
             tracker.set(flow: .wpCom)
         }
 
+        let stepValue: AuthenticatorAnalyticsTracker.Step = configuration.useEnterEmailAddressAsStepValueForGetStartedVC ? .enterEmailAddress : .start
         if isMovingToParent {
-            tracker.track(step: .enterEmailAddress)
+            tracker.track(step: stepValue)
         } else {
-            tracker.set(step: .enterEmailAddress)
+            tracker.set(step: stepValue)
         }
     }
 }

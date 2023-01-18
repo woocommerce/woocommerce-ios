@@ -323,7 +323,7 @@ private extension StoreCreationCoordinator {
                     self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: nil, planToPurchase: planToPurchase)
                 })
         navigationController.pushViewController(questionController, animated: true)
-        // TODO: analytics
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCategoryQuestion))
     }
 
     @MainActor
@@ -348,7 +348,7 @@ private extension StoreCreationCoordinator {
                                           planToPurchase: planToPurchase)
         }
         navigationController.pushViewController(questionController, animated: true)
-        // TODO: analytics
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerSellingStatusQuestion))
     }
 
     @MainActor
@@ -370,7 +370,7 @@ private extension StoreCreationCoordinator {
                     self?.showSupport(from: navigationController)
                 })
         navigationController.pushViewController(questionController, animated: true)
-        // TODO: analytics
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCountryQuestion))
     }
 
     @MainActor

@@ -337,7 +337,12 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         do {
             let parameters = try products.map { try $0.toDictionary() }
             let path = "\(Path.products)/batch"
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: ["update": parameters], availableAsRESTRequest: true)
+            let request = JetpackRequest(wooApiVersion: .mark3,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: ["update": parameters],
+                                         availableAsRESTRequest: true)
             let mapper = ProductsBulkUpdateMapper(siteID: siteID)
 
             enqueue(request, mapper: mapper, completion: completion)

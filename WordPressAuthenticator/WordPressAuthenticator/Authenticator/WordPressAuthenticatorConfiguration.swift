@@ -136,6 +136,16 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let skipXMLRPCCheckForSiteDiscovery: Bool
 
+    /// Used to determine the `step` value for `unified_login_step` analytics event in `GetStartedViewController`
+    ///
+    ///  - If disabled `start` will be used as `step` value
+    ///     - Disabled by default
+    ///  - If enabled, `enter_email_address` will be used as `step` value
+    ///     - Custom step value is used because `start` is used in other VCs as well, which doesn't allow us to differentiate between screens.
+    ///     - i.e. Some screens have the same `step` and `flow` value. `GetStartedViewController` and `SiteAddressViewController` for example.
+    ///
+    let useEnterEmailAddressAsStepValueForGetStartedVC: Bool
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -166,7 +176,8 @@ public struct WordPressAuthenticatorConfiguration {
                  enableSocialLogin: Bool = false,
                  emphasizeEmailForWPComPassword: Bool = false,
                  wpcomPasswordInstructions: String? = nil,
-                 skipXMLRPCCheckForSiteDiscovery: Bool = false) {
+                 skipXMLRPCCheckForSiteDiscovery: Bool = false,
+                 useEnterEmailAddressAsStepValueForGetStartedVC: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -197,5 +208,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.emphasizeEmailForWPComPassword = emphasizeEmailForWPComPassword
         self.wpcomPasswordInstructions = wpcomPasswordInstructions
         self.skipXMLRPCCheckForSiteDiscovery = skipXMLRPCCheckForSiteDiscovery
+        self.useEnterEmailAddressAsStepValueForGetStartedVC = useEnterEmailAddressAsStepValueForGetStartedVC
     }
 }

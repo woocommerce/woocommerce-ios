@@ -2,7 +2,7 @@ import Combine
 import Foundation
 import Yosemite
 
-final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedViewModel {
+final class BluetoothCardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedViewModel {
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
@@ -98,10 +98,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                 return
             }
 
-            if readers.first(where: { $0.readerType == .appleBuiltIn }) != nil {
-                self.disconnect()
-            }
-
+            self.disconnectFromBuiltInReader(in: readers)
             self.readerUpdateError = nil
             self.didGetConnectedReaders = true
             self.connectedReaders = readers
@@ -148,6 +145,15 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                 .store(in: &self.subscriptions)
         }
         ServiceLocator.stores.dispatch(softwareUpdateAction)
+    }
+
+    /// This screen is only used for managing Bluetooth card readers.
+    /// If we're connected to the built-in reader, we should disconnect, as users are unlikely to consider
+    /// another part of their phone as something they connect to and manage.
+    private func disconnectFromBuiltInReader(in readers: [CardReader]) {
+        if readers.includesBuiltInReader() {
+            self.disconnect()
+        }
     }
 
     private func updateProperties() {
@@ -259,7 +265,9 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             newShouldShow = .isUnknown
         } else if connectedReaders.isEmpty {
             newShouldShow = .isFalse
-        } else if connectedReaders.first(where: { $0.readerType == .appleBuiltIn }) != nil {
+        } else if connectedReaders.includesBuiltInReader() {
+            /// This screen only supports management of Bluetooth readers, and will have started disconnection
+            /// the built-in reader in this instance.
             newShouldShow = .isFalse
         } else {
             newShouldShow = .isTrue
@@ -275,9 +283,15 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 }
 
+private extension [CardReader] {
+    func includesBuiltInReader() -> Bool {
+        return self.first(where: { $0.readerType == .appleBuiltIn }) != nil
+    }
+}
+
 // MARK: - Localization
 //
-private extension CardReaderSettingsConnectedViewModel {
+private extension BluetoothCardReaderSettingsConnectedViewModel {
     enum Localization {
         static let title = NSLocalizedString(
             "Connected Reader",

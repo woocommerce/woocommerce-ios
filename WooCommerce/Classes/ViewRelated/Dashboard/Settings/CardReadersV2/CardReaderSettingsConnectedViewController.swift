@@ -13,7 +13,7 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
 
     /// ViewModel
     ///
-    private var viewModel: CardReaderSettingsConnectedViewModel?
+    private var viewModel: BluetoothCardReaderSettingsConnectedViewModel?
 
     /// Table Sections to be rendered
     ///
@@ -24,7 +24,7 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
     /// Accept our viewmodel
     ///
     func configure(viewModel: CardReaderSettingsPresentedViewModel) {
-        self.viewModel = viewModel as? CardReaderSettingsConnectedViewModel
+        self.viewModel = viewModel as? BluetoothCardReaderSettingsConnectedViewModel
 
         guard self.viewModel != nil else {
             DDLogError("Unexpectedly unable to downcast to CardReaderSettingsConnectedViewModel")

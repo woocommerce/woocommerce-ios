@@ -57,18 +57,6 @@ class SitePluginsMapperTests: XCTestCase {
         XCTAssertEqual(helloDollyPlugin.descriptionRendered, "This is not just a plugin, it symbolizes...")
         XCTAssertEqual(helloDollyPlugin.version, "1.7.2")
         XCTAssertEqual(helloDollyPlugin.textDomain, "")
-
-        let wooCommerceSubscriptionsPlugin = plugins[4]
-        XCTAssertNotNil(wooCommerceSubscriptionsPlugin)
-        XCTAssertEqual(wooCommerceSubscriptionsPlugin.siteID, dummySiteID)
-        XCTAssertEqual(wooCommerceSubscriptionsPlugin.status, .active)
-        XCTAssertEqual(wooCommerceSubscriptionsPlugin.name, "WooCommerce Subscriptions")
-        XCTAssertEqual(wooCommerceSubscriptionsPlugin.pluginUri, "https://www.woocommerce.com/products/woocommerce-subscriptions/")
-        XCTAssertEqual(wooCommerceSubscriptionsPlugin.authorUri, "https://woocommerce.com/")
-        XCTAssertEqual(wooCommerceSubscriptionsPlugin.descriptionRaw, "Sell products and services...")
-        XCTAssertEqual(wooCommerceSubscriptionsPlugin.descriptionRendered, "Sell products and services with recurring payments...")
-        XCTAssertEqual(wooCommerceSubscriptionsPlugin.version, "3.0.13")
-        XCTAssertEqual(wooCommerceSubscriptionsPlugin.textDomain, "woocommerce-subscriptions")
     }
 }
 

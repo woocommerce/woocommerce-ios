@@ -96,4 +96,24 @@ class ProductListViewModel {
         }
         stores.dispatch(batchAction)
     }
+
+    /// Update selected products with new price and trigger Network action to save the change remotely.
+    ///
+    func updateSelectedProducts(with newPrice: String, completion: @escaping (Result<Void, Error>) -> Void ) {
+        guard selectedProductsCount > 0 else {
+            completion(.failure(BulkEditError.noProductsSelected))
+            return
+        }
+
+        let updatedProducts = selectedProducts.map({ $0.copy(regularPrice: newPrice) })
+        let batchAction = ProductAction.updateProducts(siteID: siteID, products: updatedProducts) { result in
+            switch result {
+            case .success:
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+        stores.dispatch(batchAction)
+    }
 }

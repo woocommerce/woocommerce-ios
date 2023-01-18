@@ -20,19 +20,15 @@ final class PriceInputViewModel {
     private let currencySettings: CurrencySettings
     private let currencyFormatter: CurrencyFormatter
 
-    private let cancelClosure: () -> Void
-    private let applyClosure: (String) -> Void
+    var cancelClosure: () -> Void = {}
+    var applyClosure: (String) -> Void = { _ in }
 
     init(productListViewModel: ProductListViewModel,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         cancelClosure: @escaping () -> Void,
-         applyClosure: @escaping (String) -> Void) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.productListViewModel = productListViewModel
         self.priceSettingsValidator = ProductPriceSettingsValidator(currencySettings: currencySettings)
         self.currencySettings = currencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.cancelClosure = cancelClosure
-        self.applyClosure = applyClosure
     }
 
     /// Called when the cancel button is tapped

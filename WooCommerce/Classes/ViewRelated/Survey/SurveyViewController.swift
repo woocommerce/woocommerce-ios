@@ -71,7 +71,6 @@ extension SurveyViewController {
         case IPP_COD
         case IPP_firstTransaction
         case IPP_powerUsers
-        
 
         fileprivate var url: URL {
             switch self {

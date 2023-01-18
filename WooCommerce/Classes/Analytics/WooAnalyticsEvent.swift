@@ -603,6 +603,55 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - InPersonPayments Feedback Banner
+//
+extension WooAnalyticsEvent {
+    enum InPersonPaymentsFeedback {
+        /// Possible sources for IPP feedback
+        ///
+        enum Source: String {
+            fileprivate static let key = "source"
+            case orderList = "order_list" // Only one source for the moment
+        }
+
+        /// Keys
+        ///
+        private enum Keys {
+            static let campaign = "campaign_name"
+            static let source = "source"
+            static let remindLater = "remind_later"
+        }
+
+        static func shown(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
+                statName: .IPPbannerShown, // survey_banner_shown
+                properties: [
+                    Keys.source: source.rawValue, // order_list
+                    Keys.campaign: campaign.rawValue, // "ipp_not_user/ipp_new_user/ipp_heavy_user"
+                ])
+        }
+
+        static func ctaTapped(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .IPPbannerTapped, // survey_banner_cta_tapped
+                              properties: [
+                                Keys.source: source.rawValue, // order_list
+                                Keys.campaign: campaign.rawValue //  "ipp_not_user/ipp_new_user/ipp_heavy_user"
+                              ])
+        }
+
+        static func dismissed(source: Source,
+                              campaign: FeatureAnnouncementCampaign,
+                              remindLater: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .IPPbannerDismissed, // survey_banner_dismissed
+                              properties: [
+                                Keys.source: source.rawValue, // order_list
+                                Keys.campaign: campaign.rawValue, //  "ipp_not_user/ipp_new_user/ipp_heavy_user"
+                                Keys.remindLater: remindLater
+                              ])
+        }
+    }
+}
+
 // MARK: - Feature Announcement Card
 
 extension WooAnalyticsEvent {

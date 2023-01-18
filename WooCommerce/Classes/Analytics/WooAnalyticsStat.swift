@@ -687,6 +687,11 @@ public enum WooAnalyticsStat: String {
     case featureCardDismissed = "feature_card_dismissed"
     case featureCardCtaTapped = "feature_card_cta_tapped"
 
+    // MARK: In-Person Payments survey feedback events
+    case IPPbannerShown = "survey_banner_shown"
+    case IPPbannerTapped = "survey_banner_cta_tapped"
+    case IPPbannerDismissed = "survey_banner_dismissed"
+
     // MARK: Just In Time Messages events
     case justInTimeMessageCallToActionTapped = "jitm_cta_tapped"
     case justInTimeMessageDismissTapped = "jitm_dismissed"

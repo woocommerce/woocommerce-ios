@@ -43,7 +43,7 @@ enum WordPressAPIVersion: String, CaseIterable {
         switch self {
         case .wpMark2:
             return true
-        case .mark1_1, .mark1_2, .mark1_5, .wpcomMark2:
+        case .mark1_1, .mark1_2, .mark1_3, .mark1_5, .wpcomMark2:
             return false
         }
     }

@@ -75,6 +75,10 @@ extension WooAnalyticsEvent {
         case orderCreation = "order_creation"
         /// Shown in beta feature banner for coupon management.
         case couponManagement = "coupon_management"
+        // WIP: Shown in IPP banner for different number of IPP transactions. Needed so it can compile.
+        case IPP_COD
+        case IPP_firstTransaction
+        case IPP_powerUsers
     }
 
     /// The action performed on the survey screen.

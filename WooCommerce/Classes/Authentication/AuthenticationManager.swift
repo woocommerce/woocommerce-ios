@@ -62,7 +62,7 @@ class AuthenticationManager: Authentication {
         let isWPComMagicLinkPreferredToPassword = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let isStoreCreationMVPEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
-        let isWPComLoginRequiredForSiteCredentialsLogin = !featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin)
+        let enableSiteAddressLoginOnly = featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -80,7 +80,7 @@ class AuthenticationManager: Authentication {
                                                                 enableUnifiedAuth: true,
                                                                 continueWithSiteAddressFirst: false,
                                                                 enableSiteCredentialsLoginForSelfHostedSites: true,
-                                                                isWPComLoginRequiredForSiteCredentialsLogin: isWPComLoginRequiredForSiteCredentialsLogin,
+                                                                isWPComLoginRequiredForSiteCredentialsLogin: !enableSiteAddressLoginOnly,
                                                                 isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
                                                                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
                                                                     isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen,
@@ -91,7 +91,8 @@ class AuthenticationManager: Authentication {
                                                                 wpcomPasswordInstructions:
                                                                 AuthenticationConstants.wpcomPasswordInstructions,
                                                                 skipXMLRPCCheckForSiteDiscovery: true,
-                                                                useEnterEmailAddressAsStepValueForGetStartedVC: true)
+                                                                useEnterEmailAddressAsStepValueForGetStartedVC: true,
+                                                                enableSiteAddressLoginOnlyInPrologue: enableSiteAddressLoginOnly)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)

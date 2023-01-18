@@ -85,13 +85,18 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         ]
 
         let path = "sites/\(siteID)/media"
-        let request = DotcomRequest(wordpressApiVersion: .wpMark2,
-                                    method: .get,
-                                    path: path,
-                                    parameters: parameters)
-        let mapper = WordPressMediaListMapper()
+        do {
+            let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                        method: .get,
+                                        path: path,
+                                        parameters: parameters,
+                                        availableAsRESTRequest: true)
+            let mapper = WordPressMediaListMapper()
 
-        enqueue(request, mapper: mapper, completion: completion)
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 
     /// Uploads an array of media in the local file system.
@@ -156,21 +161,25 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
         ]
         let path = "sites/\(siteID)/media"
-        let request = DotcomRequest(wordpressApiVersion: .wpMark2, method: .post, path: path, parameters: nil)
-        let mapper = WordPressMediaMapper()
+        do {
+            let request = try DotcomRequest(wordpressApiVersion: .wpMark2, method: .post, path: path, parameters: nil, availableAsRESTRequest: true)
+            let mapper = WordPressMediaMapper()
 
-        enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in
-            formParameters.forEach { (key, value) in
-                multipartFormData.append(Data(value.utf8), withName: key)
-            }
+            enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in
+                formParameters.forEach { (key, value) in
+                    multipartFormData.append(Data(value.utf8), withName: key)
+                }
 
-            mediaItems.forEach { mediaItem in
-                multipartFormData.append(mediaItem.localURL,
-                                         withName: ParameterValue.mediaUploadName,
-                                         fileName: mediaItem.filename,
-                                         mimeType: mediaItem.mimeType)
-            }
-        }, completion: completion)
+                mediaItems.forEach { mediaItem in
+                    multipartFormData.append(mediaItem.localURL,
+                                             withName: ParameterValue.mediaUploadName,
+                                             fileName: mediaItem.filename,
+                                             mimeType: mediaItem.mimeType)
+                }
+            }, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 
     /// Sets the provided `productID` as `parent_id` of the `media`.
@@ -218,10 +227,14 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
         ]
         let path = "sites/\(siteID)/media/\(mediaID)"
-        let request = DotcomRequest(wordpressApiVersion: .wpMark2, method: .post, path: path, parameters: parameters)
-        let mapper = WordPressMediaMapper()
+        do {
+            let request = try DotcomRequest(wordpressApiVersion: .wpMark2, method: .post, path: path, parameters: parameters, availableAsRESTRequest: true)
+            let mapper = WordPressMediaMapper()
 
-        enqueue(request, mapper: mapper, completion: completion)
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 }
 

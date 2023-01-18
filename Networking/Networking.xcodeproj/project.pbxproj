@@ -780,7 +780,7 @@
 		EE6FDCFC2966A70400E1CECF /* product-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE6FDCFB2966A70400E1CECF /* product-without-data.json */; };
 		EE71CC3D2951A8EA0074D908 /* ApplicationPasswordStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71CC3C2951A8EA0074D908 /* ApplicationPasswordStorage.swift */; };
 		EE71CC412951CE700074D908 /* generate-application-password-using-wporg-creds-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE71CC402951CE700074D908 /* generate-application-password-using-wporg-creds-success.json */; };
-		EE76762F2962B85E000066FA /* RequestProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE76762E2962B85E000066FA /* RequestProcessorTests.swift */; };
+		EE76762F2962B85E000066FA /* ApplicationPasswordRequestProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE76762E2962B85E000066FA /* ApplicationPasswordRequestProcessorTests.swift */; };
 		EE80A24729547F8B003591E4 /* coupons-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE80A24529547F8B003591E4 /* coupons-all-without-data.json */; };
 		EE80A24829547F8B003591E4 /* coupon-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE80A24629547F8B003591E4 /* coupon-without-data.json */; };
 		EE80A25029556FBD003591E4 /* coupon-reports-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE80A24F29556FBD003591E4 /* coupon-reports-without-data.json */; };
@@ -1610,7 +1610,7 @@
 		EE6FDCFB2966A70400E1CECF /* product-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-without-data.json"; sourceTree = "<group>"; };
 		EE71CC3C2951A8EA0074D908 /* ApplicationPasswordStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordStorage.swift; sourceTree = "<group>"; };
 		EE71CC402951CE700074D908 /* generate-application-password-using-wporg-creds-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-application-password-using-wporg-creds-success.json"; sourceTree = "<group>"; };
-		EE76762E2962B85E000066FA /* RequestProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestProcessorTests.swift; sourceTree = "<group>"; };
+		EE76762E2962B85E000066FA /* ApplicationPasswordRequestProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordRequestProcessorTests.swift; sourceTree = "<group>"; };
 		EE80A24529547F8B003591E4 /* coupons-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupons-all-without-data.json"; sourceTree = "<group>"; };
 		EE80A24629547F8B003591E4 /* coupon-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupon-without-data.json"; sourceTree = "<group>"; };
 		EE80A24F29556FBD003591E4 /* coupon-reports-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupon-reports-without-data.json"; sourceTree = "<group>"; };
@@ -2841,7 +2841,7 @@
 			isa = PBXGroup;
 			children = (
 				EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */,
-				EE76762E2962B85E000066FA /* RequestProcessorTests.swift */,
+				EE76762E2962B85E000066FA /* ApplicationPasswordRequestProcessorTests.swift */,
 			);
 			path = ApplicationPassword;
 			sourceTree = "<group>";
@@ -3765,7 +3765,7 @@
 				D800DA0A25EFEB9C001E13CE /* WCPayRemoteTests.swift in Sources */,
 				E13BAD5328F8625600217769 /* InAppPurchasesRemoteTests.swift in Sources */,
 				CC851D1425E52AB500249E9C /* Decimal+ExtensionsTests.swift in Sources */,
-				EE76762F2962B85E000066FA /* RequestProcessorTests.swift in Sources */,
+				EE76762F2962B85E000066FA /* ApplicationPasswordRequestProcessorTests.swift in Sources */,
 				B554FA8B2180B1D500C54DFF /* NotificationsRemoteTests.swift in Sources */,
 				B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */,
 				02EF166E292F0C5800D90AD6 /* PaymentRemoteTests.swift in Sources */,

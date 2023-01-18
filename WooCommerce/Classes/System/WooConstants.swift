@@ -159,6 +159,15 @@ extension WooConstants {
         case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
 #endif
 
+        /// URLs for the different IPP surveys
+        /// 
+#if DEBUG
+        case IPP_COD, IPP_firstTransaction, IPP_powerUsers = "https://automattic.survey.fm/woo-app-ipp-in-app-feedback-testing"
+#else
+        case IPP_COD = "https://automattic.survey.fm/woo-app-–-cod-survey"
+        case IPP_firstTransaction = "https://automattic.survey.fm/woo-app-–-ipp-first-transaction-survey"
+        case IPP_powerUsers = "https://automattic.survey.fm/woo-app-–-ipp-survey-for-power-users"
+#endif
         /// URL for the products feedback survey
         ///
         case productsFeedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"

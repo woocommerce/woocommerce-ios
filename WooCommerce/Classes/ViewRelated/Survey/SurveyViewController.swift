@@ -68,6 +68,10 @@ extension SurveyViewController {
         case addOnsI1
         case orderCreation
         case couponManagement
+        case IPP_COD
+        case IPP_firstTransaction
+        case IPP_powerUsers
+        
 
         fileprivate var url: URL {
             switch self {
@@ -102,6 +106,21 @@ extension SurveyViewController {
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
+            case .IPP_COD:
+                return WooConstants.URLs.IPP_COD
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
+            case .IPP_firstTransaction:
+                return WooConstants.URLs.IPP_firstTransaction
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
+            case .IPP_powerUsers:
+                return WooConstants.URLs.IPP_powerUsers
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
             }
         }
 
@@ -111,6 +130,9 @@ extension SurveyViewController {
                 return Localization.title
             case .productsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .orderCreation, .couponManagement:
                 return Localization.giveFeedback
+            default:
+                // TODO: Case for new IPP feedback variants
+                return ""
             }
         }
 
@@ -129,6 +151,9 @@ extension SurveyViewController {
                 return .orderCreation
             case .couponManagement:
                 return .couponManagement
+            default:
+                // TODO: Case for new IPP feedback variants
+                return .general
             }
         }
     }

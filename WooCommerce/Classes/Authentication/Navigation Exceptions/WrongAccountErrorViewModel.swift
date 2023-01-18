@@ -244,10 +244,10 @@ private extension WrongAccountErrorViewModel {
     /// Prepares `JetpackConnectionStore` to authenticate subsequent requests to WP.org API.
     ///
     func authenticate(with credentials: WordPressOrgCredentials) {
-        guard let authenticator = credentials.makeCookieNonceAuthenticator() else {
+        guard let config = credentials.makeCookieNonceAuthenticatorConfig() else {
             return
         }
-        let network = WordPressOrgNetwork(authenticator: authenticator)
+        let network = WordPressOrgNetwork(configuration: config)
         let action = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
         storesManager.dispatch(action)
     }

@@ -339,8 +339,8 @@ private extension ProductsViewController {
         let updateStatus = UIAlertAction(title: Localization.bulkEditingStatusOption, style: .default) { [weak self] _ in
             self?.showStatusBulkEditingModal()
         }
-        let updatePrice = UIAlertAction(title: Localization.bulkEditingPriceOption, style: .default) { _ in
-            // TODO-8520: show UI for price update
+        let updatePrice = UIAlertAction(title: Localization.bulkEditingPriceOption, style: .default) { [weak self] _ in
+            self?.showPriceBulkEditingModal()
         }
         let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
 
@@ -379,7 +379,7 @@ private extension ProductsViewController {
         }.store(in: &subscriptions)
         listSelectorViewController.navigationItem.rightBarButtonItem = applyButton
 
-        self.present(WooNavigationController(rootViewController: listSelectorViewController), animated: true)
+        present(WooNavigationController(rootViewController: listSelectorViewController), animated: true)
     }
 
     @objc func dismissModal() {
@@ -402,6 +402,16 @@ private extension ProductsViewController {
                 self.presentNotice(title: Localization.updateErrorNotice)
             }
         }
+    }
+
+    func showPriceBulkEditingModal() {
+        let priceInputViewModel = PriceInputViewModel(productListViewModel: viewModel) { [weak self] in
+            self?.dismissModal()
+        } applyClosure: { newPrice in
+            //
+        }
+        let priceInputViewController = PriceInputViewController(viewModel: priceInputViewModel)
+        present(WooNavigationController(rootViewController: priceInputViewController), animated: true)
     }
 
     func displayProductsSavingInProgressView(on vc: UIViewController) {

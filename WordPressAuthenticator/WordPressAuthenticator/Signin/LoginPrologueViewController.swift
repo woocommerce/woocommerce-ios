@@ -303,7 +303,9 @@ class LoginPrologueViewController: LoginViewController {
             buttons = []
         }
 
-        let showDivider = configuration.enableWPComLoginOnlyInPrologue == false && configuration.enableSiteCreation == true
+        let showDivider = configuration.enableWPComLoginOnlyInPrologue == false &&
+            configuration.enableSiteCreation == true &&
+            configuration.enableSiteAddressLoginOnly == false
         stackedButtonsViewController.setUpButtons(using: buttons, showDivider: showDivider)
         setButtonViewControllerBackground()
     }

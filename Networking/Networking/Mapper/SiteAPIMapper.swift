@@ -19,7 +19,11 @@ struct SiteAPIMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(SiteAPIEnvelope.self, from: response).siteAPI
+        do {
+            return try decoder.decode(SiteAPIEnvelope.self, from: response).siteAPI
+        } catch {
+            return try decoder.decode(SiteAPI.self, from: response)
+        }
     }
 }
 

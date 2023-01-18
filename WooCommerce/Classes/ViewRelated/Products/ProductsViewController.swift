@@ -1,6 +1,7 @@
 import UIKit
 import WordPressUI
 import Yosemite
+import Combine
 
 import class AutomatticTracks.CrashLogging
 
@@ -9,7 +10,7 @@ import class AutomatticTracks.CrashLogging
 ///
 final class ProductsViewController: UIViewController, GhostableViewController {
 
-    let viewModel: ProductListViewModel = .init()
+    let viewModel: ProductListViewModel
 
     /// Main TableView
     ///
@@ -194,6 +195,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     private var hasErrorLoadingData: Bool = false
 
+    private var subscriptions: Set<AnyCancellable> = []
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -202,6 +205,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     init(siteID: Int64) {
         self.siteID = siteID
+        self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         configureTabBarItem()
@@ -296,7 +300,11 @@ private extension ProductsViewController {
         }
         coordinatingController.start()
     }
+}
 
+// MARK: - Bulk Editing flows
+//
+private extension ProductsViewController {
     @objc func startBulkEditing() {
         tableView.setEditing(true, animated: true)
 
@@ -328,8 +336,8 @@ private extension ProductsViewController {
     @objc func openBulkEditingOptions(sender: UIButton) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
-        let updateStatus = UIAlertAction(title: Localization.bulkEditingStatusOption, style: .default) { _ in
-            // TODO-8519: show UI for status update
+        let updateStatus = UIAlertAction(title: Localization.bulkEditingStatusOption, style: .default) { [weak self] _ in
+            self?.showStatusBulkEditingModal()
         }
         let updatePrice = UIAlertAction(title: Localization.bulkEditingPriceOption, style: .default) { _ in
             // TODO-8520: show UI for price update
@@ -346,6 +354,71 @@ private extension ProductsViewController {
         }
 
         present(actionSheet, animated: true)
+    }
+
+    func showStatusBulkEditingModal() {
+        let initialStatus = viewModel.commonStatusForSelectedProducts
+        let command = ProductStatusSettingListSelectorCommand(selected: initialStatus)
+        let listSelectorViewController = ListSelectorViewController(command: command) { _ in
+            // view dismiss callback - no-op
+        }
+        listSelectorViewController.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                                                      target: self,
+                                                                                      action: #selector(dismissModal))
+
+        let applyButton = UIBarButtonItem(title: Localization.bulkEditingApply)
+        applyButton.on(call: { [weak self] _ in
+            self?.applyBulkEditingStatus(newStatus: command.selected, modalVC: listSelectorViewController)
+        })
+        command.$selected.sink { newStatus in
+            if let newStatus, newStatus != initialStatus {
+                applyButton.isEnabled = true
+            } else {
+                applyButton.isEnabled = false
+            }
+        }.store(in: &subscriptions)
+        listSelectorViewController.navigationItem.rightBarButtonItem = applyButton
+
+        self.present(WooNavigationController(rootViewController: listSelectorViewController), animated: true)
+    }
+
+    @objc func dismissModal() {
+        dismiss(animated: true)
+    }
+
+    func applyBulkEditingStatus(newStatus: ProductStatus?, modalVC: UIViewController) {
+        guard let newStatus else { return }
+
+        displayProductsSavingInProgressView(on: modalVC)
+        viewModel.updateSelectedProducts(with: newStatus) { [weak self] result in
+            guard let self else { return }
+
+            self.dismiss(animated: true, completion: nil)
+            switch result {
+            case .success:
+                self.finishBulkEditing()
+                self.presentNotice(title: Localization.statusUpdatedNotice)
+            case .failure:
+                self.presentNotice(title: Localization.updateErrorNotice)
+            }
+        }
+    }
+
+    func displayProductsSavingInProgressView(on vc: UIViewController) {
+        let viewProperties = InProgressViewProperties(title: Localization.productsSavingTitle, message: Localization.productsSavingMessage)
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+        inProgressViewController.modalPresentationStyle = .fullScreen
+
+        vc.present(inProgressViewController, animated: true, completion: nil)
+    }
+
+    func presentNotice(title: String) {
+        let contextNoticePresenter: NoticePresenter = {
+            let noticePresenter = DefaultNoticePresenter()
+            noticePresenter.presentingViewController = tabBarController
+            return noticePresenter
+        }()
+        contextNoticePresenter.enqueue(notice: .init(title: title))
     }
 }
 
@@ -1218,5 +1291,17 @@ private extension ProductsViewController {
             "%1$@ selected",
             comment: "Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected"
         )
+
+        static let bulkEditingApply = NSLocalizedString("Apply", comment: "Title for the button to apply bulk editing changes to selected products.")
+
+        static let productsSavingTitle = NSLocalizedString("Updating your products...",
+                                                          comment: "Title of the in-progress UI while bulk updating selected products remotely")
+        static let productsSavingMessage = NSLocalizedString("Please wait while we update these products on your store",
+                                                            comment: "Message of the in-progress UI while bulk updating selected products remotely")
+
+        static let statusUpdatedNotice = NSLocalizedString("Status updated",
+                                                           comment: "Title of the notice when a user updated status for selected products")
+        static let updateErrorNotice = NSLocalizedString("Cannot update products",
+                                                         comment: "Title of the notice when there is an error updating selected products")
     }
 }

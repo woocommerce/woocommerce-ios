@@ -16,7 +16,12 @@ public class TelemetryRemote: Remote {
     public func sendTelemetry(for siteID: Int64, versionString: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let path = "tracker"
         let parameters = ["platform": "ios", "version": versionString]
-        let request = JetpackRequest(wooApiVersion: .wcTelemetry, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .wcTelemetry,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = IgnoringResponseMapper()
 
         enqueue(request, mapper: mapper, completion: completion)

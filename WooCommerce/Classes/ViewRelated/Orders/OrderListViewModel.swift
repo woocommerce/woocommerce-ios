@@ -176,9 +176,8 @@ final class OrderListViewModel {
         bindTopBannerState()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            syncIPPBannerVisibility()
             loadOrdersBannerVisibility()
-            loadIPPFeedbackBannerVisibility()
-            fetchIPPTransactions()
         } else {
             loadOrdersBannerVisibility()
         }
@@ -220,17 +219,28 @@ final class OrderListViewModel {
         stores.dispatch(action)
     }
 
+    // This is a temporary method in order to update the IPP feedback status to `.pending`, and
+    // then load feedback visibility. We need to reset the banner status on UserDefaults for
+    // the banner to appear again for testing purposes.
+    private func syncIPPBannerVisibility() {
+        let action = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .pending) { _ in
+            self.loadIPPFeedbackBannerVisibility()
+            self.fetchIPPTransactions()
+        }
+        stores.dispatch(action)
+    }
+
     private func loadIPPFeedbackBannerVisibility() {
         let action = AppSettingsAction.loadFeedbackVisibility(type: .IPP) { [weak self] result in
             switch result {
             case .success(let visible):
-                self?.hideIPPFeedbackBanner = visible
+                self?.hideIPPFeedbackBanner = !visible
             case .failure(let error):
                 self?.hideIPPFeedbackBanner = true
                 ServiceLocator.crashLogging.logError(error)
             }
         }
-        stores.dispatch(action)
+        self.stores.dispatch(action)
     }
 
     @objc private func handleAppDeactivation() {

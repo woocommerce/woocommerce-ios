@@ -12,7 +12,7 @@ final class PriceInputViewModel {
 
     /// This holds the latest entered price. It is used to perform validations when the user taps the apply button
     /// and for creating a products array with the new price for the bulk update Action
-    private(set) var currentPrice: String = ""
+    private var currentPrice: String = ""
 
     private let productListViewModel: ProductListViewModel
 

@@ -49,7 +49,7 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
 
         viewModelsAndViews.append(
             CardReaderSettingsViewModelAndView(
-                viewModel: CardReaderSettingsConnectedViewModel(
+                viewModel: BluetoothCardReaderSettingsConnectedViewModel(
                     didChangeShouldShow: { [weak self] state in
                         self?.onDidChangeShouldShow(state)
                     },

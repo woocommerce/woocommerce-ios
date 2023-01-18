@@ -399,17 +399,17 @@ private extension LegacyCollectOrderPaymentUseCase {
         alerts.success(printReceipt: { [order, configuration, weak self] in
             guard let self = self else { return }
 
-            // Inform about flow completion.
-            onCompleted()
-
             // Delegate print action
-            ReceiptActionCoordinator.printReceipt(for: order,
-                                                  params: receiptParameters,
-                                                  countryCode: configuration.countryCode,
-                                                  cardReaderModel: self.connectedReader?.readerType.model,
-                                                  stores: self.stores,
-                                                  analytics: self.analytics)
-
+            Task { @MainActor in
+                await ReceiptActionCoordinator.printReceipt(for: order,
+                                                      params: receiptParameters,
+                                                      countryCode: configuration.countryCode,
+                                                      cardReaderModel: self.connectedReader?.readerType.model,
+                                                      stores: self.stores,
+                                                      analytics: self.analytics)
+                // Inform about flow completion.
+                onCompleted()
+            }
         }, emailReceipt: { [order, analytics, paymentOrchestrator, configuration, weak self] in
             guard let self = self else { return }
 

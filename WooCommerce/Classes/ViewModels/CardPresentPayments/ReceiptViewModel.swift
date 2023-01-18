@@ -48,12 +48,14 @@ final class ReceiptViewModel {
 
     /// Prints the receipt
     func printReceipt() {
-        ReceiptActionCoordinator.printReceipt(for: order,
-                                              params: receipt,
-                                              countryCode: countryCode,
-                                              cardReaderModel: nil,
-                                              stores: stores,
-                                              analytics: ServiceLocator.analytics)
+        Task { @MainActor in
+            await ReceiptActionCoordinator.printReceipt(for: order,
+                                                  params: receipt,
+                                                  countryCode: countryCode,
+                                                  cardReaderModel: nil,
+                                                  stores: stores,
+                                                  analytics: ServiceLocator.analytics)
+        }
     }
 
     /// Returns a boolean that indicates whether email is supported for the app and device so that email UI is only displayed when it is supported.

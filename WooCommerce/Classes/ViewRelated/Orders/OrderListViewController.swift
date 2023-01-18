@@ -122,7 +122,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Banner variation that will be shown as IPP Feedback Banner. If any.
     ///
-    private var IPPsurveyVariation: SurveyViewController.Source = .IPP_COD // TODO: Make optional
+    private var IPPsurveyVariation: SurveyViewController.Source?
 
 
     // MARK: - View Lifecycle
@@ -159,12 +159,10 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureTableView()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            // TODO: Make clearer
-            let isEligible = viewModel.displayIPPFeedbackBannerIfEligible().0
-            let surveyType = viewModel.displayIPPFeedbackBannerIfEligible().1
-            if isEligible {
-                IPPsurveyVariation = surveyType ?? .IPP_COD
+            guard let survey = viewModel.displayIPPFeedbackBannerIfEligible() else {
+                return
             }
+            IPPsurveyVariation = survey
         }
 
         configureViewModel()
@@ -798,7 +796,10 @@ private extension OrderListViewController {
     /// Sets the `topBannerView` property to an IPP feedback banner.
     ///
     func setIPPFeedbackTopBanner(survey: SurveyViewController.Source) {
-        topBannerView = createIPPFeedbackTopBanner(survey: IPPsurveyVariation)
+        guard let survey = IPPsurveyVariation else {
+            return
+        }
+        topBannerView = createIPPFeedbackTopBanner(survey: survey)
         showTopBannerView()
     }
 

@@ -15,9 +15,13 @@ final class PriceInputViewController: UIViewController {
         return noticePresenter
     }()
 
-    init(viewModel: PriceInputViewModel) {
+    init(viewModel: PriceInputViewModel, noticePresenter: NoticePresenter? = nil) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+
+        if let noticePresenter {
+            self.noticePresenter = noticePresenter
+        }
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

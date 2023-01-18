@@ -8,12 +8,15 @@ final class PriceInputViewModel {
 
     @Published private(set) var applyButtonEnabled: Bool = false
 
+    @Published private(set) var inputValidationError: ProductPriceSettingsError? = nil
+
     /// This holds the latest entered price. It is used to perform validations when the user taps the apply button
     /// and for creating a products array with the new price for the bulk update Action
     private(set) var currentPrice: String = ""
 
     private let productListViewModel: ProductListViewModel
 
+    private let priceSettingsValidator: ProductPriceSettingsValidator
     private let currencySettings: CurrencySettings
     private let currencyFormatter: CurrencyFormatter
 
@@ -25,6 +28,7 @@ final class PriceInputViewModel {
          cancelClosure: @escaping () -> Void,
          applyClosure: @escaping (String) -> Void) {
         self.productListViewModel = productListViewModel
+        self.priceSettingsValidator = ProductPriceSettingsValidator(currencySettings: currencySettings)
         self.currencySettings = currencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.cancelClosure = cancelClosure
@@ -40,6 +44,11 @@ final class PriceInputViewModel {
     /// Called when the save button is tapped
     ///
     func applyButtonTapped() {
+        inputValidationError = validatePrice()
+        guard inputValidationError == nil else {
+            return
+        }
+
         applyClosure(currentPrice)
     }
 
@@ -58,6 +67,24 @@ final class PriceInputViewModel {
         } else {
             applyButtonEnabled = false
         }
+    }
+
+    /// Validates if the currently selected price is valid for all products
+    ///
+    private func validatePrice() -> ProductPriceSettingsError? {
+        for product in productListViewModel.selectedProducts {
+            let regularPrice = currentPrice
+            let salePrice = product.salePrice
+
+            if let error = priceSettingsValidator.validate(regularPrice: regularPrice,
+                                                           salePrice: salePrice,
+                                                           dateOnSaleStart: product.dateOnSaleStart,
+                                                           dateOnSaleEnd: product.dateOnSaleEnd) {
+                return error
+            }
+        }
+
+        return nil
     }
 
     /// Returns the footer text to be displayed with information about the current bulk price and how many products will be updated.

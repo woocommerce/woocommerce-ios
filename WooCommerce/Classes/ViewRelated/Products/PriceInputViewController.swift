@@ -9,6 +9,12 @@ final class PriceInputViewController: UIViewController {
     private var viewModel: PriceInputViewModel
     private var subscriptions = Set<AnyCancellable>()
 
+    private lazy var noticePresenter: NoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     init(viewModel: PriceInputViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -45,6 +51,13 @@ private extension PriceInputViewController {
             .sink { [weak self] enabled in
                 self?.navigationItem.rightBarButtonItem?.isEnabled = enabled
             }.store(in: &subscriptions)
+
+        viewModel.$inputValidationError.sink { [weak self] error in
+            guard let error = error else {
+                return
+            }
+            self?.displayNoticeForError(error)
+        }.store(in: &subscriptions)
     }
 
     func configureTableView() {
@@ -72,6 +85,25 @@ private extension PriceInputViewController {
         // Dismiss the keyboard before triggering the update
         view.endEditing(true)
         viewModel.applyButtonTapped()
+    }
+
+    func displayNoticeForError(_ productPriceSettingsError: ProductPriceSettingsError) {
+        switch productPriceSettingsError {
+        case .salePriceWithoutRegularPrice:
+            displayNotice(for: Localization.salePriceWithoutRegularPriceError)
+        case .salePriceHigherThanRegularPrice:
+            displayNotice(for: Localization.displaySalePriceError)
+        case .newSaleWithEmptySalePrice:
+            displayNotice(for: Localization.displayMissingSalePriceError)
+        }
+    }
+
+    /// Displays a Notice onscreen for a given message
+    ///
+    func displayNotice(for message: String) {
+        view.endEditing(true)
+        let notice = Notice(title: message, feedbackType: .error)
+        noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -116,5 +148,14 @@ extension PriceInputViewController: UITableViewDataSource {
 private extension PriceInputViewController {
     enum Localization {
         static let bulkEditingApply = NSLocalizedString("Apply", comment: "Title for the button to apply bulk editing changes to selected products.")
+
+        static let salePriceWithoutRegularPriceError = NSLocalizedString("The sale price can't be added without the regular price.",
+                                                                         comment: "Bulk price update error message, when the sale price is added but the"
+                                                                            + " regular price is not")
+        static let displaySalePriceError = NSLocalizedString("The sale price should be lower than the regular price.",
+                                                             comment: "Bulk price update error, when the sale price is higher than the regular"
+                                                                + " price")
+        static let displayMissingSalePriceError = NSLocalizedString("Please enter a sale price for the scheduled sale",
+                                                                    comment: "Bulk price update error, when the sale price is empty")
     }
 }

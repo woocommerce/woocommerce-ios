@@ -271,7 +271,7 @@ class LoginPrologueViewController: LoginViewController {
                                                  style: primaryButtonStyle,
                                                  onTap: loginTapCallback())
         let enterYourSiteAddressButton = StackedButton(title: displayStrings.enterYourSiteAddressButtonTitle,
-                                                       isPrimary: configuration.enableSiteAddressLoginOnly,
+                                                       isPrimary: configuration.enableSiteAddressLoginOnlyInPrologue,
                                                        configureBodyFontForTitle: true,
                                                        accessibilityIdentifier: "Prologue Self Hosted Button",
                                                        style: secondaryButtonStyle,
@@ -305,7 +305,7 @@ class LoginPrologueViewController: LoginViewController {
 
         let showDivider = configuration.enableWPComLoginOnlyInPrologue == false &&
             configuration.enableSiteCreation == true &&
-            configuration.enableSiteAddressLoginOnly == false
+            configuration.enableSiteAddressLoginOnlyInPrologue == false
         stackedButtonsViewController.setUpButtons(using: buttons, showDivider: showDivider)
         setButtonViewControllerBackground()
     }

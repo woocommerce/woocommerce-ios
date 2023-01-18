@@ -148,7 +148,7 @@ public struct WordPressAuthenticatorConfiguration {
 
     /// If enabled, the prologue screen should hide the WPCom login CTA and show only the entry point to site address login.
     ///
-    let enableSiteAddressLoginOnly: Bool
+    let enableSiteAddressLoginOnlyInPrologue: Bool
 
     /// Designated Initializer
     ///
@@ -182,7 +182,7 @@ public struct WordPressAuthenticatorConfiguration {
                  wpcomPasswordInstructions: String? = nil,
                  skipXMLRPCCheckForSiteDiscovery: Bool = false,
                  useEnterEmailAddressAsStepValueForGetStartedVC: Bool = false,
-                 enableSiteAddressLoginOnly: Bool = false) {
+                 enableSiteAddressLoginOnlyInPrologue: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -214,6 +214,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.wpcomPasswordInstructions = wpcomPasswordInstructions
         self.skipXMLRPCCheckForSiteDiscovery = skipXMLRPCCheckForSiteDiscovery
         self.useEnterEmailAddressAsStepValueForGetStartedVC = useEnterEmailAddressAsStepValueForGetStartedVC
-        self.enableSiteAddressLoginOnly = enableSiteAddressLoginOnly
+        self.enableSiteAddressLoginOnlyInPrologue = enableSiteAddressLoginOnlyInPrologue
     }
 }

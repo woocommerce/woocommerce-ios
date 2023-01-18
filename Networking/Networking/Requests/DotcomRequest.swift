@@ -2,6 +2,10 @@ import Foundation
 import Alamofire
 
 
+enum DotcomRequestError: Error {
+    case apiVersionCannotBeAccessedUsingRESTAPI
+}
+
 /// Represents a WordPress.com Request
 ///
 struct DotcomRequest: Request, RESTRequestConvertible {
@@ -29,20 +33,48 @@ struct DotcomRequest: Request, RESTRequestConvertible {
     ///
     private let availableAsRESTRequest: Bool
 
-    /// Designated Initializer.
+    /// Initializer.
     ///
     /// - Parameters:
     ///     - wordpressApiVersion: Endpoint Version.
     ///     - method: HTTP Method we should use.
     ///     - path: RPC that should be executed.
     ///     - parameters: Collection of String parameters to be passed over to our target RPC.
+    ///     - headers: Headers used in the URLRequest
+    ///
+    init(wordpressApiVersion: WordPressAPIVersion,
+         method: HTTPMethod,
+         path: String,
+         parameters: [String: Any]? = nil,
+         headers: [String: String]? = nil) {
+        self.wordpressApiVersion = wordpressApiVersion
+        self.method = method
+        self.path = path
+        self.parameters = parameters ?? [:]
+        self.headers = headers ?? [:]
+        self.availableAsRESTRequest = false
+    }
+
+    /// Initializer.
+    ///
+    /// - Parameters:
+    ///     - wordpressApiVersion: Endpoint Version.
+    ///     - method: HTTP Method we should use.
+    ///     - path: RPC that should be executed.
+    ///     - parameters: Collection of String parameters to be passed over to our target RPC.
+    ///     - headers: Headers used in the URLRequest
+    ///     - availableAsRESTRequest: Whether the request should be transformed to a REST request if application password is available.
     ///
     init(wordpressApiVersion: WordPressAPIVersion,
          method: HTTPMethod,
          path: String,
          parameters: [String: Any]? = nil,
          headers: [String: String]? = nil,
-         availableAsRESTRequest: Bool = false) {
+         availableAsRESTRequest: Bool) throws {
+        if availableAsRESTRequest && !wordpressApiVersion.isWPOrgEndpoint {
+            throw DotcomRequestError.apiVersionCannotBeAccessedUsingRESTAPI
+        }
+
         self.wordpressApiVersion = wordpressApiVersion
         self.method = method
         self.path = path

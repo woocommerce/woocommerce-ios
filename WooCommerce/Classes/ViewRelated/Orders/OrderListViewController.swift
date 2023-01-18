@@ -158,6 +158,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureSyncingCoordinator()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            // TODO: Connect data fetched here with the ViewController
             viewModel.displayIPPFeedbackBannerIfEligible()
         }
     }
@@ -789,18 +790,32 @@ private extension OrderListViewController {
     /// Sets the `topBannerView` property to an IPP feedback banner.
     ///
     func setIPPFeedbackTopBanner() {
-        topBannerView = createIPPFeedbackTopBanner()
+        let survey: SurveyViewController.Source = .IPPFeedback // TODO: This needs to come from the ViewModel
+        topBannerView = createIPPFeedbackTopBanner(survey: survey)
         showTopBannerView()
     }
 
-    private func createIPPFeedbackTopBanner() -> TopBannerView {
+    private func createIPPFeedbackTopBanner(survey: SurveyViewController.Source) -> TopBannerView {
         let shareIPPFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.shareFeedbackButton, action: { _ in
-            self.displayIPPFeedbackBannerSurvey()
+            self.displayIPPFeedbackBannerSurvey(survey: survey)
         })
 
+        var bannerTitle = "" // Dynamic
+        var bannerText = "" // Dynamic
+
+        switch survey {
+        case .IPPFeedback :
+            bannerTitle = Localization.feedbackBannerTitle
+            bannerText = Localization.feedbackBannerContent
+            // TODO: Add extra SurveyViewController cases.
+            // TODO: Non-IPP-feedback cases, do nothing.
+        default:
+            break
+        }
+
         let viewModel = TopBannerViewModel(
-            title: Localization.feedbackBannerTitle,
-            infoText: Localization.feedbackBannerContent,
+            title: bannerTitle,
+            infoText: bannerText,
             icon: UIImage.gridicon(.comment),
             isExpanded: true,
             topButton: .dismiss(handler: {  }),
@@ -811,9 +826,9 @@ private extension OrderListViewController {
         return topBannerView
     }
 
-    private func displayIPPFeedbackBannerSurvey() {
+    private func displayIPPFeedbackBannerSurvey(survey: SurveyViewController.Source) {
         // TODO: Survey will change based on conditions
-        let surveyNavigation = SurveyCoordinatingController(survey: .IPPFeedback)
+        let surveyNavigation = SurveyCoordinatingController(survey: survey)
         self.present(surveyNavigation, animated: true, completion: nil)
     }
 }
@@ -838,9 +853,17 @@ private extension OrderListViewController {
                                                            comment: "Title of the In-Person Payments feedback banner in the Orders tab"
         )
 
+        static let feedbackBannerTitle2 = NSLocalizedString("This is the title 2", comment: "Testing")
+
+        static let feedbackBannerTitle3 = NSLocalizedString("This is the title 3", comment: "Testing")
+
         static let feedbackBannerContent = NSLocalizedString("Rate your In-Person Payment experience.",
                                                              comment: "Content of the In-Person Payments feedback banner in the Orders tab"
         )
+
+        static let feedbackBannerContent2 = NSLocalizedString("This is the content text 2", comment: "Testing")
+
+        static let feedbackBannerContent3 = NSLocalizedString("This is the content text 3", comment: "Testing")
 
         static let shareFeedbackButton = NSLocalizedString("Share feedback",
                                                            comment: "Title of the feedback action button on the In-Person Payments feedback banner"

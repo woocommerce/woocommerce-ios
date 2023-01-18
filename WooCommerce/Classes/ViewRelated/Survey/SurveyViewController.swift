@@ -126,13 +126,10 @@ extension SurveyViewController {
 
         fileprivate var title: String {
             switch self {
-            case .inAppFeedback:
+            case .inAppFeedback, .IPP_COD, .IPP_firstTransaction, .IPP_powerUsers:
                 return Localization.title
             case .productsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .orderCreation, .couponManagement:
                 return Localization.giveFeedback
-            default:
-                // TODO: Case for new IPP feedback variants
-                return ""
             }
         }
 
@@ -151,9 +148,12 @@ extension SurveyViewController {
                 return .orderCreation
             case .couponManagement:
                 return .couponManagement
-            default:
-                // TODO: Case for new IPP feedback variants
-                return .general
+            case .IPP_COD:
+                return .IPP_COD
+            case .IPP_firstTransaction:
+                return .IPP_firstTransaction
+            case .IPP_powerUsers:
+                return .IPP_powerUsers
             }
         }
     }

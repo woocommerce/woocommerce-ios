@@ -262,7 +262,10 @@ private extension OrderListViewController {
                 case .orderCreation:
                     self.setOrderCreationTopBanner()
                 case .IPPFeedback:
-                    self.setIPPFeedbackTopBanner(survey: .IPP_COD)
+                    guard let survey = self.IPPsurveyVariation else {
+                        return
+                    }
+                    self.setIPPFeedbackTopBanner(survey: survey)
                 }
             }
             .store(in: &cancellables)

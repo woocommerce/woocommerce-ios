@@ -790,7 +790,7 @@ private extension OrderListViewController {
     /// Sets the `topBannerView` property to an IPP feedback banner.
     ///
     func setIPPFeedbackTopBanner() {
-        let survey: SurveyViewController.Source = .IPPFeedback // TODO: This needs to come from the ViewModel
+        let survey: SurveyViewController.Source = .IPP_powerUsers // TODO: Temporary. This needs to come from the ViewModel
         topBannerView = createIPPFeedbackTopBanner(survey: survey)
         showTopBannerView()
     }
@@ -804,12 +804,17 @@ private extension OrderListViewController {
         var bannerText = "" // Dynamic
 
         switch survey {
-        case .IPPFeedback :
+        case .IPP_COD :
             bannerTitle = Localization.feedbackBannerTitle
             bannerText = Localization.feedbackBannerContent
-            // TODO: Add extra SurveyViewController cases.
-            // TODO: Non-IPP-feedback cases, do nothing.
+        case .IPP_firstTransaction:
+            bannerTitle = Localization.feedbackBannerTitle2
+            bannerTitle = Localization.feedbackBannerContent2
+        case .IPP_powerUsers:
+            bannerTitle = Localization.feedbackBannerTitle3
+            bannerTitle = Localization.feedbackBannerContent3
         default:
+            // Non-IPP-feedback cases, do nothing.
             break
         }
 

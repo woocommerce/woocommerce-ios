@@ -13,7 +13,7 @@
 // will not cause a crash.
 //
 // See https://github.com/wordpress-mobile/WordPressAuthenticator-iOS/pull/720#issuecomment-1374952619
-#pragma GCC diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wprotocol"
 @implementation CaptureLogs
 
 - (instancetype)init
@@ -36,6 +36,7 @@
 }
 
 @end
+#pragma clang diagnostic pop
 
 @interface ObjCLoggingTest : XCTestCase
 

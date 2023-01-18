@@ -728,6 +728,7 @@
 		DE66C5632977CBC700DAA978 /* shipping-label-eligibility-failure-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C5622977CBC700DAA978 /* shipping-label-eligibility-failure-without-data.json */; };
 		DE66C5652977CC4300DAA978 /* shipping-label-purchase-success-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C5642977CC4300DAA978 /* shipping-label-purchase-success-without-data.json */; };
 		DE66C5672977CEB800DAA978 /* shipping-label-status-success-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C5662977CEB800DAA978 /* shipping-label-status-success-without-data.json */; };
+		DE66C5692977D62700DAA978 /* plugins-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C5682977D62700DAA978 /* plugins-without-data.json */; };
 		DE6F308727966FEF004E1C9A /* CouponReportListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */; };
 		DE74F29A27E08F5A0002FE59 /* SiteSettingMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */; };
 		DE74F29C27E0A1D00002FE59 /* setting-coupon.json in Resources */ = {isa = PBXBuildFile; fileRef = DE74F29B27E0A1D00002FE59 /* setting-coupon.json */; };
@@ -1569,6 +1570,7 @@
 		DE66C5622977CBC700DAA978 /* shipping-label-eligibility-failure-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-eligibility-failure-without-data.json"; sourceTree = "<group>"; };
 		DE66C5642977CC4300DAA978 /* shipping-label-purchase-success-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-purchase-success-without-data.json"; sourceTree = "<group>"; };
 		DE66C5662977CEB800DAA978 /* shipping-label-status-success-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-status-success-without-data.json"; sourceTree = "<group>"; };
+		DE66C5682977D62700DAA978 /* plugins-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "plugins-without-data.json"; sourceTree = "<group>"; };
 		DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapperTests.swift; sourceTree = "<group>"; };
 		DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSettingMapper.swift; sourceTree = "<group>"; };
 		DE74F29B27E0A1D00002FE59 /* setting-coupon.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "setting-coupon.json"; sourceTree = "<group>"; };
@@ -2188,6 +2190,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DE66C5682977D62700DAA978 /* plugins-without-data.json */,
 				DE66C5662977CEB800DAA978 /* shipping-label-status-success-without-data.json */,
 				DE66C5642977CC4300DAA978 /* shipping-label-purchase-success-without-data.json */,
 				DE66C5622977CBC700DAA978 /* shipping-label-eligibility-failure-without-data.json */,
@@ -3171,6 +3174,7 @@
 				03E8FEC427B40E3F00F5FC7D /* wcpay-charge-card-present-minimal.json in Resources */,
 				EE6FDCFC2966A70400E1CECF /* product-without-data.json in Resources */,
 				31054724262E2FC600C5C02B /* wcpay-payment-intent-requires-capture.json in Resources */,
+				DE66C5692977D62700DAA978 /* plugins-without-data.json in Resources */,
 				7492FAE3217FBDBC00ED2C69 /* settings-general-alt.json in Resources */,
 				93D8BBFF226BC1DA00AD2EB3 /* me-settings.json in Resources */,
 				74C947842193A6C70024CB60 /* comment-moderate-approved.json in Resources */,

@@ -172,6 +172,22 @@ private extension MediaStore {
     }
 }
 
+// MARK: Helpers
+//
+private extension MediaStore {
+    func isLoggedInWithoutWPCOMCredentials(_ siteID: Int64) -> Bool {
+        // We check the site ID and assume that we don't have WPCOM creds if the site ID is `-1`
+        siteID == WooConstants.placeholderSiteID
+    }
+
+    func isSiteJetpackJCPConnected(_ siteID: Int64) -> Bool {
+        guard let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
+            return false
+        }
+        return site.isJetpackCPConnected
+    }
+}
+
 public enum MediaActionError: Error {
     case unexpectedMediaCount(count: Int)
     case unknown

@@ -182,6 +182,7 @@ public enum WooAnalyticsStat: String {
     case siteCreationStep = "site_creation_step"
     case siteCreationSitePreviewed = "site_creation_site_previewed"
     case siteCreationManageStoreTapped = "site_creation_store_management_opened"
+    case siteCreationProfilerData = "site_creation_profiler_data"
     case loginPrologueCreateSiteTapped = "login_prologue_create_site_tapped"
     case signupFormLoginTapped = "signup_login_button_tapped"
     case signupSubmitted = "signup_submitted"

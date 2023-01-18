@@ -1,9 +1,21 @@
 import Combine
 import Foundation
 
+/// Necessary data from the answer of the store creation category question.
+struct StoreCreationCategoryAnswer: Equatable {
+    /// Display name of the selected category.
+    let name: String
+    /// Raw value of the category (industry) to be sent to the backend.
+    let value: String
+    /// Raw value of the category group (industry group) to be sent to the backend.
+    let groupValue: String
+}
+
 /// View model for `StoreCreationCategoryQuestionView`, an optional profiler question about store category in the store creation flow.
 @MainActor
 final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
+    typealias Answer = StoreCreationCategoryAnswer
+
     let topHeader: String
 
     let title: String = Localization.title
@@ -14,11 +26,11 @@ final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestio
     /// TODO: 8376 - update values when API is ready.
     @Published private(set) var selectedCategory: Category?
 
-    private let onContinue: (String) -> Void
+    private let onContinue: (Answer) -> Void
     private let onSkip: () -> Void
 
     init(storeName: String,
-         onContinue: @escaping (String) -> Void,
+         onContinue: @escaping (Answer) -> Void,
          onSkip: @escaping () -> Void) {
         self.topHeader = storeName
         self.onContinue = onContinue
@@ -28,11 +40,12 @@ final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestio
 
 extension StoreCreationCategoryQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
     func continueButtonTapped() async {
-        guard let selectedCategory else {
+        guard let selectedCategory,
+        let categoryGroup = categorySections.first(where: { $0.categories.contains(selectedCategory) })?.group else {
             return onSkip()
         }
 
-        onContinue(selectedCategory.name)
+        onContinue(.init(name: selectedCategory.name, value: selectedCategory.rawValue, groupValue: categoryGroup.rawValue))
     }
 
     func skipButtonTapped() {

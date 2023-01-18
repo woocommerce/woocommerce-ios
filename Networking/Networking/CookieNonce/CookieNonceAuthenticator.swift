@@ -5,6 +5,9 @@ import Foundation
 /// This differs from WordPressKit's version by handling the nonce retrieval as a separate request
 /// instead of a redirect from the login request - to fix issues with Pressable sites.
 ///
+/// This authenticator uses Ajax nonce retrieval method by default
+/// since we are not supporting sites with WP versions earlier than 5.6.0.
+///
 final class CookieNonceAuthenticator: RequestRetrier & RequestAdapter {
     private let username: String
     private let password: String

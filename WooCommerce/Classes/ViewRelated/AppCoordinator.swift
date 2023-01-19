@@ -276,6 +276,7 @@ private extension AppCoordinator {
 
         // this needs to be wrapped within a navigation controller to properly show the right bar button for Help.
         setWindowRootViewControllerAndAnimateIfNeeded(WooNavigationController(rootViewController: errorViewController))
+        ServiceLocator.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
     }
 
     /// Synchronously check if there's any `EligibilityErrorInfo` stored locally. If there is, then let's show the role error UI instead.
@@ -295,7 +296,6 @@ private extension AppCoordinator {
 
             // if the previous role check indicates that the user is ineligible, let's show the error message.
             if let errorInfo = try? result.get() {
-                ServiceLocator.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
                 self.displayRoleErrorUI(for: storeID, errorInfo: errorInfo)
                 return
             }

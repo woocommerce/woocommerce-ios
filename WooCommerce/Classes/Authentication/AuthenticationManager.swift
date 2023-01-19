@@ -319,7 +319,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void) {
         if let site = siteInfo {
-            ServiceLocator.analytics.track(event: .Login.siteInfoFetched(
+            analytics.track(event: .Login.siteInfoFetched(
                 exists: site.exists,
                 hasWordPress: site.isWP,
                 isWPCom: site.isWPCom,

@@ -1856,6 +1856,18 @@ extension WooAnalyticsEvent {
 // MARK: - REST API Login
 //
 extension WooAnalyticsEvent {
+    enum LoginUserRole {
+        enum Key: String {
+            case currentRoles = "current_roles"
+        }
+
+        static func loginWithInsufficientRole(currentRoles: [String]) -> WooAnalyticsEvent {
+            let roles = String(currentRoles.sorted().joined(by: ","))
+            return WooAnalyticsEvent(statName: .loginInsufficientRole,
+                                     properties: [Key.currentRoles.rawValue: roles])
+        }
+    }
+
     enum RESTAPILogin {
         enum Key: String {
             case step
@@ -1871,7 +1883,9 @@ extension WooAnalyticsEvent {
         /// Tracks when the login with site credentials failed.
         ///
         static func loginSiteCredentialFailed(step: LoginSiteCredentialStep, error: Error?) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .loginSiteCredentialsFailed, properties: [Key.step.rawValue: step.rawValue], error: error)
+            WooAnalyticsEvent(statName: .loginSiteCredentialsFailed,
+                              properties: [Key.step.rawValue: step.rawValue],
+                              error: error)
         }
     }
 }

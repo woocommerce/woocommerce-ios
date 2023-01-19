@@ -101,6 +101,7 @@ extension UIButton {
 
         setTitleColor(.accent, for: .normal)
         setTitleColor(.accentDark, for: .highlighted)
+        setTitleColor(.buttonDisabledTitle, for: .disabled)
     }
 
     /// Applies the Modal Cancel Button Style

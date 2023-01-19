@@ -1,1 +1,1 @@
-¿Sabes que hemos añadido una nueva sección de estadísticas? Ahora se pueden seleccionar rangos de fechas personalizados al consultar las estadísticas. Para comprobarlo, solo tendrás que hacer clic en el botón Ver más, que se encuentra debajo de las estadísticas de la tienda.
+Verás algunos cambios visuales en el aspecto de la aplicación. Échale un vistazo y danos tu opinión. ¡En las próximas semanas habrá más cambios!

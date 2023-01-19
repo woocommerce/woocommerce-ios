@@ -41,6 +41,7 @@ public protocol ProductsRemoteProtocol {
                    completion: @escaping (Result<String, Error>) -> Void)
     func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void)
+    func updateProducts(siteID: Int64, products: [Product], completion: @escaping (Result<[Product], Error>) -> Void)
     func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Int64], Error>) -> Void)
     func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void)
 }
@@ -318,6 +319,26 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             let path = "\(Path.products)/\(productID)"
             let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
             let mapper = ProductMapper(siteID: siteID)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    /// Updates provided `Products`.
+    ///
+    /// - Parameters:
+    ///     - siteID: site which hosts the Products. 
+    ///     - products: the Products to update remotely.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateProducts(siteID: Int64, products: [Product], completion: @escaping (Result<[Product], Error>) -> Void) {
+        do {
+            let parameters = try products.map { try $0.toDictionary() }
+            let path = "\(Path.products)/batch"
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: ["update": parameters])
+            let mapper = ProductsBulkUpdateMapper(siteID: siteID)
 
             enqueue(request, mapper: mapper, completion: completion)
         } catch {

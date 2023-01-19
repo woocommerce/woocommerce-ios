@@ -168,6 +168,7 @@ private extension ProductVariationStore {
     }
 
     /// Bulk creates the provided array of product variations.
+    /// Returns all product variations on it's completion block.
     ///
     func createProductVariations(siteID: Int64,
                                  productID: Int64,

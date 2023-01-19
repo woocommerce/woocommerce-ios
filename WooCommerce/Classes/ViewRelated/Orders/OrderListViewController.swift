@@ -877,10 +877,11 @@ private extension OrderListViewController {
         )
 
         static let dismissTitle = NSLocalizedString("Give feedback",
-                                                    comment: "Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed")
+                                                    comment: "Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed"
+        )
 
         static let dismissMessage = NSLocalizedString("No worries! You can always go to Settings in the Menu to send us feedback.",
-            comment: "Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed")
+                    comment: "Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed")
 
         static let remindMeLater = NSLocalizedString("Remind me later", comment: "")
 

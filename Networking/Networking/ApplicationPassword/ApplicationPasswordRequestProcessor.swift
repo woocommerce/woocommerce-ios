@@ -3,21 +3,21 @@ import Foundation
 
 /// Authenticates and retries requests
 ///
-final class RequestProcessor {
+final class ApplicationPasswordRequestProcessor {
     private var requestsToRetry = [RequestRetryCompletion]()
 
     private var isAuthenticating = false
 
-    private let requestAuthenticator: RequestAuthenticator
+    private let requestAuthenticator: ApplicationPasswordAuthenticator
 
-    init(requestAuthenticator: RequestAuthenticator) {
+    init(requestAuthenticator: ApplicationPasswordAuthenticator) {
         self.requestAuthenticator = requestAuthenticator
     }
 }
 
 // MARK: Request Authentication
 //
-extension RequestProcessor: RequestAdapter {
+extension ApplicationPasswordRequestProcessor: RequestAdapter {
     func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
         return try requestAuthenticator.authenticate(urlRequest)
     }
@@ -25,7 +25,7 @@ extension RequestProcessor: RequestAdapter {
 
 // MARK: Retrying Request
 //
-extension RequestProcessor: RequestRetrier {
+extension ApplicationPasswordRequestProcessor: RequestRetrier {
     func should(_ manager: Alamofire.SessionManager,
                 retry request: Alamofire.Request,
                 with error: Error,
@@ -48,7 +48,7 @@ extension RequestProcessor: RequestRetrier {
 
 // MARK: Helpers
 //
-private extension RequestProcessor {
+private extension ApplicationPasswordRequestProcessor {
     func generateApplicationPassword() {
         Task(priority: .medium) {
             isAuthenticating = true
@@ -66,7 +66,7 @@ private extension RequestProcessor {
 
     func shouldRetry(_ error: Error) -> Bool {
         // Need to generate application password
-        if .applicationPasswordNotAvailable == error as? RequestAuthenticatorError {
+        if .applicationPasswordNotAvailable == error as? ApplicationPasswordAuthenticatorError {
             return true
         }
 

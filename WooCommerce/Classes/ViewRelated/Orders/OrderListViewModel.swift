@@ -134,7 +134,7 @@ final class OrderListViewModel {
     /// If true, no IPP feedback banner will be shown as the user has told us that they are not interested in this information.
     /// It is persisted through app sessions.
     /// 
-    @Published var hideIPPFeedbackBanner: Bool = false
+    @Published var hideIPPFeedbackBanner: Bool = true
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -149,9 +149,7 @@ final class OrderListViewModel {
         self.notificationCenter = notificationCenter
         self.filters = filters
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            // TODO: Remove. Temporarily set to false so we can debug the IPPFeedback banner easily.
-            hideOrdersBanners = false
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) && !hideIPPFeedbackBanner {
             topBanner = .IPPFeedback
         }
     }
@@ -178,8 +176,8 @@ final class OrderListViewModel {
         bindTopBannerState()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            loadIPPFeedbackBannerVisibility()
-            fetchIPPTransactions()
+            syncIPPBannerVisibility()
+            loadOrdersBannerVisibility()
         } else {
             loadOrdersBannerVisibility()
         }
@@ -234,6 +232,17 @@ final class OrderListViewModel {
         stores.dispatch(action)
     }
 
+    // This is a temporary method in order to update the IPP feedback status to `.pending`, and
+    // then load feedback visibility. We need to reset the banner status on UserDefaults for
+    // the banner to appear again for testing purposes.
+    private func syncIPPBannerVisibility() {
+        let action = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .pending) { _ in
+            self.loadIPPFeedbackBannerVisibility()
+            self.fetchIPPTransactions()
+        }
+        stores.dispatch(action)
+    }
+
     private func loadIPPFeedbackBannerVisibility() {
         let action = AppSettingsAction.loadFeedbackVisibility(type: .IPP) { [weak self] result in
             switch result {
@@ -244,7 +253,7 @@ final class OrderListViewModel {
                 ServiceLocator.crashLogging.logError(error)
             }
         }
-        stores.dispatch(action)
+        self.stores.dispatch(action)
     }
 
     @objc private func handleAppDeactivation() {
@@ -404,27 +413,18 @@ extension OrderListViewModel {
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
 
-        Publishers.CombineLatest3(errorState, $hideOrdersBanners, $hideIPPFeedbackBanner)
-            .map { hasError, hasDismissedOrdersBanners, hasDismissedIPPBanner  -> TopBanner in
+        Publishers.CombineLatest3(errorState, $hideIPPFeedbackBanner, $hideOrdersBanners)
+            .map { hasError, hasDismissedIPPFeedbackBanner, hasDismissedOrdersBanners -> TopBanner in
 
-                if hasError {
+                guard !hasError else {
                     return .error
                 }
 
-                if hasDismissedOrdersBanners {
-                    return .none
-                }
-
-                if hasDismissedIPPBanner {
-                    //return .none // TODO: Fix. This works only once.
+                guard hasDismissedIPPFeedbackBanner else {
                     return .IPPFeedback
                 }
 
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-                    return .IPPFeedback
-                } else {
-                    return .orderCreation
-                }
+                return hasDismissedOrdersBanners ? .none : .orderCreation
             }
             .assign(to: &$topBanner)
     }

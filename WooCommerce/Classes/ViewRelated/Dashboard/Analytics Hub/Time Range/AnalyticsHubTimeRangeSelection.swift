@@ -44,15 +44,11 @@ public class AnalyticsHubTimeRangeSelection {
             return
         }
 
-        let currentTimeRange = selectionData.currentTimeRange
-        let previousTimeRange = selectionData.previousTimeRange
-        let useShortFormat = selectionType == .today || selectionType == .yesterday
-
-        self.currentTimeRange = currentTimeRange
-        self.previousTimeRange = previousTimeRange
+        self.currentTimeRange = selectionData.currentTimeRange
+        self.previousTimeRange = selectionData.previousTimeRange
         self.rangeSelectionDescription = selectionType.description
-        self.formattedCurrentRangeText = currentTimeRange?.formatToString(simplified: useShortFormat, timezone: timezone, calendar: calendar)
-        self.formattedPreviousRangeText = previousTimeRange?.formatToString(simplified: useShortFormat, timezone: timezone, calendar: calendar)
+        self.formattedCurrentRangeText = selectionData.formattedCurrentRange
+        self.formattedPreviousRangeText = selectionData.formattedPreviousRange
     }
 
     /// Unwrap the generated selected `AnalyticsHubTimeRange` based on the `selectedTimeRange`

@@ -15,7 +15,12 @@ public class SiteAPIRemote: Remote {
     public func loadAPIInformation(for siteID: Int64, completion: @escaping (Result<SiteAPI, Error>) -> Void) {
         let path = String()
         let parameters = [ParameterKeys.fields: ParameterValues.fieldValues]
-        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .none,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = SiteAPIMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

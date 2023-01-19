@@ -182,6 +182,7 @@ public enum WooAnalyticsStat: String {
     case siteCreationStep = "site_creation_step"
     case siteCreationSitePreviewed = "site_creation_site_previewed"
     case siteCreationManageStoreTapped = "site_creation_store_management_opened"
+    case siteCreationProfilerData = "site_creation_profiler_data"
     case loginPrologueCreateSiteTapped = "login_prologue_create_site_tapped"
     case signupFormLoginTapped = "signup_login_button_tapped"
     case signupSubmitted = "signup_submitted"
@@ -671,6 +672,12 @@ public enum WooAnalyticsStat: String {
     case removeProductAttributeButtonTapped = "remove_product_attribute_button_tapped"
     case editProductVariationAttributeOptionsRowTapped = "edit_product_variation_attribute_options_row_tapped"
     case editProductVariationAttributeOptionsDoneButtonTapped = "edit_product_variation_attribute_options_done_button_tapped"
+
+    case productVariationGenerationRequested = "product_variation_generation_requested"
+    case productVariationGenerationLimitReached = "product_variation_generation_limit_reached"
+    case productVariationGenerationConfirmed = "product_variation_generation_confirmed"
+    case productVariationGenerationSuccess = "product_variation_generation_success"
+    case productVariationGenerationFailure = "product_variation_generation_failure"
 
     // MARK: What's New Component events
     //

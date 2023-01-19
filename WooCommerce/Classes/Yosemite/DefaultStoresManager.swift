@@ -351,14 +351,18 @@ private extension DefaultStoresManager {
         }
         dispatch(productSettingsAction)
 
-        group.enter()
-        let sitePlanAction = AccountAction.synchronizeSitePlan(siteID: siteID) { result in
-            if case let .failure(error) = result {
-                errors.append(error)
+        /// skips synchronizing site plan if logged in with WPOrg credentials
+        /// because this requires a WPCom endpoint.
+        if isAuthenticatedWithoutWPCom {
+            group.enter()
+            let sitePlanAction = AccountAction.synchronizeSitePlan(siteID: siteID) { result in
+                if case let .failure(error) = result {
+                    errors.append(error)
+                }
+                group.leave()
             }
-            group.leave()
+            dispatch(sitePlanAction)
         }
-        dispatch(sitePlanAction)
 
         group.notify(queue: .main) {
             if errors.isEmpty {

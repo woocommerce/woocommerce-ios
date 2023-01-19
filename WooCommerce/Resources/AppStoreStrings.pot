@@ -57,13 +57,13 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v11.8-whats-new"
+msgctxt "v11.9-whats-new"
 msgid ""
-"You’ll notice some nice visual changes to the look of the app! Take a look and please share your feedback – more updates to come in the next few weeks!\n"
+"Exciting news! It's possible to generate every variation combination from your attributes. Please try it out and share your feedback!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-1"
 msgid ""
 "Track sales and\n"
@@ -71,7 +71,7 @@ msgid ""
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-1_b"
 msgid ""
 "Made with 💜\n"
@@ -79,7 +79,7 @@ msgid ""
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-2"
 msgid ""
 "Create orders\n"
@@ -87,7 +87,7 @@ msgid ""
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-3"
 msgid ""
 "Take payments\n"
@@ -95,7 +95,7 @@ msgid ""
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-4"
 msgid ""
 "Add and edit products\n"
@@ -103,7 +103,7 @@ msgid ""
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-5"
 msgid ""
 "Get notified of\n"
@@ -111,7 +111,7 @@ msgid ""
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-6"
 msgid ""
 "Get notified about new\n"
@@ -119,7 +119,7 @@ msgid ""
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-7"
 msgid "Create and manage products"
 msgstr ""

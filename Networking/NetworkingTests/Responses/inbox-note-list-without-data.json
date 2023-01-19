@@ -1,0 +1,55 @@
+[
+    {
+        "id": 291,
+        "name": "wc-admin-launch-checklist",
+        "type": "info",
+        "locale": "en_US",
+        "title": "Ready to launch your store?",
+        "content": "To make sure you never get that sinking \"what did I forget\" feeling, we've put together the essential pre-launch checklist.",
+        "status": "unactioned",
+        "date_created": "2022-01-26T09:02:08",
+        "actions": [{
+            "id": 13225,
+            "name": "learn-more",
+            "label": "Learn more",
+            "query": "https:\/\/woocommerce.com\/posts\/pre-launch-checklist-the-essentials\/?utm_source=inbox&utm_medium=product",
+            "status": "actioned",
+            "primary": false,
+            "actioned_text": "",
+            "nonce_action": null,
+            "nonce_name": null,
+            "url": "https:\/\/woocommerce.com\/posts\/pre-launch-checklist-the-essentials\/?utm_source=inbox&utm_medium=product"
+        }],
+        "layout": "plain",
+        "image": "",
+        "is_deleted": false,
+        "is_read": false,
+        "date_created_gmt": "2022-01-26T14:32:08"
+    }, {
+        "id": 97,
+        "name": "wc-admin-optimizing-the-checkout-flow",
+        "type": "info",
+        "locale": "en_US",
+        "title": "Optimizing the checkout flow",
+        "content": "It's crucial to get your store's checkout as smooth as possible to avoid losing sales. Let's take a look at how you can optimize the checkout experience for your shoppers.",
+        "status": "unactioned",
+        "date_created": "2022-01-26T09:02:08",
+        "actions": [{
+            "id": 13271,
+            "name": "optimizing-the-checkout-flow",
+            "label": "Learn more",
+            "query": "https:\/\/woocommerce.com\/posts\/optimizing-woocommerce-checkout?utm_source=inbox",
+            "status": "actioned",
+            "primary": true,
+            "actioned_text": "",
+            "nonce_action": null,
+            "nonce_name": null,
+            "url": "https:\/\/woocommerce.com\/posts\/optimizing-woocommerce-checkout?utm_source=inbox"
+        }],
+        "layout": "plain",
+        "image": "",
+        "is_deleted": false,
+        "is_read": false,
+        "date_created_gmt": "2022-01-26T14:32:08"
+    }
+]

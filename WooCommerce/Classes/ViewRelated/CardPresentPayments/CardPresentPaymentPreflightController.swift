@@ -7,7 +7,7 @@ import ProximityReader
 
 enum CardReaderConnectionResult {
     case connected(CardReader)
-    case canceled
+    case canceled(WooAnalyticsEvent.InPersonPayments.CancellationSource)
 }
 
 final class CardPresentPaymentPreflightController {
@@ -82,7 +82,8 @@ final class CardPresentPaymentPreflightController {
             analyticsTracker: analyticsTracker)
     }
 
-    func start() {
+    @MainActor
+    func start() async {
         configureBackend()
         observeConnectedReaders()
         // If we're already connected to a reader, return it
@@ -94,7 +95,7 @@ final class CardPresentPaymentPreflightController {
         // TODO: Run onboarding if needed
 
         // Ask for a Reader type if supported by device/in country
-        guard localMobileReaderSupported(),
+        guard await localMobileReaderSupported(),
               configuration.supportedReaders.contains(.appleBuiltIn)
         else {
             // Attempt to find a bluetooth reader and connect
@@ -116,31 +117,28 @@ final class CardPresentPaymentPreflightController {
             cancelAction: { [weak self] in
                 guard let self = self else { return }
                 self.alertsPresenter.dismiss()
-                self.handleConnectionResult(.success(.canceled))
+                self.handleConnectionResult(.success(.canceled(.selectReaderType)))
             }))
     }
 
-    private func localMobileReaderSupported() -> Bool {
-        #if targetEnvironment(simulator)
-        return true
-        #else
-        if #available(iOS 15.4, *) {
-            return PaymentCardReader.isSupported
-        } else {
-            return false
+    @MainActor
+    private func localMobileReaderSupported() async -> Bool {
+        await withCheckedContinuation { continuation in
+            let action = CardPresentPaymentAction.checkDeviceSupport(siteID: siteID,
+                                                                     cardReaderType: .appleBuiltIn,
+                                                                     discoveryMethod: .localMobile) { result in
+                continuation.resume(returning: result)
+            }
+            stores.dispatch(action)
         }
-        #endif
     }
 
     private func handleConnectionResult(_ result: Result<CardReaderConnectionResult, Error>) {
         let connectionResult = result.map { connection in
-            switch connection {
-            case .connected(let reader):
+            if case .connected(let reader) = connection {
                 self.connectedReader = reader
-                return CardReaderConnectionResult.connected(reader)
-            case .canceled:
-                return CardReaderConnectionResult.canceled
             }
+            return connection
         }
 
         switch connectionResult {

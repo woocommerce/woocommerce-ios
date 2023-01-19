@@ -223,6 +223,7 @@ extension WooAnalyticsEvent {
             static let serverTime = "time"
             static let errorDescription = "error_description"
             static let field = "field"
+            static let variationsCount = "variations_count"
         }
 
         enum BulkUpdateField: String {
@@ -309,6 +310,26 @@ extension WooAnalyticsEvent {
 
         static func bulkUpdateFieldFailed(field: BulkUpdateField, error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldFail, properties: [Keys.field: field.rawValue], error: error)
+        }
+
+        static func productVariationGenerationRequested() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationRequested, properties: [:])
+        }
+
+        static func productVariationGenerationConfirmed(count: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationConfirmed, properties: [Keys.variationsCount: count])
+        }
+
+        static func productVariationGenerationLimitReached(count: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationLimitReached, properties: [Keys.variationsCount: count])
+        }
+
+        static func productVariationGenerationSuccess() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationSuccess, properties: [:])
+        }
+
+        static func productVariationGenerationFailure() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationFailure, properties: [:])
         }
     }
 }
@@ -875,6 +896,7 @@ extension WooAnalyticsEvent {
             static let softwareUpdateType = "software_update_type"
             static let source = "source"
             static let enabled = "enabled"
+            static let cancellationSource = "cancellation_source"
         }
 
         static let unknownGatewayID = "unknown"
@@ -1150,14 +1172,32 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func collectPaymentCanceled(forGatewayID: String?, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
+        static func collectPaymentCanceled(forGatewayID: String?,
+                                           countryCode: String,
+                                           cardReaderModel: String,
+                                           cancellationSource: CancellationSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentCanceled,
                               properties: [
                                 Keys.cardReaderModel: cardReaderModel,
                                 Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.cancellationSource: cancellationSource.rawValue
                               ]
             )
+        }
+
+        enum CancellationSource: String {
+            case appleTOSAcceptance = "apple_tap_to_pay_terms_acceptance"
+            case reader = "card_reader"
+            case selectReaderType = "preflight_select_reader_type"
+            case searchingForReader = "searching_for_reader"
+            case foundReader = "found_reader"
+            case foundSeveralReaders = "found_several_readers"
+            case paymentPreparingReader = "payment_preparing_reader"
+            case paymentWaitingForInput = "payment_waiting_for_input"
+            case connectionError = "connection_error"
+            case readerSoftwareUpdate = "reader_software_update"
+            case other = "unknown"
         }
 
         /// Tracked when payment collection succeeds

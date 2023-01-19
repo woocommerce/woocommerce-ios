@@ -1,13 +1,28 @@
 import Alamofire
 import Combine
 import Foundation
-import WordPressKit
+
+/// Configuration for handling cookie nonce authentication.
+///
+public struct CookieNonceAuthenticatorConfiguration {
+    let username: String
+    let password: String
+    let loginURL: URL
+    let adminURL: URL
+
+    public init(username: String, password: String, loginURL: URL, adminURL: URL) {
+        self.username = username
+        self.password = password
+        self.loginURL = loginURL
+        self.adminURL = adminURL
+    }
+}
 
 /// Class to handle WP.org REST API requests.
 ///
 public final class WordPressOrgNetwork: Network {
 
-    private let authenticator: Authenticator?
+    private let authenticator: CookieNonceAuthenticator
     private let userAgent: String?
 
     private lazy var sessionManager: Alamofire.SessionManager = {
@@ -27,8 +42,8 @@ public final class WordPressOrgNetwork: Network {
 
     public var session: URLSession { sessionManager.session }
 
-    public init(authenticator: Authenticator? = nil, userAgent: String = UserAgent.defaultUserAgent) {
-        self.authenticator = authenticator
+    public init(configuration: CookieNonceAuthenticatorConfiguration, userAgent: String = UserAgent.defaultUserAgent) {
+        self.authenticator = CookieNonceAuthenticator(configuration: configuration)
         self.userAgent = userAgent
     }
 

@@ -37,17 +37,13 @@ public final class WordPressSiteStore: DeauthenticatedStore {
 
 private extension WordPressSiteStore {
     func fetchSiteInfo(for siteURL: String, completion: @escaping (Result<Site, Error>) -> Void) {
-        Task {
+        Task { @MainActor in
             do {
                 let wpSite = try await remote.fetchSiteInfo(for: siteURL)
                 let site = wpSite.asSite
-                await MainActor.run {
-                    completion(.success(site))
-                }
+                completion(.success(site))
             } catch {
-                await MainActor.run {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }

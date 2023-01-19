@@ -23,6 +23,11 @@ public enum CardPresentPaymentAction: Action {
     ///
     case loadAccounts(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
 
+    case checkDeviceSupport(siteID: Int64,
+                            cardReaderType: CardReaderType,
+                            discoveryMethod: CardReaderDiscoveryMethod,
+                            onCompletion: (Bool) -> Void)
+
     /// Start the Card Reader discovery process.
     ///
     case startCardReaderDiscovery(siteID: Int64,

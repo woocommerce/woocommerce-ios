@@ -40,7 +40,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .storeCreationM2WithInAppPurchasesEnabled:
             return false
         case .storeCreationM3Profiler:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .justInTimeMessagesOnDashboard:
             return true
         case .systemStatusReportInSupportRequest:
@@ -60,8 +60,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .applicationPasswordAuthenticationForSiteCredentialLogin:
             // Enable this to test application password authentication (WIP)
             return false
-        case .generateAllVariations:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productsBulkEditing:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .domainSettings:

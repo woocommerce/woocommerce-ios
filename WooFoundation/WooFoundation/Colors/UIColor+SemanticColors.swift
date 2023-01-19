@@ -317,6 +317,13 @@ public extension UIColor {
         return .systemColor(.systemGray4)
     }
 
+    /// Domain sale price color.
+    ///
+    static var domainSalePrice: UIColor {
+        return UIColor(light: .withColorStudio(.yellow, shade: .shade50),
+                       dark: .withColorStudio(.yellow, shade: .shade30))
+    }
+
     /// Color for loading indicators within navigation bars
     ///
     static var navigationBarLoadingIndicator: UIColor {

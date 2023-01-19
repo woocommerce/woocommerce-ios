@@ -1870,7 +1870,7 @@ extension WooAnalyticsEvent {
 
         /// Tracks when the login with site credentials failed.
         ///
-        static func loginSiteCredentialFailed(step: LoginSiteCredentialStep, error: Error) -> WooAnalyticsEvent {
+        static func loginSiteCredentialFailed(step: LoginSiteCredentialStep, error: Error?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginSiteCredentialsFailed, properties: [Key.step.rawValue: step.rawValue], error: error)
         }
     }

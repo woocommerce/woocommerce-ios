@@ -65,9 +65,10 @@ final class ProductVisibilityViewController: UIViewController {
     private func reloadSections() {
         if visibility == .passwordProtected {
             sections = [Section(rows: [.publicVisibility, .passwordVisibility, .passwordField, .privateVisibility])]
-        }
-        else {
+        } else if productSettings.password != nil {
             sections = [Section(rows: [.publicVisibility, .passwordVisibility, .privateVisibility])]
+        } else {
+            sections = [Section(rows: [.publicVisibility, .privateVisibility])]
         }
         tableView.reloadData()
     }

@@ -88,6 +88,16 @@ final class PriceInputViewModel {
     var footerText: String {
         var footerData: [String] = []
 
+        switch productListViewModel.commonPriceForSelectedProducts {
+        case .none:
+            footerData.append(Localization.currentPriceNoneFooter)
+        case .mixed:
+            footerData.append(Localization.currentPriceMixedFooter)
+        case let .value(price):
+            let currentPriceText = String.localizedStringWithFormat(Localization.currentPriceFooter, formatPriceString(price))
+            footerData.append(currentPriceText)
+        }
+
         if productListViewModel.selectedVariableProductsCount > 0 {
             footerData.append(Localization.variationsWarning)
         }
@@ -97,16 +107,6 @@ final class PriceInputViewModel {
                                                     singular: Localization.productsNumberSingularFooter,
                                                     plural: Localization.productsNumberPluralFooter)
         footerData.append(numberOfProductsText)
-
-        switch productListViewModel.commonPriceForSelectedProducts {
-        case .none:
-            footerData.insert(Localization.currentPriceNoneFooter, at: 0)
-        case .mixed:
-            footerData.insert(Localization.currentPriceMixedFooter, at: 0)
-        case let .value(price):
-            let currentPriceText = String.localizedStringWithFormat(Localization.currentPriceFooter, formatPriceString(price))
-            footerData.insert(currentPriceText, at: 0)
-        }
 
         return footerData.joined(separator: " ")
     }

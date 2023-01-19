@@ -877,7 +877,7 @@ extension AppSettingsStoreTests {
         XCTAssert(Calendar.current.isDate(actualRemindAfter, inSameDayAs: twoWeeksTime))
     }
 
-    func test_setFeatureAnnouncementDismissed_with_remindAfter_seven_days_stores_reminder_date_in_one_week() throws {
+    func test_setFeatureAnnouncementDismissed_when_remindAfter_is_seven_days_stores_reminder_then_date_saved_date_is_one_week() throws {
         // Given
         let oneWeekTime = Calendar.current.date(byAdding: .day, value: 7, to: Date())!
 

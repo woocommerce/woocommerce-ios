@@ -346,6 +346,8 @@ private extension ProductsViewController {
     }
 
     @objc func selectAllProducts() {
+        ServiceLocator.analytics.track(event: .ProductsList.bulkUpdateSelectAll())
+
         viewModel.selectProducts(resultsController.fetchedObjects)
         updatedSelectedItems()
         tableView.reloadRows(at: tableView.indexPathsForVisibleRows ?? [], with: .none)
@@ -375,6 +377,8 @@ private extension ProductsViewController {
     }
 
     func showStatusBulkEditingModal() {
+        ServiceLocator.analytics.track(event: .ProductsList.bulkUpdateRequested(field: .status, selectedProductsCount: viewModel.selectedProductsCount))
+
         let initialStatus = viewModel.commonStatusForSelectedProducts
         let command = ProductStatusSettingListSelectorCommand(selected: initialStatus)
         let listSelectorViewController = ListSelectorViewController(command: command) { _ in
@@ -407,6 +411,8 @@ private extension ProductsViewController {
     func applyBulkEditingStatus(newStatus: ProductStatus?, modalVC: UIViewController) {
         guard let newStatus else { return }
 
+        ServiceLocator.analytics.track(event: .ProductsList.bulkUpdateConfirmed(field: .status, selectedProductsCount: viewModel.selectedProductsCount))
+
         displayProductsSavingInProgressView(on: modalVC)
         viewModel.updateSelectedProducts(with: newStatus) { [weak self] result in
             guard let self else { return }
@@ -416,13 +422,17 @@ private extension ProductsViewController {
             case .success:
                 self.finishBulkEditing()
                 self.presentNotice(title: Localization.statusUpdatedNotice)
+                ServiceLocator.analytics.track(event: .ProductsList.bulkUpdateSuccess(field: .status))
             case .failure:
                 self.presentNotice(title: Localization.updateErrorNotice)
+                ServiceLocator.analytics.track(event: .ProductsList.bulkUpdateFailure(field: .status))
             }
         }
     }
 
     func showPriceBulkEditingModal() {
+        ServiceLocator.analytics.track(event: .ProductsList.bulkUpdateRequested(field: .price, selectedProductsCount: viewModel.selectedProductsCount))
+
         let priceInputViewModel = PriceInputViewModel(productListViewModel: viewModel)
         let priceInputViewController = PriceInputViewController(viewModel: priceInputViewModel)
         priceInputViewModel.cancelClosure = { [weak self] in
@@ -437,6 +447,8 @@ private extension ProductsViewController {
     func applyBulkEditingPrice(newPrice: String?, modalVC: UIViewController) {
         guard let newPrice else { return }
 
+        ServiceLocator.analytics.track(event: .ProductsList.bulkUpdateConfirmed(field: .price, selectedProductsCount: viewModel.selectedProductsCount))
+
         displayProductsSavingInProgressView(on: modalVC)
         viewModel.updateSelectedProducts(with: newPrice) { [weak self] result in
             guard let self else { return }
@@ -446,8 +458,10 @@ private extension ProductsViewController {
             case .success:
                 self.finishBulkEditing()
                 self.presentNotice(title: Localization.priceUpdatedNotice)
+                ServiceLocator.analytics.track(event: .ProductsList.bulkUpdateSuccess(field: .price))
             case .failure:
                 self.presentNotice(title: Localization.updateErrorNotice)
+                ServiceLocator.analytics.track(event: .ProductsList.bulkUpdateFailure(field: .price))
             }
         }
     }

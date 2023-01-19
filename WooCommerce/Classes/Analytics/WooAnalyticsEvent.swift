@@ -1814,6 +1814,44 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Products List
+//
+extension WooAnalyticsEvent {
+    enum ProductsList {
+        enum Keys: String {
+            case property
+            case selectedProductsCount = "selected_products_count"
+        }
+
+        enum BulkUpdateField: String {
+            case price
+            case status
+        }
+
+        static func bulkUpdateRequested(field: BulkUpdateField, selectedProductsCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateRequested, properties: [Keys.property.rawValue: field.rawValue,
+                                                                                      Keys.selectedProductsCount.rawValue: Int64(selectedProductsCount)])
+        }
+
+        static func bulkUpdateConfirmed(field: BulkUpdateField, selectedProductsCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateConfirmed, properties: [Keys.property.rawValue: field.rawValue,
+                                                                                      Keys.selectedProductsCount.rawValue: Int64(selectedProductsCount)])
+        }
+
+        static func bulkUpdateSuccess(field: BulkUpdateField) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateSuccess, properties: [Keys.property.rawValue: field.rawValue])
+        }
+
+        static func bulkUpdateFailure(field: BulkUpdateField) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateFailure, properties: [Keys.property.rawValue: field.rawValue])
+        }
+
+        static func bulkUpdateSelectAll() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateSelectAll, properties: [:])
+        }
+    }
+}
+
 // MARK: - Analytics Hub
 //
 extension WooAnalyticsEvent {

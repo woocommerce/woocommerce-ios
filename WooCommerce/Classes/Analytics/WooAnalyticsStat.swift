@@ -474,6 +474,14 @@ public enum WooAnalyticsStat: String {
     case productListAddProductTapped = "product_list_add_product_button_tapped"
     case productListClearFiltersTapped = "product_list_clear_filters_button_tapped"
 
+    // MARK: Product List Bulk Editing Events
+    //
+    case productListBulkUpdateRequested = "product_list_bulk_update_requested"
+    case productListBulkUpdateConfirmed = "product_list_bulk_update_confirmed"
+    case productListBulkUpdateSuccess = "product_list_bulk_update_success"
+    case productListBulkUpdateFailure = "product_list_bulk_update_failure"
+    case productListBulkUpdateSelectAll = "product_list_bulk_update_select_all"
+
     // MARK: Add Product Events
     //
     case addProductCreationTypeSelected = "add_product_creation_type_selected"

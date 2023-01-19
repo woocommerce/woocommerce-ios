@@ -38,6 +38,25 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.productIsSelected(sampleProduct1))
     }
 
+    func test_selecting_multiple_products_works() {
+        // Given
+        let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
+        let sampleProduct1 = Product.fake().copy(productID: 1)
+        let sampleProduct2 = Product.fake().copy(productID: 2)
+        let sampleProduct3 = Product.fake().copy(productID: 3)
+        XCTAssertEqual(viewModel.selectedProductsCount, 0)
+
+        // When
+        viewModel.selectProduct(sampleProduct1)
+        viewModel.selectProducts([sampleProduct2, sampleProduct3])
+
+        // Then
+        XCTAssertEqual(viewModel.selectedProductsCount, 3)
+        XCTAssertTrue(viewModel.productIsSelected(sampleProduct1))
+        XCTAssertTrue(viewModel.productIsSelected(sampleProduct2))
+        XCTAssertTrue(viewModel.productIsSelected(sampleProduct3))
+    }
+
     func test_deselecting_not_selected_product_does_nothing() {
         // Given
         let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)

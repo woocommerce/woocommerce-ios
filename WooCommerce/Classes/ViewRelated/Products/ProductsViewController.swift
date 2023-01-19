@@ -73,7 +73,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         didSet {
             bottomToolbar.isHidden = true
             bottomToolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
-            bottomToolbar.setSubviews(leftViews: [], rightViews: [bulkEditButton])
+            bottomToolbar.setSubviews(leftViews: [selectAllButton], rightViews: [bulkEditButton])
             bottomToolbar.addDividerOnTop()
         }
     }
@@ -102,6 +102,18 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configuration.contentInsets = Constants.toolbarButtonInsets
         button.configuration = configuration
         button.isEnabled = false
+        return button
+    }()
+
+    /// The select all CTA in the bottom toolbar.
+    private lazy var selectAllButton: UIButton = {
+        let button = UIButton(frame: .zero)
+        button.setTitle(Localization.selectAllToolbarButtonTitle, for: .normal)
+        button.addTarget(self, action: #selector(selectAllProducts), for: .touchUpInside)
+        button.applyLinkButtonStyle()
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = Constants.toolbarButtonInsets
+        button.configuration = configuration
         return button
     }()
 
@@ -331,6 +343,12 @@ private extension ProductsViewController {
     func updatedSelectedItems() {
         updateNavigationBarTitleForEditing()
         bulkEditButton.isEnabled = viewModel.bulkEditActionIsEnabled
+    }
+
+    @objc func selectAllProducts() {
+        viewModel.selectProducts(resultsController.fetchedObjects)
+        updatedSelectedItems()
+        tableView.reloadRows(at: tableView.indexPathsForVisibleRows ?? [], with: .none)
     }
 
     @objc func openBulkEditingOptions(sender: UIButton) {
@@ -1305,6 +1323,10 @@ private extension ProductsViewController {
             comment: "VoiceOver accessibility hint, informing the user the button can be used to bulk edit products"
         )
 
+        static let selectAllToolbarButtonTitle = NSLocalizedString(
+            "Select all",
+            comment: "Title of a button that selects all products for bulk update"
+        )
         static let bulkEditingToolbarButtonTitle = NSLocalizedString(
             "Bulk update",
             comment: "Title of a button that presents a menu with possible products bulk update options"

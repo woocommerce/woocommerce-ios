@@ -345,7 +345,9 @@ private extension ProductsViewController {
         let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
 
         actionSheet.addAction(updateStatus)
-        actionSheet.addAction(updatePrice)
+        if !viewModel.onlyVariableProductsSelected {
+            actionSheet.addAction(updatePrice)
+        }
         actionSheet.addAction(cancelAction)
 
         if let popoverController = actionSheet.popoverPresentationController {

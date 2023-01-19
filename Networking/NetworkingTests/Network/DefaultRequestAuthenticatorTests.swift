@@ -4,6 +4,10 @@ import Alamofire
 
 final class DefaultRequestAuthenticatorTests: XCTestCase {
 
+    /// Sample Application Password
+    ///
+    private let applicationPassword = ApplicationPassword(wpOrgUsername: "username", password: .init("password"), uuid: "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e")
+
     func test_authenticateRequest_returns_unauthenticated_request_for_non_REST_request_without_WPCOM_credentials() throws {
         // Given
         let authenticator = DefaultRequestAuthenticator(credentials: nil)
@@ -36,7 +40,6 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         // Given
         let siteURL = "https://test.com/"
         let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
-        let applicationPassword = ApplicationPassword(wpOrgUsername: credentials.username, password: .init(credentials.secret))
         let useCase = MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword)
         let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let wooAPIVersion = WooAPIVersion.mark1
@@ -58,7 +61,6 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         // Given
         let siteURL = "https://test.com/"
         let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
-        let applicationPassword = ApplicationPassword(wpOrgUsername: credentials.username, password: .init(credentials.secret))
         let useCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
         let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let wooAPIVersion = WooAPIVersion.mark1

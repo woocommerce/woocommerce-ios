@@ -480,7 +480,7 @@ public enum WooAnalyticsStat: String {
     case productListBulkUpdateConfirmed = "product_list_bulk_update_confirmed"
     case productListBulkUpdateSuccess = "product_list_bulk_update_success"
     case productListBulkUpdateFailure = "product_list_bulk_update_failure"
-    case productListBulkUpdateSelectAll = "product_list_bulk_update_select_all"
+    case productListBulkUpdateSelectAllTapped = "product_list_bulk_update_select_all_tapped"
 
     // MARK: Add Product Events
     //

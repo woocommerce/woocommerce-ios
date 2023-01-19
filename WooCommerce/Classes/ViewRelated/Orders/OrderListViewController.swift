@@ -864,27 +864,27 @@ private extension OrderListViewController {
 
         static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
 
-        static let inPersonPaymentsCashOnDeliveryBannerTitle = NSLocalizedString("Let us know what you think",
+        static let inPersonPaymentsCashOnDeliveryBannerTitle = NSLocalizedString("Let us know how we can help",
                                                            comment: "Title of the In-Person Payments feedback banner in the Orders tab"
         )
 
-        static let inPersonPaymentsFirstTransactionBannerTitle = NSLocalizedString("Title 2. TBD.",
+        static let inPersonPaymentsFirstTransactionBannerTitle = NSLocalizedString("Enjoyed your in-person payment?",
                                                             comment: "Title of the In-Person Payments feedback banner in the Orders tab"
         )
 
-        static let inPersonPaymentsPowerUsersBannerTitle = NSLocalizedString("Title 3. TBD.",
+        static let inPersonPaymentsPowerUsersBannerTitle = NSLocalizedString("Let us know what you think",
                                                             comment: "Title of the In-Person Payments feedback banner in the Orders tab"
         )
 
-        static let inPersonPaymentsCashOnDeliveryBannerContent = NSLocalizedString("Rate your In-Person Payment experience.",
+        static let inPersonPaymentsCashOnDeliveryBannerContent = NSLocalizedString("Share your own experience or how you collect in-person payments.",
                                                              comment: "Content of the In-Person Payments feedback banner in the Orders tab"
         )
 
-        static let inPersonPaymentsFirstTransactionBannerContent = NSLocalizedString("Content 2. TBD.",
+        static let inPersonPaymentsFirstTransactionBannerContent = NSLocalizedString("Rate your first in-person payment experience.",
                                                               comment: "Content of the In-Person Payments feedback banner in the Orders tab"
         )
 
-        static let inPersonPaymentsPowerUsersBannerContent = NSLocalizedString("Content 3. TBD.",
+        static let inPersonPaymentsPowerUsersBannerContent = NSLocalizedString("Tell us all about your experience with in-person payments.",
                                                               comment: "Content of the In-Person Payments feedback banner in the Orders tab"
         )
 

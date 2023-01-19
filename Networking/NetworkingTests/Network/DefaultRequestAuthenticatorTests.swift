@@ -6,7 +6,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
 
     func test_authenticateRequest_returns_unauthenticated_request_for_non_REST_request_without_WPCOM_credentials() throws {
         // Given
-        let authenticator = DefaultApplicationPasswordAuthenticator(credentials: nil)
+        let authenticator = DefaultRequestAuthenticator(credentials: nil)
         let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: false)
 
         // When
@@ -20,7 +20,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
     func test_authenticatedRequest_returns_authenticated_request_for_non_REST_request_with_WPCOM_credentials() throws {
         // Given
         let credentials = Credentials(authToken: "secret")
-        let authenticator = DefaultApplicationPasswordAuthenticator(credentials: credentials)
+        let authenticator = DefaultRequestAuthenticator(credentials: credentials)
         let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: false)
 
         // When
@@ -38,7 +38,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
         let applicationPassword = ApplicationPassword(wpOrgUsername: credentials.username, password: .init(credentials.secret))
         let useCase = MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword)
-        let authenticator = DefaultApplicationPasswordAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
+        let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let wooAPIVersion = WooAPIVersion.mark1
         let basePath = RESTRequest.Settings.basePath
         let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
@@ -60,7 +60,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
         let applicationPassword = ApplicationPassword(wpOrgUsername: credentials.username, password: .init(credentials.secret))
         let useCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
-        let authenticator = DefaultApplicationPasswordAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
+        let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let wooAPIVersion = WooAPIVersion.mark1
         let basePath = RESTRequest.Settings.basePath
         let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
@@ -88,7 +88,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let siteURL = "https://test.com/"
         let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
-        let authenticator = DefaultApplicationPasswordAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
+        let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let wooAPIVersion = WooAPIVersion.mark1
         let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
 
@@ -115,7 +115,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let siteURL = "https://test.com/"
         let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
-        let authenticator = DefaultApplicationPasswordAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
+        let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let wooAPIVersion = WooAPIVersion.mark1
         let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
 
@@ -131,7 +131,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let siteURL = "https://test.com/"
         let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
-        let authenticator = DefaultApplicationPasswordAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
+        let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: false)
 
         // When

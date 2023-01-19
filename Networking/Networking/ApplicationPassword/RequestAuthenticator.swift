@@ -26,7 +26,7 @@ protocol RequestAuthenticator {
 
 /// Authenticates request
 ///
-public struct DefaultApplicationPasswordAuthenticator: RequestAuthenticator {
+public struct DefaultRequestAuthenticator: RequestAuthenticator {
     /// Credentials to authenticate the URLRequest
     ///
     let credentials: Credentials?
@@ -84,7 +84,7 @@ public struct DefaultApplicationPasswordAuthenticator: RequestAuthenticator {
     }
 }
 
-private extension DefaultApplicationPasswordAuthenticator {
+private extension DefaultRequestAuthenticator {
     /// To check whether the given URLRequest is a REST API request
     /// 
     func isRestAPIRequest(_ urlRequest: URLRequest) -> Bool {

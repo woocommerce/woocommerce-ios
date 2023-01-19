@@ -817,14 +817,14 @@ private extension OrderListViewController {
 
         switch survey {
         case .IPP_COD :
-            bannerTitle = Localization.feedbackBannerTitle
-            bannerText = Localization.feedbackBannerContent
+            bannerTitle = Localization.inPersonPaymentsCashOnDeliveryBannerTitle
+            bannerText = Localization.inPersonPaymentsCashOnDeliveryBannerContent
         case .IPP_firstTransaction:
-            bannerTitle = Localization.feedbackBannerTitle2
-            bannerTitle = Localization.feedbackBannerContent2
+            bannerTitle = Localization.inPersonPaymentsFirstTransactionBannerTitle
+            bannerTitle = Localization.inPersonPaymentsFirstTransactionBannerContent
         case .IPP_powerUsers:
-            bannerTitle = Localization.feedbackBannerTitle3
-            bannerTitle = Localization.feedbackBannerContent3
+            bannerTitle = Localization.inPersonPaymentsPowerUsersBannerTitle
+            bannerTitle = Localization.inPersonPaymentsPowerUsersBannerContent
         default:
             break
         }
@@ -864,27 +864,27 @@ private extension OrderListViewController {
 
         static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
 
-        static let feedbackBannerTitle = NSLocalizedString("Let us know what you think",
+        static let inPersonPaymentsCashOnDeliveryBannerTitle = NSLocalizedString("Let us know what you think",
                                                            comment: "Title of the In-Person Payments feedback banner in the Orders tab"
         )
 
-        static let feedbackBannerTitle2 = NSLocalizedString("Title 2. TBD.",
+        static let inPersonPaymentsFirstTransactionBannerTitle = NSLocalizedString("Title 2. TBD.",
                                                             comment: "Title of the In-Person Payments feedback banner in the Orders tab"
         )
 
-        static let feedbackBannerTitle3 = NSLocalizedString("Title 3. TBD.",
+        static let inPersonPaymentsPowerUsersBannerTitle = NSLocalizedString("Title 3. TBD.",
                                                             comment: "Title of the In-Person Payments feedback banner in the Orders tab"
         )
 
-        static let feedbackBannerContent = NSLocalizedString("Rate your In-Person Payment experience.",
+        static let inPersonPaymentsCashOnDeliveryBannerContent = NSLocalizedString("Rate your In-Person Payment experience.",
                                                              comment: "Content of the In-Person Payments feedback banner in the Orders tab"
         )
 
-        static let feedbackBannerContent2 = NSLocalizedString("Content 2. TBD.",
+        static let inPersonPaymentsFirstTransactionBannerContent = NSLocalizedString("Content 2. TBD.",
                                                               comment: "Content of the In-Person Payments feedback banner in the Orders tab"
         )
 
-        static let feedbackBannerContent3 = NSLocalizedString("Content 3. TBD.",
+        static let inPersonPaymentsPowerUsersBannerContent = NSLocalizedString("Content 3. TBD.",
                                                               comment: "Content of the In-Person Payments feedback banner in the Orders tab"
         )
 

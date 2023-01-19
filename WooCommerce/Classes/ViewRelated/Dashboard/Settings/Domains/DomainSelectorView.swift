@@ -296,10 +296,12 @@ struct DomainSelectorView_Previews: PreviewProvider {
                               dataProvider: PaidDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores(paidDomainsResult: .success([
                                     .init(productID: 1,
+                                          supportsPrivacy: true,
                                           name: "grapefruitsmoothie.com",
                                           term: "year",
                                           cost: "NT$154.00"),
                                     .init(productID: 2,
+                                          supportsPrivacy: true,
                                           name: "fruitsmoothie.com",
                                           term: "year",
                                           cost: "NT$610.00",

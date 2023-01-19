@@ -4,7 +4,7 @@ import XCTest
 
 /// RequestProcessor Unit Tests
 ///
-final class ApplicationPasswordRequestProcessorTests: XCTestCase {
+final class RequestProcessorTests: XCTestCase {
     private var mockRequestAuthenticator: MockRequestAuthenticator!
     private var sut: RequestProcessor!
     private var sessionManager: Alamofire.SessionManager!
@@ -209,7 +209,7 @@ final class ApplicationPasswordRequestProcessorTests: XCTestCase {
 
 // MARK: Helpers
 //
-private extension ApplicationPasswordRequestProcessorTests {
+private extension RequestProcessorTests {
     func mockRequest() throws -> Alamofire.Request {
         let originalTask = MockTaskConvertible()
         let task = try originalTask.task(session: sessionManager.session, adapter: nil, queue: .main)

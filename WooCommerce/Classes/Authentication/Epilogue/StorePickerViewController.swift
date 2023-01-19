@@ -846,7 +846,7 @@ private extension StorePickerViewController {
                 }
             case .failure(let error):
                 if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
-                    ServiceLocator.analytics.track(event: .LoginUserRole.loginWithInsufficientRole(currentRoles: errorInfo.roles))
+                    ServiceLocator.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
                     delegate.showRoleErrorScreen(for: site.siteID, errorInfo: errorInfo) { [weak self] in
                         self?.dismiss()
                     }

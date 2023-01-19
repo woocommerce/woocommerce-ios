@@ -48,7 +48,7 @@ private extension PostSiteCredentialLoginChecker {
                 let _ = try await useCase.generateNewPassword()
                 onSuccess()
             } catch {
-                analytics.track(event: .RESTAPILogin.loginSiteCredentialFailed(step: .applicationPasswordGeneration, error: error))
+                analytics.track(event: .Login.siteCredentialFailed(step: .applicationPasswordGeneration, error: error))
                 switch error {
                 case ApplicationPasswordUseCaseError.applicationPasswordsDisabled:
                     // show application password disabled error
@@ -79,9 +79,9 @@ private extension PostSiteCredentialLoginChecker {
             case .success:
                 onSuccess()
             case .failure(let error):
-                self?.analytics.track(event: .RESTAPILogin.loginSiteCredentialFailed(step: .userRole, error: error))
+                self?.analytics.track(event: .Login.siteCredentialFailed(step: .userRole, error: error))
                 if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
-                    self?.analytics.track(event: .LoginUserRole.loginWithInsufficientRole(currentRoles: errorInfo.roles))
+                    self?.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
                     self?.showRoleErrorScreen(for: WooConstants.placeholderStoreID,
                                              errorInfo: errorInfo,
                                              in: navigationController,
@@ -128,11 +128,11 @@ private extension PostSiteCredentialLoginChecker {
                 if site.isWooCommerceActive {
                     onSuccess()
                 } else {
-                    self?.analytics.track(event: .RESTAPILogin.loginSiteCredentialFailed(step: .wooStatus, error: nil))
+                    self?.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: nil))
                     self?.showAlert(message: Localization.noWooError, in: navigationController)
                 }
             case .failure(let error):
-                self?.analytics.track(event: .RESTAPILogin.loginSiteCredentialFailed(step: .wooStatus, error: error))
+                self?.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: error))
                 DDLogError("⛔️ Error checking Woo: \(error)")
                 // show generic error
                 self?.showAlert(message: Localization.wooCheckError, in: navigationController, onRetry: {

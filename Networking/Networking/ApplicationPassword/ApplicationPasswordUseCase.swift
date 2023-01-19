@@ -96,16 +96,20 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     /// - Returns: Generated `ApplicationPassword` instance
     ///
     public func generateNewPassword() async throws -> ApplicationPassword {
-        async let password = try {
+        let applicationPassword = try await {
             do {
                 return try await createApplicationPassword()
             } catch ApplicationPasswordUseCaseError.duplicateName {
-                try await deletePassword()
+                do {
+                    try await deletePassword()
+                } catch ApplicationPasswordUseCaseError.unableToFindPasswordUUID {
+                    // No password found with the `applicationPasswordName`
+                    // We can proceed to the creation step
+                }
                 return try await createApplicationPassword()
             }
         }()
 
-        let applicationPassword = try await ApplicationPassword(wpOrgUsername: username, password: Secret(password))
         storage.saveApplicationPassword(applicationPassword)
         return applicationPassword
     }

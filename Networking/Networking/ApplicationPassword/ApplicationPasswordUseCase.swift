@@ -122,7 +122,12 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
         // Remove password from storage
         storage.removeApplicationPassword()
 
-        let uuid = try await fetchUUIDForApplicationPassword(await applicationPasswordName)
+        let uuid: String
+        if let uuidFromThePassword = applicationPassword?.uuid {
+            uuid = uuidFromThePassword
+        } else {
+            uuid = try await fetchUUIDForApplicationPassword(await applicationPasswordName)
+        }
         try await deleteApplicationPassword(uuid)
     }
 }

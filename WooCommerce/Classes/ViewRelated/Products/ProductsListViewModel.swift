@@ -23,6 +23,14 @@ class ProductListViewModel {
         selectedProducts.count
     }
 
+    var selectedVariableProductsCount: Int {
+        selectedProducts.filter({ $0.productType == .variable }).count
+    }
+
+    var onlyVariableProductsSelected: Bool {
+        selectedProducts.filter({ $0.productType != .variable }).isEmpty
+    }
+
     var bulkEditActionIsEnabled: Bool {
         !selectedProducts.isEmpty
     }

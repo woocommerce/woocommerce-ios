@@ -840,11 +840,11 @@ private extension OrderListViewController {
     }
 
     private func remindMeLaterTapped() {
-        viewModel.dismissIPPFeedbackBanner(remindLater: true)
+        viewModel.dismissIPPFeedbackBanner(remindLater: true, remindAfter: Settings.remindAfterDays)
     }
 
     private func dontShowAgainTapped() {
-        viewModel.dismissIPPFeedbackBanner(remindLater: false)
+        viewModel.dismissIPPFeedbackBanner(remindLater: false, remindAfter: nil)
     }
 }
 
@@ -908,6 +908,7 @@ private extension OrderListViewController {
         static let estimatedHeaderHeight = CGFloat(43)
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
+        static let remindAfterDays = 7
     }
 
     enum State {

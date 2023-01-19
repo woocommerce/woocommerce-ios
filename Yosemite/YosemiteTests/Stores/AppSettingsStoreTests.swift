@@ -848,7 +848,7 @@ extension AppSettingsStoreTests {
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
 
         // When
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindLater: false, onCompletion: nil)
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindLater: false, remindAfter: nil, onCompletion: nil)
         subject?.onAction(action)
 
         // Then
@@ -866,7 +866,7 @@ extension AppSettingsStoreTests {
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
 
         // When
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindLater: true, onCompletion: nil)
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindLater: true, remindAfter: nil, onCompletion: nil)
         subject?.onAction(action)
 
         // Then
@@ -888,7 +888,7 @@ extension AppSettingsStoreTests {
         try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
 
         // When
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindLater: false, onCompletion: nil)
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindLater: false, remindAfter: nil, onCompletion: nil)
         subject?.onAction(action)
 
         // Then

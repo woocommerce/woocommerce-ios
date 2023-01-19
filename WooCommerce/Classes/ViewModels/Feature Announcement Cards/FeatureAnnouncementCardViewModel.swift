@@ -108,6 +108,7 @@ class FeatureAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
     private func storeDismissedSetting(remindLater: Bool) {
         let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: config.campaign,
                                                                        remindLater: remindLater,
+                                                                       remindAfter: nil,
                                                                        onCompletion: nil)
         stores.dispatch(action)
         shouldBeVisible = false

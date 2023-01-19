@@ -62,7 +62,8 @@ class AuthenticationManager: Authentication {
         let isWPComMagicLinkPreferredToPassword = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let isStoreCreationMVPEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
-        let isWPComLoginRequiredForSiteCredentialsLogin = !featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin)
+        // TODO: Replace with A/B experiment
+        let enableSiteAddressLoginOnly = featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -80,7 +81,7 @@ class AuthenticationManager: Authentication {
                                                                 enableUnifiedAuth: true,
                                                                 continueWithSiteAddressFirst: false,
                                                                 enableSiteCredentialsLoginForSelfHostedSites: true,
-                                                                isWPComLoginRequiredForSiteCredentialsLogin: isWPComLoginRequiredForSiteCredentialsLogin,
+                                                                isWPComLoginRequiredForSiteCredentialsLogin: !enableSiteAddressLoginOnly,
                                                                 isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
                                                                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
                                                                     isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen,
@@ -91,7 +92,8 @@ class AuthenticationManager: Authentication {
                                                                 wpcomPasswordInstructions:
                                                                 AuthenticationConstants.wpcomPasswordInstructions,
                                                                 skipXMLRPCCheckForSiteDiscovery: true,
-                                                                useEnterEmailAddressAsStepValueForGetStartedVC: true)
+                                                                useEnterEmailAddressAsStepValueForGetStartedVC: true,
+                                                                enableSiteAddressLoginOnlyInPrologue: enableSiteAddressLoginOnly)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -329,21 +331,17 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         /// save the site to memory to check for jetpack requirement in epilogue
         currentSelfHostedSite = site
 
-        /// For self-hosted sites, navigate to enter the email address associated to the wp.com account:
-        /// https://github.com/woocommerce/woocommerce-ios/issues/3426
-        guard site.isWPCom else {
+        // TODO: Replace with A/B experiment
+        let enableWPComOnlyForWPComSites = featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthenticationForSiteCredentialLogin)
+
+        switch (enableWPComOnlyForWPComSites, site.isWPCom) {
+        case (true, true), (false, _):
             let authenticationResult: WordPressAuthenticatorResult = .presentEmailController
-
             onCompletion(authenticationResult)
-
-            return
+        case (true, false):
+            let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: true)
+            onCompletion(authenticationResult)
         }
-
-        /// We should never reach this point, as WPAuthenticator won't call its delegate for this case.
-        ///
-        DDLogWarn("⚠️ Present password controller for site: \(site.url)")
-        let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: false)
-        onCompletion(authenticationResult)
     }
 
     /// Displays appropriate error based on the input `siteInfo`.

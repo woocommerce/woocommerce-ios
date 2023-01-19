@@ -796,6 +796,9 @@ private extension OrderListViewController {
     private func createIPPFeedbackTopBanner() -> TopBannerView {
         let shareIPPFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.shareFeedbackButton, action: { _ in
             self.displayIPPFeedbackBannerSurvey()
+            // We dismiss the banner at this point as well, as we cannot know if was successfully submited or not at this point
+            // We will check the FeedbackStatus to know if we must display it again or not
+            self.viewModel.dismissIPPFeedbackBanner(remindLater: false, remindAfter: nil)
         })
 
         let viewModel = TopBannerViewModel(

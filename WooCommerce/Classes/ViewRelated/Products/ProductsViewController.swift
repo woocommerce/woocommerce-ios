@@ -539,20 +539,18 @@ private extension ProductsViewController {
         }()
         rightBarButtonItems.append(searchItem)
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productsBulkEditing) {
-            let bulkEditItem: UIBarButtonItem = {
-                let button = UIBarButtonItem(image: .multiSelectIcon,
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(startBulkEditing))
-                button.accessibilityTraits = .button
-                button.accessibilityLabel = Localization.bulkEditingNavBarButtonTitle
-                button.accessibilityHint = Localization.bulkEditingNavBarButtonHint
+        let bulkEditItem: UIBarButtonItem = {
+            let button = UIBarButtonItem(image: .multiSelectIcon,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(startBulkEditing))
+            button.accessibilityTraits = .button
+            button.accessibilityLabel = Localization.bulkEditingNavBarButtonTitle
+            button.accessibilityHint = Localization.bulkEditingNavBarButtonHint
 
-                return button
-            }()
-            rightBarButtonItems.append(bulkEditItem)
-        }
+            return button
+        }()
+        rightBarButtonItems.append(bulkEditItem)
 
         navigationItem.rightBarButtonItems = rightBarButtonItems
     }

@@ -79,6 +79,7 @@ private extension PostSiteCredentialLoginChecker {
             case .success:
                 onSuccess()
             case .failure(let error):
+                self?.analytics.track(event: .RESTAPILogin.loginSiteCredentialFailed(step: .userRole, error: error))
                 if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
                     self?.showRoleErrorScreen(for: WooConstants.placeholderStoreID,
                                              errorInfo: errorInfo,
@@ -126,9 +127,11 @@ private extension PostSiteCredentialLoginChecker {
                 if site.isWooCommerceActive {
                     onSuccess()
                 } else {
+                    self?.analytics.track(event: .RESTAPILogin.loginSiteCredentialFailed(step: .wooStatus, error: nil))
                     self?.showAlert(message: Localization.noWooError, in: navigationController)
                 }
             case .failure(let error):
+                self?.analytics.track(event: .RESTAPILogin.loginSiteCredentialFailed(step: .wooStatus, error: error))
                 DDLogError("⛔️ Error checking Woo: \(error)")
                 // show generic error
                 self?.showAlert(message: Localization.wooCheckError, in: navigationController, onRetry: {

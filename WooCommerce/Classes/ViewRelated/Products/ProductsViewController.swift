@@ -339,8 +339,8 @@ private extension ProductsViewController {
         let updateStatus = UIAlertAction(title: Localization.bulkEditingStatusOption, style: .default) { [weak self] _ in
             self?.showStatusBulkEditingModal()
         }
-        let updatePrice = UIAlertAction(title: Localization.bulkEditingPriceOption, style: .default) { _ in
-            // TODO-8520: show UI for price update
+        let updatePrice = UIAlertAction(title: Localization.bulkEditingPriceOption, style: .default) { [weak self] _ in
+            self?.showPriceBulkEditingModal()
         }
         let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
 
@@ -379,7 +379,7 @@ private extension ProductsViewController {
         }.store(in: &subscriptions)
         listSelectorViewController.navigationItem.rightBarButtonItem = applyButton
 
-        self.present(WooNavigationController(rootViewController: listSelectorViewController), animated: true)
+        present(WooNavigationController(rootViewController: listSelectorViewController), animated: true)
     }
 
     @objc func dismissModal() {
@@ -398,6 +398,36 @@ private extension ProductsViewController {
             case .success:
                 self.finishBulkEditing()
                 self.presentNotice(title: Localization.statusUpdatedNotice)
+            case .failure:
+                self.presentNotice(title: Localization.updateErrorNotice)
+            }
+        }
+    }
+
+    func showPriceBulkEditingModal() {
+        let priceInputViewModel = PriceInputViewModel(productListViewModel: viewModel)
+        let priceInputViewController = PriceInputViewController(viewModel: priceInputViewModel)
+        priceInputViewModel.cancelClosure = { [weak self] in
+            self?.dismissModal()
+        }
+        priceInputViewModel.applyClosure = { [weak self] newPrice in
+            self?.applyBulkEditingPrice(newPrice: newPrice, modalVC: priceInputViewController)
+        }
+        present(WooNavigationController(rootViewController: priceInputViewController), animated: true)
+    }
+
+    func applyBulkEditingPrice(newPrice: String?, modalVC: UIViewController) {
+        guard let newPrice else { return }
+
+        displayProductsSavingInProgressView(on: modalVC)
+        viewModel.updateSelectedProducts(with: newPrice) { [weak self] result in
+            guard let self else { return }
+
+            self.dismiss(animated: true, completion: nil)
+            switch result {
+            case .success:
+                self.finishBulkEditing()
+                self.presentNotice(title: Localization.priceUpdatedNotice)
             case .failure:
                 self.presentNotice(title: Localization.updateErrorNotice)
             }
@@ -1301,6 +1331,8 @@ private extension ProductsViewController {
 
         static let statusUpdatedNotice = NSLocalizedString("Status updated",
                                                            comment: "Title of the notice when a user updated status for selected products")
+        static let priceUpdatedNotice = NSLocalizedString("Price updated",
+                                                           comment: "Title of the notice when a user updated price for selected products")
         static let updateErrorNotice = NSLocalizedString("Cannot update products",
                                                          comment: "Title of the notice when there is an error updating selected products")
     }

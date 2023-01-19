@@ -198,9 +198,9 @@ final class OrderListViewModel {
 
     func dismissIPPFeedbackBanner(remindLater: Bool, remindAfter: Int?) {
         //  Updates the IPP feedback banner status as dismissed
-        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .dismissed, onCompletion: { _ in
-            self.hideIPPFeedbackBanner = true
-        })
+        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .dismissed) { [weak self] _ in
+            self?.hideIPPFeedbackBanner = true
+        }
         stores.dispatch(updateFeedbackStatus)
 
         //  Updates the IPP feedback banner status to be reminded later, or never

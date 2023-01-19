@@ -52,9 +52,34 @@ struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable 
 
     init(domainSuggestion: PaidDomainSuggestion) {
         self.name = domainSuggestion.name
-        // TODO: 8558 - attributed price info
-        self.attributedDetail = .init("\(domainSuggestion.saleCost ?? "no sale") / \(domainSuggestion.cost) / \(domainSuggestion.term)")
+        self.attributedDetail = {
+            var attributedCost = AttributedString(.init(format: Localization.priceFormat, domainSuggestion.cost, domainSuggestion.term))
+            attributedCost.font = .body
+            attributedCost.foregroundColor = .init(.secondaryLabel)
+
+            if let saleCost = domainSuggestion.saleCost {
+                attributedCost.strikethroughStyle = .single
+
+                var attributedSaleCost = AttributedString(saleCost)
+                attributedSaleCost.font = .body
+                attributedSaleCost.foregroundColor = .init(.domainSalePrice)
+
+                return attributedSaleCost + .init(" ") + attributedCost
+            } else {
+                return attributedCost
+            }
+        }()
         self.productID = domainSuggestion.productID
+    }
+}
+
+private extension PaidDomainSuggestionViewModel {
+    enum Localization {
+        static let priceFormat = NSLocalizedString(
+            "%1$@ / %2$@",
+            comment: "The original price of a domain. %1$@ is the price per term. " +
+            "%2$@ is the duration of each pricing term, usually year."
+        )
     }
 }
 

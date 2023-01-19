@@ -1846,8 +1846,8 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productListBulkUpdateFailure, properties: [Keys.property.rawValue: field.rawValue])
         }
 
-        static func bulkUpdateSelectAll() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productListBulkUpdateSelectAll, properties: [:])
+        static func bulkUpdateSelectAllTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateSelectAllTapped, properties: [:])
         }
     }
 }

@@ -807,7 +807,7 @@ private extension OrderListViewController {
             icon: UIImage.gridicon(.comment),
             isExpanded: true,
             topButton: .dismiss(handler: {
-                self.dismissIPPFeedbackBannerSurvey()
+                self.showIPPFeedbackDismissAlert()
             }),
             actionButtons: [shareIPPFeedbackAction]
         )
@@ -822,7 +822,7 @@ private extension OrderListViewController {
         self.present(surveyNavigation, animated: true, completion: nil)
     }
 
-    private func dismissIPPFeedbackBannerSurvey() {
+    private func showIPPFeedbackDismissAlert() {
         let actionSheet = UIAlertController(
             title: Localization.dismissTitle,
             message: Localization.dismissMessage,

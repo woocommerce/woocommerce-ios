@@ -87,10 +87,10 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         let path = "sites/\(siteID)/media"
         do {
             let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
-                                        method: .get,
-                                        path: path,
-                                        parameters: parameters,
-                                        availableAsRESTRequest: true)
+                                            method: .get,
+                                            path: path,
+                                            parameters: parameters,
+                                            availableAsRESTRequest: true)
             let mapper = WordPressMediaListMapper()
 
             enqueue(request, mapper: mapper, completion: completion)

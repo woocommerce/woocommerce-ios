@@ -276,7 +276,6 @@ final class HubMenuViewModelTests: XCTestCase {
         // Given
         let sampleStoreURL = "https://testshop.com"
         let sampleAdminURL = ""
-        let expectedAdminURL = "https://testshop.com/wp-admin"
         let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: true)
         let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL)
         sessionManager.defaultSite = site
@@ -294,7 +293,6 @@ final class HubMenuViewModelTests: XCTestCase {
         // Given
         let sampleStoreURL = "https://testshop.com"
         let sampleAdminURL = ""
-        let expectedAdminURL = "https://testshop.com/wp-admin"
         let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: false)
         let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL)
         sessionManager.defaultSite = site

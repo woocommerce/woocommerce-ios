@@ -1,9 +1,30 @@
 import XCTest
+import SafariServices
+import WordPressAuthenticator
 @testable import WooCommerce
 
 final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     private let testURL = "https://test.com"
+    private var navigationController: UINavigationController!
+    private let window = UIWindow(frame: UIScreen.main.bounds)
+
+    override func setUp() {
+        super.setUp()
+
+        window.makeKeyAndVisible()
+        navigationController = .init()
+        window.rootViewController = navigationController
+        WordPressAuthenticator.initializeAuthenticator()
+    }
+
+    override func tearDown() {
+        navigationController = nil
+        window.resignKey()
+        window.rootViewController = nil
+
+        super.tearDown()
+    }
 
     func test_viewmodel_provides_expected_image() {
         // Given
@@ -92,6 +113,34 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(secondaryButtonTitle, Expectations.secondaryButtonTitle)
+    }
+
+    func test_didTapAuxiliaryButton_presents_a_web_view() {
+        // Given
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+
+        // When
+        viewModel.didTapAuxiliaryButton(in: navigationController)
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+        XCTAssertTrue(navigationController.presentedViewController is SFSafariViewController)
+    }
+
+    func test_didTapPrimaryButton_presents_LoginNavigationController() {
+        // Given
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+
+        // When
+        viewModel.didTapPrimaryButton(in: navigationController)
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+        XCTAssertTrue(navigationController.presentedViewController is LoginNavigationController)
     }
 }
 

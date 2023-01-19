@@ -60,7 +60,7 @@ final class CardReaderConnectionController {
         /// will be called with a `success` `Bool` `False` result. The view controller passed to `searchAndConnect` will be
         /// dereferenced and the state set to `idle`
         ///
-        case cancel
+        case cancel(WooAnalyticsEvent.InPersonPayments.CancellationSource)
 
         /// A failure occurred. The completion passed to `searchAndConnect`
         /// will be called with a `failure` result. The view controller passed to `searchAndConnect` will be
@@ -200,8 +200,8 @@ private extension CardReaderConnectionController {
             onFoundSeveralReaders()
         case .retry:
             onRetry()
-        case .cancel:
-            onCancel()
+        case .cancel(let cancellationSource):
+            onCancel(from: cancellationSource)
         case .connectToReader:
             onConnectToReader()
         case .connectingFailed(let error):
@@ -424,7 +424,7 @@ private extension CardReaderConnectionController {
         /// stay in this state
         ///
         alertsPresenter.present(viewModel: alertsProvider.scanningForReader(cancel: {
-            self.state = .cancel
+            self.state = .cancel(.searchingForReader)
         }))
     }
 
@@ -449,7 +449,7 @@ private extension CardReaderConnectionController {
                     self.state = .searching
                 },
                 cancelSearch: { [weak self] in
-                    self?.state = .cancel
+                    self?.state = .cancel(.foundReader)
                 }))
     }
 
@@ -467,7 +467,7 @@ private extension CardReaderConnectionController {
                 self.state = .connectToReader
             },
             cancelSearch: { [weak self] in
-                self?.state = .cancel
+                self?.state = .cancel(.foundSeveralReaders)
             }
         )
     }
@@ -478,7 +478,7 @@ private extension CardReaderConnectionController {
         let cancel = softwareUpdateCancelable.map { cancelable in
             return { [weak self] in
                 guard let self = self else { return }
-                self.state = .cancel
+                self.state = .cancel(.readerSoftwareUpdate)
                 self.analyticsTracker.cardReaderSoftwareUpdateCancelTapped()
                 cancelable.cancel { [weak self] result in
                     if case .failure(let error) = result {
@@ -508,9 +508,9 @@ private extension CardReaderConnectionController {
 
     /// End the search for a card reader
     ///
-    func onCancel() {
+    func onCancel(from cancellationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
-            self?.returnSuccess(result: .canceled)
+            self?.returnSuccess(result: .canceled(cancellationSource))
         }
         stores.dispatch(action)
     }
@@ -639,7 +639,7 @@ private extension CardReaderConnectionController {
         }
 
         let cancelSearch = {
-            self.state = .cancel
+            self.state = .cancel(.connectionError)
         }
 
         guard case CardReaderServiceError.connection(let underlyingError) = error else {

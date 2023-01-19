@@ -19,6 +19,8 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var softwareUpdateSubject: CurrentValueSubject<CardReaderSoftwareUpdateState, Never> = .init(.none)
     private var paymentExtension: CardPresentPaymentGatewayExtension
 
+    var receivedActions: [CardPresentPaymentAction] = []
+
     init(connectedReaders: [CardReader],
          discoveredReaders: [CardReader],
          sessionManager: SessionManager,
@@ -47,6 +49,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     }
 
     private func onCardPresentPaymentAction(action: CardPresentPaymentAction) {
+        receivedActions.append(action)
         switch action {
         case .observeConnectedReaders(let onCompletion):
             onCompletion(connectedReaders)
@@ -88,6 +91,8 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
             onCompletion(Result.success(()))
         case .loadActivePaymentGatewayExtension(let onCompletion):
             onCompletion(paymentExtension)
+        case .disconnect(let onCompletion):
+            onCompletion(Result.success(()))
         default:
             fatalError("Not available")
         }

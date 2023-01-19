@@ -5,14 +5,15 @@ import enum Networking.DotcomError
 @testable import WooCommerce
 
 final class DomainSelectorViewModelTests: XCTestCase {
+    typealias ViewModel = DomainSelectorViewModel<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>
     private var stores: MockStoresManager!
-    private var viewModel: DomainSelectorViewModel!
+    private var viewModel: ViewModel!
     private var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
-        viewModel = .init(stores: stores, debounceDuration: 0)
+        viewModel = .init(dataProvider: FreeDomainSelectorDataProvider(stores: stores), debounceDuration: 0)
     }
 
     override func tearDown() {
@@ -74,7 +75,7 @@ final class DomainSelectorViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.viewModel.state == .results(domains: ["free.com"])
+            self.viewModel.state == .results(domains: [.init(domainSuggestion: .init(name: "free.com", isFree: true))])
         }
     }
 
@@ -87,7 +88,7 @@ final class DomainSelectorViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.viewModel.state == .error(message: DomainSelectorViewModel.Localization.defaultErrorMessage)
+            self.viewModel.state == .error(message: ViewModel.Localization.defaultErrorMessage)
         }
     }
 
@@ -111,7 +112,7 @@ final class DomainSelectorViewModelTests: XCTestCase {
         // When
         viewModel.searchTerm = "woo"
         waitUntil {
-            self.viewModel.state == .error(message: DomainSelectorViewModel.Localization.defaultErrorMessage)
+            self.viewModel.state == .error(message: ViewModel.Localization.defaultErrorMessage)
         }
 
         mockDomainSuggestionsSuccess(suggestions: [])

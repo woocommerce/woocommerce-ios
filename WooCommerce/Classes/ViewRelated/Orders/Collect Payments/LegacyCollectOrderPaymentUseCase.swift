@@ -389,7 +389,8 @@ private extension LegacyCollectOrderPaymentUseCase {
     func trackPaymentCancelation() {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                                          countryCode: configuration.countryCode,
-                                                                                         cardReaderModel: connectedReader?.readerType.model ?? ""))
+                                                                                         cardReaderModel: connectedReader?.readerType.model ?? "",
+                                                                                         cancellationSource: .other))
     }
 
     /// Allow merchants to print or email the payment receipt.

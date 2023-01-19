@@ -4,9 +4,6 @@ import XCTest
 /// ApplicationPasswordNameAndUUIDMapper Unit Tests
 ///
 final class ApplicationPasswordNameAndUUIDMapperTests: XCTestCase {
-
-    private let wpOrgUsername = "username"
-
     /// Verifies that GET application password response is parsed properly
     ///
     func test_response_is_properly_parsed_when_loading_all_application_passwords() throws {

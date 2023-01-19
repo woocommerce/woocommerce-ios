@@ -73,7 +73,7 @@ struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable 
     }
 }
 
-private extension PaidDomainSuggestionViewModel {
+extension PaidDomainSuggestionViewModel {
     enum Localization {
         static let priceFormat = NSLocalizedString(
             "%1$@ / %2$@",

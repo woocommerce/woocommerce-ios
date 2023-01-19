@@ -29,7 +29,7 @@ extension CodingUserInfoKey {
     ///
     public static let granularity = CodingUserInfoKey(rawValue: "granularity")!
 
-    /// Used to store the WordPress org username  within a Coder/Decoder's userInfo dictionary.
+    /// Used to store the WordPress org username within a Coder/Decoder's userInfo dictionary.
     ///
     public static let wpOrgUsername = CodingUserInfoKey(rawValue: "wpOrgUsername")!
 }

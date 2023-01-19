@@ -44,6 +44,7 @@ struct ApplicationPasswordStorage {
 private extension Keychain {
     private static let keychainApplicationPassword = "ApplicationPassword"
     private static let keychainApplicationPasswordUsername = "ApplicationPasswordUsername"
+    private static let keychainApplicationPasswordUUID = "ApplicationPasswordUUID"
 
     var password: String? {
         get { self[Keychain.keychainApplicationPassword] }
@@ -53,5 +54,10 @@ private extension Keychain {
     var username: String? {
         get { self[Keychain.keychainApplicationPasswordUsername] }
         set { self[Keychain.keychainApplicationPasswordUsername] = newValue }
+    }
+
+    var uuid: String? {
+        get { self[Keychain.keychainApplicationPasswordUUID] }
+        set { self[Keychain.keychainApplicationPasswordUUID] = newValue }
     }
 }

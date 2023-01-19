@@ -115,7 +115,8 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///  Deletes locally and also sends an API request to delete it from the site
     ///
     public func deletePassword() async throws {
-        try await deleteApplicationPassword()
+        let uuid = try await fetchUUIDForApplicationPassword(await applicationPasswordName)
+        try await deleteApplicationPassword(uuid)
     }
 }
 
@@ -192,13 +193,11 @@ private extension DefaultApplicationPasswordUseCase {
 
     /// Deletes application password using WordPress.com authentication token
     ///
-    func deleteApplicationPassword() async throws {
+    func deleteApplicationPassword(_ uuid: String) async throws {
         // Remove password from storage
         storage.removeApplicationPassword()
 
-        let passwordName = await applicationPasswordName
-        let parameters = [ParameterKey.name: passwordName]
-        let request = RESTRequest(siteURL: siteAddress, method: .delete, path: Path.applicationPasswords, parameters: parameters)
+        let request = RESTRequest(siteURL: siteAddress, method: .delete, path: Path.applicationPasswords + "/" + uuid)
 
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in

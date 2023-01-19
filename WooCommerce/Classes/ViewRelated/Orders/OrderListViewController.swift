@@ -120,9 +120,9 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var swipeActionsGlanced = false
 
-    /// Banner variation that will be shown as IPP Feedback Banner. If any.
+    /// Banner variation that will be shown as In-Person Payments feedback banner. If any.
     ///
-    private var IPPsurveyVariation: SurveyViewController.Source?
+    private var inPersonPaymentsSurveyVariation: SurveyViewController.Source?
 
 
     // MARK: - View Lifecycle
@@ -165,7 +165,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
             guard let survey = viewModel.displayIPPFeedbackBannerIfEligible() else {
                 return
             }
-            IPPsurveyVariation = survey
+            inPersonPaymentsSurveyVariation = survey
         }
     }
 
@@ -262,7 +262,7 @@ private extension OrderListViewController {
                 case .orderCreation:
                     self.setOrderCreationTopBanner()
                 case .IPPFeedback:
-                    guard let survey = self.IPPsurveyVariation else {
+                    guard let survey = self.inPersonPaymentsSurveyVariation else {
                         return
                     }
                     self.setIPPFeedbackTopBanner(survey: survey)
@@ -800,7 +800,7 @@ private extension OrderListViewController {
     /// Sets the `topBannerView` property to an IPP feedback banner.
     ///
     func setIPPFeedbackTopBanner(survey: SurveyViewController.Source) {
-        guard let survey = IPPsurveyVariation else {
+        guard let survey = inPersonPaymentsSurveyVariation else {
             return
         }
         topBannerView = createIPPFeedbackTopBanner(survey: survey)

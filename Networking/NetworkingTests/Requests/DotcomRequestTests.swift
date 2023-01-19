@@ -118,7 +118,7 @@ final class DotcomRequestTests: XCTestCase {
         XCTAssertEqual(output.siteURL, sampleSiteAddress)
     }
 
-    func test_initializing_RESTRequest_throws_for_non_WPOrg_endpoints__even_if_availableAsRESTRequest_is_true() throws {
+    func test_initializing_RESTRequest_throws_for_non_WPOrg_endpoints_even_if_availableAsRESTRequest_is_true() throws {
         let apis = WordPressAPIVersion.allCases.filter({ $0.isWPOrgEndpoint == false })
         for api in apis {
             do {

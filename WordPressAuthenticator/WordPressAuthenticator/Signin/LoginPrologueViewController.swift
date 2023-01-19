@@ -271,7 +271,7 @@ class LoginPrologueViewController: LoginViewController {
                                                  style: primaryButtonStyle,
                                                  onTap: loginTapCallback())
         let enterYourSiteAddressButton = StackedButton(title: displayStrings.enterYourSiteAddressButtonTitle,
-                                                       isPrimary: false,
+                                                       isPrimary: configuration.enableSiteAddressLoginOnlyInPrologue,
                                                        configureBodyFontForTitle: true,
                                                        accessibilityIdentifier: "Prologue Self Hosted Button",
                                                        style: secondaryButtonStyle,
@@ -288,6 +288,10 @@ class LoginPrologueViewController: LoginViewController {
                        createSiteButton]
         } else if configuration.enableWPComLoginOnlyInPrologue {
             buttons = [continueWithWPButton]
+        } else if configuration.enableSiteAddressLoginOnlyInPrologue && configuration.enableSiteCreation {
+            buttons = [enterYourSiteAddressButton, createSiteButton]
+        } else if configuration.enableSiteAddressLoginOnlyInPrologue {
+            buttons = [enterYourSiteAddressButton]
         } else if configuration.enableSiteCreation {
             let createSiteButtonForBottomStackView = StackedButton(using: createSiteButton,
                                                                    stackView: .bottom)
@@ -295,11 +299,13 @@ class LoginPrologueViewController: LoginViewController {
                        enterYourSiteAddressButton,
                        createSiteButtonForBottomStackView]
         } else {
-            WPAuthenticatorLogError("Failed to create `StackedButton`s in login progue screen.")
+            WPAuthenticatorLogError("Failed to create `StackedButton`s in login prologue screen.")
             buttons = []
         }
 
-        let showDivider = configuration.enableWPComLoginOnlyInPrologue == false && configuration.enableSiteCreation == true
+        let showDivider = configuration.enableWPComLoginOnlyInPrologue == false &&
+            configuration.enableSiteCreation == true &&
+            configuration.enableSiteAddressLoginOnlyInPrologue == false
         stackedButtonsViewController.setUpButtons(using: buttons, showDivider: showDivider)
         setButtonViewControllerBackground()
     }

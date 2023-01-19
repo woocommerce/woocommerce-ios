@@ -172,6 +172,33 @@ private extension DefaultApplicationPasswordUseCase {
         }
     }
 
+    /// Get the UUID of the application password
+    ///
+    func fetchUUIDForApplicationPassword(_ passwordName: String) async throws -> String {
+        let request = RESTRequest(siteURL: siteAddress, method: .get, path: Path.applicationPasswords)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            network.responseData(for: request) { result in
+                switch result {
+                case .success(let data):
+                    do {
+                        let mapper = ApplicationPasswordNameAndUUIDMapper()
+                        let list = try mapper.map(response: data)
+                        if let item = list.first(where: { $0.name == passwordName }) {
+                            continuation.resume(returning: item.uuid)
+                        } else {
+                            continuation.resume(throwing: ApplicationPasswordUseCaseError.unableToFindPasswordUUID)
+                        }
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
     /// Deletes application password using WordPress.com authentication token
     ///
     func deleteApplicationPassword() async throws {

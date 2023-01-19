@@ -758,20 +758,24 @@ private extension AppSettingsStore {
 
 extension AppSettingsStore {
 
-    func setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool, remindAfter: Int? = 14, onCompletion: ((Result<Bool, Error>) -> ())?) {
-        do {
-            let remindAfter = remindLater ? Date().addingDays(remindAfter ?? 14) : nil
-            let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: remindAfter)
+    func setFeatureAnnouncementDismissed(
+        campaign: FeatureAnnouncementCampaign,
+        remindLater: Bool,
+        remindAfter: Int? = 14,
+        onCompletion: ((Result<Bool, Error>) -> ())?) {
+            do {
+                let remindAfter = remindLater ? Date().addingDays(remindAfter ?? 14) : nil
+                let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: remindAfter)
 
-            let settings = generalAppSettings.settings
-            let settingsToSave = settings.replacing(featureAnnouncementSettings: newSettings, for: campaign)
-            try generalAppSettings.saveSettings(settingsToSave)
+                let settings = generalAppSettings.settings
+                let settingsToSave = settings.replacing(featureAnnouncementSettings: newSettings, for: campaign)
+                try generalAppSettings.saveSettings(settingsToSave)
 
-            onCompletion?(.success(true))
-        } catch {
-            onCompletion?(.failure(error))
+                onCompletion?(.success(true))
+            } catch {
+                onCompletion?(.failure(error))
+            }
         }
-    }
 
     func getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ()) {
         guard let campaignSettings = generalAppSettings.value(for: \.featureAnnouncementCampaignSettings)[campaign] else {

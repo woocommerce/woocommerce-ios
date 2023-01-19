@@ -8,6 +8,10 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
     private var stores: MockStoresManager!
     private var navigationController: UINavigationController!
 
+    /// Sample Application Password
+    ///
+    private let applicationPassword = ApplicationPassword(wpOrgUsername: "username", password: .init("password"), uuid: "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e")
+
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         navigationController = UINavigationController()
@@ -66,7 +70,6 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
 
     func test_role_error_screen_is_displayed_when_the_user_is_not_eligible() {
         // Given
-        let applicationPassword = ApplicationPassword(wpOrgUsername: "test", password: .init("secret"))
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
         let roleCheckUseCase = MockRoleEligibilityUseCase()
         let errorInfo = StorageEligibilityErrorInfo(name: "Billie Jean", roles: ["skater", "writer"])
@@ -90,7 +93,6 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
 
     func test_error_alert_is_displayed_when_user_info_cannot_be_fetched() {
         // Given
-        let applicationPassword = ApplicationPassword(wpOrgUsername: "test", password: .init("secret"))
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
         let roleCheckUseCase = MockRoleEligibilityUseCase()
         roleCheckUseCase.errorToReturn = .unknown(error: NetworkError.timeout)
@@ -113,7 +115,6 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
 
     func test_onSuccess_is_triggered_when_the_site_has_active_woo() {
         // Given
-        let applicationPassword = ApplicationPassword(wpOrgUsername: "test", password: .init("secret"))
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
         let roleCheckUseCase = MockRoleEligibilityUseCase()
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,
@@ -141,7 +142,6 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
 
     func test_error_alert_is_displayed_if_the_site_does_not_have_active_woo() {
         // Given
-        let applicationPassword = ApplicationPassword(wpOrgUsername: "test", password: .init("secret"))
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
         let roleCheckUseCase = MockRoleEligibilityUseCase()
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,
@@ -171,7 +171,6 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
 
     func test_error_alert_is_displayed_if_the_site_info_cannot_be_fetched() {
         // Given
-        let applicationPassword = ApplicationPassword(wpOrgUsername: "test", password: .init("secret"))
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
         let roleCheckUseCase = MockRoleEligibilityUseCase()
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,

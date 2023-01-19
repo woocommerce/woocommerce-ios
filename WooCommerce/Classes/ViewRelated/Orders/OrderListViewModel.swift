@@ -206,7 +206,6 @@ final class OrderListViewModel {
         //  Updates the IPP feedback banner status to be reminded later, or never
         let updateBannerVisibility = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .IPP, remindLater: remindLater, onCompletion: nil)
         stores.dispatch(updateBannerVisibility)
-        
     }
 
     /// Starts the snapshotsProvider, logging any errors.

@@ -162,10 +162,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureSyncingCoordinator()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            guard let survey = viewModel.feedbackBannerSurveySource() else {
-                return
-            }
-            inPersonPaymentsSurveyVariation = survey
+            inPersonPaymentsSurveyVariation = viewModel.feedbackBannerSurveySource()
         }
     }
 
@@ -800,9 +797,6 @@ private extension OrderListViewController {
     /// Sets the `topBannerView` property to an IPP feedback banner.
     ///
     func setIPPFeedbackTopBanner(survey: SurveyViewController.Source) {
-        guard let survey = inPersonPaymentsSurveyVariation else {
-            return
-        }
         topBannerView = createIPPFeedbackTopBanner(survey: survey)
         showTopBannerView()
     }

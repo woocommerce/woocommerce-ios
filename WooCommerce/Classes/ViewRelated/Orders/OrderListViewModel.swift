@@ -296,22 +296,11 @@ final class OrderListViewModel {
                 $0.paymentMethodTitle == Constants.paymentMethodTitle})
             let IPPresultsCount = IPPTransactionsFound.count
 
-            // TODO: Debug. Remove before merging
-            print("COD enabled? \(isCODEnabled) - Eligible Country? \(isIPPSupportedCountry)")
-            print("hasResults? \(hasResults)")
-            print("IPP transactions within 30 days: \(IPPresultsCount)")
-            print(recentIPPOrdersResultsController.fetchedObjects.map {
-                ("OrderID: \($0.orderID) - PaymentMethodID: \($0.paymentMethodID) (\($0.paymentMethodTitle) - DatePaid: \(String(describing: $0.datePaid))")
-            })
-
             if !hasResults {
-                print("0 transactions. Banner 1 shown")
                 return .IPP_COD
             } else if IPPresultsCount < Constants.numberOfTransactions {
-                print("< 10 transactions within 30 days. Banner 2 shown")
                 return .IPP_firstTransaction
             } else if IPPresultsCount >= Constants.numberOfTransactions {
-                print(">= 10 transactions within 30 days. Banner 3 shown")
                 return .IPP_powerUsers
             }
         }

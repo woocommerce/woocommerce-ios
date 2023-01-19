@@ -9,6 +9,11 @@
 
 @end
 
+// We are leaving some protocol methods intentionally unimplemented to then test that calling them
+// will not cause a crash.
+//
+// See https://github.com/wordpress-mobile/WordPressAuthenticator-iOS/pull/720#issuecomment-1374952619
+#pragma clang diagnostic ignored "-Wprotocol"
 @implementation CaptureLogs
 
 - (instancetype)init
@@ -31,6 +36,7 @@
 }
 
 @end
+#pragma clang diagnostic pop
 
 @interface ObjCLoggingTest : XCTestCase
 

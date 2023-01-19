@@ -346,6 +346,9 @@ private extension ProductsViewController {
     }
 
     @objc func selectAllProducts() {
+        viewModel.selectProducts(resultsController.fetchedObjects)
+        updatedSelectedItems()
+        tableView.reloadRows(at: tableView.indexPathsForVisibleRows ?? [], with: .none)
     }
 
     @objc func openBulkEditingOptions(sender: UIButton) {

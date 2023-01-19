@@ -1852,3 +1852,26 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - REST API Login
+//
+extension WooAnalyticsEvent {
+    enum RESTAPILogin {
+        enum Key: String {
+            case step
+        }
+
+        enum LoginSiteCredentialStep: String {
+            case authentication
+            case applicationPasswordGeneration = "application_password_generation"
+            case wooStatus = "woo_status"
+            case userRole = "user_role"
+        }
+
+        /// Tracks when the login with site credentials failed.
+        ///
+        static func loginSiteCredentialFailed(step: LoginSiteCredentialStep, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsFailed, properties: [Key.step.rawValue: step.rawValue], error: error)
+        }
+    }
+}

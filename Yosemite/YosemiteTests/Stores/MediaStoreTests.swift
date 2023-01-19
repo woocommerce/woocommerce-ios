@@ -193,8 +193,6 @@ final class MediaStoreTests: XCTestCase {
                                     network: network,
                                     remote: remote)
 
-        insertJCPSiteToStorage(siteID: sampleSiteID)
-
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: siteID,
@@ -394,8 +392,6 @@ final class MediaStoreTests: XCTestCase {
 
         let asset = PHAsset()
 
-        insertJCPSiteToStorage(siteID: siteID)
-
         // When
         let result: Result<Media, Error> = waitFor { promise in
             let action = MediaAction.uploadMedia(siteID: siteID,
@@ -561,8 +557,6 @@ final class MediaStoreTests: XCTestCase {
                                     storageManager: storageManager,
                                     network: network,
                                     remote: remote)
-        insertJCPSiteToStorage(siteID: siteID)
-
         // When
         let result: Result<Media, Error> = waitFor { promise in
             let action = MediaAction.updateProductID(siteID: siteID,

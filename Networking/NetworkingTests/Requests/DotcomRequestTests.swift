@@ -147,9 +147,30 @@ final class DotcomRequestTests: XCTestCase {
         XCTAssertNil(request.asRESTRequest(with: sampleSiteAddress))
     }
 
-    func test_the_converted_RESTRequest_path_does_not_have_sites_component() throws {
+    func test_the_converted_RESTRequest_path_does_not_have_sites_component_for_a_path_with_front_slash() throws {
         // Given
         let pathWithSite = "/sites/12345/media/"
+        let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                        method: .post,
+                                        path: pathWithSite,
+                                        parameters: sampleParameters,
+                                        availableAsRESTRequest: true)
+
+        // When
+        let output = try XCTUnwrap(request.asRESTRequest(with: sampleSiteAddress))
+
+        // Then
+        XCTAssertEqual(output.apiVersionPath, WooAPIVersion.none.path)
+        XCTAssertEqual(output.method, .post)
+        XCTAssertEqual(output.path, WordPressAPIVersion.wpMark2.path + "media/")
+        let params = try XCTUnwrap(output.parameters as? [String: String])
+        XCTAssertEqual(params, sampleParameters)
+        XCTAssertEqual(output.siteURL, sampleSiteAddress)
+    }
+
+    func test_the_converted_RESTRequest_path_does_not_have_sites_component_for_a_path_without_front_slash() throws {
+        // Given
+        let pathWithSite = "sites/12345/media/"
         let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
                                         method: .post,
                                         path: pathWithSite,

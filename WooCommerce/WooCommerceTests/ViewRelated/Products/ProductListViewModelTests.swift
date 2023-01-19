@@ -120,6 +120,30 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedProductsCount, 0)
     }
 
+    func test_variation_helpers_work_correctly() {
+        // Given
+        let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
+        let sampleProduct1 = Product.fake().copy(productID: 1)
+        let sampleProduct2 = Product.fake().copy(productID: 2, productTypeKey: "variable")
+
+        // When
+        viewModel.selectProduct(sampleProduct1)
+        viewModel.selectProduct(sampleProduct2)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedProductsCount, 2)
+        XCTAssertEqual(viewModel.variableProductsCount, 1)
+        XCTAssertFalse(viewModel.onlyVariableProductsSelected)
+
+        // When
+        viewModel.deselectProduct(sampleProduct1)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedProductsCount, 1)
+        XCTAssertEqual(viewModel.variableProductsCount, 1)
+        XCTAssertTrue(viewModel.onlyVariableProductsSelected)
+    }
+
     func test_common_status_works_correctly() {
         // Given
         let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)

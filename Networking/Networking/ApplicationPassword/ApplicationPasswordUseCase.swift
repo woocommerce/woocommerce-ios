@@ -119,16 +119,20 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///  Deletes locally and also sends an API request to delete it from the site
     ///
     public func deletePassword() async throws {
+        // Get the uuid before removing the password from storage
+        let uuidFromLocalPassword = applicationPassword?.uuid
+
         // Remove password from storage
         storage.removeApplicationPassword()
 
-        let uuid: String
-        if let uuidFromThePassword = applicationPassword?.uuid {
-            uuid = uuidFromThePassword
-        } else {
-            uuid = try await fetchUUIDForApplicationPassword(await applicationPasswordName)
-        }
-        try await deleteApplicationPassword(uuid)
+        let uuidToBeDeleted = try await {
+            if let uuidFromLocalPassword {
+                return uuidFromLocalPassword
+            } else {
+                return try await self.fetchUUIDForApplicationPassword(await applicationPasswordName)
+            }
+        }()
+        try await deleteApplicationPassword(uuidToBeDeleted)
     }
 }
 

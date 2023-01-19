@@ -112,7 +112,7 @@ final class DotcomRequestTests: XCTestCase {
         // Then
         XCTAssertEqual(output.apiVersionPath, WooAPIVersion.none.path)
         XCTAssertEqual(output.method, .post)
-        XCTAssertEqual(output.path, WordPressAPIVersion.wpMark2.path + sampleRPC)
+        XCTAssertEqual(output.path, "wp/v2/sample")
         let params = try XCTUnwrap(output.parameters as? [String: String])
         XCTAssertEqual(params, sampleParameters)
         XCTAssertEqual(output.siteURL, sampleSiteAddress)
@@ -162,7 +162,7 @@ final class DotcomRequestTests: XCTestCase {
         // Then
         XCTAssertEqual(output.apiVersionPath, WooAPIVersion.none.path)
         XCTAssertEqual(output.method, .post)
-        XCTAssertEqual(output.path, WordPressAPIVersion.wpMark2.path + "media/")
+        XCTAssertEqual(output.path, "wp/v2/media/")
         let params = try XCTUnwrap(output.parameters as? [String: String])
         XCTAssertEqual(params, sampleParameters)
         XCTAssertEqual(output.siteURL, sampleSiteAddress)
@@ -183,7 +183,7 @@ final class DotcomRequestTests: XCTestCase {
         // Then
         XCTAssertEqual(output.apiVersionPath, WooAPIVersion.none.path)
         XCTAssertEqual(output.method, .post)
-        XCTAssertEqual(output.path, WordPressAPIVersion.wpMark2.path + "media/")
+        XCTAssertEqual(output.path, "wp/v2/media/")
         let params = try XCTUnwrap(output.parameters as? [String: String])
         XCTAssertEqual(params, sampleParameters)
         XCTAssertEqual(output.siteURL, sampleSiteAddress)

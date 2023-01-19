@@ -295,6 +295,7 @@ private extension AppCoordinator {
 
             // if the previous role check indicates that the user is ineligible, let's show the error message.
             if let errorInfo = try? result.get() {
+                ServiceLocator.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
                 self.displayRoleErrorUI(for: storeID, errorInfo: errorInfo)
                 return
             }

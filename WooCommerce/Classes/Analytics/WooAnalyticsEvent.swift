@@ -905,6 +905,21 @@ extension WooAnalyticsEvent {
             gatewayID ?? unknownGatewayID
         }
 
+        /// Tracked when we automatically disconnect a Built In reader, when Manage Card Reader is opened
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func manageCardReadersBuiltInReaderAutoDisconnect(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .manageCardReadersBuiltInReaderAutoDisconnect,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                              ]
+            )
+        }
+
         /// Tracked when card reader discovery fails
         ///
         /// - Parameters:

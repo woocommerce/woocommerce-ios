@@ -1,6 +1,6 @@
 import Foundation
-import WordPressKit
 import WordPressAuthenticator
+import struct Networking.CookieNonceAuthenticatorConfiguration
 
 /// Extension to create cookie nonce authenticator from WP.org credentials.
 ///
@@ -15,31 +15,17 @@ extension WordPressOrgCredentials {
         return value ?? siteURL + Strings.adminPath
     }
 
-    var version: String {
-        let value = optionValue(for: Key.version.rawValue)
-        if let stringValue = value as? String {
-            return stringValue
-        }
-
-        if let numberValue = value as? NSNumber {
-            return numberValue.stringValue
-        }
-
-        return ""
-    }
-
-    /// Returns a cookie nonce authenticator based on the current credentials
+    /// Returns a cookie nonce authenticator configuration based on the current credentials
     ///
-    func makeCookieNonceAuthenticator() -> CookieNonceAuthenticator? {
+    func makeCookieNonceAuthenticatorConfig() -> CookieNonceAuthenticatorConfiguration? {
         guard let loginURL = URL(string: loginURL),
               let adminURL = URL(string: adminURL) else {
             return nil
         }
-        return CookieNonceAuthenticator(username: username,
-                                        password: password,
-                                        loginURL: loginURL,
-                                        adminURL: adminURL,
-                                        version: version)
+        return CookieNonceAuthenticatorConfiguration(username: username,
+                                                     password: password,
+                                                     loginURL: loginURL,
+                                                     adminURL: adminURL)
     }
 }
 
@@ -65,7 +51,6 @@ private extension WordPressOrgCredentials {
     enum Key: String {
         case loginURL = "login_url"
         case adminURL = "admin_url"
-        case version = "software_version"
         case value
     }
 }

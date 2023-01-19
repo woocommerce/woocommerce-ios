@@ -133,6 +133,9 @@ extension WooAnalyticsEvent.StoreCreation {
     /// Steps of the native store creation flow.
     enum Step: String {
         case storeName = "store_name"
+        case profilerCategoryQuestion = "store_profiler_industries"
+        case profilerSellingStatusQuestion = "store_profiler_commerce_journey"
+        case profilerCountryQuestion = "store_profiler_country"
         case domainPicker = "domain_picker"
         case storeSummary = "store_summary"
         case planPurchase = "plan_purchase"

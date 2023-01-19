@@ -323,7 +323,7 @@ private extension StoreCreationCoordinator {
                     self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: nil, planToPurchase: planToPurchase)
                 })
         navigationController.pushViewController(questionController, animated: true)
-        // TODO: analytics
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCategoryQuestion))
     }
 
     @MainActor
@@ -348,7 +348,7 @@ private extension StoreCreationCoordinator {
                                           planToPurchase: planToPurchase)
         }
         navigationController.pushViewController(questionController, animated: true)
-        // TODO: analytics
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerSellingStatusQuestion))
     }
 
     @MainActor
@@ -370,7 +370,7 @@ private extension StoreCreationCoordinator {
                     self?.showSupport(from: navigationController)
                 })
         navigationController.pushViewController(questionController, animated: true)
-        // TODO: analytics
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCountryQuestion))
     }
 
     @MainActor
@@ -380,15 +380,15 @@ private extension StoreCreationCoordinator {
                             sellingStatus: StoreCreationSellingStatusAnswer?,
                             countryCode: SiteAddress.CountryCode?,
                             planToPurchase: WPComPlanProduct) {
-        let domainSelector = DomainSelectorHostingController(viewModel: .init(initialSearchTerm: storeName),
-                                                             onDomainSelection: { [weak self] domain in
+        let domainSelector = FreeDomainSelectorHostingController(viewModel: .init(initialSearchTerm: storeName, dataProvider: FreeDomainSelectorDataProvider()),
+                                                                 onDomainSelection: { [weak self] domain in
             guard let self else { return }
             await self.createStoreAndContinueToStoreSummary(from: navigationController,
                                                             name: storeName,
                                                             category: category,
                                                             sellingStatus: sellingStatus,
                                                             countryCode: countryCode,
-                                                            domain: domain,
+                                                            domain: domain.name,
                                                             planToPurchase: planToPurchase)
         }, onSupport: { [weak self] in
             self?.showSupport(from: navigationController)

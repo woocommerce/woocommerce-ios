@@ -717,6 +717,7 @@
 		DE50296328C609DE00551736 /* jetpack-user-not-connected.json in Resources */ = {isa = PBXBuildFile; fileRef = DE50296228C609DE00551736 /* jetpack-user-not-connected.json */; };
 		DE50296528C60A8000551736 /* JetpackUserMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50296428C60A8000551736 /* JetpackUserMapperTests.swift */; };
 		DE5CA111288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */; };
+		DE66C5532976508300DAA978 /* CookieNonceAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE66C5522976508300DAA978 /* CookieNonceAuthenticator.swift */; };
 		DE6F308727966FEF004E1C9A /* CouponReportListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */; };
 		DE74F29A27E08F5A0002FE59 /* SiteSettingMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */; };
 		DE74F29C27E0A1D00002FE59 /* setting-coupon.json in Resources */ = {isa = PBXBuildFile; fileRef = DE74F29B27E0A1D00002FE59 /* setting-coupon.json */; };
@@ -1549,6 +1550,7 @@
 		DE50296228C609DE00551736 /* jetpack-user-not-connected.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "jetpack-user-not-connected.json"; sourceTree = "<group>"; };
 		DE50296428C60A8000551736 /* JetpackUserMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackUserMapperTests.swift; sourceTree = "<group>"; };
 		DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-malformed-variations-and-image-alt.json"; sourceTree = "<group>"; };
+		DE66C5522976508300DAA978 /* CookieNonceAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieNonceAuthenticator.swift; sourceTree = "<group>"; };
 		DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapperTests.swift; sourceTree = "<group>"; };
 		DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSettingMapper.swift; sourceTree = "<group>"; };
 		DE74F29B27E0A1D00002FE59 /* setting-coupon.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "setting-coupon.json"; sourceTree = "<group>"; };
@@ -1960,6 +1962,7 @@
 		B557D9E5209753AA005962F4 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				DE66C5512976507100DAA978 /* CookieNonce */,
 				EE54C899294777D000A9BF61 /* ApplicationPassword */,
 				B5A0369F214C0F4C00774E2C /* Internal */,
 				B5BB1D0A20A204F400112D92 /* Extensions */,
@@ -2755,6 +2758,14 @@
 			path = Product;
 			sourceTree = "<group>";
 		};
+		DE66C5512976507100DAA978 /* CookieNonce */ = {
+			isa = PBXGroup;
+			children = (
+				DE66C5522976508300DAA978 /* CookieNonceAuthenticator.swift */,
+			);
+			path = CookieNonce;
+			sourceTree = "<group>";
+		};
 		DE97C3902861B8CD0042E973 /* Encoder */ = {
 			isa = PBXGroup;
 			children = (
@@ -3355,6 +3366,7 @@
 				451A97E9260B657D0059D135 /* ShippingLabelPredefinedOption.swift in Sources */,
 				02C2548425635BD000A04423 /* ShippingLabelPaperSize.swift in Sources */,
 				CE132BBC223859710029DB6C /* ProductTag.swift in Sources */,
+				DE66C5532976508300DAA978 /* CookieNonceAuthenticator.swift in Sources */,
 				26650332261FFA1A0079A159 /* ProductAddOnEnvelope.swift in Sources */,
 				D88D5A47230BC838007B6E01 /* ProductReview.swift in Sources */,
 				DEFBA74E29485A7600C35BA9 /* RESTRequest.swift in Sources */,

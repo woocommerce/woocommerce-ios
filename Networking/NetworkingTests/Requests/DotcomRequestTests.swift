@@ -112,13 +112,13 @@ final class DotcomRequestTests: XCTestCase {
         // Then
         XCTAssertEqual(output.apiVersionPath, WooAPIVersion.none.path)
         XCTAssertEqual(output.method, .post)
-        XCTAssertEqual(output.path, WordPressAPIVersion.wpMark2.path + sampleRPC)
+        XCTAssertEqual(output.path, "wp/v2/sample")
         let params = try XCTUnwrap(output.parameters as? [String: String])
         XCTAssertEqual(params, sampleParameters)
         XCTAssertEqual(output.siteURL, sampleSiteAddress)
     }
 
-    func test_initializing_RESTRequest_throws_for_non_WPOrg_endpoints__even_if_availableAsRESTRequest_is_true() throws {
+    func test_initializing_RESTRequest_throws_for_non_WPOrg_endpoints_even_if_availableAsRESTRequest_is_true() throws {
         let apis = WordPressAPIVersion.allCases.filter({ $0.isWPOrgEndpoint == false })
         for api in apis {
             do {
@@ -147,7 +147,7 @@ final class DotcomRequestTests: XCTestCase {
         XCTAssertNil(request.asRESTRequest(with: sampleSiteAddress))
     }
 
-    func test_the_converted_RESTRequest_path_does_not_have_sites_component() throws {
+    func test_the_converted_RESTRequest_path_does_not_have_sites_component_for_a_path_with_front_slash() throws {
         // Given
         let pathWithSite = "/sites/12345/media/"
         let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
@@ -162,7 +162,28 @@ final class DotcomRequestTests: XCTestCase {
         // Then
         XCTAssertEqual(output.apiVersionPath, WooAPIVersion.none.path)
         XCTAssertEqual(output.method, .post)
-        XCTAssertEqual(output.path, WordPressAPIVersion.wpMark2.path + "media/")
+        XCTAssertEqual(output.path, "wp/v2/media/")
+        let params = try XCTUnwrap(output.parameters as? [String: String])
+        XCTAssertEqual(params, sampleParameters)
+        XCTAssertEqual(output.siteURL, sampleSiteAddress)
+    }
+
+    func test_the_converted_RESTRequest_path_does_not_have_sites_component_for_a_path_without_front_slash() throws {
+        // Given
+        let pathWithSite = "sites/12345/media/"
+        let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                        method: .post,
+                                        path: pathWithSite,
+                                        parameters: sampleParameters,
+                                        availableAsRESTRequest: true)
+
+        // When
+        let output = try XCTUnwrap(request.asRESTRequest(with: sampleSiteAddress))
+
+        // Then
+        XCTAssertEqual(output.apiVersionPath, WooAPIVersion.none.path)
+        XCTAssertEqual(output.method, .post)
+        XCTAssertEqual(output.path, "wp/v2/media/")
         let params = try XCTUnwrap(output.parameters as? [String: String])
         XCTAssertEqual(params, sampleParameters)
         XCTAssertEqual(output.siteURL, sampleSiteAddress)

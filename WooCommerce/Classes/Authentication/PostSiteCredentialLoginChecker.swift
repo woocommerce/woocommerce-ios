@@ -12,13 +12,16 @@ final class PostSiteCredentialLoginChecker {
     private let stores: StoresManager
     private let applicationPasswordUseCase: ApplicationPasswordUseCase
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
+    private let analytics: Analytics
 
     init(applicationPasswordUseCase: ApplicationPasswordUseCase,
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(stores: ServiceLocator.stores),
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.applicationPasswordUseCase = applicationPasswordUseCase
         self.roleEligibilityUseCase = roleEligibilityUseCase
         self.stores = stores
+        self.analytics = analytics
     }
 
     /// Checks whether the user is eligible to use the app.
@@ -44,21 +47,25 @@ private extension PostSiteCredentialLoginChecker {
             do {
                 let _ = try await useCase.generateNewPassword()
                 onSuccess()
-            } catch ApplicationPasswordUseCaseError.applicationPasswordsDisabled {
-                // show application password disabled error
-                let errorUI = applicationPasswordDisabledUI(for: siteURL)
-                navigationController.show(errorUI, sender: nil)
-            } catch ApplicationPasswordUseCaseError.unauthorizedRequest {
-                showAlert(message: Localization.invalidLoginOrAdminURL, in: navigationController)
             } catch {
-                DDLogError("⛔️ Error generating application password: \(error)")
-                showAlert(
-                    message: Localization.applicationPasswordError,
-                    in: navigationController,
-                    onRetry: { [weak self] in
-                        self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController, onSuccess: onSuccess)
-                    }
-                )
+                analytics.track(event: .RESTAPILogin.loginSiteCredentialFailed(step: .applicationPasswordGeneration, error: error))
+                switch error {
+                case ApplicationPasswordUseCaseError.applicationPasswordsDisabled:
+                    // show application password disabled error
+                    let errorUI = applicationPasswordDisabledUI(for: siteURL)
+                    navigationController.show(errorUI, sender: nil)
+                case ApplicationPasswordUseCaseError.unauthorizedRequest:
+                    showAlert(message: Localization.invalidLoginOrAdminURL, in: navigationController)
+                default:
+                    DDLogError("⛔️ Error generating application password: \(error)")
+                    showAlert(
+                        message: Localization.applicationPasswordError,
+                        in: navigationController,
+                        onRetry: { [weak self] in
+                            self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController, onSuccess: onSuccess)
+                        }
+                    )
+                }
             }
         }
     }

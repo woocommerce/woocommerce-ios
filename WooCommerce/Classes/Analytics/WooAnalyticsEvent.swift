@@ -76,11 +76,11 @@ extension WooAnalyticsEvent {
         /// Shown in beta feature banner for coupon management.
         case couponManagement = "coupon_management"
         /// Shown in IPP banner for eligible merchants with no IPP transactions.
-        case IPP_COD
+        case inPersonPaymentsCashOnDeliveryBanner
         /// Shown in IPP banner for eligible merchants with a few IPP transactions.
-        case IPP_firstTransaction
+        case inPersonPaymentsFirstTransactionBanner
         /// Shown in IPP banner for eligible merchants with a significant number of IPP transactions.
-        case IPP_powerUsers
+        case inPersonPaymentsPowerUsersBanner
     }
 
     /// The action performed on the survey screen.

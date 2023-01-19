@@ -106,17 +106,17 @@ extension SurveyViewController {
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
             case .IPP_COD:
-                return WooConstants.URLs.IPP_COD
+                return WooConstants.URLs.inPersonPaymentsCashOnDeliveryFeedback
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
             case .IPP_firstTransaction:
-                return WooConstants.URLs.IPP_firstTransaction
+                return WooConstants.URLs.inPersonPaymentsFirstTransactionFeedback
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
             case .IPP_powerUsers:
-                return WooConstants.URLs.IPP_powerUsers
+                return WooConstants.URLs.inPersonPaymentsPowerUsersFeedback
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
@@ -148,11 +148,11 @@ extension SurveyViewController {
             case .couponManagement:
                 return .couponManagement
             case .IPP_COD:
-                return .IPP_COD
+                return .inPersonPaymentsCashOnDeliveryBanner
             case .IPP_firstTransaction:
-                return .IPP_firstTransaction
+                return .inPersonPaymentsFirstTransactionBanner
             case .IPP_powerUsers:
-                return .IPP_powerUsers
+                return .inPersonPaymentsPowerUsersBanner
             }
         }
     }

@@ -31,12 +31,16 @@ class ProductListViewModel {
         return selectedProducts.contains(productToCheck)
     }
 
-    func selectProduct(_ selectedProduct: Product) {
-        selectedProducts.insert(selectedProduct)
+    func selectProduct(_ product: Product) {
+        selectedProducts.insert(product)
     }
 
-    func deselectProduct(_ selectedProduct: Product) {
-        selectedProducts.remove(selectedProduct)
+    func selectProducts(_ products: [Product]) {
+        selectedProducts.formUnion(products)
+    }
+
+    func deselectProduct(_ product: Product) {
+        selectedProducts.remove(product)
     }
 
     func deselectAll() {

@@ -283,7 +283,7 @@ final class OrderListViewModel {
         }
     }
 
-    func displayIPPFeedbackBannerIfEligible() -> SurveyViewController.Source? {
+    func feedbackBannerSurveySource() -> SurveyViewController.Source? {
         if isCODEnabled && isIPPSupportedCountry {
             let hasResults = IPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
 

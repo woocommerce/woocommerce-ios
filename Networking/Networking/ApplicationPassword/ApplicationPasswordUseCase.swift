@@ -199,7 +199,7 @@ private extension DefaultApplicationPasswordUseCase {
         }
     }
 
-    /// Deletes application password using WordPress.com authentication token
+    /// Deletes application password using UUID
     ///
     func deleteApplicationPassword(_ uuid: String) async throws {
         let request = RESTRequest(siteURL: siteAddress, method: .delete, path: Path.applicationPasswords + "/" + uuid)

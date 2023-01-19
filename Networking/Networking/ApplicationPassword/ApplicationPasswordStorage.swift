@@ -15,10 +15,11 @@ struct ApplicationPasswordStorage {
     ///
     var applicationPassword: ApplicationPassword? {
         guard let password = keychain.password,
-              let username = keychain.username else {
+              let username = keychain.username,
+              let uuid = keychain.uuid else {
             return nil
         }
-        return ApplicationPassword(wpOrgUsername: username, password: Secret(password))
+        return ApplicationPassword(wpOrgUsername: username, password: Secret(password), uuid: uuid)
     }
 
     /// Saves application password into keychain
@@ -28,6 +29,7 @@ struct ApplicationPasswordStorage {
     func saveApplicationPassword(_ password: ApplicationPassword) {
         keychain.username = password.wpOrgUsername
         keychain.password = password.password.secretValue
+        keychain.uuid = password.uuid
     }
 
     /// Removes the currently saved password from storage
@@ -36,6 +38,7 @@ struct ApplicationPasswordStorage {
         // Delete password from keychain
         keychain.username = nil
         keychain.password = nil
+        keychain.uuid = nil
     }
 }
 

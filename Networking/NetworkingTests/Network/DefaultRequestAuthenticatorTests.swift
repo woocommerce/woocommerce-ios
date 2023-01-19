@@ -70,7 +70,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
 
         do {
             let _ = try authenticator.authenticate(request)
-        } catch ApplicationPasswordAuthenticatorError.applicationPasswordNotAvailable {
+        } catch RequestAuthenticatorError.applicationPasswordNotAvailable {
             try await authenticator.generateApplicationPassword()
         }
 
@@ -98,7 +98,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let request = try restRequest.asURLRequest()
         do {
             let _ = try authenticator.authenticate(request)
-        } catch ApplicationPasswordAuthenticatorError.applicationPasswordNotAvailable {
+        } catch RequestAuthenticatorError.applicationPasswordNotAvailable {
             // Then
             do {
                 try await authenticator.generateApplicationPassword()

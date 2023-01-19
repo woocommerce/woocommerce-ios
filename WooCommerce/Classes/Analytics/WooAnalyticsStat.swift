@@ -235,6 +235,9 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Card Reader Connection Events
     //
+    case cardReaderSelectTypeShown = "card_present_select_reader_type_shown"
+    case cardReaderSelectTypeBuiltInTapped = "card_present_select_reader_type_built_in_tapped"
+    case cardReaderSelectTypeBluetoothTapped = "card_present_select_reader_type_bluetooth_tapped"
     case cardReaderDiscoveryTapped = "card_reader_discovery_tapped"
     case cardReaderDiscoveryFailed = "card_reader_discovery_failed"
     case cardReaderDiscoveredReader = "card_reader_discovery_reader_discovered"

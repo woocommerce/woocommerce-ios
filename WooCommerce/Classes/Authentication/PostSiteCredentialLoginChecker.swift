@@ -81,6 +81,7 @@ private extension PostSiteCredentialLoginChecker {
             case .failure(let error):
                 self?.analytics.track(event: .RESTAPILogin.loginSiteCredentialFailed(step: .userRole, error: error))
                 if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
+                    self?.analytics.track(event: .LoginUserRole.loginWithInsufficientRole(currentRoles: errorInfo.roles))
                     self?.showRoleErrorScreen(for: WooConstants.placeholderStoreID,
                                              errorInfo: errorInfo,
                                              in: navigationController,

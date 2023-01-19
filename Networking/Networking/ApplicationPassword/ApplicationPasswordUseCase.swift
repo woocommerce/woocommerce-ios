@@ -126,19 +126,20 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
 private extension DefaultApplicationPasswordUseCase {
     /// Creates application password using WordPress.com authentication token
     ///
-    /// - Returns: Application password as `String`
+    /// - Returns: Generated `ApplicationPassword`
     ///
-    func createApplicationPassword() async throws -> String {
+    func createApplicationPassword() async throws -> ApplicationPassword {
         let passwordName = await applicationPasswordName
 
         let parameters = [ParameterKey.name: passwordName]
         let request = RESTRequest(siteURL: siteAddress, method: .post, path: Path.applicationPasswords, parameters: parameters)
         return try await withCheckedThrowingContinuation { continuation in
-            network.responseData(for: request) { result in
+            network.responseData(for: request) { [weak self] result in
+                guard let self else { return }
                 switch result {
                 case .success(let data):
                     do {
-                        let mapper = ApplicationPasswordMapper()
+                        let mapper = ApplicationPasswordMapper(wpOrgUsername: self.username)
                         let password = try mapper.map(response: data)
                         continuation.resume(returning: password)
                     } catch {

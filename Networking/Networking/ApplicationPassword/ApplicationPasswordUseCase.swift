@@ -9,16 +9,7 @@ public enum ApplicationPasswordUseCaseError: Error {
     case applicationPasswordsDisabled
     case failedToConstructLoginOrAdminURLUsingSiteAddress
     case unauthorizedRequest
-}
-
-public struct ApplicationPassword {
-    /// WordPress org username that the application password belongs to
-    ///
-    let wpOrgUsername: String
-
-    /// Application password
-    ///
-    let password: Secret<String>
+    case unableToFindPasswordUUID
 }
 
 public protocol ApplicationPasswordUseCase {

@@ -158,15 +158,15 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         registerTableViewHeadersAndCells()
         configureTableView()
 
+        configureViewModel()
+        configureSyncingCoordinator()
+
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
             guard let survey = viewModel.displayIPPFeedbackBannerIfEligible() else {
                 return
             }
             IPPsurveyVariation = survey
         }
-
-        configureViewModel()
-        configureSyncingCoordinator()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -363,6 +363,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
         transitionToSyncingState()
         viewModel.hasErrorLoadingData = false
+        viewModel.updateBannerVisibility()
 
         let action = viewModel.synchronizationAction(
             siteID: siteID,

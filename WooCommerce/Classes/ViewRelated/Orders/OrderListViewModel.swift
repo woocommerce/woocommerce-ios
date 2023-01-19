@@ -174,13 +174,6 @@ final class OrderListViewModel {
 
         observeForegroundRemoteNotifications()
         bindTopBannerState()
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            syncIPPBannerVisibility()
-            loadOrdersBannerVisibility()
-        } else {
-            loadOrdersBannerVisibility()
-        }
     }
 
     func dismissOrdersBanner() {
@@ -194,6 +187,15 @@ final class OrderListViewModel {
         }
 
         stores.dispatch(action)
+    }
+
+    func updateBannerVisibility() {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            syncIPPBannerVisibility()
+            loadOrdersBannerVisibility()
+        } else {
+            loadOrdersBannerVisibility()
+        }
     }
 
     /// Starts the snapshotsProvider, logging any errors.

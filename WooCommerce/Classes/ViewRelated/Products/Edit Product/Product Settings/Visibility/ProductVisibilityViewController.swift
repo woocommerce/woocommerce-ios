@@ -13,6 +13,7 @@ final class ProductVisibilityViewController: UIViewController {
     private let onCompletion: Completion
 
     private let productSettings: ProductSettings
+    private let showsPasswordProtectedVisibility: Bool
 
     private var visibility: ProductVisibility = .public
 
@@ -25,9 +26,10 @@ final class ProductVisibilityViewController: UIViewController {
 
     /// Init
     ///
-    init(settings: ProductSettings, completion: @escaping Completion) {
+    init(settings: ProductSettings, showsPasswordProtectedVisibility: Bool, completion: @escaping Completion) {
         productSettings = settings
         onCompletion = completion
+        self.showsPasswordProtectedVisibility = showsPasswordProtectedVisibility
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -65,7 +67,7 @@ final class ProductVisibilityViewController: UIViewController {
     private func reloadSections() {
         if visibility == .passwordProtected {
             sections = [Section(rows: [.publicVisibility, .passwordVisibility, .passwordField, .privateVisibility])]
-        } else if productSettings.password != nil {
+        } else if showsPasswordProtectedVisibility {
             sections = [Section(rows: [.publicVisibility, .passwordVisibility, .privateVisibility])]
         } else {
             sections = [Section(rows: [.publicVisibility, .privateVisibility])]

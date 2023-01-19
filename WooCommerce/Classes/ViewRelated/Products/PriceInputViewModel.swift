@@ -88,11 +88,11 @@ final class PriceInputViewModel {
     var footerText: String {
         var footerData: [String] = []
 
-        if productListViewModel.variableProductsCount > 0 {
+        if productListViewModel.selectedVariableProductsCount > 0 {
             footerData.append(Localization.variationsWarning)
         }
 
-        let numberOfProducts = productListViewModel.selectedProductsCount - productListViewModel.variableProductsCount
+        let numberOfProducts = productListViewModel.selectedProductsCount - productListViewModel.selectedVariableProductsCount
         let numberOfProductsText = String.pluralize(numberOfProducts,
                                                     singular: Localization.productsNumberSingularFooter,
                                                     plural: Localization.productsNumberPluralFooter)

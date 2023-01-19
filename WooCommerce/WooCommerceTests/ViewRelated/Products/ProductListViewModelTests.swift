@@ -132,7 +132,7 @@ final class ProductListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.selectedProductsCount, 2)
-        XCTAssertEqual(viewModel.variableProductsCount, 1)
+        XCTAssertEqual(viewModel.selectedVariableProductsCount, 1)
         XCTAssertFalse(viewModel.onlyVariableProductsSelected)
 
         // When
@@ -140,7 +140,7 @@ final class ProductListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.selectedProductsCount, 1)
-        XCTAssertEqual(viewModel.variableProductsCount, 1)
+        XCTAssertEqual(viewModel.selectedVariableProductsCount, 1)
         XCTAssertTrue(viewModel.onlyVariableProductsSelected)
     }
 

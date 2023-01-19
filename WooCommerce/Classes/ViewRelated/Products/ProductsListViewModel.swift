@@ -23,7 +23,7 @@ class ProductListViewModel {
         selectedProducts.count
     }
 
-    var variableProductsCount: Int {
+    var selectedVariableProductsCount: Int {
         selectedProducts.filter({ $0.productType == .variable }).count
     }
 

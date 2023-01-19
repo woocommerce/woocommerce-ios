@@ -86,20 +86,29 @@ final class PriceInputViewModel {
     /// Returns the footer text to be displayed with information about the current bulk price and how many products will be updated.
     ///
     var footerText: String {
-        let numberOfProducts = productListViewModel.selectedProductsCount
+        var footerData: [String] = []
+
+        if productListViewModel.variableProductsCount > 0 {
+            footerData.append(Localization.variationsWarning)
+        }
+
+        let numberOfProducts = productListViewModel.selectedProductsCount - productListViewModel.variableProductsCount
         let numberOfProductsText = String.pluralize(numberOfProducts,
-                                                      singular: Localization.productsNumberSingularFooter,
-                                                      plural: Localization.productsNumberPluralFooter)
+                                                    singular: Localization.productsNumberSingularFooter,
+                                                    plural: Localization.productsNumberPluralFooter)
+        footerData.append(numberOfProductsText)
 
         switch productListViewModel.commonPriceForSelectedProducts {
         case .none:
-            return [Localization.currentPriceNoneFooter, numberOfProductsText].joined(separator: " ")
+            footerData.insert(Localization.currentPriceNoneFooter, at: 0)
         case .mixed:
-            return [Localization.currentPriceMixedFooter, numberOfProductsText].joined(separator: " ")
+            footerData.insert(Localization.currentPriceMixedFooter, at: 0)
         case let .value(price):
             let currentPriceText = String.localizedStringWithFormat(Localization.currentPriceFooter, formatPriceString(price))
-            return [currentPriceText, numberOfProductsText].joined(separator: " ")
+            footerData.insert(currentPriceText, at: 0)
         }
+
+        return footerData.joined(separator: " ")
     }
 
     /// It formats a price `String` according to the current price settings.
@@ -134,5 +143,7 @@ private extension PriceInputViewModel {
         static let currentPriceNoneFooter = NSLocalizedString("Current price is not set.",
                                                               comment: "Message in the footer of bulk price setting screen, when none of the"
                                                               + " products have price value.")
+        static let variationsWarning = NSLocalizedString("Prices for variations won't be updated.",
+                                                         comment: "Message in the footer of bulk price setting screen, when variable products are selected")
     }
 }

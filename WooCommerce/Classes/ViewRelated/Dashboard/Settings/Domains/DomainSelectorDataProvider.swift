@@ -48,13 +48,17 @@ final class FreeDomainSelectorDataProvider: DomainSelectorDataProvider {
 struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable {
     let name: String
     let attributedDetail: AttributedString?
+
+    // Properties for cart creation after a domain is selected.
     let productID: Int64
+    let supportsPrivacy: Bool
 
     init(domainSuggestion: PaidDomainSuggestion) {
         self.name = domainSuggestion.name
         // TODO: 8558 - attributed price info
         self.attributedDetail = .init("\(domainSuggestion.saleCost ?? "no sale") / \(domainSuggestion.cost) / \(domainSuggestion.term)")
         self.productID = domainSuggestion.productID
+        self.supportsPrivacy = domainSuggestion.supportsPrivacy
     }
 }
 

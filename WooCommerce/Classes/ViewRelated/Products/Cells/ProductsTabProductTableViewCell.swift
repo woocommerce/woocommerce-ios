@@ -158,6 +158,9 @@ private extension ProductsTabProductTableViewCell {
         //Background when selected
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = .listBackground
+
+        // Prevents overflow of selectedBackgroundView above dividers from adjacent cells
+        clipsToBounds = true
     }
 
     func configureNameLabel() {

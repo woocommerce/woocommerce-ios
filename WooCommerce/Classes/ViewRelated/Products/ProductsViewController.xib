@@ -40,10 +40,12 @@
                             </userDefinedRuntimeAttributes>
                         </tableView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pNN-uJ-nMs" userLabel="Bulk Edit Bar" customClass="ToolbarView" customModule="WooCommerce" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="764" width="414" height="50"/>
+                            <rect key="frame" x="0.0" y="765" width="414" height="49"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
-                                <constraint firstAttribute="height" priority="995" constant="50" id="mXV-oU-3bM"/>
+                                <constraint firstAttribute="height" priority="995" constant="49" id="mXV-oU-3bM">
+                                    <variation key="heightClass=compact" constant="32"/>
+                                </constraint>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xLN-As-fgq" userLabel="Safe Area Placeholder">

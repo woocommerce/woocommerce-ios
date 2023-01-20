@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 12.0
+It's now possible to bulk update product status and prices! Simply go to the Products tab and click on the multi select icon on the top to try it out. 
+
 ## 11.9
 Exciting news! It's possible to generate every variation combinations from your attributes. Please try it out and share your feedback!
 

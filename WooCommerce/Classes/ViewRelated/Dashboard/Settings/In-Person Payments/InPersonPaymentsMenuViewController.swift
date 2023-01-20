@@ -455,10 +455,9 @@ extension InPersonPaymentsMenuViewController: UITableViewDataSource {
         guard section == sections.firstIndex(where: { $0 == cardReadersSection }) else {
             return nil
         }
-
+        
         return inPersonPaymentsLearnMoreButton
     }
-
 }
 
 // MARK: - UITableViewDelegate

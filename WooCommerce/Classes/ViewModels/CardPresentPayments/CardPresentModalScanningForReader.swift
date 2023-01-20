@@ -21,27 +21,6 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
 
     let auxiliaryButtonTitle: String? = nil
 
-    var auxiliaryAttributedButtonTitle: NSAttributedString? {
-        let result = NSMutableAttributedString(
-            string: .localizedStringWithFormat(
-                Localization.learnMoreText,
-                Localization.learnMoreLink
-            ),
-            attributes: [.foregroundColor: UIColor.text]
-        )
-        result.replaceFirstOccurrence(
-            of: Localization.learnMoreLink,
-            with: NSAttributedString(
-                string: Localization.learnMoreLink,
-                attributes: [
-                    .foregroundColor: UIColor.accent,
-                    .underlineStyle: NSUnderlineStyle.single.rawValue
-                ]
-            ))
-        result.addAttribute(.font, value: UIFont.footnote, range: NSRange(location: 0, length: result.length))
-        return result
-    }
-
     let bottomTitle: String? = Localization.instruction
 
     var bottomSubtitle: String?
@@ -94,27 +73,6 @@ private extension CardPresentModalScanningForReader {
             "cardPresent.modalScanningForReader.cancelButton",
             value: "Cancel",
             comment: "Label for a cancel button"
-        )
-
-        static let learnMoreLink = NSLocalizedString(
-            "cardPresent.modalScanningForReader.learnMore.link",
-            value: "Learn more",
-            comment: """
-                     A label prompting users to learn more about In-Person Payments.
-                     This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-                     """
-        )
-
-        static let learnMoreText = NSLocalizedString(
-            "cardPresent.modalScanningForReader.learnMore.text",
-            value: "%1$@ about In‑Person Payments",
-            comment: """
-                     A label prompting users to learn more about In-Person Payments.
-                     The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-                     If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
-                     %1$@ is a placeholder that always replaced with \"Learn more\" string,
-                     which should be translated separately and considered part of this sentence.
-                     """
         )
     }
 }

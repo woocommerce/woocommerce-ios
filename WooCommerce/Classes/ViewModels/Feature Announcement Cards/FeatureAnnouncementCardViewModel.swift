@@ -106,8 +106,9 @@ class FeatureAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
     }
 
     private func storeDismissedSetting(remindLater: Bool) {
+        let remindAfterDays = remindLater ? 0 : nil
         let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: config.campaign,
-                                                                       remindAfterDays: nil,
+                                                                       remindAfterDays: remindAfterDays,
                                                                        onCompletion: nil)
         stores.dispatch(action)
         shouldBeVisible = false

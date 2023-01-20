@@ -595,7 +595,6 @@ private extension ProductsViewController {
         tableView.dataSource = self
         tableView.delegate = self
 
-        tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
 

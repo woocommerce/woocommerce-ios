@@ -194,7 +194,12 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
                                                             .decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
             ?? ""
 
-        let purchasable = try container.decode(Bool.self, forKey: .purchasable)
+        // Even though WooCommerce Core returns Bool values,
+        // some plugins alter the field value from Bool to Int (1 or 0)
+        let purchasable = container.failsafeDecodeIfPresent(targetType: Bool.self, forKey: .purchasable,
+                                                            alternativeTypes: [
+                                                            .integer(transform: { ($0 as NSNumber).boolValue })])
+            ?? true
         let virtual = try container.decode(Bool.self, forKey: .virtual)
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)
         let downloads = try container.decode([ProductDownload].self, forKey: .downloads)

@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "built-in-reader-preparing-light.pdf",
+      "filename" : "illustration - Preparing for payment-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "built-in-reader-preparing-dark.pdf",
+      "filename" : "illustration - Preparing for payment-dark.pdf",
       "idiom" : "universal"
     }
   ],

@@ -18,7 +18,7 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
         amount
     }
 
-    let image: UIImage = .paymentErrorImage
+    let image: UIImage
 
     let primaryButtonTitle: String? = Localization.dismiss
 
@@ -38,9 +38,13 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
         return topTitle + bottomTitle
     }
 
-    init(amount: String, errorDescription: String?, onDismiss: @escaping () -> Void) {
+    init(amount: String,
+         errorDescription: String?,
+         image: UIImage = .paymentErrorImage,
+         onDismiss: @escaping () -> Void) {
         self.amount = amount
         self.bottomTitle = errorDescription
+        self.image = image
         self.onDismiss = onDismiss
     }
 

@@ -75,6 +75,12 @@ extension WooAnalyticsEvent {
         case orderCreation = "order_creation"
         /// Shown in beta feature banner for coupon management.
         case couponManagement = "coupon_management"
+        /// Shown in IPP banner for eligible merchants with no IPP transactions.
+        case inPersonPaymentsCashOnDeliveryBanner
+        /// Shown in IPP banner for eligible merchants with a few IPP transactions.
+        case inPersonPaymentsFirstTransactionBanner
+        /// Shown in IPP banner for eligible merchants with a significant number of IPP transactions.
+        case inPersonPaymentsPowerUsersBanner
     }
 
     /// The action performed on the survey screen.
@@ -596,6 +602,54 @@ extension WooAnalyticsEvent {
 
     static func featureAnnouncementShown(source: Source) -> WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .featureAnnouncementShown, properties: [Source.key: source.rawValue])
+    }
+}
+
+// MARK: - InPersonPayments Feedback Banner
+extension WooAnalyticsEvent {
+    enum InPersonPaymentsFeedbackBanner {
+        /// Possible sources for the Feedback Banner
+        ///
+        enum Source: String {
+            static let key = "source"
+            
+            case orderList = "order_list"
+        }
+
+        /// Keys for the Feedback Banner properties
+        ///
+        private enum Keys {
+            static let campaign = "campaign"
+            static let source = "source"
+            static let remindLater = "remind_later"
+        }
+
+        static func shown(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .inPersonPaymentsBannerShown,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
+                              ])
+        }
+
+        static func ctaTapped(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .inPersonPaymentsBannerTapped,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
+                              ])
+        }
+
+        static func dismissed(source: Source,
+                              campaign: FeatureAnnouncementCampaign,
+                              remindLater: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .inPersonPaymentsBannerDismissed,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue,
+                                Keys.remindLater: remindLater
+                              ])
+        }
     }
 }
 

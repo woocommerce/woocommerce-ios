@@ -877,9 +877,13 @@ private extension OrderListViewController {
         static let dismissMessage = NSLocalizedString("No worries! You can always go to Settings in the Menu to send us feedback.",
                     comment: "Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed")
 
-        static let remindMeLater = NSLocalizedString("Remind me later", comment: "")
+        static let remindMeLater = NSLocalizedString("Remind me later",
+                                                     comment: "Title of the button shown when the In-Person Payments feedback banner is dismissed."
+        )
 
-        static let dontShowAgain = NSLocalizedString("Don't show again", comment: "")
+        static let dontShowAgain = NSLocalizedString("Don't show again",
+                                                     comment: "Title of the button shown when the In-Person Payments feedback banner is dismissed."
+        )
 
         static func markCompletedNoticeTitle(orderID: Int64) -> String {
             let format = NSLocalizedString(

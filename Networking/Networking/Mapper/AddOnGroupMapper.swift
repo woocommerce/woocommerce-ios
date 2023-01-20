@@ -11,7 +11,11 @@ struct AddOnGroupMapper: Mapper {
     func map(response: Data) throws -> [AddOnGroup] {
         let decoder = JSONDecoder()
         decoder.userInfo = [.siteID: siteID]
-        return try decoder.decode(AddOnGroupEnvelope.self, from: response).data
+        do {
+            return try decoder.decode(AddOnGroupEnvelope.self, from: response).data
+        } catch {
+            return try decoder.decode([AddOnGroup].self, from: response)
+        }
     }
 }
 

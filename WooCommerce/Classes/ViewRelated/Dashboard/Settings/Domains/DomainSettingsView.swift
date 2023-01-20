@@ -40,7 +40,9 @@ struct DomainSettingsView: View {
                 }
 
                 if viewModel.hasDomainCredit {
-                    // TODO: 8558 - domain credit UI with redemption action
+                    DomainSettingsDomainCreditView() {
+                        addDomain()
+                    }
                 }
 
                 if viewModel.domains.isNotEmpty {

@@ -370,15 +370,15 @@ extension OrderListViewModel {
         stores.dispatch(updateBannerVisibility)
     }
 
-    func remindMeLaterTapped() {
+    func IPPFeedbackBannerRemindMeLaterTapped() {
         dismissIPPFeedbackBanner(remindAfterDays: Constants.remindIPPBannerDismissalAfterDays)
     }
 
-    func dontShowAgainTapped() {
+    func IPPFeedbackBannerDontShowAgainTapped() {
         dismissIPPFeedbackBanner(remindAfterDays: nil)
     }
 
-    func IPPFeedbackWasDismissed() {
+    func IPPFeedbackBannerWasDismissed() {
         dismissIPPFeedbackBanner(remindAfterDays: nil)
     }
 }

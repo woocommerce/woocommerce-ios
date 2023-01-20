@@ -318,6 +318,17 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// and can proceed to the self-hosted username and password view controller.
     ///
     func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void) {
+        if let site = siteInfo {
+            analytics.track(event: .Login.siteInfoFetched(
+                exists: site.exists,
+                hasWordPress: site.isWP,
+                isWPCom: site.isWPCom,
+                isJetpackInstalled: site.hasJetpack,
+                isJetpackActive: site.isJetpackActive,
+                isJetpackConnected: site.isJetpackConnected,
+                urlAfterRedirects: site.url
+            ))
+        }
 
         /// WordPress must be present.
         guard let site = siteInfo, site.isWP else {

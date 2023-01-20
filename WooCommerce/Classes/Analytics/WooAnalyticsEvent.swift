@@ -1896,3 +1896,64 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - REST API Login
+//
+extension WooAnalyticsEvent {
+    enum Login {
+        enum Key: String {
+            case step
+            case currentRoles = "current_roles"
+            case exists
+            case hasWordPress = "is_wordpress"
+            case isWPCom = "is_wp_com"
+            case isJetpackInstalled = "has_jetpack"
+            case isJetpackActive = "is_jetpack_active"
+            case isJetpackConnected = "is_jetpack_connected"
+            case urlAfterRedirects = "url_after_redirects"
+        }
+
+        enum LoginSiteCredentialStep: String {
+            case authentication
+            case applicationPasswordGeneration = "application_password_generation"
+            case wooStatus = "woo_status"
+            case userRole = "user_role"
+        }
+
+        /// Tracks when the user attempts to log in with insufficient roles.
+        ///
+        static func insufficientRole(currentRoles: [String]) -> WooAnalyticsEvent {
+            let roles = String(currentRoles.sorted().joined(by: ","))
+            return WooAnalyticsEvent(statName: .loginInsufficientRole,
+                                     properties: [Key.currentRoles.rawValue: roles])
+        }
+
+        /// Tracks when the login with site credentials failed.
+        ///
+        static func siteCredentialFailed(step: LoginSiteCredentialStep, error: Error?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsFailed,
+                              properties: [Key.step.rawValue: step.rawValue],
+                              error: error)
+        }
+
+        /// Tracks when site info is fetched during site address login.
+        ///
+        static func siteInfoFetched(exists: Bool,
+                                    hasWordPress: Bool,
+                                    isWPCom: Bool,
+                                    isJetpackInstalled: Bool,
+                                    isJetpackActive: Bool,
+                                    isJetpackConnected: Bool,
+                                    urlAfterRedirects: String) -> WooAnalyticsEvent {
+            .init(statName: .loginSiteAddressSiteInfoFetched, properties: [
+                Key.exists.rawValue: exists,
+                Key.hasWordPress.rawValue: hasWordPress,
+                Key.isWPCom.rawValue: isWPCom,
+                Key.isJetpackInstalled.rawValue: isJetpackInstalled,
+                Key.isJetpackActive.rawValue: isJetpackActive,
+                Key.isJetpackConnected.rawValue: isJetpackConnected,
+                Key.urlAfterRedirects.rawValue: urlAfterRedirects
+            ])
+        }
+    }
+}

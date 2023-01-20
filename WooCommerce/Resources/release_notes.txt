@@ -1,3 +1,1 @@
-- [**] Adds a feature of bulk updating products from the product's list. [https://github.com/woocommerce/woocommerce-ios/pull/8704]
-- [internal] Store creation flow now includes 3 profiler questions: store category, selling status, and store country. [https://github.com/woocommerce/woocommerce-ios/pull/8667]
-
+It's now possible to bulk update product status and prices! Simply go to the Products tab and click on the multi select icon on the top to try it out.

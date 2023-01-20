@@ -5,10 +5,24 @@ import MessageUI
 import WooFoundation
 import protocol Storage.StorageManagerType
 
+
+/// Protocol to abstract the `LegacyCollectOrderPaymentUseCase`.
+/// Currently only used to facilitate unit tests.
+///
+protocol LegacyCollectOrderPaymentProtocol {
+    /// Starts the collect payment flow.
+    ///
+    ///
+    /// - Parameter onCollect: Closure Invoked after the collect process has finished.
+    /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
+    /// - Parameter onCancel: Closure invoked after the flow is cancelled
+    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCancel: @escaping () -> (), onCompleted: @escaping () -> ())
+}
+
 /// Use case to collect payments from an order.
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
-final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
+final class LegacyCollectOrderPaymentUseCase: NSObject, LegacyCollectOrderPaymentProtocol {
     /// Currency Formatter
     ///
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
@@ -375,7 +389,8 @@ private extension LegacyCollectOrderPaymentUseCase {
     func trackPaymentCancelation() {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                                          countryCode: configuration.countryCode,
-                                                                                         cardReaderModel: connectedReader?.readerType.model ?? ""))
+                                                                                         cardReaderModel: connectedReader?.readerType.model ?? "",
+                                                                                         cancellationSource: .other))
     }
 
     /// Allow merchants to print or email the payment receipt.
@@ -385,17 +400,17 @@ private extension LegacyCollectOrderPaymentUseCase {
         alerts.success(printReceipt: { [order, configuration, weak self] in
             guard let self = self else { return }
 
-            // Inform about flow completion.
-            onCompleted()
-
             // Delegate print action
-            ReceiptActionCoordinator.printReceipt(for: order,
-                                                  params: receiptParameters,
-                                                  countryCode: configuration.countryCode,
-                                                  cardReaderModel: self.connectedReader?.readerType.model,
-                                                  stores: self.stores,
-                                                  analytics: self.analytics)
-
+            Task { @MainActor in
+                await ReceiptActionCoordinator.printReceipt(for: order,
+                                                      params: receiptParameters,
+                                                      countryCode: configuration.countryCode,
+                                                      cardReaderModel: self.connectedReader?.readerType.model,
+                                                      stores: self.stores,
+                                                      analytics: self.analytics)
+                // Inform about flow completion.
+                onCompleted()
+            }
         }, emailReceipt: { [order, analytics, paymentOrchestrator, configuration, weak self] in
             guard let self = self else { return }
 

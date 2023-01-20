@@ -470,6 +470,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
+        try container.encode(productID, forKey: .productID)
+
         try container.encode(images, forKey: .images)
 
         try container.encode(name, forKey: .name)

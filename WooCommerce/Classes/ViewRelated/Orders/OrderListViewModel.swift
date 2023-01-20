@@ -53,6 +53,47 @@ final class OrderListViewModel {
     ///
     private var isAppActive: Bool = true
 
+    private var isCODEnabled: Bool {
+        guard let codGateway = storageManager.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: "cod")?.toReadOnly() else {
+            return false
+        }
+        return codGateway.enabled
+    }
+
+    private var isIPPSupportedCountry: Bool {
+        CardPresentConfigurationLoader().configuration.isSupportedCountry
+    }
+
+    /// Results controller that fetches any IPP transactions via WooCommerce Payments
+    ///
+    private lazy var IPPOrdersResultsController: ResultsController<StorageOrder> = {
+        let paymentGateway = Constants.paymentMethodID
+        let predicate = NSPredicate(
+            format: "siteID == %lld AND paymentMethodID == %@",
+            argumentArray: [siteID, paymentGateway]
+        )
+        return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    /// Results controller that fetches IPP transactions via WooCommerce Payments, within the last 30 days
+    ///
+    private lazy var recentIPPOrdersResultsController: ResultsController<StorageOrder> = {
+        let today = Date()
+        let paymentGateway = Constants.paymentMethodID
+        let thirtyDaysBeforeToday = Calendar.current.date(
+            byAdding: .day,
+            value: -30,
+            to: today
+        ) ?? Date()
+
+        let predicate = NSPredicate(
+            format: "siteID == %lld AND paymentMethodID == %@ AND datePaid >= %@",
+            argumentArray: [siteID, paymentGateway, thirtyDaysBeforeToday]
+        )
+
+        return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
     ///
     /// The `OrderStatus` data is fetched from the API by `OrdersTabbedViewModel`.
@@ -90,6 +131,11 @@ final class OrderListViewModel {
     ///
     @Published var hideOrdersBanners: Bool = true
 
+    /// If true, no IPP feedback banner will be shown as the user has told us that they are not interested in this information.
+    /// It is persisted through app sessions.
+    /// 
+    @Published var hideIPPFeedbackBanner: Bool = true
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -102,6 +148,10 @@ final class OrderListViewModel {
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) && !hideIPPFeedbackBanner {
+            topBanner = .IPPFeedback
+        }
     }
 
     deinit {
@@ -124,7 +174,6 @@ final class OrderListViewModel {
 
         observeForegroundRemoteNotifications()
         bindTopBannerState()
-        loadOrdersBannerVisibility()
     }
 
     func dismissOrdersBanner() {
@@ -138,6 +187,15 @@ final class OrderListViewModel {
         }
 
         stores.dispatch(action)
+    }
+
+    func updateBannerVisibility() {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            syncIPPBannerVisibility()
+            loadOrdersBannerVisibility()
+        } else {
+            loadOrdersBannerVisibility()
+        }
     }
 
     /// Starts the snapshotsProvider, logging any errors.
@@ -161,6 +219,30 @@ final class OrderListViewModel {
         }
 
         stores.dispatch(action)
+    }
+
+    // This is a temporary method in order to update the IPP feedback status to `.pending`, and
+    // then load feedback visibility. We need to reset the banner status on UserDefaults for
+    // the banner to appear again for testing purposes.
+    private func syncIPPBannerVisibility() {
+        let action = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .pending) { _ in
+            self.loadIPPFeedbackBannerVisibility()
+            self.fetchIPPTransactions()
+        }
+        stores.dispatch(action)
+    }
+
+    private func loadIPPFeedbackBannerVisibility() {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .IPP) { [weak self] result in
+            switch result {
+            case .success(let visible):
+                self?.hideIPPFeedbackBanner = !visible
+            case .failure(let error):
+                self?.hideIPPFeedbackBanner = true
+                ServiceLocator.crashLogging.logError(error)
+            }
+        }
+        self.stores.dispatch(action)
     }
 
     @objc private func handleAppDeactivation() {
@@ -190,6 +272,39 @@ final class OrderListViewModel {
                                  pageSize: pageSize,
                                  reason: reason,
                                  completionHandler: completionHandler)
+    }
+
+    private func fetchIPPTransactions() {
+        do {
+            try IPPOrdersResultsController.performFetch()
+            try recentIPPOrdersResultsController.performFetch()
+        } catch {
+            DDLogError("Error fetching IPP transactions: \(error)")
+        }
+    }
+
+    func feedbackBannerSurveySource() -> SurveyViewController.Source? {
+        if isCODEnabled && isIPPSupportedCountry {
+            let hasResults = IPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
+
+            /// In order to filter WCPay transactions processed through IPP within the last 30 days,
+            /// we check if these contain `receipt_url` in their metadata, unlike those processed through a website,
+            /// which doesn't
+            ///
+            let IPPTransactionsFound = recentIPPOrdersResultsController.fetchedObjects.filter({
+                $0.customFields.contains(where: {$0.key == Constants.receiptURLKey }) &&
+                $0.paymentMethodTitle == Constants.paymentMethodTitle})
+            let IPPresultsCount = IPPTransactionsFound.count
+
+            if !hasResults {
+                return .IPP_COD
+            } else if IPPresultsCount < Constants.numberOfTransactions {
+                return .IPP_firstTransaction
+            } else if IPPresultsCount >= Constants.numberOfTransactions {
+                return .IPP_powerUsers
+            }
+        }
+        return nil
     }
 
     private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {
@@ -280,18 +395,18 @@ extension OrderListViewModel {
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
 
-        Publishers.CombineLatest(errorState, $hideOrdersBanners)
-            .map { hasError, hasDismissedOrdersBanners  -> TopBanner in
+        Publishers.CombineLatest3(errorState, $hideIPPFeedbackBanner, $hideOrdersBanners)
+            .map { hasError, hasDismissedIPPFeedbackBanner, hasDismissedOrdersBanners -> TopBanner in
 
-                if hasError {
+                guard !hasError else {
                     return .error
                 }
 
-                if hasDismissedOrdersBanners {
-                    return .none
+                guard hasDismissedIPPFeedbackBanner else {
+                    return .IPPFeedback
                 }
 
-                return .orderCreation
+                return hasDismissedOrdersBanners ? .none : .orderCreation
             }
             .assign(to: &$topBanner)
     }
@@ -334,6 +449,17 @@ extension OrderListViewModel {
     enum TopBanner {
         case error
         case orderCreation
+        case IPPFeedback
         case none
+    }
+}
+
+// MARK: IPP feedback constants
+private extension OrderListViewModel {
+    enum Constants {
+        static let paymentMethodID = "woocommerce_payments"
+        static let paymentMethodTitle = "WooCommerce In-Person Payments"
+        static let receiptURLKey = "receipt_url"
+        static let numberOfTransactions = 10
     }
 }

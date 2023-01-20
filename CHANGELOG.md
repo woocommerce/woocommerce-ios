@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 11.9
+Exciting news! It's possible to generate every variation combinations from your attributes. Please try it out and share your feedback!
+
 ## 11.8
 You’ll notice some nice visual changes to the look of the app! Take a look and please share your feedback – more updates to come in the next few weeks!
 

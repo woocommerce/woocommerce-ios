@@ -450,7 +450,7 @@ extension UnderlyingError: LocalizedError {
                                      "the device does not meet minimum requirements.")
         case .commandNotAllowedDuringCall:
             return NSLocalizedString("The built-in reader cannot be used during a phone call. Please try again after " +
-                                     "you finish your call",
+                                     "you finish your call.",
                                      comment: "Error message shown when the built-in reader cannot be used because " +
                                      "there is a call in progress")
         case .invalidAmount:

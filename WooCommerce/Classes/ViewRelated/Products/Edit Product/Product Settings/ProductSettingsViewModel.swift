@@ -44,7 +44,8 @@ final class ProductSettingsViewModel {
             sections = Self.configureSections(productSettings,
                                               productType: product.productType)
             /// If nil, we fetch the password from site post API because it was never fetched
-            if password == nil {
+            /// Skip this if the user is not authenticated with WPCom.
+            if password == nil && ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
                 retrieveProductPassword(siteID: product.siteID, productID: product.productID) { [weak self] (password, error) in
                     guard let self = self else {
                         return

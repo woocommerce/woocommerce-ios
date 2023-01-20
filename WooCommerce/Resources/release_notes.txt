@@ -1,3 +1,1 @@
-We've made it so you can generate all possible variations for a product's attributes!
-
-For mobile payments, we fixed the card reader manual links so you can have the resources you need when using a card reader.
+Exciting news! It's possible to generate every variation combination from your attributes. Please try it out and share your feedback!

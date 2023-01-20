@@ -48,32 +48,16 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
     }
 
     func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        let errorDescription: String?
-        if let error = error as? CardReaderServiceError {
-            switch error {
-            case .connection(let underlyingError),
-                    .discovery(let underlyingError),
-                    .disconnection(let underlyingError),
-                    .intentCreation(let underlyingError),
-                    .paymentMethodCollection(let underlyingError),
-                    .paymentCapture(let underlyingError),
-                    .paymentCancellation(let underlyingError),
-                    .softwareUpdate(let underlyingError, _):
-                errorDescription = Localization.errorDescription(underlyingError: underlyingError)
-            default:
-                errorDescription = error.errorDescription
-            }
-        } else {
-            errorDescription = error.localizedDescription
-        }
-        return CardPresentModalError(errorDescription: errorDescription,
+        return CardPresentModalError(errorDescription: builtInReaderDescription(for: error),
                                      transactionType: .collectPayment,
                                      primaryAction: tryAgain,
                                      dismissCompletion: dismissCompletion)
     }
 
     func nonRetryableError(error: Error, dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalNonRetryableError(amount: amount, error: error, onDismiss: dismissCompletion)
+        CardPresentModalNonRetryableError(amount: amount,
+                                          errorDescription: builtInReaderDescription(for: error),
+                                          onDismiss: dismissCompletion)
     }
 
     func retryableError(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
@@ -86,6 +70,26 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
 }
 
 private extension BuiltInCardReaderPaymentAlertsProvider {
+    func builtInReaderDescription(for error: Error) -> String? {
+        if let error = error as? CardReaderServiceError {
+            switch error {
+            case .connection(let underlyingError),
+                    .discovery(let underlyingError),
+                    .disconnection(let underlyingError),
+                    .intentCreation(let underlyingError),
+                    .paymentMethodCollection(let underlyingError),
+                    .paymentCapture(let underlyingError),
+                    .paymentCancellation(let underlyingError),
+                    .softwareUpdate(let underlyingError, _):
+                return Localization.errorDescription(underlyingError: underlyingError)
+            default:
+                return error.errorDescription
+            }
+        } else {
+            return error.localizedDescription
+        }
+    }
+
     enum Localization {
         static func errorDescription(underlyingError: UnderlyingError) -> String? {
             switch underlyingError {
@@ -102,6 +106,10 @@ private extension BuiltInCardReaderPaymentAlertsProvider {
                     "Sorry, this payment couldn’t be processed",
                     comment: "Error message when the card reader service experiences an unexpected internal service error."
                 )
+            case .notConnectedToReader:
+                return NSLocalizedString(
+                    "The payment was interrupted and cannot be continued. You can retry the payment from the order screen.",
+                    comment: "Error shown when the built-in card reader payment is interrupted by activity on the phone")
             default:
                 return underlyingError.errorDescription
             }

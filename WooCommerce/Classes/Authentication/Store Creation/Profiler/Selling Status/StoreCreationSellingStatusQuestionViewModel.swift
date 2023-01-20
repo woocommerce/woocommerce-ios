@@ -5,14 +5,15 @@ import Foundation
 @MainActor
 final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
     /// Selling status options.
+    /// Its raw value is the value to be sent to the backend.
     /// https://github.com/Automattic/woocommerce.com/blob/trunk/themes/woo/start/config/options.json
-    enum SellingStatus: Equatable {
+    enum SellingStatus: String {
         /// Just starting my business.
-        case justStarting
+        case justStarting = "im_just_starting_my_business"
         /// Already selling, but not online.
-        case alreadySellingButNotOnline
+        case alreadySellingButNotOnline = "im_already_selling_but_not_online"
         /// Already selling online.
-        case alreadySellingOnline
+        case alreadySellingOnline = "im_already_selling_online"
     }
 
     let topHeader: String
@@ -30,11 +31,11 @@ final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQu
     /// Set to `true` when the user selects the selling status as "I am already selling online".
     @Published private(set) var isAlreadySellingOnline: Bool = false
 
-    private let onContinue: () -> Void
+    private let onContinue: (StoreCreationSellingStatusAnswer?) -> Void
     private let onSkip: () -> Void
 
     init(storeName: String,
-         onContinue: @escaping () -> Void,
+         onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void,
          onSkip: @escaping () -> Void) {
         self.topHeader = storeName
         self.onContinue = onContinue
@@ -48,7 +49,7 @@ final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQu
 
 extension StoreCreationSellingStatusQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
     func continueButtonTapped() async {
-        guard selectedStatus != nil else {
+        guard let selectedStatus else {
             return onSkip()
         }
         guard selectedStatus != .alreadySellingOnline else {
@@ -56,7 +57,7 @@ extension StoreCreationSellingStatusQuestionViewModel: OptionalStoreCreationProf
             return
         }
         // TODO: submission API.
-        onContinue()
+        onContinue(.init(sellingStatus: selectedStatus, sellingPlatforms: nil))
     }
 
     func skipButtonTapped() {

@@ -13,7 +13,12 @@ public class SiteSettingsRemote: Remote {
     ///
     public func loadGeneralSettings(for siteID: Int64, completion: @escaping ([SiteSetting]?, Error?) -> Void) {
         let path = Constants.siteSettingsPath + Constants.generalSettingsGroup
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = SiteSettingsMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -27,7 +32,12 @@ public class SiteSettingsRemote: Remote {
     ///
     public func loadProductSettings(for siteID: Int64, completion: @escaping ([SiteSetting]?, Error?) -> Void) {
         let path = Constants.siteSettingsPath + Constants.productSettingsGroup
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = SiteSettingsMapper(siteID: siteID, settingsGroup: SiteSettingGroup.product)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -43,7 +53,12 @@ public class SiteSettingsRemote: Remote {
     ///
     public func loadSetting(for siteID: Int64, settingGroup: SiteSettingGroup, settingID: String, completion: @escaping (Result<SiteSetting, Error>) -> Void) {
         let path = Constants.siteSettingsPath + settingGroup.rawValue + "/" + settingID
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -65,7 +80,12 @@ public class SiteSettingsRemote: Remote {
                               completion: @escaping (Result<SiteSetting, Error>) -> Void) {
         let parameters: [String: Any] = [Constants.valueParameter: value]
         let path = Constants.siteSettingsPath + settingGroup.rawValue + "/" + settingID
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .put,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
 
         enqueue(request, mapper: mapper, completion: completion)

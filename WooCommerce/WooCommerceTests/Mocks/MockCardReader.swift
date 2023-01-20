@@ -44,4 +44,15 @@ struct MockCardReader {
                    readerType: .wisepad3,
                    locationId: nil)
     }
+
+    static func appleBuiltIn() -> CardReader {
+        CardReader(serial: "APPLE-BUILT-IN-SIMULATOR-1",
+                   vendorIdentifier: "SIMULATOR",
+                   name: "Simulated Apple Built In Reader",
+                   status: .init(connected: false, remembered: false),
+                   softwareVersion: nil,
+                   batteryLevel: nil,
+                   readerType: .appleBuiltIn,
+                   locationId: "st_simulated")
+    }
 }

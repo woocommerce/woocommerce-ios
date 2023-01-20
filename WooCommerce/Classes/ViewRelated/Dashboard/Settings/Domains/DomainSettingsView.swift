@@ -2,8 +2,9 @@ import SwiftUI
 
 /// Hosting controller that wraps the `DomainSettingsView` view.
 final class DomainSettingsHostingController: UIHostingController<DomainSettingsView> {
-    init(viewModel: DomainSettingsViewModel) {
-        super.init(rootView: DomainSettingsView(viewModel: viewModel))
+    init(viewModel: DomainSettingsViewModel, addDomain: @escaping () -> Void) {
+        super.init(rootView: DomainSettingsView(viewModel: viewModel,
+                                                addDomain: addDomain))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -20,9 +21,11 @@ final class DomainSettingsHostingController: UIHostingController<DomainSettingsV
 /// Shows a site's domains with actions to add a domain or redeem a domain credit.
 struct DomainSettingsView: View {
     @ObservedObject private var viewModel: DomainSettingsViewModel
+    private let addDomain: () -> Void
 
-    init(viewModel: DomainSettingsViewModel) {
+    init(viewModel: DomainSettingsViewModel, addDomain: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.addDomain = addDomain
     }
 
     var body: some View {
@@ -33,6 +36,7 @@ struct DomainSettingsView: View {
                         FreeStagingDomainView(domain: freeDomain)
                         Spacer()
                     }
+                    .padding(.horizontal, insets: Layout.defaultHorizontalPadding)
                 }
 
                 if viewModel.hasDomainCredit {
@@ -40,7 +44,9 @@ struct DomainSettingsView: View {
                 }
 
                 if viewModel.domains.isNotEmpty {
-                    // TODO: 8558 - show domain list with search domain action
+                    DomainSettingsListView(domains: viewModel.domains) {
+                        addDomain()
+                    }
                 }
             }
             .padding(Layout.contentPadding)
@@ -52,7 +58,7 @@ struct DomainSettingsView: View {
                         .frame(height: Layout.dividerHeight)
                         .foregroundColor(Color(.separator))
                     Button(Localization.searchDomainButton) {
-                        // TODO: 8558 - search domain action
+                        addDomain()
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(Layout.bottomContentPadding)
@@ -82,7 +88,8 @@ private extension DomainSettingsView {
     enum Layout {
         static let dividerHeight: CGFloat = 1
         static let bottomContentPadding: EdgeInsets = .init(top: 10, leading: 16, bottom: 10, trailing: 16)
-        static let contentPadding: EdgeInsets = .init(top: 39, leading: 16, bottom: 16, trailing: 16)
+        static let contentPadding: EdgeInsets = .init(top: 39, leading: 0, bottom: 16, trailing: 0)
+        static let defaultHorizontalPadding: EdgeInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
         static let contentSpacing: CGFloat = 36
     }
 }
@@ -131,7 +138,8 @@ struct DomainSettingsView_Previews: PreviewProvider {
                                     .init(name: "duo.test", isPrimary: true, renewalDate: .now)
                                 ]),
                                 // The site has domain credit.
-                                sitePlanResult: .success(.init(hasDomainCredit: true)))))
+                                sitePlanResult: .success(.init(hasDomainCredit: true)))),
+                                   addDomain: {})
             }
 
             NavigationView {
@@ -142,7 +150,8 @@ struct DomainSettingsView_Previews: PreviewProvider {
                                 domainsResult: .success([
                                     .init(name: "free.test", isPrimary: true)
                                 ]),
-                                sitePlanResult: .success(.init(hasDomainCredit: true)))))
+                                sitePlanResult: .success(.init(hasDomainCredit: true)))),
+                                   addDomain: {})
             }
         }
     }

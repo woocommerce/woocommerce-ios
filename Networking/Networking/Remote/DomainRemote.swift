@@ -7,6 +7,15 @@ public protocol DomainRemoteProtocol {
     /// - Returns: The result of free domain suggestions.
     func loadFreeDomainSuggestions(query: String) async throws -> [FreeDomainSuggestion]
 
+    /// Loads domain suggestions that are not free based on the query.
+    /// - Parameter query: What the domain suggestions are based on.
+    /// - Returns: A list of paid domain suggestions.
+    func loadPaidDomainSuggestions(query: String) async throws -> [PaidDomainSuggestion]
+
+    /// Loads WPCOM domain products for domain cost and sale info in `loadPaidDomainSuggestions`.
+    /// - Returns: A list of domain products.
+    func loadDomainProducts() async throws -> [DomainProduct]
+
     /// Loads all domains for a site.
     /// - Parameter siteID: ID of the site to load the domains for.
     /// - Returns: A list of domains.
@@ -25,6 +34,26 @@ public class DomainRemote: Remote, DomainRemoteProtocol {
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         return try await enqueue(request)
+    }
+
+    public func loadPaidDomainSuggestions(query: String) async throws -> [PaidDomainSuggestion] {
+        let path = Path.domainSuggestions
+        let parameters: [String: Any] = [
+            ParameterKey.query: query,
+            ParameterKey.quantity: Defaults.domainSuggestionsQuantity
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
+        return try await enqueue(request)
+    }
+
+    public func loadDomainProducts() async throws -> [DomainProduct] {
+        let path = Path.domainProducts
+        let parameters: [String: Any] = [
+            ParameterKey.domainProductType: "domains"
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
+        let productsByName: [String: DomainProduct] = try await enqueue(request)
+        return Array(productsByName.values)
     }
 
     public func loadDomains(siteID: Int64) async throws -> [SiteDomain] {
@@ -50,6 +79,41 @@ public struct FreeDomainSuggestion: Decodable, Equatable {
     private enum CodingKeys: String, CodingKey {
         case name = "domain_name"
         case isFree = "is_free"
+    }
+}
+
+/// Necessary data for a paid domain suggestion.
+public struct PaidDomainSuggestion: Decodable, Equatable {
+    /// Domain name.
+    public let name: String
+    /// WPCOM product ID.
+    public let productID: Int64
+    /// Whether there is privacy support. Used when creating a cart with a domain product.
+    public let supportsPrivacy: Bool
+
+    private enum CodingKeys: String, CodingKey {
+        case name = "domain_name"
+        case productID = "product_id"
+        case supportsPrivacy = "supports_privacy"
+    }
+}
+
+/// Necessary data for a WPCOM domain product.
+public struct DomainProduct: Decodable, Equatable {
+    /// WPCOM product ID.
+    public let productID: Int64
+    /// The duration of the product, localized on the backend (e.g. "year").
+    public let term: String
+    /// Cost string including the currency.
+    public let cost: String
+    /// Optional sale cost string including the currency.
+    public let saleCost: String?
+
+    private enum CodingKeys: String, CodingKey {
+        case productID = "product_id"
+        case term = "product_term"
+        case cost = "combined_cost_display"
+        case saleCost = "combined_sale_cost_display"
     }
 }
 
@@ -114,10 +178,13 @@ private extension DomainRemote {
         static let quantity = "quantity"
         /// Whether to restrict suggestions to only wordpress.com subdomains. If `true`, only `quantity` and `query` parameters are respected.
         static let wordPressDotComSubdomainsOnly = "only_wordpressdotcom"
+        /// The type of WPCOM products.
+        static let domainProductType = "type"
     }
 
     enum Path {
         static let domainSuggestions = "domains/suggestions"
+        static let domainProducts = "products"
         static let domains = "domains"
     }
 }

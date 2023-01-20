@@ -796,7 +796,13 @@ private extension OrderListViewController {
     private func createIPPFeedbackTopBanner() -> TopBannerView {
         let shareIPPFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.shareFeedbackButton, action: { [weak self] _ in
             self?.displayIPPFeedbackBannerSurvey()
-            // We dismiss the banner at this point as we cannot know if the user successfully submitted it
+            ServiceLocator.analytics.track(
+                event: .InPersonPaymentsFeedbackBanner.ctaTapped(
+                    source: .orderList,
+                    campaign: .inPersonPaymentsCashOnDelivery // TODO: Campaign must be variable
+                ))
+            // We dismiss the banner at this point as we cannot know if the user successfully submitted it,
+            // but we can't track the event as dismissed
             self?.viewModel.dismissIPPFeedbackBanner(remindAfterDays: nil)
         })
 
@@ -829,12 +835,24 @@ private extension OrderListViewController {
         )
 
         let remindMeLaterAction = UIAlertAction( title: Localization.remindMeLater, style: .default) { [weak self] _ in
-            self?.viewModel.remindMeLaterTapped()
+            //self?.viewModel.remindMeLaterTapped() TODO: Uncomment before merge
+            ServiceLocator.analytics.track(
+                event: .InPersonPaymentsFeedbackBanner.dismissed(
+                    source: .orderList,
+                    campaign: .inPersonPaymentsCashOnDelivery, // // TODO: Campaign must be variable
+                    remindLater: true)
+            )
         }
         actionSheet.addAction(remindMeLaterAction)
 
         let dontShowAgainAction = UIAlertAction( title: Localization.dontShowAgain, style: .default) { [weak self] _ in
-            self?.viewModel.dontShowAgainTapped()
+            //self?.viewModel.dontShowAgainTapped() // TODO: Uncomment before merge
+            ServiceLocator.analytics.track(
+                event: .InPersonPaymentsFeedbackBanner.dismissed(
+                    source: .orderList,
+                    campaign: .inPersonPaymentsCashOnDelivery, // TODO: Campaign must be variable
+                    remindLater: false)
+            )
         }
         actionSheet.addAction(dontShowAgainAction)
 

@@ -309,6 +309,12 @@ final class OrderListViewModel {
              } else if IPPresultsCount >= Constants.numberOfTransactions {
                  print(">= 10 transactions within 30 days. Banner 3 shown")
              }
+            // TODO: Move to view controller
+            // TODO: Campaign must be variable
+            ServiceLocator.analytics.track(event: .InPersonPaymentsFeedbackBanner.shown(
+                source: .orderList,
+                campaign: .inPersonPaymentsCashOnDelivery)
+            )
         }
     }
 

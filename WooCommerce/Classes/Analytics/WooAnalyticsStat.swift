@@ -82,6 +82,12 @@ public enum WooAnalyticsStat: String {
     case loginInvalidEmailScreenViewed = "login_invalid_email_screen_viewed"
     case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
     case createAccountOnInvalidEmailScreenTapped = "create_account_on_invalid_email_screen"
+    case loginInsufficientRole = "login_insufficient_role"
+
+    // MARK: REST API login
+    //
+    case loginSiteAddressSiteInfoFetched = "login_site_address_site_info_fetched"
+    case loginSiteCredentialsFailed = "login_site_credentials_login_failed"
 
     // MARK: Site credentials
     //

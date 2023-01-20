@@ -31,6 +31,28 @@ class ShippingLabelAccountSettingsMapperTests: XCTestCase {
         XCTAssertEqual(settings.storeOwnerWpcomUsername, "apiexamples")
     }
 
+    /// Verifies that the Shipping Label Account Settings are parsed correctly.
+    ///
+    func test_Account_Settings_are_properly_parsed_when_response_has_no_data_envelope() {
+        guard let settings = mapLoadShippingLabelAccountSettingsWithoutDataEnvelope() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(settings.siteID, sampleSiteID)
+        XCTAssertEqual(settings.canEditSettings, true)
+        XCTAssertEqual(settings.canManagePayments, true)
+        XCTAssertEqual(settings.isEmailReceiptsEnabled, true)
+        XCTAssertEqual(settings.lastSelectedPackageID, "small_flat_box")
+        XCTAssertEqual(settings.paperSize, .label)
+        XCTAssertEqual(settings.paymentMethods, [sampleShippingLabelPaymentMethod()])
+        XCTAssertEqual(settings.selectedPaymentMethodID, 11743265)
+        XCTAssertEqual(settings.storeOwnerDisplayName, "Example User")
+        XCTAssertEqual(settings.storeOwnerUsername, "admin")
+        XCTAssertEqual(settings.storeOwnerWpcomEmail, "example@example.com")
+        XCTAssertEqual(settings.storeOwnerWpcomUsername, "apiexamples")
+    }
+
     /// Verifies that the Shipping Label Account Settings without any payment methods are parsed correctly.
     ///
     func test_Account_Settings_without_payment_methods_are_properly_parsed() {
@@ -73,6 +95,12 @@ private extension ShippingLabelAccountSettingsMapperTests {
     ///
     func mapLoadShippingLabelAccountSettings() -> ShippingLabelAccountSettings? {
         return mapAccountSettings(from: "shipping-label-account-settings")
+    }
+
+    /// Returns the ShippingLabelAccountSettingsMapper output upon receiving `shipping-label-account-settings-without-data`
+    ///
+    func mapLoadShippingLabelAccountSettingsWithoutDataEnvelope() -> ShippingLabelAccountSettings? {
+        return mapAccountSettings(from: "shipping-label-account-settings-without-data")
     }
 
     /// Returns the ShippingLabelAccountSettingsMapper output upon receiving `shipping-label-account-settings-no-payment-methods`

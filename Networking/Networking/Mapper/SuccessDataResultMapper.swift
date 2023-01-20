@@ -8,7 +8,14 @@ struct SuccessDataResultMapper: Mapper {
     /// (Attempts) to extract the `success` flag from a given JSON Encoded response.
     ///
     func map(response: Data) throws -> Bool {
-        let rawData = try JSONDecoder().decode(SuccessDataResultEnvelope.self, from: response).rawData
+        let decoder = JSONDecoder()
+        let rawData: [String: Bool] = try {
+            do {
+                return try decoder.decode(SuccessDataResultEnvelope.self, from: response).rawData
+            } catch {
+                return try decoder.decode([String: Bool].self, from: response)
+            }
+        }()
         return rawData["success"] ?? false
     }
 }

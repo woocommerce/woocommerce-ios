@@ -1,13 +1,14 @@
 import XCTest
+import TestKit
 @testable import Yosemite
 @testable import WooCommerce
 
-final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
+final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
     private var mockStoresManager: MockCardPresentPaymentsStoresManager!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analyticsTracker: CardReaderConnectionAnalyticsTracker!
 
-    private var viewModel: CardReaderSettingsConnectedViewModel!
+    private var viewModel: BluetoothCardReaderSettingsConnectedViewModel!
 
     override func setUpWithError() throws {
         mockStoresManager = MockCardPresentPaymentsStoresManager(
@@ -26,10 +27,11 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
                                                                 analytics: analytics)
         analyticsTracker.setCandidateReader(MockCardReader.wisePad3())
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
-                                                         configuration: Mocks.configuration,
-                                                         analyticsTracker: analyticsTracker,
-                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
+        viewModel = BluetoothCardReaderSettingsConnectedViewModel(
+            didChangeShouldShow: nil,
+            configuration: Mocks.configuration,
+            analyticsTracker: analyticsTracker,
+            delayToShowUpdateSuccessMessage: .milliseconds(1))
     }
 
     func test_did_change_should_show_returns_false_if_no_connected_readers() {
@@ -41,14 +43,15 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         let expectation = self.expectation(description: #function)
-        let _ = CardReaderSettingsConnectedViewModel(didChangeShouldShow: { shouldShow in
-            XCTAssertTrue(shouldShow == .isFalse)
-            expectation.fulfill()
-        },
-                                                     configuration: Mocks.configuration,
-                                                     analyticsTracker: .init(configuration: Mocks.configuration,
-                                                                             stores: mockStoresManager),
-                                                     delayToShowUpdateSuccessMessage: .milliseconds(1))
+        let _ = BluetoothCardReaderSettingsConnectedViewModel(
+            didChangeShouldShow: { shouldShow in
+                XCTAssertTrue(shouldShow == .isFalse)
+                expectation.fulfill()
+            },
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager),
+            delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
@@ -56,23 +59,25 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
     func test_did_change_should_show_returns_true_if_a_reader_is_connected() {
         let expectation = self.expectation(description: #function)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: { shouldShow in
-            XCTAssertTrue(shouldShow == .isTrue)
-            expectation.fulfill()
-        },
-                                                         configuration: Mocks.configuration,
-                                                         analyticsTracker: .init(configuration: Mocks.configuration,
-                                                                                 stores: mockStoresManager),
-                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
+        viewModel = BluetoothCardReaderSettingsConnectedViewModel(
+            didChangeShouldShow: { shouldShow in
+                XCTAssertTrue(shouldShow == .isTrue)
+                expectation.fulfill()
+            },
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager),
+            delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     func test_view_model_correctly_formats_connected_card_reader_battery_level() {
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
-                                                         configuration: Mocks.configuration,
-                                                         analyticsTracker: .init(configuration: Mocks.configuration,
-                                                                                 stores: mockStoresManager))
+        viewModel = BluetoothCardReaderSettingsConnectedViewModel(
+            didChangeShouldShow: nil,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager))
         XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "50% Battery")
     }
 
@@ -84,20 +89,22 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
-                                                         configuration: Mocks.configuration,
-                                                         analyticsTracker: .init(configuration: Mocks.configuration,
-                                                                                 stores: mockStoresManager),
-                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
+        viewModel = BluetoothCardReaderSettingsConnectedViewModel(
+            didChangeShouldShow: nil,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager),
+            delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "Unknown Battery Level")
     }
 
     func test_view_model_correctly_formats_connected_card_reader_software_version() {
-        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
-                                                             configuration: Mocks.configuration,
-                                                             analyticsTracker: .init(configuration: Mocks.configuration,
-                                                                                     stores: mockStoresManager),
-                                                             delayToShowUpdateSuccessMessage: .milliseconds(1))
+        let viewModel = BluetoothCardReaderSettingsConnectedViewModel(
+            didChangeShouldShow: nil,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager),
+            delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Version: 1.00.03.34-SZZZ_Generic_v45-300001")
     }
 
@@ -109,11 +116,12 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
-                                                         configuration: Mocks.configuration,
-                                                         analyticsTracker: .init(configuration: Mocks.configuration,
-                                                                                 stores: mockStoresManager),
-                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
+        viewModel = BluetoothCardReaderSettingsConnectedViewModel(
+            didChangeShouldShow: nil,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager),
+            delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Unknown Software Version")
     }
 
@@ -157,11 +165,12 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
-                                                         configuration: Mocks.configuration,
-                                                         analyticsTracker: .init(configuration: Mocks.configuration,
-                                                                                 stores: mockStoresManager),
-                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
+        viewModel = BluetoothCardReaderSettingsConnectedViewModel(
+            didChangeShouldShow: nil,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager),
+            delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         var updateDidBegin = false
 
@@ -459,11 +468,12 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
-                                                         configuration: Mocks.configuration,
-                                                         analyticsTracker: .init(configuration: Mocks.configuration,
-                                                                                 stores: mockStoresManager),
-                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
+        viewModel = BluetoothCardReaderSettingsConnectedViewModel(
+            didChangeShouldShow: nil,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager),
+            delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         // Then
         XCTAssertEqual(viewModel.connectedReaderModel, "WISEPAD_3")
@@ -478,18 +488,70 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
-                                                         configuration: Mocks.configuration,
-                                                         analyticsTracker: .init(configuration: Mocks.configuration,
-                                                                                 stores: mockStoresManager),
-                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
+        viewModel = BluetoothCardReaderSettingsConnectedViewModel(
+            didChangeShouldShow: nil,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager),
+            delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         // Then
         XCTAssertNil(viewModel.connectedReaderModel)
     }
+
+    func test_when_connected_to_a_built_in_reader_it_isnt_displayed() {
+        // Given
+        mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.appleBuiltIn()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        // When
+        let shouldShow = waitFor { promise in
+            self.viewModel = BluetoothCardReaderSettingsConnectedViewModel(
+                didChangeShouldShow: { promise($0) },
+                configuration: Mocks.configuration,
+                analyticsTracker: .init(configuration: Mocks.configuration,
+                                        stores: self.mockStoresManager),
+                delayToShowUpdateSuccessMessage: .milliseconds(1))
+        }
+
+        // Then
+        assertEqual(.isFalse, shouldShow)
+    }
+
+    func test_when_connected_to_a_built_in_reader_it_disconnects() {
+        // Given
+        mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.appleBuiltIn()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        // When
+        viewModel = BluetoothCardReaderSettingsConnectedViewModel(
+            didChangeShouldShow: nil,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager),
+            delayToShowUpdateSuccessMessage: .milliseconds(1))
+
+        // Then
+        XCTAssertNotNil(mockStoresManager.receivedActions.first(where: { action in
+            switch action {
+            case .disconnect(_):
+                return true
+            default:
+                return false
+            }
+        }))
+    }
 }
 
-private extension CardReaderSettingsConnectedViewModelTests {
+private extension BluetoothCardReaderSettingsConnectedViewModelTests {
     enum Mocks {
         static let configuration = CardPresentPaymentsConfiguration(country: "US")
     }

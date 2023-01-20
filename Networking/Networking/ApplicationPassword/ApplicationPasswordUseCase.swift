@@ -9,16 +9,7 @@ public enum ApplicationPasswordUseCaseError: Error {
     case applicationPasswordsDisabled
     case failedToConstructLoginOrAdminURLUsingSiteAddress
     case unauthorizedRequest
-}
-
-public struct ApplicationPassword {
-    /// WordPress org username that the application password belongs to
-    ///
-    let wpOrgUsername: String
-
-    /// Application password
-    ///
-    let password: Secret<String>
+    case unableToFindPasswordUUID
 }
 
 public protocol ApplicationPasswordUseCase {
@@ -105,16 +96,20 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     /// - Returns: Generated `ApplicationPassword` instance
     ///
     public func generateNewPassword() async throws -> ApplicationPassword {
-        async let password = try {
+        let applicationPassword = try await {
             do {
                 return try await createApplicationPassword()
             } catch ApplicationPasswordUseCaseError.duplicateName {
-                try await deletePassword()
+                do {
+                    try await deletePassword()
+                } catch ApplicationPasswordUseCaseError.unableToFindPasswordUUID {
+                    // No password found with the `applicationPasswordName`
+                    // We can proceed to the creation step
+                }
                 return try await createApplicationPassword()
             }
         }()
 
-        let applicationPassword = try await ApplicationPassword(wpOrgUsername: username, password: Secret(password))
         storage.saveApplicationPassword(applicationPassword)
         return applicationPassword
     }
@@ -124,26 +119,40 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///  Deletes locally and also sends an API request to delete it from the site
     ///
     public func deletePassword() async throws {
-        try await deleteApplicationPassword()
+        // Get the uuid before removing the password from storage
+        let uuidFromLocalPassword = applicationPassword?.uuid
+
+        // Remove password from storage
+        storage.removeApplicationPassword()
+
+        let uuidToBeDeleted = try await {
+            if let uuidFromLocalPassword {
+                return uuidFromLocalPassword
+            } else {
+                return try await self.fetchUUIDForApplicationPassword(await applicationPasswordName)
+            }
+        }()
+        try await deleteApplicationPassword(uuidToBeDeleted)
     }
 }
 
 private extension DefaultApplicationPasswordUseCase {
     /// Creates application password using WordPress.com authentication token
     ///
-    /// - Returns: Application password as `String`
+    /// - Returns: Generated `ApplicationPassword`
     ///
-    func createApplicationPassword() async throws -> String {
+    func createApplicationPassword() async throws -> ApplicationPassword {
         let passwordName = await applicationPasswordName
 
         let parameters = [ParameterKey.name: passwordName]
         let request = RESTRequest(siteURL: siteAddress, method: .post, path: Path.applicationPasswords, parameters: parameters)
         return try await withCheckedThrowingContinuation { continuation in
-            network.responseData(for: request) { result in
+            network.responseData(for: request) { [weak self] result in
+                guard let self else { return }
                 switch result {
                 case .success(let data):
                     do {
-                        let mapper = ApplicationPasswordMapper()
+                        let mapper = ApplicationPasswordMapper(wpOrgUsername: self.username)
                         let password = try mapper.map(response: data)
                         continuation.resume(returning: password)
                     } catch {
@@ -172,15 +181,37 @@ private extension DefaultApplicationPasswordUseCase {
         }
     }
 
-    /// Deletes application password using WordPress.com authentication token
+    /// Get the UUID of the application password
     ///
-    func deleteApplicationPassword() async throws {
-        // Remove password from storage
-        storage.removeApplicationPassword()
+    func fetchUUIDForApplicationPassword(_ passwordName: String) async throws -> String {
+        let request = RESTRequest(siteURL: siteAddress, method: .get, path: Path.applicationPasswords)
 
-        let passwordName = await applicationPasswordName
-        let parameters = [ParameterKey.name: passwordName]
-        let request = RESTRequest(siteURL: siteAddress, method: .delete, path: Path.applicationPasswords, parameters: parameters)
+        return try await withCheckedThrowingContinuation { continuation in
+            network.responseData(for: request) { result in
+                switch result {
+                case .success(let data):
+                    do {
+                        let mapper = ApplicationPasswordNameAndUUIDMapper()
+                        let list = try mapper.map(response: data)
+                        if let item = list.first(where: { $0.name == passwordName }) {
+                            continuation.resume(returning: item.uuid)
+                        } else {
+                            continuation.resume(throwing: ApplicationPasswordUseCaseError.unableToFindPasswordUUID)
+                        }
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
+    /// Deletes application password using UUID
+    ///
+    func deleteApplicationPassword(_ uuid: String) async throws {
+        let request = RESTRequest(siteURL: siteAddress, method: .delete, path: Path.applicationPasswords + "/" + uuid)
 
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in

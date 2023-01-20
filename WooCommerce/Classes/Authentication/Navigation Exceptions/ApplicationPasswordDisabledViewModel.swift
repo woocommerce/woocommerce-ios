@@ -1,4 +1,5 @@
 import UIKit
+import WordPressAuthenticator
 
 /// Configuration and actions for an ULErrorViewController,
 /// modeling an error when application password is disabled.
@@ -27,8 +28,8 @@ struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
     let isAuxiliaryButtonHidden = false
     let auxiliaryButtonTitle = Localization.auxiliaryButtonTitle
 
-    let primaryButtonTitle = ""
-    let isPrimaryButtonHidden = true
+    let primaryButtonTitle = Localization.primaryButtonTitle
+    let isPrimaryButtonHidden = false
 
     let secondaryButtonTitle = Localization.secondaryButtonTitle
 
@@ -37,7 +38,10 @@ struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        // no-op
+        guard let viewController else {
+            return
+        }
+        WordPressAuthenticator.showLoginForJustWPCom(from: viewController)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -69,6 +73,10 @@ private extension ApplicationPasswordDisabledViewModel {
         static let auxiliaryButtonTitle = NSLocalizedString(
             "What is Application Password?",
             comment: "Button that will navigate to a web page explaining Application Password"
+        )
+        static let primaryButtonTitle = NSLocalizedString(
+            "Log in with WordPress.com",
+            comment: "Button that will navigate to the authentication flow with WP.com"
         )
     }
     enum Constants {

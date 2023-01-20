@@ -32,9 +32,14 @@ struct OrderShippingLabelListMapper: Mapper {
             .orderID: orderID
         ]
 
-        let envelope = try decoder.decode(OrderShippingLabelListEnvelope.self, from: response)
-        let data = OrderShippingLabelListResponse(shippingLabels: envelope.data.shippingLabels, settings: envelope.data.settings)
-        return data
+        let data: OrderShippingLabelListData = try {
+            do {
+                return try decoder.decode(OrderShippingLabelListEnvelope.self, from: response).data
+            } catch {
+                return try decoder.decode(OrderShippingLabelListData.self, from: response)
+            }
+        }()
+        return OrderShippingLabelListResponse(shippingLabels: data.shippingLabels, settings: data.settings)
     }
 }
 

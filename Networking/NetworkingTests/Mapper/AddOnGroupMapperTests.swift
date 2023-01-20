@@ -24,12 +24,39 @@ class AddOnGroupMapperTests: XCTestCase {
         XCTAssertEqual(secondGroup.name, "Music")
         XCTAssertEqual(secondGroup.addOns.count, 1)
     }
+
+    func test_addOnGroups_field_are_properly_parsed_when_response_has_no_data_envelope() throws {
+        // Given & When
+        let addOnGroups = try XCTUnwrap(mapLoadGroupAddOnsResponseWithoutDataEnvelope())
+
+        // Then
+        XCTAssertEqual(addOnGroups.count, 2)
+
+        let firstGroup = addOnGroups[0]
+        XCTAssertEqual(firstGroup.siteID, dummySiteID)
+        XCTAssertEqual(firstGroup.groupID, 422)
+        XCTAssertEqual(firstGroup.name, "Gifts")
+        XCTAssertEqual(firstGroup.addOns.count, 2)
+
+        let secondGroup = addOnGroups[1]
+        XCTAssertEqual(secondGroup.siteID, dummySiteID)
+        XCTAssertEqual(secondGroup.groupID, 427)
+        XCTAssertEqual(secondGroup.name, "Music")
+        XCTAssertEqual(secondGroup.addOns.count, 1)
+    }
 }
 
 // MARK: JSON Loading
 private extension AddOnGroupMapperTests {
     func mapLoadGroupAddOnsResponse() -> [AddOnGroup]? {
         guard let response = Loader.contentsOf("add-on-groups") else {
+            return nil
+        }
+        return try? AddOnGroupMapper(siteID: dummySiteID).map(response: response)
+    }
+
+    func mapLoadGroupAddOnsResponseWithoutDataEnvelope() -> [AddOnGroup]? {
+        guard let response = Loader.contentsOf("add-on-groups-without-data") else {
             return nil
         }
         return try? AddOnGroupMapper(siteID: dummySiteID).map(response: response)

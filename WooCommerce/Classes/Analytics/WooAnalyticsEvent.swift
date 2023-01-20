@@ -612,7 +612,7 @@ extension WooAnalyticsEvent {
         ///
         enum Source: String {
             static let key = "source"
-            
+
             case orderList = "order_list"
         }
 

@@ -174,13 +174,6 @@ final class OrderListViewModel {
 
         observeForegroundRemoteNotifications()
         bindTopBannerState()
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            syncIPPBannerVisibility()
-            loadOrdersBannerVisibility()
-        } else {
-            loadOrdersBannerVisibility()
-        }
     }
 
     func dismissOrdersBanner() {
@@ -194,6 +187,15 @@ final class OrderListViewModel {
         }
 
         stores.dispatch(action)
+    }
+
+    func updateBannerVisibility() {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            syncIPPBannerVisibility()
+            loadOrdersBannerVisibility()
+        } else {
+            loadOrdersBannerVisibility()
+        }
     }
 
     /// Starts the snapshotsProvider, logging any errors.
@@ -281,7 +283,7 @@ final class OrderListViewModel {
         }
     }
 
-    func displayIPPFeedbackBannerIfEligible() {
+    func feedbackBannerSurveySource() -> SurveyViewController.Source? {
         if isCODEnabled && isIPPSupportedCountry {
             let hasResults = IPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
 
@@ -294,21 +296,13 @@ final class OrderListViewModel {
                 $0.paymentMethodTitle == Constants.paymentMethodTitle})
             let IPPresultsCount = IPPTransactionsFound.count
 
-            // TODO: Debug. Remove before merging
-            print("COD enabled? \(isCODEnabled) - Eligible Country? \(isIPPSupportedCountry)")
-            print("hasResults? \(hasResults)")
-            print("IPP transactions within 30 days: \(IPPresultsCount)")
-            print(recentIPPOrdersResultsController.fetchedObjects.map {
-                ("OrderID: \($0.orderID) - PaymentMethodID: \($0.paymentMethodID) (\($0.paymentMethodTitle) - DatePaid: \(String(describing: $0.datePaid))")
-            })
-
             if !hasResults {
-                 print("0 transactions. Banner 1 shown")
-             } else if IPPresultsCount < Constants.numberOfTransactions {
-                 print("< 10 transactions within 30 days. Banner 2 shown")
-             } else if IPPresultsCount >= Constants.numberOfTransactions {
-                 print(">= 10 transactions within 30 days. Banner 3 shown")
-             }
+                return .IPP_COD
+            } else if IPPresultsCount < Constants.numberOfTransactions {
+                return .IPP_firstTransaction
+            } else if IPPresultsCount >= Constants.numberOfTransactions {
+                return .IPP_powerUsers
+            }
             // TODO: Move to view controller
             // TODO: Campaign must be variable
             ServiceLocator.analytics.track(event: .InPersonPaymentsFeedbackBanner.shown(
@@ -316,6 +310,7 @@ final class OrderListViewModel {
                 campaign: .inPersonPaymentsCashOnDelivery)
             )
         }
+        return nil
     }
 
     private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {
@@ -376,12 +371,15 @@ extension OrderListViewModel {
         stores.dispatch(updateBannerVisibility)
     }
 
-    func remindMeLaterTapped() {
+    func IPPFeedbackBannerRemindMeLaterTapped() {
         dismissIPPFeedbackBanner(remindAfterDays: Constants.remindIPPBannerDismissalAfterDays)
-        
     }
 
-    func dontShowAgainTapped() {
+    func IPPFeedbackBannerDontShowAgainTapped() {
+        dismissIPPFeedbackBanner(remindAfterDays: nil)
+    }
+
+    func IPPFeedbackBannerWasDismissed() {
         dismissIPPFeedbackBanner(remindAfterDays: nil)
     }
 }

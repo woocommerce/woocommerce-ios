@@ -12,7 +12,12 @@ public class StripeRemote: Remote {
                             completion: @escaping (Result<StripeAccount, Error>) -> Void) {
         let parameters = [AccountParameterKeys.fields: AccountParameterValues.fieldValues]
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Path.accounts, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.accounts,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
 
         let mapper = StripeAccountMapper()
 
@@ -36,7 +41,12 @@ public class StripeRemote: Remote {
             CaptureOrderPaymentKeys.paymentIntentID: paymentIntentID
         ]
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
 
         let mapper = RemotePaymentIntentMapper()
 
@@ -53,7 +63,11 @@ extension StripeRemote {
     ///   - completion: Closure to be executed upon completion.
     public func loadConnectionToken(for siteID: Int64,
                                     completion: @escaping(Result<ReaderConnectionToken, Error>) -> Void) {
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: Path.connectionTokens)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: Path.connectionTokens,
+                                     availableAsRESTRequest: true)
 
         let mapper = ReaderConnectionTokenMapper()
 
@@ -68,7 +82,12 @@ extension StripeRemote {
     ///
     public func loadDefaultReaderLocation(for siteID: Int64,
                                           onCompletion: @escaping (Result<RemoteReaderLocation, Error>) -> Void) {
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Path.locations, parameters: [:])
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.locations,
+                                     parameters: [:],
+                                     availableAsRESTRequest: true)
 
         let mapper = RemoteReaderLocationMapper()
 

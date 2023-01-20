@@ -14,7 +14,7 @@ final class CardPresentModalConnectingFailed: CardPresentPaymentsModalViewModel 
 
     var topSubtitle: String? = nil
 
-    let image: UIImage = .paymentErrorImage
+    let image: UIImage
 
     let primaryButtonTitle: String? = Localization.tryAgain
 
@@ -30,7 +30,10 @@ final class CardPresentModalConnectingFailed: CardPresentPaymentsModalViewModel 
         return topTitle
     }
 
-    init(continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+    init(image: UIImage = .paymentErrorImage,
+         continueSearch: @escaping () -> Void,
+         cancelSearch: @escaping () -> Void) {
+        self.image = image
         self.continueSearchAction = continueSearch
         self.cancelSearchAction = cancelSearch
     }

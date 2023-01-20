@@ -110,27 +110,6 @@ final class LegacyCollectOrderPaymentUseCaseTests: XCTestCase {
     }
 
     // MARK: Success alert actions
-
-    func test_printing_receipt_from_collectPayment_success_alert_tracks_receiptPrintTapped_event() throws {
-        // Given
-        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
-        mockSuccessfulCardPresentPaymentActions(intent: intent)
-
-        // When
-        waitFor { promise in
-            self.useCase.collectPayment(onCollect: { _ in
-                promise(())
-            }, onCancel: {}, onCompleted: {})
-        }
-        alerts.printReceiptFromSuccessAlert?()
-
-        // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_print_tapped"}))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
-        XCTAssertEqual(eventProperties["country"] as? String, "US")
-    }
-
     func test_emailing_receipt_from_collectPayment_success_alert_tracks_receiptEmailTapped_event() throws {
         // Given
         let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])

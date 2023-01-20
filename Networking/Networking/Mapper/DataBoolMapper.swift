@@ -1,13 +1,17 @@
 import Foundation
 
-/// Mapper: Bool Result Wrapped in `data` Key
+/// Mapper: Bool Result, Wrapped in `data` Key or not
 ///
 struct DataBoolMapper: Mapper {
 
     /// (Attempts) to extract the boolean flag from a given JSON Encoded response.
     ///
     func map(response: Data) throws -> Bool {
-        try JSONDecoder().decode(DataBool.self, from: response).data
+        do {
+            return try JSONDecoder().decode(DataBool.self, from: response).data
+        } catch {
+            return try JSONDecoder().decode(Bool.self, from: response)
+        }
     }
 }
 

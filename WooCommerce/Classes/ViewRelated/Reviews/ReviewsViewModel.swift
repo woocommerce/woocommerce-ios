@@ -136,9 +136,12 @@ extension ReviewsViewModel {
             }
         }
 
-        group.enter()
-        synchronizeNotifications {
-            group.leave()
+        // skips checking notifications if authenticated without WPCom.
+        if stores.isAuthenticatedWithoutWPCom == false {
+            group.enter()
+            synchronizeNotifications {
+                group.leave()
+            }
         }
 
         group.notify(queue: .main) {

@@ -30,8 +30,9 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
                                        message: message)
     }
 
-    func processingTransaction() -> CardPresentPaymentsModalViewModel {
-        CardPresentModalBuiltInReaderProcessing(name: name, amount: amount)
+    func processingTransaction(title: String) -> CardPresentPaymentsModalViewModel {
+        name = title
+        return CardPresentModalBuiltInReaderProcessing(name: name, amount: amount)
     }
 
     func success(printReceipt: @escaping () -> Void,

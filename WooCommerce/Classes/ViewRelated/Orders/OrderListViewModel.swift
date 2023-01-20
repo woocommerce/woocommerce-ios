@@ -223,7 +223,7 @@ final class OrderListViewModel {
     // then load feedback visibility. We need to reset the banner status on UserDefaults for
     // the banner to appear again for testing purposes.
     private func syncIPPBannerVisibility() {
-        let action = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .pending) { _ in
+        let action = AppSettingsAction.updateFeedbackStatus(type: .inPersonPayments, status: .pending) { _ in
             self.loadIPPFeedbackBannerVisibility()
             self.fetchIPPTransactions()
         }
@@ -231,7 +231,7 @@ final class OrderListViewModel {
     }
 
     private func loadIPPFeedbackBannerVisibility() {
-        let action = AppSettingsAction.loadFeedbackVisibility(type: .IPP) { [weak self] result in
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .inPersonPayments) { [weak self] result in
             switch result {
             case .success(let visible):
                 self?.hideIPPFeedbackBanner = !visible
@@ -356,14 +356,14 @@ final class OrderListViewModel {
 extension OrderListViewModel {
     func dismissIPPFeedbackBanner(remindAfterDays: Int?) {
         //  Updates the IPP feedback banner status as dismissed
-        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .dismissed) { [weak self] _ in
+        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .inPersonPayments, status: .dismissed) { [weak self] _ in
             self?.hideIPPFeedbackBanner = true
         }
         stores.dispatch(updateFeedbackStatus)
 
         //  Updates the IPP feedback banner status to be reminded later, or never
         let updateBannerVisibility = AppSettingsAction.setFeatureAnnouncementDismissed(
-            campaign: .IPP,
+            campaign: .inPersonPaymentsCashOnDelivery, // TODO: Pass this dynamically, as we have 3 options
             remindAfterDays: remindAfterDays,
             onCompletion: nil
         )
@@ -372,6 +372,7 @@ extension OrderListViewModel {
 
     func remindMeLaterTapped() {
         dismissIPPFeedbackBanner(remindAfterDays: Constants.remindIPPBannerDismissalAfterDays)
+        
     }
 
     func dontShowAgainTapped() {

@@ -95,7 +95,7 @@ extension KeyedDecodingContainer {
         if let integerAsString = failsafeDecodeIfPresent(String.self, forKey: key) {
             return Int(integerAsString)
         }
-        
+
         return nil
     }
 

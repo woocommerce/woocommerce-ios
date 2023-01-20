@@ -377,6 +377,10 @@ extension OrderListViewModel {
     func dontShowAgainTapped() {
         dismissIPPFeedbackBanner(remindAfterDays: nil)
     }
+
+    func IPPFeedbackWasDismissed() {
+        dismissIPPFeedbackBanner(remindAfterDays: nil)
+    }
 }
 
 // MARK: - Remote Notifications Observation

@@ -332,7 +332,7 @@ private extension ReviewDetailsViewController {
         commentCell.isTrashEnabled    = true
         commentCell.isSpamEnabled     = true
         commentCell.isApproveSelected = productReview.status == .approved
-        commentCell.isReplyEnabled    = true
+        commentCell.isReplyEnabled    = ServiceLocator.stores.isAuthenticatedWithoutWPCom == false
 
         let reviewID = productReview.reviewID
         let reviewSiteID = productReview.siteID

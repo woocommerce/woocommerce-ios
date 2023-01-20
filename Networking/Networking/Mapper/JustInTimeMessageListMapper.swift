@@ -16,7 +16,11 @@ struct JustInTimeMessageListMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID
         ]
-        return try decoder.decode(JustInTimeMessageListEnvelope.self, from: response).data
+        do {
+            return try decoder.decode(JustInTimeMessageListEnvelope.self, from: response).data
+        } catch {
+            return try decoder.decode([JustInTimeMessage].self, from: response)
+        }
     }
 }
 

@@ -28,7 +28,7 @@ public class AlamofireNetwork: Network {
 
     /// Authenticator to update requests authorization header if possible.
     ///
-    private let requestAuthenticator: ApplicationPasswordRequestProcessor
+    private let requestAuthenticator: RequestProcessor
 
     public var session: URLSession { SessionManager.default.session }
 
@@ -36,7 +36,7 @@ public class AlamofireNetwork: Network {
     ///
     public required init(credentials: Credentials?) {
         self.requestConverter = RequestConverter(credentials: credentials)
-        self.requestAuthenticator = ApplicationPasswordRequestProcessor(requestAuthenticator: DefaultApplicationPasswordAuthenticator(credentials: credentials))
+        self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.

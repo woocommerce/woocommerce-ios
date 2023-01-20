@@ -159,6 +159,26 @@ extension WooConstants {
         case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
 #endif
 
+        /// URL for the IPP feedback survey for testing purposes
+        ///
+#if DEBUG
+        case inPersonPaymentsCashOnDeliveryFeedback,
+             inPersonPaymentsFirstTransactionFeedback,
+             inPersonPaymentsPowerUsersFeedback = "https://automattic.survey.fm/woo-app-ipp-in-app-feedback-testing"
+#else
+        /// URL for the IPP feedback survey (COD case). Used when merchants have COD enabled, but no IPP transactions.
+        ///
+        case inPersonPaymentsCashOnDeliveryFeedback = "https://automattic.survey.fm/woo-app-–-cod-survey"
+
+        /// URL for IPP feedback survey (First Transaction case). Used when merchants have only a few IPP transactions.
+        ///
+        case inPersonPaymentsFirstTransactionFeedback = "https://automattic.survey.fm/woo-app-–-ipp-first-transaction-survey"
+
+        /// URL for IPP feedback survey (Power Users case).  Used when merchants have a significant number of IPP transactions.
+        ///
+        case inPersonPaymentsPowerUsersFeedback = "https://automattic.survey.fm/woo-app-–-ipp-survey-for-power-users"
+#endif
+
         /// URL for the products feedback survey
         ///
         case productsFeedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"

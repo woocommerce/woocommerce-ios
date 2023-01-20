@@ -240,8 +240,9 @@ private extension ProductFormRemoteActionUseCase {
     func updatePasswordRemotely(product: EditableProductModel,
                                 password: String?,
                                 onCompletion: @escaping (Result<String?, Error>) -> Void) {
-        // Only update product password if available.
-        guard let updatedPassword = password else {
+        // Only update product password if available and user is authenticated with WPCom.
+        guard let updatedPassword = password,
+              stores.isAuthenticatedWithoutWPCom == false else {
             onCompletion(.success(password))
             return
         }

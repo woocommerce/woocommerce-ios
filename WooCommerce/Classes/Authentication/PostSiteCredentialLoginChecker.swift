@@ -40,34 +40,25 @@ private extension PostSiteCredentialLoginChecker {
     func checkApplicationPassword(for siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
                                   in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
-        Task {
+        Task { @MainActor in
             do {
                 let _ = try await useCase.generateNewPassword()
-                await MainActor.run {
-                    onSuccess()
-                }
+                onSuccess()
             } catch ApplicationPasswordUseCaseError.applicationPasswordsDisabled {
                 // show application password disabled error
-                await MainActor.run {
-                    let errorUI = applicationPasswordDisabledUI(for: siteURL)
-                    navigationController.show(errorUI, sender: nil)
-                }
+                let errorUI = applicationPasswordDisabledUI(for: siteURL)
+                navigationController.show(errorUI, sender: nil)
             } catch ApplicationPasswordUseCaseError.unauthorizedRequest {
-                await MainActor.run {
-                    self.showAlert(message: Localization.invalidLoginOrAdminURL, in: navigationController)
-                }
+                showAlert(message: Localization.invalidLoginOrAdminURL, in: navigationController)
             } catch {
-                // show generic error
-                await MainActor.run {
-                    DDLogError("⛔️ Error generating application password: \(error)")
-                    self.showAlert(
-                        message: Localization.applicationPasswordError,
-                        in: navigationController,
-                        onRetry: { [weak self] in
-                            self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController, onSuccess: onSuccess)
-                        }
-                    )
-                }
+                DDLogError("⛔️ Error generating application password: \(error)")
+                showAlert(
+                    message: Localization.applicationPasswordError,
+                    in: navigationController,
+                    onRetry: { [weak self] in
+                        self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController, onSuccess: onSuccess)
+                    }
+                )
             }
         }
     }

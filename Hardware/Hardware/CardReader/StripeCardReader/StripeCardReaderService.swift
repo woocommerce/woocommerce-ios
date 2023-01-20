@@ -470,6 +470,10 @@ extension StripeCardReaderService: CardReaderService {
                         .softwareUpdate(underlyingError: underlyingError, batteryLevel: nil) :
                         .connection(underlyingError: underlyingError)
                     promise(.failure(serviceError))
+
+                    if case .appleBuiltInReaderTOSAcceptanceCanceled = underlyingError {
+                        self.discoveryCancellable?.cancel({ _ in })
+                    }
                 }
 
                 if let reader = reader {
@@ -862,11 +866,11 @@ private extension StripeCardReaderService {
 
 private extension StripeCardReaderService {
     private func setConfigProvider(_ configProvider: CardReaderConfigProvider) {
-        readerLocationProvider = configProvider
-
-        let tokenProvider = DefaultConnectionTokenProvider(provider: configProvider)
-
         if !Terminal.hasTokenProvider() {
+            readerLocationProvider = configProvider
+
+            let tokenProvider = DefaultConnectionTokenProvider(provider: configProvider)
+
             Terminal.setTokenProvider(tokenProvider)
         }
     }

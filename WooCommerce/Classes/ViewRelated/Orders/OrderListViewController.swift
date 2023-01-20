@@ -120,6 +120,10 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var swipeActionsGlanced = false
 
+    /// Banner variation that will be shown as In-Person Payments feedback banner. If any.
+    ///
+    private var inPersonPaymentsSurveyVariation: SurveyViewController.Source?
+
 
     // MARK: - View Lifecycle
 
@@ -158,7 +162,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureSyncingCoordinator()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            viewModel.displayIPPFeedbackBannerIfEligible()
+            inPersonPaymentsSurveyVariation = viewModel.feedbackBannerSurveySource()
         }
     }
 
@@ -254,6 +258,11 @@ private extension OrderListViewController {
                     self.setErrorTopBanner()
                 case .orderCreation:
                     self.setOrderCreationTopBanner()
+                case .IPPFeedback:
+                    guard let survey = self.inPersonPaymentsSurveyVariation else {
+                        return
+                    }
+                    self.setIPPFeedbackTopBanner(survey: survey)
                 }
             }
             .store(in: &cancellables)
@@ -351,6 +360,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
         transitionToSyncingState()
         viewModel.hasErrorLoadingData = false
+        viewModel.updateBannerVisibility()
 
         let action = viewModel.synchronizationAction(
             siteID: siteID,
@@ -783,6 +793,53 @@ private extension OrderListViewController {
         })
         showTopBannerView()
     }
+
+    /// Sets the `topBannerView` property to an IPP feedback banner.
+    ///
+    func setIPPFeedbackTopBanner(survey: SurveyViewController.Source) {
+        topBannerView = createIPPFeedbackTopBanner(survey: survey)
+        showTopBannerView()
+    }
+
+    private func createIPPFeedbackTopBanner(survey: SurveyViewController.Source) -> TopBannerView {
+        let shareIPPFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.shareFeedbackButton, action: { _ in
+            self.displayIPPFeedbackBannerSurvey(survey: survey)
+        })
+
+        var bannerTitle = ""
+        var bannerText = ""
+
+        switch survey {
+        case .IPP_COD :
+            bannerTitle = Localization.inPersonPaymentsCashOnDeliveryBannerTitle
+            bannerText = Localization.inPersonPaymentsCashOnDeliveryBannerContent
+        case .IPP_firstTransaction:
+            bannerTitle = Localization.inPersonPaymentsFirstTransactionBannerTitle
+            bannerTitle = Localization.inPersonPaymentsFirstTransactionBannerContent
+        case .IPP_powerUsers:
+            bannerTitle = Localization.inPersonPaymentsPowerUsersBannerTitle
+            bannerTitle = Localization.inPersonPaymentsPowerUsersBannerContent
+        default:
+            break
+        }
+
+        let viewModel = TopBannerViewModel(
+            title: bannerTitle,
+            infoText: bannerText,
+            icon: UIImage.gridicon(.comment),
+            isExpanded: true,
+            topButton: .dismiss(handler: {  }),
+            actionButtons: [shareIPPFeedbackAction]
+        )
+        let topBannerView = TopBannerView(viewModel: viewModel)
+        topBannerView.translatesAutoresizingMaskIntoConstraints = false
+        return topBannerView
+    }
+
+    private func displayIPPFeedbackBannerSurvey(survey: SurveyViewController.Source) {
+        let surveyNavigation = SurveyCoordinatingController(survey: survey)
+        self.present(surveyNavigation, animated: true, completion: nil)
+    }
 }
 
 // MARK: - Constants
@@ -800,6 +857,34 @@ private extension OrderListViewController {
                                  comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
 
         static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
+
+        static let inPersonPaymentsCashOnDeliveryBannerTitle = NSLocalizedString("Let us know how we can help",
+                                                           comment: "Title of the In-Person Payments feedback banner in the Orders tab"
+        )
+
+        static let inPersonPaymentsFirstTransactionBannerTitle = NSLocalizedString("Enjoyed your in-person payment?",
+                                                            comment: "Title of the In-Person Payments feedback banner in the Orders tab"
+        )
+
+        static let inPersonPaymentsPowerUsersBannerTitle = NSLocalizedString("Let us know what you think",
+                                                            comment: "Title of the In-Person Payments feedback banner in the Orders tab"
+        )
+
+        static let inPersonPaymentsCashOnDeliveryBannerContent = NSLocalizedString("Share your own experience or how you collect in-person payments.",
+                                                             comment: "Content of the In-Person Payments feedback banner in the Orders tab"
+        )
+
+        static let inPersonPaymentsFirstTransactionBannerContent = NSLocalizedString("Rate your first in-person payment experience.",
+                                                              comment: "Content of the In-Person Payments feedback banner in the Orders tab"
+        )
+
+        static let inPersonPaymentsPowerUsersBannerContent = NSLocalizedString("Tell us all about your experience with in-person payments.",
+                                                              comment: "Content of the In-Person Payments feedback banner in the Orders tab"
+        )
+
+        static let shareFeedbackButton = NSLocalizedString("Share feedback",
+                                                           comment: "Title of the feedback action button on the In-Person Payments feedback banner"
+        )
 
         static func markCompletedNoticeTitle(orderID: Int64) -> String {
             let format = NSLocalizedString(

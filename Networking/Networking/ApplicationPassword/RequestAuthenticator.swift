@@ -1,9 +1,9 @@
-enum ApplicationPasswordAuthenticatorError: Error {
+enum RequestAuthenticatorError: Error {
     case applicationPasswordUseCaseNotAvailable
     case applicationPasswordNotAvailable
 }
 
-protocol ApplicationPasswordAuthenticator {
+protocol RequestAuthenticator {
     /// Credentials to authenticate the URLRequest
     ///
     var credentials: Credentials? { get }
@@ -26,7 +26,7 @@ protocol ApplicationPasswordAuthenticator {
 
 /// Authenticates request
 ///
-public struct DefaultApplicationPasswordAuthenticator: ApplicationPasswordAuthenticator {
+public struct DefaultRequestAuthenticator: RequestAuthenticator {
     /// Credentials to authenticate the URLRequest
     ///
     let credentials: Credentials?
@@ -71,7 +71,7 @@ public struct DefaultApplicationPasswordAuthenticator: ApplicationPasswordAuthen
     ///
     func generateApplicationPassword() async throws {
         guard let applicationPasswordUseCase else {
-            throw ApplicationPasswordAuthenticatorError.applicationPasswordUseCaseNotAvailable
+            throw RequestAuthenticatorError.applicationPasswordUseCaseNotAvailable
         }
         let _ = try await applicationPasswordUseCase.generateNewPassword()
         return
@@ -84,7 +84,7 @@ public struct DefaultApplicationPasswordAuthenticator: ApplicationPasswordAuthen
     }
 }
 
-private extension DefaultApplicationPasswordAuthenticator {
+private extension DefaultRequestAuthenticator {
     /// To check whether the given URLRequest is a REST API request
     /// 
     func isRestAPIRequest(_ urlRequest: URLRequest) -> Bool {
@@ -110,7 +110,7 @@ private extension DefaultApplicationPasswordAuthenticator {
     ///
     func authenticateUsingApplicationPasswordIfPossible(_ urlRequest: URLRequest) throws -> URLRequest {
         guard let applicationPassword = applicationPasswordUseCase?.applicationPassword else {
-            throw ApplicationPasswordAuthenticatorError.applicationPasswordNotAvailable
+            throw RequestAuthenticatorError.applicationPasswordNotAvailable
         }
 
         return AuthenticatedRESTRequest(applicationPassword: applicationPassword, request: urlRequest).asURLRequest()

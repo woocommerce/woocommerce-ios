@@ -122,6 +122,26 @@ final class ProductReviewsRemoteTests: XCTestCase {
         XCTAssertNotNil(try result.get())
     }
 
+    /// Verifies that loadProductReview properly parses the `reviews-single-without-data` sample response.
+    ///
+    func test_load_product_review_properly_returns_parsed_product_reviews_without_data_envelope() throws {
+        // Given
+        let remote = ProductReviewsRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "products/reviews/\(sampleReviewID)", filename: "reviews-single-without-data")
+
+        // When
+        let result: Result<ProductReview, Error> = waitFor { promise in
+            remote.loadProductReview(for: self.sampleSiteID, reviewID: self.sampleReviewID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertNotNil(try result.get())
+    }
+
     /// Verifies that loadProductReview properly relays Networking Layer errors.
     ///
     func testLoadProductReviewProperlyRelaysNetworkingErrors() throws {

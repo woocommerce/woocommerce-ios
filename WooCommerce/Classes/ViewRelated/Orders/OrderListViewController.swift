@@ -830,24 +830,16 @@ private extension OrderListViewController {
         )
 
         let remindMeLaterAction = UIAlertAction( title: Localization.remindMeLater, style: .default) { [weak self] _ in
-            self?.remindMeLaterTapped()
+            self?.viewModel.remindMeLaterTapped()
         }
         actionSheet.addAction(remindMeLaterAction)
 
         let dontShowAgainAction = UIAlertAction( title: Localization.dontShowAgain, style: .default) { [weak self] _ in
-            self?.dontShowAgainTapped()
+            self?.viewModel.dontShowAgainTapped()
         }
         actionSheet.addAction(dontShowAgainAction)
 
         self.present(actionSheet, animated: true)
-    }
-
-    private func remindMeLaterTapped() {
-        viewModel.dismissIPPFeedbackBanner(remindLater: true, remindAfter: Settings.remindAfterDays)
-    }
-
-    private func dontShowAgainTapped() {
-        viewModel.dismissIPPFeedbackBanner(remindLater: false, remindAfter: nil)
     }
 }
 
@@ -911,7 +903,6 @@ private extension OrderListViewController {
         static let estimatedHeaderHeight = CGFloat(43)
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
-        static let remindAfterDays = 7
     }
 
     enum State {

@@ -196,23 +196,6 @@ final class OrderListViewModel {
         stores.dispatch(action)
     }
 
-    func dismissIPPFeedbackBanner(remindLater: Bool, remindAfter: Int?) {
-        //  Updates the IPP feedback banner status as dismissed
-        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .dismissed) { [weak self] _ in
-            self?.hideIPPFeedbackBanner = true
-        }
-        stores.dispatch(updateFeedbackStatus)
-
-        //  Updates the IPP feedback banner status to be reminded later, or never
-        let updateBannerVisibility = AppSettingsAction.setFeatureAnnouncementDismissed(
-            campaign: .IPP,
-            remindLater: remindLater,
-            remindAfter: remindAfter,
-            onCompletion: nil
-        )
-        stores.dispatch(updateBannerVisibility)
-    }
-
     /// Starts the snapshotsProvider, logging any errors.
     private func startReceivingSnapshots() {
         do {
@@ -368,6 +351,35 @@ final class OrderListViewModel {
     }
 }
 
+// MARK: - In-Person Payments Feedback Banner
+
+extension OrderListViewModel {
+    func dismissIPPFeedbackBanner(remindLater: Bool, remindAfter: Int?) {
+        //  Updates the IPP feedback banner status as dismissed
+        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .dismissed) { [weak self] _ in
+            self?.hideIPPFeedbackBanner = true
+        }
+        stores.dispatch(updateFeedbackStatus)
+
+        //  Updates the IPP feedback banner status to be reminded later, or never
+        let updateBannerVisibility = AppSettingsAction.setFeatureAnnouncementDismissed(
+            campaign: .IPP,
+            remindLater: remindLater,
+            remindAfter: remindAfter,
+            onCompletion: nil
+        )
+        stores.dispatch(updateBannerVisibility)
+    }
+
+    func remindMeLaterTapped() {
+        dismissIPPFeedbackBanner(remindLater: true, remindAfter: Constants.remindAfterDays)
+    }
+
+    func dontShowAgainTapped() {
+        dismissIPPFeedbackBanner(remindLater: false, remindAfter: nil)
+    }
+}
+
 // MARK: - Remote Notifications Observation
 
 private extension OrderListViewModel {
@@ -483,5 +495,6 @@ private extension OrderListViewModel {
         static let paymentMethodTitle = "WooCommerce In-Person Payments"
         static let receiptURLKey = "receipt_url"
         static let numberOfTransactions = 10
+        static let remindAfterDays = 7
     }
 }

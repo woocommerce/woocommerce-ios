@@ -178,8 +178,8 @@ public class AppSettingsStore: Store {
             setCouponManagementFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadCouponManagementFeatureSwitchState(let onCompletion):
             loadCouponManagementFeatureSwitchState(onCompletion: onCompletion)
-        case .setFeatureAnnouncementDismissed(campaign: let campaign, remindLater: let remindLater, remindAfter: let remindAfter, onCompletion: let completion):
-            setFeatureAnnouncementDismissed(campaign: campaign, remindLater: remindLater, remindAfter: remindAfter, onCompletion: completion)
+        case .setFeatureAnnouncementDismissed(campaign: let campaign, remindAfterDays: let remindAfterDays, onCompletion: let completion):
+            setFeatureAnnouncementDismissed(campaign: campaign, remindAfterDays: remindAfterDays, onCompletion: completion)
         case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
             getFeatureAnnouncementVisibility(campaign: campaign, onCompletion: completion)
         case .setSkippedCashOnDeliveryOnboardingStep(siteID: let siteID):
@@ -760,11 +760,13 @@ extension AppSettingsStore {
 
     func setFeatureAnnouncementDismissed(
         campaign: FeatureAnnouncementCampaign,
-        remindLater: Bool,
-        remindAfter: Int? = 14,
+        remindAfterDays: Int?,
         onCompletion: ((Result<Bool, Error>) -> ())?) {
             do {
-                let remindAfter = remindLater ? Date().addingDays(remindAfter ?? 14) : nil
+                guard let remindAfterDays else {
+                    return
+                }
+                let remindAfter = Date().addingDays(remindAfterDays)
                 let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: remindAfter)
 
                 let settings = generalAppSettings.settings

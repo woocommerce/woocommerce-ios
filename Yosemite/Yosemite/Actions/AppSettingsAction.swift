@@ -199,8 +199,7 @@ public enum AppSettingsAction: Action {
 
     case setFeatureAnnouncementDismissed(
         campaign: FeatureAnnouncementCampaign,
-        remindLater: Bool,
-        remindAfter: Int?,
+        remindAfterDays: Int?,
         onCompletion: ((Result<Bool, Error>) -> ())?
     )
 

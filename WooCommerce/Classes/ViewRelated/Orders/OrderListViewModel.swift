@@ -364,8 +364,7 @@ extension OrderListViewModel {
         //  Updates the IPP feedback banner status to be reminded later, or never
         let updateBannerVisibility = AppSettingsAction.setFeatureAnnouncementDismissed(
             campaign: .IPP,
-            remindLater: remindLater,
-            remindAfter: remindAfter,
+            remindAfterDays: remindAfter,
             onCompletion: nil
         )
         stores.dispatch(updateBannerVisibility)

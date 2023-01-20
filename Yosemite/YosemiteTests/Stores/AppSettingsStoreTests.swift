@@ -841,6 +841,23 @@ final class AppSettingsStoreTests: XCTestCase {
 
 extension AppSettingsStoreTests {
 
+    func test_setFeatureAnnouncementDismissed_for_campaign_when_remindAfterDays_is_nil_then_does_not_store_current_date() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
+        // When
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindAfterDays: nil, onCompletion: nil)
+        subject?.onAction(action)
+
+        // Then
+        var savedSettings: GeneralAppSettings? = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        XCTAssertNil(savedSettings)
+        guard let savedSettings else {
+            return
+        }
+        var savedDate: Date? = try XCTUnwrap( savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
+        XCTAssertNil(savedDate)
+    }
+
     func test_setFeatureAnnouncementDismissed_for_campaign_stores_current_date() throws {
         // Given
         let currentTime = Date()
@@ -848,7 +865,7 @@ extension AppSettingsStoreTests {
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
 
         // When
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindLater: false, remindAfter: nil, onCompletion: nil)
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindAfterDays: 0, onCompletion: nil)
         subject?.onAction(action)
 
         // Then
@@ -859,14 +876,15 @@ extension AppSettingsStoreTests {
         XCTAssert(Calendar.current.isDate(actualDismissDate, inSameDayAs: currentTime))
     }
 
-    func test_setFeatureAnnouncementDismissed_with_remindLater_true_stores_reminder_date_in_two_weeks() throws {
+    func test_setFeatureAnnouncementDismissed_with_remindAfterDays_two_weeks_stores_reminder_date_in_two_weeks() throws {
         // Given
-        let twoWeeksTime = Calendar.current.date(byAdding: .day, value: 14, to: Date())!
+        let remindAfterDays = 14
+        let twoWeeksTime = Calendar.current.date(byAdding: .day, value: remindAfterDays, to: Date())!
 
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
 
         // When
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindLater: true, remindAfter: nil, onCompletion: nil)
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindAfterDays: remindAfterDays, onCompletion: nil)
         subject?.onAction(action)
 
         // Then
@@ -877,14 +895,15 @@ extension AppSettingsStoreTests {
         XCTAssert(Calendar.current.isDate(actualRemindAfter, inSameDayAs: twoWeeksTime))
     }
 
-    func test_setFeatureAnnouncementDismissed_when_remindAfter_is_seven_days_stores_reminder_then_date_saved_date_is_one_week() throws {
+    func test_setFeatureAnnouncementDismissed_when_remindAfterDays_is_seven_days_stores_reminder_then_date_saved_date_is_one_week() throws {
         // Given
-        let oneWeekTime = Calendar.current.date(byAdding: .day, value: 7, to: Date())!
+        let remindAfterDays = 7
+        let oneWeekTime = Calendar.current.date(byAdding: .day, value: remindAfterDays, to: Date())!
 
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
 
         // When
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindLater: true, remindAfter: 7, onCompletion: nil)
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindAfterDays: remindAfterDays, onCompletion: nil)
         subject?.onAction(action)
 
         // Then
@@ -900,13 +919,14 @@ extension AppSettingsStoreTests {
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
 
         let currentTime = Date()
-        let date = Date(timeIntervalSince1970: 100)
+        let datePrior = Date(timeIntervalSince1970: 100)
+        let date = Date()
 
         let settings = createAppSettings(featureAnnouncementCampaignSettings: [.test: .init(dismissedDate: date, remindAfter: nil)])
         try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
 
         // When
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindLater: false, remindAfter: nil, onCompletion: nil)
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindAfterDays: 0, onCompletion: nil)
         subject?.onAction(action)
 
         // Then

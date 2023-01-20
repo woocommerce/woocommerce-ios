@@ -3,11 +3,14 @@ import XCTest
 import Yosemite
 import KeychainAccess
 @testable import Networking
-import WordPressShared
 
 /// SessionManager Unit Tests
 ///
 class SessionManagerTests: XCTestCase {
+
+    /// Sample Application Password
+    ///
+    private let applicationPassword = ApplicationPassword(wpOrgUsername: "username", password: .init("password"), uuid: "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e")
 
     /// CredentialsStorage Unit-Testing Instance
     ///
@@ -68,10 +71,9 @@ class SessionManagerTests: XCTestCase {
         // Given
         manager.defaultCredentials = Settings.wporgCredentials
         let storage = ApplicationPasswordStorage(keychain: Keychain(service: Settings.keychainServiceName))
-        let password = ApplicationPassword(wpOrgUsername: "username", password: Secret("pass"))
 
         // When
-        storage.saveApplicationPassword(password)
+        storage.saveApplicationPassword(applicationPassword)
 
         // Then
         XCTAssertNotNil(storage.applicationPassword)
@@ -91,10 +93,9 @@ class SessionManagerTests: XCTestCase {
         // Given
         manager.defaultCredentials = Settings.wporgCredentials
         let storage = ApplicationPasswordStorage(keychain: Keychain(service: Settings.keychainServiceName))
-        let password = ApplicationPassword(wpOrgUsername: "username", password: Secret("pass"))
 
         // When
-        storage.saveApplicationPassword(password)
+        storage.saveApplicationPassword(applicationPassword)
 
         // Then
         XCTAssertNotNil(storage.applicationPassword)

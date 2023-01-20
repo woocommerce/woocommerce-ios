@@ -102,13 +102,18 @@ enum ProductSettingsRows {
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
-            // If the password was not fetched, the cell is not selectable
-            guard settings.password != nil else {
+            let passwordProtectedAvailable = ServiceLocator.stores.isAuthenticatedWithoutWPCom == false
+            /// If the password was not fetched for user authenticated with WPCom,
+            /// the cell is not selectable
+            if settings.password == nil && passwordProtectedAvailable {
                 return
             }
 
             ServiceLocator.analytics.track(.productSettingsVisibilityTapped)
-            let viewController = ProductVisibilityViewController(settings: settings) { (productSettings) in
+            let viewController = ProductVisibilityViewController(
+                settings: settings,
+                showsPasswordProtectedVisibility: passwordProtectedAvailable
+            ) { (productSettings) in
                 self.settings.password = productSettings.password
                 self.settings.status = productSettings.status
                 onCompletion(self.settings)

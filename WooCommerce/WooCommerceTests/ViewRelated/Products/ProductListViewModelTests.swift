@@ -38,6 +38,25 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.productIsSelected(sampleProduct1))
     }
 
+    func test_selecting_multiple_products_works() {
+        // Given
+        let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
+        let sampleProduct1 = Product.fake().copy(productID: 1)
+        let sampleProduct2 = Product.fake().copy(productID: 2)
+        let sampleProduct3 = Product.fake().copy(productID: 3)
+        XCTAssertEqual(viewModel.selectedProductsCount, 0)
+
+        // When
+        viewModel.selectProduct(sampleProduct1)
+        viewModel.selectProducts([sampleProduct2, sampleProduct3])
+
+        // Then
+        XCTAssertEqual(viewModel.selectedProductsCount, 3)
+        XCTAssertTrue(viewModel.productIsSelected(sampleProduct1))
+        XCTAssertTrue(viewModel.productIsSelected(sampleProduct2))
+        XCTAssertTrue(viewModel.productIsSelected(sampleProduct3))
+    }
+
     func test_deselecting_not_selected_product_does_nothing() {
         // Given
         let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
@@ -120,6 +139,30 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedProductsCount, 0)
     }
 
+    func test_variation_helpers_work_correctly() {
+        // Given
+        let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
+        let sampleProduct1 = Product.fake().copy(productID: 1)
+        let sampleProduct2 = Product.fake().copy(productID: 2, productTypeKey: "variable")
+
+        // When
+        viewModel.selectProduct(sampleProduct1)
+        viewModel.selectProduct(sampleProduct2)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedProductsCount, 2)
+        XCTAssertEqual(viewModel.selectedVariableProductsCount, 1)
+        XCTAssertFalse(viewModel.onlyVariableProductsSelected)
+
+        // When
+        viewModel.deselectProduct(sampleProduct1)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedProductsCount, 1)
+        XCTAssertEqual(viewModel.selectedVariableProductsCount, 1)
+        XCTAssertTrue(viewModel.onlyVariableProductsSelected)
+    }
+
     func test_common_status_works_correctly() {
         // Given
         let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
@@ -140,6 +183,28 @@ final class ProductListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(viewModel.commonStatusForSelectedProducts)
+    }
+
+    func test_common_price_works_correctly() {
+        // Given
+        let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
+        let sampleProduct1 = Product.fake().copy(productID: 1, regularPrice: "100")
+        let sampleProduct2 = Product.fake().copy(productID: 2, regularPrice: "100")
+        let sampleProduct3 = Product.fake().copy(productID: 3, regularPrice: "200")
+        XCTAssertEqual(viewModel.commonPriceForSelectedProducts, .none)
+
+        // When
+        viewModel.selectProduct(sampleProduct1)
+        viewModel.selectProduct(sampleProduct2)
+
+        // Then
+        XCTAssertEqual(viewModel.commonPriceForSelectedProducts, .value("100"))
+
+        // When
+        viewModel.selectProduct(sampleProduct3)
+
+        // Then
+        XCTAssertEqual(viewModel.commonPriceForSelectedProducts, .mixed)
     }
 
     func test_updating_products_with_status_sets_correct_status() throws {
@@ -165,6 +230,37 @@ final class ProductListViewModelTests: XCTestCase {
         viewModel.selectProduct(sampleProduct3)
         let result = waitFor { promise in
             viewModel.updateSelectedProducts(with: .published) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_updating_products_with_price_sets_correct_price() throws {
+        // Given
+        let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
+        let sampleProduct1 = Product.fake().copy(productID: 1, regularPrice: "100")
+        let sampleProduct2 = Product.fake().copy(productID: 2, regularPrice: "100")
+        let sampleProduct3 = Product.fake().copy(productID: 3, regularPrice: "200")
+
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProducts(_, products, completion):
+                XCTAssertTrue(products.allSatisfy { $0.regularPrice == "150" })
+                completion(.success(products))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.selectProduct(sampleProduct1)
+        viewModel.selectProduct(sampleProduct2)
+        viewModel.selectProduct(sampleProduct3)
+        let result = waitFor { promise in
+            viewModel.updateSelectedProducts(with: "150") { result in
                 promise(result)
             }
         }

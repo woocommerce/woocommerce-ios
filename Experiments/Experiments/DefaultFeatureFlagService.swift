@@ -60,8 +60,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .applicationPasswordAuthenticationForSiteCredentialLogin:
             // Enable this to test application password authentication (WIP)
             return false
-        case .productsBulkEditing:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .domainSettings:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

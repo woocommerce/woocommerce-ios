@@ -1278,6 +1278,10 @@
 		AEE2610F26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE2610E26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift */; };
 		AEE2611126E6785400B142A0 /* EditOrderAddressFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE2611026E6785400B142A0 /* EditOrderAddressFormViewModelTests.swift */; };
 		AEE9A880293A3E5500227C92 /* RefreshablePlainList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE9A87F293A3E5500227C92 /* RefreshablePlainList.swift */; };
+		AEFF77A42978389400667F7A /* PriceInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFF77A32978389400667F7A /* PriceInputViewController.swift */; };
+		AEFF77A629783CA600667F7A /* PriceInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFF77A529783CA600667F7A /* PriceInputViewModel.swift */; };
+		AEFF77A829786A2900667F7A /* PriceInputViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFF77A729786A2900667F7A /* PriceInputViewControllerTests.swift */; };
+		AEFF77AA29786DAA00667F7A /* PriceInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFF77A929786DAA00667F7A /* PriceInputViewModelTests.swift */; };
 		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
 		B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED021C041DF000076A9 /* Locale+Woo.swift */; };
 		B509FED321C05121000076A9 /* SupportManagerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED221C05121000076A9 /* SupportManagerAdapter.swift */; };
@@ -3336,6 +3340,10 @@
 		AEE2610E26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOrderAddressFormViewModel.swift; sourceTree = "<group>"; };
 		AEE2611026E6785400B142A0 /* EditOrderAddressFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOrderAddressFormViewModelTests.swift; sourceTree = "<group>"; };
 		AEE9A87F293A3E5500227C92 /* RefreshablePlainList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshablePlainList.swift; sourceTree = "<group>"; };
+		AEFF77A32978389400667F7A /* PriceInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceInputViewController.swift; sourceTree = "<group>"; };
+		AEFF77A529783CA600667F7A /* PriceInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceInputViewModel.swift; sourceTree = "<group>"; };
+		AEFF77A729786A2900667F7A /* PriceInputViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceInputViewControllerTests.swift; sourceTree = "<group>"; };
+		AEFF77A929786DAA00667F7A /* PriceInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceInputViewModelTests.swift; sourceTree = "<group>"; };
 		B509112D2049E27A007D25DC /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		B509FED021C041DF000076A9 /* Locale+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locale+Woo.swift"; sourceTree = "<group>"; };
 		B509FED221C05121000076A9 /* SupportManagerAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportManagerAdapter.swift; sourceTree = "<group>"; };
@@ -5440,6 +5448,8 @@
 			children = (
 				093B265827DF15100026F92D /* BulkUpdatePriceViewControllerTests.swift */,
 				09BE3A9027C921A70070B69D /* BulkUpdatePriceSettingsViewModelTests.swift */,
+				AEFF77A729786A2900667F7A /* PriceInputViewControllerTests.swift */,
+				AEFF77A929786DAA00667F7A /* PriceInputViewModelTests.swift */,
 			);
 			path = "Bulk Edit Price";
 			sourceTree = "<group>";
@@ -6834,6 +6844,8 @@
 				020DD49023239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift */,
 				02564A89246CDF6100D6DB2A /* ProductsTopBannerFactory.swift */,
 				0279F0D9252DB4BE0098D7DE /* ProductVariationDetailsFactory.swift */,
+				AEFF77A32978389400667F7A /* PriceInputViewController.swift */,
+				AEFF77A529783CA600667F7A /* PriceInputViewModel.swift */,
 			);
 			path = Products;
 			sourceTree = "<group>";
@@ -10490,6 +10502,7 @@
 				26AC0DD92941081500859074 /* AnalyticsHubCustomRangeData.swift in Sources */,
 				CECC759723D607C900486676 /* OrderItemRefund+Woo.swift in Sources */,
 				03EF250228C615A5006A033E /* InPersonPaymentsMenuViewModel.swift in Sources */,
+				AEFF77A629783CA600667F7A /* PriceInputViewModel.swift in Sources */,
 				0212275C244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift in Sources */,
 				DEC6C51A2747758D006832D3 /* JetpackInstallView.swift in Sources */,
 				DE37517C28DC5FC6000163CB /* Authenticator.swift in Sources */,
@@ -10763,6 +10776,7 @@
 				024DF31923742C3F006658FE /* AztecFormatBarFactory.swift in Sources */,
 				02291737270BEFF200449FA0 /* ProcessConfiguration.swift in Sources */,
 				45CE2D322625AA9A00E3CA00 /* ShippingLabelPackageList.swift in Sources */,
+				AEFF77A42978389400667F7A /* PriceInputViewController.swift in Sources */,
 				02535CBB25823F7A00E137BB /* ShippingLabelPaperSize+UI.swift in Sources */,
 				CCD2E67E25DD4DC900BD975D /* ProductVariationsViewModel.swift in Sources */,
 				02C2756824F4E77F00286C04 /* ProductShippingSettingsViewModel.swift in Sources */,
@@ -11522,6 +11536,7 @@
 				0257285C230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift in Sources */,
 				FEED57FA2686544D00E47FD9 /* RoleErrorViewModelTests.swift in Sources */,
 				03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */,
+				AEFF77AA29786DAA00667F7A /* PriceInputViewModelTests.swift in Sources */,
 				EEC2D27F292CF60E0072132E /* LoginJetpackSetupHostingControllerTests.swift in Sources */,
 				4535EE82281BE726004212B4 /* CouponCodeInputFormatterTests.swift in Sources */,
 				DEF36DEC2898D64600178AC2 /* JetpackSetupWebViewModelTests.swift in Sources */,
@@ -11650,6 +11665,7 @@
 				57A5D8D92534FEBB00AA54D6 /* TotalRefundedCalculationUseCaseTests.swift in Sources */,
 				B5718D6521B56B400026C9F0 /* PushNotificationsManagerTests.swift in Sources */,
 				D8A8C4F32268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift in Sources */,
+				AEFF77A829786A2900667F7A /* PriceInputViewControllerTests.swift in Sources */,
 				02C2756F24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift in Sources */,
 				571FDDAE24C768DC00D486A5 /* MockZendeskManager.swift in Sources */,
 				45FBDF3C238D4EA800127F77 /* ExtendedAddProductImageCollectionViewCellTests.swift in Sources */,

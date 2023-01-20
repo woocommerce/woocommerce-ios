@@ -103,14 +103,22 @@ final class CardPresentPaymentPreflightController {
             return
         }
 
+        analytics.track(event: .InPersonPayments.cardReaderSelectTypeShown(forGatewayID: paymentGatewayAccount.gatewayID,
+                                                                           countryCode: configuration.countryCode))
         alertsPresenter.present(viewModel: CardPresentModalSelectSearchType(
             tapOnIPhoneAction: { [weak self] in
                 guard let self = self else { return }
+                self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeBuiltInTapped(
+                    forGatewayID: self.paymentGatewayAccount.gatewayID,
+                    countryCode: self.configuration.countryCode))
                 self.builtInConnectionController.searchAndConnect(
                     onCompletion: self.handleConnectionResult)
             },
             bluetoothAction: { [weak self] in
                 guard let self = self else { return }
+                self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeBluetoothTapped(
+                    forGatewayID: self.paymentGatewayAccount.gatewayID,
+                    countryCode: self.configuration.countryCode))
                 self.connectionController.searchAndConnect(
                     onCompletion: self.handleConnectionResult)
             },

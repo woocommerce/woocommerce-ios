@@ -93,6 +93,12 @@ final class CardReaderConnectionAnalyticsTracker {
                                         countryCode: configuration.countryCode,
                                         cardReaderModel: cardReaderModel))
     }
+
+    func automaticallyDisconnectedFromBuiltInReader() {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments
+            .manageCardReadersBuiltInReaderAutoDisconnect(forGatewayID: gatewayID,
+                                                          countryCode: configuration.countryCode))
+    }
 }
 
 private extension CardReaderConnectionAnalyticsTracker {

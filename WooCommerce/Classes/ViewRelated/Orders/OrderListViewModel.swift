@@ -346,6 +346,38 @@ final class OrderListViewModel {
     }
 }
 
+// MARK: - In-Person Payments Feedback Banner
+
+extension OrderListViewModel {
+    func dismissIPPFeedbackBanner(remindAfterDays: Int?) {
+        //  Updates the IPP feedback banner status as dismissed
+        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .dismissed) { [weak self] _ in
+            self?.hideIPPFeedbackBanner = true
+        }
+        stores.dispatch(updateFeedbackStatus)
+
+        //  Updates the IPP feedback banner status to be reminded later, or never
+        let updateBannerVisibility = AppSettingsAction.setFeatureAnnouncementDismissed(
+            campaign: .IPP,
+            remindAfterDays: remindAfterDays,
+            onCompletion: nil
+        )
+        stores.dispatch(updateBannerVisibility)
+    }
+
+    func IPPFeedbackBannerRemindMeLaterTapped() {
+        dismissIPPFeedbackBanner(remindAfterDays: Constants.remindIPPBannerDismissalAfterDays)
+    }
+
+    func IPPFeedbackBannerDontShowAgainTapped() {
+        dismissIPPFeedbackBanner(remindAfterDays: nil)
+    }
+
+    func IPPFeedbackBannerWasDismissed() {
+        dismissIPPFeedbackBanner(remindAfterDays: nil)
+    }
+}
+
 // MARK: - Remote Notifications Observation
 
 private extension OrderListViewModel {
@@ -461,5 +493,6 @@ private extension OrderListViewModel {
         static let paymentMethodTitle = "WooCommerce In-Person Payments"
         static let receiptURLKey = "receipt_url"
         static let numberOfTransactions = 10
+        static let remindIPPBannerDismissalAfterDays = 7
     }
 }

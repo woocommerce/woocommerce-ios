@@ -178,8 +178,8 @@ public class AppSettingsStore: Store {
             setCouponManagementFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadCouponManagementFeatureSwitchState(let onCompletion):
             loadCouponManagementFeatureSwitchState(onCompletion: onCompletion)
-        case .setFeatureAnnouncementDismissed(campaign: let campaign, remindLater: let remindLater, onCompletion: let completion):
-            setFeatureAnnouncementDismissed(campaign: campaign, remindLater: remindLater, onCompletion: completion)
+        case .setFeatureAnnouncementDismissed(campaign: let campaign, remindAfterDays: let remindAfterDays, onCompletion: let completion):
+            setFeatureAnnouncementDismissed(campaign: campaign, remindAfterDays: remindAfterDays, onCompletion: completion)
         case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
             getFeatureAnnouncementVisibility(campaign: campaign, onCompletion: completion)
         case .setSkippedCashOnDeliveryOnboardingStep(siteID: let siteID):
@@ -758,20 +758,26 @@ private extension AppSettingsStore {
 
 extension AppSettingsStore {
 
-    func setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool, onCompletion: ((Result<Bool, Error>) -> ())?) {
-        do {
-            let remindAfter = remindLater ? Date().addingDays(14) : nil
-            let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: remindAfter)
+    func setFeatureAnnouncementDismissed(
+        campaign: FeatureAnnouncementCampaign,
+        remindAfterDays: Int?,
+        onCompletion: ((Result<Bool, Error>) -> ())?) {
+            do {
+                guard let remindAfterDays else {
+                    return
+                }
+                let remindAfter = Date().addingDays(remindAfterDays)
+                let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: remindAfter)
 
-            let settings = generalAppSettings.settings
-            let settingsToSave = settings.replacing(featureAnnouncementSettings: newSettings, for: campaign)
-            try generalAppSettings.saveSettings(settingsToSave)
+                let settings = generalAppSettings.settings
+                let settingsToSave = settings.replacing(featureAnnouncementSettings: newSettings, for: campaign)
+                try generalAppSettings.saveSettings(settingsToSave)
 
-            onCompletion?(.success(true))
-        } catch {
-            onCompletion?(.failure(error))
+                onCompletion?(.success(true))
+            } catch {
+                onCompletion?(.failure(error))
+            }
         }
-    }
 
     func getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ()) {
         guard let campaignSettings = generalAppSettings.value(for: \.featureAnnouncementCampaignSettings)[campaign] else {

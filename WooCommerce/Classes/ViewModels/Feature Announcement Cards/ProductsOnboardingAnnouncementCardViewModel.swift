@@ -34,7 +34,7 @@ struct ProductsOnboardingAnnouncementCardViewModel: AnnouncementCardViewModelPro
     ///
     func dontShowAgainTapped() {
         let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .productsOnboarding,
-                                                                       remindLater: false,
+                                                                       remindAfterDays: nil,
                                                                        onCompletion: nil)
         ServiceLocator.stores.dispatch(action)
     }

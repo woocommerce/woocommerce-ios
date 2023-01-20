@@ -717,6 +717,7 @@
 		DE50296328C609DE00551736 /* jetpack-user-not-connected.json in Resources */ = {isa = PBXBuildFile; fileRef = DE50296228C609DE00551736 /* jetpack-user-not-connected.json */; };
 		DE50296528C60A8000551736 /* JetpackUserMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50296428C60A8000551736 /* JetpackUserMapperTests.swift */; };
 		DE5CA111288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */; };
+		DE66C5572976913C00DAA978 /* wcpay-charge-card-present-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C5562976913C00DAA978 /* wcpay-charge-card-present-without-data.json */; };
 		DE66C5532976508300DAA978 /* CookieNonceAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE66C5522976508300DAA978 /* CookieNonceAuthenticator.swift */; };
 		DE6F308727966FEF004E1C9A /* CouponReportListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */; };
 		DE74F29A27E08F5A0002FE59 /* SiteSettingMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */; };
@@ -1555,6 +1556,7 @@
 		DE50296228C609DE00551736 /* jetpack-user-not-connected.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "jetpack-user-not-connected.json"; sourceTree = "<group>"; };
 		DE50296428C60A8000551736 /* JetpackUserMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackUserMapperTests.swift; sourceTree = "<group>"; };
 		DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-malformed-variations-and-image-alt.json"; sourceTree = "<group>"; };
+		DE66C5562976913C00DAA978 /* wcpay-charge-card-present-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wcpay-charge-card-present-without-data.json"; sourceTree = "<group>"; };
 		DE66C5522976508300DAA978 /* CookieNonceAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieNonceAuthenticator.swift; sourceTree = "<group>"; };
 		DE6F308627966FEF004E1C9A /* CouponReportListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapperTests.swift; sourceTree = "<group>"; };
 		DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSettingMapper.swift; sourceTree = "<group>"; };
@@ -2185,6 +2187,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DE66C5562976913C00DAA978 /* wcpay-charge-card-present-without-data.json */,
 				DE4F2A432975684900B0701C /* site-api-without-data.json */,
 				DE4F2A3D29750EF400B0701C /* inbox-note-list-without-data.json */,
 				DE4F2A3E29750EF400B0701C /* inbox-note-without-data.json */,
@@ -3079,6 +3082,7 @@
 				31A451CC27863A2E00FE81AA /* stripe-account-rejected-fraud.json in Resources */,
 				31A451D827863A2E00FE81AA /* stripe-account-restricted-overdue.json in Resources */,
 				D865CE69278CA245002C8520 /* stripe-payment-intent-unknown-status.json in Resources */,
+				DE66C5572976913C00DAA978 /* wcpay-charge-card-present-without-data.json in Resources */,
 				DE42F9652967F34400D514C2 /* refund-single-without-data.json in Resources */,
 				0205021C27C86B9700FB1C6B /* inbox-note-without-isRead.json in Resources */,
 				24F98C622502EFF600F49B68 /* feature-flags-load-all.json in Resources */,

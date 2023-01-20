@@ -12,7 +12,12 @@ public class WCPayRemote: Remote {
                             completion: @escaping (Result<WCPayAccount, Error>) -> Void) {
         let parameters = [AccountParameterKeys.fields: AccountParameterValues.fieldValues]
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Path.accounts, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.accounts,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
 
         let mapper = WCPayAccountMapper()
 
@@ -34,7 +39,12 @@ public class WCPayRemote: Remote {
             CaptureOrderPaymentKeys.paymentIntentID: paymentIntentID
         ]
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
 
         let mapper = RemotePaymentIntentMapper()
 
@@ -52,7 +62,12 @@ public class WCPayRemote: Remote {
                             completion: @escaping (Result<WCPayCharge, Error>) -> Void) {
         let path = "\(Path.charges)/\(chargeID)"
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: [:])
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: [:],
+                                     availableAsRESTRequest: true)
 
         let mapper = WCPayChargeMapper(siteID: siteID)
 
@@ -69,7 +84,11 @@ extension WCPayRemote {
     ///   - completion: Closure to be executed upon completion.
     public func loadConnectionToken(for siteID: Int64,
                                     completion: @escaping(Result<ReaderConnectionToken, Error>) -> Void) {
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: Path.connectionTokens)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: Path.connectionTokens,
+                                     availableAsRESTRequest: true)
 
         let mapper = ReaderConnectionTokenMapper()
 
@@ -84,7 +103,12 @@ extension WCPayRemote {
     ///
     public func loadDefaultReaderLocation(for siteID: Int64,
                                           onCompletion: @escaping (Result<RemoteReaderLocation, Error>) -> Void) {
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Path.locations, parameters: [:])
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.locations,
+                                     parameters: [:],
+                                     availableAsRESTRequest: true)
 
         let mapper = RemoteReaderLocationMapper()
 

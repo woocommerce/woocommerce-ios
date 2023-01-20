@@ -1,1 +1,3 @@
-Exciting news! It's possible to generate every variation combination from your attributes. Please try it out and share your feedback!
+- [**] Adds a feature of bulk updating products from the product's list. [https://github.com/woocommerce/woocommerce-ios/pull/8704]
+- [internal] Store creation flow now includes 3 profiler questions: store category, selling status, and store country. [https://github.com/woocommerce/woocommerce-ios/pull/8667]
+

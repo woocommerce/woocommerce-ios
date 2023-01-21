@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.1
+-----
+
+
 12.0
 -----
 - [**] Adds a feature of bulk updating products from the product's list. [https://github.com/woocommerce/woocommerce-ios/pull/8704]

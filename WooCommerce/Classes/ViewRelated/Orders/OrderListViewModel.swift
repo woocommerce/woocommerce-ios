@@ -360,7 +360,7 @@ final class OrderListViewModel {
 // MARK: - In-Person Payments Feedback Banner
 
 extension OrderListViewModel {
-    func dismissIPPFeedbackBanner(remindAfterDays: Int?) {
+    func dismissIPPFeedbackBanner(remindAfterDays: Int?, campaign: FeatureAnnouncementCampaign) {
         //  Updates the IPP feedback banner status as dismissed
         let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .inPersonPayments, status: .dismissed) { [weak self] _ in
             self?.hideIPPFeedbackBanner = true
@@ -376,16 +376,16 @@ extension OrderListViewModel {
         stores.dispatch(updateBannerVisibility)
     }
 
-    func IPPFeedbackBannerRemindMeLaterTapped() {
-        dismissIPPFeedbackBanner(remindAfterDays: Constants.remindIPPBannerDismissalAfterDays)
+    func IPPFeedbackBannerRemindMeLaterTapped(for campaign: FeatureAnnouncementCampaign) {
+        dismissIPPFeedbackBanner(remindAfterDays: Constants.remindIPPBannerDismissalAfterDays, campaign: campaign)
     }
 
-    func IPPFeedbackBannerDontShowAgainTapped() {
-        dismissIPPFeedbackBanner(remindAfterDays: nil)
+    func IPPFeedbackBannerDontShowAgainTapped(for campaign: FeatureAnnouncementCampaign) {
+        dismissIPPFeedbackBanner(remindAfterDays: nil, campaign: campaign)
     }
 
-    func IPPFeedbackBannerWasDismissed() {
-        dismissIPPFeedbackBanner(remindAfterDays: nil)
+    func IPPFeedbackBannerWasDismissed(for campaign: FeatureAnnouncementCampaign) {
+        dismissIPPFeedbackBanner(remindAfterDays: nil, campaign: campaign)
     }
 }
 

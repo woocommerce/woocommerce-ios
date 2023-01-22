@@ -308,13 +308,10 @@ final class OrderListViewModel {
             }).count == 1 ? true : false
 
             if !hasInPersonPaymentsResults {
-                print("Have not yet completed any IPP transactions")
                 return .inPersonPaymentsCashOnDelivery
             } else if isFirstInPersonPaymentsTransaction && (recentIPPresultsCount < Constants.numberOfTransactions) {
-                print("Completed their first IPP (wcpay) transaction, but less than 10 transactions in the last 30 days")
                 return .inPersonPaymentsFirstTransaction
             } else if inPersonPaymentsResultsCount >= Constants.numberOfTransactions {
-                print("Completed more than 10 IPP (wcpay) transactions (in the last 30 days or not)")
                 return .inPersonPaymentsPowerUsers
             }
         }

@@ -369,7 +369,7 @@ extension OrderListViewModel {
 
         //  Updates the IPP feedback banner status to be reminded later, or never
         let updateBannerVisibility = AppSettingsAction.setFeatureAnnouncementDismissed(
-            campaign: .inPersonPaymentsCashOnDelivery, // TODO: Pass this dynamically, as we have 3 options
+            campaign: campaign,
             remindAfterDays: remindAfterDays,
             onCompletion: nil
         )

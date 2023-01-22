@@ -269,7 +269,7 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case let .loadFeedbackVisibility(.IPP, onCompletion):
+            case let .loadFeedbackVisibility(.inPersonPayments, onCompletion):
                 onCompletion(.success(true))
             default:
                 break

@@ -298,11 +298,11 @@ final class OrderListViewModel {
             let recentIPPresultsCount = recentIPPTransactionsFound.count
 
             if !hasResults {
-                return .IPP_COD
+                return .inPersonPaymentsCashOnDelivery
             } else if IPPresultsCount < Constants.numberOfTransactions {
-                return .IPP_firstTransaction
+                return .inPersonPaymentsFirstTransaction
             } else if recentIPPresultsCount >= Constants.numberOfTransactions {
-                return .IPP_powerUsers
+                return .inPersonPaymentsPowerUsers
             }
         }
         return nil

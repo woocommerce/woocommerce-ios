@@ -812,13 +812,13 @@ private extension OrderListViewController {
         var bannerText = ""
 
         switch survey {
-        case .IPP_COD :
+        case .inPersonPaymentsCashOnDelivery :
             bannerTitle = Localization.inPersonPaymentsCashOnDeliveryBannerTitle
             bannerText = Localization.inPersonPaymentsCashOnDeliveryBannerContent
-        case .IPP_firstTransaction:
+        case .inPersonPaymentsFirstTransaction:
             bannerTitle = Localization.inPersonPaymentsFirstTransactionBannerTitle
             bannerTitle = Localization.inPersonPaymentsFirstTransactionBannerContent
-        case .IPP_powerUsers:
+        case .inPersonPaymentsPowerUsers:
             bannerTitle = Localization.inPersonPaymentsPowerUsersBannerTitle
             bannerTitle = Localization.inPersonPaymentsPowerUsersBannerContent
         default:

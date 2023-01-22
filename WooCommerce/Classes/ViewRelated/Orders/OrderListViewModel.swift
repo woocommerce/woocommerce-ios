@@ -283,8 +283,16 @@ final class OrderListViewModel {
         }
     }
 
+    private func inPersonPaymentsFeedbackCampaignTracked(campaign: FeatureAnnouncementCampaign) {
+        ServiceLocator.analytics.track(event: .InPersonPaymentsFeedbackBanner.shown(
+            source: .orderList,
+            campaign: campaign)
+        )
+    }
+
     func feedbackBannerSurveySource() -> SurveyViewController.Source? {
         if isCODEnabled && isIPPSupportedCountry {
+
             let hasResults = IPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
 
             /// In order to filter WCPay transactions processed through IPP within the last 30 days,
@@ -297,18 +305,15 @@ final class OrderListViewModel {
             let IPPresultsCount = IPPTransactionsFound.count
 
             if !hasResults {
+                inPersonPaymentsFeedbackCampaignTracked(campaign: .inPersonPaymentsCashOnDelivery)
                 return .IPP_COD
             } else if IPPresultsCount < Constants.numberOfTransactions {
+                inPersonPaymentsFeedbackCampaignTracked(campaign: .inPersonPaymentsFirstTransaction)
                 return .IPP_firstTransaction
             } else if IPPresultsCount >= Constants.numberOfTransactions {
+                inPersonPaymentsFeedbackCampaignTracked(campaign: .inPersonPaymentsPowerUsers)
                 return .IPP_powerUsers
             }
-            // TODO: Move to view controller
-            // TODO: Campaign must be variable
-            ServiceLocator.analytics.track(event: .InPersonPaymentsFeedbackBanner.shown(
-                source: .orderList,
-                campaign: .inPersonPaymentsCashOnDelivery)
-            )
         }
         return nil
     }

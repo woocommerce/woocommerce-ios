@@ -802,34 +802,38 @@ private extension OrderListViewController {
     }
 
     private func createIPPFeedbackTopBanner(survey: SurveyViewController.Source) -> TopBannerView {
-        let shareIPPFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.shareFeedbackButton, action: { [weak self] _ in
-            self?.displayIPPFeedbackBannerSurvey(survey: survey)
-            ServiceLocator.analytics.track(
-                event: .InPersonPaymentsFeedbackBanner.ctaTapped(
-                    source: .orderList,
-                    campaign: .inPersonPaymentsCashOnDelivery // TODO: Campaign must be variable
-                ))
-            // We dismiss the banner at this point as we cannot know if the user successfully submitted it,
-            // but we can't track the event as dismissed
-            self?.viewModel.IPPFeedbackBannerWasDismissed()
-        })
-
         var bannerTitle = ""
         var bannerText = ""
+        var campaign: FeatureAnnouncementCampaign = .inPersonPaymentsCashOnDelivery
 
         switch survey {
         case .IPP_COD :
             bannerTitle = Localization.inPersonPaymentsCashOnDeliveryBannerTitle
             bannerText = Localization.inPersonPaymentsCashOnDeliveryBannerContent
+            campaign = .inPersonPaymentsCashOnDelivery
         case .IPP_firstTransaction:
             bannerTitle = Localization.inPersonPaymentsFirstTransactionBannerTitle
             bannerTitle = Localization.inPersonPaymentsFirstTransactionBannerContent
+            campaign = .inPersonPaymentsFirstTransaction
         case .IPP_powerUsers:
             bannerTitle = Localization.inPersonPaymentsPowerUsersBannerTitle
             bannerTitle = Localization.inPersonPaymentsPowerUsersBannerContent
+            campaign = .inPersonPaymentsPowerUsers
         default:
             break
         }
+
+        let shareIPPFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.shareFeedbackButton, action: { [weak self] _ in
+            self?.displayIPPFeedbackBannerSurvey(survey: survey)
+            ServiceLocator.analytics.track(
+                event: .InPersonPaymentsFeedbackBanner.ctaTapped(
+                    source: .orderList,
+                    campaign: campaign
+                ))
+            // We dismiss the banner at this point as we cannot know if the user successfully submitted it,
+            // but we can't track the event as dismissed
+            self?.viewModel.IPPFeedbackBannerWasDismissed()
+        })
 
         let viewModel = TopBannerViewModel(
             title: bannerTitle,
@@ -837,7 +841,7 @@ private extension OrderListViewController {
             icon: UIImage.gridicon(.comment),
             isExpanded: true,
             topButton: .dismiss(handler: {
-                self.showIPPFeedbackDismissAlert()
+                self.showIPPFeedbackDismissAlert(survey: survey, campaign: campaign)
             }),
             actionButtons: [shareIPPFeedbackAction]
         )
@@ -851,7 +855,7 @@ private extension OrderListViewController {
         self.present(surveyNavigation, animated: true, completion: nil)
     }
 
-    private func showIPPFeedbackDismissAlert() {
+    private func showIPPFeedbackDismissAlert(survey: SurveyViewController.Source, campaign: FeatureAnnouncementCampaign ) {
         let actionSheet = UIAlertController(
             title: Localization.dismissTitle,
             message: Localization.dismissMessage,
@@ -859,22 +863,22 @@ private extension OrderListViewController {
         )
 
         let remindMeLaterAction = UIAlertAction( title: Localization.remindMeLater, style: .default) { [weak self] _ in
-            //self?.viewModel.IPPFeedbackBannerRemindMeLaterTapped() TODO: Uncomment before merge
+            self?.viewModel.IPPFeedbackBannerRemindMeLaterTapped()
             ServiceLocator.analytics.track(
                 event: .InPersonPaymentsFeedbackBanner.dismissed(
                     source: .orderList,
-                    campaign: .inPersonPaymentsCashOnDelivery, // // TODO: Campaign must be variable
+                    campaign: campaign,
                     remindLater: true)
             )
         }
         actionSheet.addAction(remindMeLaterAction)
 
         let dontShowAgainAction = UIAlertAction( title: Localization.dontShowAgain, style: .default) { [weak self] _ in
-            //self?.viewModel.IPPFeedbackBannerDontShowAgainTapped() // TODO: Uncomment before merge
+            self?.viewModel.IPPFeedbackBannerDontShowAgainTapped()
             ServiceLocator.analytics.track(
                 event: .InPersonPaymentsFeedbackBanner.dismissed(
                     source: .orderList,
-                    campaign: .inPersonPaymentsCashOnDelivery, // TODO: Campaign must be variable
+                    campaign: campaign,
                     remindLater: false)
             )
         }

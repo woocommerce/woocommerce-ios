@@ -41,7 +41,7 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertEqual(site.timezone, "")
         XCTAssertEqual(site.siteID, -1)
         XCTAssertEqual(site.gmtOffset, 0)
-        XCTAssertEqual(site.adminURL, "https://test.com/wp-admin")
+        XCTAssertEqual(site.adminURL, "https://test.com/wp-admin/")
         XCTAssertEqual(site.loginURL, "https://test.com/wp-login.php")
         XCTAssertFalse(site.isWooCommerceActive)
         XCTAssertFalse(site.isJetpackConnected)

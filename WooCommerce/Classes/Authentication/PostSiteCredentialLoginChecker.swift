@@ -12,13 +12,16 @@ final class PostSiteCredentialLoginChecker {
     private let stores: StoresManager
     private let applicationPasswordUseCase: ApplicationPasswordUseCase
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
+    private let analytics: Analytics
 
     init(applicationPasswordUseCase: ApplicationPasswordUseCase,
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(stores: ServiceLocator.stores),
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.applicationPasswordUseCase = applicationPasswordUseCase
         self.roleEligibilityUseCase = roleEligibilityUseCase
         self.stores = stores
+        self.analytics = analytics
     }
 
     /// Checks whether the user is eligible to use the app.
@@ -40,27 +43,22 @@ private extension PostSiteCredentialLoginChecker {
     func checkApplicationPassword(for siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
                                   in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
-        Task {
+        Task { @MainActor in
             do {
                 let _ = try await useCase.generateNewPassword()
-                await MainActor.run {
-                    onSuccess()
-                }
-            } catch ApplicationPasswordUseCaseError.applicationPasswordsDisabled {
-                // show application password disabled error
-                await MainActor.run {
+                onSuccess()
+            } catch {
+                analytics.track(event: .Login.siteCredentialFailed(step: .applicationPasswordGeneration, error: error))
+                switch error {
+                case ApplicationPasswordUseCaseError.applicationPasswordsDisabled:
+                    // show application password disabled error
                     let errorUI = applicationPasswordDisabledUI(for: siteURL)
                     navigationController.show(errorUI, sender: nil)
-                }
-            } catch ApplicationPasswordUseCaseError.unauthorizedRequest {
-                await MainActor.run {
-                    self.showAlert(message: Localization.invalidLoginOrAdminURL, in: navigationController)
-                }
-            } catch {
-                // show generic error
-                await MainActor.run {
+                case ApplicationPasswordUseCaseError.unauthorizedRequest:
+                    showAlert(message: Localization.invalidLoginOrAdminURL, in: navigationController)
+                default:
                     DDLogError("⛔️ Error generating application password: \(error)")
-                    self.showAlert(
+                    showAlert(
                         message: Localization.applicationPasswordError,
                         in: navigationController,
                         onRetry: { [weak self] in
@@ -81,7 +79,9 @@ private extension PostSiteCredentialLoginChecker {
             case .success:
                 onSuccess()
             case .failure(let error):
+                self?.analytics.track(event: .Login.siteCredentialFailed(step: .userRole, error: error))
                 if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
+                    self?.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
                     self?.showRoleErrorScreen(for: WooConstants.placeholderStoreID,
                                              errorInfo: errorInfo,
                                              in: navigationController,
@@ -128,9 +128,11 @@ private extension PostSiteCredentialLoginChecker {
                 if site.isWooCommerceActive {
                     onSuccess()
                 } else {
+                    self?.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: nil))
                     self?.showAlert(message: Localization.noWooError, in: navigationController)
                 }
             case .failure(let error):
+                self?.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: error))
                 DDLogError("⛔️ Error checking Woo: \(error)")
                 // show generic error
                 self?.showAlert(message: Localization.wooCheckError, in: navigationController, onRetry: {

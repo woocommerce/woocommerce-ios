@@ -82,6 +82,12 @@ public enum WooAnalyticsStat: String {
     case loginInvalidEmailScreenViewed = "login_invalid_email_screen_viewed"
     case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
     case createAccountOnInvalidEmailScreenTapped = "create_account_on_invalid_email_screen"
+    case loginInsufficientRole = "login_insufficient_role"
+
+    // MARK: REST API login
+    //
+    case loginSiteAddressSiteInfoFetched = "login_site_address_site_info_fetched"
+    case loginSiteCredentialsFailed = "login_site_credentials_login_failed"
 
     // MARK: Site credentials
     //
@@ -182,6 +188,7 @@ public enum WooAnalyticsStat: String {
     case siteCreationStep = "site_creation_step"
     case siteCreationSitePreviewed = "site_creation_site_previewed"
     case siteCreationManageStoreTapped = "site_creation_store_management_opened"
+    case siteCreationProfilerData = "site_creation_profiler_data"
     case loginPrologueCreateSiteTapped = "login_prologue_create_site_tapped"
     case signupFormLoginTapped = "signup_login_button_tapped"
     case signupSubmitted = "signup_submitted"
@@ -472,6 +479,14 @@ public enum WooAnalyticsStat: String {
     case productListMenuSearchTapped = "product_list_menu_search_tapped"
     case productListAddProductTapped = "product_list_add_product_button_tapped"
     case productListClearFiltersTapped = "product_list_clear_filters_button_tapped"
+
+    // MARK: Product List Bulk Editing Events
+    //
+    case productListBulkUpdateRequested = "product_list_bulk_update_requested"
+    case productListBulkUpdateConfirmed = "product_list_bulk_update_confirmed"
+    case productListBulkUpdateSuccess = "product_list_bulk_update_success"
+    case productListBulkUpdateFailure = "product_list_bulk_update_failure"
+    case productListBulkUpdateSelectAllTapped = "product_list_bulk_update_select_all_tapped"
 
     // MARK: Add Product Events
     //

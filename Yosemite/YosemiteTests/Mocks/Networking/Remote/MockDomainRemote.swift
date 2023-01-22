@@ -4,8 +4,14 @@ import XCTest
 /// Mock for `DomainRemote`.
 ///
 final class MockDomainRemote {
-    /// The results to return in `loadDomainSuggestions`.
+    /// The results to return in `loadFreeDomainSuggestions`.
     private var loadDomainSuggestionsResult: Result<[FreeDomainSuggestion], Error>?
+
+    /// The results to return in `loadPaidDomainSuggestions`.
+    private var loadPaidDomainSuggestionsResult: Result<[PaidDomainSuggestion], Error>?
+
+    /// The results to return in `loadDomainProducts`.
+    private var loadDomainProductsResult: Result<[DomainProduct], Error>?
 
     /// The results to return in `loadDomains`.
     private var loadDomainsResult: Result<[SiteDomain], Error>?
@@ -13,6 +19,16 @@ final class MockDomainRemote {
     /// Returns the value when `loadDomainSuggestions` is called.
     func whenLoadingDomainSuggestions(thenReturn result: Result<[FreeDomainSuggestion], Error>) {
         loadDomainSuggestionsResult = result
+    }
+
+    /// Returns the value when `loadPaidDomainSuggestions` is called.
+    func whenLoadingPaidDomainSuggestions(thenReturn result: Result<[PaidDomainSuggestion], Error>) {
+        loadPaidDomainSuggestionsResult = result
+    }
+
+    /// Returns the value when `loadDomainProducts` is called.
+    func whenLoadingDomainProducts(thenReturn result: Result<[DomainProduct], Error>) {
+        loadDomainProductsResult = result
     }
 
     /// Returns the value when `loadDomains` is called.
@@ -31,13 +47,19 @@ extension MockDomainRemote: DomainRemoteProtocol {
     }
 
     func loadPaidDomainSuggestions(query: String) async throws -> [PaidDomainSuggestion] {
-        // TODO: 8558 - Yosemite layer for paid domains
-        throw NetworkError.notFound
+        guard let result = loadPaidDomainSuggestionsResult else {
+            XCTFail("Could not find result for loading domain suggestions.")
+            throw NetworkError.notFound
+        }
+        return try result.get()
     }
 
     func loadDomainProducts() async throws -> [DomainProduct] {
-        // TODO: 8558 - Yosemite layer for paid domains
-        throw NetworkError.notFound
+        guard let result = loadDomainProductsResult else {
+            XCTFail("Could not find result for loading domain products.")
+            throw NetworkError.notFound
+        }
+        return try result.get()
     }
 
     func loadDomains(siteID: Int64) async throws -> [SiteDomain] {

@@ -75,6 +75,12 @@ extension WooAnalyticsEvent {
         case orderCreation = "order_creation"
         /// Shown in beta feature banner for coupon management.
         case couponManagement = "coupon_management"
+        /// Shown in IPP banner for eligible merchants with no IPP transactions.
+        case inPersonPaymentsCashOnDeliveryBanner
+        /// Shown in IPP banner for eligible merchants with a few IPP transactions.
+        case inPersonPaymentsFirstTransactionBanner
+        /// Shown in IPP banner for eligible merchants with a significant number of IPP transactions.
+        case inPersonPaymentsPowerUsersBanner
     }
 
     /// The action performed on the survey screen.
@@ -896,6 +902,7 @@ extension WooAnalyticsEvent {
             static let softwareUpdateType = "software_update_type"
             static let source = "source"
             static let enabled = "enabled"
+            static let cancellationSource = "cancellation_source"
         }
 
         static let unknownGatewayID = "unknown"
@@ -1171,14 +1178,32 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func collectPaymentCanceled(forGatewayID: String?, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
+        static func collectPaymentCanceled(forGatewayID: String?,
+                                           countryCode: String,
+                                           cardReaderModel: String,
+                                           cancellationSource: CancellationSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentCanceled,
                               properties: [
                                 Keys.cardReaderModel: cardReaderModel,
                                 Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.cancellationSource: cancellationSource.rawValue
                               ]
             )
+        }
+
+        enum CancellationSource: String {
+            case appleTOSAcceptance = "apple_tap_to_pay_terms_acceptance"
+            case reader = "card_reader"
+            case selectReaderType = "preflight_select_reader_type"
+            case searchingForReader = "searching_for_reader"
+            case foundReader = "found_reader"
+            case foundSeveralReaders = "found_several_readers"
+            case paymentPreparingReader = "payment_preparing_reader"
+            case paymentWaitingForInput = "payment_waiting_for_input"
+            case connectionError = "connection_error"
+            case readerSoftwareUpdate = "reader_software_update"
+            case other = "unknown"
         }
 
         /// Tracked when payment collection succeeds
@@ -1795,6 +1820,44 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Products List
+//
+extension WooAnalyticsEvent {
+    enum ProductsList {
+        enum Keys: String {
+            case property
+            case selectedProductsCount = "selected_products_count"
+        }
+
+        enum BulkUpdateField: String {
+            case price
+            case status
+        }
+
+        static func bulkUpdateRequested(field: BulkUpdateField, selectedProductsCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateRequested, properties: [Keys.property.rawValue: field.rawValue,
+                                                                                      Keys.selectedProductsCount.rawValue: Int64(selectedProductsCount)])
+        }
+
+        static func bulkUpdateConfirmed(field: BulkUpdateField, selectedProductsCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateConfirmed, properties: [Keys.property.rawValue: field.rawValue,
+                                                                                      Keys.selectedProductsCount.rawValue: Int64(selectedProductsCount)])
+        }
+
+        static func bulkUpdateSuccess(field: BulkUpdateField) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateSuccess, properties: [Keys.property.rawValue: field.rawValue])
+        }
+
+        static func bulkUpdateFailure(field: BulkUpdateField) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateFailure, properties: [Keys.property.rawValue: field.rawValue])
+        }
+
+        static func bulkUpdateSelectAllTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateSelectAllTapped, properties: [:])
+        }
+    }
+}
+
 // MARK: - Analytics Hub
 //
 extension WooAnalyticsEvent {
@@ -1830,6 +1893,67 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .analyticsHubDateRangeSelectionFailed, properties: [Keys.option.rawValue: option.tracksIdentifier,
                                                                                             Keys.calendar.rawValue: Locale.current.calendar.debugDescription,
                                                                                             Keys.timezone.rawValue: TimeZone.current.debugDescription])
+        }
+    }
+}
+
+// MARK: - REST API Login
+//
+extension WooAnalyticsEvent {
+    enum Login {
+        enum Key: String {
+            case step
+            case currentRoles = "current_roles"
+            case exists
+            case hasWordPress = "is_wordpress"
+            case isWPCom = "is_wp_com"
+            case isJetpackInstalled = "has_jetpack"
+            case isJetpackActive = "is_jetpack_active"
+            case isJetpackConnected = "is_jetpack_connected"
+            case urlAfterRedirects = "url_after_redirects"
+        }
+
+        enum LoginSiteCredentialStep: String {
+            case authentication
+            case applicationPasswordGeneration = "application_password_generation"
+            case wooStatus = "woo_status"
+            case userRole = "user_role"
+        }
+
+        /// Tracks when the user attempts to log in with insufficient roles.
+        ///
+        static func insufficientRole(currentRoles: [String]) -> WooAnalyticsEvent {
+            let roles = String(currentRoles.sorted().joined(by: ","))
+            return WooAnalyticsEvent(statName: .loginInsufficientRole,
+                                     properties: [Key.currentRoles.rawValue: roles])
+        }
+
+        /// Tracks when the login with site credentials failed.
+        ///
+        static func siteCredentialFailed(step: LoginSiteCredentialStep, error: Error?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsFailed,
+                              properties: [Key.step.rawValue: step.rawValue],
+                              error: error)
+        }
+
+        /// Tracks when site info is fetched during site address login.
+        ///
+        static func siteInfoFetched(exists: Bool,
+                                    hasWordPress: Bool,
+                                    isWPCom: Bool,
+                                    isJetpackInstalled: Bool,
+                                    isJetpackActive: Bool,
+                                    isJetpackConnected: Bool,
+                                    urlAfterRedirects: String) -> WooAnalyticsEvent {
+            .init(statName: .loginSiteAddressSiteInfoFetched, properties: [
+                Key.exists.rawValue: exists,
+                Key.hasWordPress.rawValue: hasWordPress,
+                Key.isWPCom.rawValue: isWPCom,
+                Key.isJetpackInstalled.rawValue: isJetpackInstalled,
+                Key.isJetpackActive.rawValue: isJetpackActive,
+                Key.isJetpackConnected.rawValue: isJetpackConnected,
+                Key.urlAfterRedirects.rawValue: urlAfterRedirects
+            ])
         }
     }
 }

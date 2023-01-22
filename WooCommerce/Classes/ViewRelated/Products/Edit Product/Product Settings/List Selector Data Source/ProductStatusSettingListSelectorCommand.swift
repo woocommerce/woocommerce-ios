@@ -15,7 +15,7 @@ final class ProductStatusSettingListSelectorCommand: ListSelectorCommand {
         .pending
     ]
 
-    private(set) var selected: ProductStatus?
+    @Published private(set) var selected: ProductStatus?
 
     init(selected: ProductStatus?) {
         self.selected = selected

@@ -456,10 +456,33 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_active"] as? Bool))
         XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_connected"] as? Bool))
     }
+
+    func test_shouldPresentUsernamePasswordController_tracks_fetched_site_info() throws {
+        // Given
+        let navigationController = UINavigationController()
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: true, hasJetpack: true, isJetpackActive: true, isJetpackConnected: true)
+        let storage = MockStorageManager()
+        let manager = AuthenticationManager(storageManager: storage, analytics: analytics)
+
+        // When
+        manager.shouldPresentUsernamePasswordController(for: siteInfo) { _ in }
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.loginSiteAddressSiteInfoFetched.rawValue])
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_wordpress"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_wp_com"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["has_jetpack"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_active"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_connected"] as? Bool))
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["url_after_redirects"] as? String, siteInfo.url)
+    }
 }
 
 private extension AuthenticationManagerTests {
-    func siteInfo(url: String = "",
+    func siteInfo(url: String = "https://test.com",
                   exists: Bool = false,
                   hasWordPress: Bool = false,
                   isWordPressCom: Bool = false,

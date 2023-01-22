@@ -131,6 +131,11 @@ final class OrderListViewModel {
     ///
     @Published var hideOrdersBanners: Bool = true
 
+    /// If true, no IPP feedback banner will be shown as the user has told us that they are not interested in this information.
+    /// It is persisted through app sessions.
+    /// 
+    @Published var hideIPPFeedbackBanner: Bool = true
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -143,6 +148,10 @@ final class OrderListViewModel {
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) && !hideIPPFeedbackBanner {
+            topBanner = .IPPFeedback
+        }
     }
 
     deinit {
@@ -165,11 +174,6 @@ final class OrderListViewModel {
 
         observeForegroundRemoteNotifications()
         bindTopBannerState()
-        loadOrdersBannerVisibility()
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            fetchIPPTransactions()
-        }
     }
 
     func dismissOrdersBanner() {
@@ -183,6 +187,15 @@ final class OrderListViewModel {
         }
 
         stores.dispatch(action)
+    }
+
+    func updateBannerVisibility() {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+            syncIPPBannerVisibility()
+            loadOrdersBannerVisibility()
+        } else {
+            loadOrdersBannerVisibility()
+        }
     }
 
     /// Starts the snapshotsProvider, logging any errors.
@@ -206,6 +219,30 @@ final class OrderListViewModel {
         }
 
         stores.dispatch(action)
+    }
+
+    // This is a temporary method in order to update the IPP feedback status to `.pending`, and
+    // then load feedback visibility. We need to reset the banner status on UserDefaults for
+    // the banner to appear again for testing purposes.
+    private func syncIPPBannerVisibility() {
+        let action = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .pending) { _ in
+            self.loadIPPFeedbackBannerVisibility()
+            self.fetchIPPTransactions()
+        }
+        stores.dispatch(action)
+    }
+
+    private func loadIPPFeedbackBannerVisibility() {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .IPP) { [weak self] result in
+            switch result {
+            case .success(let visible):
+                self?.hideIPPFeedbackBanner = !visible
+            case .failure(let error):
+                self?.hideIPPFeedbackBanner = true
+                ServiceLocator.crashLogging.logError(error)
+            }
+        }
+        self.stores.dispatch(action)
     }
 
     @objc private func handleAppDeactivation() {
@@ -246,7 +283,7 @@ final class OrderListViewModel {
         }
     }
 
-    func displayIPPFeedbackBannerIfEligible() {
+    func feedbackBannerSurveySource() -> SurveyViewController.Source? {
         if isCODEnabled && isIPPSupportedCountry {
             let hasResults = IPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
             let IPPresultsCount = IPPOrdersResultsController.fetchedObjects.count
@@ -260,23 +297,15 @@ final class OrderListViewModel {
                 $0.paymentMethodTitle == Constants.paymentMethodTitle})
             let recentIPPresultsCount = recentIPPTransactionsFound.count
 
-            // TODO: Debug. Remove before merging
-            print("COD enabled? \(isCODEnabled) - Eligible Country? \(isIPPSupportedCountry)")
-            print("hasResults? \(hasResults)")
-            print("IPP transactions (all): \(IPPresultsCount)")
-            print("IPP transactions within 30 days: \(recentIPPresultsCount)")
-            print(recentIPPOrdersResultsController.fetchedObjects.map {
-                ("OrderID: \($0.orderID) - PaymentMethodID: \($0.paymentMethodID) (\($0.paymentMethodTitle) - DatePaid: \(String(describing: $0.datePaid))")
-            })
-
             if !hasResults {
-                 print("0 transactions. Banner 1 shown")
-             } else if IPPresultsCount < Constants.numberOfTransactions {
-                 print("< 10 transactions (all). Banner 2 shown")
-             } else if recentIPPresultsCount >= Constants.numberOfTransactions {
-                 print(">= 10 transactions within 30 days. Banner 3 shown")
-             }
+                return .IPP_COD
+            } else if IPPresultsCount < Constants.numberOfTransactions {
+                return .IPP_firstTransaction
+            } else if recentIPPresultsCount >= Constants.numberOfTransactions {
+                return .IPP_powerUsers
+            }
         }
+        return nil
     }
 
     private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {
@@ -315,6 +344,38 @@ final class OrderListViewModel {
 
     func updateFilters(filters: FilterOrderListViewModel.Filters?) {
         self.filters = filters
+    }
+}
+
+// MARK: - In-Person Payments Feedback Banner
+
+extension OrderListViewModel {
+    func dismissIPPFeedbackBanner(remindAfterDays: Int?) {
+        //  Updates the IPP feedback banner status as dismissed
+        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .dismissed) { [weak self] _ in
+            self?.hideIPPFeedbackBanner = true
+        }
+        stores.dispatch(updateFeedbackStatus)
+
+        //  Updates the IPP feedback banner status to be reminded later, or never
+        let updateBannerVisibility = AppSettingsAction.setFeatureAnnouncementDismissed(
+            campaign: .IPP,
+            remindAfterDays: remindAfterDays,
+            onCompletion: nil
+        )
+        stores.dispatch(updateBannerVisibility)
+    }
+
+    func IPPFeedbackBannerRemindMeLaterTapped() {
+        dismissIPPFeedbackBanner(remindAfterDays: Constants.remindIPPBannerDismissalAfterDays)
+    }
+
+    func IPPFeedbackBannerDontShowAgainTapped() {
+        dismissIPPFeedbackBanner(remindAfterDays: nil)
+    }
+
+    func IPPFeedbackBannerWasDismissed() {
+        dismissIPPFeedbackBanner(remindAfterDays: nil)
     }
 }
 
@@ -367,18 +428,18 @@ extension OrderListViewModel {
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
 
-        Publishers.CombineLatest(errorState, $hideOrdersBanners)
-            .map { hasError, hasDismissedOrdersBanners  -> TopBanner in
+        Publishers.CombineLatest3(errorState, $hideIPPFeedbackBanner, $hideOrdersBanners)
+            .map { hasError, hasDismissedIPPFeedbackBanner, hasDismissedOrdersBanners -> TopBanner in
 
-                if hasError {
+                guard !hasError else {
                     return .error
                 }
 
-                if hasDismissedOrdersBanners {
-                    return .none
+                guard hasDismissedIPPFeedbackBanner else {
+                    return .IPPFeedback
                 }
 
-                return .orderCreation
+                return hasDismissedOrdersBanners ? .none : .orderCreation
             }
             .assign(to: &$topBanner)
     }
@@ -421,6 +482,7 @@ extension OrderListViewModel {
     enum TopBanner {
         case error
         case orderCreation
+        case IPPFeedback
         case none
     }
 }
@@ -432,5 +494,6 @@ private extension OrderListViewModel {
         static let paymentMethodTitle = "WooCommerce In-Person Payments"
         static let receiptURLKey = "receipt_url"
         static let numberOfTransactions = 10
+        static let remindIPPBannerDismissalAfterDays = 7
     }
 }

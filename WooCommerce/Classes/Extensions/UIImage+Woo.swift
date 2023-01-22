@@ -1170,6 +1170,10 @@ extension UIImage {
     static var builtInReaderSuccess: UIImage {
         return UIImage(named: "built-in-reader-payment-success")!
     }
+
+    static var builtInReaderError: UIImage {
+        return UIImage(named: "built-in-reader-error")!
+    }
 }
 
 private extension UIImage {

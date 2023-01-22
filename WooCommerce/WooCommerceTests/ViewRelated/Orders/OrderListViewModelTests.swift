@@ -239,7 +239,9 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertFalse(resynchronizeRequested)
     }
 
-    func test_when_having_no_error__and_orders_banner_should_not_be_shown_shows_nothing() {
+    // MARK: - Banner visibility
+
+    func test_when_having_no_error_and_orders_banner_should_not_be_shown_shows_nothing() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -250,13 +252,39 @@ final class OrderListViewModelTests: XCTestCase {
                 break
             }
         }
+        viewModel.activate()
 
         // When
-        viewModel.activate()
+        viewModel.updateBannerVisibility()
+        viewModel.hideIPPFeedbackBanner = true
 
         // Then
         waitUntil {
             viewModel.topBanner == .none
+        }
+    }
+
+    func test_when_having_no_error_and_IPP_banner_should_be_shown_shows_IPP_banner() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(.IPP, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        viewModel.activate()
+
+        // When
+        viewModel.updateBannerVisibility()
+        viewModel.hideIPPFeedbackBanner = false
+
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .IPPFeedback
         }
     }
 
@@ -271,13 +299,46 @@ final class OrderListViewModelTests: XCTestCase {
                 break
             }
         }
+        viewModel.activate()
 
         // When
-        viewModel.activate()
+        viewModel.updateBannerVisibility()
+        viewModel.hideIPPFeedbackBanner = true
 
         // Then
         waitUntil {
             viewModel.topBanner == .orderCreation
+        }
+    }
+
+    func test_when_having_no_error_and_orders_banner_or_IPP_banner_should_be_shown_shows_correct_banner() {
+        // Given
+        let isIPPFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(.ordersCreation, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        viewModel.activate()
+
+        // When
+        viewModel.updateBannerVisibility()
+
+        // Then
+        if isIPPFeatureFlagEnabled {
+            viewModel.hideIPPFeedbackBanner = false
+            waitUntil {
+                viewModel.topBanner == .IPPFeedback
+            }
+        } else {
+            waitUntil {
+                viewModel.topBanner == .orderCreation
+            }
         }
     }
 
@@ -293,9 +354,10 @@ final class OrderListViewModelTests: XCTestCase {
                 break
             }
         }
+        viewModel.activate()
 
         // When
-        viewModel.activate()
+        viewModel.updateBannerVisibility()
 
         // Then
         waitUntil {
@@ -306,9 +368,10 @@ final class OrderListViewModelTests: XCTestCase {
     func test_storing_error_shows_error_banner() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
+        viewModel.activate()
 
         // When
-        viewModel.activate()
+        viewModel.updateBannerVisibility()
         viewModel.hasErrorLoadingData = true
 
         // Then
@@ -317,12 +380,14 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
-    func test_dismissing_orders_banners_does_not_show_banners() {
+    func test_dismissing_banners_does_not_show_banners() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        viewModel.activate()
 
         // When
-        viewModel.activate()
+        viewModel.updateBannerVisibility()
+        viewModel.hideIPPFeedbackBanner = true
         viewModel.hideOrdersBanners = true
 
         // Then
@@ -334,9 +399,10 @@ final class OrderListViewModelTests: XCTestCase {
     func test_hiding_orders_banners_still_shows_error_banner() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
+        viewModel.activate()
 
         // When
-        viewModel.activate()
+        viewModel.updateBannerVisibility()
         viewModel.hasErrorLoadingData = true
         viewModel.hideOrdersBanners = true
 

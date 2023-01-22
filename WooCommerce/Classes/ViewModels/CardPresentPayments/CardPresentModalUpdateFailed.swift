@@ -11,7 +11,7 @@ final class CardPresentModalUpdateFailed: CardPresentPaymentsModalViewModel {
 
     var topSubtitle: String? = nil
 
-    let image: UIImage = .paymentErrorImage
+    let image: UIImage
 
     let primaryButtonTitle: String? = Localization.tryAgain
 
@@ -27,7 +27,8 @@ final class CardPresentModalUpdateFailed: CardPresentPaymentsModalViewModel {
         return topTitle
     }
 
-    init(tryAgain: @escaping () -> Void, close: @escaping () -> Void) {
+    init(image: UIImage = .paymentErrorImage, tryAgain: @escaping () -> Void, close: @escaping () -> Void) {
+        self.image = image
         self.tryAgain = tryAgain
         self.close = close
     }

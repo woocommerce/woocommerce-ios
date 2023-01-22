@@ -39,6 +39,25 @@ class SitePluginsMapperTests: XCTestCase {
         XCTAssertEqual(wooCommerceSubscriptionsPlugin.version, "3.0.13")
         XCTAssertEqual(wooCommerceSubscriptionsPlugin.textDomain, "woocommerce-subscriptions")
     }
+
+    /// Verifies the SitePlugin fields are parsed correctly.
+    ///
+    func test_SitePlugin_fields_are_properly_parsed_when_response_has_no_data_envelope() {
+        let plugins = mapLoadSitePluginsResponseWithoutDataEnvelope()
+        XCTAssertEqual(plugins.count, 3)
+
+        let helloDollyPlugin = plugins[0]
+        XCTAssertNotNil(helloDollyPlugin)
+        XCTAssertEqual(helloDollyPlugin.siteID, dummySiteID)
+        XCTAssertEqual(helloDollyPlugin.status, .inactive)
+        XCTAssertEqual(helloDollyPlugin.name, "Hello Dolly")
+        XCTAssertEqual(helloDollyPlugin.pluginUri, "http://wordpress.org/plugins/hello-dolly/")
+        XCTAssertEqual(helloDollyPlugin.authorUri, "http://ma.tt/")
+        XCTAssertEqual(helloDollyPlugin.descriptionRaw, "This is not just a plugin, it...")
+        XCTAssertEqual(helloDollyPlugin.descriptionRendered, "This is not just a plugin, it symbolizes...")
+        XCTAssertEqual(helloDollyPlugin.version, "1.7.2")
+        XCTAssertEqual(helloDollyPlugin.textDomain, "")
+    }
 }
 
 
@@ -60,5 +79,11 @@ private extension SitePluginsMapperTests {
     ///
     func mapLoadSitePluginsResponse() -> [SitePlugin] {
         return mapPlugins(from: "plugins")
+    }
+
+    /// Returns the SitePluginsMapper output upon receiving `plugins-without-data`
+    ///
+    func mapLoadSitePluginsResponseWithoutDataEnvelope() -> [SitePlugin] {
+        return mapPlugins(from: "plugins-without-data")
     }
 }

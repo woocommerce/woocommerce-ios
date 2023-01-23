@@ -20,7 +20,11 @@ struct ProductCategoryMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(ProductCategoryEnvelope.self, from: response).productCategory
+        do {
+            return try decoder.decode(ProductCategoryEnvelope.self, from: response).productCategory
+        } catch {
+            return try decoder.decode(ProductCategory.self, from: response)
+        }
     }
 }
 

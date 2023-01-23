@@ -209,6 +209,68 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(mockRequestAuthenticator.generateApplicationPasswordCalled)
     }
+
+    // MARK: Notification center
+    //
+    func test_notification_is_posted_when_application_password_generation_is_successful() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+                promise(())
+            }
+        }
+
+        // Then
+        waitUntil {
+            self.mockNotificationCenter.notificationName == .ApplicationPasswordsNewPasswordCreated
+        }
+    }
+
+    func test_notification_is_posted_when_application_password_generation_fails() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = ApplicationPasswordUseCaseError.applicationPasswordsDisabled
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+                promise(())
+            }
+        }
+
+        // Then
+        waitUntil {
+            self.mockNotificationCenter.notificationName == .ApplicationPasswordsGenerationFailed
+        }
+    }
+
+    func test_posted_notification_holds_expected_error_when_application_password_generation_fails() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        let applicationPasswordGenerationError = ApplicationPasswordUseCaseError.applicationPasswordsDisabled
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = applicationPasswordGenerationError
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+                promise(())
+            }
+        }
+
+        // Then
+        waitUntil {
+            (self.mockNotificationCenter.notificationObject as? ApplicationPasswordUseCaseError) == applicationPasswordGenerationError
+        }
+    }
 }
 
 // MARK: Helpers

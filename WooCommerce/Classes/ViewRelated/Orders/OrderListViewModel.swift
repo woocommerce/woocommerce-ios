@@ -368,6 +368,22 @@ extension OrderListViewModel {
     func IPPFeedbackBannerWasDismissed() {
         dismissIPPFeedbackBanner(remindAfterDays: nil)
     }
+
+    func IPPFeedbackBannerWasSubmitted() {
+        //  Updates the IPP feedback banner status as given
+        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .given(Date())) { [weak self] _ in
+            self?.hideIPPFeedbackBanner = true
+        }
+        stores.dispatch(updateFeedbackStatus)
+
+        //  Updates the IPP feedback banner status to not be reminded again
+        let updateBannerVisibility = AppSettingsAction.setFeatureAnnouncementDismissed(
+            campaign: .IPP,
+            remindAfterDays: nil,
+            onCompletion: nil
+        )
+        stores.dispatch(updateBannerVisibility)
+    }
 }
 
 // MARK: - Remote Notifications Observation

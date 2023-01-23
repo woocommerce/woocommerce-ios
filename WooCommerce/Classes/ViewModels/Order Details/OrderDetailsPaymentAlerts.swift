@@ -27,9 +27,6 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         }
     }
 
-    private var name: String = ""
-    private var amount: String = ""
-
     private let transactionType: CardPresentTransactionType
 
     private let alertsProvider: CardReaderTransactionAlertsProviding
@@ -58,9 +55,6 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
                          amount: String,
                          inputMethods: CardReaderInput,
                          onCancel: @escaping () -> Void) {
-        self.name = title
-        self.amount = amount
-
         // Initial presentation of the modal view controller. We need to provide
         // a customer name and an amount.
         let viewModel = alertsProvider.tapOrInsertCard(title: title,
@@ -75,8 +69,8 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         presentViewModel(viewModel: viewModel)
     }
 
-    func processingPayment() {
-        let viewModel = alertsProvider.processingTransaction()
+    func processingPayment(title: String) {
+        let viewModel = alertsProvider.processingTransaction(title: title)
         presentViewModel(viewModel: viewModel)
     }
 

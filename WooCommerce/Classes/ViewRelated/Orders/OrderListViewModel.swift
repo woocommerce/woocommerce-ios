@@ -379,6 +379,14 @@ extension OrderListViewModel {
         stores.dispatch(updateBannerVisibility)
     }
 
+    func IPPFeedbackBannerCTATapped(for campaign: FeatureAnnouncementCampaign) {
+        analytics.track(
+            event: .InPersonPaymentsFeedbackBanner.ctaTapped(
+                source: .orderList,
+                campaign: campaign
+            ))
+    }
+
     func IPPFeedbackBannerRemindMeLaterTapped(for campaign: FeatureAnnouncementCampaign) {
         analytics.track(
             event: .InPersonPaymentsFeedbackBanner.dismissed(

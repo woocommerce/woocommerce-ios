@@ -795,6 +795,7 @@
 		EE57C1152979371B00BC31E7 /* ApplicationPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C1142979371B00BC31E7 /* ApplicationPassword.swift */; };
 		EE57C11729794BD500BC31E7 /* ApplicationPasswordNameAndUUIDMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11629794BD500BC31E7 /* ApplicationPasswordNameAndUUIDMapperTests.swift */; };
 		EE57C11929794DCA00BC31E7 /* get-application-passwords-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C11829794DCA00BC31E7 /* get-application-passwords-success.json */; };
+		EE57C123297EB04F00BC31E7 /* product-attribute-create-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C122297EB04F00BC31E7 /* product-attribute-create-without-data.json */; };
 		EE62EE61295ACF8D009C965B /* RequestConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE60295ACF8D009C965B /* RequestConverterTests.swift */; };
 		EE62EE63295AD45E009C965B /* String+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE62295AD45E009C965B /* String+URL.swift */; };
 		EE62EE65295AD46D009C965B /* String+URLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE64295AD46D009C965B /* String+URLTests.swift */; };
@@ -1648,6 +1649,7 @@
 		EE57C1142979371B00BC31E7 /* ApplicationPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPassword.swift; sourceTree = "<group>"; };
 		EE57C11629794BD500BC31E7 /* ApplicationPasswordNameAndUUIDMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordNameAndUUIDMapperTests.swift; sourceTree = "<group>"; };
 		EE57C11829794DCA00BC31E7 /* get-application-passwords-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "get-application-passwords-success.json"; sourceTree = "<group>"; };
+		EE57C122297EB04F00BC31E7 /* product-attribute-create-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-attribute-create-without-data.json"; sourceTree = "<group>"; };
 		EE62EE60295ACF8D009C965B /* RequestConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestConverterTests.swift; sourceTree = "<group>"; };
 		EE62EE62295AD45E009C965B /* String+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+URL.swift"; sourceTree = "<group>"; };
 		EE62EE64295AD46D009C965B /* String+URLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+URLTests.swift"; sourceTree = "<group>"; };
@@ -2382,6 +2384,7 @@
 				AEA056E3296DBA6E00948D52 /* products-batch-update.json */,
 				45152818257A84A60076B03C /* product-attributes-all.json */,
 				4515281E257A89B90076B03C /* product-attribute-create.json */,
+				EE57C122297EB04F00BC31E7 /* product-attribute-create-without-data.json */,
 				45152824257A8B740076B03C /* product-attribute-update.json */,
 				4515282A257A8C010076B03C /* product-attribute-delete.json */,
 				026CF623237D839A009563D4 /* product-variations-load-all.json */,
@@ -3342,6 +3345,7 @@
 				020D07C223D858BB00FD9580 /* media-upload.json in Resources */,
 				31A451D127863A2E00FE81AA /* stripe-account-rejected-other.json in Resources */,
 				DEF13C5029629EEA0024A02B /* user-complete-without-data.json in Resources */,
+				EE57C123297EB04F00BC31E7 /* product-attribute-create-without-data.json in Resources */,
 				EE57C11929794DCA00BC31E7 /* get-application-passwords-success.json in Resources */,
 				74ABA1CA213F19FE00FFAD30 /* top-performers-year.json in Resources */,
 				DEF13C5C2965812D0024A02B /* order-stats-v4-year-without-data.json in Resources */,

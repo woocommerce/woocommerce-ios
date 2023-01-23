@@ -451,6 +451,68 @@ final class OrderListViewModelTests: XCTestCase {
         // Assert
         XCTAssertFalse(resynchronizeRequested)
     }
+
+    func test_IPPFeedbackBannerWasSubmitted_hides_banner_after_being_called() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
+
+        // When
+        viewModel.IPPFeedbackBannerWasSubmitted()
+        viewModel.hasErrorLoadingData = false
+        viewModel.hideOrdersBanners = true
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .none
+        }
+    }
+
+    func test_feedback_status_when_IPPFeedbackBannerWasSubmitted_is_called_then_feedback_status_is_not_nil() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        var updatedFeedbackStatus: FeedbackSettings.Status?
+
+        // When
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(.IPP, onCompletion):
+                onCompletion(.success(true))
+            case let .updateFeedbackStatus(.IPP, status, onCompletion):
+                updatedFeedbackStatus = status
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        viewModel.activate()
+        viewModel.IPPFeedbackBannerWasSubmitted()
+
+        // Then
+        assertEqual(2, stores.receivedActions.count)
+        XCTAssertNotNil(updatedFeedbackStatus)
+    }
+
+    func test_feedback_status_when_IPPFeedbackBannerWasSubmitted_is_not_called_then_feedback_status_is_nil() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        var feedbackStatus: FeedbackSettings.Status?
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .updateFeedbackStatus(.IPP, status, onCompletion):
+                feedbackStatus = status
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        // When
+        viewModel.activate()
+
+        // Then
+        assertEqual(nil, feedbackStatus)
+    }
 }
 
 // MARK: - Helpers

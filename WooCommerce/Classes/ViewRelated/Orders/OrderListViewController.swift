@@ -863,23 +863,11 @@ private extension OrderListViewController {
 
         let remindMeLaterAction = UIAlertAction( title: Localization.remindMeLater, style: .default) { [weak self] _ in
             self?.viewModel.IPPFeedbackBannerRemindMeLaterTapped(for: campaign)
-            ServiceLocator.analytics.track(
-                event: .InPersonPaymentsFeedbackBanner.dismissed(
-                    source: .orderList,
-                    campaign: campaign,
-                    remindLater: true)
-            )
         }
         actionSheet.addAction(remindMeLaterAction)
 
         let dontShowAgainAction = UIAlertAction( title: Localization.dontShowAgain, style: .default) { [weak self] _ in
             self?.viewModel.IPPFeedbackBannerDontShowAgainTapped(for: campaign)
-            ServiceLocator.analytics.track(
-                event: .InPersonPaymentsFeedbackBanner.dismissed(
-                    source: .orderList,
-                    campaign: campaign,
-                    remindLater: false)
-            )
         }
         actionSheet.addAction(dontShowAgainAction)
 

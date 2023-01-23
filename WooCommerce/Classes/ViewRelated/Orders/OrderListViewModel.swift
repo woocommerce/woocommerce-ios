@@ -21,6 +21,7 @@ import protocol Storage.StorageManagerType
 final class OrderListViewModel {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let analytics: Analytics
     private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
 
@@ -139,12 +140,14 @@ final class OrderListViewModel {
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          filters: FilterOrderListViewModel.Filters?) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
+        self.analytics = analytics
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
@@ -284,7 +287,7 @@ final class OrderListViewModel {
     }
 
     private func inPersonPaymentsFeedbackCampaignTracked(campaign: FeatureAnnouncementCampaign) {
-        ServiceLocator.analytics.track(event: .InPersonPaymentsFeedbackBanner.shown(
+        analytics.track(event: .InPersonPaymentsFeedbackBanner.shown(
             source: .orderList,
             campaign: campaign)
         )
@@ -377,10 +380,22 @@ extension OrderListViewModel {
     }
 
     func IPPFeedbackBannerRemindMeLaterTapped(for campaign: FeatureAnnouncementCampaign) {
+        analytics.track(
+            event: .InPersonPaymentsFeedbackBanner.dismissed(
+                source: .orderList,
+                campaign: campaign,
+                remindLater: true)
+        )
         dismissIPPFeedbackBanner(remindAfterDays: Constants.remindIPPBannerDismissalAfterDays, campaign: campaign)
     }
 
     func IPPFeedbackBannerDontShowAgainTapped(for campaign: FeatureAnnouncementCampaign) {
+        analytics.track(
+            event: .InPersonPaymentsFeedbackBanner.dismissed(
+                source: .orderList,
+                campaign: campaign,
+                remindLater: false)
+        )
         dismissIPPFeedbackBanner(remindAfterDays: nil, campaign: campaign)
     }
 

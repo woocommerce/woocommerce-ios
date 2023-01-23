@@ -85,3 +85,15 @@ private extension RequestProcessor {
         requestsToRetry.removeAll()
     }
 }
+
+// MARK: - Application Password Notifications
+//
+public extension NSNotification.Name {
+    /// Posted whenever a new password was created when a  regeneration is needed.
+    ///
+    static let ApplicationPasswordsNewPasswordCreated = NSNotification.Name(rawValue: "ApplicationPasswordsNewPasswordCreated")
+
+    /// Posted when generating an application password fails
+    ///
+    static let ApplicationPasswordsGenerationFailed = NSNotification.Name(rawValue: "ApplicationPasswordsGenerationFailed")
+}

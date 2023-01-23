@@ -57,9 +57,9 @@ extension KeyedDecodingContainer {
                     return transform(result)
                 }
             case .integer(transform: let transform):
-                            if let result = failsafeDecodeIfPresent(integerForKey: key) {
-                                return transform(result)
-                            }
+                if let result = failsafeDecodeIfPresent(integerForKey: key) {
+                    return transform(result)
+                }
             }
         }
         return nil

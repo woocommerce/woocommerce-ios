@@ -10,7 +10,7 @@ final class CardPresentModalUpdateFailedNonRetryable: CardPresentPaymentsModalVi
 
     var topSubtitle: String? = nil
 
-    let image: UIImage = .paymentErrorImage
+    let image: UIImage
 
     let primaryButtonTitle: String? = nil
 
@@ -26,7 +26,8 @@ final class CardPresentModalUpdateFailedNonRetryable: CardPresentPaymentsModalVi
         return topTitle
     }
 
-    init(close: @escaping () -> Void) {
+    init(image: UIImage = .paymentErrorImage, close: @escaping () -> Void) {
+        self.image = image
         self.close = close
     }
 

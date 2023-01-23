@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "illustration - Processing payment-light.pdf",
+      "filename" : "illustration - error-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,15 +11,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "illustration - Processing payment-dark.pdf",
+      "filename" : "illustration - error-dark.pdf",
       "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "preserves-vector-representation" : true
   }
 }

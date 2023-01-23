@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-11 10:54:17+0000 */
+/* Translation-Revision-Date: 2023-01-18 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -71,6 +71,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "已申请 %1$@ 退款 (%2$@)";
+
+/* Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected */
+"%1$@ selected" = "已选择 %1$@ 项";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
 "%1$@ total" = "%1$@ 总值";
@@ -418,7 +421,8 @@ which should be translated separately and considered part of this sentence. */
    Add tracking screen - title. */
 "Add Tracking" = "添加跟踪";
 
-/* Title on empty state button when the product has attributes but no variations */
+/* Title on empty state button when the product has attributes but no variations
+   Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "添加变体";
 
 /* Button title on the store picker for store creation */
@@ -592,6 +596,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "您需要的所有功能，皆已内置其中";
+
+/* Message for the notice when there were no variations to generate */
+"All variations are already generated." = "所有变体都已生成。";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "允许";
@@ -1047,6 +1054,9 @@ which should be translated separately and considered part of this sentence. */
    Title that appears on top of the bulk update of product variations screen */
 "Bulk Update" = "批量更新";
 
+/* Title of a button that presents a menu with possible products bulk update options */
+"Bulk update" = "批量更新";
+
 /* Country option for a site address. */
 "Burkina Faso" = "布基纳法索";
 
@@ -1175,7 +1185,8 @@ which should be translated separately and considered part of this sentence. */
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
-   Title for the button to cancel the simple payments screen */
+   Title for the button to cancel the simple payments screen
+   Title of an option to dismiss the bulk edit action sheet */
 "Cancel" = "取消";
 
 /* Action button to cancel Jetpack installation. */
@@ -1829,6 +1840,9 @@ which should be translated separately and considered part of this sentence. */
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "正在创建模板产品...";
 
+/* Blocking indicator text when creating multiple variations remotely. */
+"Creating Variations..." = "正在创建变体…";
+
 /* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
 "Creating your store" = "正在创建您的商店";
 
@@ -2121,6 +2135,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "文档";
+
+/* Navigates to domain settings screen.
+   Navigation bar title of the domain settings screen. */
+"Domain" = "域名";
 
 /* Country option for a site address. */
 "Dominica" = "多米尼加";
@@ -2720,6 +2738,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info message shown when the order contains multiple fee lines */
 "Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "费用不完整。\n要编辑所有费用，请在 WooCommerce 商店管理中查看订单。";
 
+/* Blocking indicator text when fetching existing variations prior generating them. */
+"Fetching Variations..." = "正在获取变体…";
+
 /* Country option for a site address. */
 "Fiji" = "斐济";
 
@@ -2878,7 +2899,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "正在生成变量";
 
-/* Error title for for when there are too many variations to generate. */
+/* Error title for when there are too many variations to generate. */
 "Generation limit exceeded" = "超出了生成限制";
 
 /* Country option for a site address. */
@@ -3212,8 +3233,7 @@ which should be translated separately and considered part of this sentence. */
 "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "为 %2$@ blog_id %3$@ 的 #%1$@ 订单面对面付款";
 
 /* Navigates to In-Person Payments screen
-   Title for a dismissal alert on the upsell card reader feature announcement banner
-   Title for the In-Person Payments settings screen */
+   Title for a dismissal alert on the upsell card reader feature announcement banner */
 "In-Person Payments" = "现场付款";
 
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
@@ -4226,6 +4246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "尚无税类";
 
+/* Title for the notice when there were no variations to generate */
+"No variations to generate" = "没有要生成的变体";
+
 /* Message for a dismissal alert on the upsell card reader feature announcement banner */
 "No worries! You can always get started with In-Person Payments in Settings" = "不必担心！ 开始体验前，您始终可以先设置面对面付款";
 
@@ -4655,7 +4678,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment" = "付款因不明原因被拒。 请尝试其他付款方式";
 
-/* Title of the hub menu payments button */
+/* Title for the Payments settings screen
+   Title of the hub menu payments button */
 "Payments" = "付款";
 
 /* Display label for pending order status.
@@ -4979,6 +5003,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice title when updating the price via the bulk variation screen */
 "Prices updated successfully." = "价格已成功更新。";
+
+/* Title for a free domain if the domain is the primary site address. */
+"Primary site address" = "主站点地址";
 
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
 "Print" = "打印";
@@ -5669,6 +5696,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Search Coupons button */
 "Search coupons" = "搜索优惠券";
 
+/* Title of the button on the domain settings screen to search for a domain. */
+"Search for a Domain" = "搜索域名";
+
 /* Search Orders */
 "Search orders" = "搜索订单";
 
@@ -5742,6 +5772,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "选择结束日期";
+
+/* Title that appears on top of the Product List screen when bulk editing starts. */
+"Select items" = "选择项目";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "选择段落样式";
@@ -6075,6 +6108,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "处理退款时出错。 请重试。";
+
+/* Error message for when we can't create variations remotely
+   Error message for when we can't fetch existing variations. */
+"Something went wrong, please try again later." = "出错了，请稍后重试。";
 
 /* Message of the alert when the user cannot create a store because they already created one before. */
 "Sorry, but you can only create one store. Your account is already associated with an active store." = "抱歉，但是您只能创建一个商店。 您的账户已关联有效的商店。";
@@ -6522,7 +6559,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Terms of Service" = "服务条款";
 
 /* Cell description on beta features screen to enable in-app purchases */
-"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "使用您手机的内置读卡器测试现场付款，因为我们准备推出了。 在运行 iOS 15.5 或更高版本的 iPhone XS 和更新的手机上受支持。";
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 16 or above, for US-based stores." = "使用您手机的内置读卡器测试现场付款，因为我们准备推出了。 对于美国境内的商店，在运行 iOS 16 或更高版本的 iPhone XS 和更新的手机上受支持。";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "在我们准备好发布时测试应用内购买";
@@ -7254,6 +7291,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "无法创建新订单";
 
+/* Error title for when we can't create variations remotely. */
+"Unable to create variations" = "无法创建变体";
+
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "无法删除订单号 %1$d 的跟踪信息";
 
@@ -7262,6 +7302,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error notice when we fail to load country information in the edit address screen. */
 "Unable to fetch country information, please try again later." = "无法获取国家\/地区信息，请稍后重试。";
+
+/* Error title for when we can't fetch existing variations. */
+"Unable to fetch variations" = "无法获取变体";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "无法履行订单号 %1$d";
@@ -7472,11 +7515,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
 "Update available" = "更新可用";
 
+/* Title of an option that opens bulk products price update flow */
+"Update price" = "更新价格";
+
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "更新产品库存和 SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
 "Update products' downloadable files' info remotely" = "远程更新产品的“可下载文件”的信息";
+
+/* Title of an option that opens bulk products status update flow */
+"Update status" = "更新状态";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "更新至 WooCommerce 3.5，继续使用此应用程序";
@@ -7607,6 +7656,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the variations attributes row on Product screen */
 "Variations Attributes" = "变体属性";
+
+/* Title for the notice when after variations were created */
+"Variations created successfully" = "变体已成功创建";
 
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "有关您站点的各种系统信息";
@@ -8062,8 +8114,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "您的电子邮件未与 WordPress.com 账户关联";
 
+/* Title of the free domain view. */
+"Your free store address" = "您的免费商店地址";
+
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
-"Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "您的 iPhone 可以作为读卡器使用，您也可以通过蓝牙连接到外部读卡器。";
+"Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "您的 iPhone 可以作为读卡器使用，您也可以通过蓝牙连接到外部读卡器。";
 
 /* Label that displays when a configuration update is happening */
 "Your iPhone needs to be configured to collect payments." = "您的 iPhone 经过配置后才能收款。";

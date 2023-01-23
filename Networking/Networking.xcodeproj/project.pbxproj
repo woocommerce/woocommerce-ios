@@ -742,6 +742,8 @@
 		DEA6B1C9296D0E8B005AA5E9 /* systemStatusWithPluginsOnly-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA6B1C7296D0E8A005AA5E9 /* systemStatusWithPluginsOnly-without-data.json */; };
 		DEA6B1CA296D0E8B005AA5E9 /* systemStatus-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA6B1C8296D0E8A005AA5E9 /* systemStatus-without-data.json */; };
 		DEC2961C26BBE764005A056B /* ShippingLabelCustomsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */; };
+		DEC2B08D297AA048003923FB /* reviews-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B08C297AA048003923FB /* reviews-all-without-data.json */; };
+		DEC2B08F297AA123003923FB /* reviews-single-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B08E297AA123003923FB /* reviews-single-without-data.json */; };
 		DEC51A95274CDA52009F3DF4 /* SitePluginMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A94274CDA52009F3DF4 /* SitePluginMapper.swift */; };
 		DEC51A97274DD962009F3DF4 /* plugin.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC51A96274DD962009F3DF4 /* plugin.json */; };
 		DEC51A99274DDDC9009F3DF4 /* SitePluginMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A98274DDDC9009F3DF4 /* SitePluginMapperTests.swift */; };
@@ -1591,6 +1593,8 @@
 		DEA6B1C7296D0E8A005AA5E9 /* systemStatusWithPluginsOnly-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "systemStatusWithPluginsOnly-without-data.json"; sourceTree = "<group>"; };
 		DEA6B1C8296D0E8A005AA5E9 /* systemStatus-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "systemStatus-without-data.json"; sourceTree = "<group>"; };
 		DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsForm.swift; sourceTree = "<group>"; };
+		DEC2B08C297AA048003923FB /* reviews-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-all-without-data.json"; sourceTree = "<group>"; };
+		DEC2B08E297AA123003923FB /* reviews-single-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-single-without-data.json"; sourceTree = "<group>"; };
 		DEC51A94274CDA52009F3DF4 /* SitePluginMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginMapper.swift; sourceTree = "<group>"; };
 		DEC51A96274DD962009F3DF4 /* plugin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = plugin.json; sourceTree = "<group>"; };
 		DEC51A98274DDDC9009F3DF4 /* SitePluginMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginMapperTests.swift; sourceTree = "<group>"; };
@@ -2207,6 +2211,8 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DEC2B08E297AA123003923FB /* reviews-single-without-data.json */,
+				DEC2B08C297AA048003923FB /* reviews-all-without-data.json */,
 				DE66C5682977D62700DAA978 /* plugins-without-data.json */,
 				DE66C5662977CEB800DAA978 /* shipping-label-status-success-without-data.json */,
 				DE66C5642977CC4300DAA978 /* shipping-label-purchase-success-without-data.json */,
@@ -3123,6 +3129,7 @@
 				B58D10C82114D21D00107ED4 /* generic_error.json in Resources */,
 				077F39D826A58EB600ABEADC /* systemStatus.json in Resources */,
 				31A451CD27863A2E00FE81AA /* stripe-account-restricted.json in Resources */,
+				DEC2B08F297AA123003923FB /* reviews-single-without-data.json in Resources */,
 				CE50346721B5DCBE007573C6 /* site-plan.json in Resources */,
 				D865CE5D278CA159002C8520 /* stripe-payment-intent-requires-confirmation.json in Resources */,
 				743E84F322172D0A00FAC9D7 /* shipment_tracking_empty.json in Resources */,
@@ -3254,6 +3261,7 @@
 				0272E3FB254AABB800436277 /* order-with-line-item-attributes-before-API-support.json in Resources */,
 				DE42F95D2966CB6A00D514C2 /* order-notes-without-data.json in Resources */,
 				31723C892787A299007F1405 /* stripe-connection-token.json in Resources */,
+				DEC2B08D297AA048003923FB /* reviews-all-without-data.json in Resources */,
 				74A1D266211898F000931DFA /* site-visits-year.json in Resources */,
 				743BF8BE21191B63008A9D87 /* site-visits.json in Resources */,
 				CE0A0F1F223998A10075ED8D /* products-load-all.json in Resources */,

@@ -23,7 +23,7 @@ final class ToolbarView: UIView {
     func setup() {
         translatesAutoresizingMaskIntoConstraints = false
         addSubview(stackView)
-        pinSubviewToAllEdges(stackView)
+        pinSubviewToSafeArea(stackView)
     }
 
     func addDividerOnTop() {

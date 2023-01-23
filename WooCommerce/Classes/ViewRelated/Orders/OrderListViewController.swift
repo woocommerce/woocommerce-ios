@@ -828,7 +828,7 @@ private extension OrderListViewController {
         let viewModel = TopBannerViewModel(
             title: bannerTitle,
             infoText: bannerText,
-            icon: UIImage.gridicon(.comment),
+            icon: UIImage.commentContent,
             isExpanded: true,
             topButton: .dismiss(handler: {
                 self.showIPPFeedbackDismissAlert()

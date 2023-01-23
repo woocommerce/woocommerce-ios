@@ -247,3 +247,13 @@ private class MockRequestAuthenticator: RequestAuthenticator {
         mockedShouldRetryValue ?? true
     }
 }
+
+private class MockNotificationCenter: NotificationCenter {
+    private(set) var notificationName: NSNotification.Name?
+    private(set) var notificationObject: Any?
+
+    override func post(name aName: NSNotification.Name, object anObject: Any?, userInfo aUserInfo: [AnyHashable: Any]? = nil) {
+        notificationName = aName
+        notificationObject = anObject
+    }
+}

@@ -114,6 +114,8 @@ private extension TopBannerView {
 
         zip(viewModel.actionButtons, actionButtons).forEach { buttonInfo, button in
             button.setTitle(buttonInfo.title, for: .normal)
+            // Overrides the general .applyLinkButtonStyle() with pink color
+            // pecCkj-fa-p2
             button.setTitleColor(UIColor.withColorStudio(.pink), for: .normal)
             button.on(.touchUpInside, call: { _ in buttonInfo.action(button) })
         }
@@ -142,7 +144,7 @@ private extension TopBannerView {
 
     func createMainStackView(with viewModel: TopBannerViewModel) -> UIStackView {
         let iconInformationStackView = createIconInformationStackView(with: viewModel)
-        let mainStackView = UIStackView(arrangedSubviews: [iconInformationStackView, createBorderView()])
+        let mainStackView = UIStackView(arrangedSubviews: [createBorderView(), iconInformationStackView, createBorderView()])
         if isActionEnabled {
             configureActionStackView(with: viewModel)
             mainStackView.addArrangedSubview(actionStackView)

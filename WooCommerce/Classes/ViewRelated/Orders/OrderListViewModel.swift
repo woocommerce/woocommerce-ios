@@ -64,21 +64,20 @@ final class OrderListViewModel {
         CardPresentConfigurationLoader().configuration.isSupportedCountry
     }
 
-    /// Results controller that fetches any (WooCommerce Payments, or Stripe) In-Person Payments transactions
+    /// Results controller that fetches any WooCommerce Payments In-Person Payments transactions
     ///
-    private lazy var IPPOrdersResultsController: ResultsController<StorageOrder> = {
+    private lazy var WCPayOrdersResultsController: ResultsController<StorageOrder> = {
         let wcpay = Constants.wcpayPaymentMethodID
-        let stripe = Constants.stripePaymentMethodID
         let predicate = NSPredicate(
-            format: "siteID == %lld AND (paymentMethodID == %@ OR paymentMethodID == %@)",
-            argumentArray: [siteID, wcpay, stripe]
+            format: "siteID == %lld AND paymentMethodID == %@",
+            argumentArray: [siteID, wcpay]
         )
         return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
     /// Results controller that fetches WooCommerce Payments In-Person Payments within the last 30 days
     ///
-    private lazy var recentIPPWCPayOrdersResultsController: ResultsController<StorageOrder> = {
+    private lazy var recentWCPayIPPResultsController: ResultsController<StorageOrder> = {
         let today = Date()
         let wcpay = Constants.wcpayPaymentMethodID
         let thirtyDaysBeforeToday = Calendar.current.date(
@@ -277,8 +276,8 @@ final class OrderListViewModel {
 
     private func fetchIPPTransactions() {
         do {
-            try IPPOrdersResultsController.performFetch()
-            try recentIPPWCPayOrdersResultsController.performFetch()
+            try WCPayOrdersResultsController.performFetch()
+            try recentWCPayIPPResultsController.performFetch()
         } catch {
             DDLogError("Error fetching IPP transactions: \(error)")
         }
@@ -287,31 +286,24 @@ final class OrderListViewModel {
     func feedbackBannerSurveySource() -> SurveyViewController.Source? {
 
         if isCODEnabled && isIPPSupportedCountry {
-            let hasInPersonPaymentsResults = IPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
-            let inPersonPaymentsResultsCount = IPPOrdersResultsController.fetchedObjects.count
+            let hasWCPayResults = WCPayOrdersResultsController.fetchedObjects.isEmpty ? false : true
+            let WCPAYResultsCount = WCPayOrdersResultsController.fetchedObjects.count
+            let hasOneOrMoreWCPayTransactions = (WCPAYResultsCount >= 1) ? true : false
 
             /// In order to filter WCPay transactions processed through IPP within the last 30 days,
             /// we check if these contain `receipt_url` in their metadata, unlike those processed through a website,
             /// which doesn't
             ///
-            let recentIPPWCPayTransactionsFound = recentIPPWCPayOrdersResultsController.fetchedObjects.filter({
+            let recentIPPWCPayTransactionsFound = recentWCPayIPPResultsController.fetchedObjects.filter({
                 $0.customFields.contains(where: {$0.key == Constants.receiptURLKey }) &&
                 $0.paymentMethodTitle == Constants.paymentMethodTitle})
-            let recentIPPresultsCount = recentIPPWCPayTransactionsFound.count
+            let recentWCPayResultsCount = recentIPPWCPayTransactionsFound.count
 
-            /// As we're fetching all In-Person Payments transactions (wcpay and stripe), we filter this results controller
-            /// to check if is their first WCPay transaction historically.
-            ///
-            let isFirstInPersonPaymentsTransaction = IPPOrdersResultsController.fetchedObjects.filter({
-                $0.customFields.contains(where: {$0.key == Constants.receiptURLKey }) &&
-                $0.paymentMethodTitle == Constants.paymentMethodTitle
-            }).count == 1 ? true : false
-
-            if !hasInPersonPaymentsResults {
+            if !hasWCPayResults {
                 return .inPersonPaymentsCashOnDelivery
-            } else if isFirstInPersonPaymentsTransaction && (recentIPPresultsCount < Constants.numberOfTransactions) {
+            } else if hasOneOrMoreWCPayTransactions && (recentWCPayResultsCount < Constants.numberOfTransactions) {
                 return .inPersonPaymentsFirstTransaction
-            } else if inPersonPaymentsResultsCount >= Constants.numberOfTransactions {
+            } else if WCPAYResultsCount >= Constants.numberOfTransactions {
                 return .inPersonPaymentsPowerUsers
             }
         }
@@ -501,7 +493,6 @@ extension OrderListViewModel {
 private extension OrderListViewModel {
     enum Constants {
         static let wcpayPaymentMethodID = "woocommerce_payments"
-        static let stripePaymentMethodID = "stripe"
         static let paymentMethodTitle = "WooCommerce In-Person Payments"
         static let receiptURLKey = "receipt_url"
         static let numberOfTransactions = 10

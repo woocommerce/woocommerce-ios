@@ -35,7 +35,6 @@ final class ProductAttributeMapperTests: XCTestCase {
         XCTAssertEqual(productAttribute.variation, true)
         XCTAssertEqual(productAttribute.options, [])
     }
-
 }
 
 

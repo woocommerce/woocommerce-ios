@@ -812,6 +812,10 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Widgets
     case widgetTapped = "widget_tapped"
+
+    // MARK: Application password Events
+    case applicationPasswordsNewPasswordCreated = "application_passwords_new_password_created"
+    case applicationPasswordsGenerationFailed = "application_passwords_generation_failed"
 }
 
 public extension WooAnalyticsStat {

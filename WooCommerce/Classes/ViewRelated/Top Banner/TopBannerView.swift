@@ -114,6 +114,7 @@ private extension TopBannerView {
 
         zip(viewModel.actionButtons, actionButtons).forEach { buttonInfo, button in
             button.setTitle(buttonInfo.title, for: .normal)
+            button.setTitleColor(UIColor.withColorStudio(.pink), for: .normal)
             button.on(.touchUpInside, call: { _ in buttonInfo.action(button) })
         }
     }

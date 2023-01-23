@@ -480,8 +480,8 @@ final class OrderListViewModelTests: XCTestCase {
         assertEqual(expectedSource, actualProperties["source"] as? String)
         assertEqual(expectedRemindLater, actualProperties["remind_later"] as? Bool)
     }
-    
-    func test_IPPFeedbackBannerRemindMeLaterTapped_tracks_dismiss_event_and_properties_correctly(){
+
+    func test_IPPFeedbackBannerRemindMeLaterTapped_tracks_dismiss_event_and_properties_correctly() {
         // Given
         let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerDismissed
         let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
@@ -491,7 +491,7 @@ final class OrderListViewModelTests: XCTestCase {
         // When
         let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
         viewModel.IPPFeedbackBannerRemindMeLaterTapped(for: .inPersonPaymentsCashOnDelivery)
-        
+
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
         guard let actualProperties = analyticsProvider.receivedProperties.first(

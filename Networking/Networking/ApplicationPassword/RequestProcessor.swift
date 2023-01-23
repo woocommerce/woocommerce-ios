@@ -10,8 +10,12 @@ final class RequestProcessor {
 
     private let requestAuthenticator: RequestAuthenticator
 
-    init(requestAuthenticator: RequestAuthenticator) {
+    private let notificationCenter: NotificationCenter
+
+    init(requestAuthenticator: RequestAuthenticator,
+         notificationCenter: NotificationCenter = .default) {
         self.requestAuthenticator = requestAuthenticator
+        self.notificationCenter = notificationCenter
     }
 }
 
@@ -58,14 +62,14 @@ private extension RequestProcessor {
                 isAuthenticating = false
 
                 // Post a notification for tracking
-                NotificationCenter.default.post(name: .ApplicationPasswordsNewPasswordCreated, object: nil, userInfo: nil)
+                notificationCenter.post(name: .ApplicationPasswordsNewPasswordCreated, object: nil, userInfo: nil)
 
                 completeRequests(true)
             } catch {
                 isAuthenticating = false
 
                 // Post a notification for tracking
-                NotificationCenter.default.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
+                notificationCenter.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
 
                 completeRequests(false)
             }

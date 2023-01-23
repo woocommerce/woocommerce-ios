@@ -2,7 +2,7 @@
 
 12.1
 -----
-
+- [*] Adds an In-Person Payments survey banner on top of the Orders view [https://github.com/woocommerce/woocommerce-ios/issues/8530]
 
 12.0
 -----

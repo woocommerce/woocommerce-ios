@@ -8,6 +8,7 @@ final class RequestProcessorTests: XCTestCase {
     private var mockRequestAuthenticator: MockRequestAuthenticator!
     private var sut: RequestProcessor!
     private var sessionManager: Alamofire.SessionManager!
+    private var mockNotificationCenter: MockNotificationCenter!
 
     private let url = URL(string: "https://test.com/")!
 
@@ -16,13 +17,16 @@ final class RequestProcessorTests: XCTestCase {
 
         sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
         mockRequestAuthenticator = MockRequestAuthenticator()
-        sut = RequestProcessor(requestAuthenticator: mockRequestAuthenticator)
+        mockNotificationCenter = MockNotificationCenter()
+        sut = RequestProcessor(requestAuthenticator: mockRequestAuthenticator,
+                               notificationCenter: mockNotificationCenter)
     }
 
     override func tearDown() {
         sut = nil
         mockRequestAuthenticator = nil
         sessionManager = nil
+        mockNotificationCenter = nil
 
         super.tearDown()
     }

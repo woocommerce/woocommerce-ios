@@ -611,8 +611,6 @@ extension WooAnalyticsEvent {
         /// Possible sources for the Feedback Banner
         ///
         enum Source: String {
-            static let key = "source"
-
             case orderList = "order_list"
         }
 

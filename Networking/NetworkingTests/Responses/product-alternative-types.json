@@ -24,7 +24,7 @@
             "date_on_sale_to_gmt": "2019-10-27T21:29:59",
             "price_html": "Free",
             "on_sale": false,
-            "purchasable": true,
+            "purchasable": 1,
             "total_sales": 0,
             "virtual": true,
             "downloadable": false,

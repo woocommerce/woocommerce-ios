@@ -490,6 +490,9 @@ final class OrderListViewModelTests: XCTestCase {
 
         // Then
         assertEqual(2, stores.receivedActions.count)
+        XCTAssertTrue(stores.receivedActions.contains(where: {
+            $0 is AppSettingsAction
+        }))
         XCTAssertNotNil(updatedFeedbackStatus)
     }
 

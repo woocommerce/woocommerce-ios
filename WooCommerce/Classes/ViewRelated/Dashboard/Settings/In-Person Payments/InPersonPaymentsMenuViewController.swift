@@ -20,6 +20,8 @@ final class InPersonPaymentsMenuViewController: UIViewController {
                             countryCode: viewModel.cardPresentPaymentsConfiguration.countryCode))
     }()
 
+    private lazy var inPersonPaymentsLearnMoreViewModel = LearnMoreViewModel.InPersonPayments()
+
     private let viewModel: InPersonPaymentsMenuViewModel = InPersonPaymentsMenuViewModel()
 
     private let cashOnDeliveryToggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel
@@ -41,30 +43,10 @@ final class InPersonPaymentsMenuViewController: UIViewController {
 
     private var activityIndicator: UIActivityIndicatorView?
 
-    private var inPersonPaymentsLearnMoreButtonTitle: NSAttributedString? {
-        let result = NSMutableAttributedString(
-            string: .localizedStringWithFormat(
-                Localization.learnMoreText,
-                Localization.learnMoreLink
-            ),
-            attributes: [.foregroundColor: UIColor.textSubtle]
-        )
-        result.replaceFirstOccurrence(
-            of: Localization.learnMoreLink,
-            with: NSAttributedString(
-                string: Localization.learnMoreLink,
-                attributes: [
-                    .foregroundColor: UIColor.textLink
-                ]
-            ))
-        result.addAttribute(.font, value: UIFont.footnote, range: NSRange(location: 0, length: result.length))
-        return result
-    }
-
     private var inPersonPaymentsLearnMoreButton: UIButton {
         let button = UIButton()
         button.addTarget(self, action: #selector(learnMoreAboutInPersonPaymentsButtonWasTapped), for: .touchUpInside)
-        button.setAttributedTitle(inPersonPaymentsLearnMoreButtonTitle, for: .normal)
+        button.setAttributedTitle(inPersonPaymentsLearnMoreViewModel.learnMoreAttributedString, for: .normal)
         button.naturalContentHorizontalAlignment = .leading
         button.configuration = UIButton.Configuration.plain()
 
@@ -424,7 +406,7 @@ extension InPersonPaymentsMenuViewController {
     }
 
     @objc func learnMoreAboutInPersonPaymentsButtonWasTapped() {
-        WebviewHelper.launch(WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL(), with: self)
+        WebviewHelper.launch(inPersonPaymentsLearnMoreViewModel.url, with: self)
     }
 
 }
@@ -568,19 +550,6 @@ private extension InPersonPaymentsMenuViewController {
                      This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
                      """
         )
-
-        static let learnMoreText = NSLocalizedString(
-            "cardPresent.modalScanningForReader.learnMore.text",
-            value: "%1$@ about In‑Person Payments",
-            comment: """
-                     A label prompting users to learn more about In-Person Payments.
-                     The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-                     If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
-                     %1$@ is a placeholder that always replaced with \"Learn more\" string,
-                     which should be translated separately and considered part of this sentence.
-                     """
-        )
-
     }
 }
 

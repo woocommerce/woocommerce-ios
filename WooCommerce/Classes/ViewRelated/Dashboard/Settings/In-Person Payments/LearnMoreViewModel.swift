@@ -63,4 +63,24 @@ private enum Localization {
                  which should be translated separately and considered part of this sentence.
                  """
     )
+
+    static let inPersonPaymentslearnMoreText = NSLocalizedString(
+        "cardPresent.modalScanningForReader.learnMore.text",
+        value: "%1$@ about In‑Person Payments",
+        comment: """
+                 A label prompting users to learn more about In-Person Payments.
+                 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+                 %1$@ is a placeholder that always replaced with \"Learn more\" string,
+                 which should be translated separately and considered part of this sentence.
+                 """
+    )
+}
+
+extension LearnMoreViewModel {
+    static func InPersonPayments() -> LearnMoreViewModel {
+        LearnMoreViewModel(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL(),
+                           linkText: Localization.learnMoreLink,
+                           formatText: Localization.inPersonPaymentslearnMoreText)
+    }
 }

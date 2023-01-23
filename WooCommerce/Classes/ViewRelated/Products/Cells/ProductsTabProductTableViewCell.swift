@@ -140,7 +140,7 @@ private extension ProductsTabProductTableViewCell {
             bottomBorderView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             bottomBorderView.trailingAnchor.constraint(equalTo: trailingAnchor),
             bottomBorderView.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor),
-            bottomBorderView.heightAnchor.constraint(equalToConstant: 0.5)
+            bottomBorderView.heightAnchor.constraint(equalToConstant: 1.0 / UIScreen.main.scale)
         ])
     }
 
@@ -158,6 +158,9 @@ private extension ProductsTabProductTableViewCell {
         //Background when selected
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = .listBackground
+
+        // Prevents overflow of selectedBackgroundView above dividers from adjacent cells
+        clipsToBounds = true
     }
 
     func configureNameLabel() {

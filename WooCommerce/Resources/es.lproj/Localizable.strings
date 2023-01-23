@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-11 12:54:05+0000 */
+/* Translation-Revision-Date: 2023-01-18 17:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -71,6 +71,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "Se ha solicitado un rembolso a %1$@ (%2$@)";
+
+/* Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected */
+"%1$@ selected" = "%1$@ seleccionados";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
 "%1$@ total" = "%1$@ total";
@@ -418,7 +421,8 @@ which should be translated separately and considered part of this sentence. */
    Add tracking screen - title. */
 "Add Tracking" = "Añadir seguimiento";
 
-/* Title on empty state button when the product has attributes but no variations */
+/* Title on empty state button when the product has attributes but no variations
+   Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "Añadir variación";
 
 /* Button title on the store picker for store creation */
@@ -592,6 +596,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "Viene con todas las funciones que necesitas";
+
+/* Message for the notice when there were no variations to generate */
+"All variations are already generated." = "Ya se han generado todas las variaciones.";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "Permitir";
@@ -1047,6 +1054,9 @@ which should be translated separately and considered part of this sentence. */
    Title that appears on top of the bulk update of product variations screen */
 "Bulk Update" = "Actualización en lote";
 
+/* Title of a button that presents a menu with possible products bulk update options */
+"Bulk update" = "Actualización en lote";
+
 /* Country option for a site address. */
 "Burkina Faso" = "Burkina Faso";
 
@@ -1175,7 +1185,8 @@ which should be translated separately and considered part of this sentence. */
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
-   Title for the button to cancel the simple payments screen */
+   Title for the button to cancel the simple payments screen
+   Title of an option to dismiss the bulk edit action sheet */
 "Cancel" = "Cancelar";
 
 /* Action button to cancel Jetpack installation. */
@@ -1829,6 +1840,9 @@ which should be translated separately and considered part of this sentence. */
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "Creando el producto de la plantilla...";
 
+/* Blocking indicator text when creating multiple variations remotely. */
+"Creating Variations..." = "Creando variaciones...";
+
 /* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
 "Creating your store" = "Estamos creando tu tienda";
 
@@ -2121,6 +2135,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Documentos";
+
+/* Navigates to domain settings screen.
+   Navigation bar title of the domain settings screen. */
+"Domain" = "Dominio";
 
 /* Country option for a site address. */
 "Dominica" = "Dominica";
@@ -2720,6 +2738,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info message shown when the order contains multiple fee lines */
 "Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "Las cuotas están incompletas.\nPara editar todas las cuotas, visualiza el pedido en la administración de tu tienda de WooCommerce.";
 
+/* Blocking indicator text when fetching existing variations prior generating them. */
+"Fetching Variations..." = "Recuperando variaciones…";
+
 /* Country option for a site address. */
 "Fiji" = "Fiyi";
 
@@ -2878,7 +2899,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Creando la variación";
 
-/* Error title for for when there are too many variations to generate. */
+/* Error title for when there are too many variations to generate. */
 "Generation limit exceeded" = "Se ha excedido el límite de generaciones.";
 
 /* Country option for a site address. */
@@ -3212,8 +3233,7 @@ which should be translated separately and considered part of this sentence. */
 "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "Pago en persona del pedido #%1$@ para %2$@ blog_id %3$@";
 
 /* Navigates to In-Person Payments screen
-   Title for a dismissal alert on the upsell card reader feature announcement banner
-   Title for the In-Person Payments settings screen */
+   Title for a dismissal alert on the upsell card reader feature announcement banner */
 "In-Person Payments" = "Pagos en Persona";
 
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
@@ -4226,6 +4246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "Todavía no hay clases de impuesto";
 
+/* Title for the notice when there were no variations to generate */
+"No variations to generate" = "No hay variaciones por generar";
+
 /* Message for a dismissal alert on the upsell card reader feature announcement banner */
 "No worries! You can always get started with In-Person Payments in Settings" = "No te preocupes: Siempre puedes ir a Ajustes y empezar con Pagos en Persona.";
 
@@ -4655,7 +4678,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment" = "Se ha rechazado el pago por motivos que no se han especificado. Prueba otro método de pago.";
 
-/* Title of the hub menu payments button */
+/* Title for the Payments settings screen
+   Title of the hub menu payments button */
 "Payments" = "Pagos";
 
 /* Display label for pending order status.
@@ -4979,6 +5003,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice title when updating the price via the bulk variation screen */
 "Prices updated successfully." = "Los precios se han actualizado correctamente.";
+
+/* Title for a free domain if the domain is the primary site address. */
+"Primary site address" = "Dirección principal del sitio";
 
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
 "Print" = "Imprimir";
@@ -5669,6 +5696,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Search Coupons button */
 "Search coupons" = "Buscar cupones";
 
+/* Title of the button on the domain settings screen to search for a domain. */
+"Search for a Domain" = "Buscar un dominio";
+
 /* Search Orders */
 "Search orders" = "Buscar en pedidos";
 
@@ -5742,6 +5772,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "Selecciona la fecha de finalización";
+
+/* Title that appears on top of the Product List screen when bulk editing starts. */
+"Select items" = "Seleccionar elementos";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Elegir el estilo del párrafo";
@@ -6075,6 +6108,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "No se ha podido realizar el reembolso. Inténtalo de nuevo.";
+
+/* Error message for when we can't create variations remotely
+   Error message for when we can't fetch existing variations. */
+"Something went wrong, please try again later." = "Se ha producido un error. Inténtalo de nuevo más tarde.";
 
 /* Message of the alert when the user cannot create a store because they already created one before. */
 "Sorry, but you can only create one store. Your account is already associated with an active store." = "Lo sentimos, pero solo puedes crear una tienda. Tu cuenta ya está asociada con una tienda activa.";
@@ -6522,7 +6559,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Terms of Service" = "Condiciones del servicio";
 
 /* Cell description on beta features screen to enable in-app purchases */
-"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "Prueba Pagos en persona mediante el lector de tarjetas integrado en tu teléfono, mientras preparamos el lanzamiento. Compatible con el iPhone XS y los teléfonos más nuevos que dispongan de iOS 15.5 o superior.";
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 16 or above, for US-based stores." = "Prueba Pagos en persona mediante el lector de tarjetas integrado en tu teléfono, mientras preparamos el lanzamiento. Compatible con el iPhone XS y los modelos más recientes que dispongan de iOS 16 o una versión posterior (tiendas de EE. UU.).";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "Prueba las compras en la aplicación mientras preparamos el lanzamiento";
@@ -7254,6 +7291,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "No se ha podido crear el nuevo pedido";
 
+/* Error title for when we can't create variations remotely. */
+"Unable to create variations" = "No se pueden crear las variaciones";
+
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "No se ha podido eliminar el seguimiento del pedido n.º %1$d";
 
@@ -7262,6 +7302,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error notice when we fail to load country information in the edit address screen. */
 "Unable to fetch country information, please try again later." = "No se puede obtener la información sobre el país; inténtalo de nuevo más tarde.";
+
+/* Error title for when we can't fetch existing variations. */
+"Unable to fetch variations" = "No se pueden obtener las variaciones";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "No se ha podido realizar el pedido n.º %1$d";
@@ -7472,11 +7515,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
 "Update available" = "Actualización disponible";
 
+/* Title of an option that opens bulk products price update flow */
+"Update price" = "Actualizar precio";
+
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "Actualiza el inventario de productos y SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
 "Update products' downloadable files' info remotely" = "Cargar información de archivos de descarga de productos de forma remota";
+
+/* Title of an option that opens bulk products status update flow */
+"Update status" = "Actualizar estado";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Actualiza a WooCommerce 3.5 para seguir usando esta aplicación";
@@ -7607,6 +7656,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the variations attributes row on Product screen */
 "Variations Attributes" = "Atributos de variaciones";
+
+/* Title for the notice when after variations were created */
+"Variations created successfully" = "Las variaciones se han creado correctamente";
 
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "Información diversa sobre el sistema de tu sitio";
@@ -8062,8 +8114,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "Ninguna cuenta de WordPress.com utiliza tu dirección de correo electrónico";
 
+/* Title of the free domain view. */
+"Your free store address" = "Dirección de tu tienda gratuita";
+
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
-"Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "Tu iPhone se puede usar como lector de tarjetas o puedes conectarlo a un lector externo a través de Bluetooth.";
+"Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "Tu iPhone se puede usar como lector de tarjetas o puedes conectarlo a un lector externo a través de Bluetooth.";
 
 /* Label that displays when a configuration update is happening */
 "Your iPhone needs to be configured to collect payments." = "Para aceptar pagos, debes configurar tu iPhone.";

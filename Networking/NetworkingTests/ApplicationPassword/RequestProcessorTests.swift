@@ -238,6 +238,8 @@ private class MockRequestAuthenticator: RequestAuthenticator {
 
     var credentials: Networking.Credentials? = nil
 
+    var mockErrorWhileGeneratingPassword: Error?
+
     func authenticate(_ urlRequest: URLRequest) throws -> URLRequest {
         authenticateCalled = true
         return urlRequest
@@ -245,6 +247,9 @@ private class MockRequestAuthenticator: RequestAuthenticator {
 
     func generateApplicationPassword() async throws {
         generateApplicationPasswordCalled = true
+        if let mockErrorWhileGeneratingPassword {
+            throw mockErrorWhileGeneratingPassword
+        }
     }
 
     func shouldRetry(_ urlRequest: URLRequest) -> Bool {

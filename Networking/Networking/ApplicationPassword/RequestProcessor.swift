@@ -56,9 +56,17 @@ private extension RequestProcessor {
             do {
                 let _ = try await requestAuthenticator.generateApplicationPassword()
                 isAuthenticating = false
+
+                // Post a notification for tracking
+                NotificationCenter.default.post(name: .ApplicationPasswordsNewPasswordCreated, object: nil, userInfo: nil)
+
                 completeRequests(true)
             } catch {
                 isAuthenticating = false
+
+                // Post a notification for tracking
+                NotificationCenter.default.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
+
                 completeRequests(false)
             }
         }

@@ -501,6 +501,7 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
         var feedbackStatus: FeedbackSettings.Status?
 
+        // When
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .updateFeedbackStatus(.IPP, status, onCompletion):
@@ -510,11 +511,35 @@ final class OrderListViewModelTests: XCTestCase {
                 break
             }
         }
-        // When
         viewModel.activate()
 
         // Then
         assertEqual(nil, feedbackStatus)
+    }
+
+    func test_feedback_type_when_IPPFeedbackBannerWasSubmitted_is_called_then_feedback_type_is_IPP() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        var feedbackType: FeedbackType?
+
+        // When
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(type, onCompletion):
+                feedbackType = type
+                onCompletion(.success(true))
+            case let .updateFeedbackStatus(.IPP, _, onCompletion):
+                feedbackType = .IPP
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        viewModel.activate()
+        viewModel.IPPFeedbackBannerWasSubmitted()
+
+        // Then
+        XCTAssertEqual(feedbackType, .IPP)
     }
 }
 

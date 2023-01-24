@@ -164,15 +164,10 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
             inPersonPaymentsSurveyVariation = viewModel.feedbackBannerSurveySource()
 
-            switch inPersonPaymentsSurveyVariation {
-            case .IPP_COD:
-                viewModel.trackInPersonPaymentsFeedbackBannerShown(campaign: .inPersonPaymentsCashOnDelivery)
-            case .IPP_firstTransaction:
-                viewModel.trackInPersonPaymentsFeedbackBannerShown(campaign: .inPersonPaymentsFirstTransaction)
-            case .IPP_powerUsers:
-                viewModel.trackInPersonPaymentsFeedbackBannerShown(campaign: .inPersonPaymentsPowerUsers)
-            default:
-                break
+            if let inPersonPaymentsSurveyVariation {
+                viewModel.trackInPersonPaymentsFeedbackBannerShown(for: inPersonPaymentsSurveyVariation)
+            } else {
+                DDLogError("Couldn't assign an In-Person Payments survey variation")
             }
         }
     }

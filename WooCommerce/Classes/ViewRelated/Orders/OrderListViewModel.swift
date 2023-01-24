@@ -286,7 +286,25 @@ final class OrderListViewModel {
         }
     }
 
-    func trackInPersonPaymentsFeedbackBannerShown(campaign: FeatureAnnouncementCampaign) {
+    func trackInPersonPaymentsFeedbackBannerShown(for surveySource: SurveyViewController.Source) {
+        var campaign: FeatureAnnouncementCampaign? = nil
+
+        switch surveySource {
+        case .IPP_COD:
+            campaign = .inPersonPaymentsCashOnDelivery
+        case .IPP_firstTransaction:
+            campaign = .inPersonPaymentsFirstTransaction
+        case .IPP_powerUsers:
+            campaign = .inPersonPaymentsPowerUsers
+        default:
+            break
+        }
+
+        guard let campaign = campaign else {
+            DDLogError("Couldn't assign a specific campaign for the Survey Source.")
+            return
+        }
+
         analytics.track(event: .InPersonPaymentsFeedbackBanner.shown(
             source: .orderList,
             campaign: campaign)

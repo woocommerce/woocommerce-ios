@@ -459,6 +459,26 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertFalse(resynchronizeRequested)
     }
 
+    func test_trackInPersonPaymentsFeedbackBannerShown_tracks_event_and_properties_correctly() {
+        // Given
+        let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerShown
+        let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
+        let expectedSource = WooAnalyticsEvent.InPersonPaymentsFeedbackBanner.Source.orderList.rawValue
+
+        // When
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        viewModel.trackInPersonPaymentsFeedbackBannerShown(for: .IPP_COD)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
+        guard let actualProperties = analyticsProvider.receivedProperties.first(
+            where: { $0.keys.contains("source") }) else {
+            return XCTFail("Expected properties were not tracked"
+            )}
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+        assertEqual(expectedSource, actualProperties["source"] as? String)
+    }
+
     func test_IPPFeedbackBannerCTATapped_tracks_event_and_properties_correctly() {
         // Given
         let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerTapped

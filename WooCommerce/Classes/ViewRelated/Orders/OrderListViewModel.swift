@@ -286,7 +286,7 @@ final class OrderListViewModel {
         }
     }
 
-    private func inPersonPaymentsFeedbackCampaignTracked(campaign: FeatureAnnouncementCampaign) {
+    func inPersonPaymentsFeedbackCampaignTracked(campaign: FeatureAnnouncementCampaign) {
         analytics.track(event: .InPersonPaymentsFeedbackBanner.shown(
             source: .orderList,
             campaign: campaign)
@@ -308,13 +308,10 @@ final class OrderListViewModel {
             let IPPresultsCount = IPPTransactionsFound.count
 
             if !hasResults {
-                inPersonPaymentsFeedbackCampaignTracked(campaign: .inPersonPaymentsCashOnDelivery)
                 return .IPP_COD
             } else if IPPresultsCount < Constants.numberOfTransactions {
-                inPersonPaymentsFeedbackCampaignTracked(campaign: .inPersonPaymentsFirstTransaction)
                 return .IPP_firstTransaction
             } else if IPPresultsCount >= Constants.numberOfTransactions {
-                inPersonPaymentsFeedbackCampaignTracked(campaign: .inPersonPaymentsPowerUsers)
                 return .IPP_powerUsers
             }
         }

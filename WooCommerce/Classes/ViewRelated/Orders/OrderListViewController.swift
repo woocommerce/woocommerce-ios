@@ -163,6 +163,17 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
             inPersonPaymentsSurveyVariation = viewModel.feedbackBannerSurveySource()
+
+            switch inPersonPaymentsSurveyVariation {
+            case .IPP_COD:
+                viewModel.inPersonPaymentsFeedbackCampaignTracked(campaign: .inPersonPaymentsCashOnDelivery)
+            case .IPP_firstTransaction:
+                viewModel.inPersonPaymentsFeedbackCampaignTracked(campaign: .inPersonPaymentsFirstTransaction)
+            case .IPP_powerUsers:
+                viewModel.inPersonPaymentsFeedbackCampaignTracked(campaign: .inPersonPaymentsPowerUsers)
+            default:
+                break
+            }
         }
     }
 

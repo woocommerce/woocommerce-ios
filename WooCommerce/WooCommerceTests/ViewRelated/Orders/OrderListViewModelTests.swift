@@ -467,7 +467,7 @@ final class OrderListViewModelTests: XCTestCase {
 
         // When
         let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
-        viewModel.trackInPersonPaymentsFeedbackBannerShown(for: .IPP_COD)
+        viewModel.trackInPersonPaymentsFeedbackBannerShown(for: .inPersonPaymentsCashOnDelivery)
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)

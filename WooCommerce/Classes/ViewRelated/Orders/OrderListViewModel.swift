@@ -290,11 +290,11 @@ final class OrderListViewModel {
         var campaign: FeatureAnnouncementCampaign? = nil
 
         switch surveySource {
-        case .IPP_COD:
+        case .inPersonPaymentsCashOnDelivery:
             campaign = .inPersonPaymentsCashOnDelivery
-        case .IPP_firstTransaction:
+        case .inPersonPaymentsFirstTransaction:
             campaign = .inPersonPaymentsFirstTransaction
-        case .IPP_powerUsers:
+        case .inPersonPaymentsPowerUsers:
             campaign = .inPersonPaymentsPowerUsers
         default:
             break

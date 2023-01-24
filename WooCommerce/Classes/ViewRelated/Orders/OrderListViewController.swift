@@ -832,8 +832,7 @@ private extension OrderListViewController {
         let shareIPPFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.shareFeedbackButton, action: { [weak self] _ in
             self?.displayIPPFeedbackBannerSurvey(survey: survey)
             self?.viewModel.IPPFeedbackBannerCTATapped(for: campaign)
-            // We dismiss the banner at this point as we cannot know if the user successfully submitted it
-            self?.viewModel.IPPFeedbackBannerWasDismissed(for: campaign)
+            self?.viewModel.IPPFeedbackBannerWasSubmitted()
         })
 
         let viewModel = TopBannerViewModel(

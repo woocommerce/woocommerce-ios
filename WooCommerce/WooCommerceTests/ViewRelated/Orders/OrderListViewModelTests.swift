@@ -542,6 +542,101 @@ final class OrderListViewModelTests: XCTestCase {
         assertEqual(expectedSource, actualProperties["source"] as? String)
         assertEqual(expectedRemindLater, actualProperties["remind_later"] as? Bool)
     }
+
+    func test_IPPFeedbackBannerWasSubmitted_hides_banner_after_being_called() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
+
+        // When
+        viewModel.IPPFeedbackBannerWasSubmitted()
+        viewModel.hasErrorLoadingData = false
+        viewModel.hideOrdersBanners = true
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .none
+        }
+    }
+
+    func test_IPPFeedbackBannerWasSubmitted_then_it_calls_updateFeedbackStatus_with_right_parameters() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        var updatedFeedbackStatus: FeedbackSettings.Status?
+        var receivedFeedbackType: FeedbackType?
+
+        // When
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .updateFeedbackStatus(type, status, onCompletion):
+                receivedFeedbackType = type
+                updatedFeedbackStatus = status
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        viewModel.activate()
+        viewModel.IPPFeedbackBannerWasSubmitted()
+
+        // Then
+        XCTAssertTrue(viewModel.hideIPPFeedbackBanner)
+
+        XCTAssertEqual(receivedFeedbackType, .inPersonPayments)
+
+        switch updatedFeedbackStatus {
+        case .given:
+            break
+        default:
+            XCTFail()
+        }
+    }
+
+    func test_IPPFeedbackBannerWasSubmitted_then_it_calls_setFeatureAnnouncementDismissed_with_right_parameters() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        var receivedCampaign: FeatureAnnouncementCampaign?
+        var receivedRemindAfterDays: Int?
+
+        // When
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .setFeatureAnnouncementDismissed(campaign, remindAfterDays, _):
+                receivedRemindAfterDays = remindAfterDays
+                receivedCampaign = campaign
+            default:
+                break
+            }
+        }
+
+        viewModel.activate()
+        viewModel.IPPFeedbackBannerWasSubmitted()
+
+        // Then
+        XCTAssertEqual(receivedCampaign, .inPersonPaymentsPowerUsers)
+        XCTAssertNil(receivedRemindAfterDays)
+    }
+
+    func test_feedback_status_when_IPPFeedbackBannerWasSubmitted_is_not_called_then_feedback_status_is_nil() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        var feedbackStatus: FeedbackSettings.Status?
+
+        // When
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .updateFeedbackStatus(.inPersonPayments, status, onCompletion):
+                feedbackStatus = status
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        viewModel.activate()
+
+        // Then
+        assertEqual(nil, feedbackStatus)
+    }
 }
 
 // MARK: - Helpers

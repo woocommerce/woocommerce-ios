@@ -162,13 +162,11 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureSyncingCoordinator()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            inPersonPaymentsSurveyVariation = viewModel.feedbackBannerSurveySource()
-
-            if let inPersonPaymentsSurveyVariation {
-                viewModel.trackInPersonPaymentsFeedbackBannerShown(for: inPersonPaymentsSurveyVariation)
-            } else {
-                DDLogError("Couldn't assign an In-Person Payments survey variation")
-            }
+            viewModel.feedbackBannerSurveySource(onCompletion: { survey in
+                // Only assign the survey once we're sure the data is fetched from storage
+                inPersonPaymentsSurveyVariation = survey
+                viewModel.trackInPersonPaymentsFeedbackBannerShown(for: survey)
+            })
         }
     }
 

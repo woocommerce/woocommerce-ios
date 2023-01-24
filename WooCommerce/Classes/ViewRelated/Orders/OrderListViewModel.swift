@@ -311,9 +311,10 @@ final class OrderListViewModel {
         )
     }
 
-    func feedbackBannerSurveySource() -> SurveyViewController.Source? {
-
+    func feedbackBannerSurveySource(onCompletion: (SurveyViewController.Source) -> Void ) {
         if isCODEnabled && isIPPSupportedCountry {
+            fetchIPPTransactions()
+
             let hasWCPayResults = WCPayOrdersResultsController.fetchedObjects.isEmpty ? false : true
             let WCPAYResultsCount = WCPayOrdersResultsController.fetchedObjects.count
             let hasOneOrMoreWCPayTransactions = (WCPAYResultsCount >= 1) ? true : false
@@ -328,14 +329,13 @@ final class OrderListViewModel {
             let recentWCPayResultsCount = recentIPPWCPayTransactionsFound.count
 
             if !hasWCPayResults {
-                return .inPersonPaymentsCashOnDelivery
+                onCompletion(.inPersonPaymentsCashOnDelivery)
             } else if hasOneOrMoreWCPayTransactions && (recentWCPayResultsCount < Constants.numberOfTransactions) {
-                return .inPersonPaymentsFirstTransaction
+                onCompletion(.inPersonPaymentsFirstTransaction)
             } else if WCPAYResultsCount >= Constants.numberOfTransactions {
-                return .inPersonPaymentsPowerUsers
+                onCompletion(.inPersonPaymentsPowerUsers)
             }
         }
-        return nil
     }
 
     private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {

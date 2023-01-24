@@ -19,7 +19,7 @@ extension WooAnalyticsEvent {
             case other = "other"
         }
 
-        /// Tracks when generating application password suceeds
+        /// Tracks when generating application password succeeds
         ///
         static func applicationPasswordGeneratedSuccessfully(scenario: Scenario) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .applicationPasswordsNewPasswordCreated,

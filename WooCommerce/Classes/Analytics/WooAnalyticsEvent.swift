@@ -605,6 +605,52 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - InPersonPayments Feedback Banner
+extension WooAnalyticsEvent {
+    enum InPersonPaymentsFeedbackBanner {
+        /// Possible sources for the Feedback Banner
+        ///
+        enum Source: String {
+            case orderList = "order_list"
+        }
+
+        /// Keys for the Feedback Banner properties
+        ///
+        private enum Keys {
+            static let campaign = "campaign"
+            static let source = "source"
+            static let remindLater = "remind_later"
+        }
+
+        static func shown(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .inPersonPaymentsBannerShown,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
+                              ])
+        }
+
+        static func ctaTapped(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .inPersonPaymentsBannerTapped,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
+                              ])
+        }
+
+        static func dismissed(source: Source,
+                              campaign: FeatureAnnouncementCampaign,
+                              remindLater: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .inPersonPaymentsBannerDismissed,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue,
+                                Keys.remindLater: remindLater
+                              ])
+        }
+    }
+}
+
 // MARK: - Feature Announcement Card
 
 extension WooAnalyticsEvent {

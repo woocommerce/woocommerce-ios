@@ -14,6 +14,9 @@ final class OrderListViewModelTests: XCTestCase {
 
     private var stores: MockStoresManager!
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     private var storage: StorageType {
         storageManager.viewStorage
     }
@@ -25,6 +28,8 @@ final class OrderListViewModelTests: XCTestCase {
         storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.sessionManager.setStoreId(siteID)
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings(stores: stores, storageManager: storageManager))
     }
 
@@ -33,6 +38,8 @@ final class OrderListViewModelTests: XCTestCase {
         storageManager.reset()
         storageManager = nil
         stores = nil
+        analyticsProvider = nil
+        analytics = nil
 
         cancellables.forEach {
             $0.cancel()
@@ -269,7 +276,7 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case let .loadFeedbackVisibility(.IPP, onCompletion):
+            case let .loadFeedbackVisibility(.inPersonPayments, onCompletion):
                 onCompletion(.success(true))
             default:
                 break
@@ -450,6 +457,90 @@ final class OrderListViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertFalse(resynchronizeRequested)
+    }
+
+    func test_trackInPersonPaymentsFeedbackBannerShown_tracks_event_and_properties_correctly() {
+        // Given
+        let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerShown
+        let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
+        let expectedSource = WooAnalyticsEvent.InPersonPaymentsFeedbackBanner.Source.orderList.rawValue
+
+        // When
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        viewModel.trackInPersonPaymentsFeedbackBannerShown(for: .IPP_COD)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
+        guard let actualProperties = analyticsProvider.receivedProperties.first(
+            where: { $0.keys.contains("source") }) else {
+            return XCTFail("Expected properties were not tracked"
+            )}
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+        assertEqual(expectedSource, actualProperties["source"] as? String)
+    }
+
+    func test_IPPFeedbackBannerCTATapped_tracks_event_and_properties_correctly() {
+        // Given
+        let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerTapped
+        let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
+        let expectedSource = WooAnalyticsEvent.InPersonPaymentsFeedbackBanner.Source.orderList.rawValue
+
+        // When
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        viewModel.IPPFeedbackBannerCTATapped(for: .inPersonPaymentsCashOnDelivery)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
+        guard let actualProperties = analyticsProvider.receivedProperties.first(
+            where: { $0.keys.contains("source") }) else {
+            return XCTFail("Expected properties were not tracked"
+            )}
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+        assertEqual(expectedSource, actualProperties["source"] as? String)
+    }
+
+    func test_IPPFeedbackBannerDontShowAgainTapped_tracks_dismiss_event_and_properties_correctly() {
+        // Given
+        let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerDismissed
+        let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
+        let expectedSource = WooAnalyticsEvent.InPersonPaymentsFeedbackBanner.Source.orderList.rawValue
+        let expectedRemindLater = false
+
+        // When
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        viewModel.IPPFeedbackBannerDontShowAgainTapped(for: .inPersonPaymentsCashOnDelivery)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
+        guard let actualProperties = analyticsProvider.receivedProperties.first(
+            where: { $0.keys.contains("source") }) else {
+            return XCTFail("Expected properties were not tracked"
+            )}
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+        assertEqual(expectedSource, actualProperties["source"] as? String)
+        assertEqual(expectedRemindLater, actualProperties["remind_later"] as? Bool)
+    }
+
+    func test_IPPFeedbackBannerRemindMeLaterTapped_tracks_dismiss_event_and_properties_correctly() {
+        // Given
+        let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerDismissed
+        let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
+        let expectedSource = WooAnalyticsEvent.InPersonPaymentsFeedbackBanner.Source.orderList.rawValue
+        let expectedRemindLater = true
+
+        // When
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        viewModel.IPPFeedbackBannerRemindMeLaterTapped(for: .inPersonPaymentsCashOnDelivery)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
+        guard let actualProperties = analyticsProvider.receivedProperties.first(
+            where: { $0.keys.contains("source") }) else {
+            return XCTFail("Expected properties were not tracked"
+            )}
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+        assertEqual(expectedSource, actualProperties["source"] as? String)
+        assertEqual(expectedRemindLater, actualProperties["remind_later"] as? Bool)
     }
 }
 

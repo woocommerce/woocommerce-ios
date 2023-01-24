@@ -19,5 +19,5 @@ public enum FeedbackType: String, Codable {
 
     /// Identifier for the In-Person Payments feedback survey
     ///
-    case IPP
+    case inPersonPayments
 }

@@ -473,8 +473,8 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
         guard let actualProperties = analyticsProvider.receivedProperties.first(
             where: { $0.keys.contains("source") }) else {
-                return XCTFail("Expected properties were not tracked"
-                )}
+            return XCTFail("Expected properties were not tracked"
+            )}
         assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
         assertEqual(expectedSource, actualProperties["source"] as? String)
     }
@@ -494,8 +494,8 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
         guard let actualProperties = analyticsProvider.receivedProperties.first(
             where: { $0.keys.contains("source") }) else {
-                return XCTFail("Expected properties were not tracked"
-                )}
+            return XCTFail("Expected properties were not tracked"
+            )}
         assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
         assertEqual(expectedSource, actualProperties["source"] as? String)
         assertEqual(expectedRemindLater, actualProperties["remind_later"] as? Bool)
@@ -516,8 +516,8 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
         guard let actualProperties = analyticsProvider.receivedProperties.first(
             where: { $0.keys.contains("source") }) else {
-                return XCTFail("Expected properties were not tracked"
-                )}
+            return XCTFail("Expected properties were not tracked"
+            )}
         assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
         assertEqual(expectedSource, actualProperties["source"] as? String)
         assertEqual(expectedRemindLater, actualProperties["remind_later"] as? Bool)

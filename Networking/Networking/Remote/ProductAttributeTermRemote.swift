@@ -24,7 +24,12 @@ public final class ProductAttributeTermRemote: Remote {
         ]
 
         let path = Path.terms(attributeID: attributeID)
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = ProductAttributeTermListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper) { terms, error in
@@ -54,7 +59,12 @@ public final class ProductAttributeTermRemote: Remote {
         ]
 
         let path = Path.terms(attributeID: attributeID)
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = ProductAttributeTermMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

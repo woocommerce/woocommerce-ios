@@ -11,7 +11,7 @@ protocol OrderDetailsPaymentAlertsProtocol {
 
     func displayReaderMessage(message: String)
 
-    func processingPayment()
+    func processingPayment(title: String)
 
     func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void, noReceiptAction: @escaping () -> Void)
 

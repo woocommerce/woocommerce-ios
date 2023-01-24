@@ -301,7 +301,7 @@ private extension LegacyCollectOrderPaymentUseCase {
 
             }, onProcessingMessage: { [weak self] in
                 // Waiting message
-                self?.alerts.processingPayment()
+                self?.alerts.processingPayment(title: Localization.collectPaymentTitle(username: self?.order.billingAddress?.firstName))
             }, onDisplayMessage: { [weak self] message in
                 // Reader messages. EG: Remove Card
                 self?.alerts.displayReaderMessage(message: message)

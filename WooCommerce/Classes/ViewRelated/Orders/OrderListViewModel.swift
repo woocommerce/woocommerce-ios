@@ -21,6 +21,7 @@ import protocol Storage.StorageManagerType
 final class OrderListViewModel {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let analytics: Analytics
     private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
 
@@ -139,12 +140,14 @@ final class OrderListViewModel {
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          filters: FilterOrderListViewModel.Filters?) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
+        self.analytics = analytics
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
@@ -224,7 +227,7 @@ final class OrderListViewModel {
     // Requests if the In-Person Payments feedback banner should be shown,
     // in which case we proceed to sync the view model by fetching transactions
     private func syncIPPBannerVisibility() {
-        let action = AppSettingsAction.loadFeedbackVisibility(type: .IPP) { [weak self] visibility in
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .inPersonPayments) { [weak self] visibility in
             switch visibility {
             case .success(let visible):
                 self?.hideIPPFeedbackBanner = !visible
@@ -275,8 +278,34 @@ final class OrderListViewModel {
         }
     }
 
+    func trackInPersonPaymentsFeedbackBannerShown(for surveySource: SurveyViewController.Source) {
+        var campaign: FeatureAnnouncementCampaign? = nil
+
+        switch surveySource {
+        case .IPP_COD:
+            campaign = .inPersonPaymentsCashOnDelivery
+        case .IPP_firstTransaction:
+            campaign = .inPersonPaymentsFirstTransaction
+        case .IPP_powerUsers:
+            campaign = .inPersonPaymentsPowerUsers
+        default:
+            break
+        }
+
+        guard let campaign = campaign else {
+            DDLogError("Couldn't assign a specific campaign for the Survey Source.")
+            return
+        }
+
+        analytics.track(event: .InPersonPaymentsFeedbackBanner.shown(
+            source: .orderList,
+            campaign: campaign)
+        )
+    }
+
     func feedbackBannerSurveySource() -> SurveyViewController.Source? {
         if isCODEnabled && isIPPSupportedCountry {
+
             let hasResults = IPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
 
             /// In order to filter WCPay transactions processed through IPP within the last 30 days,
@@ -341,44 +370,64 @@ final class OrderListViewModel {
 // MARK: - In-Person Payments Feedback Banner
 
 extension OrderListViewModel {
-    func dismissIPPFeedbackBanner(remindAfterDays: Int?) {
+    func dismissIPPFeedbackBanner(remindAfterDays: Int?, campaign: FeatureAnnouncementCampaign) {
         //  Updates the IPP feedback banner status as dismissed
-        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .dismissed) { [weak self] _ in
+        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .inPersonPayments, status: .dismissed) { [weak self] _ in
             self?.hideIPPFeedbackBanner = true
         }
         stores.dispatch(updateFeedbackStatus)
 
         //  Updates the IPP feedback banner status to be reminded later, or never
         let updateBannerVisibility = AppSettingsAction.setFeatureAnnouncementDismissed(
-            campaign: .IPP,
+            campaign: campaign,
             remindAfterDays: remindAfterDays,
             onCompletion: nil
         )
         stores.dispatch(updateBannerVisibility)
     }
 
-    func IPPFeedbackBannerRemindMeLaterTapped() {
-        dismissIPPFeedbackBanner(remindAfterDays: Constants.remindIPPBannerDismissalAfterDays)
+    func IPPFeedbackBannerCTATapped(for campaign: FeatureAnnouncementCampaign) {
+        analytics.track(
+            event: .InPersonPaymentsFeedbackBanner.ctaTapped(
+                source: .orderList,
+                campaign: campaign
+            ))
     }
 
-    func IPPFeedbackBannerDontShowAgainTapped() {
-        dismissIPPFeedbackBanner(remindAfterDays: nil)
+    func IPPFeedbackBannerRemindMeLaterTapped(for campaign: FeatureAnnouncementCampaign) {
+        analytics.track(
+            event: .InPersonPaymentsFeedbackBanner.dismissed(
+                source: .orderList,
+                campaign: campaign,
+                remindLater: true)
+        )
+        dismissIPPFeedbackBanner(remindAfterDays: Constants.remindIPPBannerDismissalAfterDays, campaign: campaign)
     }
 
-    func IPPFeedbackBannerWasDismissed() {
-        dismissIPPFeedbackBanner(remindAfterDays: nil)
+    func IPPFeedbackBannerDontShowAgainTapped(for campaign: FeatureAnnouncementCampaign) {
+        analytics.track(
+            event: .InPersonPaymentsFeedbackBanner.dismissed(
+                source: .orderList,
+                campaign: campaign,
+                remindLater: false)
+        )
+        dismissIPPFeedbackBanner(remindAfterDays: nil, campaign: campaign)
+    }
+
+    func IPPFeedbackBannerWasDismissed(for campaign: FeatureAnnouncementCampaign) {
+        dismissIPPFeedbackBanner(remindAfterDays: nil, campaign: campaign)
     }
 
     func IPPFeedbackBannerWasSubmitted() {
         //  Updates the IPP feedback banner status as given
-        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .IPP, status: .given(Date())) { [weak self] _ in
+        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .inPersonPayments, status: .given(Date())) { [weak self] _ in
             self?.hideIPPFeedbackBanner = true
         }
         stores.dispatch(updateFeedbackStatus)
 
         //  Updates the IPP feedback banner status to not be reminded again
         let updateBannerVisibility = AppSettingsAction.setFeatureAnnouncementDismissed(
-            campaign: .IPP,
+            campaign: .inPersonPaymentsPowerUsers,
             remindAfterDays: nil,
             onCompletion: nil
         )

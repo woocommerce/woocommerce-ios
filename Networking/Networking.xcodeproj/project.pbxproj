@@ -801,10 +801,10 @@
 		EE57C129297F8F3D00BC31E7 /* ProductAttributeTermMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C128297F8F3D00BC31E7 /* ProductAttributeTermMapperTests.swift */; };
 		EE57C12B297F8F8600BC31E7 /* attribute-term-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C12A297F8F8600BC31E7 /* attribute-term-without-data.json */; };
 		EE57C12D297F923A00BC31E7 /* product-variation-update-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C12C297F923A00BC31E7 /* product-variation-update-without-data.json */; };
-		EE57C131297F97F900BC31E7 /* ProductVariationsBulkUpdateMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C130297F97F900BC31E7 /* ProductVariationsBulkUpdateMapperTests.swift */; };
 		EE57C134297F985A00BC31E7 /* product-variations-bulk-update-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C132297F985A00BC31E7 /* product-variations-bulk-update-without-data.json */; };
 		EE57C135297F985A00BC31E7 /* product-variations-bulk-create-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C133297F985A00BC31E7 /* product-variations-bulk-create-without-data.json */; };
 		EE57C137297F98DB00BC31E7 /* product-variations-load-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C136297F98DB00BC31E7 /* product-variations-load-all-without-data.json */; };
+		EE57C138297F9AC900BC31E7 /* ProductVariationsBulkUpdateMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C130297F97F900BC31E7 /* ProductVariationsBulkUpdateMapperTests.swift */; };
 		EE62EE61295ACF8D009C965B /* RequestConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE60295ACF8D009C965B /* RequestConverterTests.swift */; };
 		EE62EE63295AD45E009C965B /* String+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE62295AD45E009C965B /* String+URL.swift */; };
 		EE62EE65295AD46D009C965B /* String+URLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE64295AD46D009C965B /* String+URLTests.swift */; };
@@ -3965,7 +3965,7 @@
 				740211E121939908002248DA /* CommentRemoteTests.swift in Sources */,
 				B57B1E6A21C925280046E764 /* DotcomValidatorTests.swift in Sources */,
 				B567AF3020A0FB8F00AB6C62 /* DotcomRequestTests.swift in Sources */,
-				EE57C131297F97F900BC31E7 /* ProductVariationsBulkUpdateMapperTests.swift in Sources */,
+				EE57C138297F9AC900BC31E7 /* ProductVariationsBulkUpdateMapperTests.swift in Sources */,
 				E18152C428F85E5C0011A0EC /* InAppPurchasesProductsMapperTests.swift in Sources */,
 				D8A2849A25FBB2E70019A84B /* ProductAttributeTermListMapperTests.swift in Sources */,
 			);

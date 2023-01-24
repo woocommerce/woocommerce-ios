@@ -286,7 +286,7 @@ final class OrderListViewModel {
         }
     }
 
-    func inPersonPaymentsFeedbackCampaignTracked(campaign: FeatureAnnouncementCampaign) {
+    func trackInPersonPaymentsFeedbackBannerShown(campaign: FeatureAnnouncementCampaign) {
         analytics.track(event: .InPersonPaymentsFeedbackBanner.shown(
             source: .orderList,
             campaign: campaign)

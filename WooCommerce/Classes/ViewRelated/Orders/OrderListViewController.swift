@@ -166,11 +166,11 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
             switch inPersonPaymentsSurveyVariation {
             case .IPP_COD:
-                viewModel.inPersonPaymentsFeedbackCampaignTracked(campaign: .inPersonPaymentsCashOnDelivery)
+                viewModel.trackInPersonPaymentsFeedbackBannerShown(campaign: .inPersonPaymentsCashOnDelivery)
             case .IPP_firstTransaction:
-                viewModel.inPersonPaymentsFeedbackCampaignTracked(campaign: .inPersonPaymentsFirstTransaction)
+                viewModel.trackInPersonPaymentsFeedbackBannerShown(campaign: .inPersonPaymentsFirstTransaction)
             case .IPP_powerUsers:
-                viewModel.inPersonPaymentsFeedbackCampaignTracked(campaign: .inPersonPaymentsPowerUsers)
+                viewModel.trackInPersonPaymentsFeedbackBannerShown(campaign: .inPersonPaymentsPowerUsers)
             default:
                 break
             }

@@ -744,6 +744,8 @@
 		DEC2961C26BBE764005A056B /* ShippingLabelCustomsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */; };
 		DEC2B08D297AA048003923FB /* reviews-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B08C297AA048003923FB /* reviews-all-without-data.json */; };
 		DEC2B08F297AA123003923FB /* reviews-single-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B08E297AA123003923FB /* reviews-single-without-data.json */; };
+		DEC2B091297AA5A6003923FB /* categories-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B090297AA5A6003923FB /* categories-all-without-data.json */; };
+		DEC2B093297AA60D003923FB /* category-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B092297AA60D003923FB /* category-without-data.json */; };
 		DEC51A95274CDA52009F3DF4 /* SitePluginMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A94274CDA52009F3DF4 /* SitePluginMapper.swift */; };
 		DEC51A97274DD962009F3DF4 /* plugin.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC51A96274DD962009F3DF4 /* plugin.json */; };
 		DEC51A99274DDDC9009F3DF4 /* SitePluginMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A98274DDDC9009F3DF4 /* SitePluginMapperTests.swift */; };
@@ -1595,6 +1597,8 @@
 		DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsForm.swift; sourceTree = "<group>"; };
 		DEC2B08C297AA048003923FB /* reviews-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-all-without-data.json"; sourceTree = "<group>"; };
 		DEC2B08E297AA123003923FB /* reviews-single-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-single-without-data.json"; sourceTree = "<group>"; };
+		DEC2B090297AA5A6003923FB /* categories-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-all-without-data.json"; sourceTree = "<group>"; };
+		DEC2B092297AA60D003923FB /* category-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "category-without-data.json"; sourceTree = "<group>"; };
 		DEC51A94274CDA52009F3DF4 /* SitePluginMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginMapper.swift; sourceTree = "<group>"; };
 		DEC51A96274DD962009F3DF4 /* plugin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = plugin.json; sourceTree = "<group>"; };
 		DEC51A98274DDDC9009F3DF4 /* SitePluginMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginMapperTests.swift; sourceTree = "<group>"; };
@@ -2211,6 +2215,8 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DEC2B092297AA60D003923FB /* category-without-data.json */,
+				DEC2B090297AA5A6003923FB /* categories-all-without-data.json */,
 				DEC2B08E297AA123003923FB /* reviews-single-without-data.json */,
 				DEC2B08C297AA048003923FB /* reviews-all-without-data.json */,
 				DE66C5682977D62700DAA978 /* plugins-without-data.json */,
@@ -3083,6 +3089,7 @@
 				26BD9FCD2965EC3C004E0D15 /* product-variations-bulk-create.json in Resources */,
 				028CB718290223CB00331C09 /* account-username-suggestions.json in Resources */,
 				0282DD91233A120A006A5FDB /* products-search-photo.json in Resources */,
+				DEC2B093297AA60D003923FB /* category-without-data.json in Resources */,
 				45152825257A8B740076B03C /* product-attribute-update.json in Resources */,
 				68C87B342862D40E00A99054 /* setting-all-except-countries.json in Resources */,
 				3158FE6026129ADD00E566B9 /* wcpay-account-none.json in Resources */,
@@ -3163,6 +3170,7 @@
 				3105471C262E2F8000C5C02B /* wcpay-payment-intent-requires-action.json in Resources */,
 				3158FE6826129CE200E566B9 /* wcpay-account-rejected-fraud.json in Resources */,
 				02AAD53F250092A400BA1E26 /* product-add-or-delete.json in Resources */,
+				DEC2B091297AA5A6003923FB /* categories-all-without-data.json in Resources */,
 				D823D90B22376EFE00C90817 /* shipment_tracking_delete.json in Resources */,
 				31A451D727863A2E00FE81AA /* stripe-account-dev-test.json in Resources */,
 				74C947832193A6C70024CB60 /* comment-moderate-trash.json in Resources */,

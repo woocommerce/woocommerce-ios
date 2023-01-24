@@ -25,7 +25,12 @@ public final class ProductCategoriesRemote: Remote {
         ]
 
         let path = Path.categories
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = ProductCategoryListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -42,7 +47,11 @@ public final class ProductCategoriesRemote: Remote {
                                     siteID: Int64,
                                     completion: @escaping (Result<ProductCategory, Error>) -> Void) -> Void {
         let path = Path.categories + "/\(categoryID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
         let mapper = ProductCategoryMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -69,7 +78,12 @@ public final class ProductCategoriesRemote: Remote {
         }
 
         let path = Path.categories
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = ProductCategoryMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

@@ -36,8 +36,9 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
                                        message: message)
     }
 
-    func processingTransaction() -> CardPresentPaymentsModalViewModel {
-        CardPresentModalProcessing(name: name, amount: amount, transactionType: transactionType)
+    func processingTransaction(title: String) -> CardPresentPaymentsModalViewModel {
+        name = title
+        return CardPresentModalProcessing(name: name, amount: amount, transactionType: transactionType)
     }
 
     func success(printReceipt: @escaping () -> Void,

@@ -41,6 +41,36 @@ final class InPersonPaymentsMenuViewController: UIViewController {
 
     private var activityIndicator: UIActivityIndicatorView?
 
+    private var inPersonPaymentsLearnMoreButtonTitle: NSAttributedString? {
+        let result = NSMutableAttributedString(
+            string: .localizedStringWithFormat(
+                Localization.learnMoreText,
+                Localization.learnMoreLink
+            ),
+            attributes: [.foregroundColor: UIColor.textSubtle]
+        )
+        result.replaceFirstOccurrence(
+            of: Localization.learnMoreLink,
+            with: NSAttributedString(
+                string: Localization.learnMoreLink,
+                attributes: [
+                    .foregroundColor: UIColor.textLink
+                ]
+            ))
+        result.addAttribute(.font, value: UIFont.footnote, range: NSRange(location: 0, length: result.length))
+        return result
+    }
+
+    private var inPersonPaymentsLearnMoreButton: UIButton {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(learnMoreAboutInPersonPaymentsButtonWasTapped), for: .touchUpInside)
+        button.setAttributedTitle(inPersonPaymentsLearnMoreButtonTitle, for: .normal)
+        button.naturalContentHorizontalAlignment = .leading
+        button.configuration = UIButton.Configuration.plain()
+
+        return button
+    }
+
     init(stores: StoresManager = ServiceLocator.stores,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
     ) {
@@ -392,6 +422,11 @@ extension InPersonPaymentsMenuViewController {
 
         SimplePaymentsAmountFlowOpener.openSimplePaymentsAmountFlow(from: navigationController, siteID: siteID)
     }
+
+    @objc func learnMoreAboutInPersonPaymentsButtonWasTapped() {
+        WebviewHelper.launch(WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL(), with: self)
+    }
+
 }
 
 // MARK: - UITableViewDataSource
@@ -414,6 +449,14 @@ extension InPersonPaymentsMenuViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        guard section == sections.firstIndex(where: { $0 == cardReadersSection }) else {
+            return nil
+        }
+
+        return inPersonPaymentsLearnMoreButton
     }
 }
 
@@ -516,10 +559,32 @@ private extension InPersonPaymentsMenuViewController {
             "Continue setup",
             comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
         )
+
+        static let learnMoreLink = NSLocalizedString(
+            "cardPresent.modalScanningForReader.learnMore.link",
+            value: "Learn more",
+            comment: """
+                     A label prompting users to learn more about In-Person Payments.
+                     This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
+                     """
+        )
+
+        static let learnMoreText = NSLocalizedString(
+            "cardPresent.modalScanningForReader.learnMore.text",
+            value: "%1$@ about In‑Person Payments",
+            comment: """
+                     A label prompting users to learn more about In-Person Payments.
+                     The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                     If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+                     %1$@ is a placeholder that always replaced with \"Learn more\" string,
+                     which should be translated separately and considered part of this sentence.
+                     """
+        )
+
     }
 }
 
-private struct Section {
+private struct Section: Equatable {
     let header: String
     let rows: [Row]
 }

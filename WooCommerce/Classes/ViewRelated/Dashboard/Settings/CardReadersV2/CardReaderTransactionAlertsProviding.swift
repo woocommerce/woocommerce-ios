@@ -23,7 +23,7 @@ protocol CardReaderTransactionAlertsProviding {
 
     /// An alert to show that the transaction is being processed
     ///
-    func processingTransaction() -> CardPresentPaymentsModalViewModel
+    func processingTransaction(title: String) -> CardPresentPaymentsModalViewModel
 
     /// An alert to display successful transaction and provide options related to receipts
     ///

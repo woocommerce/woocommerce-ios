@@ -19,6 +19,20 @@ final class ProductCategoryListMapperTests: XCTestCase {
         XCTAssertEqual(secondProductCategory.name, "American")
         XCTAssertEqual(secondProductCategory.slug, "american")
     }
+
+    /// Verifies that all of the ProductCategory Fields are parsed correctly.
+    ///
+    func test_ProductCategory_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
+        let productCategories = try mapLoadAllProductCategoriesResponseWithoutDataEnvelope()
+        XCTAssertEqual(productCategories.count, 2)
+
+        let secondProductCategory = productCategories[1]
+        XCTAssertEqual(secondProductCategory.categoryID, 20)
+        XCTAssertEqual(secondProductCategory.parentID, 17)
+        XCTAssertEqual(secondProductCategory.siteID, dummySiteID)
+        XCTAssertEqual(secondProductCategory.name, "American")
+        XCTAssertEqual(secondProductCategory.slug, "american")
+    }
 }
 
 
@@ -40,5 +54,11 @@ private extension ProductCategoryListMapperTests {
     ///
     func mapLoadAllProductCategoriesResponse() throws -> [ProductCategory] {
         return try mapProductCategories(from: "categories-all")
+    }
+
+    /// Returns the ProductListMapper output upon receiving `categories-all-without-data`
+    ///
+    func mapLoadAllProductCategoriesResponseWithoutDataEnvelope() throws -> [ProductCategory] {
+        return try mapProductCategories(from: "categories-all-without-data")
     }
 }

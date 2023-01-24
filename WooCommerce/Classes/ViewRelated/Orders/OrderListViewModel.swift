@@ -329,10 +329,13 @@ final class OrderListViewModel {
             let recentWCPayResultsCount = recentIPPWCPayTransactionsFound.count
 
             if !hasWCPayResults {
+                // Case 1: No WCPay transactions
                 onCompletion(.inPersonPaymentsCashOnDelivery)
             } else if hasOneOrMoreWCPayTransactions && (recentWCPayResultsCount < Constants.numberOfTransactions) {
+                // Case 2: One or more WCPay transactions, but less than 10 within latest 30 days
                 onCompletion(.inPersonPaymentsFirstTransaction)
             } else if WCPayResultsCount >= Constants.numberOfTransactions {
+                // Case 3: More than 10 WCPay transactions
                 onCompletion(.inPersonPaymentsPowerUsers)
             }
         }

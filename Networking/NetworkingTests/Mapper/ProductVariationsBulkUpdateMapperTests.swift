@@ -16,7 +16,7 @@ final class ProductVariationsBulkUpdateMapperTests: XCTestCase {
     /// Verifies that all of the ProductVariation Fields are parsed correctly.
     ///
     func test_ProductVariation_fields_are_properly_parsed() throws {
-        let productVariations = try XCTUnwrap(mapLoadProductVariationListResponse())
+        let productVariations = try XCTUnwrap(mapLoadProductVariationBulkUpdateResponse())
         XCTAssertTrue(productVariations.count == 1)
 
         let variation = try XCTUnwrap(productVariations.first)
@@ -26,7 +26,7 @@ final class ProductVariationsBulkUpdateMapperTests: XCTestCase {
     /// Verifies that all of the ProductVariation Fields are parsed correctly.
     ///
     func test_ProductVariation_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let productVariations = try XCTUnwrap(mapLoadProductVariationListResponseWithoutDataEnvelope())
+        let productVariations = try XCTUnwrap(mapLoadProductVariationBulkUpdateResponseWithoutDataEnvelope())
         XCTAssertTrue(productVariations.count == 1)
 
         let variation = try XCTUnwrap(productVariations.first)
@@ -38,7 +38,7 @@ final class ProductVariationsBulkUpdateMapperTests: XCTestCase {
 ///
 private extension ProductVariationsBulkUpdateMapperTests {
 
-    /// Returns the ProductVariationListMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the ProductVariationsBulkUpdateMapper output upon receiving `filename` (Data Encoded)
     ///
     func mapProductVariations(from filename: String) -> [ProductVariation]? {
         guard let response = Loader.contentsOf(filename) else {
@@ -48,15 +48,15 @@ private extension ProductVariationsBulkUpdateMapperTests {
         return try? ProductVariationsBulkUpdateMapper(siteID: dummySiteID, productID: dummyProductID).map(response: response)
     }
 
-    /// Returns the ProductVariationListMapper output upon receiving `product`
+    /// Returns the ProductVariationsBulkUpdateMapper output upon receiving `product`
     ///
-    func mapLoadProductVariationListResponse() -> [ProductVariation]? {
+    func mapLoadProductVariationBulkUpdateResponse() -> [ProductVariation]? {
         return mapProductVariations(from: "product-variations-bulk-update")
     }
 
-    /// Returns the ProductVariationListMapper output upon receiving `product`
+    /// Returns the ProductVariationsBulkUpdateMapper output upon receiving `product`
     ///
-    func mapLoadProductVariationListResponseWithoutDataEnvelope() -> [ProductVariation]? {
+    func mapLoadProductVariationBulkUpdateResponseWithoutDataEnvelope() -> [ProductVariation]? {
         return mapProductVariations(from: "product-variations-bulk-update-without-data")
     }
 }

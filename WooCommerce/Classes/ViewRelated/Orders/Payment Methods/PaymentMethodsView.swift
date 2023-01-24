@@ -92,7 +92,7 @@ struct PaymentMethodsView: View {
 
                     NavigationLink(destination: WebView(isPresented: .constant(true), url: learnMoreViewModel.url)) {
                         AttributedText(learnMoreViewModel.learnMoreAttributedString)
-                    }
+                    }.padding(.horizontal)
                 }
 
                 // Pushes content to the top

@@ -61,7 +61,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         ]
 
         let path = "\(Path.products)/\(productID)/variations"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -76,7 +76,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     ///
     public func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
         let path = "\(Path.products)/\(productID)/variations/\(variationID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil, availableAsRESTRequest: true)
         let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -98,7 +98,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
             let parameters = try newVariation.toDictionary()
 
             let path = "\(Path.products)/\(productID)/variations"
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
             let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
@@ -122,7 +122,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         do {
             let parameters = try productVariations.map { try $0.toDictionary() }
             let path = "\(Path.products)/\(productID)/variations/batch"
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: ["create": parameters])
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: ["create": parameters], availableAsRESTRequest: true)
             let mapper = ProductVariationsBulkCreateMapper(siteID: siteID, productID: productID)
 
             enqueue(request, mapper: mapper, completion: completion)
@@ -143,7 +143,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
             let productID = productVariation.productID
             let siteID = productVariation.siteID
             let path = "\(Path.products)/\(productID)/variations/\(productVariation.productVariationID)"
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
             let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
 
             enqueue(request, mapper: mapper, completion: completion)
@@ -168,7 +168,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         do {
             let parameters = try ([ParameterKey.image: image]).toDictionary()
             let path = "\(Path.products)/\(productID)/variations/\(variationID)"
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
             let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
 
             enqueue(request, mapper: mapper, completion: completion)
@@ -193,7 +193,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         do {
             let parameters = try productVariations.map { try $0.toDictionary() }
             let path = "\(Path.products)/\(productID)/variations/batch"
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: ["update": parameters])
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: ["update": parameters], availableAsRESTRequest: true)
             let mapper = ProductVariationsBulkUpdateMapper(siteID: siteID, productID: productID)
 
             enqueue(request, mapper: mapper, completion: completion)
@@ -212,7 +212,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     ///
     public func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
         let path = "\(Path.products)/\(productID)/variations/\(variationID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: siteID, path: path, parameters: ["force": true])
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: siteID, path: path, parameters: ["force": true], availableAsRESTRequest: true)
         let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
 
         enqueue(request, mapper: mapper, completion: completion)

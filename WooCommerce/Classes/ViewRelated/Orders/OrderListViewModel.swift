@@ -311,7 +311,7 @@ final class OrderListViewModel {
         )
     }
 
-    func feedbackBannerSurveySource(onCompletion: (SurveyViewController.Source) -> Void ) {
+    func feedbackBannerSurveySource(onCompletion: (SurveyViewController.Source) -> Void) {
         if isCODEnabled && isIPPSupportedCountry {
             fetchIPPTransactions()
 

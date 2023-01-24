@@ -1180,7 +1180,6 @@ extension UIImage {
     static var builtInReaderError: UIImage {
         return UIImage(named: "built-in-reader-error")!
     }
-
 }
 
 private extension UIImage {

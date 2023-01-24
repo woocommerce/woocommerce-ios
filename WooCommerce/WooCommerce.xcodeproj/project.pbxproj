@@ -6806,6 +6806,7 @@
 				74213449210A323C00C13890 /* WooAnalyticsStat.swift */,
 				747AA0882107CEC60047A89B /* AnalyticsProvider.swift */,
 				747AA08A2107CF8D0047A89B /* TracksProvider.swift */,
+				EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */,
 				5783FB3E25D7369F00B9984B /* WooAnalyticsEventPropertyType.swift */,
 				02C3FACD282A93020095440A /* WooAnalyticsEvent+Dashboard.swift */,
 				0247F511286F73EA009C177E /* WooAnalyticsEvent+ImageUpload.swift */,
@@ -7180,7 +7181,6 @@
 				B53B898C20D462A000EDB467 /* DefaultStoresManager.swift */,
 				B5DBF3CA20E149CC00B53AED /* AuthenticatedState.swift */,
 				B5DBF3C420E148E000B53AED /* DeauthenticatedState.swift */,
-				EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */,
 			);
 			path = Yosemite;
 			sourceTree = "<group>";

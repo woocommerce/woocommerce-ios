@@ -797,6 +797,9 @@
 		EE57C11929794DCA00BC31E7 /* get-application-passwords-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C11829794DCA00BC31E7 /* get-application-passwords-success.json */; };
 		EE57C123297EB04F00BC31E7 /* product-attribute-create-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C122297EB04F00BC31E7 /* product-attribute-create-without-data.json */; };
 		EE57C125297EB4E300BC31E7 /* product-attributes-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C124297EB4E300BC31E7 /* product-attributes-all-without-data.json */; };
+		EE57C127297F8E5E00BC31E7 /* product-attribute-terms-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C126297F8E5E00BC31E7 /* product-attribute-terms-without-data.json */; };
+		EE57C129297F8F3D00BC31E7 /* ProductAttributeTermMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C128297F8F3D00BC31E7 /* ProductAttributeTermMapperTests.swift */; };
+		EE57C12B297F8F8600BC31E7 /* attribute-term-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C12A297F8F8600BC31E7 /* attribute-term-without-data.json */; };
 		EE62EE61295ACF8D009C965B /* RequestConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE60295ACF8D009C965B /* RequestConverterTests.swift */; };
 		EE62EE63295AD45E009C965B /* String+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE62295AD45E009C965B /* String+URL.swift */; };
 		EE62EE65295AD46D009C965B /* String+URLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE64295AD46D009C965B /* String+URLTests.swift */; };
@@ -1652,6 +1655,9 @@
 		EE57C11829794DCA00BC31E7 /* get-application-passwords-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "get-application-passwords-success.json"; sourceTree = "<group>"; };
 		EE57C122297EB04F00BC31E7 /* product-attribute-create-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-attribute-create-without-data.json"; sourceTree = "<group>"; };
 		EE57C124297EB4E300BC31E7 /* product-attributes-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-attributes-all-without-data.json"; sourceTree = "<group>"; };
+		EE57C126297F8E5E00BC31E7 /* product-attribute-terms-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-attribute-terms-without-data.json"; sourceTree = "<group>"; };
+		EE57C128297F8F3D00BC31E7 /* ProductAttributeTermMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeTermMapperTests.swift; sourceTree = "<group>"; };
+		EE57C12A297F8F8600BC31E7 /* attribute-term-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "attribute-term-without-data.json"; sourceTree = "<group>"; };
 		EE62EE60295ACF8D009C965B /* RequestConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestConverterTests.swift; sourceTree = "<group>"; };
 		EE62EE62295AD45E009C965B /* String+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+URL.swift"; sourceTree = "<group>"; };
 		EE62EE64295AD46D009C965B /* String+URLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+URLTests.swift"; sourceTree = "<group>"; };
@@ -2316,7 +2322,9 @@
 				45B204BB24890B1200FE6526 /* category.json */,
 				45150AA1268373F8006922EA /* countries.json */,
 				266C7F9125AD3C87006ED243 /* attribute-term.json */,
+				EE57C12A297F8F8600BC31E7 /* attribute-term-without-data.json */,
 				26B6454D259BF81400EF3FB3 /* product-attribute-terms.json */,
+				EE57C126297F8E5E00BC31E7 /* product-attribute-terms-without-data.json */,
 				74C9477F2193A6C60024CB60 /* comment-moderate-approved.json */,
 				74C9477E2193A6C60024CB60 /* comment-moderate-trash.json */,
 				74C947812193A6C70024CB60 /* comment-moderate-unapproved.json */,
@@ -2725,6 +2733,7 @@
 				D8FBFF1D22D51F39006E3336 /* OrderStatsMapperV4Tests.swift */,
 				262E5AD4255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift */,
 				0313651C28AE625300EEE571 /* PaymentGatewayMapperTests.swift */,
+				EE57C128297F8F3D00BC31E7 /* ProductAttributeTermMapperTests.swift */,
 				D8A2849925FBB2E70019A84B /* ProductAttributeTermListMapperTests.swift */,
 				CE0A0F1C22398D520075ED8D /* ProductListMapperTests.swift */,
 				74CF0A8B22414D7800DB993F /* ProductMapperTests.swift */,
@@ -3087,6 +3096,7 @@
 				CC9A253C26442C71005DE56E /* shipping-label-eligibility-success.json in Resources */,
 				B5A24179217F98F600595DEF /* notifications-load-all.json in Resources */,
 				DEA6B1C9296D0E8B005AA5E9 /* systemStatusWithPluginsOnly-without-data.json in Resources */,
+				EE57C12B297F8F8600BC31E7 /* attribute-term-without-data.json in Resources */,
 				314EDF2927C02CC100A56B6F /* stripe-account-complete-empty-descriptor.json in Resources */,
 				028CB71F2902589E00331C09 /* create-account-error-invalid-email.json in Resources */,
 				DE66C55F2977C67D00DAA978 /* shipping-label-account-settings-without-data.json in Resources */,
@@ -3248,6 +3258,7 @@
 				D823D90722376B4800C90817 /* shipment_tracking_new_custom_provider.json in Resources */,
 				268B68FD24C87E37007EBF1D /* leaderboards-year-alt.json in Resources */,
 				74A1D264211898F000931DFA /* site-visits-week.json in Resources */,
+				EE57C127297F8E5E00BC31E7 /* product-attribute-terms-without-data.json in Resources */,
 				B53EF53621813681003E146F /* generic_success.json in Resources */,
 				31054718262E2F5E00C5C02B /* wcpay-payment-intent-requires-confirmation.json in Resources */,
 				DE66C5672977CEB800DAA978 /* shipping-label-status-success-without-data.json in Resources */,
@@ -3825,6 +3836,7 @@
 				036563DF29069C8F00D84BFD /* JustInTimeMessageListMapperTests.swift in Sources */,
 				74AB0ACA21948CE4008220CD /* CommentResultMapperTests.swift in Sources */,
 				68CB801428D8A05200E169F8 /* CustomerMapperTests.swift in Sources */,
+				EE57C129297F8F3D00BC31E7 /* ProductAttributeTermMapperTests.swift in Sources */,
 				02698CF824C183A5005337C4 /* ProductVariationListMapperTests.swift in Sources */,
 				B524194921AC659500D6FC0A /* DevicesRemoteTests.swift in Sources */,
 				2685C0DA263B551300D9EE97 /* AddOnGroupMapperTests.swift in Sources */,

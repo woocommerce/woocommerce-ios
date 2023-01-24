@@ -806,6 +806,9 @@
 		EE57C137297F98DB00BC31E7 /* product-variations-load-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C136297F98DB00BC31E7 /* product-variations-load-all-without-data.json */; };
 		EE57C138297F9AC900BC31E7 /* ProductVariationsBulkUpdateMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C130297F97F900BC31E7 /* ProductVariationsBulkUpdateMapperTests.swift */; };
 		EE57C13A297F9EBE00BC31E7 /* ProductVariationsBulkCreateMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C139297F9EBE00BC31E7 /* ProductVariationsBulkCreateMapperTests.swift */; };
+		EE57C13C297FBECB00BC31E7 /* product-tags-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C13B297FBECB00BC31E7 /* product-tags-all-without-data.json */; };
+		EE57C13E297FBEE200BC31E7 /* product-tags-created-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C13D297FBEE200BC31E7 /* product-tags-created-without-data.json */; };
+		EE57C140297FBEFB00BC31E7 /* product-tags-deleted-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C13F297FBEFB00BC31E7 /* product-tags-deleted-without-data.json */; };
 		EE62EE61295ACF8D009C965B /* RequestConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE60295ACF8D009C965B /* RequestConverterTests.swift */; };
 		EE62EE63295AD45E009C965B /* String+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE62295AD45E009C965B /* String+URL.swift */; };
 		EE62EE65295AD46D009C965B /* String+URLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE64295AD46D009C965B /* String+URLTests.swift */; };
@@ -1670,6 +1673,9 @@
 		EE57C133297F985A00BC31E7 /* product-variations-bulk-create-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variations-bulk-create-without-data.json"; sourceTree = "<group>"; };
 		EE57C136297F98DB00BC31E7 /* product-variations-load-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variations-load-all-without-data.json"; sourceTree = "<group>"; };
 		EE57C139297F9EBE00BC31E7 /* ProductVariationsBulkCreateMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsBulkCreateMapperTests.swift; sourceTree = "<group>"; };
+		EE57C13B297FBECB00BC31E7 /* product-tags-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-tags-all-without-data.json"; sourceTree = "<group>"; };
+		EE57C13D297FBEE200BC31E7 /* product-tags-created-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-tags-created-without-data.json"; sourceTree = "<group>"; };
+		EE57C13F297FBEFB00BC31E7 /* product-tags-deleted-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-tags-deleted-without-data.json"; sourceTree = "<group>"; };
 		EE62EE60295ACF8D009C965B /* RequestConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestConverterTests.swift; sourceTree = "<group>"; };
 		EE62EE62295AD45E009C965B /* String+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+URL.swift"; sourceTree = "<group>"; };
 		EE62EE64295AD46D009C965B /* String+URLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+URLTests.swift"; sourceTree = "<group>"; };
@@ -2434,9 +2440,12 @@
 				45D685F923D0C3CF005F87D0 /* product-search-sku.json */,
 				EEA6583F2966C05D00112DF0 /* product-search-sku-without-data.json */,
 				4599FC5B24A6276F0056157A /* product-tags-all.json */,
+				EE57C13B297FBECB00BC31E7 /* product-tags-all-without-data.json */,
 				45AF57A824AB42CD0088E2F7 /* product-tags-extra.json */,
 				45AB8B0E24AA29DC00B5B36E /* product-tags-created.json */,
+				EE57C13D297FBEE200BC31E7 /* product-tags-created-without-data.json */,
 				45AB8B1224AA34CB00B5B36E /* product-tags-deleted.json */,
+				EE57C13F297FBEFB00BC31E7 /* product-tags-deleted-without-data.json */,
 				45AB8B1F24AB3E1F00B5B36E /* product-tags-empty.json */,
 				CEC4BF90234E40B5008D9195 /* refund-single.json */,
 				CEC4BF92234E7EE0008D9195 /* refunds-all.json */,
@@ -3122,6 +3131,7 @@
 				E137619929151C7400FD098F /* error-wp-rest-forbidden.json in Resources */,
 				31A451CE27863A2E00FE81AA /* stripe-account-wrong-json.json in Resources */,
 				26BD9FCD2965EC3C004E0D15 /* product-variations-bulk-create.json in Resources */,
+				EE57C13C297FBECB00BC31E7 /* product-tags-all-without-data.json in Resources */,
 				028CB718290223CB00331C09 /* account-username-suggestions.json in Resources */,
 				0282DD91233A120A006A5FDB /* products-search-photo.json in Resources */,
 				DEC2B093297AA60D003923FB /* category-without-data.json in Resources */,
@@ -3131,6 +3141,7 @@
 				743E84FC22174CE100FAC9D7 /* restnoroute_error.json in Resources */,
 				CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */,
 				D8FBFF2722D529F2006E3336 /* order-stats-v4-month.json in Resources */,
+				EE57C140297FBEFB00BC31E7 /* product-tags-deleted-without-data.json in Resources */,
 				02B41A92296BEB3000FE3311 /* load-site-current-plan-success.json in Resources */,
 				02EF1672292F0D1900D90AD6 /* load-plan-success.json in Resources */,
 				DEA6B1C6296C13FB005AA5E9 /* payment-gateway-list-without-data.json in Resources */,
@@ -3323,6 +3334,7 @@
 				A69FE19D2588D70E0059A96B /* order-with-deleted-refunds.json in Resources */,
 				E18152C228F85E0A0011A0EC /* iap-products.json in Resources */,
 				02B41A90296BC85800FE3311 /* site-domains.json in Resources */,
+				EE57C13E297FBEE200BC31E7 /* product-tags-created-without-data.json in Resources */,
 				EEA658462966C67C00112DF0 /* products-ids-only-without-data.json in Resources */,
 				DE2095C127966EC800171F1C /* coupon-reports.json in Resources */,
 				453305F52459ED2700264E50 /* site-post-update.json in Resources */,

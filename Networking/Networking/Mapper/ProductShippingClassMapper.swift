@@ -17,7 +17,11 @@ struct ProductShippingClassMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(ProductShippingClassEnvelope.self, from: response).productShippingClass
+        do {
+            return try decoder.decode(ProductShippingClassEnvelope.self, from: response).productShippingClass
+        } catch {
+            return try decoder.decode(ProductShippingClass.self, from: response)
+        }
     }
 }
 

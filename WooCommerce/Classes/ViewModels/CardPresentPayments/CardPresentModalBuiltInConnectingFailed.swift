@@ -3,7 +3,7 @@ import Yosemite
 
 /// Modal presented when an error occurs while connecting to a reader
 ///
-final class CardPresentModalConnectingFailed: CardPresentPaymentsModalViewModel {
+final class CardPresentModalBuiltInConnectingFailed: CardPresentPaymentsModalViewModel {
     private let continueSearchAction: () -> Void
     private let cancelSearchAction: () -> Void
 
@@ -14,7 +14,7 @@ final class CardPresentModalConnectingFailed: CardPresentPaymentsModalViewModel 
 
     var topSubtitle: String? = nil
 
-    let image: UIImage = .paymentErrorImage
+    let image: UIImage = .builtInReaderError
 
     let primaryButtonTitle: String? = Localization.tryAgain
 
@@ -55,21 +55,21 @@ final class CardPresentModalConnectingFailed: CardPresentPaymentsModalViewModel 
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
-private extension CardPresentModalConnectingFailed {
+private extension CardPresentModalBuiltInConnectingFailed {
     enum Localization {
         static let title = NSLocalizedString(
-            "We couldn't connect your reader",
-            comment: "Title of the alert presented when the user tries to connect to a specific card reader and it fails"
+            "We couldn't start Tap to Pay on iPhone",
+            comment: "Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails"
         )
 
         static let tryAgain = NSLocalizedString(
             "Try again",
-            comment: "Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue."
+            comment: "Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue."
         )
 
         static let cancel = NSLocalizedString(
             "Cancel",
-            comment: "Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching."
+            comment: "Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching."
         )
     }
 }

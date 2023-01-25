@@ -18,10 +18,9 @@ struct BuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidin
     func connectingFailed(error: Error,
                           continueSearch: @escaping () -> Void,
                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalConnectingFailed(image: .builtInReaderError,
-                                         error: error,
-                                         continueSearch: continueSearch,
-                                         cancelSearch: cancelSearch)
+        CardPresentModalBuiltInConnectingFailed(error: error,
+                                                continueSearch: continueSearch,
+                                                cancelSearch: cancelSearch)
     }
 
     func connectingFailedIncompleteAddress(openWCSettings: ((UIViewController) -> Void)?,

@@ -1,0 +1,26 @@
+[
+  {
+    "tracking_id": "sdfgdfgdfsg34534525",
+    "tracking_provider": "USPS",
+    "tracking_link": "https:\/\/tools.usps.com\/go\/TrackConfirmAction_input?qtc_tLabels1=456745674567",
+    "tracking_number": "456745674567",
+    "date_shipped": "2019-12-31",
+    "_links": {
+      "self": [
+        {
+          "href": "https:\/\/somewhere.online.net.com\/wp-json\/wc\/v2\/orders\/198\/shipment-trackings\/b1b94eecb1eb1c1edf3fa041efffd015"
+        }
+      ],
+      "collection": [
+        {
+          "href": "https:\/\/somewhere.online.net.com\/wp-json\/wc\/v2\/orders\/198\/shipment-trackings"
+        }
+      ],
+      "up": [
+        {
+          "href": "https:\/\/somewhere.online.net.com\/wp-json\/wc\/v2\/orders\/198"
+        }
+      ]
+    }
+  }
+]

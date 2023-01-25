@@ -115,9 +115,9 @@ private extension ShipmentTrackingListMapperTests {
         return mapShipmentTrackings(from: "shipment_tracking_empty")
     }
 
-    /// Returns the ShipmentTrackingsMapper output upon receiving `shipment_tracking_single-without-data`
+    /// Returns the ShipmentTrackingsMapper output upon receiving `shipment_tracking_single_without_data`
     ///
     func mapLoadSingleTrackingsResponseWithoutDataEnvelope() -> [ShipmentTracking] {
-        return mapShipmentTrackings(from: "shipment_tracking_single-without-data")
+        return mapShipmentTrackings(from: "shipment_tracking_single_without_data")
     }
 }

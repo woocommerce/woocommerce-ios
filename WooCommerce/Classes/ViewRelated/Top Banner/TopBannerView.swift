@@ -152,9 +152,9 @@ private extension TopBannerView {
         let iconInformationStackView = createIconInformationStackView(with: viewModel)
         // TODO: Remove colors. Temporary testing helpers
         let mainStackView = UIStackView(arrangedSubviews: [
-            createLabelHolderStackView(height: 2.0, width: nil, color: .green),
+            createEmptyBorderStackView(height: 2.0, width: nil, color: .green),
             iconInformationStackView,
-            createLabelHolderStackView(height: 2.0, width: nil, color: .green)]
+            createEmptyBorderStackView(height: 2.0, width: nil, color: .green)]
         )
         if isActionEnabled {
             configureActionStackView(with: viewModel)
@@ -185,9 +185,9 @@ private extension TopBannerView {
         // TODO: Better way to deal with height/width/layout width:
         // TODO: Remove colors. Temporary testing helpers
         labelHolderStackView.addArrangedSubviews([
-            createLabelHolderStackView(height: 50, width: nil, color: .orange),
+            createEmptyBorderStackView(height: 50, width: nil, color: .orange),
             infoLabel,
-            createLabelHolderStackView(height: 50, width: 20, color: .orange)]
+            createEmptyBorderStackView(height: 50, width: 20, color: .orange)]
         )
         labelHolderStackView.backgroundColor = .orange
         labelHolderStackView.spacing = 1
@@ -259,7 +259,8 @@ private extension TopBannerView {
         return UIView.createBorderView()
     }
 
-    func createLabelHolderStackView(height: CGFloat, width: CGFloat?, color: UIColor?) -> UIView {
+    // TODO: This method is based on createBorderView(), there's no need for duplication
+    func createEmptyBorderStackView(height: CGFloat, width: CGFloat?, color: UIColor?) -> UIView {
         return UIView.createBorderView(height: height, width: width ?? 0, color: color ?? .systemColor(.separator))
     }
 
@@ -331,14 +332,14 @@ private extension TopBannerView {
     func updateExpandCollapseState(isExpanded: Bool) {
         let image = isExpanded ? UIImage.chevronUpImage: UIImage.chevronDownImage
         expandCollapseButton.setImage(image, for: .normal)
-        infoLabel.isHidden = !isExpanded
+        labelHolderStackView.isHidden = !isExpanded
         if isActionEnabled {
             actionStackView.isHidden = !isExpanded
         }
         titleStackView.accessibilityHint = isExpanded ? Localization.collapseHint : Localization.expandHint
         titleStackView.accessibilityValue = isExpanded ? Localization.expanded : Localization.collapsed
 
-        let accessibleView = isExpanded ? infoLabel : nil
+        let accessibleView = isExpanded ? labelHolderStackView : nil
         UIAccessibility.post(notification: .layoutChanged, argument: accessibleView)
     }
 }

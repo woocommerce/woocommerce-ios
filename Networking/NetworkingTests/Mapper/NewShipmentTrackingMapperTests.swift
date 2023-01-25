@@ -43,7 +43,7 @@ final class NewShipmentTrackingMapperTests: XCTestCase {
 ///
 private extension NewShipmentTrackingMapperTests {
 
-    /// Returns the ShipmentTrackingsMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the NewShipmentTrackingMapper output upon receiving `filename` (Data Encoded)
     ///
     func mapShipmentTracking(from filename: String) throws -> ShipmentTracking {
         guard let response = Loader.contentsOf(filename) else {
@@ -53,13 +53,13 @@ private extension NewShipmentTrackingMapperTests {
         return try! NewShipmentTrackingMapper(siteID: dummySiteID, orderID: dummyOrderID).map(response: response)
     }
 
-    /// Returns the ShipmentTrackingsMapper output upon receiving `shipment_tracking_new`
+    /// Returns the NewShipmentTrackingMapper output upon receiving `shipment_tracking_new`
     ///
     func mapLoadShipmentTrackingResponse() throws -> ShipmentTracking {
         try mapShipmentTracking(from: "shipment_tracking_new")
     }
 
-    /// Returns the ShipmentTrackingsMapper output upon receiving `shipment_tracking_new-without-data`
+    /// Returns the NewShipmentTrackingMapper output upon receiving `shipment_tracking_new-without-data`
     ///
     func mapLoadShipmentTrackingResponseWithoutDataEnvelope() throws -> ShipmentTracking {
         try mapShipmentTracking(from: "shipment_tracking_new-without-data")

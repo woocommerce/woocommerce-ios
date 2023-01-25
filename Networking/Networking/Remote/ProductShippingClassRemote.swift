@@ -26,7 +26,12 @@ public class ProductShippingClassRemote: Remote {
         ]
 
         let path = "\(Path.models)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = ProductShippingClassListMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -41,7 +46,12 @@ public class ProductShippingClassRemote: Remote {
     ///
     public func loadOne(for siteID: Int64, remoteID: Int64, completion: @escaping (ProductShippingClass?, Error?) -> Void) {
         let path = "\(Path.models)/\(remoteID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = ProductShippingClassMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

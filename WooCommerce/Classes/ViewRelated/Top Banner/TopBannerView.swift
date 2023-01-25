@@ -120,6 +120,7 @@ private extension TopBannerView {
 
         zip(viewModel.actionButtons, actionButtons).forEach { buttonInfo, button in
             button.setTitle(buttonInfo.title, for: .normal)
+            button.titleLabel?.font = .boldSystemFont(ofSize: titleLabel.font.pointSize)
             // Overrides the general .applyLinkButtonStyle() with pink color
             // pecCkj-fa-p2
             button.setTitleColor(UIColor.withColorStudio(.pink), for: .normal)

@@ -696,9 +696,13 @@ private extension ProductsViewController {
         // trigger safe area update
         if let tabBarController {
             let currentFrame = tabBarController.view.frame
-            tabBarController.view.frame = currentFrame.insetBy(dx: 0, dy: 1)
+            tabBarController.view.frame = .zero
+//            tabBarController.view.frame = currentFrame.insetBy(dx: 0, dy: 1)
             tabBarController.view.frame = currentFrame
+
+            tabBarController.additionalSafeAreaInsets = .zero
         }
+        self.additionalSafeAreaInsets = .zero
 
         bottomToolbar.isHidden = false
     }

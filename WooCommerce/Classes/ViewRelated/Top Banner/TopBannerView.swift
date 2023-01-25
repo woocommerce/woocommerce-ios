@@ -179,11 +179,11 @@ private extension TopBannerView {
 
     func createLabelHolderStackView() -> UIStackView {
         labelHolderStackView.addArrangedSubviews([
-            createSeparatorView(height: 48, width: 0),
+            createSeparatorView(height: Constants.labelHolderHeight, width: Constants.labelHolderLeftMargin),
             infoLabel,
-            createSeparatorView(height: 48, width: 24)
+            createSeparatorView(height: Constants.labelHolderHeight, width: Constants.labelHolderRightMargin)
         ])
-        labelHolderStackView.spacing = 1
+        labelHolderStackView.spacing = Constants.labelHolderSpacing
         infoLabel.adjustsFontSizeToFitWidth = true
 
         return labelHolderStackView
@@ -341,5 +341,16 @@ private extension TopBannerView {
         static let expandHint = NSLocalizedString("Double-tap for more information", comment: "Accessibility hint to expand a banner")
         static let collapseHint = NSLocalizedString("Double-tap to collapse", comment: "Accessibility hint to collapse a banner")
         static let dismissHint = NSLocalizedString("Double-tap to dismiss", comment: "Accessibility hint to dismiss a banner")
+    }
+}
+
+// MARK: - Constants
+//
+private extension TopBannerView {
+    enum Constants {
+        static let labelHolderHeight: CGFloat = 48.0
+        static let labelHolderLeftMargin: CGFloat = 0.0
+        static let labelHolderRightMargin: CGFloat = 24.0
+        static let labelHolderSpacing: CGFloat = 1.0
     }
 }

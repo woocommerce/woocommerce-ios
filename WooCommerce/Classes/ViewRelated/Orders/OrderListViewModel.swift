@@ -224,25 +224,17 @@ final class OrderListViewModel {
         stores.dispatch(action)
     }
 
-    // This is a temporary method in order to update the IPP feedback status to `.pending`, and
-    // then load feedback visibility. We need to reset the banner status on UserDefaults for
-    // the banner to appear again for testing purposes.
+    // Requests if the In-Person Payments feedback banner should be shown,
+    // in which case we proceed to sync the view model by fetching transactions
     private func syncIPPBannerVisibility() {
-        let action = AppSettingsAction.updateFeedbackStatus(type: .inPersonPayments, status: .pending) { _ in
-            self.loadIPPFeedbackBannerVisibility()
-            self.fetchIPPTransactions()
-        }
-        stores.dispatch(action)
-    }
-
-    private func loadIPPFeedbackBannerVisibility() {
-        let action = AppSettingsAction.loadFeedbackVisibility(type: .inPersonPayments) { [weak self] result in
-            switch result {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .inPersonPayments) { [weak self] visibility in
+            switch visibility {
             case .success(let visible):
                 self?.hideIPPFeedbackBanner = !visible
+                self?.fetchIPPTransactions()
             case .failure(let error):
                 self?.hideIPPFeedbackBanner = true
-                ServiceLocator.crashLogging.logError(error)
+                DDLogError("Couldn't load feedback visibility. \(error)")
             }
         }
         self.stores.dispatch(action)
@@ -429,6 +421,22 @@ extension OrderListViewModel {
 
     func IPPFeedbackBannerWasDismissed(for campaign: FeatureAnnouncementCampaign) {
         dismissIPPFeedbackBanner(remindAfterDays: nil, campaign: campaign)
+    }
+
+    func IPPFeedbackBannerWasSubmitted() {
+        //  Updates the IPP feedback banner status as given
+        let updateFeedbackStatus = AppSettingsAction.updateFeedbackStatus(type: .inPersonPayments, status: .given(Date())) { [weak self] _ in
+            self?.hideIPPFeedbackBanner = true
+        }
+        stores.dispatch(updateFeedbackStatus)
+
+        //  Updates the IPP feedback banner status to not be reminded again
+        let updateBannerVisibility = AppSettingsAction.setFeatureAnnouncementDismissed(
+            campaign: .inPersonPaymentsPowerUsers,
+            remindAfterDays: nil,
+            onCompletion: nil
+        )
+        stores.dispatch(updateBannerVisibility)
     }
 }
 

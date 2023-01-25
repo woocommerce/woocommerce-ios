@@ -46,9 +46,10 @@ private extension PostSiteCredentialLoginChecker {
         Task { @MainActor in
             do {
                 let _ = try await useCase.generateNewPassword()
+                analytics.track(event: .ApplicationPassword.applicationPasswordGeneratedSuccessfully(scenario: .generation))
                 onSuccess()
             } catch {
-                analytics.track(event: .Login.siteCredentialFailed(step: .applicationPasswordGeneration, error: error))
+                analytics.track(event: .ApplicationPassword.applicationPasswordGenerationFailed(scenario: .generation, error: error))
                 switch error {
                 case ApplicationPasswordUseCaseError.applicationPasswordsDisabled:
                     // show application password disabled error

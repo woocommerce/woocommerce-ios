@@ -19,6 +19,10 @@ class AuthenticatedState: StoresManagerState {
     ///
     private var errorObserverToken: NSObjectProtocol?
 
+    /// For tracking events from Networking layer
+    ///
+    private let trackEventRequestNotificationHandler: TrackEventRequestNotificationHandler
+
     /// Designated Initializer
     ///
     init(credentials: Credentials) {
@@ -98,6 +102,8 @@ class AuthenticatedState: StoresManagerState {
         }
 
         self.services = services
+
+        trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
 
         startListeningToNotifications()
     }

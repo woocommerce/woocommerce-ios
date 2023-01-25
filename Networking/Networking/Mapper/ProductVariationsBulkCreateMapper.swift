@@ -44,7 +44,11 @@ private struct ProductVariationsEnvelope: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let nestedContainer = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
-        createdProductVariations = try nestedContainer.decode([ProductVariation].self, forKey: .create)
+        do {
+            let nestedContainer = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
+            createdProductVariations = try nestedContainer.decode([ProductVariation].self, forKey: .create)
+        } catch {
+            createdProductVariations = try container.decode([ProductVariation].self, forKey: .create)
+        }
     }
 }

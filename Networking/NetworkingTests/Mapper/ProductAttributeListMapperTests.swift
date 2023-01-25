@@ -26,6 +26,21 @@ final class ProductAttributeListMapperTests: XCTestCase {
         XCTAssertEqual(secondProductAttribute.options, [])
     }
 
+    /// Verifies that all of the ProductAttribute Fields are parsed correctly when response has no data envelope
+    ///
+    func test_ProductAttribute_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
+        let productAttributes = try mapProductAttributeResponseWithoutDataEnvelope()
+        XCTAssertEqual(productAttributes.count, 2)
+
+        let secondProductAttribute = productAttributes[1]
+
+        XCTAssertEqual(secondProductAttribute.attributeID, 2)
+        XCTAssertEqual(secondProductAttribute.name, "Size")
+        XCTAssertEqual(secondProductAttribute.position, 0)
+        XCTAssertEqual(secondProductAttribute.visible, true)
+        XCTAssertEqual(secondProductAttribute.variation, true)
+        XCTAssertEqual(secondProductAttribute.options, [])
+    }
 }
 
 
@@ -48,4 +63,9 @@ private extension ProductAttributeListMapperTests {
     func mapProductAttributesResponse() throws -> [ProductAttribute] {
         return try mapProductAttribute(from: "product-attributes-all")
     }
-}
+
+    /// Returns the ProductAttributeListMapper output upon receiving `product-attributes-all-without-data`
+    ///
+    func mapProductAttributeResponseWithoutDataEnvelope() throws -> [ProductAttribute] {
+        try mapProductAttribute(from: "product-attributes-all-without-data")
+    }}

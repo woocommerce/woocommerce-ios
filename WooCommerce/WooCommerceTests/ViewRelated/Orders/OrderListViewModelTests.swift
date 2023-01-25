@@ -459,6 +459,8 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertFalse(resynchronizeRequested)
     }
 
+// MARK: - In-Person Payments feedback banner tracks
+
     func test_trackInPersonPaymentsFeedbackBannerShown_tracks_event_and_properties_correctly() {
         // Given
         let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerShown
@@ -467,7 +469,7 @@ final class OrderListViewModelTests: XCTestCase {
 
         // When
         let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
-        viewModel.trackInPersonPaymentsFeedbackBannerShown(for: .IPP_COD)
+        viewModel.trackInPersonPaymentsFeedbackBannerShown(for: .inPersonPaymentsCashOnDelivery)
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
@@ -541,6 +543,103 @@ final class OrderListViewModelTests: XCTestCase {
         assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
         assertEqual(expectedSource, actualProperties["source"] as? String)
         assertEqual(expectedRemindLater, actualProperties["remind_later"] as? Bool)
+    }
+
+// MARK: - In-Person Payments feedback banner survey
+
+    func test_feedbackBannerSurveySource_when_there_are_no_wcpay_orders_then_assigns_inPersonPaymentsCashOnDelivery_survey() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        var expectedSurvey: SurveyViewController.Source?
+
+        // When
+        let _ = insertOrder(
+            id: 123,
+            status: .completed,
+            dateCreated: Date()
+        )
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
+
+        // Then
+        viewModel.feedbackBannerSurveySource(onCompletion: { survey in
+            expectedSurvey = survey
+            XCTAssertEqual(expectedSurvey, .inPersonPaymentsCashOnDelivery)
+        })
+    }
+
+    func test_feedbackBannerSurveySource_when_there_is_one_wcpay_order_then_assigns_inPersonPaymentsCashOnDelivery_survey() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        var expectedSurvey: SurveyViewController.Source?
+
+        // When
+        let _ = insertOrder(
+            id: 123,
+            status: .completed,
+            dateCreated: Date(),
+            paymentMethodID: "woocommerce_payments"
+        )
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
+
+        // Then
+        viewModel.feedbackBannerSurveySource(onCompletion: { survey in
+            expectedSurvey = survey
+            XCTAssertEqual(expectedSurvey, .inPersonPaymentsCashOnDelivery)
+        })
+    }
+
+    func test_feedbackBannerSurveySource_when_there_are_less_than_ten_wcpay_orders_then_assigns_inPersonPaymentsFirstTransaction_survey() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        var expectedSurvey: SurveyViewController.Source?
+
+        // When
+        let _ = (0..<9).map { orderID in
+            insertOrder(
+                id: orderID ,
+                status: .completed,
+                dateCreated: Date(),
+                paymentMethodID: "woocommerce_payments"
+            )
+        }
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 9)
+
+        // Then
+        viewModel.feedbackBannerSurveySource(onCompletion: { survey in
+            expectedSurvey = survey
+            XCTAssertEqual(expectedSurvey, .inPersonPaymentsFirstTransaction)
+        })
+    }
+
+    func test_feedbackBannerSurveySource_when_there_more_than_ten_wcpay_orders_then_assigns_inPersonPaymentsPowerUsers_survey() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        var expectedSurvey: SurveyViewController.Source?
+
+        // When
+        let _ = (0..<15).map { orderID in
+            insertOrder(
+                id: orderID ,
+                status: .completed,
+                dateCreated: Date(),
+                paymentMethodID: "woocommerce_payments"
+            )
+        }
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 15)
+
+        // Then
+        viewModel.feedbackBannerSurveySource(onCompletion: { survey in
+            expectedSurvey = survey
+            XCTAssertEqual(expectedSurvey, .inPersonPaymentsPowerUsers)
+        })
     }
 
     func test_IPPFeedbackBannerWasSubmitted_hides_banner_after_being_called() {
@@ -702,11 +801,13 @@ private extension OrderListViewModelTests {
 
     func insertOrder(id orderID: Int64,
                      status: OrderStatusEnum,
-                     dateCreated: Date = Date()) -> Yosemite.Order {
+                     dateCreated: Date = Date(),
+                     paymentMethodID: String? = nil) -> Yosemite.Order {
         let readonlyOrder = MockOrders().empty().copy(siteID: siteID,
                                                       orderID: orderID,
                                                       status: status,
-                                                      dateCreated: dateCreated)
+                                                      dateCreated: dateCreated,
+                                                      paymentMethodID: paymentMethodID)
         let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
         storageOrder.update(with: readonlyOrder)
 

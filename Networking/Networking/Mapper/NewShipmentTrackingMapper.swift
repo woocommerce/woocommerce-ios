@@ -22,7 +22,12 @@ struct NewShipmentTrackingMapper: Mapper {
             .siteID: siteID,
             .orderID: orderID
         ]
-        return try decoder.decode(NewShipmentTrackingMapperEnvelope.self, from: response).shipmentTracking
+
+        do {
+            return try decoder.decode(NewShipmentTrackingMapperEnvelope.self, from: response).shipmentTracking
+        } catch {
+            return try decoder.decode(ShipmentTracking.self, from: response)
+        }
     }
 }
 

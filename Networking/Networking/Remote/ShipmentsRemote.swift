@@ -16,7 +16,12 @@ public final class ShipmentsRemote: Remote {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
 
         // 2019-2-15 — We are using the v2 endpoint here because this endpoint does not support v3 yet
-        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark2,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = ShipmentTrackingListMapper(siteID: siteID, orderID: orderID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -43,7 +48,12 @@ public final class ShipmentsRemote: Remote {
                           ParameterKeys.trackingProvider: trackingProvider,
                           ParameterKeys.dateShipped: dateShipped]
 
-        let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark2,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = NewShipmentTrackingMapper(siteID: siteID, orderID: orderID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -73,7 +83,12 @@ public final class ShipmentsRemote: Remote {
                           ParameterKeys.customTrackingProvider: trackingProvider,
                           ParameterKeys.dateShipped: dateShipped]
 
-        let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark2,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = NewShipmentTrackingMapper(siteID: siteID, orderID: orderID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -90,7 +105,12 @@ public final class ShipmentsRemote: Remote {
     public func deleteShipmentTracking(for siteID: Int64, orderID: Int64, trackingID: String, completion: @escaping (ShipmentTracking?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/" + trackingID
 
-        let request = JetpackRequest(wooApiVersion: .mark2, method: .delete, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark2,
+                                     method: .delete,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = NewShipmentTrackingMapper(siteID: siteID, orderID: orderID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -101,7 +121,12 @@ public final class ShipmentsRemote: Remote {
                                                    completion: @escaping ([ShipmentTrackingProviderGroup]?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/\(Constants.providersPath)"
 
-        let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark2,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = ShipmentTrackingProviderListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

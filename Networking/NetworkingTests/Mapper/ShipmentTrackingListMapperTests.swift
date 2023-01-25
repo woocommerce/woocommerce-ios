@@ -4,7 +4,7 @@ import XCTest
 
 /// ShipmentTrackingListMapper Unit Tests
 ///
-class ShipmentTrackingListMapperTests: XCTestCase {
+final class ShipmentTrackingListMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
@@ -63,6 +63,23 @@ class ShipmentTrackingListMapperTests: XCTestCase {
         let shipmentTrackings = mapLoadEmptyTrackingsResponse()
         XCTAssertEqual(shipmentTrackings.count, 0)
     }
+
+    /// Verifies that all of the ShipmentTracking Fields are parsed correctly for a single tracking JSON object.
+    ///
+    func test_tracking_fields_are_properly_parsed_when_response_has_no_data_envelope() {
+        let shipmentTrackings = mapLoadSingleTrackingsResponseWithoutDataEnvelope()
+        XCTAssertEqual(shipmentTrackings.count, 1)
+
+        let firstTracking = shipmentTrackings.first
+        let firstTrackingShipDate = DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2019-12-31")
+        XCTAssertEqual(firstTracking?.siteID, dummySiteID)
+        XCTAssertEqual(firstTracking?.orderID, dummyOrderID)
+        XCTAssertEqual(firstTracking?.trackingID, "sdfgdfgdfsg34534525")
+        XCTAssertEqual(firstTracking?.trackingNumber, "456745674567")
+        XCTAssertEqual(firstTracking?.trackingProvider, "USPS")
+        XCTAssertEqual(firstTracking?.trackingURL, "https://tools.usps.com/go/TrackConfirmAction_input?qtc_tLabels1=456745674567")
+        XCTAssertEqual(firstTracking?.dateShipped, firstTrackingShipDate)
+    }
 }
 
 
@@ -96,5 +113,11 @@ private extension ShipmentTrackingListMapperTests {
     ///
     func mapLoadEmptyTrackingsResponse() -> [ShipmentTracking] {
         return mapShipmentTrackings(from: "shipment_tracking_empty")
+    }
+
+    /// Returns the ShipmentTrackingsMapper output upon receiving `shipment_tracking_single_without_data`
+    ///
+    func mapLoadSingleTrackingsResponseWithoutDataEnvelope() -> [ShipmentTracking] {
+        return mapShipmentTrackings(from: "shipment_tracking_single_without_data")
     }
 }

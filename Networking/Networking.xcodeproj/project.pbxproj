@@ -813,6 +813,7 @@
 		EE57C144297FCCA700BC31E7 /* product-shipping-classes-load-one-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C142297FCCA700BC31E7 /* product-shipping-classes-load-one-without-data.json */; };
 		EE57C146297FCCD200BC31E7 /* ProductShippingClassListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C145297FCCD200BC31E7 /* ProductShippingClassListMapperTests.swift */; };
 		EE57C148297FCCE000BC31E7 /* ProductShippingClassMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C147297FCCE000BC31E7 /* ProductShippingClassMapperTests.swift */; };
+		EE57C14A2980CE4B00BC31E7 /* taxes-classes-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE57C1492980CE4B00BC31E7 /* taxes-classes-without-data.json */; };
 		EE62EE61295ACF8D009C965B /* RequestConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE60295ACF8D009C965B /* RequestConverterTests.swift */; };
 		EE62EE63295AD45E009C965B /* String+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE62295AD45E009C965B /* String+URL.swift */; };
 		EE62EE65295AD46D009C965B /* String+URLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE64295AD46D009C965B /* String+URLTests.swift */; };
@@ -1684,6 +1685,7 @@
 		EE57C142297FCCA700BC31E7 /* product-shipping-classes-load-one-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-shipping-classes-load-one-without-data.json"; sourceTree = "<group>"; };
 		EE57C145297FCCD200BC31E7 /* ProductShippingClassListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingClassListMapperTests.swift; sourceTree = "<group>"; };
 		EE57C147297FCCE000BC31E7 /* ProductShippingClassMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingClassMapperTests.swift; sourceTree = "<group>"; };
+		EE57C1492980CE4B00BC31E7 /* taxes-classes-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "taxes-classes-without-data.json"; sourceTree = "<group>"; };
 		EE62EE60295ACF8D009C965B /* RequestConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestConverterTests.swift; sourceTree = "<group>"; };
 		EE62EE62295AD45E009C965B /* String+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+URL.swift"; sourceTree = "<group>"; };
 		EE62EE64295AD46D009C965B /* String+URLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+URLTests.swift"; sourceTree = "<group>"; };
@@ -2511,6 +2513,7 @@
 				CCA1D6072943804C00B40560 /* site-summary-stats.json */,
 				022902D122E2436300059692 /* stats_module_disabled_error.json */,
 				45ED4F11239E8C57004F1BE3 /* taxes-classes.json */,
+				EE57C1492980CE4B00BC31E7 /* taxes-classes-without-data.json */,
 				74ABA1C4213F17AA00FFAD30 /* top-performers-day.json */,
 				74ABA1C8213F19FE00FFAD30 /* top-performers-week.json */,
 				749737692141F2BE0008C490 /* top-performers-week-alt.json */,
@@ -3112,6 +3115,7 @@
 				DE42F9602967C88400D514C2 /* report-orders-total-without-data.json in Resources */,
 				DE9DEEF5291CF1B40070AD7C /* site-plugin-without-envelope.json in Resources */,
 				0261F5A928D4641500B7AC72 /* products-sku-search.json in Resources */,
+				EE57C14A2980CE4B00BC31E7 /* taxes-classes-without-data.json in Resources */,
 				EE80A24829547F8B003591E4 /* coupon-without-data.json in Resources */,
 				EE57C137297F98DB00BC31E7 /* product-variations-load-all-without-data.json in Resources */,
 				09885C8027C3FFD200910A62 /* product-variations-bulk-update.json in Resources */,

@@ -150,7 +150,7 @@ private extension TopBannerView {
 
     func createMainStackView(with viewModel: TopBannerViewModel) -> UIStackView {
         let iconInformationStackView = createIconInformationStackView(with: viewModel)
-        let mainStackView = UIStackView(arrangedSubviews: [iconInformationStackView, createBorderView()])
+        let mainStackView = UIStackView(arrangedSubviews: [createBorderView(), iconInformationStackView, createBorderView()])
         if isActionEnabled {
             configureActionStackView(with: viewModel)
             mainStackView.addArrangedSubview(actionStackView)

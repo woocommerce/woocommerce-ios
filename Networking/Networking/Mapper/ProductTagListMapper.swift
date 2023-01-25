@@ -21,7 +21,11 @@ struct ProductTagListMapper: Mapper {
 
         switch responseType {
           case .load:
-            return try decoder.decode(ProductTagListEnvelope.self, from: response).tags
+            do {
+                return try decoder.decode(ProductTagListEnvelope.self, from: response).tags
+            } catch {
+                return try decoder.decode([ProductTag].self, from: response)
+            }
           case .create:
             return try decoder.decode(ProductTagListBatchCreateEnvelope.self, from: response).tags
           case .delete:
@@ -59,10 +63,16 @@ private struct ProductTagListBatchCreateEnvelope: Decodable {
 
     init(from decoder: Decoder) throws {
         let container = try? decoder.container(keyedBy: CodingKeys.self)
-        let nestedContainer = try? container?.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
 
-        let productTagsCreated: [ProductTagFromBatchCreation]? = nestedContainer?.failsafeDecodeIfPresent(Array<ProductTagFromBatchCreation>.self,
-                                                                                                          forKey: .create)
+        let productTagsCreated: [ProductTagFromBatchCreation]?
+        do {
+            let nestedContainer = try container?.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
+            productTagsCreated = nestedContainer?.failsafeDecodeIfPresent(Array<ProductTagFromBatchCreation>.self,
+                                                                          forKey: .create)
+        } catch {
+            productTagsCreated = container?.failsafeDecodeIfPresent(Array<ProductTagFromBatchCreation>.self,
+                                                                    forKey: .create)
+        }
         tags = productTagsCreated?
             .filter { $0.error == nil }
             .compactMap { (tagCreated) -> ProductTag? in
@@ -88,9 +98,12 @@ private struct ProductTagListBatchDeleteEnvelope: Decodable {
 
     init(from decoder: Decoder) throws {
         let container = try? decoder.container(keyedBy: CodingKeys.self)
-        let nestedContainer = try? container?.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
-
-        tags = nestedContainer?.failsafeDecodeIfPresent(Array<ProductTag>.self, forKey: .delete) ?? []
+        do {
+            let nestedContainer = try container?.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
+            tags = nestedContainer?.failsafeDecodeIfPresent(Array<ProductTag>.self, forKey: .delete) ?? []
+        } catch {
+            tags = container?.failsafeDecodeIfPresent(Array<ProductTag>.self, forKey: .delete) ?? []
+        }
     }
 
     private enum CodingKeys: String, CodingKey {

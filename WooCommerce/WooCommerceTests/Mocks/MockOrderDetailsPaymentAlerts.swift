@@ -36,7 +36,7 @@ extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         // no-op
     }
 
-    func processingPayment() {
+    func processingPayment(title: String) {
         // no-op
     }
 

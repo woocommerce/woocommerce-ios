@@ -37,7 +37,7 @@ struct InAppFeedbackCardVisibilityUseCase {
         switch feedbackType {
         case .general:
             return try shouldGeneralFeedbackBeVisible(currentDate: currentDate)
-        case .shippingLabelsRelease3, .couponManagement, .ordersCreation, .IPP:
+        case .shippingLabelsRelease3, .couponManagement, .ordersCreation, .inPersonPayments:
             return settings.feedbackStatus(of: feedbackType) == .pending
         }
     }

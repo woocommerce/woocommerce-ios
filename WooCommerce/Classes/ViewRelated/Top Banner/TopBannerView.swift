@@ -50,6 +50,12 @@ final class TopBannerView: UIView {
         return stackView
     }()
 
+    private let labelHolderStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        return stackView
+    }()
+
     // StackView to hold the action buttons. Needed to change the axis on larger accessibility traits
     private let buttonsStackView = UIStackView()
 
@@ -114,6 +120,10 @@ private extension TopBannerView {
 
         zip(viewModel.actionButtons, actionButtons).forEach { buttonInfo, button in
             button.setTitle(buttonInfo.title, for: .normal)
+            button.titleLabel?.font = .boldSystemFont(ofSize: titleLabel.font.pointSize)
+            // Overrides the general .applyLinkButtonStyle() with pink color
+            // pecCkj-fa-p2
+            button.setTitleColor(UIColor.withColorStudio(.pink), for: .normal)
             button.on(.touchUpInside, call: { _ in buttonInfo.action(button) })
         }
     }
@@ -141,7 +151,7 @@ private extension TopBannerView {
 
     func createMainStackView(with viewModel: TopBannerViewModel) -> UIStackView {
         let iconInformationStackView = createIconInformationStackView(with: viewModel)
-        let mainStackView = UIStackView(arrangedSubviews: [iconInformationStackView, createBorderView()])
+        let mainStackView = UIStackView(arrangedSubviews: [createBorderView(), iconInformationStackView, createBorderView()])
         if isActionEnabled {
             configureActionStackView(with: viewModel)
             mainStackView.addArrangedSubview(actionStackView)
@@ -167,6 +177,18 @@ private extension TopBannerView {
         return iconInformationStackView
     }
 
+    func createLabelHolderStackView() -> UIStackView {
+        labelHolderStackView.addArrangedSubviews([
+            createSeparatorView(height: Constants.labelHolderHeight, width: Constants.labelHolderLeftMargin),
+            infoLabel,
+            createSeparatorView(height: Constants.labelHolderHeight, width: Constants.labelHolderRightMargin)
+        ])
+        labelHolderStackView.spacing = Constants.labelHolderSpacing
+        infoLabel.adjustsFontSizeToFitWidth = true
+
+        return labelHolderStackView
+    }
+
     func createInformationStackView(with viewModel: TopBannerViewModel) -> UIStackView {
         let topActionButton = topButton(for: viewModel.topButton)
         titleStackView.addArrangedSubviews([titleLabel, topActionButton].compactMap { $0 })
@@ -179,7 +201,8 @@ private extension TopBannerView {
         // titleStackView will hidden if there is no title
         titleStackView.isHidden = viewModel.title == nil || viewModel.title?.isEmpty == true
 
-        let informationStackView = UIStackView(arrangedSubviews: [titleStackView, infoLabel])
+        let informationStackView = UIStackView(arrangedSubviews: [titleStackView, createLabelHolderStackView()])
+
         informationStackView.axis = .vertical
         informationStackView.spacing = 9
 
@@ -223,6 +246,10 @@ private extension TopBannerView {
 
     func createBorderView() -> UIView {
         return UIView.createBorderView()
+    }
+
+    func createSeparatorView(height: CGFloat, width: CGFloat) -> UIView {
+        return UIView.createSeparatorView(height: height, width: width)
     }
 
     func topButton(for buttonType: TopBannerViewModel.TopButtonType) -> UIButton? {
@@ -293,14 +320,14 @@ private extension TopBannerView {
     func updateExpandCollapseState(isExpanded: Bool) {
         let image = isExpanded ? UIImage.chevronUpImage: UIImage.chevronDownImage
         expandCollapseButton.setImage(image, for: .normal)
-        infoLabel.isHidden = !isExpanded
+        labelHolderStackView.isHidden = !isExpanded
         if isActionEnabled {
             actionStackView.isHidden = !isExpanded
         }
         titleStackView.accessibilityHint = isExpanded ? Localization.collapseHint : Localization.expandHint
         titleStackView.accessibilityValue = isExpanded ? Localization.expanded : Localization.collapsed
 
-        let accessibleView = isExpanded ? infoLabel : nil
+        let accessibleView = isExpanded ? labelHolderStackView : nil
         UIAccessibility.post(notification: .layoutChanged, argument: accessibleView)
     }
 }
@@ -314,5 +341,16 @@ private extension TopBannerView {
         static let expandHint = NSLocalizedString("Double-tap for more information", comment: "Accessibility hint to expand a banner")
         static let collapseHint = NSLocalizedString("Double-tap to collapse", comment: "Accessibility hint to collapse a banner")
         static let dismissHint = NSLocalizedString("Double-tap to dismiss", comment: "Accessibility hint to dismiss a banner")
+    }
+}
+
+// MARK: - Constants
+//
+private extension TopBannerView {
+    enum Constants {
+        static let labelHolderHeight: CGFloat = 48.0
+        static let labelHolderLeftMargin: CGFloat = 0.0
+        static let labelHolderRightMargin: CGFloat = 24.0
+        static let labelHolderSpacing: CGFloat = 1.0
     }
 }

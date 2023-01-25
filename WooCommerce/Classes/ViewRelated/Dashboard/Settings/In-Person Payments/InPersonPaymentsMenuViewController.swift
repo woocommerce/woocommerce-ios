@@ -20,6 +20,8 @@ final class InPersonPaymentsMenuViewController: UIViewController {
                             countryCode: viewModel.cardPresentPaymentsConfiguration.countryCode))
     }()
 
+    private lazy var inPersonPaymentsLearnMoreViewModel = LearnMoreViewModel.inPersonPayments()
+
     private let viewModel: InPersonPaymentsMenuViewModel = InPersonPaymentsMenuViewModel()
 
     private let cashOnDeliveryToggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel
@@ -40,6 +42,16 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     }()
 
     private var activityIndicator: UIActivityIndicatorView?
+
+    private var inPersonPaymentsLearnMoreButton: UIButton {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(learnMoreAboutInPersonPaymentsButtonWasTapped), for: .touchUpInside)
+        button.setAttributedTitle(inPersonPaymentsLearnMoreViewModel.learnMoreAttributedString, for: .normal)
+        button.naturalContentHorizontalAlignment = .leading
+        button.configuration = UIButton.Configuration.plain()
+
+        return button
+    }
 
     init(stores: StoresManager = ServiceLocator.stores,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
@@ -392,6 +404,11 @@ extension InPersonPaymentsMenuViewController {
 
         SimplePaymentsAmountFlowOpener.openSimplePaymentsAmountFlow(from: navigationController, siteID: siteID)
     }
+
+    @objc func learnMoreAboutInPersonPaymentsButtonWasTapped() {
+        WebviewHelper.launch(inPersonPaymentsLearnMoreViewModel.url, with: self)
+    }
+
 }
 
 // MARK: - UITableViewDataSource
@@ -414,6 +431,14 @@ extension InPersonPaymentsMenuViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        guard section == sections.firstIndex(where: { $0 == cardReadersSection }) else {
+            return nil
+        }
+
+        return inPersonPaymentsLearnMoreButton
     }
 }
 
@@ -516,10 +541,19 @@ private extension InPersonPaymentsMenuViewController {
             "Continue setup",
             comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
         )
+
+        static let learnMoreLink = NSLocalizedString(
+            "cardPresent.modalScanningForReader.learnMore.link",
+            value: "Learn more",
+            comment: """
+                     A label prompting users to learn more about In-Person Payments.
+                     This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
+                     """
+        )
     }
 }
 
-private struct Section {
+private struct Section: Equatable {
     let header: String
     let rows: [Row]
 }

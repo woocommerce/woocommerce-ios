@@ -14,6 +14,9 @@ final class OrderListViewModelTests: XCTestCase {
 
     private var stores: MockStoresManager!
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     private var storage: StorageType {
         storageManager.viewStorage
     }
@@ -25,6 +28,8 @@ final class OrderListViewModelTests: XCTestCase {
         storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.sessionManager.setStoreId(siteID)
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings(stores: stores, storageManager: storageManager))
     }
 
@@ -33,6 +38,8 @@ final class OrderListViewModelTests: XCTestCase {
         storageManager.reset()
         storageManager = nil
         stores = nil
+        analyticsProvider = nil
+        analytics = nil
 
         cancellables.forEach {
             $0.cancel()
@@ -269,7 +276,7 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case let .loadFeedbackVisibility(.IPP, onCompletion):
+            case let .loadFeedbackVisibility(.inPersonPayments, onCompletion):
                 onCompletion(.success(true))
             default:
                 break
@@ -451,6 +458,284 @@ final class OrderListViewModelTests: XCTestCase {
         // Assert
         XCTAssertFalse(resynchronizeRequested)
     }
+
+// MARK: - In-Person Payments feedback banner tracks
+
+    func test_trackInPersonPaymentsFeedbackBannerShown_tracks_event_and_properties_correctly() {
+        // Given
+        let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerShown
+        let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
+        let expectedSource = WooAnalyticsEvent.InPersonPaymentsFeedbackBanner.Source.orderList.rawValue
+
+        // When
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        viewModel.trackInPersonPaymentsFeedbackBannerShown(for: .inPersonPaymentsCashOnDelivery)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
+        guard let actualProperties = analyticsProvider.receivedProperties.first(
+            where: { $0.keys.contains("source") }) else {
+            return XCTFail("Expected properties were not tracked"
+            )}
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+        assertEqual(expectedSource, actualProperties["source"] as? String)
+    }
+
+    func test_IPPFeedbackBannerCTATapped_tracks_event_and_properties_correctly() {
+        // Given
+        let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerTapped
+        let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
+        let expectedSource = WooAnalyticsEvent.InPersonPaymentsFeedbackBanner.Source.orderList.rawValue
+
+        // When
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        viewModel.IPPFeedbackBannerCTATapped(for: .inPersonPaymentsCashOnDelivery)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
+        guard let actualProperties = analyticsProvider.receivedProperties.first(
+            where: { $0.keys.contains("source") }) else {
+            return XCTFail("Expected properties were not tracked"
+            )}
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+        assertEqual(expectedSource, actualProperties["source"] as? String)
+    }
+
+    func test_IPPFeedbackBannerDontShowAgainTapped_tracks_dismiss_event_and_properties_correctly() {
+        // Given
+        let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerDismissed
+        let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
+        let expectedSource = WooAnalyticsEvent.InPersonPaymentsFeedbackBanner.Source.orderList.rawValue
+        let expectedRemindLater = false
+
+        // When
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        viewModel.IPPFeedbackBannerDontShowAgainTapped(for: .inPersonPaymentsCashOnDelivery)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
+        guard let actualProperties = analyticsProvider.receivedProperties.first(
+            where: { $0.keys.contains("source") }) else {
+            return XCTFail("Expected properties were not tracked"
+            )}
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+        assertEqual(expectedSource, actualProperties["source"] as? String)
+        assertEqual(expectedRemindLater, actualProperties["remind_later"] as? Bool)
+    }
+
+    func test_IPPFeedbackBannerRemindMeLaterTapped_tracks_dismiss_event_and_properties_correctly() {
+        // Given
+        let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerDismissed
+        let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
+        let expectedSource = WooAnalyticsEvent.InPersonPaymentsFeedbackBanner.Source.orderList.rawValue
+        let expectedRemindLater = true
+
+        // When
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        viewModel.IPPFeedbackBannerRemindMeLaterTapped(for: .inPersonPaymentsCashOnDelivery)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
+        guard let actualProperties = analyticsProvider.receivedProperties.first(
+            where: { $0.keys.contains("source") }) else {
+            return XCTFail("Expected properties were not tracked"
+            )}
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+        assertEqual(expectedSource, actualProperties["source"] as? String)
+        assertEqual(expectedRemindLater, actualProperties["remind_later"] as? Bool)
+    }
+
+// MARK: - In-Person Payments feedback banner survey
+
+    func test_feedbackBannerSurveySource_when_there_are_no_wcpay_orders_then_assigns_inPersonPaymentsCashOnDelivery_survey() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        var expectedSurvey: SurveyViewController.Source?
+
+        // When
+        let _ = insertOrder(
+            id: 123,
+            status: .completed,
+            dateCreated: Date()
+        )
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
+
+        // Then
+        viewModel.feedbackBannerSurveySource(onCompletion: { survey in
+            expectedSurvey = survey
+            XCTAssertEqual(expectedSurvey, .inPersonPaymentsCashOnDelivery)
+        })
+    }
+
+    func test_feedbackBannerSurveySource_when_there_is_one_wcpay_order_then_assigns_inPersonPaymentsCashOnDelivery_survey() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        var expectedSurvey: SurveyViewController.Source?
+
+        // When
+        let _ = insertOrder(
+            id: 123,
+            status: .completed,
+            dateCreated: Date(),
+            paymentMethodID: "woocommerce_payments"
+        )
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
+
+        // Then
+        viewModel.feedbackBannerSurveySource(onCompletion: { survey in
+            expectedSurvey = survey
+            XCTAssertEqual(expectedSurvey, .inPersonPaymentsCashOnDelivery)
+        })
+    }
+
+    func test_feedbackBannerSurveySource_when_there_are_less_than_ten_wcpay_orders_then_assigns_inPersonPaymentsFirstTransaction_survey() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        var expectedSurvey: SurveyViewController.Source?
+
+        // When
+        let _ = (0..<9).map { orderID in
+            insertOrder(
+                id: orderID ,
+                status: .completed,
+                dateCreated: Date(),
+                paymentMethodID: "woocommerce_payments"
+            )
+        }
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 9)
+
+        // Then
+        viewModel.feedbackBannerSurveySource(onCompletion: { survey in
+            expectedSurvey = survey
+            XCTAssertEqual(expectedSurvey, .inPersonPaymentsFirstTransaction)
+        })
+    }
+
+    func test_feedbackBannerSurveySource_when_there_more_than_ten_wcpay_orders_then_assigns_inPersonPaymentsPowerUsers_survey() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        var expectedSurvey: SurveyViewController.Source?
+
+        // When
+        let _ = (0..<15).map { orderID in
+            insertOrder(
+                id: orderID ,
+                status: .completed,
+                dateCreated: Date(),
+                paymentMethodID: "woocommerce_payments"
+            )
+        }
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 15)
+
+        // Then
+        viewModel.feedbackBannerSurveySource(onCompletion: { survey in
+            expectedSurvey = survey
+            XCTAssertEqual(expectedSurvey, .inPersonPaymentsPowerUsers)
+        })
+    }
+
+    func test_IPPFeedbackBannerWasSubmitted_hides_banner_after_being_called() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
+
+        // When
+        viewModel.IPPFeedbackBannerWasSubmitted()
+        viewModel.hasErrorLoadingData = false
+        viewModel.hideOrdersBanners = true
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .none
+        }
+    }
+
+    func test_IPPFeedbackBannerWasSubmitted_then_it_calls_updateFeedbackStatus_with_right_parameters() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        var updatedFeedbackStatus: FeedbackSettings.Status?
+        var receivedFeedbackType: FeedbackType?
+
+        // When
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .updateFeedbackStatus(type, status, onCompletion):
+                receivedFeedbackType = type
+                updatedFeedbackStatus = status
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        viewModel.activate()
+        viewModel.IPPFeedbackBannerWasSubmitted()
+
+        // Then
+        XCTAssertTrue(viewModel.hideIPPFeedbackBanner)
+
+        XCTAssertEqual(receivedFeedbackType, .inPersonPayments)
+
+        switch updatedFeedbackStatus {
+        case .given:
+            break
+        default:
+            XCTFail()
+        }
+    }
+
+    func test_IPPFeedbackBannerWasSubmitted_then_it_calls_setFeatureAnnouncementDismissed_with_right_parameters() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        var receivedCampaign: FeatureAnnouncementCampaign?
+        var receivedRemindAfterDays: Int?
+
+        // When
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .setFeatureAnnouncementDismissed(campaign, remindAfterDays, _):
+                receivedRemindAfterDays = remindAfterDays
+                receivedCampaign = campaign
+            default:
+                break
+            }
+        }
+
+        viewModel.activate()
+        viewModel.IPPFeedbackBannerWasSubmitted()
+
+        // Then
+        XCTAssertEqual(receivedCampaign, .inPersonPaymentsPowerUsers)
+        XCTAssertNil(receivedRemindAfterDays)
+    }
+
+    func test_feedback_status_when_IPPFeedbackBannerWasSubmitted_is_not_called_then_feedback_status_is_nil() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        var feedbackStatus: FeedbackSettings.Status?
+
+        // When
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .updateFeedbackStatus(.inPersonPayments, status, onCompletion):
+                feedbackStatus = status
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        viewModel.activate()
+
+        // Then
+        assertEqual(nil, feedbackStatus)
+    }
 }
 
 // MARK: - Helpers
@@ -516,11 +801,13 @@ private extension OrderListViewModelTests {
 
     func insertOrder(id orderID: Int64,
                      status: OrderStatusEnum,
-                     dateCreated: Date = Date()) -> Yosemite.Order {
+                     dateCreated: Date = Date(),
+                     paymentMethodID: String? = nil) -> Yosemite.Order {
         let readonlyOrder = MockOrders().empty().copy(siteID: siteID,
                                                       orderID: orderID,
                                                       status: status,
-                                                      dateCreated: dateCreated)
+                                                      dateCreated: dateCreated,
+                                                      paymentMethodID: paymentMethodID)
         let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
         storageOrder.update(with: readonlyOrder)
 

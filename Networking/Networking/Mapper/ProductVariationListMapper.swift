@@ -26,7 +26,11 @@ struct ProductVariationListMapper: Mapper {
             .productID: productID
         ]
 
-        return try decoder.decode(ProductVariationsEnvelope.self, from: response).productVariations
+        do {
+            return try decoder.decode(ProductVariationsEnvelope.self, from: response).productVariations
+        } catch {
+            return try decoder.decode([ProductVariation].self, from: response)
+        }
     }
 }
 

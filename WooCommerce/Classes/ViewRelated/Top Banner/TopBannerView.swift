@@ -50,6 +50,12 @@ final class TopBannerView: UIView {
         return stackView
     }()
 
+    private let labelHolderStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        return stackView
+    }()
+
     // StackView to hold the action buttons. Needed to change the axis on larger accessibility traits
     private let buttonsStackView = UIStackView()
 
@@ -144,7 +150,12 @@ private extension TopBannerView {
 
     func createMainStackView(with viewModel: TopBannerViewModel) -> UIStackView {
         let iconInformationStackView = createIconInformationStackView(with: viewModel)
-        let mainStackView = UIStackView(arrangedSubviews: [createBorderView(), iconInformationStackView, createBorderView()])
+        // TODO: Remove colors. Temporary testing helpers
+        let mainStackView = UIStackView(arrangedSubviews: [
+            createLabelHolderStackView(height: 2.0, width: nil, color: .green),
+            iconInformationStackView,
+            createLabelHolderStackView(height: 2.0, width: nil, color: .green)]
+        )
         if isActionEnabled {
             configureActionStackView(with: viewModel)
             mainStackView.addArrangedSubview(actionStackView)
@@ -170,6 +181,25 @@ private extension TopBannerView {
         return iconInformationStackView
     }
 
+    func createLabelHolderStackView() -> UIStackView {
+        // TODO: Better way to deal with height/width/layout width:
+        // TODO: Remove colors. Temporary testing helpers
+        labelHolderStackView.addArrangedSubviews([
+            createLabelHolderStackView(height: 50, width: nil, color: .orange),
+            infoLabel,
+            createLabelHolderStackView(height: 50, width: 20, color: .orange)]
+        )
+        labelHolderStackView.backgroundColor = .orange
+        labelHolderStackView.spacing = 1
+        infoLabel.backgroundColor = .yellow
+        infoLabel.preferredMaxLayoutWidth = CGFloat(320)
+
+        // TODO: Dealing with dismissal and Order Creation:
+        // At the moment once we dismiss this banner, Order Creation won't look good if is not-expanded
+
+        return labelHolderStackView
+    }
+
     func createInformationStackView(with viewModel: TopBannerViewModel) -> UIStackView {
         let topActionButton = topButton(for: viewModel.topButton)
         titleStackView.addArrangedSubviews([titleLabel, topActionButton].compactMap { $0 })
@@ -182,7 +212,8 @@ private extension TopBannerView {
         // titleStackView will hidden if there is no title
         titleStackView.isHidden = viewModel.title == nil || viewModel.title?.isEmpty == true
 
-        let informationStackView = UIStackView(arrangedSubviews: [titleStackView, infoLabel])
+        let informationStackView = UIStackView(arrangedSubviews: [titleStackView, createLabelHolderStackView()])
+
         informationStackView.axis = .vertical
         informationStackView.spacing = 9
 
@@ -226,6 +257,10 @@ private extension TopBannerView {
 
     func createBorderView() -> UIView {
         return UIView.createBorderView()
+    }
+
+    func createLabelHolderStackView(height: CGFloat, width: CGFloat?, color: UIColor?) -> UIView {
+        return UIView.createBorderView(height: height, width: width ?? 0, color: color ?? .systemColor(.separator))
     }
 
     func topButton(for buttonType: TopBannerViewModel.TopButtonType) -> UIButton? {

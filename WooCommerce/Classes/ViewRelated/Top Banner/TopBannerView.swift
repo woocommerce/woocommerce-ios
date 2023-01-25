@@ -178,13 +178,13 @@ private extension TopBannerView {
 
     func createLabelHolderStackView() -> UIStackView {
         // TODO: Better way to deal with height/width/layout width:
+        // TODO: Use a different helper function than UIView.createBorderView()
         labelHolderStackView.addArrangedSubviews([
             UIView.createBorderView(height: 50, width: 0),
             infoLabel,
-            UIView.createBorderView(height: 50, width: 20)
+            UIView.createBorderView(height: 50, width: 24)
         ])
         labelHolderStackView.spacing = 1
-        infoLabel.preferredMaxLayoutWidth = CGFloat(320)
         infoLabel.adjustsFontSizeToFitWidth = true
 
         return labelHolderStackView

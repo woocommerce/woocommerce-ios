@@ -89,7 +89,10 @@ extension MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         }
     }
 
-    func connectingFailed(from: UIViewController, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+    func connectingFailed(from: UIViewController,
+                          error: Error,
+                          continueSearch: @escaping () -> Void,
+                          cancelSearch: @escaping () -> Void) {
         if mode == .continueSearchingAfterConnectionFailure {
             continueSearch()
         }

@@ -1,4 +1,6 @@
 import XCTest
+import Hardware
+import TestKit
 @testable import WooCommerce
 
 final class CardPresentModalConnectingFailedTests: XCTestCase {
@@ -9,6 +11,7 @@ final class CardPresentModalConnectingFailedTests: XCTestCase {
         super.setUp()
         closures = Closures()
         viewModel = CardPresentModalConnectingFailed(
+            error: CardReaderServiceError.connection(underlyingError: .alreadyConnectedToReader),
             continueSearch: closures.continueSearch(),
             cancelSearch: closures.cancelSearch()
         )
@@ -40,8 +43,8 @@ final class CardPresentModalConnectingFailedTests: XCTestCase {
         XCTAssertNotNil(viewModel.secondaryButtonTitle)
     }
 
-    func test_bottom_title_is_nil() {
-        XCTAssertNil(viewModel.bottomTitle)
+    func test_bottom_title_is_error_description() {
+        assertEqual(UnderlyingError.alreadyConnectedToReader.localizedDescription, viewModel.bottomTitle)
     }
 
     func test_bottom_subTitle_is_nil() {

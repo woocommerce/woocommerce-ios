@@ -452,7 +452,9 @@ private extension BuiltInCardReaderConnectionController {
 
         guard case CardReaderServiceError.connection(let underlyingError) = error else {
             return alertsPresenter.present(
-                viewModel: alertsProvider.connectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch))
+                viewModel: alertsProvider.connectingFailed(error: error,
+                                                           continueSearch: continueSearch,
+                                                           cancelSearch: cancelSearch))
         }
 
         switch underlyingError {
@@ -471,6 +473,7 @@ private extension BuiltInCardReaderConnectionController {
         default:
             alertsPresenter.present(
                 viewModel: alertsProvider.connectingFailed(
+                    error: error,
                     continueSearch: continueSearch,
                     cancelSearch: cancelSearch))
         }

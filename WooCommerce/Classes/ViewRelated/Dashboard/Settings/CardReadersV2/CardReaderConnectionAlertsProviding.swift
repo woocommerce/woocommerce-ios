@@ -22,7 +22,8 @@ protocol CardReaderConnectionAlertsProviding {
     /// Defines an alert indicating connecting failed. The user may continue the search
     /// or cancel
     ///
-    func connectingFailed(continueSearch: @escaping () -> Void,
+    func connectingFailed(error: Error,
+                          continueSearch: @escaping () -> Void,
                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
 
     /// Defines an alert indicating connecting failed because their address needs updating.

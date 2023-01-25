@@ -31,11 +31,19 @@ final class CardPresentModalConnectingFailed: CardPresentPaymentsModalViewModel 
     }
 
     init(image: UIImage = .paymentErrorImage,
+         error: Error,
          continueSearch: @escaping () -> Void,
          cancelSearch: @escaping () -> Void) {
         self.image = image
         self.continueSearchAction = continueSearch
         self.cancelSearchAction = cancelSearch
+
+        switch error {
+        case CardReaderServiceError.connection(let underlyingError):
+            bottomTitle = underlyingError.localizedDescription
+        default:
+            break
+        }
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {

@@ -21,8 +21,11 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         setViewModelAndPresent(from: from, viewModel: connectingToReader())
     }
 
-    func connectingFailed(from: UIViewController, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
-        setViewModelAndPresent(from: from, viewModel: connectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch))
+    func connectingFailed(from: UIViewController, error: Error, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+        setViewModelAndPresent(from: from,
+                               viewModel: connectingFailed(error: error,
+                                                           continueSearch: continueSearch,
+                                                           cancelSearch: cancelSearch))
     }
 
     func connectingFailedIncompleteAddress(from: UIViewController,
@@ -184,8 +187,10 @@ private extension CardReaderSettingsAlerts {
         CardPresentModalConnectingToReader()
     }
 
-    func connectingFailed(continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalConnectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch)
+    func connectingFailed(error: Error,
+                          continueSearch: @escaping () -> Void,
+                          cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalConnectingFailed(error: error, continueSearch: continueSearch, cancelSearch: cancelSearch)
     }
 
     func connectingFailedUpdateAddress(openWCSettings: ((UIViewController) -> Void)?,

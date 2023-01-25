@@ -11,8 +11,13 @@ struct ShipmentTrackingProviderListMapper: Mapper {
 
     func map(response: Data) throws -> [ShipmentTrackingProviderGroup] {
         let decoder = JSONDecoder()
-        let rawDictionary = try? decoder.decode(ShipmentTrackingProviderListEnvelope.self, from: response).rawData
-        return rawDictionary?.map({ ShipmentTrackingProviderGroup(name: $0.key, siteID: siteID, dictionary: $0.value) }) ?? []
+        let rawDictionary: ShipmentTrackingProviderListEnvelope.RawData
+        do {
+            rawDictionary = try decoder.decode(ShipmentTrackingProviderListEnvelope.self, from: response).rawData
+        } catch {
+            rawDictionary = try decoder.decode(ShipmentTrackingProviderListEnvelope.RawData.self, from: response)
+        }
+        return rawDictionary.map({ ShipmentTrackingProviderGroup(name: $0.key, siteID: siteID, dictionary: $0.value) })
     }
 }
 
@@ -21,7 +26,9 @@ struct ShipmentTrackingProviderListMapper: Mapper {
 /// the providers within a `data` key.
 ///
 private struct ShipmentTrackingProviderListEnvelope: Decodable {
-    let rawData: [String: [String: String]]
+    typealias RawData = [String: [String: String]]
+
+    let rawData: RawData
 
     private enum CodingKeys: String, CodingKey {
         case rawData = "data"

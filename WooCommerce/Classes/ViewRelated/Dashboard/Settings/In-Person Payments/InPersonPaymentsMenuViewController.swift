@@ -20,7 +20,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
                             countryCode: viewModel.cardPresentPaymentsConfiguration.countryCode))
     }()
 
-    private lazy var inPersonPaymentsLearnMoreViewModel = LearnMoreViewModel.InPersonPayments()
+    private lazy var inPersonPaymentsLearnMoreViewModel = LearnMoreViewModel.inPersonPayments()
 
     private let viewModel: InPersonPaymentsMenuViewModel = InPersonPaymentsMenuViewModel()
 

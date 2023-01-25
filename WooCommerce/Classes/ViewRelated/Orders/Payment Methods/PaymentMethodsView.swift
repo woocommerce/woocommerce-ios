@@ -23,7 +23,7 @@ struct PaymentMethodsView: View {
 
     @State private var showingPurchaseCardReaderView = false
 
-    private let learnMoreViewModel = LearnMoreViewModel.InPersonPayments()
+    private let learnMoreViewModel = LearnMoreViewModel.inPersonPayments()
 
     ///   Environment safe areas
     ///

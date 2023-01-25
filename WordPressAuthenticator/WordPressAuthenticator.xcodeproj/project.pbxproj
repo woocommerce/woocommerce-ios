@@ -36,6 +36,7 @@
 		3F879FF4293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FF3293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift */; };
 		3F879FF6293E1F8E005C2B48 /* OAuthTokenResponseBody+Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FF5293E1F8E005C2B48 /* OAuthTokenResponseBody+Fixture.swift */; };
 		3F879FF8293E222E005C2B48 /* GoogleOAuthTokenGettingStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FF7293E222E005C2B48 /* GoogleOAuthTokenGettingStub.swift */; };
+		3F881660298150FB00AEC4C0 /* URLSesison+DataGetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F88165F298150FB00AEC4C0 /* URLSesison+DataGetting.swift */; };
 		3F9439BE27D6F9B60067183A /* LoginPrologueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9439BD27D6F9B60067183A /* LoginPrologueViewController.swift */; };
 		3FE8071529364C410088420C /* Result+ConvenienceInitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE8071429364C410088420C /* Result+ConvenienceInitTests.swift */; };
 		3FE80717293650190088420C /* Result+ConvenienceInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE80716293650190088420C /* Result+ConvenienceInit.swift */; };
@@ -270,6 +271,7 @@
 		3F879FF3293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleOAuthTokenGetterTests.swift; sourceTree = "<group>"; };
 		3F879FF5293E1F8E005C2B48 /* OAuthTokenResponseBody+Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OAuthTokenResponseBody+Fixture.swift"; sourceTree = "<group>"; };
 		3F879FF7293E222E005C2B48 /* GoogleOAuthTokenGettingStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleOAuthTokenGettingStub.swift; sourceTree = "<group>"; };
+		3F88165F298150FB00AEC4C0 /* URLSesison+DataGetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSesison+DataGetting.swift"; sourceTree = "<group>"; };
 		3F9439BD27D6F9B60067183A /* LoginPrologueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPrologueViewController.swift; sourceTree = "<group>"; };
 		3FE8071429364C410088420C /* Result+ConvenienceInitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+ConvenienceInitTests.swift"; sourceTree = "<group>"; };
 		3FE80716293650190088420C /* Result+ConvenienceInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+ConvenienceInit.swift"; sourceTree = "<group>"; };
@@ -545,6 +547,7 @@
 				3F879FE0293A53CB005C2B48 /* OAuthRequestBody+GoogleSignIn.swift */,
 				3FE8072029365F6D0088420C /* URL+GoogleSignIn.swift */,
 				3F879FDC293A500D005C2B48 /* URLRequest+GoogleSignIn.swift */,
+				3F88165F298150FB00AEC4C0 /* URLSesison+DataGetting.swift */,
 			);
 			path = GoogleSignIn;
 			sourceTree = "<group>";
@@ -1416,6 +1419,7 @@
 				B56090F9208A533200399AE4 /* WordPressAuthenticator+Events.swift in Sources */,
 				CEDE0D93242011E000CB3345 /* NSObject+Helpers.swift in Sources */,
 				020DEF6428AA091100C85D51 /* MagicLinkRequester.swift in Sources */,
+				3F881660298150FB00AEC4C0 /* URLSesison+DataGetting.swift in Sources */,
 				3F879FE2293A53F5005C2B48 /* OAuthRequestBody+GoogleSignIn.swift in Sources */,
 				020BE74A23B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift in Sources */,
 				B560913A208A563800399AE4 /* LoginLinkRequestViewController.swift in Sources */,

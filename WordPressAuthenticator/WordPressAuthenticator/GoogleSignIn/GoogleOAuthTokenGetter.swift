@@ -20,11 +20,3 @@ class GoogleOAuthTokenGetter: GoogleOAuthTokenGetting {
         return try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
     }
 }
-
-extension URLSession: DataGetting {
-
-    func data(for request: URLRequest) async throws -> Data {
-        let (data, _) = try await data(for: request)
-        return data
-    }
-}

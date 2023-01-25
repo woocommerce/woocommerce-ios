@@ -178,15 +178,12 @@ private extension TopBannerView {
 
     func createLabelHolderStackView() -> UIStackView {
         // TODO: Better way to deal with height/width/layout width:
-        // TODO: Remove colors. Temporary testing helpers
         labelHolderStackView.addArrangedSubviews([
             UIView.createBorderView(height: 50, width: 0),
             infoLabel,
             UIView.createBorderView(height: 50, width: 20)
         ])
-        labelHolderStackView.backgroundColor = .orange
         labelHolderStackView.spacing = 1
-        infoLabel.backgroundColor = .yellow
         infoLabel.preferredMaxLayoutWidth = CGFloat(320)
         infoLabel.adjustsFontSizeToFitWidth = true
 

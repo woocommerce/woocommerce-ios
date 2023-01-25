@@ -73,6 +73,10 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private let alertsPresenter: CardPresentPaymentAlertsPresenting
 
+    /// Onboarding presenter: shows steps for payment setup when required
+    ///
+    private let onboardingPresenter: CardPresentPaymentsOnboardingPresenting
+
     /// Stores the card reader listener subscription while trying to connect to one.
     ///
     private var readerSubscription: AnyCancellable?
@@ -103,6 +107,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          formattedAmount: String,
          paymentGatewayAccount: PaymentGatewayAccount,
          rootViewController: UIViewController,
+         onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          paymentCaptureCelebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
@@ -112,6 +117,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.formattedAmount = formattedAmount
         self.paymentGatewayAccount = paymentGatewayAccount
         self.rootViewController = rootViewController
+        self.onboardingPresenter = onboardingPresenter
         self.alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
         self.configuration = configuration
         self.stores = stores
@@ -144,7 +150,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         preflightController = CardPresentPaymentPreflightController(siteID: siteID,
                                                                     paymentGatewayAccount: paymentGatewayAccount,
                                                                     configuration: configuration,
-                                                                    alertsPresenter: alertsPresenter)
+                                                                    rootViewController: rootViewController,
+                                                                    alertsPresenter: alertsPresenter,
+                                                                    onboardingPresenter: onboardingPresenter)
         preflightController?.readerConnection.sink { [weak self] connectionResult in
             guard let self = self else { return }
             switch connectionResult {

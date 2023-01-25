@@ -35,9 +35,18 @@ final class CardPresentPaymentPreflightController {
     ///
     private let analytics: Analytics
 
-    /// Stores the connected card reader
-    private var connectedReader: CardReader?
+    /// Root View Controller
+    /// Used for showing onboarding alerts
+    private let rootViewController: UIViewController
 
+    /// Onboarding presenter.
+    /// Shows messages to help a merchant get correctly set up for card payments, prior to taking a payment.
+    ///
+    private let onboardingPresenter: CardPresentPaymentsOnboardingPresenting
+
+    /// Stores the connected card reader
+    ///
+    private var connectedReader: CardReader?
 
     /// Controller to connect a card reader.
     ///
@@ -53,13 +62,17 @@ final class CardPresentPaymentPreflightController {
     init(siteID: Int64,
          paymentGatewayAccount: PaymentGatewayAccount,
          configuration: CardPresentPaymentsConfiguration,
+         rootViewController: UIViewController,
          alertsPresenter: CardPresentPaymentAlertsPresenting,
+         onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.paymentGatewayAccount = paymentGatewayAccount
         self.configuration = configuration
+        self.rootViewController = rootViewController
         self.alertsPresenter = alertsPresenter
+        self.onboardingPresenter = onboardingPresenter
         self.stores = stores
         self.analytics = analytics
         self.connectedReader = nil
@@ -92,7 +105,7 @@ final class CardPresentPaymentPreflightController {
             return
         }
 
-        // TODO: Run onboarding if needed
+        await onboardingPresenter.showOnboardingIfRequired(from: rootViewController)
 
         // Ask for a Reader type if supported by device/in country
         guard await localMobileReaderSupported(),

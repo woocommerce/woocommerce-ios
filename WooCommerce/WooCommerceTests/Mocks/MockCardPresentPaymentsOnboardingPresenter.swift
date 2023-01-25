@@ -5,9 +5,13 @@ final class MockCardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboa
     var spyShowOnboardingWasCalled = false
 
     func showOnboardingIfRequired(from viewController: UIViewController,
-                                  readyToCollectPayment completion: @escaping (() -> ())) {
+                                  readyToCollectPayment completion: @escaping () -> Void) {
         spyShowOnboardingWasCalled = true
         completion()
+    }
+
+    func showOnboardingIfRequired(from: UIViewController) async {
+        spyShowOnboardingWasCalled = true
     }
 
     func refresh() {

@@ -111,6 +111,7 @@ private extension TopBannerView {
         } else {
             // It is necessary to remove the subview when no text, otherwise the stack view spacing stays.
             infoLabel.removeFromSuperview()
+            labelHolderStackView.removeFromSuperview()
         }
 
         iconImageView.image = viewModel.icon

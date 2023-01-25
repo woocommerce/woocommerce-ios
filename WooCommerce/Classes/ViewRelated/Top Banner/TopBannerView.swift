@@ -177,12 +177,10 @@ private extension TopBannerView {
     }
 
     func createLabelHolderStackView() -> UIStackView {
-        // TODO: Better way to deal with height/width/layout width:
-        // TODO: Use a different helper function than UIView.createBorderView()
         labelHolderStackView.addArrangedSubviews([
-            UIView.createSeparatorView(height: 50, width: 0),
+            createSeparatorView(height: 48, width: 0),
             infoLabel,
-            UIView.createSeparatorView(height: 50, width: 24)
+            createSeparatorView(height: 48, width: 24)
         ])
         labelHolderStackView.spacing = 1
         infoLabel.adjustsFontSizeToFitWidth = true
@@ -249,8 +247,8 @@ private extension TopBannerView {
         return UIView.createBorderView()
     }
 
-    func createSeparatorView() -> UIView {
-        return UIView.createSeparatorView()
+    func createSeparatorView(height: CGFloat, width: CGFloat) -> UIView {
+        return UIView.createSeparatorView(height: height, width: width)
     }
 
     func topButton(for buttonType: TopBannerViewModel.TopButtonType) -> UIButton? {

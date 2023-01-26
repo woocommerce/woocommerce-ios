@@ -58,7 +58,7 @@ final class CardPresentModalBuiltInConnectingFailed: CardPresentPaymentsModalVie
 private extension CardPresentModalBuiltInConnectingFailed {
     enum Localization {
         static let title = NSLocalizedString(
-            "We couldn't start Tap to Pay on iPhone",
+            "Setup failed",
             comment: "Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails"
         )
 

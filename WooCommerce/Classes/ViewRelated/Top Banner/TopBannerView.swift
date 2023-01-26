@@ -99,18 +99,19 @@ private extension TopBannerView {
     }
 
     func renderContent(of viewModel: TopBannerViewModel) {
+        // It is necessary to remove the subview when there is no text,
+        // otherwise the stack view spacing stays, breaking the view.
+        // See: https://github.com/woocommerce/woocommerce-ios/issues/8747
         if let title = viewModel.title, !title.isEmpty {
             titleLabel.text = title
         } else {
-            // It is necessary to remove the subview when no text, otherwise the stack view spacing stays.
             titleLabel.removeFromSuperview()
         }
 
         if let infoText = viewModel.infoText, !infoText.isEmpty {
             infoLabel.text = infoText
         } else {
-            // It is necessary to remove the subview when no text, otherwise the stack view spacing stays.
-            infoLabel.removeFromSuperview()
+            labelHolderStackView.removeFromSuperview()
         }
 
         iconImageView.image = viewModel.icon

@@ -11,8 +11,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductsViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
-                <outlet property="bottomPlaceholder" destination="xLN-As-fgq" id="bwi-vq-EvS"/>
-                <outlet property="bottomToolbar" destination="pNN-uJ-nMs" id="Z6G-Im-KE6"/>
                 <outlet property="tableView" destination="1mE-SE-uK9" id="ogX-nu-l5x"/>
                 <outlet property="toolbar" destination="9eA-hc-k15" id="V2c-iT-WpM"/>
                 <outlet property="view" destination="iN0-l3-epB" id="Jh9-wF-LZg"/>
@@ -34,31 +32,17 @@
                             </constraints>
                         </view>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="1mE-SE-uK9">
-                            <rect key="frame" x="0.0" y="50" width="414" height="715"/>
+                            <rect key="frame" x="0.0" y="50" width="414" height="798"/>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="orders-table-view"/>
                             </userDefinedRuntimeAttributes>
                         </tableView>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pNN-uJ-nMs" userLabel="Bulk Edit Bar" customClass="ToolbarView" customModule="WooCommerce" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="765" width="414" height="49"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            <constraints>
-                                <constraint firstAttribute="height" priority="995" constant="49" id="mXV-oU-3bM">
-                                    <variation key="heightClass=compact" constant="32"/>
-                                </constraint>
-                            </constraints>
-                        </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xLN-As-fgq" userLabel="Safe Area Placeholder">
-                            <rect key="frame" x="0.0" y="814" width="414" height="34"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        </view>
                     </subviews>
                     <constraints>
                         <constraint firstItem="9eA-hc-k15" firstAttribute="leading" secondItem="tDW-j0-dUT" secondAttribute="leading" id="2Md-DN-FrJ"/>
                         <constraint firstItem="1mE-SE-uK9" firstAttribute="top" secondItem="9eA-hc-k15" secondAttribute="bottom" id="CRj-o0-2WZ"/>
                         <constraint firstAttribute="trailing" secondItem="9eA-hc-k15" secondAttribute="trailing" id="Qcx-pF-i9M"/>
                         <constraint firstItem="9eA-hc-k15" firstAttribute="top" secondItem="tDW-j0-dUT" secondAttribute="top" id="ilw-mJ-v1G"/>
-                        <constraint firstItem="pNN-uJ-nMs" firstAttribute="top" secondItem="1mE-SE-uK9" secondAttribute="bottom" id="mlT-bM-H2X"/>
                     </constraints>
                 </stackView>
             </subviews>
@@ -69,10 +53,8 @@
                 <constraint firstItem="tDW-j0-dUT" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="9UK-Qy-FXd"/>
                 <constraint firstAttribute="bottom" secondItem="tDW-j0-dUT" secondAttribute="bottom" id="AQF-qF-3wt"/>
                 <constraint firstItem="1mE-SE-uK9" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="E6i-2y-FvV"/>
-                <constraint firstItem="xLN-As-fgq" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="Iu8-XK-w4W"/>
                 <constraint firstItem="tDW-j0-dUT" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="KSv-iL-NFv"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="1mE-SE-uK9" secondAttribute="trailing" id="qVI-Qq-E5k"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="pNN-uJ-nMs" secondAttribute="bottom" id="xJE-yf-lID"/>
             </constraints>
             <point key="canvasLocation" x="100.00000000000001" y="48.883928571428569"/>
         </view>

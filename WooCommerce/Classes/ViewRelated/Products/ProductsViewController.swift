@@ -67,53 +67,19 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     @IBOutlet private weak var toolbar: ToolbarView!
 
-    /// Top toolbar that shows the bulk edit CTA.
-    ///
-    @IBOutlet private weak var bottomToolbar: ToolbarView! {
-        didSet {
-            bottomToolbar.isHidden = true
-            bottomToolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
-            bottomToolbar.setSubviews(leftViews: [selectAllButton], rightViews: [bulkEditButton])
-            bottomToolbar.addDividerOnTop()
-        }
-    }
-
-    /// Bottom placeholder inside StackView to cover the safe area gap below the bottom toolbar.
-    ///
-    @IBOutlet private weak var bottomPlaceholder: UIView! {
-        didSet {
-            bottomPlaceholder.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
-        }
-    }
-
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
 
     /// The filter CTA in the top toolbar.
     private lazy var filterButton: UIButton = UIButton(frame: .zero)
 
-    /// The bulk edit CTA in the bottom toolbar.
-    private lazy var bulkEditButton: UIButton = {
-        let button = UIButton(frame: .zero)
-        button.setTitle(Localization.bulkEditingToolbarButtonTitle, for: .normal)
-        button.addTarget(self, action: #selector(openBulkEditingOptions(sender:)), for: .touchUpInside)
-        button.applyLinkButtonStyle()
-        var configuration = UIButton.Configuration.plain()
-        configuration.contentInsets = Constants.toolbarButtonInsets
-        button.configuration = configuration
+    /// The bulk edit CTA in the navbar.
+    private lazy var bulkEditButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: Localization.bulkEditingToolbarButtonTitle,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(openBulkEditingOptions(sender:)))
         button.isEnabled = false
-        return button
-    }()
-
-    /// The select all CTA in the bottom toolbar.
-    private lazy var selectAllButton: UIButton = {
-        let button = UIButton(frame: .zero)
-        button.setTitle(Localization.selectAllToolbarButtonTitle, for: .normal)
-        button.addTarget(self, action: #selector(selectAllProducts), for: .touchUpInside)
-        button.applyLinkButtonStyle()
-        var configuration = UIButton.Configuration.plain()
-        configuration.contentInsets = Constants.toolbarButtonInsets
-        button.configuration = configuration
         return button
     }()
 
@@ -325,7 +291,6 @@ private extension ProductsViewController {
 
         configureNavigationBarForEditing()
         showOrHideToolbar()
-        showBottomToolbar()
     }
 
     @objc func finishBulkEditing() {
@@ -337,7 +302,6 @@ private extension ProductsViewController {
 
         configureNavigationBar()
         showOrHideToolbar()
-        hideBottomToolbar()
     }
 
     func updatedSelectedItems() {
@@ -353,7 +317,7 @@ private extension ProductsViewController {
         tableView.reloadRows(at: tableView.indexPathsForVisibleRows ?? [], with: .none)
     }
 
-    @objc func openBulkEditingOptions(sender: UIButton) {
+    @objc func openBulkEditingOptions(sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         let updateStatus = UIAlertAction(title: Localization.bulkEditingStatusOption, style: .default) { [weak self] _ in
@@ -371,8 +335,7 @@ private extension ProductsViewController {
         actionSheet.addAction(cancelAction)
 
         if let popoverController = actionSheet.popoverPresentationController {
-            popoverController.sourceView = sender
-            popoverController.sourceRect = sender.bounds
+            popoverController.barButtonItem = sender
         }
 
         present(actionSheet, animated: true)
@@ -554,12 +517,13 @@ private extension ProductsViewController {
         }()
         rightBarButtonItems.append(bulkEditItem)
 
+        navigationItem.leftBarButtonItem = nil
         navigationItem.rightBarButtonItems = rightBarButtonItems
     }
 
     func configureNavigationBarForEditing() {
         updateNavigationBarTitleForEditing()
-        configureNavigationBarRightButtonItemsForEditing()
+        configureNavigationBarItemsForEditing()
     }
 
     func updateNavigationBarTitleForEditing() {
@@ -571,10 +535,11 @@ private extension ProductsViewController {
         }
     }
 
-    func configureNavigationBarRightButtonItemsForEditing() {
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .cancel,
-                                                              target: self,
-                                                              action: #selector(finishBulkEditing))]
+    func configureNavigationBarItemsForEditing() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                           target: self,
+                                                           action: #selector(finishBulkEditing))
+        navigationItem.rightBarButtonItems = [bulkEditButton]
     }
 
     /// Apply Woo styles.
@@ -688,24 +653,6 @@ private extension ProductsViewController {
         }
 
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
-    }
-
-    func showBottomToolbar() {
-        tabBarController?.tabBar.isHidden = true
-
-        // trigger safe area update
-        if let tabBarController {
-            let currentFrame = tabBarController.view.frame
-            tabBarController.view.frame = currentFrame.insetBy(dx: 0, dy: 1)
-            tabBarController.view.frame = currentFrame
-        }
-
-        bottomToolbar.isHidden = false
-    }
-
-    func hideBottomToolbar() {
-        tabBarController?.tabBar.isHidden = false
-        bottomToolbar.isHidden = true
     }
 }
 

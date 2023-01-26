@@ -142,6 +142,8 @@ private extension AppCoordinator {
         } else {
             configureAndDisplayAuthenticator()
         }
+
+        analytics.track(event: .ApplicationPassword.restAPILoginExperiment(variation: ABTest.applicationPasswordAuthentication.variation.analyticsValue))
     }
 
     /// Configures the WPAuthenticator and sets the authenticator UI as the window's root view.

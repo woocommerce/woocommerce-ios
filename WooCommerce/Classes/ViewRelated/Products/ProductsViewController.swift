@@ -297,6 +297,8 @@ private extension ProductsViewController {
         viewModel.deselectAll()
         tableView.setEditing(false, animated: true)
 
+        bulkEditButton.isEnabled = false
+
         // Enable pull-to-refresh
         tableView.addSubview(refreshControl)
 

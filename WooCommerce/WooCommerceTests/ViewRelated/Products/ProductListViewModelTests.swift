@@ -266,16 +266,17 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_updating_products_with_price_sets_correct_price() throws {
+    func test_updating_products_with_price_sets_correct_price_and_filters_simple_products() throws {
         // Given
         let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
-        let sampleProduct1 = Product.fake().copy(productID: 1, regularPrice: "100")
-        let sampleProduct2 = Product.fake().copy(productID: 2, regularPrice: "100")
-        let sampleProduct3 = Product.fake().copy(productID: 3, regularPrice: "200")
+        let sampleProduct1 = Product.fake().copy(productID: 1, productTypeKey: "simple", regularPrice: "100")
+        let sampleProduct2 = Product.fake().copy(productID: 2, productTypeKey: "simple", regularPrice: "200")
+        let sampleProduct3 = Product.fake().copy(productID: 3, productTypeKey: "variable", regularPrice: "200")
 
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .updateProducts(_, products, completion):
+                XCTAssertEqual(products.count, 2)
                 XCTAssertTrue(products.allSatisfy { $0.regularPrice == "150" })
                 completion(.success(products))
             default:

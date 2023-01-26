@@ -14,6 +14,10 @@ class ProductListViewModel {
 
     private(set) var selectedProducts: Set<Product> = .init()
 
+    private var onlySimpleSelectedProducts: Set<Product> {
+        selectedProducts.filter({ $0.productType == .simple })
+    }
+
     init(siteID: Int64, stores: StoresManager) {
         self.siteID = siteID
         self.stores = stores
@@ -32,7 +36,7 @@ class ProductListViewModel {
     }
 
     var onlyNonSimpleProductsSelected: Bool {
-        !selectedProducts.isEmpty && selectedProducts.filter({ $0.productType == .simple }).isEmpty
+        !selectedProducts.isEmpty && onlySimpleSelectedProducts.isEmpty
     }
 
     var bulkEditActionIsEnabled: Bool {
@@ -116,12 +120,12 @@ class ProductListViewModel {
     /// Update selected products with new price and trigger Network action to save the change remotely.
     ///
     func updateSelectedProducts(with newPrice: String, completion: @escaping (Result<Void, Error>) -> Void ) {
-        guard selectedProductsCount > 0 else {
+        guard onlySimpleSelectedProducts.count > 0 else {
             completion(.failure(BulkEditError.noProductsSelected))
             return
         }
 
-        let updatedProducts = selectedProducts.map({ $0.copy(regularPrice: newPrice) })
+        let updatedProducts = onlySimpleSelectedProducts.map({ $0.copy(regularPrice: newPrice) })
         let batchAction = ProductAction.updateProducts(siteID: siteID, products: updatedProducts) { result in
             switch result {
             case .success:

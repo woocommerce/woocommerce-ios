@@ -237,7 +237,7 @@ private extension BuiltInCardReaderConnectionController {
                 guard case .searching = self.state else {
                     return
                 }
-                
+
                 /// If we have a found reader, advance to `connectToReader`
                 ///
                 if cardReaders.isNotEmpty {

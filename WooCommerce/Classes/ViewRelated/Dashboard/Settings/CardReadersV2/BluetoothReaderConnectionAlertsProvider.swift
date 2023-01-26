@@ -16,9 +16,9 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
     }
 
     func connectingFailed(error: Error,
-                          continueSearch: @escaping () -> Void,
+                          retrySearch: @escaping () -> Void,
                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalConnectingFailed(error: error, continueSearch: continueSearch, cancelSearch: cancelSearch)
+        CardPresentModalConnectingFailed(error: error, retrySearch: retrySearch, cancelSearch: cancelSearch)
     }
 
     func connectingFailedNonRetryable(error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

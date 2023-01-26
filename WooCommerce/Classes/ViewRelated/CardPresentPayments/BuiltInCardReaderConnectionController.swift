@@ -231,6 +231,13 @@ private extension BuiltInCardReaderConnectionController {
                 /// discovered changes, so some care around state must be taken here.
                 ///
 
+                /// To avoid interrupting connecting to a known reader, ensure we are
+                /// in the searching state before proceeding further
+                ///
+                guard case .searching = self.state else {
+                    return
+                }
+                
                 /// If we have a found reader, advance to `connectToReader`
                 ///
                 if cardReaders.isNotEmpty {
@@ -441,11 +448,6 @@ private extension BuiltInCardReaderConnectionController {
             self.state = .retry
         }
 
-        // TODO: Consider removing this in favour of retry only – continue doesn't make sense for a built-in reader
-        let continueSearch = {
-            self.state = .searching
-        }
-
         let cancelSearch = {
             self.state = .cancel(.connectionError)
         }
@@ -453,7 +455,7 @@ private extension BuiltInCardReaderConnectionController {
         guard case CardReaderServiceError.connection(let underlyingError) = error else {
             return alertsPresenter.present(
                 viewModel: alertsProvider.connectingFailed(error: error,
-                                                           continueSearch: continueSearch,
+                                                           retrySearch: retrySearch,
                                                            cancelSearch: cancelSearch))
         }
 
@@ -475,7 +477,7 @@ private extension BuiltInCardReaderConnectionController {
                 alertsPresenter.present(
                     viewModel: alertsProvider.connectingFailed(
                         error: error,
-                        continueSearch: continueSearch,
+                        retrySearch: retrySearch,
                         cancelSearch: cancelSearch))
             } else {
                 alertsPresenter.present(

@@ -16,10 +16,10 @@ struct BuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidin
     }
 
     func connectingFailed(error: Error,
-                          continueSearch: @escaping () -> Void,
+                          retrySearch: @escaping () -> Void,
                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalBuiltInConnectingFailed(error: error,
-                                                continueSearch: continueSearch,
+                                                continueSearch: retrySearch,
                                                 cancelSearch: cancelSearch)
     }
 

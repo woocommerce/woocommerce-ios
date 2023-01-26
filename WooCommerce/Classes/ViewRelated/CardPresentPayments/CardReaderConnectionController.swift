@@ -645,7 +645,7 @@ private extension CardReaderConnectionController {
         guard case CardReaderServiceError.connection(let underlyingError) = error else {
             return alertsPresenter.present(
                 viewModel: alertsProvider.connectingFailed(error: error,
-                                                           continueSearch: continueSearch,
+                                                           retrySearch: continueSearch,
                                                            cancelSearch: cancelSearch))
         }
 
@@ -668,10 +668,12 @@ private extension CardReaderConnectionController {
                     retrySearch: retrySearch,
                     cancelSearch: cancelSearch))
         default:
+            // We continueSearch here from a button labeled `Try again`, rather than retrying from the beginning,
+            // this is because the original reader can be re-discovered in the same process.
             alertsPresenter.present(
                 viewModel: alertsProvider.connectingFailed(
                     error: error,
-                    continueSearch: continueSearch,
+                    retrySearch: continueSearch,
                     cancelSearch: cancelSearch))
         }
     }

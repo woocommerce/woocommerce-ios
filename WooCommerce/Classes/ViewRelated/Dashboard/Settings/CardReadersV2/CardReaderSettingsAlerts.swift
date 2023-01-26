@@ -190,7 +190,7 @@ private extension CardReaderSettingsAlerts {
     func connectingFailed(error: Error,
                           continueSearch: @escaping () -> Void,
                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalConnectingFailed(error: error, continueSearch: continueSearch, cancelSearch: cancelSearch)
+        CardPresentModalConnectingFailed(error: error, retrySearch: continueSearch, cancelSearch: cancelSearch)
     }
 
     func connectingFailedUpdateAddress(openWCSettings: ((UIViewController) -> Void)?,

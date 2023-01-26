@@ -318,7 +318,25 @@ final class AppCoordinatorTests: XCTestCase {
         appCoordinator.start()
 
         // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.loginOnboardingShown.rawValue])
+        _ = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginOnboardingShown.rawValue}))
+    }
+
+    func test_trackRestAPILoginExperimentVariation_is_tracked_after_presenting_onboarding() throws {
+        // Given
+        stores.deauthenticate()
+        let analytics = MockAnalyticsProvider()
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == "rest_api_login_experiment" }))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+        XCTAssertNotNil(eventProperties["experiment_variant"] as? String)
     }
 
     // MARK: - Login reminder analytics

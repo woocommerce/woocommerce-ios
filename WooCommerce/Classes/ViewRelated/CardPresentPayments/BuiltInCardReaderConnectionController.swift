@@ -452,7 +452,9 @@ private extension BuiltInCardReaderConnectionController {
 
         guard case CardReaderServiceError.connection(let underlyingError) = error else {
             return alertsPresenter.present(
-                viewModel: alertsProvider.connectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch))
+                viewModel: alertsProvider.connectingFailed(error: error,
+                                                           continueSearch: continueSearch,
+                                                           cancelSearch: cancelSearch))
         }
 
         switch underlyingError {
@@ -469,10 +471,17 @@ private extension BuiltInCardReaderConnectionController {
                     retrySearch: retrySearch,
                     cancelSearch: cancelSearch))
         default:
-            alertsPresenter.present(
-                viewModel: alertsProvider.connectingFailed(
-                    continueSearch: continueSearch,
-                    cancelSearch: cancelSearch))
+            if underlyingError.canBeResolvedByRetrying {
+                alertsPresenter.present(
+                    viewModel: alertsProvider.connectingFailed(
+                        error: error,
+                        continueSearch: continueSearch,
+                        cancelSearch: cancelSearch))
+            } else {
+                alertsPresenter.present(
+                    viewModel: alertsProvider.connectingFailedNonRetryable(error: error,
+                                                                           close: cancelSearch))
+            }
         }
     }
 
@@ -561,5 +570,21 @@ private extension BuiltInCardReaderConnectionController {
             comment: "The button title to indicate that the user has finished updating their store's address and is" +
             "ready to close the webview. This also tries to connect to the reader again."
         )
+    }
+}
+
+private extension CardReaderServiceUnderlyingError {
+    var canBeResolvedByRetrying: Bool {
+        switch self {
+        case .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn,
+                .passcodeNotEnabled,
+                .appleBuiltInReaderDeviceBanned,
+                .appleBuiltInReaderMerchantBlocked,
+                .nfcDisabled,
+                .unsupportedMobileDeviceConfiguration:
+            return false
+        default:
+            return true
+        }
     }
 }

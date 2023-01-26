@@ -44,6 +44,7 @@ protocol CardReaderSettingsAlertsProvider {
     /// or cancel
     ///
     func connectingFailed(from: UIViewController,
+                          error: Error,
                           continueSearch: @escaping () -> Void,
                           cancelSearch: @escaping () -> Void)
 

@@ -142,7 +142,7 @@ final class ProductListViewModelTests: XCTestCase {
     func test_variation_helpers_work_correctly() {
         // Given
         let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
-        let sampleProduct1 = Product.fake().copy(productID: 1)
+        let sampleProduct1 = Product.fake().copy(productID: 1, productTypeKey: "simple")
         let sampleProduct2 = Product.fake().copy(productID: 2, productTypeKey: "variable")
 
         // When
@@ -152,7 +152,7 @@ final class ProductListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.selectedProductsCount, 2)
         XCTAssertEqual(viewModel.selectedVariableProductsCount, 1)
-        XCTAssertFalse(viewModel.onlyVariableProductsSelected)
+        XCTAssertFalse(viewModel.onlyNonSimpleProductsSelected)
 
         // When
         viewModel.deselectProduct(sampleProduct1)
@@ -160,7 +160,35 @@ final class ProductListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.selectedProductsCount, 1)
         XCTAssertEqual(viewModel.selectedVariableProductsCount, 1)
-        XCTAssertTrue(viewModel.onlyVariableProductsSelected)
+        XCTAssertTrue(viewModel.onlyNonSimpleProductsSelected)
+    }
+
+    func test_product_type_helpers_work_correctly() {
+        // Given
+        let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
+        let sampleProduct1 = Product.fake().copy(productID: 1, productTypeKey: "simple")
+        let sampleProduct2 = Product.fake().copy(productID: 2, productTypeKey: "variable")
+        let sampleProduct3 = Product.fake().copy(productID: 3, productTypeKey: "grouped")
+        let sampleProduct4 = Product.fake().copy(productID: 4, productTypeKey: "booking")
+
+        // When
+        viewModel.selectProduct(sampleProduct1)
+        viewModel.selectProduct(sampleProduct2)
+        viewModel.selectProduct(sampleProduct3)
+        viewModel.selectProduct(sampleProduct4)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedProductsCount, 4)
+        XCTAssertEqual(viewModel.selectedNonSimpleProductsCount, 3)
+        XCTAssertFalse(viewModel.onlyNonSimpleProductsSelected)
+
+        // When
+        viewModel.deselectProduct(sampleProduct1)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedProductsCount, 3)
+        XCTAssertEqual(viewModel.selectedNonSimpleProductsCount, 3)
+        XCTAssertTrue(viewModel.onlyNonSimpleProductsSelected)
     }
 
     func test_common_status_works_correctly() {

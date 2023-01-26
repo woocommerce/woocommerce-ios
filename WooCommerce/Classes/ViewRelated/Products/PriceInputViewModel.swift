@@ -102,7 +102,7 @@ final class PriceInputViewModel {
             footerData.append(Localization.variationsWarning)
         }
 
-        let numberOfProducts = productListViewModel.selectedProductsCount - productListViewModel.selectedVariableProductsCount
+        let numberOfProducts = productListViewModel.selectedProductsCount - productListViewModel.selectedNonSimpleProductsCount
         let numberOfProductsText = String.pluralize(numberOfProducts,
                                                     singular: Localization.productsNumberSingularFooter,
                                                     plural: Localization.productsNumberPluralFooter)

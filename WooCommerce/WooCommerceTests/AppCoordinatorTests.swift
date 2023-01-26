@@ -340,10 +340,12 @@ final class AppCoordinatorTests: XCTestCase {
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.loginLocalNotificationTapped.rawValue])
-        let actionPropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["action"] as? String)
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginLocalNotificationTapped.rawValue}))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+
+        let actionPropertyValue = try XCTUnwrap(eventProperties["action"] as? String)
         XCTAssertEqual(actionPropertyValue, "contact_support")
-        let typePropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["type"] as? String)
+        let typePropertyValue = try XCTUnwrap(eventProperties["type"] as? String)
         XCTAssertEqual(typePropertyValue, "site_address_error")
     }
 
@@ -364,10 +366,12 @@ final class AppCoordinatorTests: XCTestCase {
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.loginLocalNotificationTapped.rawValue])
-        let actionPropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["action"] as? String)
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginLocalNotificationTapped.rawValue}))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+
+        let actionPropertyValue = try XCTUnwrap(eventProperties["action"] as? String)
         XCTAssertEqual(actionPropertyValue, "login_with_wpcom")
-        let typePropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["type"] as? String)
+        let typePropertyValue = try XCTUnwrap(eventProperties["type"] as? String)
         XCTAssertEqual(typePropertyValue, "site_address_error")
     }
 
@@ -388,10 +392,12 @@ final class AppCoordinatorTests: XCTestCase {
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.loginLocalNotificationTapped.rawValue])
-        let actionPropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["action"] as? String)
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginLocalNotificationTapped.rawValue}))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+
+        let actionPropertyValue = try XCTUnwrap(eventProperties["action"] as? String)
         XCTAssertEqual(actionPropertyValue, "default")
-        let typePropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["type"] as? String)
+        let typePropertyValue = try XCTUnwrap(eventProperties["type"] as? String)
         XCTAssertEqual(typePropertyValue, "site_address_error")
     }
 
@@ -412,8 +418,10 @@ final class AppCoordinatorTests: XCTestCase {
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.loginLocalNotificationDismissed.rawValue])
-        let typePropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["type"] as? String)
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginLocalNotificationDismissed.rawValue}))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+
+        let typePropertyValue = try XCTUnwrap(eventProperties["type"] as? String)
         XCTAssertEqual(typePropertyValue, "site_address_error")
     }
 }

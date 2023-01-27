@@ -5,6 +5,8 @@ enum OrderDurationRecorderError: Error {
     case durationExceededTimeout
 }
 
+/// Measures the duration of Order Creation and In-Person Payments flows for analytical purposes
+///
 class OrderDurationRecorder {
     static let shared = OrderDurationRecorder()
     private var orderAddNewTimestamp: TimeInterval?

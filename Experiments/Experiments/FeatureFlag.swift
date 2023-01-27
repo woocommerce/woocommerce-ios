@@ -138,10 +138,6 @@ public enum FeatureFlag: Int {
     /// - Note: The app will ignore this if `performanceMonitoring` is `false`.
     case performanceMonitoringViewController
 
-    /// Whether application password authentication should be used when a user logs in with site credentials.
-    ///
-    case applicationPasswordAuthenticationForSiteCredentialLogin
-
     /// Whether to enable domain updates from the settings for a WPCOM site.
     ///
     case domainSettings

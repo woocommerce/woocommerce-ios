@@ -332,6 +332,7 @@ private extension LegacyCollectOrderPaymentUseCase {
                                                    countryCode: configuration.countryCode,
                                                    paymentMethod: capturedPaymentData.paymentMethod,
                                                    cardReaderModel: connectedReader?.readerType.model ?? ""))
+        OrderDurationRecorder.shared.reset()
 
         // Success Callback
         onCompletion(.success(capturedPaymentData))

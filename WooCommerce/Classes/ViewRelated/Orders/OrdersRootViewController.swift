@@ -377,6 +377,7 @@ private extension OrdersRootViewController {
         }
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
+        OrderDurationRecorder.shared.startRecording()
     }
 
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.

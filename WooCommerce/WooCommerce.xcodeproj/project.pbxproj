@@ -1452,6 +1452,7 @@
 		B958A7D328B52A2300823EEF /* MockRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7D228B52A2300823EEF /* MockRoute.swift */; };
 		B958A7D628B5310100823EEF /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7D428B5302500823EEF /* URLOpener.swift */; };
 		B958A7D828B5316A00823EEF /* MockURLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7D728B5316A00823EEF /* MockURLOpener.swift */; };
+		B958B4DA2983E3F40010286B /* OrderDurationRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958B4D92983E3F40010286B /* OrderDurationRecorder.swift */; };
 		B96B536B2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */; };
 		B96D6C0729081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */; };
 		B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */; };
@@ -3538,6 +3539,7 @@
 		B958A7D228B52A2300823EEF /* MockRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRoute.swift; sourceTree = "<group>"; };
 		B958A7D428B5302500823EEF /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
 		B958A7D728B5316A00823EEF /* MockURLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLOpener.swift; sourceTree = "<group>"; };
+		B958B4D92983E3F40010286B /* OrderDurationRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDurationRecorder.swift; sourceTree = "<group>"; };
 		B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPluginsDataProviderTests.swift; sourceTree = "<group>"; };
 		B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesForWPComPlansManager.swift; sourceTree = "<group>"; };
 		B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermanentNoticePresenter.swift; sourceTree = "<group>"; };
@@ -7773,6 +7775,14 @@
 			path = "Universal Links";
 			sourceTree = "<group>";
 		};
+		B958B4D82983E3E00010286B /* DurationRecorder */ = {
+			isa = PBXGroup;
+			children = (
+				B958B4D92983E3F40010286B /* OrderDurationRecorder.swift */,
+			);
+			path = DurationRecorder;
+			sourceTree = "<group>";
+		};
 		B9B0391B28A690DA00DC1C83 /* PermanentNotice */ = {
 			isa = PBXGroup;
 			children = (
@@ -8133,6 +8143,7 @@
 		CCFC50532743BBBF001E505F /* Order Creation */ = {
 			isa = PBXGroup;
 			children = (
+				B958B4D82983E3E00010286B /* DurationRecorder */,
 				B651474327D644DE00C9C4E6 /* CustomerNoteSection */,
 				CCFC50542743BC0D001E505F /* OrderForm.swift */,
 				CCFC50582743E021001E505F /* EditableOrderViewModel.swift */,
@@ -11285,6 +11296,7 @@
 				DE3404E828B4B96800CF0D97 /* NonAtomicSiteViewModel.swift in Sources */,
 				D8815B0126385E3F00EDAD62 /* CardPresentModalTapCard.swift in Sources */,
 				773077EE251E943700178696 /* ProductDownloadFileViewController.swift in Sources */,
+				B958B4DA2983E3F40010286B /* OrderDurationRecorder.swift in Sources */,
 				CC3B35DB28E5A6830036B097 /* ReviewReply.swift in Sources */,
 				45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */,
 				319A626127ACAE3400BC96C3 /* InPersonPaymentsPluginChoicesView.swift in Sources */,

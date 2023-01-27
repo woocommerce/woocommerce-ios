@@ -1,3 +1,4 @@
+import AuthenticationServices
 import UIKit
 import WordPressShared
 import WordPressKit
@@ -631,4 +632,10 @@ extension LoginEmailViewController: GoogleAuthenticatorLoginDelegate {
         present(socialErrorNav, animated: true)
     }
 
+}
+
+extension LoginEmailViewController: ASWebAuthenticationPresentationContextProviding {
+    public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        return view.window!
+    }
 }

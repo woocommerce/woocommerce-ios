@@ -1,3 +1,5 @@
+import AuthenticationServices
+
 /// View controller that handles the google signup flow
 ///
 class SignupGoogleViewController: LoginViewController {
@@ -77,4 +79,10 @@ extension SignupGoogleViewController: GoogleAuthenticatorSignupDelegate {
         navigationController?.popViewController(animated: true)
     }
 
+}
+
+extension SignupGoogleViewController: ASWebAuthenticationPresentationContextProviding {
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        return view.window!
+    }
 }

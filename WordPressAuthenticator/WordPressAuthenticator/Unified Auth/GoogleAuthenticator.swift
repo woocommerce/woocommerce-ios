@@ -192,32 +192,10 @@ private extension GoogleAuthenticator {
             return
         }
 
-        // Save account information to pass back to delegate later.
-        loginFields.emailAddress = email
-        loginFields.username = email
-        loginFields.meta.socialServiceIDToken = token
+        // Set `googleUser` here, `didSignIn(token:, email:)` will do the rest.
         loginFields.meta.googleUser = user
 
-        guard authConfig.enableUnifiedAuth else {
-            // Initiate separate WP login / signup paths.
-            switch authType {
-            case .login:
-                SVProgressHUD.show()
-                loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
-            case .signup:
-                createWordPressComUser(token: token, email: email)
-            }
-
-            return
-        }
-
-        // Initiate unified path by attempting to login first.
-        //
-        // `SVProgressHUD.show()` will crash in an app that doesn't have a window property in its
-        // `UIApplicationDelegate`, such as those created via the Xcode templates circa version 12
-        // onwards.
-        SVProgressHUD.show()
-        loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
+        didSignIn(token: token, email: email)
     }
 
     private func failedToSignIn(error: Error?) {
@@ -242,6 +220,34 @@ private extension GoogleAuthenticator {
         // FIXME: Shouldn't we be calling a method to report error, if there was one?
         signupDelegate?.googleSignupCancelled()
         delegate?.googleAuthCancelled()
+    }
+
+    private func didSignIn(token: String, email: String) {
+        // Save account information to pass back to delegate later.
+        loginFields.emailAddress = email
+        loginFields.username = email
+        loginFields.meta.socialServiceIDToken = token
+
+        guard authConfig.enableUnifiedAuth else {
+            // Initiate separate WP login / signup paths.
+            switch authType {
+            case .login:
+                SVProgressHUD.show()
+                loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
+            case .signup:
+                createWordPressComUser(token: token, email: email)
+            }
+
+            return
+        }
+
+        // Initiate unified path by attempting to login first.
+        //
+        // `SVProgressHUD.show()` will crash in an app that doesn't have a window property in its
+        // `UIApplicationDelegate`, such as those created via the Xcode templates circa version 12
+        // onwards.
+        SVProgressHUD.show()
+        loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
     }
 
     enum LocalizedText {

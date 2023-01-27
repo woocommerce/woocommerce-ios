@@ -186,28 +186,10 @@ private extension GoogleAuthenticator {
     func didSignIn(for user: GIDGoogleUser?, error: Error?) {
         // Get account information
         guard let user = user,
-            let token = user.authentication.idToken,
-            let email = user.profile?.email else {
-
-                // The Google SignIn may have been cancelled.
-                let failure = error?.localizedDescription ?? "Unknown error"
-
-                tracker.track(failure: failure, ifTrackingNotEnabled: {
-                    let properties = ["error": failure]
-
-                    switch authType {
-                    case .login:
-                        track(.loginSocialButtonFailure, properties: properties)
-                    case .signup:
-                        track(.signupSocialButtonFailure, properties: properties)
-                    }
-                })
-
-                // Notify the delegates so the Google Auth view can be dismissed.
-                signupDelegate?.googleSignupCancelled()
-                delegate?.googleAuthCancelled()
-
-                return
+              let token = user.authentication.idToken,
+              let email = user.profile?.email else {
+            failedToSignIn(error: error)
+            return
         }
 
         // Save account information to pass back to delegate later.
@@ -236,6 +218,30 @@ private extension GoogleAuthenticator {
         // onwards.
         SVProgressHUD.show()
         loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
+    }
+
+    private func failedToSignIn(error: Error?) {
+        // The Google SignIn may have been cancelled.
+        //
+        // FIXME: Is `error == .none` how we distinguish between user cancellation and legit error?
+        let failure = error?.localizedDescription ?? "Unknown error"
+
+        tracker.track(failure: failure, ifTrackingNotEnabled: {
+            let properties = ["error": failure]
+
+            switch authType {
+            case .login:
+                track(.loginSocialButtonFailure, properties: properties)
+            case .signup:
+                track(.signupSocialButtonFailure, properties: properties)
+            }
+        })
+
+        // Notify the delegates so the Google Auth view can be dismissed.
+        //
+        // FIXME: Shouldn't we be calling a method to report error, if there was one?
+        signupDelegate?.googleSignupCancelled()
+        delegate?.googleAuthCancelled()
     }
 
     enum LocalizedText {

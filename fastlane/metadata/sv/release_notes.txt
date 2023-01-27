@@ -1,1 +1,1 @@
-Spännande nyheter! Det är möjligt att generera alla variationskombinationer från dina attribut. Prova och dela din feedback.
+Det är nu möjligt att massuppdatera produktstatus och priser. Det är bara att gå till fliken Produkter och klicka på flervalsikonen längst upp för att testa.

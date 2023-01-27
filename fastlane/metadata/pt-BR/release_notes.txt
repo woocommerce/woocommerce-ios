@@ -1,1 +1,1 @@
-Boa notícia! Agora você pode gerar todas as combinações de variação usando seus atributos. Experimente e compartilhe seu feedback.
+Agora é possível atualizar preços e status de produto em massa! Basta acessar a guia Produtos e clicar no ícone de seleção múltipla na parte superior para experimentar.

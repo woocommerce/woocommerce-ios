@@ -153,15 +153,7 @@ private extension GoogleAuthenticator {
     ///   - viewController: The UIViewController that Google is being presented from.
     ///                     Required by Google SDK.
     func requestAuthorization(from viewController: UIViewController) {
-        switch authType {
-        case .login:
-            tracker.set(flow: .loginWithGoogle)
-            tracker.track(step: .start) {
-                track(.loginSocialButtonClick)
-            }
-        case .signup:
-            track(.createAccountInitiated)
-        }
+        trackRequestAuthorizitation(type: authType)
 
         let googleInstance = GIDSignIn.sharedInstance
         let configuration = GIDConfiguration(clientID: authConfig.googleLoginClientId, serverClientID: authConfig.googleLoginServerClientId)
@@ -172,6 +164,18 @@ private extension GoogleAuthenticator {
         // Assigning the view controller has no effect since we don't use Google UI, but it's is required, so here we are.
         googleInstance.signIn(with: configuration, presenting: viewController) { user, error in
             self.didSignIn(for: user, error: error)
+        }
+    }
+
+    private func trackRequestAuthorizitation(type: GoogleAuthType) {
+        switch type {
+        case .login:
+            tracker.set(flow: .loginWithGoogle)
+            tracker.track(step: .start) {
+                track(.loginSocialButtonClick)
+            }
+        case .signup:
+            track(.createAccountInitiated)
         }
     }
 

@@ -4,7 +4,7 @@ import Yosemite
 /// Modal presented when an error occurs while connecting to a reader
 ///
 final class CardPresentModalConnectingFailed: CardPresentPaymentsModalViewModel {
-    private let continueSearchAction: () -> Void
+    private let retrySearchAction: () -> Void
     private let cancelSearchAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedTopInfo
@@ -31,9 +31,9 @@ final class CardPresentModalConnectingFailed: CardPresentPaymentsModalViewModel 
     }
 
     init(error: Error,
-         continueSearch: @escaping () -> Void,
+         retrySearch: @escaping () -> Void,
          cancelSearch: @escaping () -> Void) {
-        self.continueSearchAction = continueSearch
+        self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
 
         switch error {
@@ -45,7 +45,7 @@ final class CardPresentModalConnectingFailed: CardPresentPaymentsModalViewModel 
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        continueSearchAction()
+        retrySearchAction()
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

@@ -12,7 +12,7 @@ final class CardPresentModalConnectingFailedTests: XCTestCase {
         closures = Closures()
         viewModel = CardPresentModalConnectingFailed(
             error: CardReaderServiceError.connection(underlyingError: .alreadyConnectedToReader),
-            continueSearch: closures.continueSearch(),
+            retrySearch: closures.continueSearch(),
             cancelSearch: closures.cancelSearch()
         )
     }

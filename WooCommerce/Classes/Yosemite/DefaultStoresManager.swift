@@ -27,6 +27,14 @@ class DefaultStoresManager: StoresManager {
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
 
+    /// Observes application password generation failure notification
+    ///
+    private var applicationPasswordGenerationFailureObserver: NSObjectProtocol?
+
+    /// NotificationCenter
+    ///
+    private let notificationCenter: NotificationCenter
+
     /// SessionManager: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
     private(set) var sessionManager: SessionManagerProtocol {
@@ -101,9 +109,11 @@ class DefaultStoresManager: StoresManager {
 
     /// Designated Initializer
     ///
-    init(sessionManager: SessionManagerProtocol) {
+    init(sessionManager: SessionManagerProtocol,
+         notificationCenter: NotificationCenter = .default) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
+        self.notificationCenter = notificationCenter
 
         isLoggedIn = isAuthenticated
 
@@ -132,6 +142,8 @@ class DefaultStoresManager: StoresManager {
     func authenticate(credentials: Credentials) -> StoresManager {
         state = AuthenticatedState(credentials: credentials)
         sessionManager.defaultCredentials = credentials
+
+        listenToApplicationPasswordGenerationFailureNotification()
 
         return self
     }
@@ -176,6 +188,8 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func deauthenticate() -> StoresManager {
+        applicationPasswordGenerationFailureObserver = nil
+
         let resetAction = CardPresentPaymentAction.reset
         ServiceLocator.stores.dispatch(resetAction)
 
@@ -569,6 +583,16 @@ private extension DefaultStoresManager {
 
         // Reload widgets UI
         WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    /// Deauthenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
+    ///
+    func listenToApplicationPasswordGenerationFailureNotification() {
+        applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
+                                                                                      object: nil,
+                                                                                      queue: .main) { [weak self] note in
+            _ = self?.deauthenticate()
+        }
     }
 }
 

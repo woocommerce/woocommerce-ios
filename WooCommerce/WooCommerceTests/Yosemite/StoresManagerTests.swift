@@ -283,6 +283,26 @@ final class StoresManagerTests: XCTestCase {
         // Then
         XCTAssertTrue(mockSessionManager.deleteApplicationPasswordInvoked)
     }
+
+    /// Verifies that user is logged out when application password regeneration fails
+    ///
+    func test_it_deauthenticates_upon_receiving_application_password_generation_failure_notification() {
+        // Given
+        let manager = DefaultStoresManager.testingInstance
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+        manager.authenticate(credentials: SessionSettings.wporgCredentials)
+
+        // When
+        let error = ApplicationPasswordUseCaseError.unauthorizedRequest
+        MockNotificationCenter.testingInstance.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
+
+        // Assert
+        XCTAssertFalse(manager.isAuthenticated)
+        XCTAssertEqual(isLoggedInValues, [false, true, false])
+    }
 }
 
 
@@ -293,7 +313,8 @@ extension DefaultStoresManager {
     /// Returns a StoresManager instance with testing Keychain/UserDefaults
     ///
     static var testingInstance: DefaultStoresManager {
-        return DefaultStoresManager(sessionManager: SessionManager.testingInstance)
+        return DefaultStoresManager(sessionManager: SessionManager.testingInstance,
+                                    notificationCenter: MockNotificationCenter.testingInstance)
     }
 }
 
@@ -344,4 +365,8 @@ final class MockSessionManager: SessionManagerProtocol {
     func deleteApplicationPassword() {
         deleteApplicationPasswordInvoked = true
     }
+}
+
+private class MockNotificationCenter: NotificationCenter {
+    static var testingInstance = MockNotificationCenter()
 }

@@ -152,7 +152,7 @@ final class ProductListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.selectedProductsCount, 2)
         XCTAssertEqual(viewModel.selectedVariableProductsCount, 1)
-        XCTAssertFalse(viewModel.onlyNonSimpleProductsSelected)
+        XCTAssertFalse(viewModel.onlyPriceIncompatibleProductsSelected)
 
         // When
         viewModel.deselectProduct(sampleProduct1)
@@ -160,35 +160,45 @@ final class ProductListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.selectedProductsCount, 1)
         XCTAssertEqual(viewModel.selectedVariableProductsCount, 1)
-        XCTAssertTrue(viewModel.onlyNonSimpleProductsSelected)
+        XCTAssertTrue(viewModel.onlyPriceIncompatibleProductsSelected)
     }
 
     func test_product_type_helpers_work_correctly() {
         // Given
         let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
+
+        // products compatible with bulk price update
         let sampleProduct1 = Product.fake().copy(productID: 1, productTypeKey: "simple")
-        let sampleProduct2 = Product.fake().copy(productID: 2, productTypeKey: "variable")
-        let sampleProduct3 = Product.fake().copy(productID: 3, productTypeKey: "grouped")
-        let sampleProduct4 = Product.fake().copy(productID: 4, productTypeKey: "booking")
+        let sampleProduct2 = Product.fake().copy(productID: 2, productTypeKey: "affiliate")
+        let sampleProduct3 = Product.fake().copy(productID: 3, productTypeKey: "custom-unknown")
+
+        // products incompatible with bulk price update
+        let sampleProduct4 = Product.fake().copy(productID: 4, productTypeKey: "variable")
+        let sampleProduct5 = Product.fake().copy(productID: 5, productTypeKey: "grouped")
+        let sampleProduct6 = Product.fake().copy(productID: 6, productTypeKey: "booking")
 
         // When
         viewModel.selectProduct(sampleProduct1)
         viewModel.selectProduct(sampleProduct2)
         viewModel.selectProduct(sampleProduct3)
         viewModel.selectProduct(sampleProduct4)
+        viewModel.selectProduct(sampleProduct5)
+        viewModel.selectProduct(sampleProduct6)
 
         // Then
-        XCTAssertEqual(viewModel.selectedProductsCount, 4)
-        XCTAssertEqual(viewModel.selectedNonSimpleProductsCount, 3)
-        XCTAssertFalse(viewModel.onlyNonSimpleProductsSelected)
+        XCTAssertEqual(viewModel.selectedProductsCount, 6)
+        XCTAssertEqual(viewModel.selectedPriceIncompatibleProductsCount, 3)
+        XCTAssertFalse(viewModel.onlyPriceIncompatibleProductsSelected)
 
         // When
         viewModel.deselectProduct(sampleProduct1)
+        viewModel.deselectProduct(sampleProduct2)
+        viewModel.deselectProduct(sampleProduct3)
 
         // Then
         XCTAssertEqual(viewModel.selectedProductsCount, 3)
-        XCTAssertEqual(viewModel.selectedNonSimpleProductsCount, 3)
-        XCTAssertTrue(viewModel.onlyNonSimpleProductsSelected)
+        XCTAssertEqual(viewModel.selectedPriceIncompatibleProductsCount, 3)
+        XCTAssertTrue(viewModel.onlyPriceIncompatibleProductsSelected)
     }
 
     func test_common_status_works_correctly() {
@@ -270,7 +280,7 @@ final class ProductListViewModelTests: XCTestCase {
         // Given
         let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
         let sampleProduct1 = Product.fake().copy(productID: 1, productTypeKey: "simple", regularPrice: "100")
-        let sampleProduct2 = Product.fake().copy(productID: 2, productTypeKey: "simple", regularPrice: "200")
+        let sampleProduct2 = Product.fake().copy(productID: 2, productTypeKey: "affiliate", regularPrice: "200")
         let sampleProduct3 = Product.fake().copy(productID: 3, productTypeKey: "variable", regularPrice: "200")
 
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in

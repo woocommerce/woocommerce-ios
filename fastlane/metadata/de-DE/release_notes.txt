@@ -1,1 +1,1 @@
-Tolle Neuigkeiten! Du kannst alle möglichen Variantenkombinationen aus deinen Attributen erstellen. Probiere es aus und teile uns dein Feedback mit!
+Es ist jetzt möglich, Status und Preise von Produkten gesammelt zu aktualisieren. Gehe einfach auf den Tab „Produkte“ und klicke oben auf das Icon für die Mehrfachauswahl, um es auszuprobieren.

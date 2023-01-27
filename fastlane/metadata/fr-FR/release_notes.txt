@@ -1,1 +1,1 @@
-Grande nouvelle ! Il est possible de créer chaque combinaison de variantes depuis vos attributs. Faites le test et dites-nous ce que vous en pensez !
+Il est maintenant possible de mettre à jour de façon groupée l’état et le prix des produits ! Il suffit d’accéder à l’onglet « Produits » et de cliquer sur l’icône de sélection multiple pour essayer.

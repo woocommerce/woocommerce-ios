@@ -27,8 +27,30 @@ class ProductListViewModel {
         selectedProducts.filter({ $0.productType == .variable }).count
     }
 
-    var onlyVariableProductsSelected: Bool {
-        selectedProducts.filter({ $0.productType != .variable }).isEmpty
+    /// Product types that are incompatible with bulk update of regular price
+    ///
+    private let priceIncompatibleProductsTypes: Set<ProductType> = [
+        .variable,
+        .grouped,
+        .custom("booking")
+    ]
+
+    /// Number of selected products that are incompatible with bulk update of regular price
+    ///
+    var selectedPriceIncompatibleProductsCount: Int {
+        selectedProducts.filter({ priceIncompatibleProductsTypes.contains($0.productType) }).count
+    }
+
+    /// Boolean indicating if all of selected products are incompatible with bulk update of regular price
+    ///
+    var onlyPriceIncompatibleProductsSelected: Bool {
+        !selectedProducts.isEmpty && onlyPriceCompatibleSelectedProducts.isEmpty
+    }
+
+    /// Subset of selected products filtered for types that support bulk update of regular price
+    ///
+    private var onlyPriceCompatibleSelectedProducts: Set<Product> {
+        selectedProducts.filter({ !priceIncompatibleProductsTypes.contains($0.productType) })
     }
 
     var bulkEditActionIsEnabled: Bool {
@@ -112,12 +134,12 @@ class ProductListViewModel {
     /// Update selected products with new price and trigger Network action to save the change remotely.
     ///
     func updateSelectedProducts(with newPrice: String, completion: @escaping (Result<Void, Error>) -> Void ) {
-        guard selectedProductsCount > 0 else {
+        guard !onlyPriceIncompatibleProductsSelected else {
             completion(.failure(BulkEditError.noProductsSelected))
             return
         }
 
-        let updatedProducts = selectedProducts.map({ $0.copy(regularPrice: newPrice) })
+        let updatedProducts = onlyPriceCompatibleSelectedProducts.map({ $0.copy(regularPrice: newPrice) })
         let batchAction = ProductAction.updateProducts(siteID: siteID, products: updatedProducts) { result in
             switch result {
             case .success:

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-18 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-01-25 22:47:09+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -431,6 +431,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Add a Different Address switch in the Address form */
 "Add a different shipping address" = "添加其他配送地址";
 
+/* Title of button to add a domain in domain settings. */
+"Add a domain" = "添加域";
+
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "添加新信用卡";
 
@@ -760,7 +763,8 @@ which should be translated separately and considered part of this sentence. */
 "Application password cannot be generated due to a custom login or admin URL on your site." = "由于您的站点上有自定义登录或管理员 URL，无法生成应用程序密码。";
 
 /* Apply navigation button in custom range date picker
-   Change order status screen - button title to apply selection */
+   Change order status screen - button title to apply selection
+   Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "应用";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -1219,6 +1223,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
 "Cannot update product" = "无法更新产品";
+
+/* Title of the notice when there is an error updating selected products */
+"Cannot update products" = "无法更新产品";
 
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
@@ -1883,13 +1890,16 @@ which should be translated separately and considered part of this sentence. */
 /* Cell title: the current date. */
 "Current" = "当前";
 
-/* Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
+/* Message in the footer of bulk price setting screen with the current price, when it is the same for all products
+   Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
 "Current price is %@." = "当前价格为 %@。";
 
-/* Message in the footer of bulk price setting screen, when none of the variations have price value. */
+/* Message in the footer of bulk price setting screen, when none of the products have price value.
+   Message in the footer of bulk price setting screen, when none of the variations have price value. */
 "Current price is not set." = "当前价格未设置。";
 
-/* Message in the footer of bulk price setting screen, when variations have different price values. */
+/* Message in the footer of bulk price setting screen, when products have different price values.
+   Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "当前价格参差不齐。";
 
 /* Error description for when there are too many variations to generate. */
@@ -2149,7 +2159,8 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "还没有帐户？_注册_";
 
-/* Alert button text on a feature announcement which prevents the banner being shown again */
+/* Alert button text on a feature announcement which prevents the banner being shown again
+   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "不再显示";
 
 /* Action title to select products to add to a grouped product from search results
@@ -2411,6 +2422,9 @@ which should be translated separately and considered part of this sentence. */
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
 "End Date" = "结束日期";
+
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Enjoyed your in-person payment?" = "您对现场付款满意吗？";
 
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "喜欢 WooCommerce 应用程序？";
@@ -2970,6 +2984,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to give feedback about the add-ons feature
    Title of the button to give feedback about the Orders features
    Title of the feedback action button on the coupon list screen
+   Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "提供反馈";
 
@@ -3624,6 +3639,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Lesotho" = "莱索托";
 
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Let us know how we can help" = "请告知我们该如何为您提供帮助";
+
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Let us know what you think" = "请告诉我们您的想法";
+
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter（8.5 x 11 英寸）";
 
@@ -3744,6 +3765,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "使用您的电子邮件地址登录 WordPress.com 帐户。";
+
+/* Button that will navigate to the authentication flow with WP.com */
+"Log in with WordPress.com" = "使用 WordPress.com 帐户登录";
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "使用其他帐户登录";
@@ -4251,6 +4275,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message for a dismissal alert on the upsell card reader feature announcement banner */
 "No worries! You can always get started with In-Person Payments in Settings" = "不必担心！ 开始体验前，您始终可以先设置面对面付款";
+
+/* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
+"No worries! You can always go to Settings in the Menu to send us feedback." = "不必担心！您可以随时进入菜单中的设置，向我们发送反馈。";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
@@ -4931,6 +4958,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message of the in-progress UI while saving a Variation remotely */
 "Please wait while we save your latest changes" = "正在保存您的最新更改，请稍候";
 
+/* Message of the in-progress UI while bulk updating selected products remotely */
+"Please wait while we update these products on your store" = "请稍候，我们正在更新您商店中的产品";
+
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
 "Please wait while we update your store details" = "请稍候，正在更新您的商店详细信息";
@@ -5000,6 +5030,12 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for editing the price settings row on Product main screen
    Title of the cell in Product Price Settings > Price */
 "Price" = "价格";
+
+/* Title of the notice when a user updated price for selected products */
+"Price updated" = "价格已更新";
+
+/* Message in the footer of bulk price setting screen, when variable products are selected */
+"Prices for variations won't be updated." = "变化的价格将不会更新。";
 
 /* Notice title when updating the price via the bulk variation screen */
 "Prices updated successfully." = "价格已成功更新。";
@@ -5243,6 +5279,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "给我们评分";
 
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Rate your first in-person payment experience." = "请评价您的现场付款体验。";
+
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "请与我们快乐的工程师联系，他们可以帮助解答与付款相关的问题";
 
@@ -5363,7 +5402,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Religious Organizations" = "宗教组织";
 
-/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time */
+/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
+   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "稍后提醒我";
 
 /* Confirm button on the alert when the user taps to delete a Product image
@@ -5412,6 +5452,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title for the Rename Attributes screen */
 "Rename Attribute" = "重命名属性";
+
+/* Renewal date of a site's domain in domain settings. Reads like `Renews on October 11, 2023`. */
+"Renews on %1$@" = "续订日期%1$@";
 
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "替换照片";
@@ -5761,6 +5804,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "选择产品类型";
 
+/* Title of a button that selects all products for bulk update */
+"Select all" = "选择全部";
+
 /* Text field placeholder in Edit Address Form */
 "Select an option" = "选择一个选项";
 
@@ -5858,11 +5904,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "分享付款链接";
 
+/* Title of the feedback action button on the In-Person Payments feedback banner */
+"Share feedback" = "分享反馈";
+
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "登录到您的 WordPress.com 帐户时，使用分析工具共享关于您使用服务的信息。";
 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
 "Share with Friends" = "分享给朋友";
+
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Share your own experience or how you collect in-person payments." = "请分享您自己的体验或您是如何收取现场付款的。";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title
@@ -6251,6 +6303,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Status label in Product Settings */
 "Status" = "状态";
 
+/* Title of the notice when a user updated status for selected products */
+"Status updated" = "状态已更新";
+
 /* Button title to contact support to get help with deprecated stats */
 "Still need help? Contact us" = "仍需要帮助？ 联系我们";
 
@@ -6549,6 +6604,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Telemedicine And Telehealth" = "远程医疗和远程保健";
 
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Tell us all about your experience with in-person payments." = "请告知我们您的现场付款体验。";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "告知我们更多有关 %1$@ 的信息…";
 
@@ -6647,7 +6705,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The attribute couldn't be saved." = "无法保存属性。";
 
 /* Error message shown when the built-in reader cannot be used because there is a call in progress */
-"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "通话期间不能使用内置读卡器。 请结束通话后再重试";
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call." = "通话期间不能使用内置读卡器。请结束通话后再重试。";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "银行卡不支持当前币种。 请尝试其他付款方式";
@@ -6739,6 +6797,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the cancel button on the reader is used. */
 "The payment was canceled on the reader" = "已在阅读器上取消付款";
 
+/* Error shown when the built-in card reader payment is interrupted by activity on the phone */
+"The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "付款被中断且无法继续。请从订单屏幕中重试付款。";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "电话号码无效或您没有致电来自此设备的客户。";
 
@@ -6747,6 +6808,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "该产品的价格。可编辑。";
+
+/* Message in the footer of bulk price setting screen (singular). */
+"The price will be updated for %d product." = "%d产品的价格将更新。";
+
+/* Message in the footer of bulk price setting screen (plurar). */
+"The price will be updated for %d products." = "%d产品的价格将更新。";
 
 /* Message in the footer of bulk price setting screen (singular). */
 "The price will be updated for %d variation." = "%d 个变体的价格将更新。";
@@ -7557,6 +7624,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
 "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "因读卡器电池充电量只有 %.0f%%，读卡器软件更新失败。 请先为读卡器充电 50%% 以上，然后重试。";
 
+/* Title of the in-progress UI while bulk updating selected products remotely */
+"Updating your products..." = "导入您的产品......";
+
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "追加销售";
@@ -8143,6 +8213,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "在您使用 Safari 访问自己的站点时，站点地址显示在屏幕顶部的地址栏中。";
+
+/* Header text of the site's domain list in domain settings. */
+"Your site domains" = "您的站点域名";
 
 /* Title of the store creation success screen. */
 "Your store has been created!" = "您的商店已创建！";

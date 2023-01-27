@@ -1,1 +1,1 @@
-¡Buenas noticias! Es posible generar todas las combinaciones de tus atributos. Pruébalo y déjanos tus comentarios.
+¡Ahora puedes actualizar precios y estados de producto en lote! Para probar esta función, solo tienes que ir a la pestaña Productos y hacer clic en el icono de selección múltiple de la parte superior.

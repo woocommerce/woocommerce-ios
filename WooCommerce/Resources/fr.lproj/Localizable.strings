@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-19 16:54:04+0000 */
+/* Translation-Revision-Date: 2023-01-24 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -431,6 +431,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Add a Different Address switch in the Address form */
 "Add a different shipping address" = "Ajouter une adresse de livraison différente";
 
+/* Title of button to add a domain in domain settings. */
+"Add a domain" = "Ajouter un domaine";
+
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "Ajouter une nouvelle carte de crédit";
 
@@ -760,7 +763,8 @@ which should be translated separately and considered part of this sentence. */
 "Application password cannot be generated due to a custom login or admin URL on your site." = "Impossible de générer le mot de passe de l’application en raison de la présence d’une URL d’administrateur ou de connexion personnalisée sur votre site.";
 
 /* Apply navigation button in custom range date picker
-   Change order status screen - button title to apply selection */
+   Change order status screen - button title to apply selection
+   Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "Appliquer";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -1219,6 +1223,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
 "Cannot update product" = "Impossible de mettre le produit à jour";
+
+/* Title of the notice when there is an error updating selected products */
+"Cannot update products" = "Impossible de mettre les produits à jour";
 
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
@@ -1883,13 +1890,16 @@ which should be translated separately and considered part of this sentence. */
 /* Cell title: the current date. */
 "Current" = "Actuel";
 
-/* Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
+/* Message in the footer of bulk price setting screen with the current price, when it is the same for all products
+   Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
 "Current price is %@." = "Le prix actuel est de %@.";
 
-/* Message in the footer of bulk price setting screen, when none of the variations have price value. */
+/* Message in the footer of bulk price setting screen, when none of the products have price value.
+   Message in the footer of bulk price setting screen, when none of the variations have price value. */
 "Current price is not set." = "Le prix actuel n’est pas défini.";
 
-/* Message in the footer of bulk price setting screen, when variations have different price values. */
+/* Message in the footer of bulk price setting screen, when products have different price values.
+   Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "Les prix actuels sont variables.";
 
 /* Error description for when there are too many variations to generate. */
@@ -2149,7 +2159,8 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Vous n'avez pas encore de compte ? _S'inscrire_";
 
-/* Alert button text on a feature announcement which prevents the banner being shown again */
+/* Alert button text on a feature announcement which prevents the banner being shown again
+   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "Ne plus afficher";
 
 /* Action title to select products to add to a grouped product from search results
@@ -2411,6 +2422,9 @@ which should be translated separately and considered part of this sentence. */
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
 "End Date" = "Date de fin";
+
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Enjoyed your in-person payment?" = "Votre paiement en personne s’est-il bien passé ?";
 
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "Vous appréciez l’application WooCommerce ?";
@@ -2970,6 +2984,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to give feedback about the add-ons feature
    Title of the button to give feedback about the Orders features
    Title of the feedback action button on the coupon list screen
+   Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Faire un commentaire";
 
@@ -3624,6 +3639,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Lesotho" = "Lesotho";
 
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Let us know how we can help" = "Dites-nous comment nous pouvons vous aider";
+
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Let us know what you think" = "Dites-nous ce que vous pensez";
+
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8,5 x 11 po)";
 
@@ -3744,6 +3765,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "Connectez-vous à votre compte WordPress.com avec votre adresse e-mail.";
+
+/* Button that will navigate to the authentication flow with WP.com */
+"Log in with WordPress.com" = "Se connecter avec WordPress.com";
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "Se connecter avec un autre compte";
@@ -4251,6 +4275,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message for a dismissal alert on the upsell card reader feature announcement banner */
 "No worries! You can always get started with In-Person Payments in Settings" = "Aucune inquiétude ! Vous pouvez toujours autoriser les paiements en personne dans vos réglages.";
+
+/* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
+"No worries! You can always go to Settings in the Menu to send us feedback." = "Aucune inquiétude ! Vous pouvez toujours accéder aux réglages depuis le menu pour nous envoyer des commentaires.";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
@@ -4931,6 +4958,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message of the in-progress UI while saving a Variation remotely */
 "Please wait while we save your latest changes" = "Veuillez patienter pendant l’enregistrement de vos modifications.";
 
+/* Message of the in-progress UI while bulk updating selected products remotely */
+"Please wait while we update these products on your store" = "Veuillez patienter pendant que nous mettons à jour ces produits dans votre boutique.";
+
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
 "Please wait while we update your store details" = "Veuillez patienter pendant la mise à jour des détails de votre boutique";
@@ -5000,6 +5030,12 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for editing the price settings row on Product main screen
    Title of the cell in Product Price Settings > Price */
 "Price" = "Prix";
+
+/* Title of the notice when a user updated price for selected products */
+"Price updated" = "Prix mis à jour";
+
+/* Message in the footer of bulk price setting screen, when variable products are selected */
+"Prices for variations won't be updated." = "Les prix des variantes ne seront pas mis à jour.";
 
 /* Notice title when updating the price via the bulk variation screen */
 "Prices updated successfully." = "Les prix ont bien été mis à jour.";
@@ -5243,6 +5279,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "Donnez-nous votre avis";
 
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Rate your first in-person payment experience." = "Évaluez votre première expérience de paiement en personne.";
+
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "Contacter nos Happiness Engineers pour toutes les questions relatives aux paiements";
 
@@ -5363,7 +5402,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Religious Organizations" = "Organisations religieuses";
 
-/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time */
+/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
+   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "Me le rappeler ultérieurement";
 
 /* Confirm button on the alert when the user taps to delete a Product image
@@ -5412,6 +5452,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title for the Rename Attributes screen */
 "Rename Attribute" = "Renommer l’attribut";
+
+/* Renewal date of a site's domain in domain settings. Reads like `Renews on October 11, 2023`. */
+"Renews on %1$@" = "Renouvellement le %1$@";
 
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "Remplacer une photo";
@@ -5761,6 +5804,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Sélectionner un type de produit";
 
+/* Title of a button that selects all products for bulk update */
+"Select all" = "Tout sélectionner";
+
 /* Text field placeholder in Edit Address Form */
 "Select an option" = "Sélectionner une option";
 
@@ -5858,11 +5904,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Partage de lien de paiement";
 
+/* Title of the feedback action button on the In-Person Payments feedback banner */
+"Share feedback" = "Partager des commentaires";
+
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Partager l’information avec notre outil d’analyse à propos de votre utilisation des services lorsque vous êtes connectés avec votre compte WordPress.com.";
 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
 "Share with Friends" = "Partager avec des amis";
+
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Share your own experience or how you collect in-person payments." = "Partagez votre propre expérience et dites-nous comment vous collectez les paiements en personne.";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title
@@ -6251,6 +6303,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Status label in Product Settings */
 "Status" = "État";
 
+/* Title of the notice when a user updated status for selected products */
+"Status updated" = "État mis à jour";
+
 /* Button title to contact support to get help with deprecated stats */
 "Still need help? Contact us" = "Besoin d’une aide supplémentaire ? Contactez nous";
 
@@ -6549,6 +6604,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Telemedicine And Telehealth" = "Télémédecine et télésoins";
 
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Tell us all about your experience with in-person payments." = "Parlez-nous de votre expérience avec les paiements en personne.";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Ajouter des informations sur %1$@...";
 
@@ -6647,7 +6705,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The attribute couldn't be saved." = "Impossible d’enregistrer l’attribut.";
 
 /* Error message shown when the built-in reader cannot be used because there is a call in progress */
-"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "Impossible d’utiliser le lecteur intégré pendant un appel téléphonique. Veuillez réessayer une fois l’appel terminé.";
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call." = "Impossible d’utiliser le lecteur intégré pendant un appel téléphonique. Veuillez réessayer une fois l’appel terminé.";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "La carte ne prend pas en charge cette devise. Essayez un autre moyen de paiement";
@@ -6739,6 +6797,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the cancel button on the reader is used. */
 "The payment was canceled on the reader" = "Le paiement a été annulé sur le lecteur.";
 
+/* Error shown when the built-in card reader payment is interrupted by activity on the phone */
+"The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "Le paiement a été interrompu et ne peut pas se poursuivre. Vous pouvez retenter de procéder au paiement sur l’écran de commande.";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "Le numéro de téléphone n’est pas valide ou ne pouvez pas appeler le client depuis cet appareil.";
 
@@ -6747,6 +6808,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "Prix de ce produit. Modifiable.";
+
+/* Message in the footer of bulk price setting screen (singular). */
+"The price will be updated for %d product." = "Le prix de %d produit va être mis à jour.";
+
+/* Message in the footer of bulk price setting screen (plurar). */
+"The price will be updated for %d products." = "Les prix de %d produits vont être mis à jour.";
 
 /* Message in the footer of bulk price setting screen (singular). */
 "The price will be updated for %d variation." = "Le prix sera mis à jour pour %d variante.";
@@ -7557,6 +7624,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
 "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "La mise à jour du logiciel du lecteur a échoué car la batterie du lecteur est chargée à %.0f%%. Veuillez charger le lecteur au-dessus de 50 %% avant de réessayer.";
 
+/* Title of the in-progress UI while bulk updating selected products remotely */
+"Updating your products..." = "Mise à jour de vos produits…";
+
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "Produits suggérés";
@@ -8143,6 +8213,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "L’adresse de votre site apparait dans la barre en haut de l’écran quand vous visitez votre site dans Safari.";
+
+/* Header text of the site's domain list in domain settings. */
+"Your site domains" = "Domaines de votre site";
 
 /* Title of the store creation success screen. */
 "Your store has been created!" = "Votre boutique a été créée !";

@@ -39,8 +39,9 @@ public class NewGoogleAuthenticator: NSObject {
         self.contextProvider = contextProvider
     }
 
+    /// Get the user's OAuth token from their Google account. This token can be used to authenticate with the WordPress backend.
     // FIXME: We'll want something better that `String` as the return type
-    public func authenticate() async throws -> String {
+    public func getOAuthToken() async throws -> String {
         let pkce = try ProofKeyForCodeExchange()
         let url = try await getURL(clientId: clientId, scheme: scheme, pkce: pkce)
         return try await requestOAuthToken(url: url, clientId: clientId, audience: audience, pkce: pkce)

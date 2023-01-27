@@ -73,7 +73,7 @@ class NewGoogleAuthenticatorTests: XCTestCase {
                 url: url,
                 clientId: GoogleClientId(string: "a.b.c")!,
                 audience: "audience",
-                pkce: ProofKeyForCodeExchange(codeVerifier: "code", method: .plain)
+                pkce: ProofKeyForCodeExchange()
             )
             XCTFail("Expected an error to be thrown")
         } catch {

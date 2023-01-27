@@ -1,4 +1,5 @@
 import Foundation
+import AuthenticationServices
 import GoogleSignIn
 import WordPressKit
 import SVProgressHUD
@@ -120,11 +121,36 @@ class GoogleAuthenticator: NSObject {
     ///                  The values are updated during the Google process,
     ///                  and returned to the calling view controller via delegate methods.
     ///   - authType: Indicates the type of authentication (login or signup)
-    func showFrom(viewController: UIViewController, loginFields: LoginFields, for authType: GoogleAuthType = .login) {
+    func showFrom(
+        viewController: UIViewController & ASWebAuthenticationPresentationContextProviding,
+        loginFields: LoginFields,
+        for authType: GoogleAuthType = .login
+    ) {
+        // The fact that we set `loginFields`, then reset its `meta.socialService` property doesn't
+        // seem ideal...
         self.loginFields = loginFields
         self.loginFields.meta.socialService = SocialServiceName.google
         self.authType = authType
-        requestAuthorization(from: viewController)
+
+        guard authConfig.googleLoginWithoutSDK == false else {
+            // Use method that depends on SDK
+            requestAuthorization(from: viewController)
+            return
+        }
+
+        Task.init {
+            do {
+                let token = try await requestAuthorization(
+                    for: authType,
+                    from: viewController,
+                    loginFields: loginFields
+                )
+
+                didSignIn(token: token.token.rawValue, email: token.email)
+            } catch {
+                failedToSignIn(error: error)
+            }
+        }
     }
 
     /// Public method to create a WP account with a Google account.
@@ -260,6 +286,42 @@ private extension GoogleAuthenticator {
         static let googleUnableToConnect = NSLocalizedString("Unable To Connect", comment: "Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com")
     }
 
+}
+
+// MARK: - SDK-less flow
+
+extension GoogleAuthenticator {
+
+    private func requestAuthorization(
+        for authType: GoogleAuthType,
+        from viewController: UIViewController & ASWebAuthenticationPresentationContextProviding,
+        loginFields: LoginFields
+    ) async throws -> IDToken {
+        // Intentionally duplicated from the callsite, so we don't forget about this when removing
+        // the SDK.
+        //
+        // The fact that we set `loginFields`, then reset its `meta.socialService` property doesn't
+        // seem ideal...
+        self.loginFields = loginFields
+        self.loginFields.meta.socialService = SocialServiceName.google
+        self.authType = authType
+
+        trackRequestAuthorizitation(type: authType)
+
+        // We might want to change this in subsequent iterations, perhaps by moving the
+        // `contextProvider` to the `getOAuthToken()` method so to allow it to be stored
+        // as a `lazy` property?
+        let sdkLessGoogleAuthenticator = NewGoogleAuthenticator(
+            clientId: authConfig.googleClientId,
+            scheme: authConfig.googleLoginScheme,
+            audience: authConfig.googleLoginServerClientId,
+            contextProvider: viewController,
+            urlSession: .shared
+        )
+
+        await SVProgressHUD.show()
+        return try await sdkLessGoogleAuthenticator.getOAuthToken()
+    }
 }
 
 // MARK: - LoginFacadeDelegate

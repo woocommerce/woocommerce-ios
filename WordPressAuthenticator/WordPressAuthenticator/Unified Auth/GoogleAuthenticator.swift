@@ -135,13 +135,12 @@ class GoogleAuthenticator: NSObject {
     func createGoogleAccount(loginFields: LoginFields) {
         self.loginFields = loginFields
 
-        guard let user = loginFields.meta.googleUser,
-            let token = loginFields.meta.socialServiceIDToken else {
-                WPAuthenticatorLogError("GoogleAuthenticator - createGoogleAccount: Failed to get Google account information.")
-                return
+        guard let token = loginFields.meta.socialServiceIDToken else {
+            WPAuthenticatorLogError("GoogleAuthenticator - createGoogleAccount: Failed to get Google account information.")
+            return
         }
 
-        createWordPressComUser(user: user, token: token, email: loginFields.emailAddress)
+        createWordPressComUser(token: token, email: loginFields.emailAddress)
     }
 
 }
@@ -224,7 +223,7 @@ private extension GoogleAuthenticator {
                 SVProgressHUD.show()
                 loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
             case .signup:
-                createWordPressComUser(user: user, token: token, email: email)
+                createWordPressComUser(token: token, email: email)
             }
 
             return
@@ -337,9 +336,9 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
 private extension GoogleAuthenticator {
 
-    /// Creates a WordPress.com account with the associated Google User + Google Token + Google Email.
+    /// Creates a WordPress.com account with the associated Google token and email.
     ///
-    func createWordPressComUser(user: GIDGoogleUser, token: String, email: String) {
+    func createWordPressComUser(token: String, email: String) {
         SVProgressHUD.show()
         let service = SignupService()
 

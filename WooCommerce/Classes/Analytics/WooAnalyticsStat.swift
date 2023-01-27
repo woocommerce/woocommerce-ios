@@ -821,6 +821,7 @@ public enum WooAnalyticsStat: String {
     // MARK: Application password Events
     case applicationPasswordsNewPasswordCreated = "application_passwords_new_password_created"
     case applicationPasswordsGenerationFailed = "application_passwords_generation_failed"
+    case trackRestAPILoginExperimentVariation = "rest_api_login_experiment"
 }
 
 public extension WooAnalyticsStat {

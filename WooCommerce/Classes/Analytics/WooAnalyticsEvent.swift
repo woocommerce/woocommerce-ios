@@ -415,6 +415,10 @@ extension WooAnalyticsEvent {
             case list
         }
 
+        enum GlobalKeys {
+            static let timestampSinceOrderAddNew = "timestamp_since_order_add_new"
+        }
+
         private enum Keys {
             static let flow = "flow"
             static let hasDifferentShippingDetails = "has_different_shipping_details"
@@ -518,7 +522,13 @@ extension WooAnalyticsEvent {
         }
 
         static func orderCreationSuccess() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderCreationSuccess, properties: [:])
+            var properties: [String: WooAnalyticsEventPropertyType] = [:]
+
+            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.currentLapse() {
+                properties[GlobalKeys.timestampSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            }
+
+            return WooAnalyticsEvent(statName: .orderCreationSuccess, properties: properties)
         }
 
         static func orderCreationFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
@@ -891,8 +901,14 @@ extension WooAnalyticsEvent {
         }
 
         static func paymentsFlowCollect(flow: Flow, method: PaymentMethod) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .paymentsFlowCollect, properties: [Keys.flow: flow.rawValue,
-                                                                           Keys.paymentMethod: method.rawValue])
+            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
+                              Keys.paymentMethod: method.rawValue]
+
+            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.currentLapse() {
+                properties[Orders.GlobalKeys.timestampSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            }
+
+            return WooAnalyticsEvent(statName: .paymentsFlowCollect, properties: properties)
         }
     }
 }
@@ -1327,13 +1343,19 @@ extension WooAnalyticsEvent {
                                           countryCode: String,
                                           paymentMethod: PaymentMethod,
                                           cardReaderModel: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentSuccess,
-                              properties: [
-                                Keys.cardReaderModel: cardReaderModel,
-                                Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                                Keys.paymentMethodType: paymentMethod.analyticsValue
-                              ]
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Keys.cardReaderModel: cardReaderModel,
+                Keys.countryCode: countryCode,
+                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                Keys.paymentMethodType: paymentMethod.analyticsValue
+              ]
+
+            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.currentLapse() {
+                properties[Orders.GlobalKeys.timestampSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            }
+
+            return WooAnalyticsEvent(statName: .collectPaymentSuccess,
+                              properties: properties
             )
         }
 
@@ -1347,12 +1369,18 @@ extension WooAnalyticsEvent {
         static func collectInteracPaymentSuccess(gatewayID: String?,
                                                  countryCode: String,
                                                  cardReaderModel: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectInteracPaymentSuccess,
-                              properties: [
-                                Keys.cardReaderModel: cardReaderModel,
-                                Keys.countryCode: countryCode,
-                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
-                              ])
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Keys.cardReaderModel: cardReaderModel,
+                Keys.countryCode: countryCode,
+                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
+              ]
+
+            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.currentLapse() {
+                properties[Orders.GlobalKeys.timestampSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            }
+
+            return WooAnalyticsEvent(statName: .collectInteracPaymentSuccess,
+                              properties: properties)
         }
 
         /// Tracked when an Interac client-side refund succeeds

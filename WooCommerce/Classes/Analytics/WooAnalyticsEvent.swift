@@ -416,7 +416,7 @@ extension WooAnalyticsEvent {
         }
 
         enum GlobalKeys {
-            static let timestampSinceOrderAddNew = "timestamp_since_order_add_new"
+            static let timeIntervalSinceOrderAddNew = "time_interval_since_order_add_new"
         }
 
         private enum Keys {
@@ -524,8 +524,8 @@ extension WooAnalyticsEvent {
         static func orderCreationSuccess() -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [:]
 
-            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.timestampSinceOrderAddNew() {
-                properties[GlobalKeys.timestampSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.timeIntervalSinceOrderAddNew() {
+                properties[GlobalKeys.timeIntervalSinceOrderAddNew] = lapseSinceLastOrderAddNew
             }
 
             return WooAnalyticsEvent(statName: .orderCreationSuccess, properties: properties)
@@ -904,8 +904,8 @@ extension WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
                               Keys.paymentMethod: method.rawValue]
 
-            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.timestampSinceOrderAddNew() {
-                properties[Orders.GlobalKeys.timestampSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.timeIntervalSinceOrderAddNew() {
+                properties[Orders.GlobalKeys.timeIntervalSinceOrderAddNew] = lapseSinceLastOrderAddNew
             }
 
             return WooAnalyticsEvent(statName: .paymentsFlowCollect, properties: properties)
@@ -965,7 +965,7 @@ extension WooAnalyticsEvent {
             static let source = "source"
             static let enabled = "enabled"
             static let cancellationSource = "cancellation_source"
-            static let timestampSinceCardCollectPaymentFlow = "timestamp_since_card_collect_payment_flow"
+            static let timeIntervalSinceCardCollectPaymentFlow = "time_interval_since_card_collect_payment_flow"
         }
 
         static let unknownGatewayID = "unknown"
@@ -1351,12 +1351,12 @@ extension WooAnalyticsEvent {
                 Keys.paymentMethodType: paymentMethod.analyticsValue
               ]
 
-            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.timestampSinceOrderAddNew() {
-                properties[Orders.GlobalKeys.timestampSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.timeIntervalSinceOrderAddNew() {
+                properties[Orders.GlobalKeys.timeIntervalSinceOrderAddNew] = lapseSinceLastOrderAddNew
             }
 
-            if let timestampSinceCardCollectPaymentFlow = try? OrderDurationRecorder.shared.timestampSinceCardPaymentStarted() {
-                properties[Keys.timestampSinceCardCollectPaymentFlow] = timestampSinceCardCollectPaymentFlow
+            if let timeIntervalSinceCardCollectPaymentFlow = try? OrderDurationRecorder.shared.timeIntervalSinceCardPaymentStarted() {
+                properties[Keys.timeIntervalSinceCardCollectPaymentFlow] = timeIntervalSinceCardCollectPaymentFlow
             }
 
             return WooAnalyticsEvent(statName: .collectPaymentSuccess,
@@ -1380,12 +1380,12 @@ extension WooAnalyticsEvent {
                 Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
               ]
 
-            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.timestampSinceOrderAddNew() {
-                properties[Orders.GlobalKeys.timestampSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.timeIntervalSinceOrderAddNew() {
+                properties[Orders.GlobalKeys.timeIntervalSinceOrderAddNew] = lapseSinceLastOrderAddNew
             }
 
-            if let timestampSinceCardCollectPaymentFlow = try? OrderDurationRecorder.shared.timestampSinceCardPaymentStarted() {
-                properties[Keys.timestampSinceCardCollectPaymentFlow] = timestampSinceCardCollectPaymentFlow
+            if let timeIntervalSinceCardCollectPaymentFlow = try? OrderDurationRecorder.shared.timeIntervalSinceCardPaymentStarted() {
+                properties[Keys.timeIntervalSinceCardCollectPaymentFlow] = timeIntervalSinceCardCollectPaymentFlow
             }
 
             return WooAnalyticsEvent(statName: .collectInteracPaymentSuccess,

@@ -1,1 +1,3 @@
-It's now possible to bulk update product status and prices! Simply go to the Products tab and click on the multi select icon on the top to try it out.
+- [*] Adds an In-Person Payments survey banner on top of the Orders view [https://github.com/woocommerce/woocommerce-ios/issues/8530]
+- [*] Fix: Allow product's `purchasable` to be a number as some third-party plugins could alter the type in the API. This could help with the Products tab not loading due to product decoding errors. [https://github.com/woocommerce/woocommerce-ios/pull/8718]
+- [***] [Internal] Start the AB test for allowing login to the app using site credentials [https://github.com/woocommerce/woocommerce-ios/pull/8744]

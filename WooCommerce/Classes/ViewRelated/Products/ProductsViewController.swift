@@ -337,7 +337,7 @@ private extension ProductsViewController {
         let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
 
         actionSheet.addAction(updateStatus)
-        if !viewModel.onlyNonSimpleProductsSelected {
+        if !viewModel.onlyPriceIncompatibleProductsSelected {
             actionSheet.addAction(updatePrice)
         }
         actionSheet.addAction(cancelAction)

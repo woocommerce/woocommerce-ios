@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-26 13:54:03+0000 */
+/* Translation-Revision-Date: 2023-01-27 14:05:28+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -5454,7 +5454,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Rename Attribute" = "Eigenschap een nieuwe naam geven";
 
 /* Renewal date of a site's domain in domain settings. Reads like `Renews on October 11, 2023`. */
-"Renews on %1$@" = "Vernieuwt op %$1@";
+"Renews on %1$@" = "Vernieuwt op %1$@";
 
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "Foto vervangen";

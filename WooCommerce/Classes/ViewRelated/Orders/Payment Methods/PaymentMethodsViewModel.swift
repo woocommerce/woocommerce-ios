@@ -219,6 +219,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                            onSuccess: @escaping () -> (),
                            onFailure: @escaping () -> ()) {
         trackCollectIntention(method: .card)
+        OrderDurationRecorder.shared.recordCardPaymentStarted()
 
         guard let rootViewController = rootViewController else {
             DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
@@ -285,6 +286,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                               useCase: LegacyCollectOrderPaymentProtocol? = nil,
                               onSuccess: @escaping () -> ()) {
         trackCollectIntention(method: .card)
+        OrderDurationRecorder.shared.recordCardPaymentStarted()
 
         guard let rootViewController = rootViewController else {
             DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")

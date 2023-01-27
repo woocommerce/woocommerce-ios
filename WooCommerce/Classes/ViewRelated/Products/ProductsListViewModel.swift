@@ -134,7 +134,7 @@ class ProductListViewModel {
     /// Update selected products with new price and trigger Network action to save the change remotely.
     ///
     func updateSelectedProducts(with newPrice: String, completion: @escaping (Result<Void, Error>) -> Void ) {
-        guard !onlyPriceCompatibleSelectedProducts.isEmpty else {
+        guard !onlyPriceIncompatibleProductsSelected else {
             completion(.failure(BulkEditError.noProductsSelected))
             return
         }

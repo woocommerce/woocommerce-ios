@@ -6,7 +6,7 @@ class OAuthRequestBodyGoogleSignInTests: XCTestCase {
     func testGoogleSignInTokenRequestBody() throws {
         let pkce = ProofKeyForCodeExchange(codeVerifier: "test", method: .plain)
         let body = OAuthTokenRequestBody.googleSignInRequestBody(
-            clientId: "com.app.123-abc",
+            clientId: GoogleClientId(string: "com.app.123-abc")!,
             authCode: "codeValue",
             pkce: pkce
         )

@@ -6,7 +6,7 @@ class URLGoogleSignInTests: XCTestCase {
     func testGoogleSignInAuthURL() throws {
         let pkce = ProofKeyForCodeExchange(codeVerifier: "test", method: .plain)
         let url = try URL.googleSignInAuthURL(
-            clientId: "123-abc245def.apps.googleusercontent.com",
+            clientId: GoogleClientId(string: "123-abc245def.apps.googleusercontent.com")!,
             pkce: pkce
         )
 

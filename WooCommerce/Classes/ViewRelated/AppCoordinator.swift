@@ -26,6 +26,7 @@ final class AppCoordinator {
     private var authStatesSubscription: AnyCancellable?
     private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
+    private let abTestVariationProvider: ABTestVariationProvider
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
@@ -143,7 +144,8 @@ private extension AppCoordinator {
             configureAndDisplayAuthenticator()
         }
 
-        analytics.track(event: .ApplicationPassword.restAPILoginExperiment(variation: ABTest.applicationPasswordAuthentication.variation.analyticsValue))
+        let applicationPasswordABTestVariation = abTestVariationProvider.variation(for: .applicationPasswordAuthentication)
+        analytics.track(event: .ApplicationPassword.restAPILoginExperiment(variation: applicationPasswordABTestVariation.analyticsValue))
     }
 
     /// Configures the WPAuthenticator and sets the authenticator UI as the window's root view.

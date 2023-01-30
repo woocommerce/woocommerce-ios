@@ -6,17 +6,24 @@ import protocol Storage.StorageManagerType
 /// Handles `DomainAction`.
 ///
 public final class DomainStore: Store {
-    // Keeps a strong reference to remote to keep requests alive.
+    // Keeps a strong reference to remotes to keep requests alive.
     private let remote: DomainRemoteProtocol
+    private let paymentRemote: PaymentRemoteProtocol
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: DomainRemoteProtocol) {
+    public init(dispatcher: Dispatcher,
+                storageManager: StorageManagerType,
+                network: Network,
+                remote: DomainRemoteProtocol,
+                paymentRemote: PaymentRemoteProtocol) {
         self.remote = remote
+        self.paymentRemote = paymentRemote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
     public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = DomainRemote(network: network)
-        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let paymentRemote = PaymentRemote(network: network)
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, paymentRemote: paymentRemote)
     }
 
     public override func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -37,6 +44,8 @@ public final class DomainStore: Store {
             loadPaidDomainSuggestions(query: query, completion: completion)
         case .loadDomains(let siteID, let completion):
             loadDomains(siteID: siteID, completion: completion)
+        case .createDomainShoppingCart(let siteID, let domain, let completion):
+            createDomainShoppingCart(siteID: siteID, domain: domain, completion: completion)
         }
     }
 }
@@ -66,6 +75,7 @@ private extension DomainStore {
                         return nil
                     }
                     return PaidDomainSuggestion(productID: domainSuggestion.productID,
+                                                supportsPrivacy: domainSuggestion.supportsPrivacy,
                                                 name: domainSuggestion.name,
                                                 term: domainProduct.term,
                                                 cost: domainProduct.cost,
@@ -82,6 +92,20 @@ private extension DomainStore {
         Task { @MainActor in
             let result = await Result { try await remote.loadDomains(siteID: siteID) }
             completion(result)
+        }
+    }
+
+    func createDomainShoppingCart(siteID: Int64,
+                                  domain: DomainToPurchase,
+                                  completion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            let result = await Result {
+                try await paymentRemote.createCart(siteID: siteID,
+                                                   domain: .init(name: domain.name,
+                                                                 productID: domain.productID,
+                                                                 supportsPrivacy: domain.supportsPrivacy))
+            }
+            completion(result.map { _ in () })
         }
     }
 }

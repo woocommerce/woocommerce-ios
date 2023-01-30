@@ -135,13 +135,12 @@ class GoogleAuthenticator: NSObject {
     func createGoogleAccount(loginFields: LoginFields) {
         self.loginFields = loginFields
 
-        guard let user = loginFields.meta.googleUser,
-            let token = loginFields.meta.socialServiceIDToken else {
-                WPAuthenticatorLogError("GoogleAuthenticator - createGoogleAccount: Failed to get Google account information.")
-                return
+        guard let token = loginFields.meta.socialServiceIDToken else {
+            WPAuthenticatorLogError("GoogleAuthenticator - createGoogleAccount: Failed to get Google account information.")
+            return
         }
 
-        createWordPressComUser(user: user, token: token, email: loginFields.emailAddress)
+        createWordPressComUser(token: token, email: loginFields.emailAddress)
     }
 
 }
@@ -154,15 +153,7 @@ private extension GoogleAuthenticator {
     ///   - viewController: The UIViewController that Google is being presented from.
     ///                     Required by Google SDK.
     func requestAuthorization(from viewController: UIViewController) {
-        switch authType {
-        case .login:
-            tracker.set(flow: .loginWithGoogle)
-            tracker.track(step: .start) {
-                track(.loginSocialButtonClick)
-            }
-        case .signup:
-            track(.createAccountInitiated)
-        }
+        trackRequestAuthorizitation(type: authType)
 
         let googleInstance = GIDSignIn.sharedInstance
         let configuration = GIDConfiguration(clientID: authConfig.googleLoginClientId, serverClientID: authConfig.googleLoginServerClientId)
@@ -173,6 +164,18 @@ private extension GoogleAuthenticator {
         // Assigning the view controller has no effect since we don't use Google UI, but it's is required, so here we are.
         googleInstance.signIn(with: configuration, presenting: viewController) { user, error in
             self.didSignIn(for: user, error: error)
+        }
+    }
+
+    private func trackRequestAuthorizitation(type: GoogleAuthType) {
+        switch type {
+        case .login:
+            tracker.set(flow: .loginWithGoogle)
+            tracker.track(step: .start) {
+                track(.loginSocialButtonClick)
+            }
+        case .signup:
+            track(.createAccountInitiated)
         }
     }
 
@@ -187,35 +190,47 @@ private extension GoogleAuthenticator {
     func didSignIn(for user: GIDGoogleUser?, error: Error?) {
         // Get account information
         guard let user = user,
-            let token = user.authentication.idToken,
-            let email = user.profile?.email else {
-
-                // The Google SignIn may have been cancelled.
-                let failure = error?.localizedDescription ?? "Unknown error"
-
-                tracker.track(failure: failure, ifTrackingNotEnabled: {
-                    let properties = ["error": failure]
-
-                    switch authType {
-                    case .login:
-                        track(.loginSocialButtonFailure, properties: properties)
-                    case .signup:
-                        track(.signupSocialButtonFailure, properties: properties)
-                    }
-                })
-
-                // Notify the delegates so the Google Auth view can be dismissed.
-                signupDelegate?.googleSignupCancelled()
-                delegate?.googleAuthCancelled()
-
-                return
+              let token = user.authentication.idToken,
+              let email = user.profile?.email else {
+            failedToSignIn(error: error)
+            return
         }
 
+        // Set `googleUser` here, `didSignIn(token:, email:)` will do the rest.
+        loginFields.meta.googleUser = user
+
+        didSignIn(token: token, email: email)
+    }
+
+    private func failedToSignIn(error: Error?) {
+        // The Google SignIn may have been cancelled.
+        //
+        // FIXME: Is `error == .none` how we distinguish between user cancellation and legit error?
+        let failure = error?.localizedDescription ?? "Unknown error"
+
+        tracker.track(failure: failure, ifTrackingNotEnabled: {
+            let properties = ["error": failure]
+
+            switch authType {
+            case .login:
+                track(.loginSocialButtonFailure, properties: properties)
+            case .signup:
+                track(.signupSocialButtonFailure, properties: properties)
+            }
+        })
+
+        // Notify the delegates so the Google Auth view can be dismissed.
+        //
+        // FIXME: Shouldn't we be calling a method to report error, if there was one?
+        signupDelegate?.googleSignupCancelled()
+        delegate?.googleAuthCancelled()
+    }
+
+    private func didSignIn(token: String, email: String) {
         // Save account information to pass back to delegate later.
         loginFields.emailAddress = email
         loginFields.username = email
         loginFields.meta.socialServiceIDToken = token
-        loginFields.meta.googleUser = user
 
         guard authConfig.enableUnifiedAuth else {
             // Initiate separate WP login / signup paths.
@@ -224,7 +239,7 @@ private extension GoogleAuthenticator {
                 SVProgressHUD.show()
                 loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
             case .signup:
-                createWordPressComUser(user: user, token: token, email: email)
+                createWordPressComUser(token: token, email: email)
             }
 
             return
@@ -337,9 +352,9 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
 private extension GoogleAuthenticator {
 
-    /// Creates a WordPress.com account with the associated Google User + Google Token + Google Email.
+    /// Creates a WordPress.com account with the associated Google token and email.
     ///
-    func createWordPressComUser(user: GIDGoogleUser, token: String, email: String) {
+    func createWordPressComUser(token: String, email: String) {
         SVProgressHUD.show()
         let service = SignupService()
 

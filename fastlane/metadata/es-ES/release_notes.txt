@@ -1,1 +1,1 @@
-Verás algunos cambios visuales en el aspecto de la aplicación. Échale un vistazo y danos tu opinión. ¡En las próximas semanas habrá más cambios!
+¡Ahora puedes actualizar precios y estados de producto en lote! Para probar esta función, solo tienes que ir a la pestaña Productos y hacer clic en el icono de selección múltiple de la parte superior.

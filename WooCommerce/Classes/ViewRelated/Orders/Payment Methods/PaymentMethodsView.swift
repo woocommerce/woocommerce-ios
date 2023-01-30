@@ -23,6 +23,8 @@ struct PaymentMethodsView: View {
 
     @State private var showingPurchaseCardReaderView = false
 
+    private let learnMoreViewModel = LearnMoreViewModel.inPersonPayments()
+
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
@@ -87,6 +89,10 @@ struct PaymentMethodsView: View {
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.listForeground(modal: false)))
                     }
+
+                    NavigationLink(destination: WebView(isPresented: .constant(true), url: learnMoreViewModel.url)) {
+                        AttributedText(learnMoreViewModel.learnMoreAttributedString)
+                    }.padding(.horizontal)
                 }
 
                 // Pushes content to the top

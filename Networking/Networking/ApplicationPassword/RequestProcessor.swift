@@ -10,8 +10,12 @@ final class RequestProcessor {
 
     private let requestAuthenticator: RequestAuthenticator
 
-    init(requestAuthenticator: RequestAuthenticator) {
+    private let notificationCenter: NotificationCenter
+
+    init(requestAuthenticator: RequestAuthenticator,
+         notificationCenter: NotificationCenter = .default) {
         self.requestAuthenticator = requestAuthenticator
+        self.notificationCenter = notificationCenter
     }
 }
 
@@ -56,9 +60,17 @@ private extension RequestProcessor {
             do {
                 let _ = try await requestAuthenticator.generateApplicationPassword()
                 isAuthenticating = false
+
+                // Post a notification for tracking
+                notificationCenter.post(name: .ApplicationPasswordsNewPasswordCreated, object: nil, userInfo: nil)
+
                 completeRequests(true)
             } catch {
                 isAuthenticating = false
+
+                // Post a notification for tracking
+                notificationCenter.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
+
                 completeRequests(false)
             }
         }
@@ -84,4 +96,16 @@ private extension RequestProcessor {
         }
         requestsToRetry.removeAll()
     }
+}
+
+// MARK: - Application Password Notifications
+//
+public extension NSNotification.Name {
+    /// Posted whenever a new password was created when a  regeneration is needed.
+    ///
+    static let ApplicationPasswordsNewPasswordCreated = NSNotification.Name(rawValue: "ApplicationPasswordsNewPasswordCreated")
+
+    /// Posted when generating an application password fails
+    ///
+    static let ApplicationPasswordsGenerationFailed = NSNotification.Name(rawValue: "ApplicationPasswordsGenerationFailed")
 }

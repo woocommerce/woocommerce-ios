@@ -142,6 +142,8 @@ private extension AppCoordinator {
         } else {
             configureAndDisplayAuthenticator()
         }
+
+        analytics.track(event: .ApplicationPassword.restAPILoginExperiment(variation: ABTest.applicationPasswordAuthentication.variation.analyticsValue))
     }
 
     /// Configures the WPAuthenticator and sets the authenticator UI as the window's root view.
@@ -276,6 +278,7 @@ private extension AppCoordinator {
 
         // this needs to be wrapped within a navigation controller to properly show the right bar button for Help.
         setWindowRootViewControllerAndAnimateIfNeeded(WooNavigationController(rootViewController: errorViewController))
+        ServiceLocator.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
     }
 
     /// Synchronously check if there's any `EligibilityErrorInfo` stored locally. If there is, then let's show the role error UI instead.

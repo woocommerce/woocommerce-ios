@@ -31,6 +31,31 @@ final class ProductReviewListMapperTests: XCTestCase {
 
         XCTAssertFalse(firstProductReview.verified)
     }
+
+    /// Verifies that all of the ProductReview Fields are parsed correctly.
+    ///
+    func test_ProductReview_fields_are_properly_parsed_when_response_has_no_data_envelope() {
+        let productReviews = mapLoadAllProductReviewsResponseWithoutDataEnvelope()
+        XCTAssertEqual(productReviews.count, 2)
+
+        let firstProductReview = productReviews[0]
+
+        XCTAssertEqual(firstProductReview.siteID, dummySiteID)
+        XCTAssertEqual(firstProductReview.reviewID, 173)
+        XCTAssertEqual(firstProductReview.productID, 32)
+
+        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-08-20T06:06:29")
+        XCTAssertEqual(firstProductReview.dateCreated, dateCreated)
+
+        XCTAssertEqual(firstProductReview.status, ProductReviewStatus.approved)
+
+        XCTAssertEqual(firstProductReview.reviewer, "somereviewer")
+        XCTAssertEqual(firstProductReview.reviewerEmail, "somewhere@intheinternet.com")
+        XCTAssertEqual(firstProductReview.review, "<p>The fancy chair gets only three stars</p>\n")
+        XCTAssertEqual(firstProductReview.rating, 3)
+
+        XCTAssertFalse(firstProductReview.verified)
+    }
 }
 
 
@@ -52,5 +77,11 @@ private extension ProductReviewListMapperTests {
     ///
     func mapLoadAllProductReviewsResponse() -> [ProductReview] {
         return mapProductReviews(from: "reviews-all")
+    }
+
+    /// Returns the ProductListMapper output upon receiving `reviews-all-without-data`
+    ///
+    func mapLoadAllProductReviewsResponseWithoutDataEnvelope() -> [ProductReview] {
+        return mapProductReviews(from: "reviews-all-without-data")
     }
 }

@@ -268,7 +268,9 @@ private extension CollectOrderPaymentUseCase {
             }, onProcessingMessage: { [weak self] in
                 guard let self = self else { return }
                 // Waiting message
-                self.alertsPresenter.present(viewModel: paymentAlerts.processingTransaction())
+                self.alertsPresenter.present(
+                    viewModel: paymentAlerts.processingTransaction(
+                        title: Localization.processingPaymentTitle(username: self.order.billingAddress?.firstName)))
             }, onDisplayMessage: { [weak self] message in
                 guard let self = self else { return }
                 // Reader messages. EG: Remove Card
@@ -552,6 +554,19 @@ private extension CollectOrderPaymentUseCase {
                 return collectPaymentWithoutName
             }
             return .localizedStringWithFormat(collectPaymentWithName, username)
+        }
+
+        private static let processingPaymentWithoutName = NSLocalizedString(
+            "Processing payment",
+            comment: "Alert title when processing a payment without a user name.")
+        private static let processingPaymentWithName = NSLocalizedString(
+            "Processing payment from %1$@",
+            comment: "Alert title when processing a payment with a user name.")
+        static func processingPaymentTitle(username: String?) -> String {
+            guard let username = username, username.isNotEmpty else {
+                return processingPaymentWithoutName
+            }
+            return .localizedStringWithFormat(processingPaymentWithName, username)
         }
     }
 }

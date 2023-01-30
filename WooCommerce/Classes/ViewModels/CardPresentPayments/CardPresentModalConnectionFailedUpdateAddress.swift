@@ -15,7 +15,7 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 
     var topSubtitle: String? = nil
 
-    let image: UIImage = .paymentErrorImage
+    let image: UIImage
 
     var primaryButtonTitle: String? {
         guard openWCSettingsAction != nil else {
@@ -36,9 +36,11 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
         return topTitle
     }
 
-    init(openWCSettings: ((UIViewController) -> Void)?,
+    init(image: UIImage = .paymentErrorImage,
+         openWCSettings: ((UIViewController) -> Void)?,
          retrySearch: @escaping () -> Void,
          cancelSearch: @escaping () -> Void) {
+        self.image = image
         self.openWCSettingsAction = openWCSettings
         self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch

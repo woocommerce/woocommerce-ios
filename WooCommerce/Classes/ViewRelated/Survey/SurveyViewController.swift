@@ -68,9 +68,9 @@ extension SurveyViewController {
         case addOnsI1
         case orderCreation
         case couponManagement
-        case IPP_COD
-        case IPP_firstTransaction
-        case IPP_powerUsers
+        case inPersonPaymentsCashOnDelivery
+        case inPersonPaymentsFirstTransaction
+        case inPersonPaymentsPowerUsers
 
         fileprivate var url: URL {
             switch self {
@@ -105,17 +105,17 @@ extension SurveyViewController {
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
-            case .IPP_COD:
+            case .inPersonPaymentsCashOnDelivery:
                 return WooConstants.URLs.inPersonPaymentsCashOnDeliveryFeedback
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
-            case .IPP_firstTransaction:
+            case .inPersonPaymentsFirstTransaction:
                 return WooConstants.URLs.inPersonPaymentsFirstTransactionFeedback
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
-            case .IPP_powerUsers:
+            case .inPersonPaymentsPowerUsers:
                 return WooConstants.URLs.inPersonPaymentsPowerUsersFeedback
                     .asURL()
                     .tagPlatform("ios")
@@ -125,7 +125,7 @@ extension SurveyViewController {
 
         fileprivate var title: String {
             switch self {
-            case .inAppFeedback, .IPP_COD, .IPP_firstTransaction, .IPP_powerUsers:
+            case .inAppFeedback, .inPersonPaymentsCashOnDelivery, .inPersonPaymentsFirstTransaction, .inPersonPaymentsPowerUsers:
                 return Localization.title
             case .productsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .orderCreation, .couponManagement:
                 return Localization.giveFeedback
@@ -147,11 +147,11 @@ extension SurveyViewController {
                 return .orderCreation
             case .couponManagement:
                 return .couponManagement
-            case .IPP_COD:
+            case .inPersonPaymentsCashOnDelivery:
                 return .inPersonPaymentsCashOnDeliveryBanner
-            case .IPP_firstTransaction:
+            case .inPersonPaymentsFirstTransaction:
                 return .inPersonPaymentsFirstTransactionBanner
-            case .IPP_powerUsers:
+            case .inPersonPaymentsPowerUsers:
                 return .inPersonPaymentsPowerUsersBanner
             }
         }

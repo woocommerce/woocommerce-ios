@@ -4,7 +4,7 @@ import Yosemite
 /// Modal presented when an error occurs while connecting to a reader
 ///
 final class CardPresentModalConnectingFailed: CardPresentPaymentsModalViewModel {
-    private let continueSearchAction: () -> Void
+    private let retrySearchAction: () -> Void
     private let cancelSearchAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedTopInfo
@@ -30,13 +30,22 @@ final class CardPresentModalConnectingFailed: CardPresentPaymentsModalViewModel 
         return topTitle
     }
 
-    init(continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
-        self.continueSearchAction = continueSearch
+    init(error: Error,
+         retrySearch: @escaping () -> Void,
+         cancelSearch: @escaping () -> Void) {
+        self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
+
+        switch error {
+        case CardReaderServiceError.connection(let underlyingError):
+            bottomTitle = underlyingError.localizedDescription
+        default:
+            break
+        }
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        continueSearchAction()
+        retrySearchAction()
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

@@ -7,7 +7,11 @@ struct ShippingLabelCreationEligibilityMapper: Mapper {
     ///
     func map(response: Data) throws -> ShippingLabelCreationEligibilityResponse {
         let decoder = JSONDecoder()
-        return try decoder.decode(ShippingLabelCreationEligibilityMapperEnvelope.self, from: response).eligibility
+        do {
+            return try decoder.decode(ShippingLabelCreationEligibilityMapperEnvelope.self, from: response).eligibility
+        } catch {
+            return try decoder.decode(ShippingLabelCreationEligibilityResponse.self, from: response)
+        }
     }
 }
 

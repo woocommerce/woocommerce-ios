@@ -345,6 +345,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Add a Different Address switch in the Address form */
 "Add a different shipping address" = "Add a different shipping address";
 
+/* Title of button to add a domain in domain settings. */
+"Add a domain" = "Add a domain";
+
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "Add a new credit card";
 
@@ -768,7 +771,8 @@ which should be translated separately and considered part of this sentence. */
 "appLinkWidget.displayName" = "Icon";
 
 /* Apply navigation button in custom range date picker
-   Change order status screen - button title to apply selection */
+   Change order status screen - button title to apply selection
+   Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "Apply";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -1221,6 +1225,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
 "Cannot update product" = "Cannot update product";
+
+/* Title of the notice when there is an error updating selected products */
+"Cannot update products" = "Cannot update products";
 
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
@@ -1931,13 +1938,16 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the current country in the store creation country question. */
 "CURRENT LOCATION" = "CURRENT LOCATION";
 
-/* Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
+/* Message in the footer of bulk price setting screen with the current price, when it is the same for all products
+   Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
 "Current price is %@." = "Current price is %@.";
 
-/* Message in the footer of bulk price setting screen, when none of the variations have price value. */
+/* Message in the footer of bulk price setting screen, when none of the products have price value.
+   Message in the footer of bulk price setting screen, when none of the variations have price value. */
 "Current price is not set." = "Current price is not set.";
 
-/* Message in the footer of bulk price setting screen, when variations have different price values. */
+/* Message in the footer of bulk price setting screen, when products have different price values.
+   Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "Current prices are mixed.";
 
 /* Error description for when there are too many variations to generate. */
@@ -2200,7 +2210,8 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Don't have an account? _Sign up_";
 
-/* Alert button text on a feature announcement which prevents the banner being shown again */
+/* Alert button text on a feature announcement which prevents the banner being shown again
+   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "Don't show again";
 
 /* Action title to select products to add to a grouped product from search results
@@ -2465,6 +2476,9 @@ which should be translated separately and considered part of this sentence. */
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
 "End Date" = "End Date";
+
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Enjoyed your in-person payment?" = "Enjoyed your in-person payment?";
 
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "Enjoying the WooCommerce app?";
@@ -3028,6 +3042,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to give feedback about the add-ons feature
    Title of the button to give feedback about the Orders features
    Title of the feedback action button on the coupon list screen
+   Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Give feedback";
 
@@ -3688,6 +3703,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Lesotho" = "Lesotho";
 
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Let us know how we can help" = "Let us know how we can help";
+
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Let us know what you think" = "Let us know what you think";
+
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8.5 x 11 in)";
 
@@ -3806,6 +3827,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to restart the login flow.
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "Log In With Another Account";
+
+/* Button that will navigate to the authentication flow with WP.com */
+"Log in with WordPress.com" = "Log in with WordPress.com";
 
 /* Sign in instructions on the 'log in using email' screen.
    Sign in instructions on the 'log in using WordPress.com account' screen. */
@@ -4321,6 +4345,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message for a dismissal alert on the upsell card reader feature announcement banner */
 "No worries! You can always get started with In-Person Payments in Settings" = "No worries! You can always get started with In-Person Payments in Settings";
+
+/* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
+"No worries! You can always go to Settings in the Menu to send us feedback." = "No worries! You can always go to Settings in the Menu to send us feedback.";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
@@ -5001,6 +5028,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message of the in-progress UI while saving a Variation remotely */
 "Please wait while we save your latest changes" = "Please wait while we save your latest changes";
 
+/* Message of the in-progress UI while bulk updating selected products remotely */
+"Please wait while we update these products on your store" = "Please wait while we update these products on your store";
+
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
 "Please wait while we update your store details" = "Please wait while we update your store details";
@@ -5070,6 +5100,12 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for editing the price settings row on Product main screen
    Title of the cell in Product Price Settings > Price */
 "Price" = "Price";
+
+/* Title of the notice when a user updated price for selected products */
+"Price updated" = "Price updated";
+
+/* Message in the footer of bulk price setting screen, when variable products are selected */
+"Prices for variations won't be updated." = "Prices for variations won't be updated.";
 
 /* Notice title when updating the price via the bulk variation screen */
 "Prices updated successfully." = "Prices updated successfully.";
@@ -5313,6 +5349,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "Rate us";
 
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Rate your first in-person payment experience." = "Rate your first in-person payment experience.";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "rated %ld times";
 
@@ -5439,7 +5478,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Religious Organizations" = "Religious Organizations";
 
-/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time */
+/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
+   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "Remind me later";
 
 /* Confirm button on the alert when the user taps to delete a Product image
@@ -5488,6 +5528,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title for the Rename Attributes screen */
 "Rename Attribute" = "Rename Attribute";
+
+/* Renewal date of a site's domain in domain settings. Reads like `Renews on October 11, 2023`. */
+"Renews on %1$@" = "Renews on %1$@";
 
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "Replace Photo";
@@ -5802,6 +5845,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Select all button title in the issue refund screen */
 "Select All" = "Select All";
 
+/* Title of a button that selects all products for bulk update */
+"Select all" = "Select all";
+
 /* Text field placeholder in Edit Address Form */
 "Select an option" = "Select an option";
 
@@ -5915,6 +5961,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "share details";
 
+/* Title of the feedback action button on the In-Person Payments feedback banner */
+"Share feedback" = "Share feedback";
+
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Share information with our analytics tool about your use of services while logged in to your WordPress.com account.";
 
@@ -5923,6 +5972,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
 "Share with Friends" = "Share with Friends";
+
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Share your own experience or how you collect in-person payments." = "Share your own experience or how you collect in-person payments.";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title
@@ -6334,6 +6386,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Status label in Product Settings */
 "Status" = "Status";
 
+/* Title of the notice when a user updated status for selected products */
+"Status updated" = "Status updated";
+
 /* Button title to contact support to get help with deprecated stats */
 "Still need help? Contact us" = "Still need help? Contact us";
 
@@ -6683,6 +6738,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Telemedicine And Telehealth" = "Telemedicine And Telehealth";
 
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Tell us all about your experience with in-person payments." = "Tell us all about your experience with in-person payments.";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Tell us more about %1$@...";
 
@@ -6769,7 +6827,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The Bluetooth connection to the card reader disconnected unexpectedly" = "The Bluetooth connection to the card reader disconnected unexpectedly";
 
 /* Error message shown when the built-in reader cannot be used because there is a call in progress */
-"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "The built-in reader cannot be used during a phone call. Please try again after you finish your call";
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call." = "The built-in reader cannot be used during a phone call. Please try again after you finish your call.";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "The card does not support this currency. Try another means of payment";
@@ -6870,6 +6928,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the cancel button on the reader is used. */
 "The payment was canceled on the reader" = "The payment was canceled on the reader";
 
+/* Error shown when the built-in card reader payment is interrupted by activity on the phone */
+"The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "The payment was interrupted and cannot be continued. You can retry the payment from the order screen.";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "The phone number is not valid or you can't call the customer from this device.";
 
@@ -6878,6 +6939,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "The price for this product. Editable.";
+
+/* Message in the footer of bulk price setting screen (singular). */
+"The price will be updated for %d product." = "The price will be updated for %d product.";
+
+/* Message in the footer of bulk price setting screen (plurar). */
+"The price will be updated for %d products." = "The price will be updated for %d products.";
 
 /* Message in the footer of bulk price setting screen (singular). */
 "The price will be updated for %d variation." = "The price will be updated for %d variation.";
@@ -7693,6 +7760,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
 "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again.";
 
+/* Title of the in-progress UI while bulk updating selected products remotely */
+"Updating your products..." = "Updating your products...";
+
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "Upsells";
@@ -8290,6 +8360,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Your site address appears in the bar at the top of the screen when you visit your site in Safari.";
+
+/* Header text of the site's domain list in domain settings. */
+"Your site domains" = "Your site domains";
 
 /* Title of the store creation success screen. */
 "Your store has been created!" = "Your store has been created!";

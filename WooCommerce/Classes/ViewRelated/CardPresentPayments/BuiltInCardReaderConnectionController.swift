@@ -231,6 +231,13 @@ private extension BuiltInCardReaderConnectionController {
                 /// discovered changes, so some care around state must be taken here.
                 ///
 
+                /// To avoid interrupting connecting to a known reader, ensure we are
+                /// in the searching state before proceeding further
+                ///
+                guard case .searching = self.state else {
+                    return
+                }
+
                 /// If we have a found reader, advance to `connectToReader`
                 ///
                 if cardReaders.isNotEmpty {
@@ -441,18 +448,15 @@ private extension BuiltInCardReaderConnectionController {
             self.state = .retry
         }
 
-        // TODO: Consider removing this in favour of retry only – continue doesn't make sense for a built-in reader
-        let continueSearch = {
-            self.state = .searching
-        }
-
         let cancelSearch = {
             self.state = .cancel(.connectionError)
         }
 
         guard case CardReaderServiceError.connection(let underlyingError) = error else {
             return alertsPresenter.present(
-                viewModel: alertsProvider.connectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch))
+                viewModel: alertsProvider.connectingFailed(error: error,
+                                                           retrySearch: retrySearch,
+                                                           cancelSearch: cancelSearch))
         }
 
         switch underlyingError {
@@ -469,10 +473,17 @@ private extension BuiltInCardReaderConnectionController {
                     retrySearch: retrySearch,
                     cancelSearch: cancelSearch))
         default:
-            alertsPresenter.present(
-                viewModel: alertsProvider.connectingFailed(
-                    continueSearch: continueSearch,
-                    cancelSearch: cancelSearch))
+            if underlyingError.canBeResolvedByRetrying {
+                alertsPresenter.present(
+                    viewModel: alertsProvider.connectingFailed(
+                        error: error,
+                        retrySearch: retrySearch,
+                        cancelSearch: cancelSearch))
+            } else {
+                alertsPresenter.present(
+                    viewModel: alertsProvider.connectingFailedNonRetryable(error: error,
+                                                                           close: cancelSearch))
+            }
         }
     }
 
@@ -561,5 +572,21 @@ private extension BuiltInCardReaderConnectionController {
             comment: "The button title to indicate that the user has finished updating their store's address and is" +
             "ready to close the webview. This also tries to connect to the reader again."
         )
+    }
+}
+
+private extension CardReaderServiceUnderlyingError {
+    var canBeResolvedByRetrying: Bool {
+        switch self {
+        case .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn,
+                .passcodeNotEnabled,
+                .appleBuiltInReaderDeviceBanned,
+                .appleBuiltInReaderMerchantBlocked,
+                .nfcDisabled,
+                .unsupportedMobileDeviceConfiguration:
+            return false
+        default:
+            return true
+        }
     }
 }

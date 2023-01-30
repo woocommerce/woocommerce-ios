@@ -15,7 +15,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
     var topSubtitle: String? = nil
 
-    let image: UIImage = .paymentErrorImage
+    let image: UIImage
 
     let primaryButtonTitle: String?
 
@@ -36,10 +36,12 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
     init(errorDescription: String?,
          transactionType: CardPresentTransactionType,
+         image: UIImage = .paymentErrorImage,
          primaryAction: @escaping () -> Void,
          dismissCompletion: @escaping () -> Void) {
         self.topTitle = Localization.paymentFailed(transactionType: transactionType)
         self.bottomTitle = errorDescription
+        self.image = image
         self.primaryButtonTitle = Localization.tryAgain(transactionType: transactionType)
         self.secondaryButtonTitle = Localization.noThanks(transactionType: transactionType)
         self.primaryAction = primaryAction

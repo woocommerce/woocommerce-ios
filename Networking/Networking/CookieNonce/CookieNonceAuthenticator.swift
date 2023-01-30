@@ -87,6 +87,10 @@ private extension CookieNonceAuthenticator {
                 invalidateLoginSequence(error: error)
             } catch {
                 DDLogError("⛔️ Cookie nonce authenticator failed with uncaught error: \(error)")
+
+                //  Complete the pending requests without retrying. This informs the clients waiting for response about the failure.
+                //
+                completeRequests(false)
             }
         }
     }

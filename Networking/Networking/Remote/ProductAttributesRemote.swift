@@ -16,7 +16,7 @@ public final class ProductAttributesRemote: Remote {
                                          completion: @escaping (Result<[ProductAttribute], Error>) -> Void) {
 
         let path = Path.attributes
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, availableAsRESTRequest: true)
 
         let mapper = ProductAttributeListMapper(siteID: siteID)
 
@@ -42,7 +42,7 @@ public final class ProductAttributesRemote: Remote {
         ]
 
         let path = Path.attributes
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ProductAttributeMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -70,7 +70,7 @@ public final class ProductAttributesRemote: Remote {
         ]
 
         let path = Path.attributes + "/\(productAttributeID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ProductAttributeMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -88,7 +88,7 @@ public final class ProductAttributesRemote: Remote {
                                        completion: @escaping (Result<ProductAttribute, Error>) -> Void) {
 
         let path = Path.attributes + "/\(productAttributeID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: siteID, path: path)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: siteID, path: path, availableAsRESTRequest: true)
         let mapper = ProductAttributeMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

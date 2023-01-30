@@ -25,7 +25,11 @@ struct ShippingLabelPurchaseMapper: Mapper {
             .orderID: orderID
         ]
 
-        return try decoder.decode(ShippingLabelPurchaseResponse.self, from: response).data.labels
+        do {
+            return try decoder.decode(ShippingLabelPurchaseResponse.self, from: response).data.labels
+        } catch {
+            return try decoder.decode(ShippingLabelPurchaseEnvelope.self, from: response).labels
+        }
     }
 }
 

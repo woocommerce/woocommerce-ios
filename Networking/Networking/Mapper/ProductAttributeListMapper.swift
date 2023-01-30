@@ -17,7 +17,11 @@ struct ProductAttributeListMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(ProductAttributeListEnvelope.self, from: response).productAttributes
+        do {
+            return try decoder.decode(ProductAttributeListEnvelope.self, from: response).productAttributes
+        } catch {
+            return try decoder.decode([ProductAttribute].self, from: response)
+        }
     }
 }
 

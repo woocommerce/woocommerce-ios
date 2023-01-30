@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-11 10:54:17+0000 */
+/* Translation-Revision-Date: 2023-01-25 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -71,6 +71,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "%1$@ 환불 요청됨(%2$@)";
+
+/* Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected */
+"%1$@ selected" = "%1$@ 선택됨";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
 "%1$@ total" = "총 %1$@개";
@@ -418,7 +421,8 @@ which should be translated separately and considered part of this sentence. */
    Add tracking screen - title. */
 "Add Tracking" = "추적 추가";
 
-/* Title on empty state button when the product has attributes but no variations */
+/* Title on empty state button when the product has attributes but no variations
+   Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "변형 추가";
 
 /* Button title on the store picker for store creation */
@@ -426,6 +430,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Add a Different Address switch in the Address form */
 "Add a different shipping address" = "다른 배송 주소 추가";
+
+/* Title of button to add a domain in domain settings. */
+"Add a domain" = "도메인 추가";
 
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "새 신용카드 추가";
@@ -593,6 +600,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "필요한 모든 기능이 이미 구축되어 있음";
 
+/* Message for the notice when there were no variations to generate */
+"All variations are already generated." = "모든 변형이 이미 생성되었습니다.";
+
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "허용";
 
@@ -753,7 +763,8 @@ which should be translated separately and considered part of this sentence. */
 "Application password cannot be generated due to a custom login or admin URL on your site." = "사이트의 사용자 정의 로그인 또는 관리 URL로 인해 애플리케이션 비밀번호를 생성할 수 없습니다.";
 
 /* Apply navigation button in custom range date picker
-   Change order status screen - button title to apply selection */
+   Change order status screen - button title to apply selection
+   Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "적용";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -1047,6 +1058,9 @@ which should be translated separately and considered part of this sentence. */
    Title that appears on top of the bulk update of product variations screen */
 "Bulk Update" = "일괄 업데이트";
 
+/* Title of a button that presents a menu with possible products bulk update options */
+"Bulk update" = "대량 업데이트";
+
 /* Country option for a site address. */
 "Burkina Faso" = "부르키나파소";
 
@@ -1175,7 +1189,8 @@ which should be translated separately and considered part of this sentence. */
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
-   Title for the button to cancel the simple payments screen */
+   Title for the button to cancel the simple payments screen
+   Title of an option to dismiss the bulk edit action sheet */
 "Cancel" = "취소";
 
 /* Action button to cancel Jetpack installation. */
@@ -1208,6 +1223,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
 "Cannot update product" = "제품을 업데이트할 수 없음";
+
+/* Title of the notice when there is an error updating selected products */
+"Cannot update products" = "상품을 업데이트할 수 없음";
 
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
@@ -1829,6 +1847,9 @@ which should be translated separately and considered part of this sentence. */
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "템플릿 상품 생성 중...";
 
+/* Blocking indicator text when creating multiple variations remotely. */
+"Creating Variations..." = "변형 생성 중...";
+
 /* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
 "Creating your store" = "스토어 생성하기";
 
@@ -1869,13 +1890,16 @@ which should be translated separately and considered part of this sentence. */
 /* Cell title: the current date. */
 "Current" = "현재";
 
-/* Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
+/* Message in the footer of bulk price setting screen with the current price, when it is the same for all products
+   Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
 "Current price is %@." = "현재 가격은 %@입니다.";
 
-/* Message in the footer of bulk price setting screen, when none of the variations have price value. */
+/* Message in the footer of bulk price setting screen, when none of the products have price value.
+   Message in the footer of bulk price setting screen, when none of the variations have price value. */
 "Current price is not set." = "현재 가격이 설정되지 않았습니다.";
 
-/* Message in the footer of bulk price setting screen, when variations have different price values. */
+/* Message in the footer of bulk price setting screen, when products have different price values.
+   Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "현재 가격이 뒤섞였습니다.";
 
 /* Error description for when there are too many variations to generate. */
@@ -2122,6 +2146,10 @@ which should be translated separately and considered part of this sentence. */
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "문서";
 
+/* Navigates to domain settings screen.
+   Navigation bar title of the domain settings screen. */
+"Domain" = "도메인";
+
 /* Country option for a site address. */
 "Dominica" = "도미니카";
 
@@ -2131,7 +2159,8 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "아직 계정이 없으신가요? _가입_";
 
-/* Alert button text on a feature announcement which prevents the banner being shown again */
+/* Alert button text on a feature announcement which prevents the banner being shown again
+   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "다시 보지 않음";
 
 /* Action title to select products to add to a grouped product from search results
@@ -2393,6 +2422,9 @@ which should be translated separately and considered part of this sentence. */
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
 "End Date" = "종료 날짜";
+
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Enjoyed your in-person payment?" = "직접 결제가 편하셨나요?";
 
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "WooCommerce 앱이 마음에 드시나요?";
@@ -2720,6 +2752,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info message shown when the order contains multiple fee lines */
 "Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "수수료가 완전하지 않습니다.\n모든 수수료를 편집하려면 우커머스 스토어 관리자에서 주문을 확인하세요.";
 
+/* Blocking indicator text when fetching existing variations prior generating them. */
+"Fetching Variations..." = "변형을 가져오는 중…";
+
 /* Country option for a site address. */
 "Fiji" = "피지";
 
@@ -2878,7 +2913,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "변형 생성 중";
 
-/* Error title for for when there are too many variations to generate. */
+/* Error title for when there are too many variations to generate. */
 "Generation limit exceeded" = "생성 한도 초과됨";
 
 /* Country option for a site address. */
@@ -2949,6 +2984,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to give feedback about the add-ons feature
    Title of the button to give feedback about the Orders features
    Title of the feedback action button on the coupon list screen
+   Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "피드백 보내기";
 
@@ -3212,8 +3248,7 @@ which should be translated separately and considered part of this sentence. */
 "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "%2$@ blog_id %3$@에 대한 주문 #%1$@의 대면 결제";
 
 /* Navigates to In-Person Payments screen
-   Title for a dismissal alert on the upsell card reader feature announcement banner
-   Title for the In-Person Payments settings screen */
+   Title for a dismissal alert on the upsell card reader feature announcement banner */
 "In-Person Payments" = "대면 결제";
 
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
@@ -3604,6 +3639,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Lesotho" = "레소토";
 
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Let us know how we can help" = "어떻게 도와드릴 수 있을지 알려주세요.";
+
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Let us know what you think" = "회원님의 생각을 알려주세요.";
+
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "편지지(8.5 x 11in)";
 
@@ -3724,6 +3765,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "이메일 주소로 워드프레스닷컴 계정에 로그인하세요.";
+
+/* Button that will navigate to the authentication flow with WP.com */
+"Log in with WordPress.com" = "워드프레스닷컴으로 로그인";
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "다른 계정으로 로그인";
@@ -4226,8 +4270,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "아직 세금 클래스가 없음";
 
+/* Title for the notice when there were no variations to generate */
+"No variations to generate" = "생성할 변형 없음";
+
 /* Message for a dismissal alert on the upsell card reader feature announcement banner */
 "No worries! You can always get started with In-Person Payments in Settings" = "걱정하지 마세요! 언제든지 설정에서 대면 결제를 시작하실 수 있습니다.";
+
+/* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
+"No worries! You can always go to Settings in the Menu to send us feedback." = "걱정하지 마세요! 언제든지 메뉴의 설정으로 이동하여 피드백을 보내실 수 있습니다.";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
@@ -4655,7 +4705,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment" = "불특정한 사유로 결제가 거부되었습니다. 다른 결제 수단 시도";
 
-/* Title of the hub menu payments button */
+/* Title for the Payments settings screen
+   Title of the hub menu payments button */
 "Payments" = "결제";
 
 /* Display label for pending order status.
@@ -4907,6 +4958,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message of the in-progress UI while saving a Variation remotely */
 "Please wait while we save your latest changes" = "마지막 변경 사항을 저장하는 동안 기다려 주세요.";
 
+/* Message of the in-progress UI while bulk updating selected products remotely */
+"Please wait while we update these products on your store" = "스토어에서 이러한 상품을 업데이트하는 동안 기다려 주세요.";
+
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
 "Please wait while we update your store details" = "스토어 세부정보를 업데이트하는 동안 기다려 주세요.";
@@ -4977,8 +5031,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Price Settings > Price */
 "Price" = "가격";
 
+/* Title of the notice when a user updated price for selected products */
+"Price updated" = "가격 업데이트됨";
+
+/* Message in the footer of bulk price setting screen, when variable products are selected */
+"Prices for variations won't be updated." = "변형의 가격은 업데이트되지 않습니다.";
+
 /* Notice title when updating the price via the bulk variation screen */
 "Prices updated successfully." = "가격이 업데이트되었습니다.";
+
+/* Title for a free domain if the domain is the primary site address. */
+"Primary site address" = "주요 사이트 주소";
 
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
 "Print" = "인쇄";
@@ -5216,6 +5279,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "평가하기";
 
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Rate your first in-person payment experience." = "첫 번째 직접 결제 경험을 평가하세요.";
+
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "결제 관련 질문에 대한 답변을 도와드릴 수 있는 해피니스 엔지니어에게 연락하기";
 
@@ -5336,7 +5402,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Religious Organizations" = "종교단체";
 
-/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time */
+/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
+   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "나중에 다시 알림";
 
 /* Confirm button on the alert when the user taps to delete a Product image
@@ -5385,6 +5452,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title for the Rename Attributes screen */
 "Rename Attribute" = "속성 이름 변경";
+
+/* Renewal date of a site's domain in domain settings. Reads like `Renews on October 11, 2023`. */
+"Renews on %1$@" = "%1$@에 갱신";
 
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "사진 바꾸기";
@@ -5669,6 +5739,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Search Coupons button */
 "Search coupons" = "쿠폰 검색";
 
+/* Title of the button on the domain settings screen to search for a domain. */
+"Search for a Domain" = "도메인 검색";
+
 /* Search Orders */
 "Search orders" = "주문 검색";
 
@@ -5731,6 +5804,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "제품 유형 선택";
 
+/* Title of a button that selects all products for bulk update */
+"Select all" = "모두 선택";
+
 /* Text field placeholder in Edit Address Form */
 "Select an option" = "옵션 선택";
 
@@ -5742,6 +5818,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "종료 날짜 선택";
+
+/* Title that appears on top of the Product List screen when bulk editing starts. */
+"Select items" = "아이템 선택";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "단락 스타일 선택";
@@ -5825,11 +5904,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "결제 링크 공유";
 
+/* Title of the feedback action button on the In-Person Payments feedback banner */
+"Share feedback" = "피드백 공유";
+
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "워드프레스닷컴 계정에 로그인되어 있는 동안 이용하는 서비스에 대한 정보를 워드프레스의 분석 도구와 공유합니다.";
 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
 "Share with Friends" = "친구와 공유";
+
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Share your own experience or how you collect in-person payments." = "회원님의 경험 또는 직접 결제 방식을 공유하세요.";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title
@@ -6076,6 +6161,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "환불에 문제가 발생했습니다. 다시 시도하세요.";
 
+/* Error message for when we can't create variations remotely
+   Error message for when we can't fetch existing variations. */
+"Something went wrong, please try again later." = "문제가 발생했습니다. 나중에 다시 시도하세요.";
+
 /* Message of the alert when the user cannot create a store because they already created one before. */
 "Sorry, but you can only create one store. Your account is already associated with an active store." = "죄송합니다. 스토어는 하나만 생성할 수 있습니다. 계정이 이미 활성 스토어와 연결되어 있습니다.";
 
@@ -6213,6 +6302,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
 "Status" = "상태";
+
+/* Title of the notice when a user updated status for selected products */
+"Status updated" = "상태 업데이트됨";
 
 /* Button title to contact support to get help with deprecated stats */
 "Still need help? Contact us" = "도움이 더 필요하세요? 문의하기";
@@ -6512,6 +6604,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Telemedicine And Telehealth" = "원격의료 및 원격보건";
 
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Tell us all about your experience with in-person payments." = "직접 결제를 경험해보니 어떤지 말씀해 주세요.";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@에 대한 정보를 알려주세요...";
 
@@ -6522,7 +6617,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Terms of Service" = "서비스 약관";
 
 /* Cell description on beta features screen to enable in-app purchases */
-"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "출시 준비가 되면 스마트폰에 내장된 카드 리더를 사용하여 대면 결제를 테스트해 보세요. iOS 15.5 이상이 실행되는 iPhone XS 이상 기종에서 지원됩니다.";
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 16 or above, for US-based stores." = "시작할 준비가 되면 스마트폰에 내장된 카드 리더를 사용하여 직접 결제를 테스트해 보세요. 미국 기반 스토어의 경우 iOS 16 이상이 실행되는 iPhone XS 이상 기종에서 지원됩니다.";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "시작할 준비가 되었으니 앱 내 구매를 테스트해 보세요.";
@@ -6610,7 +6705,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The attribute couldn't be saved." = "속성을 저장할 수 없습니다.";
 
 /* Error message shown when the built-in reader cannot be used because there is a call in progress */
-"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "통화 중에는 기본 제공 리더를 사용할 수 없습니다. 통화를 마치고 다시 시도하세요.";
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call." = "통화 중에는 기본 제공 리더를 사용할 수 없습니다. 통화를 마치고 다시 시도하세요.";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "카드에서 이 통화가 지원되지 않습니다. 다른 결제 수단 시도";
@@ -6702,6 +6797,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the cancel button on the reader is used. */
 "The payment was canceled on the reader" = "리더에서 결제가 취소되었습니다.";
 
+/* Error shown when the built-in card reader payment is interrupted by activity on the phone */
+"The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "결제가 중단되었으며 계속할 수 없습니다. 주문 화면에서 결제를 다시 시도하실 수 있습니다.";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "전화번호가 유효하지 않거나 이 기기에서 고객에게 전화를 걸 수 없습니다.";
 
@@ -6710,6 +6808,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "이 제품의 가격입니다. 편집 가능합니다.";
+
+/* Message in the footer of bulk price setting screen (singular). */
+"The price will be updated for %d product." = "%d개 상품의 가격이 업데이트됩니다.";
+
+/* Message in the footer of bulk price setting screen (plurar). */
+"The price will be updated for %d products." = "%d개 상품의 가격이 업데이트됩니다.";
 
 /* Message in the footer of bulk price setting screen (singular). */
 "The price will be updated for %d variation." = "%d개 변형 가격이 업데이트됩니다.";
@@ -7254,6 +7358,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "새 주문을 생성할 수 없음";
 
+/* Error title for when we can't create variations remotely. */
+"Unable to create variations" = "변형을 생성할 수 없음";
+
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "%1$d번 주문에 대한 추적을 삭제할 수 없음";
 
@@ -7262,6 +7369,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error notice when we fail to load country information in the edit address screen. */
 "Unable to fetch country information, please try again later." = "국가 정보를 가져올 수 없습니다. 나중에 다시 시도하세요.";
+
+/* Error title for when we can't fetch existing variations. */
+"Unable to fetch variations" = "변형을 가져올 수 없음";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "%1$d번 주문을 처리할 수 없음";
@@ -7472,11 +7582,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
 "Update available" = "업데이트 사용 가능";
 
+/* Title of an option that opens bulk products price update flow */
+"Update price" = "가격 업데이트";
+
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "제품 인벤토리 및 SKU 업데이트";
 
 /* Accessibility label to update products' downloadable files' info remotely */
 "Update products' downloadable files' info remotely" = "제품의 다운로드 가능한 파일 정보를 원격으로 업데이트";
+
+/* Title of an option that opens bulk products status update flow */
+"Update status" = "상태 업데이트";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "이 앱을 계속 사용하려면 WooCommerce 3.5로 업데이트하세요.";
@@ -7507,6 +7623,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
 "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "리더의 배터리가 %.0f%% 충전되어 리더 소프트웨어를 업데이트하지 못했습니다. 다시 시도하기 전에 리더를 50%% 넘게 충전하세요.";
+
+/* Title of the in-progress UI while bulk updating selected products remotely */
+"Updating your products..." = "상품 업데이트 중...";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -7607,6 +7726,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the variations attributes row on Product screen */
 "Variations Attributes" = "변형 속성";
+
+/* Title for the notice when after variations were created */
+"Variations created successfully" = "변형 생성됨";
 
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "사이트에 대한 다양한 시스템 정보";
@@ -8062,8 +8184,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "해당 이메일은 워드프레스닷컴 계정에서 사용되지 않습니다.";
 
+/* Title of the free domain view. */
+"Your free store address" = "무료 스토어 주소";
+
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
-"Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "iPhone을 카드 리더로 사용하거나, 블루투스를 통해 외부 리더에 연결할 수 있습니다.";
+"Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "iPhone을 카드 리더로 사용하거나, 블루투스를 통해 외부 리더에 연결할 수 있습니다.";
 
 /* Label that displays when a configuration update is happening */
 "Your iPhone needs to be configured to collect payments." = "결제받도록 iPhone을 구성해야 합니다.";
@@ -8088,6 +8213,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Safari에서 사이트를 방문하면 화면 위쪽의 표시줄에 사이트 주소가 표시됩니다.";
+
+/* Header text of the site's domain list in domain settings. */
+"Your site domains" = "사이트 도메인";
 
 /* Title of the store creation success screen. */
 "Your store has been created!" = "스토어가 생성되었습니다!";

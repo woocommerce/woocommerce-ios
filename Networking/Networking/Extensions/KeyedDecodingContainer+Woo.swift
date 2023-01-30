@@ -5,6 +5,7 @@ enum AlternativeDecodingType<T> {
     case decimal(transform: (Decimal) -> T)
     case string(transform: (String) -> T)
     case bool(transform: (Bool) -> T)
+    case integer(transform: (Int) -> T)
 }
 
 // MARK: - KeyedDecodingContainer: Bulletproof JSON Decoding.
@@ -53,6 +54,10 @@ extension KeyedDecodingContainer {
                 }
             case .bool(transform: let transform):
                 if let result = failsafeDecodeIfPresent(booleanForKey: key) {
+                    return transform(result)
+                }
+            case .integer(transform: let transform):
+                if let result = failsafeDecodeIfPresent(integerForKey: key) {
                     return transform(result)
                 }
             }

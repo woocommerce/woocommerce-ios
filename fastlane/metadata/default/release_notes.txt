@@ -1,1 +1,1 @@
-You’ll notice some nice visual changes to the look of the app! Take a look and please share your feedback – more updates to come in the next few weeks!
+It's now possible to bulk update product status and prices! Simply go to the Products tab and click on the multi select icon on the top to try it out.

@@ -333,8 +333,8 @@ private extension LegacyCollectOrderPaymentUseCase {
                                                    countryCode: configuration.countryCode,
                                                    paymentMethod: capturedPaymentData.paymentMethod,
                                                    cardReaderModel: connectedReader?.readerType.model ?? "",
-                                                   milisecondsSinceOrderAddNew: try? orderDurationRecorder.milisecondsSinceOrderAddNew(),
-                                                   milisecondsSinceCardPaymentStarted: try? orderDurationRecorder.milisecondsSinceCardPaymentStarted()))
+                                                   millisecondsSinceOrderAddNew: try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
+                                                   millisecondsSinceCardPaymentStarted: try? orderDurationRecorder.millisecondsSinceCardPaymentStarted()))
         orderDurationRecorder.reset()
 
         // Success Callback

@@ -20,7 +20,7 @@ final class ReviewAgeTests: XCTestCase {
         XCTAssertEqual(age?.description, Expectations.olderThan7Days)
     }
 
-    /// We are going to assume that days are 84400 miliseconds
+    /// We are going to assume that days are 84400 milliseconds
     /// which is wrong and inaccurate, but after all, this is software engineering,
     /// not real life
     func testAgeCalculationsReturnLast24HoursAgeFor12Hours() {

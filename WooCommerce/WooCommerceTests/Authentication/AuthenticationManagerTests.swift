@@ -158,6 +158,27 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
+    func test_it_presents_username_and_password_controller_for_non_jetpack_site_when_using_application_password_authentication() {
+        // Given
+        let mockABTestVariationProvider = MockABTestVariationProvider()
+        mockABTestVariationProvider.mockVariationValue = .treatment
+
+        let manager = AuthenticationManager(abTestVariationProvider: mockABTestVariationProvider)
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false])
+        var result: WordPressAuthenticatorResult?
+        let completionHandler: (WordPressAuthenticatorResult) -> Void = { completionResult in
+            result = completionResult
+        }
+
+        // When
+        manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: completionHandler)
+
+        // Then
+        guard case .presentPasswordController = result else {
+            return XCTFail("Unexpected result returned for non-Jetpack site")
+        }
+    }
+
     func test_it_shows_error_upon_login_epilogue_if_the_self_hosted_site_does_not_have_jetpack() {
         // Given
         let manager = AuthenticationManager()
@@ -228,6 +249,27 @@ final class AuthenticationManagerTests: XCTestCase {
         // Then
         let rootController = navigationController.viewControllers.first
         XCTAssertTrue(rootController is ULErrorViewController)
+    }
+
+    func test_it_does_not_display_jetpack_error_for_org_site_credentials_sign_in_when_using_application_password_authentication() {
+        // Given
+        let mockABTestVariationProvider = MockABTestVariationProvider()
+        mockABTestVariationProvider.mockVariationValue = .treatment
+
+        let manager = AuthenticationManager(abTestVariationProvider: mockABTestVariationProvider)
+        let testSite = "http://test.com"
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false, "urlAfterRedirects": testSite])
+        let wporgCredentials = WordPressOrgCredentials(username: "cba", password: "password", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
+        let credentials = AuthenticatorCredentials(wpcom: nil, wporg: wporgCredentials)
+        let navigationController = UINavigationController()
+
+        // When
+        manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { _ in })
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: {})
+
+        // Then
+        let rootController = navigationController.viewControllers.first
+        XCTAssertFalse(rootController is ULErrorViewController)
     }
 
     func test_errorViewController_display_account_mismatch_screen_if_no_site_matches_the_given_self_hosted_site() {

@@ -839,8 +839,8 @@ private extension EditableOrderViewModel {
     /// Tracks an order creation success
     ///
     func trackCreateOrderSuccess() {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess(milisecondsSinceSinceOrderAddNew:
-                                                                                try? OrderDurationRecorder.shared.milisecondsSinceOrderAddNew()))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess(millisecondsSinceSinceOrderAddNew:
+                                                                                try? OrderDurationRecorder.shared.millisecondsSinceOrderAddNew()))
     }
 
     /// Tracks an order creation failure

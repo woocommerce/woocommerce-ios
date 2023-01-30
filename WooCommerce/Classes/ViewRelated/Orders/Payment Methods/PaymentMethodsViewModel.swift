@@ -437,8 +437,8 @@ private extension PaymentMethodsViewModel {
     func trackCollectIntention(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod) {
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCollect(flow: flow,
                                                                                   method: method,
-                                                                                  milisecondsSinceOrderAddNew:
-                                                                                    try? OrderDurationRecorder.shared.milisecondsSinceOrderAddNew()))
+                                                                                  millisecondsSinceOrderAddNew:
+                                                                                    try? OrderDurationRecorder.shared.millisecondsSinceOrderAddNew()))
     }
 }
 

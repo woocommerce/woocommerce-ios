@@ -3,6 +3,8 @@ import WordPressKit
 import WordPressAuthenticator
 import Yosemite
 @testable import WooCommerce
+@testable import Experiments
+@testable import AutomatticTracks
 
 /// Test cases for `AuthenticationManager`.
 final class AuthenticationManagerTests: XCTestCase {
@@ -137,9 +139,12 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(viewModel is NoSecureConnectionErrorViewModel)
     }
 
-    func test_it_presents_username_and_password_controller_for_non_jetpack_site() {
+    func test_it_presents_username_and_password_controller_for_non_jetpack_site_when_not_using_application_password_authentication() {
         // Given
-        let manager = AuthenticationManager()
+        let mockABTestVariationProvider = MockABTestVariationProvider()
+        mockABTestVariationProvider.mockVariationValue = .control
+
+        let manager = AuthenticationManager(abTestVariationProvider: mockABTestVariationProvider)
         let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false])
         var result: WordPressAuthenticatorResult?
         let completionHandler: (WordPressAuthenticatorResult) -> Void = { completionResult in
@@ -206,9 +211,12 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(rootController is ULAccountMismatchViewController)
     }
 
-    func test_it_can_display_jetpack_error_for_org_site_credentials_sign_in() {
+    func test_it_can_display_jetpack_error_for_org_site_credentials_sign_in_when_not_using_application_password_authentication() {
         // Given
-        let manager = AuthenticationManager()
+        let mockABTestVariationProvider = MockABTestVariationProvider()
+        mockABTestVariationProvider.mockVariationValue = .control
+
+        let manager = AuthenticationManager(abTestVariationProvider: mockABTestVariationProvider)
         let testSite = "http://test.com"
         let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false, "urlAfterRedirects": testSite])
         let wporgCredentials = WordPressOrgCredentials(username: "cba", password: "password", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
@@ -459,7 +467,6 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_shouldPresentUsernamePasswordController_tracks_fetched_site_info() throws {
         // Given
-        let navigationController = UINavigationController()
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
 
@@ -496,5 +503,13 @@ private extension AuthenticationManagerTests {
                                       "isJetpackActive": isJetpackActive,
                                       "isJetpackConnected": isJetpackConnected,
                                       "isWordPressDotCom": isWordPressCom])
+    }
+}
+
+private class MockABTestVariationProvider: ABTestVariationProvider {
+    var mockVariationValue: Variation!
+
+    func variation(for abTest: ABTest) -> Variation {
+        mockVariationValue
     }
 }

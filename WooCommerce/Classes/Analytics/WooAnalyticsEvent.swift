@@ -1377,11 +1377,11 @@ extension WooAnalyticsEvent {
                                                  countryCode: String,
                                                  cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectInteracPaymentSuccess,
-                                     properties: [
-                                        Keys.cardReaderModel: cardReaderModel,
-                                        Keys.countryCode: countryCode,
-                                        Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
-                                     ])
+                              properties: [
+                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID)
+                              ])
         }
 
         /// Tracked when an Interac client-side refund succeeds

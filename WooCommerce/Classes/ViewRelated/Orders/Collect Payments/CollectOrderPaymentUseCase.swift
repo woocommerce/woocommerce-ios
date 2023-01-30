@@ -96,6 +96,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     private var preflightController: CardPresentPaymentPreflightController?
 
+    private let orderDurationRecorder: OrderDurationRecorderProtocol
+
     private var cancellables: Set<AnyCancellable> = []
 
     init(siteID: Int64,
@@ -106,6 +108,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          paymentCaptureCelebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
+         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.order = order
@@ -116,6 +119,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.configuration = configuration
         self.stores = stores
         self.paymentCaptureCelebration = paymentCaptureCelebration
+        self.orderDurationRecorder = orderDurationRecorder
         self.analytics = analytics
     }
 
@@ -300,7 +304,6 @@ private extension CollectOrderPaymentUseCase {
     ///
     func handleSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData,
                                  onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        let orderDurationRecorder = OrderDurationRecorder.shared
         // Record success
         analytics.track(event: WooAnalyticsEvent.InPersonPayments
                             .collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID,

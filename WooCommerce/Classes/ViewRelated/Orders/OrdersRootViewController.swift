@@ -65,13 +65,17 @@ final class OrdersRootViewController: UIViewController {
 
     private let featureFlagService: FeatureFlagService
 
+    private let orderDurationRecorder: OrderDurationRecorderProtocol
+
     // MARK: View Lifecycle
 
     init(siteID: Int64,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
+        self.orderDurationRecorder = orderDurationRecorder
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
@@ -377,7 +381,7 @@ private extension OrdersRootViewController {
         }
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
-        OrderDurationRecorder.shared.startRecording()
+        orderDurationRecorder.startRecording()
     }
 
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.

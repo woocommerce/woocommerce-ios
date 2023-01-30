@@ -5,9 +5,17 @@ enum OrderDurationRecorderError: Error {
     case durationExceededTimeout
 }
 
+protocol OrderDurationRecorderProtocol {
+    func startRecording()
+    func recordCardPaymentStarted()
+    func reset()
+    func millisecondsSinceOrderAddNew() throws -> Int64
+    func millisecondsSinceCardPaymentStarted() throws -> Int64
+}
+
 /// Measures the duration of Order Creation and In-Person Payments flows for analytical purposes
 ///
-class OrderDurationRecorder {
+class OrderDurationRecorder: OrderDurationRecorderProtocol {
     static let shared = OrderDurationRecorder()
     private var orderAddNewTimestamp: TimeInterval?
     private var cardPaymentStartedTimestamp: TimeInterval?

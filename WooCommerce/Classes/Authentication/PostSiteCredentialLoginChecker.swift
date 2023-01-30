@@ -56,7 +56,7 @@ private extension PostSiteCredentialLoginChecker {
                     let errorUI = applicationPasswordDisabledUI(for: siteURL)
                     navigationController.show(errorUI, sender: nil)
                 case ApplicationPasswordUseCaseError.unauthorizedRequest:
-                    showAlert(message: Localization.invalidLoginOrAdminURL, in: navigationController)
+                    showAlert(message: Localization.unauthorizedForAppPassword, in: navigationController)
                 default:
                     DDLogError("⛔️ Error generating application password: \(error)")
                     showAlert(
@@ -199,9 +199,9 @@ private extension PostSiteCredentialLoginChecker {
             "Error checking for the WooCommerce plugin.",
             comment: "Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication"
         )
-        static let invalidLoginOrAdminURL = NSLocalizedString(
-            "Application password cannot be generated due to a custom login or admin URL on your site.",
-            comment: "Message to display when the constructed admin or login URL for the logged-in site is not accessible"
+        static let unauthorizedForAppPassword = NSLocalizedString(
+            "The request to generate application password is not authorized.",
+            comment: "Message to display when the generating application password fails with unauthorized error"
         )
         static let contactSupport = NSLocalizedString("Contact Support", comment: "Button to contact support for login")
         static let retryButton = NSLocalizedString("Try Again", comment: "Button to refetch application password for the current site")

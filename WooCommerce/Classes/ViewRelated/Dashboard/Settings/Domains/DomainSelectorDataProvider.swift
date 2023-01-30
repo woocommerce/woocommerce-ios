@@ -61,7 +61,10 @@ struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable 
             attributedCost.foregroundColor = .init(.secondaryLabel)
 
             if let saleCost = domainSuggestion.saleCost {
-                attributedCost.strikethroughStyle = .single
+                // Strikethrough style for the original cost string.
+                if let range = attributedCost.range(of: domainSuggestion.cost) {
+                    attributedCost[range].strikethroughStyle = .single
+                }
 
                 var attributedSaleCost = AttributedString(saleCost)
                 attributedSaleCost.font = .body

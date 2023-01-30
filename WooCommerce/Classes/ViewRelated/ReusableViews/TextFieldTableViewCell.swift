@@ -4,6 +4,17 @@ import UIKit
 ///
 final class TextFieldTableViewCell: UITableViewCell {
     struct ViewModel {
+        internal init(text: String? = nil, placeholder: String? = nil, onTextChange: ((String?) -> Void)? = nil, onTextDidBeginEditing: (() -> Void)? = nil, onTextDidReturn: ((String?) -> Void)? = nil, inputFormatter: UnitInputFormatter? = nil, keyboardType: UIKeyboardType, returnKeyType: UIReturnKeyType = .default, autocapitalizationType: UITextAutocapitalizationType = .none) {
+            self.text = text
+            self.placeholder = placeholder
+            self.onTextChange = onTextChange
+            self.onTextDidBeginEditing = onTextDidBeginEditing
+            self.onTextDidReturn = onTextDidReturn
+            self.inputFormatter = inputFormatter
+            self.keyboardType = keyboardType
+            self.returnKeyType = returnKeyType
+            self.autocapitalizationType = autocapitalizationType
+        }
         let text: String?
         let placeholder: String?
         let onTextChange: ((_ text: String?) -> Void)?
@@ -11,7 +22,8 @@ final class TextFieldTableViewCell: UITableViewCell {
         let onTextDidReturn: ((_ text: String?) -> Void)?
         let inputFormatter: UnitInputFormatter?
         let keyboardType: UIKeyboardType
-        var returnKeyType: UIReturnKeyType = .default
+        let returnKeyType: UIReturnKeyType
+        let autocapitalizationType: UITextAutocapitalizationType
     }
 
     @IBOutlet private weak var textField: UITextField!
@@ -41,6 +53,7 @@ final class TextFieldTableViewCell: UITableViewCell {
         textField.returnKeyType = viewModel.returnKeyType
         textField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
         textField.addTarget(self, action: #selector(textFieldDidBegin(textField:)), for: .editingDidBegin)
+        textField.autocapitalizationType = viewModel.autocapitalizationType
     }
 
     @discardableResult

@@ -28,15 +28,15 @@ class OrderDurationRecorder {
         cardPaymentStartedTimestamp = nil
     }
 
-    func timeIntervalSinceOrderAddNew() throws -> TimeInterval {
-        return try timeIntervalSince(orderAddNewTimestamp)
+    func milisecondsSinceOrderAddNew() throws -> Int64 {
+        try milisecondsSince(orderAddNewTimestamp)
     }
 
-    func timeIntervalSinceCardPaymentStarted() throws -> TimeInterval {
-        try timeIntervalSince(cardPaymentStartedTimestamp)
+    func milisecondsSinceCardPaymentStarted() throws -> Int64 {
+        try milisecondsSince(cardPaymentStartedTimestamp)
     }
 
-    private func timeIntervalSince(_ origin: TimeInterval?) throws -> TimeInterval {
+    private func milisecondsSince(_ origin: TimeInterval?) throws -> Int64 {
         guard let startTimestamp = origin else {
             throw OrderDurationRecorderError.noStartRecordingTimestamp
         }
@@ -47,6 +47,6 @@ class OrderDurationRecorder {
             throw OrderDurationRecorderError.durationExceededTimeout
         }
 
-        return timestamp
+        return Int64(timestamp*1000)
     }
 }

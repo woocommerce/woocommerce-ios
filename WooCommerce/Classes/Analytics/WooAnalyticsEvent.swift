@@ -416,7 +416,7 @@ extension WooAnalyticsEvent {
         }
 
         enum GlobalKeys {
-            static let timeIntervalSinceOrderAddNew = "time_interval_since_order_add_new"
+            static let milisecondsSinceOrderAddNew = "miliseconds_since_order_add_new"
         }
 
         private enum Keys {
@@ -521,11 +521,11 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderCreationSuccess() -> WooAnalyticsEvent {
+        static func orderCreationSuccess(milisecondsSinceSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [:]
 
-            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.timeIntervalSinceOrderAddNew() {
-                properties[GlobalKeys.timeIntervalSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            if let lapseSinceLastOrderAddNew = milisecondsSinceSinceOrderAddNew {
+                properties[GlobalKeys.milisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
             }
 
             return WooAnalyticsEvent(statName: .orderCreationSuccess, properties: properties)
@@ -900,12 +900,12 @@ extension WooAnalyticsEvent {
                                                                           Keys.source: source.rawValue])
         }
 
-        static func paymentsFlowCollect(flow: Flow, method: PaymentMethod) -> WooAnalyticsEvent {
+        static func paymentsFlowCollect(flow: Flow, method: PaymentMethod, milisecondsSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
                               Keys.paymentMethod: method.rawValue]
 
-            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.timeIntervalSinceOrderAddNew() {
-                properties[Orders.GlobalKeys.timeIntervalSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            if let lapseSinceLastOrderAddNew = milisecondsSinceOrderAddNew {
+                properties[Orders.GlobalKeys.milisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
             }
 
             return WooAnalyticsEvent(statName: .paymentsFlowCollect, properties: properties)
@@ -965,7 +965,7 @@ extension WooAnalyticsEvent {
             static let source = "source"
             static let enabled = "enabled"
             static let cancellationSource = "cancellation_source"
-            static let timeIntervalSinceCardCollectPaymentFlow = "time_interval_since_card_collect_payment_flow"
+            static let milisecondsSinceCardCollectPaymentFlow = "miliseconds_since_card_collect_payment_flow"
         }
 
         static let unknownGatewayID = "unknown"
@@ -1343,7 +1343,9 @@ extension WooAnalyticsEvent {
         static func collectPaymentSuccess(forGatewayID: String?,
                                           countryCode: String,
                                           paymentMethod: PaymentMethod,
-                                          cardReaderModel: String) -> WooAnalyticsEvent {
+                                          cardReaderModel: String,
+                                          milisecondsSinceOrderAddNew: Int64?,
+                                          milisecondsSinceCardPaymentStarted: Int64?) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Keys.cardReaderModel: cardReaderModel,
                 Keys.countryCode: countryCode,
@@ -1351,12 +1353,12 @@ extension WooAnalyticsEvent {
                 Keys.paymentMethodType: paymentMethod.analyticsValue
               ]
 
-            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.timeIntervalSinceOrderAddNew() {
-                properties[Orders.GlobalKeys.timeIntervalSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            if let lapseSinceLastOrderAddNew = milisecondsSinceOrderAddNew {
+                properties[Orders.GlobalKeys.milisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
             }
 
-            if let timeIntervalSinceCardCollectPaymentFlow = try? OrderDurationRecorder.shared.timeIntervalSinceCardPaymentStarted() {
-                properties[Keys.timeIntervalSinceCardCollectPaymentFlow] = timeIntervalSinceCardCollectPaymentFlow
+            if let timeIntervalSinceCardCollectPaymentFlow = milisecondsSinceCardPaymentStarted {
+                properties[Keys.milisecondsSinceCardCollectPaymentFlow] = timeIntervalSinceCardCollectPaymentFlow
             }
 
             return WooAnalyticsEvent(statName: .collectPaymentSuccess,
@@ -1374,22 +1376,12 @@ extension WooAnalyticsEvent {
         static func collectInteracPaymentSuccess(gatewayID: String?,
                                                  countryCode: String,
                                                  cardReaderModel: String) -> WooAnalyticsEvent {
-            var properties: [String: WooAnalyticsEventPropertyType] = [
-                Keys.cardReaderModel: cardReaderModel,
-                Keys.countryCode: countryCode,
-                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
-              ]
-
-            if let lapseSinceLastOrderAddNew = try? OrderDurationRecorder.shared.timeIntervalSinceOrderAddNew() {
-                properties[Orders.GlobalKeys.timeIntervalSinceOrderAddNew] = lapseSinceLastOrderAddNew
-            }
-
-            if let timeIntervalSinceCardCollectPaymentFlow = try? OrderDurationRecorder.shared.timeIntervalSinceCardPaymentStarted() {
-                properties[Keys.timeIntervalSinceCardCollectPaymentFlow] = timeIntervalSinceCardCollectPaymentFlow
-            }
-
             return WooAnalyticsEvent(statName: .collectInteracPaymentSuccess,
-                              properties: properties)
+                                     properties: [
+                                        Keys.cardReaderModel: cardReaderModel,
+                                        Keys.countryCode: countryCode,
+                                        Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
+                                     ])
         }
 
         /// Tracked when an Interac client-side refund succeeds

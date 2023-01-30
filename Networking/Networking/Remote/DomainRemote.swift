@@ -91,6 +91,12 @@ public struct PaidDomainSuggestion: Decodable, Equatable {
     /// Whether there is privacy support. Used when creating a cart with a domain product.
     public let supportsPrivacy: Bool
 
+    public init(name: String, productID: Int64, supportsPrivacy: Bool) {
+        self.name = name
+        self.productID = productID
+        self.supportsPrivacy = supportsPrivacy
+    }
+
     private enum CodingKeys: String, CodingKey {
         case name = "domain_name"
         case productID = "product_id"

@@ -102,6 +102,7 @@
 		02EF1670292F0CF400D90AD6 /* create-cart-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02EF166F292F0CF400D90AD6 /* create-cart-success.json */; };
 		02EF1672292F0D1900D90AD6 /* load-plan-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02EF1671292F0D1900D90AD6 /* load-plan-success.json */; };
 		02F096C22406691100C0C1D5 /* media-library.json in Resources */ = {isa = PBXBuildFile; fileRef = 02F096C12406691100C0C1D5 /* media-library.json */; };
+		02F4AA2929791623002AA0E8 /* create-doman-cart-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02F4AA2829791623002AA0E8 /* create-doman-cart-success.json */; };
 		0313651928AE559D00EEE571 /* PaymentGatewayMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651828AE559D00EEE571 /* PaymentGatewayMapper.swift */; };
 		0313651B28AE60E000EEE571 /* payment-gateway-cod.json in Resources */ = {isa = PBXBuildFile; fileRef = 0313651A28AE60E000EEE571 /* payment-gateway-cod.json */; };
 		0313651D28AE625300EEE571 /* PaymentGatewayMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651C28AE625300EEE571 /* PaymentGatewayMapperTests.swift */; };
@@ -975,6 +976,7 @@
 		02EF166F292F0CF400D90AD6 /* create-cart-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-cart-success.json"; sourceTree = "<group>"; };
 		02EF1671292F0D1900D90AD6 /* load-plan-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "load-plan-success.json"; sourceTree = "<group>"; };
 		02F096C12406691100C0C1D5 /* media-library.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-library.json"; sourceTree = "<group>"; };
+		02F4AA2829791623002AA0E8 /* create-doman-cart-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-doman-cart-success.json"; sourceTree = "<group>"; };
 		0313651828AE559D00EEE571 /* PaymentGatewayMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayMapper.swift; sourceTree = "<group>"; };
 		0313651A28AE60E000EEE571 /* payment-gateway-cod.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "payment-gateway-cod.json"; sourceTree = "<group>"; };
 		0313651C28AE625300EEE571 /* PaymentGatewayMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayMapperTests.swift; sourceTree = "<group>"; };
@@ -2305,6 +2307,7 @@
 				028CB71A290224D700331C09 /* create-account-error-username.json */,
 				028CB712290223CB00331C09 /* create-account-success.json */,
 				02EF166F292F0CF400D90AD6 /* create-cart-success.json */,
+				02F4AA2829791623002AA0E8 /* create-doman-cart-success.json */,
 				02050F58296FEC5B00710E63 /* domain-products.json */,
 				0239306C291A973F00B2632F /* domain-suggestions.json */,
 				02050F56296FE90A00710E63 /* domain-suggestions-paid.json */,
@@ -3117,6 +3120,7 @@
 			files = (
 				D865CE6F278CC19A002C8520 /* stripe-location-error.json in Resources */,
 				31799AFE270518AD00D78179 /* wcpay-location-error.json in Resources */,
+				02F4AA2929791623002AA0E8 /* create-doman-cart-success.json in Resources */,
 				74C8F07020EEC3A800B6EDC9 /* broken-notes.json in Resources */,
 				2670C3FE270F4E6A002FE931 /* sites-malformed.json in Resources */,
 				CCF434662906C2A400B4475A /* products-ids-only.json in Resources */,

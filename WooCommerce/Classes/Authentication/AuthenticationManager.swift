@@ -9,6 +9,8 @@ import struct Networking.Settings
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
 import class Networking.DefaultApplicationPasswordUseCase
+import protocol Experiments.ABTestVariationProvider
+import struct Experiments.DefaultABTestVariationProvider
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
@@ -45,15 +47,19 @@ class AuthenticationManager: Authentication {
 
     private let analytics: Analytics
 
+    private let abTestVariationProvider: ABTestVariationProvider
+
     /// Keeps a reference to the checker
     private var postSiteCredentialLoginChecker: PostSiteCredentialLoginChecker?
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         abTestVariationProvider: ABTestVariationProvider = DefaultABTestVariationProvider()) {
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.analytics = analytics
+        self.abTestVariationProvider = abTestVariationProvider
     }
 
     /// Initializes the WordPress Authenticator.
@@ -62,7 +68,7 @@ class AuthenticationManager: Authentication {
         let isWPComMagicLinkPreferredToPassword = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let isStoreCreationMVPEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
-        let enableSiteAddressLoginOnly = ABTest.applicationPasswordAuthentication.variation == .treatment
+        let enableSiteAddressLoginOnly = abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -341,7 +347,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         /// save the site to memory to check for jetpack requirement in epilogue
         currentSelfHostedSite = site
 
-        let enableWPComOnlyForWPComSites = ABTest.applicationPasswordAuthentication.variation == .treatment
+        let enableWPComOnlyForWPComSites = abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment
 
         switch (enableWPComOnlyForWPComSites, site.isWPCom) {
         case (true, true), (false, _):
@@ -387,7 +393,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         /// If the user logged in with site credentials and application password feature flag is enabled,
         /// check if they can use the app and navigates to the home screen.
         if let siteCredentials = credentials.wporg,
-           ABTest.applicationPasswordAuthentication.variation == .treatment {
+           abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment {
             return didAuthenticateUser(to: siteURL,
                                        with: siteCredentials,
                                        in: navigationController)
@@ -499,7 +505,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
         if let wporg = credentials.wporg,
-           ABTest.applicationPasswordAuthentication.variation == .treatment {
+           abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment {
             ServiceLocator.stores.authenticate(credentials: .wporg(username: wporg.username,
                                                                    password: wporg.password,
                                                                    siteAddress: wporg.siteURL))

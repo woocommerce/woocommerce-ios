@@ -20,7 +20,8 @@ public enum ABTest: String, CaseIterable {
     case applicationPasswordAuthentication = "woocommerceios_login_rest_api_project_202301_v2"
 
     /// Returns a variation for the given experiment
-    public var variation: Variation {
+    ///
+    var variation: Variation {
         ExPlat.shared?.experiment(rawValue) ?? .control
     }
 

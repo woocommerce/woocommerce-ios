@@ -1971,6 +1971,7 @@
 		E1F52DC62668E03B00349D75 /* CardPresentModalBluetoothRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */; };
 		EE0EE7A628B7415200F6061E /* CustomHelpCenterContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EE7A528B7415200F6061E /* CustomHelpCenterContent.swift */; };
 		EE0EE7A828B74EF300F6061E /* CustomHelpCenterContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */; };
+		EE2EDFE12987A189004E702B /* MockABTestVariationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */; };
 		EE57C11D297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */; };
 		EE57C11F297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */; };
 		EE57C121297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C120297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift */; };
@@ -4072,6 +4073,7 @@
 		E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalBluetoothRequired.swift; sourceTree = "<group>"; };
 		EE0EE7A528B7415200F6061E /* CustomHelpCenterContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHelpCenterContent.swift; sourceTree = "<group>"; };
 		EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHelpCenterContentTests.swift; sourceTree = "<group>"; };
+		EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockABTestVariationProvider.swift; sourceTree = "<group>"; };
 		EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEventRequestNotificationHandler.swift; sourceTree = "<group>"; };
 		EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ApplicationPassword.swift"; sourceTree = "<group>"; };
 		EE57C120297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEventRequestNotificationHandlerTests.swift; sourceTree = "<group>"; };
@@ -6807,6 +6809,7 @@
 				EE8DCA7F28BF964700F23B23 /* MockAuthentication.swift */,
 				AEB4DB98290AE8F300AE4340 /* MockCookieJar.swift */,
 				02660503293D8D24004084EA /* PaymentCaptureCelebration.swift */,
+				EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -11423,6 +11426,7 @@
 				DE4B3B2C2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift in Sources */,
 				D89C009425B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift in Sources */,
 				573A960324F433DD0091F3A5 /* ProductsTopBannerFactoryTests.swift in Sources */,
+				EE2EDFE12987A189004E702B /* MockABTestVariationProvider.swift in Sources */,
 				0273707E24C0047800167204 /* SequenceHelpersTests.swift in Sources */,
 				D802547326551D0F001B2CC1 /* CardPresentModalTapCardTests.swift in Sources */,
 				F997174723DC070D00592D8E /* XLPagerStrip+AccessibilityIdentifierTests.swift in Sources */,

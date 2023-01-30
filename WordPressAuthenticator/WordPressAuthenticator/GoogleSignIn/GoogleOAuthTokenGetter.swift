@@ -8,11 +8,17 @@ class GoogleOAuthTokenGetter: GoogleOAuthTokenGetting {
 
     func getToken(
         clientId: GoogleClientId,
+        audience: String,
         authCode: String,
         pkce: ProofKeyForCodeExchange
     ) async throws -> OAuthTokenResponseBody {
         let request = try URLRequest.googleSignInTokenRequest(
-            body: .googleSignInRequestBody(clientId: clientId, authCode: authCode, pkce: pkce)
+            body: .googleSignInRequestBody(
+                clientId: clientId,
+                audience: audience,
+                authCode: authCode,
+                pkce: pkce
+            )
         )
 
         let data = try await dataGetter.data(for: request)

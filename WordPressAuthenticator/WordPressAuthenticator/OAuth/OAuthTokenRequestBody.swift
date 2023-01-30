@@ -4,6 +4,7 @@
 struct OAuthTokenRequestBody: Encodable {
     let clientId: String
     let clientSecret: String
+    let audience: String
     let code: String
     let codeVerifier: String
     let grantType: String
@@ -12,6 +13,7 @@ struct OAuthTokenRequestBody: Encodable {
     enum CodingKeys: String, CodingKey {
         case clientId = "client_id"
         case clientSecret = "client_secret"
+        case audience
         case code
         case codeVerifier = "code_verifier"
         case grantType = "grant_type"
@@ -26,6 +28,10 @@ struct OAuthTokenRequestBody: Encodable {
             (CodingKeys.codeVerifier.rawValue, codeVerifier),
             (CodingKeys.grantType.rawValue, grantType),
             (CodingKeys.redirectURI.rawValue, redirectURI),
+            // This is not in the spec at
+            // https://developers.google.com/identity/protocols/oauth2/native-app#step-2:-send-a-request-to-googles-oauth-2.0-server
+            // but we'll get an idToken that our backend considers invalid if omitted.
+            (CodingKeys.audience.rawValue, audience),
         ]
 
         let items = params.map { URLQueryItem(name: $0.0, value: $0.1) }

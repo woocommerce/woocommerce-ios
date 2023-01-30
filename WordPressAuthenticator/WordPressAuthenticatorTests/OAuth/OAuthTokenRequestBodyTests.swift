@@ -7,6 +7,7 @@ class OAuthTokenRequestBodyTests: XCTestCase {
         let body = OAuthTokenRequestBody(
             clientId: "clientId",
             clientSecret: "clientSecret",
+            audience: "audience",
             code: "codeValue",
             codeVerifier: "codeVerifier",
             grantType: "grantType",

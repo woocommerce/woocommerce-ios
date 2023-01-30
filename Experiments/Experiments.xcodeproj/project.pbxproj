@@ -16,6 +16,7 @@
 		BC10218D75FEA979BDA1E68C /* Pods_Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33CEC0C5283FD4C9EF8C6A3C /* Pods_Experiments.framework */; };
 		C8E16F0EE6954B58A1C402F0 /* Pods_ExperimentsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAC7C082DD376957B4676401 /* Pods_ExperimentsTests.framework */; };
 		CC53FB48275E426900C4CA4F /* ABTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB47275E426900C4CA4F /* ABTest.swift */; };
+		EE2EDFDF29879331004E702B /* ABTestVariationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2EDFDE29879331004E702B /* ABTestVariationProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		AAC7C082DD376957B4676401 /* Pods_ExperimentsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ExperimentsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF72D9DB7771E7A5105C88B0 /* Pods-Experiments.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Experiments.release.xcconfig"; path = "Target Support Files/Pods-Experiments/Pods-Experiments.release.xcconfig"; sourceTree = "<group>"; };
 		CC53FB47275E426900C4CA4F /* ABTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABTest.swift; sourceTree = "<group>"; };
+		EE2EDFDE29879331004E702B /* ABTestVariationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABTestVariationProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 				0270C0A427069B8900FC799F /* DefaultFeatureFlagService.swift */,
 				0270C0A627069BA500FC799F /* BuildConfiguration.swift */,
 				CC53FB47275E426900C4CA4F /* ABTest.swift */,
+				EE2EDFDE29879331004E702B /* ABTestVariationProvider.swift */,
 			);
 			path = Experiments;
 			sourceTree = "<group>";
@@ -314,6 +317,7 @@
 				0270C0A327069B7800FC799F /* FeatureFlagService.swift in Sources */,
 				0270C0A527069B8900FC799F /* DefaultFeatureFlagService.swift in Sources */,
 				0270C09C27069AE700FC799F /* FeatureFlag.swift in Sources */,
+				EE2EDFDF29879331004E702B /* ABTestVariationProvider.swift in Sources */,
 				0270C0A727069BA500FC799F /* BuildConfiguration.swift in Sources */,
 				CC53FB48275E426900C4CA4F /* ABTest.swift in Sources */,
 			);

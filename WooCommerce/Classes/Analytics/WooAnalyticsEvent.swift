@@ -1376,7 +1376,7 @@ extension WooAnalyticsEvent {
         static func collectInteracPaymentSuccess(gatewayID: String?,
                                                  countryCode: String,
                                                  cardReaderModel: String) -> WooAnalyticsEvent {
-            return WooAnalyticsEvent(statName: .collectInteracPaymentSuccess,
+            WooAnalyticsEvent(statName: .collectInteracPaymentSuccess,
                                      properties: [
                                         Keys.cardReaderModel: cardReaderModel,
                                         Keys.countryCode: countryCode,

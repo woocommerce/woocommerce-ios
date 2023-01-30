@@ -137,7 +137,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(viewModel is NoSecureConnectionErrorViewModel)
     }
 
-    func test_it_presents_username_and_password_controller_for_non_jetpack_site_when_not_using_application_password_authentication() {
+    func test_it_presents_email_controller_for_non_jetpack_site_when_not_using_application_password_authentication() {
         // Given
         let mockABTestVariationProvider = MockABTestVariationProvider()
         mockABTestVariationProvider.mockVariationValue = .control

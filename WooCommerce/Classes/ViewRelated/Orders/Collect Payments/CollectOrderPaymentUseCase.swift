@@ -300,13 +300,16 @@ private extension CollectOrderPaymentUseCase {
     ///
     func handleSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData,
                                  onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        let orderDurationRecorder = OrderDurationRecorder.shared
         // Record success
         analytics.track(event: WooAnalyticsEvent.InPersonPayments
                             .collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID,
                                                    countryCode: configuration.countryCode,
                                                    paymentMethod: capturedPaymentData.paymentMethod,
-                                                   cardReaderModel: connectedReader?.readerType.model ?? ""))
-        OrderDurationRecorder.shared.reset()
+                                                   cardReaderModel: connectedReader?.readerType.model ?? "",
+                                                   milisecondsSinceOrderAddNew: try? orderDurationRecorder.milisecondsSinceOrderAddNew(),
+                                                   milisecondsSinceCardPaymentStarted: try? orderDurationRecorder.milisecondsSinceCardPaymentStarted()))
+        orderDurationRecorder.reset()
 
         // Success Callback
         onCompletion(.success(capturedPaymentData))

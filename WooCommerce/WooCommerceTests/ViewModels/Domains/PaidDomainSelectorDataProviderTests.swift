@@ -20,7 +20,7 @@ final class PaidDomainSelectorDataProviderTests: XCTestCase {
 
     func test_loadDomainSuggestions_returns_detail_without_sale_cost() async throws {
         // Given
-        let domainWithoutSale = PaidDomainSuggestion(productID: 134, name: "domain.nosale", term: "year", cost: "US$47.00")
+        let domainWithoutSale = PaidDomainSuggestion(productID: 134, supportsPrivacy: true, name: "domain.nosale", term: "year", cost: "US$47.00")
         stores.whenReceivingAction(ofType: DomainAction.self) { action in
             switch action {
             case let .loadPaidDomainSuggestions(_, completion):
@@ -46,7 +46,7 @@ final class PaidDomainSelectorDataProviderTests: XCTestCase {
 
     func test_loadDomainSuggestions_returns_detail_with_sale_cost() async throws {
         // Given
-        let domainWithSale = PaidDomainSuggestion(productID: 18, name: "domain.onsale", term: "year", cost: "US$25.00", saleCost: "US$3.90")
+        let domainWithSale = PaidDomainSuggestion(productID: 18, supportsPrivacy: true, name: "domain.onsale", term: "year", cost: "US$25.00", saleCost: "US$3.90")
         stores.whenReceivingAction(ofType: DomainAction.self) { action in
             switch action {
             case let .loadPaidDomainSuggestions(_, completion):

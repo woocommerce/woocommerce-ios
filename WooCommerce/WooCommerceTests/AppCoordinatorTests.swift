@@ -5,7 +5,6 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import protocol Storage.StorageManagerType
-@testable import AutomatticTracks
 
 final class AppCoordinatorTests: XCTestCase {
     private var sessionManager: SessionManager!
@@ -473,13 +472,5 @@ private extension AppCoordinatorTests {
                               pushNotesManager: pushNotesManager,
                               featureFlagService: featureFlagService,
                               abTestVariationProvider: abTestVariationProvider)
-    }
-}
-
-private class MockABTestVariationProvider: ABTestVariationProvider {
-    var mockVariationValue: Variation!
-
-    func variation(for abTest: ABTest) -> Variation {
-        mockVariationValue
     }
 }

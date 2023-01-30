@@ -3,8 +3,6 @@ import WordPressKit
 import WordPressAuthenticator
 import Yosemite
 @testable import WooCommerce
-@testable import Experiments
-@testable import AutomatticTracks
 
 /// Test cases for `AuthenticationManager`.
 final class AuthenticationManagerTests: XCTestCase {
@@ -503,13 +501,5 @@ private extension AuthenticationManagerTests {
                                       "isJetpackActive": isJetpackActive,
                                       "isJetpackConnected": isJetpackConnected,
                                       "isWordPressDotCom": isWordPressCom])
-    }
-}
-
-private class MockABTestVariationProvider: ABTestVariationProvider {
-    var mockVariationValue: Variation!
-
-    func variation(for abTest: ABTest) -> Variation {
-        mockVariationValue
     }
 }

@@ -549,6 +549,31 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             }
         }))
     }
+
+    func test_when_automatically_disconnects_from_built_in_reader_it_tracks_that_in_analytics() throws {
+        // Given
+        mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.appleBuiltIn()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        // When
+        viewModel = BluetoothCardReaderSettingsConnectedViewModel(
+            didChangeShouldShow: nil,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager),
+            delayToShowUpdateSuccessMessage: .milliseconds(1))
+
+        // Then
+        let expectedEvent = WooAnalyticsStat.manageCardReadersBuiltInReaderAutoDisconnect.rawValue
+        let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: expectedEvent))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[eventIndex])
+        assertEqual(WooAnalyticsEvent.InPersonPayments.unknownGatewayID, eventProperties[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String)
+        assertEqual("US", eventProperties[WooAnalyticsEvent.InPersonPayments.Keys.countryCode] as? String)
+    }
 }
 
 private extension BluetoothCardReaderSettingsConnectedViewModelTests {

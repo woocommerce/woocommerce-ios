@@ -148,6 +148,7 @@ public typealias CardReaderInput = Hardware.CardReaderInput
 public typealias CardReaderSoftwareUpdateState = Hardware.CardReaderSoftwareUpdateState
 public typealias CardReaderServiceDiscoveryStatus = Hardware.CardReaderServiceDiscoveryStatus
 public typealias CardReaderServiceError = Hardware.CardReaderServiceError
+public typealias CardReaderServiceUnderlyingError = Hardware.UnderlyingError
 public typealias CardReaderType = Hardware.CardReaderType
 public typealias CardReaderConfigError = Hardware.CardReaderConfigError
 public typealias PaymentMethod = Hardware.PaymentMethod

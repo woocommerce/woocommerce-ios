@@ -8,7 +8,11 @@ struct ShippingLabelPackagesMapper: Mapper {
     ///
     func map(response: Data) throws -> ShippingLabelPackagesResponse {
         let decoder = JSONDecoder()
-        return try decoder.decode(ShippingLabelPackagesMapperEnvelope.self, from: response).data
+        do {
+            return try decoder.decode(ShippingLabelPackagesMapperEnvelope.self, from: response).data
+        } catch {
+            return try decoder.decode(ShippingLabelPackagesResponse.self, from: response)
+        }
     }
 }
 

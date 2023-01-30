@@ -19,6 +19,14 @@ final class ProductVariationMapperTests: XCTestCase {
 
         XCTAssertEqual(productVariation, sampleProductVariation(siteID: dummySiteID, productID: dummyProductID, id: 2783))
     }
+
+    /// Verifies that all of the ProductVariation Fields are parsed correctly when response has no data envelope.
+    ///
+    func test_ProductVariation_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
+        let productVariation = try XCTUnwrap(mapLoadProductVariationResponseWithoutDataEnvelope())
+
+        XCTAssertEqual(productVariation, sampleProductVariation(siteID: dummySiteID, productID: dummyProductID, id: 2783))
+    }
 }
 
 /// Private Helpers
@@ -38,6 +46,12 @@ private extension ProductVariationMapperTests {
     ///
     func mapLoadProductVariationResponse() -> ProductVariation? {
         return mapProductVariation(from: "product-variation-update")
+    }
+
+    /// Returns the ProductVariationMapper output upon receiving `ProductVariation`
+    ///
+    func mapLoadProductVariationResponseWithoutDataEnvelope() -> ProductVariation? {
+        return mapProductVariation(from: "product-variation-update-without-data")
     }
 }
 

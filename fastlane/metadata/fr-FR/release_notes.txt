@@ -1,1 +1,1 @@
-Des modifications visuelles ont été apportées à l’application ! Jetez-y un œil et dites-nous ce que vous en pensez. D’autres mises à jour seront apportées dans les semaines à venir !
+Il est maintenant possible de mettre à jour de façon groupée l’état et le prix des produits ! Il suffit d’accéder à l’onglet « Produits » et de cliquer sur l’icône de sélection multiple pour essayer.

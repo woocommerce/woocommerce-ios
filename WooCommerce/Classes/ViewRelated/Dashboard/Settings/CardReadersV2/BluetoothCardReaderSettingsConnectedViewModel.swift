@@ -153,6 +153,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: CardReaderSettingsPre
     private func disconnectFromBuiltInReader(in readers: [CardReader]) {
         if readers.includesBuiltInReader() {
             self.disconnect()
+            self.analyticsTracker.automaticallyDisconnectedFromBuiltInReader()
         }
     }
 

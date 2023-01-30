@@ -33,6 +33,29 @@ class ShippingLabelPurchaseMapperTests: XCTestCase {
         XCTAssertEqual(shippingLabel.productIDs, [])
         XCTAssertEqual(shippingLabel.productNames, ["Beanie"])
     }
+
+    /// Verifies that the Shipping Label Purchase is parsed correctly.
+    ///
+    func test_ShippingLabelPurchase_is_properly_parsed_when_response_has_no_data_envelope() {
+        guard let shippingLabelList = mapLoadShippingLabelPurchaseWithoutDataEnvelope(),
+              let shippingLabel = shippingLabelList.first else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(shippingLabel.siteID, sampleSiteID)
+        XCTAssertEqual(shippingLabel.orderID, sampleOrderID)
+        XCTAssertEqual(shippingLabel.shippingLabelID, 733)
+        XCTAssertNil(shippingLabel.carrierID)
+        XCTAssertEqual(shippingLabel.dateCreated, Date(timeIntervalSince1970: 1584549793.938))
+        XCTAssertEqual(shippingLabel.packageName, "Test")
+        XCTAssertNil(shippingLabel.trackingNumber)
+        XCTAssertEqual(shippingLabel.serviceName, "USPS - First Class Mail")
+        XCTAssertEqual(shippingLabel.refundableAmount, 0)
+        XCTAssertEqual(shippingLabel.status, ShippingLabelStatus.purchaseInProgress)
+        XCTAssertEqual(shippingLabel.productIDs, [])
+        XCTAssertEqual(shippingLabel.productNames, ["Beanie"])
+    }
 }
 
 /// Private Helpers
@@ -53,5 +76,11 @@ private extension ShippingLabelPurchaseMapperTests {
     ///
     func mapLoadShippingLabelPurchase() -> [ShippingLabelPurchase]? {
         return mapShippingLabelPurchase(from: "shipping-label-purchase-success")
+    }
+
+    /// Returns the ShippingLabelPurchaseMapper output upon receiving `shipping-label-purchase-success-without-data`
+    ///
+    func mapLoadShippingLabelPurchaseWithoutDataEnvelope() -> [ShippingLabelPurchase]? {
+        return mapShippingLabelPurchase(from: "shipping-label-purchase-success-without-data")
     }
 }

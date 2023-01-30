@@ -210,6 +210,12 @@ extension UIImage {
         return UIImage.gridicon(.comment)
     }
 
+    /// Comment Content Icon
+    ///
+    static var commentContent: UIImage {
+        return UIImage(named: "icon-comment-content") ?? UIImage.gridicon(.comment)
+    }
+
     /// Credit Card Icon
     ///
     static var creditCardImage: UIImage {
@@ -1169,6 +1175,10 @@ extension UIImage {
     ///
     static var builtInReaderSuccess: UIImage {
         return UIImage(named: "built-in-reader-payment-success")!
+    }
+
+    static var builtInReaderError: UIImage {
+        return UIImage(named: "built-in-reader-error")!
     }
 }
 

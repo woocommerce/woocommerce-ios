@@ -38,7 +38,7 @@ final class CardPresentModalBuiltInConnectingToReader: CardPresentPaymentsModalV
 private extension CardPresentModalBuiltInConnectingToReader {
     enum Localization {
         static let title = NSLocalizedString(
-            "Preparing iPhone card reader...",
+            "Preparing iPhone card reader",
             comment: "Title label for modal dialog that appears when connecting to a built in card reader"
         )
 

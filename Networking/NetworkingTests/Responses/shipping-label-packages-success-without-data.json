@@ -1,0 +1,217 @@
+{
+  "success": true,
+  "storeOptions": {
+    "currency_symbol": "$",
+    "dimension_unit": "cm",
+    "weight_unit": "kg",
+    "origin_country": "US"
+  },
+  "formSchema": {
+    "custom": {
+      "type": "array",
+      "title": "Box Sizes",
+      "description": "Items will be packed into these boxes based on item dimensions and volume. Outer dimensions will be passed to the delivery service, whereas inner dimensions will be used for packing. Items not fitting into boxes will be packed individually.",
+      "default": [],
+      "items": {
+        "type": "object",
+        "title": "Box",
+        "required": [
+          "name",
+          "inner_dimensions",
+          "box_weight",
+          "max_weight"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "is_user_defined": {
+            "type": "boolean"
+          },
+          "inner_dimensions": {
+            "type": "string",
+            "title": "Inner Dimensions (L x W x H)",
+            "pattern": "^(\\d+|(?:\\d*\\.\\d+)) x (\\d+|(?:\\d*\\.\\d+)) x (\\d+|(?:\\d*\\.\\d+))$"
+          },
+          "outer_dimensions": {
+            "type": "string",
+            "title": "Outer Dimensions (L x W x H)",
+            "pattern": "^(\\d+|(?:\\d*\\.\\d+)) x (\\d+|(?:\\d*\\.\\d+)) x (\\d+|(?:\\d*\\.\\d+))$"
+          },
+          "box_weight": {
+            "type": "number",
+            "title": "Weight of Box (lbs)"
+          },
+          "max_weight": {
+            "type": "number",
+            "title": "Max Weight (lbs)"
+          },
+          "is_letter": {
+            "type": "boolean",
+            "title": "Letter"
+          }
+        }
+      }
+    },
+    "predefined": {
+      "usps": {
+        "pri_flat_boxes": {
+          "title": "USPS Priority Mail Flat Rate Boxes",
+          "definitions": [
+            {
+              "inner_dimensions": "21.91 x 13.65 x 4.13",
+              "outer_dimensions": "21.91 x 13.65 x 4.13",
+              "box_weight": 0,
+              "is_flat_rate": true,
+              "id": "small_flat_box",
+              "name": "Small Flat Rate Box",
+              "dimensions": "21.91 x 13.65 x 4.13",
+              "max_weight": 31.75,
+              "is_letter": false,
+              "group_id": "pri_flat_boxes",
+              "can_ship_international": true
+            }
+          ]
+        },
+        "pri_envelopes": {
+          "title": "USPS Priority Mail Flat Rate Envelopes",
+          "definitions": [
+            {
+              "inner_dimensions": "31.75 x 24.13 x 1.27",
+              "outer_dimensions": "31.75 x 24.13 x 1.27",
+              "box_weight": 0,
+              "is_flat_rate": true,
+              "id": "flat_envelope",
+              "name": "Flat Rate Envelope",
+              "dimensions": [
+                "31.75 x 24.13 x 1.27"
+              ],
+              "max_weight": 31.75,
+              "is_letter": true,
+              "group_id": "pri_envelopes",
+              "can_ship_international": true
+            }
+          ]
+        },
+        "pri_boxes": {
+          "title": "USPS Priority Mail Boxes",
+          "definitions": [
+            {
+              "inner_dimensions": "95.72 x 15.56 x 12.86",
+              "outer_dimensions": "95.72 x 15.56 x 12.86",
+              "box_weight": 0,
+              "is_flat_rate": false,
+              "id": "medium_tube",
+              "name": "Priority Mail Medium Tube",
+              "dimensions": "95.72 x 15.56 x 12.86",
+              "max_weight": 31.75,
+              "is_letter": false,
+              "service_group_ids": [
+                "priority",
+                "priority_international"
+              ],
+              "group_id": "pri_boxes",
+              "can_ship_international": true
+            }
+          ]
+        },
+        "pri_express_envelopes": {
+          "title": "USPS Priority Mail Express Flat Rate Envelopes",
+          "definitions": [
+            {
+              "inner_dimensions": "31.75 x 24.13 x 1.27",
+              "outer_dimensions": "31.75 x 24.13 x 1.27",
+              "box_weight": 0,
+              "is_flat_rate": true,
+              "id": "express_flat_envelope",
+              "name": "Flat Rate Envelope",
+              "dimensions": [
+                "31.75 x 24.13 x 1.27"
+              ],
+              "max_weight": 31.75,
+              "is_letter": true,
+              "group_id": "pri_express_envelopes",
+              "can_ship_international": true
+            }
+          ]
+        },
+        "pri_express_boxes": {
+          "title": "USPS Priority Mail Express Boxes",
+          "definitions": [
+            {
+              "inner_dimensions": "38.73 x 31.43 x 7.62",
+              "outer_dimensions": "39.69 x 31.59 x 7.94",
+              "box_weight": 0,
+              "is_flat_rate": false,
+              "id": "express_box",
+              "name": "Priority Mail Express Box",
+              "dimensions": {
+                "inner": "38.73 x 31.43 x 7.62",
+                "outer": "39.69 x 31.59 x 7.94"
+              },
+              "max_weight": 31.75,
+              "is_letter": false,
+              "service_group_ids": [
+                "priority_exp",
+                "priority_express_international"
+              ],
+              "group_id": "pri_express_boxes",
+              "can_ship_international": true
+            }
+          ]
+        },
+        "pri_regional_boxes": {
+          "title": "USPS Priority Mail Regional Rate Boxes",
+          "definitions": [
+            {
+              "inner_dimensions": "25.72 x 18.1 x 12.7",
+              "outer_dimensions": "25.72 x 18.1 x 12.7",
+              "box_weight": 0,
+              "is_flat_rate": true,
+              "id": "regional_a1",
+              "name": "Regional Rate Box A1",
+              "dimensions": "25.72 x 18.1 x 12.7",
+              "max_weight": 6.8,
+              "is_letter": false,
+              "group_id": "pri_regional_boxes",
+              "can_ship_international": false
+            }
+          ]
+        }
+      },
+      "dhlexpress": {
+        "domestic_and_international": {
+          "title": "DHL Express",
+          "definitions": [
+            {
+              "inner_dimensions": "24.89 x 30.48 x 2.54",
+              "outer_dimensions": "24.89 x 30.48 x 2.54",
+              "box_weight": 0,
+              "is_flat_rate": false,
+              "id": "SmallPaddedPouch",
+              "name": "Small Padded Pouch",
+              "dimensions": "24.89 x 30.48 x 2.54",
+              "max_weight": 45.36,
+              "is_letter": true,
+              "group_id": "domestic_and_international",
+              "can_ship_international": true
+            }
+          ]
+        }
+      }
+    }
+  },
+  "formData": {
+    "custom": [
+      {
+        "inner_dimensions": "12 x 12 x 4",
+        "is_user_defined": true,
+        "max_weight": 0,
+        "name": "Small box",
+        "box_weight": 1.4
+      }
+    ],
+    "predefined": []
+  }
+}

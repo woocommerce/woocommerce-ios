@@ -17,7 +17,11 @@ struct SitePluginsMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(SitePluginsEnvelope.self, from: response).plugins
+        do {
+            return try decoder.decode(SitePluginsEnvelope.self, from: response).plugins
+        } catch {
+            return try decoder.decode([SitePlugin].self, from: response)
+        }
     }
 }
 

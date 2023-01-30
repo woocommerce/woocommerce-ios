@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-11 23:54:04+0000 */
+/* Translation-Revision-Date: 2023-01-25 15:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -71,6 +71,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "%1$@ geri ödeme istendi (%2$@)";
+
+/* Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected */
+"%1$@ selected" = "%1$@ seçildi";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
 "%1$@ total" = "Toplam %1$@";
@@ -418,7 +421,8 @@ which should be translated separately and considered part of this sentence. */
    Add tracking screen - title. */
 "Add Tracking" = "Takip Ekle";
 
-/* Title on empty state button when the product has attributes but no variations */
+/* Title on empty state button when the product has attributes but no variations
+   Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "Varyasyon Ekle";
 
 /* Button title on the store picker for store creation */
@@ -426,6 +430,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Add a Different Address switch in the Address form */
 "Add a different shipping address" = "Farklı bir gönderim adresi ekle";
+
+/* Title of button to add a domain in domain settings. */
+"Add a domain" = "Alan adı ekle";
 
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "Yeni bir kredi kartı ekle";
@@ -593,6 +600,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "İhtiyacınız olan tüm özelliklerle birlikte";
 
+/* Message for the notice when there were no variations to generate */
+"All variations are already generated." = "Tüm varyasyonlar zaten oluşturuldu.";
+
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "İzin ver";
 
@@ -753,7 +763,8 @@ which should be translated separately and considered part of this sentence. */
 "Application password cannot be generated due to a custom login or admin URL on your site." = "Sitenizdeki özel bir giriş veya yönetici URL'si nedeniyle uygulama şifresi oluşturulamıyor.";
 
 /* Apply navigation button in custom range date picker
-   Change order status screen - button title to apply selection */
+   Change order status screen - button title to apply selection
+   Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "Uygula";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -1047,6 +1058,9 @@ which should be translated separately and considered part of this sentence. */
    Title that appears on top of the bulk update of product variations screen */
 "Bulk Update" = "Toplu Güncelleme";
 
+/* Title of a button that presents a menu with possible products bulk update options */
+"Bulk update" = "Toplu güncelleme";
+
 /* Country option for a site address. */
 "Burkina Faso" = "Burkina Faso";
 
@@ -1175,7 +1189,8 @@ which should be translated separately and considered part of this sentence. */
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
-   Title for the button to cancel the simple payments screen */
+   Title for the button to cancel the simple payments screen
+   Title of an option to dismiss the bulk edit action sheet */
 "Cancel" = "İptal";
 
 /* Action button to cancel Jetpack installation. */
@@ -1208,6 +1223,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
 "Cannot update product" = "Ürün güncellenemiyor";
+
+/* Title of the notice when there is an error updating selected products */
+"Cannot update products" = "Ürünler güncellenemiyor";
 
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
@@ -1829,6 +1847,9 @@ which should be translated separately and considered part of this sentence. */
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "Şablon Ürün Oluşturuluyor...";
 
+/* Blocking indicator text when creating multiple variations remotely. */
+"Creating Variations..." = "Varyasyon Oluşturuluyor...";
+
 /* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
 "Creating your store" = "Mağazanız oluşturuluyor";
 
@@ -1869,13 +1890,16 @@ which should be translated separately and considered part of this sentence. */
 /* Cell title: the current date. */
 "Current" = "Geçerli";
 
-/* Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
+/* Message in the footer of bulk price setting screen with the current price, when it is the same for all products
+   Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
 "Current price is %@." = "Geçerli fiyat: %@.";
 
-/* Message in the footer of bulk price setting screen, when none of the variations have price value. */
+/* Message in the footer of bulk price setting screen, when none of the products have price value.
+   Message in the footer of bulk price setting screen, when none of the variations have price value. */
 "Current price is not set." = "Geçerli fiyat belirlenmedi.";
 
-/* Message in the footer of bulk price setting screen, when variations have different price values. */
+/* Message in the footer of bulk price setting screen, when products have different price values.
+   Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "Geçerli fiyatlar karışık.";
 
 /* Error description for when there are too many variations to generate. */
@@ -2122,6 +2146,10 @@ which should be translated separately and considered part of this sentence. */
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Belgeler";
 
+/* Navigates to domain settings screen.
+   Navigation bar title of the domain settings screen. */
+"Domain" = "Alan Adı";
+
 /* Country option for a site address. */
 "Dominica" = "Dominika";
 
@@ -2131,7 +2159,8 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Hesabınız yok mu? _Kaydol_";
 
-/* Alert button text on a feature announcement which prevents the banner being shown again */
+/* Alert button text on a feature announcement which prevents the banner being shown again
+   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "Tekrar gösterme";
 
 /* Action title to select products to add to a grouped product from search results
@@ -2393,6 +2422,9 @@ which should be translated separately and considered part of this sentence. */
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
 "End Date" = "Bitiş tarihi";
+
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Enjoyed your in-person payment?" = "Şahsen ödemenizden memnun kaldınız mı?";
 
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "WooCommerce uygulaması hoşunuza gidiyor mu?";
@@ -2720,6 +2752,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info message shown when the order contains multiple fee lines */
 "Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "Ücretler eksik.\nTüm ücretleri düzenlemek için siparişi WooCommerce mağaza yöneticinizde görüntüleyin.";
 
+/* Blocking indicator text when fetching existing variations prior generating them. */
+"Fetching Variations..." = "Varyasyonlar Getiriliyor…";
+
 /* Country option for a site address. */
 "Fiji" = "Fiji";
 
@@ -2878,7 +2913,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Varyasyon Oluşturma";
 
-/* Error title for for when there are too many variations to generate. */
+/* Error title for when there are too many variations to generate. */
 "Generation limit exceeded" = "Oluşturma sınırı aşıldı";
 
 /* Country option for a site address. */
@@ -2949,6 +2984,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to give feedback about the add-ons feature
    Title of the button to give feedback about the Orders features
    Title of the feedback action button on the coupon list screen
+   Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Görüşlerinizi paylaşın";
 
@@ -3212,8 +3248,7 @@ which should be translated separately and considered part of this sentence. */
 "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "%2$@ blog_id %3$@\/%1$@ no'lu Sipariş için Şahsen Ödeme";
 
 /* Navigates to In-Person Payments screen
-   Title for a dismissal alert on the upsell card reader feature announcement banner
-   Title for the In-Person Payments settings screen */
+   Title for a dismissal alert on the upsell card reader feature announcement banner */
 "In-Person Payments" = "Şahsen Ödemeler";
 
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
@@ -3604,6 +3639,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Lesotho" = "Lesoto";
 
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Let us know how we can help" = "Nasıl yardımcı olabileceğimizi bize söyleyin";
+
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Let us know what you think" = "Ne düşündüğünüzü bize söyleyin";
+
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8,5 x 11 inç)";
 
@@ -3724,6 +3765,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "E-posta adresinizle WordPress.com hesabınızda oturum açın.";
+
+/* Button that will navigate to the authentication flow with WP.com */
+"Log in with WordPress.com" = "WordPress.com'la oturum aç";
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "Başka Bir Hesapla Oturum Açın";
@@ -4226,8 +4270,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "Henüz bir vergi sınıfı yok";
 
+/* Title for the notice when there were no variations to generate */
+"No variations to generate" = "Oluşturulacak varyasyon yok";
+
 /* Message for a dismissal alert on the upsell card reader feature announcement banner */
 "No worries! You can always get started with In-Person Payments in Settings" = "Endişe etmeyin: İstediğiniz zaman Şahsen Ödemeleri Ayarlar bölümünden kullanmaya başlayabilirsiniz";
+
+/* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
+"No worries! You can always go to Settings in the Menu to send us feedback." = "Endişe etmeyin: Bize geri bildirim göndermek için her zaman Menüde Ayarlar'a gidebilirsiniz.";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
@@ -4655,7 +4705,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment" = "Ödeme belirtilmeyen bir nedenle reddedildi. Başka bir ödeme yöntemi deneyin";
 
-/* Title of the hub menu payments button */
+/* Title for the Payments settings screen
+   Title of the hub menu payments button */
 "Payments" = "Ödemeler";
 
 /* Display label for pending order status.
@@ -4907,6 +4958,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message of the in-progress UI while saving a Variation remotely */
 "Please wait while we save your latest changes" = "En son değişikliklerinizi kaydederken lütfen bekleyin";
 
+/* Message of the in-progress UI while bulk updating selected products remotely */
+"Please wait while we update these products on your store" = "Bu ürünleri mağazanızda güncellerken lütfen bekleyin";
+
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
 "Please wait while we update your store details" = "Mağaza bilgileriniz güncellenirken lütfen bekleyin";
@@ -4977,8 +5031,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Price Settings > Price */
 "Price" = "Fiyat";
 
+/* Title of the notice when a user updated price for selected products */
+"Price updated" = "Fiyat güncellendi";
+
+/* Message in the footer of bulk price setting screen, when variable products are selected */
+"Prices for variations won't be updated." = "Varyasyon fiyatları güncellenmeyecek.";
+
 /* Notice title when updating the price via the bulk variation screen */
 "Prices updated successfully." = "Fiyatlar başarıyla güncellendi.";
+
+/* Title for a free domain if the domain is the primary site address. */
+"Primary site address" = "Birincil site adresi";
 
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
 "Print" = "Yazdır";
@@ -5216,6 +5279,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "Bizi değerlendirin";
 
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Rate your first in-person payment experience." = "İlk şahsen ödeme deneyiminizi puanlayın.";
+
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "Ödemelerle ilgili sorularınızda size yardımcı olabilecek mutluluk mühendislerimize ulaşın";
 
@@ -5336,7 +5402,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Religious Organizations" = "Dini Kuruluşlar";
 
-/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time */
+/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
+   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "Daha sonra hatırlat";
 
 /* Confirm button on the alert when the user taps to delete a Product image
@@ -5385,6 +5452,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title for the Rename Attributes screen */
 "Rename Attribute" = "Niteliği Yeniden Adlandır";
+
+/* Renewal date of a site's domain in domain settings. Reads like `Renews on October 11, 2023`. */
+"Renews on %1$@" = "%1$@ tarihinde yenilenir";
 
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "Fotoğrafı Değiştir";
@@ -5669,6 +5739,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Search Coupons button */
 "Search coupons" = "Kuponları ara";
 
+/* Title of the button on the domain settings screen to search for a domain. */
+"Search for a Domain" = "Bir Alan Adı Ara";
+
 /* Search Orders */
 "Search orders" = "Siparişleri ara";
 
@@ -5731,6 +5804,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Bir ürün türü seç";
 
+/* Title of a button that selects all products for bulk update */
+"Select all" = "Tümünü seç";
+
 /* Text field placeholder in Edit Address Form */
 "Select an option" = "Bir seçenek seçin";
 
@@ -5742,6 +5818,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "Bitiş tarihini seç";
+
+/* Title that appears on top of the Product List screen when bulk editing starts. */
+"Select items" = "Öğe seç";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Paragraf stilini seçin";
@@ -5825,11 +5904,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Ödeme Bağlantısını Paylaş";
 
+/* Title of the feedback action button on the In-Person Payments feedback banner */
+"Share feedback" = "Görüşlerinizi paylaşın";
+
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "WordPress.com hesabınızda oturum açmış durumdayken hizmetlerini kullanımınız hakkında bilgileri analiz aracımızla paylaşın.";
 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
 "Share with Friends" = "Arkadaşlarla paylaş";
+
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Share your own experience or how you collect in-person payments." = "Kendi deneyiminizi veya şahsen ödemeleri nasıl aldığınızı paylaşın.";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title
@@ -6076,6 +6161,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "Para iadesiyle ilgili bir şeyler yanlış gitti. Lütfen yeniden deneyin.";
 
+/* Error message for when we can't create variations remotely
+   Error message for when we can't fetch existing variations. */
+"Something went wrong, please try again later." = "Bir yanlışlık oldu, lütfen daha sonra tekrar deneyin.";
+
 /* Message of the alert when the user cannot create a store because they already created one before. */
 "Sorry, but you can only create one store. Your account is already associated with an active store." = "Üzgünüz, fakat yalnızca bir mağaza oluşturabilirsiniz. Hesabınız önceden etkin bir mağaza ile ilişkilendirilmiş durumda.";
 
@@ -6213,6 +6302,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
 "Status" = "Durum";
+
+/* Title of the notice when a user updated status for selected products */
+"Status updated" = "Durum güncellendi";
 
 /* Button title to contact support to get help with deprecated stats */
 "Still need help? Contact us" = "Hâlâ yardıma ihtiyacınız var mı? İletişim kurun";
@@ -6512,6 +6604,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Telemedicine And Telehealth" = "Teletıp ve Telesağlık";
 
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Tell us all about your experience with in-person payments." = "Şahsen ödemelerle ilgili deneyimlerinizi bize anlatın.";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Bize %1$@ ile ilgili daha fazla bilgi verin...";
 
@@ -6522,7 +6617,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Terms of Service" = "Hizmet Koşulları";
 
 /* Cell description on beta features screen to enable in-app purchases */
-"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "Başlamaya hazırlanırken, telefonunuzun dahili kart okuyucusunu kullanarak Şahsen Ödemeleri test edin. iOS 15.5 veya üzerini çalıştıran iPhone XS ve daha yeni telefonlarda desteklenir.";
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 16 or above, for US-based stores." = "Başlamaya hazırlanırken, telefonunuzun dahili kart okuyucusunu kullanarak Şahsen Ödemeleri test edin. ABD merkezli mağazalar için iOS 16 veya üzerini çalıştıran iPhone XS ve daha yeni telefonlarda desteklenir.";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "Lansmana hazırlanırken uygulama içi satın alma işlemini test edin";
@@ -6610,7 +6705,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The attribute couldn't be saved." = "Özellik kaydedilemedi.";
 
 /* Error message shown when the built-in reader cannot be used because there is a call in progress */
-"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "Dahili okuyucu telefon görüşmesi sırasında kullanılamaz. Görüşmenizi bitirdikten sonra lütfen tekrar deneyin.";
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call." = "Dahili okuyucu telefon görüşmesi sırasında kullanılamaz. Görüşmenizi bitirdikten sonra lütfen tekrar deneyin.";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "Kart bu para birimini desteklemiyor. Başka bir ödeme yöntemi deneyin";
@@ -6702,6 +6797,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the cancel button on the reader is used. */
 "The payment was canceled on the reader" = "Ödeme, okuyucu üzerinden iptal edildi";
 
+/* Error shown when the built-in card reader payment is interrupted by activity on the phone */
+"The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "Ödeme kesintiye uğradı ve devam edilemiyor. Sipariş ekranından tekrar ödeme yapmayı deneyebilirsiniz.";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "Telefon numarası geçerli değil veya müşteriyi bu cihazdan arayamazsınız.";
 
@@ -6710,6 +6808,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "Bu ürünün fiyatı. Düzenlenebilir.";
+
+/* Message in the footer of bulk price setting screen (singular). */
+"The price will be updated for %d product." = "%d ürün için fiyat güncellenecektir.";
+
+/* Message in the footer of bulk price setting screen (plurar). */
+"The price will be updated for %d products." = "%d ürün için fiyat güncellenecektir.";
 
 /* Message in the footer of bulk price setting screen (singular). */
 "The price will be updated for %d variation." = "%d varyasyon için fiyat güncellenecektir.";
@@ -7254,6 +7358,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "Yeni sipariş oluşturulamıyor";
 
+/* Error title for when we can't create variations remotely. */
+"Unable to create variations" = "Varyasyonlar oluşturulamıyor";
+
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "%1$d No'lu sipariş için takip silinemiyor";
 
@@ -7262,6 +7369,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error notice when we fail to load country information in the edit address screen. */
 "Unable to fetch country information, please try again later." = "Ülke bilgileri alınamadı, lütfen daha sonra tekrar deneyin.";
+
+/* Error title for when we can't fetch existing variations. */
+"Unable to fetch variations" = "Varyasyonlar getirilemiyor";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "%1$d numaralı sipariş yerine getirilemiyor";
@@ -7472,11 +7582,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
 "Update available" = "Güncelleme var";
 
+/* Title of an option that opens bulk products price update flow */
+"Update price" = "Fiyatı güncelle";
+
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "Ürün envanterini ve SKU’sunu güncelleme";
 
 /* Accessibility label to update products' downloadable files' info remotely */
 "Update products' downloadable files' info remotely" = "Ürünlerin indirilebilir dosyalarının bilgilerini uzaktan güncelleyin";
+
+/* Title of an option that opens bulk products status update flow */
+"Update status" = "Durumu güncelle";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Bu uygulamayı kullanmaya devam etmek için WooCommerce 3.5'e güncelleyin";
@@ -7507,6 +7623,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
 "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "Okuyucunun pil şarj düzeyi %.0f%% olduğundan okuyucu yazılımı güncellenemedi.  Lütfen tekrar denemeden önce okuyucuyu %%50'den fazla şarj edin.";
+
+/* Title of the in-progress UI while bulk updating selected products remotely */
+"Updating your products..." = "Ürünleriniz güncelleniyor...";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -7607,6 +7726,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the variations attributes row on Product screen */
 "Variations Attributes" = "Varyasyonların Nitelikleri";
+
+/* Title for the notice when after variations were created */
+"Variations created successfully" = "Varyasyonlar başarıyla oluşturuldu";
 
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "Sitenizle ilgili çeşitli sistem bilgileri";
@@ -8062,8 +8184,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "E-postanız bir WordPress.com hesabıyla kullanılmaz";
 
+/* Title of the free domain view. */
+"Your free store address" = "Ücretsiz mağaza adresiniz";
+
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
-"Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "iPhone'unuz kart okuyucu olarak kullanılabilir veya Bluetooth üzerinden harici bir okuyucuya bağlanabilirsiniz.";
+"Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "iPhone'unuz kart okuyucu olarak kullanılabilir veya Bluetooth üzerinden harici bir okuyucuya bağlanabilirsiniz.";
 
 /* Label that displays when a configuration update is happening */
 "Your iPhone needs to be configured to collect payments." = "iPhone'unuzun ödemeleri alması için yapılandırılması gerekir.";
@@ -8088,6 +8213,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Sitenizin adresi, Safari ile sitenizi ziyaret ettiğinizde en üstte görüntülenir.";
+
+/* Header text of the site's domain list in domain settings. */
+"Your site domains" = "Sitenizin alan adları";
 
 /* Title of the store creation success screen. */
 "Your store has been created!" = "Mağazanız oluşturuldu!";

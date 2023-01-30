@@ -8,6 +8,7 @@ final class RequestProcessorTests: XCTestCase {
     private var mockRequestAuthenticator: MockRequestAuthenticator!
     private var sut: RequestProcessor!
     private var sessionManager: Alamofire.SessionManager!
+    private var mockNotificationCenter: MockNotificationCenter!
 
     private let url = URL(string: "https://test.com/")!
 
@@ -16,13 +17,16 @@ final class RequestProcessorTests: XCTestCase {
 
         sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
         mockRequestAuthenticator = MockRequestAuthenticator()
-        sut = RequestProcessor(requestAuthenticator: mockRequestAuthenticator)
+        mockNotificationCenter = MockNotificationCenter()
+        sut = RequestProcessor(requestAuthenticator: mockRequestAuthenticator,
+                               notificationCenter: mockNotificationCenter)
     }
 
     override func tearDown() {
         sut = nil
         mockRequestAuthenticator = nil
         sessionManager = nil
+        mockNotificationCenter = nil
 
         super.tearDown()
     }
@@ -205,6 +209,68 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(mockRequestAuthenticator.generateApplicationPasswordCalled)
     }
+
+    // MARK: Notification center
+    //
+    func test_notification_is_posted_when_application_password_generation_is_successful() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+                promise(())
+            }
+        }
+
+        // Then
+        waitUntil {
+            self.mockNotificationCenter.notificationName == .ApplicationPasswordsNewPasswordCreated
+        }
+    }
+
+    func test_notification_is_posted_when_application_password_generation_fails() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = ApplicationPasswordUseCaseError.applicationPasswordsDisabled
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+                promise(())
+            }
+        }
+
+        // Then
+        waitUntil {
+            self.mockNotificationCenter.notificationName == .ApplicationPasswordsGenerationFailed
+        }
+    }
+
+    func test_posted_notification_holds_expected_error_when_application_password_generation_fails() throws {
+        // Given
+        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        let applicationPasswordGenerationError = ApplicationPasswordUseCaseError.applicationPasswordsDisabled
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = applicationPasswordGenerationError
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        waitFor { promise in
+            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+                promise(())
+            }
+        }
+
+        // Then
+        waitUntil {
+            (self.mockNotificationCenter.notificationObject as? ApplicationPasswordUseCaseError) == applicationPasswordGenerationError
+        }
+    }
 }
 
 // MARK: Helpers
@@ -234,6 +300,8 @@ private class MockRequestAuthenticator: RequestAuthenticator {
 
     var credentials: Networking.Credentials? = nil
 
+    var mockErrorWhileGeneratingPassword: Error?
+
     func authenticate(_ urlRequest: URLRequest) throws -> URLRequest {
         authenticateCalled = true
         return urlRequest
@@ -241,9 +309,22 @@ private class MockRequestAuthenticator: RequestAuthenticator {
 
     func generateApplicationPassword() async throws {
         generateApplicationPasswordCalled = true
+        if let mockErrorWhileGeneratingPassword {
+            throw mockErrorWhileGeneratingPassword
+        }
     }
 
     func shouldRetry(_ urlRequest: URLRequest) -> Bool {
         mockedShouldRetryValue ?? true
+    }
+}
+
+private class MockNotificationCenter: NotificationCenter {
+    private(set) var notificationName: NSNotification.Name?
+    private(set) var notificationObject: Any?
+
+    override func post(name aName: NSNotification.Name, object anObject: Any?, userInfo aUserInfo: [AnyHashable: Any]? = nil) {
+        notificationName = aName
+        notificationObject = anObject
     }
 }

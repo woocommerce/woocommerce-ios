@@ -605,6 +605,52 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - InPersonPayments Feedback Banner
+extension WooAnalyticsEvent {
+    enum InPersonPaymentsFeedbackBanner {
+        /// Possible sources for the Feedback Banner
+        ///
+        enum Source: String {
+            case orderList = "order_list"
+        }
+
+        /// Keys for the Feedback Banner properties
+        ///
+        private enum Keys {
+            static let campaign = "campaign"
+            static let source = "source"
+            static let remindLater = "remind_later"
+        }
+
+        static func shown(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .inPersonPaymentsBannerShown,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
+                              ])
+        }
+
+        static func ctaTapped(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .inPersonPaymentsBannerTapped,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
+                              ])
+        }
+
+        static func dismissed(source: Source,
+                              campaign: FeatureAnnouncementCampaign,
+                              remindLater: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .inPersonPaymentsBannerDismissed,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue,
+                                Keys.remindLater: remindLater
+                              ])
+        }
+    }
+}
+
 // MARK: - Feature Announcement Card
 
 extension WooAnalyticsEvent {
@@ -909,6 +955,69 @@ extension WooAnalyticsEvent {
 
         static func gatewayID(forGatewayID gatewayID: String?) -> String {
             gatewayID ?? unknownGatewayID
+        }
+
+        /// Tracked when we ask the user to choose between Built In and Bluetooth readers
+        /// at the start of the connection flow
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderSelectTypeShown(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSelectTypeShown,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                              ]
+            )
+        }
+
+        /// Tracked when the user to chooses the Built In reader
+        /// at the start of the connection flow
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderSelectTypeBuiltInTapped(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSelectTypeBuiltInTapped,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                              ]
+            )
+        }
+
+        /// Tracked when the user to chooses the Bluetooth reader
+        /// at the start of the connection flow
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderSelectTypeBluetoothTapped(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSelectTypeBluetoothTapped,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                              ]
+            )
+        }
+
+        /// Tracked when we automatically disconnect a Built In reader, when Manage Card Reader is opened
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func manageCardReadersBuiltInReaderAutoDisconnect(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .manageCardReadersBuiltInReaderAutoDisconnect,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                              ]
+            )
         }
 
         /// Tracked when card reader discovery fails
@@ -1893,6 +2002,67 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .analyticsHubDateRangeSelectionFailed, properties: [Keys.option.rawValue: option.tracksIdentifier,
                                                                                             Keys.calendar.rawValue: Locale.current.calendar.debugDescription,
                                                                                             Keys.timezone.rawValue: TimeZone.current.debugDescription])
+        }
+    }
+}
+
+// MARK: - REST API Login
+//
+extension WooAnalyticsEvent {
+    enum Login {
+        enum Key: String {
+            case step
+            case currentRoles = "current_roles"
+            case exists
+            case hasWordPress = "is_wordpress"
+            case isWPCom = "is_wp_com"
+            case isJetpackInstalled = "has_jetpack"
+            case isJetpackActive = "is_jetpack_active"
+            case isJetpackConnected = "is_jetpack_connected"
+            case urlAfterRedirects = "url_after_redirects"
+        }
+
+        enum LoginSiteCredentialStep: String {
+            case authentication
+            case applicationPasswordGeneration = "application_password_generation"
+            case wooStatus = "woo_status"
+            case userRole = "user_role"
+        }
+
+        /// Tracks when the user attempts to log in with insufficient roles.
+        ///
+        static func insufficientRole(currentRoles: [String]) -> WooAnalyticsEvent {
+            let roles = String(currentRoles.sorted().joined(by: ","))
+            return WooAnalyticsEvent(statName: .loginInsufficientRole,
+                                     properties: [Key.currentRoles.rawValue: roles])
+        }
+
+        /// Tracks when the login with site credentials failed.
+        ///
+        static func siteCredentialFailed(step: LoginSiteCredentialStep, error: Error?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsFailed,
+                              properties: [Key.step.rawValue: step.rawValue],
+                              error: error)
+        }
+
+        /// Tracks when site info is fetched during site address login.
+        ///
+        static func siteInfoFetched(exists: Bool,
+                                    hasWordPress: Bool,
+                                    isWPCom: Bool,
+                                    isJetpackInstalled: Bool,
+                                    isJetpackActive: Bool,
+                                    isJetpackConnected: Bool,
+                                    urlAfterRedirects: String) -> WooAnalyticsEvent {
+            .init(statName: .loginSiteAddressSiteInfoFetched, properties: [
+                Key.exists.rawValue: exists,
+                Key.hasWordPress.rawValue: hasWordPress,
+                Key.isWPCom.rawValue: isWPCom,
+                Key.isJetpackInstalled.rawValue: isJetpackInstalled,
+                Key.isJetpackActive.rawValue: isJetpackActive,
+                Key.isJetpackConnected.rawValue: isJetpackConnected,
+                Key.urlAfterRedirects.rawValue: urlAfterRedirects
+            ])
         }
     }
 }

@@ -27,7 +27,11 @@ struct ShipmentTrackingListMapper: Mapper {
             .orderID: orderID
         ]
 
-        return try decoder.decode(ShipmentTrackingListEnvelope.self, from: response).shipmentTrackings
+        do {
+            return try decoder.decode(ShipmentTrackingListEnvelope.self, from: response).shipmentTrackings
+        } catch {
+            return try decoder.decode([ShipmentTracking].self, from: response)
+        }
     }
 }
 

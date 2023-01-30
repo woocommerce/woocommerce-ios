@@ -46,7 +46,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .systemStatusReportInSupportRequest:
             return true
         case .IPPInAppFeedbackBanner:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,
@@ -57,9 +57,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .alpha
         case .tapToPayOnIPhone:
             return buildConfig == .localDeveloper
-        case .applicationPasswordAuthenticationForSiteCredentialLogin:
-            // Enable this to test application password authentication (WIP)
-            return false
         case .domainSettings:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

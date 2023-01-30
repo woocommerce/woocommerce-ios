@@ -30,8 +30,9 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
                                        message: message)
     }
 
-    func processingTransaction() -> CardPresentPaymentsModalViewModel {
-        CardPresentModalBuiltInReaderProcessing(name: name, amount: amount)
+    func processingTransaction(title: String) -> CardPresentPaymentsModalViewModel {
+        name = title
+        return CardPresentModalBuiltInReaderProcessing(name: name, amount: amount)
     }
 
     func success(printReceipt: @escaping () -> Void,
@@ -50,6 +51,7 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
     func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         return CardPresentModalError(errorDescription: builtInReaderDescription(for: error),
                                      transactionType: .collectPayment,
+                                     image: .builtInReaderError,
                                      primaryAction: tryAgain,
                                      dismissCompletion: dismissCompletion)
     }
@@ -57,11 +59,13 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
     func nonRetryableError(error: Error, dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalNonRetryableError(amount: amount,
                                           errorDescription: builtInReaderDescription(for: error),
+                                          image: .builtInReaderError,
                                           onDismiss: dismissCompletion)
     }
 
     func retryableError(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalRetryableError(primaryAction: tryAgain)
+        CardPresentModalRetryableError(image: .builtInReaderError,
+                                       primaryAction: tryAgain)
     }
 
     func cancelledOnReader() -> CardPresentPaymentsModalViewModel? {

@@ -47,6 +47,14 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let googleLoginScheme: String
 
+    internal var googleClientId: GoogleClientId {
+        guard let clientId = GoogleClientId(string: googleLoginClientId) else {
+            fatalError("Could not init GoogleClientId from developer provided value.")
+        }
+
+        return clientId
+    }
+
     /// UserAgent
     ///
     let userAgent: String

@@ -171,7 +171,11 @@ private extension OrderDetailsResultsControllers {
     }
 
     func configureStatusResultsController() {
-        try? statusResultsController.performFetch()
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Order Statuses: \(error)")
+        }
     }
 
     private func configureTrackingResultsController(onReload: @escaping () -> Void) {
@@ -186,8 +190,12 @@ private extension OrderDetailsResultsControllers {
             self.refetchAllResultsControllers()
             onReload()
         }
-
-        try? trackingResultsController.performFetch()
+        
+        do {
+            try trackingResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Order \(order.orderID) shipment tracking details: \(error)")
+        }
     }
 
     private func configureProductResultsController(onReload: @escaping () -> Void) {
@@ -202,8 +210,12 @@ private extension OrderDetailsResultsControllers {
             self.refetchAllResultsControllers()
             onReload()
         }
-
-        try? productResultsController.performFetch()
+        
+        do {
+            try productResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Products for Site \(siteID): \(error)")
+        }
     }
 
     private func configureProductVariationResultsController(onReload: @escaping () -> Void) {
@@ -239,7 +251,11 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? refundResultsController.performFetch()
+        do {
+            try refundResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Refund details for Site \(siteID) and Order \(order.orderID): \(error)")
+        }
     }
 
     private func configureShippingLabelResultsController(onReload: @escaping () -> Void) {
@@ -253,7 +269,11 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? shippingLabelResultsController.performFetch()
+        do {
+            try shippingLabelResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch ShippingLabel for Site \(siteID) and Order \(order.orderID): \(error)")
+        }
     }
 
     private func configureAddOnGroupResultsController(onReload: @escaping () -> Void) {
@@ -267,7 +287,11 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? addOnGroupResultsController.performFetch()
+        do {
+            try addOnGroupResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch AddOnGroup Site \(siteID): \(error)")
+        }
     }
 
     private func configureSitePluginsResultsController(onReload: @escaping () -> Void) {
@@ -281,12 +305,17 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? sitePluginsResultsController.performFetch()
+        do {
+            try sitePluginsResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Site Plugins for Site \(siteID): \(error)")
+        }
     }
 
     /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
     /// involves more than one results controller.
     func refetchAllResultsControllers() {
+        // TODO: Test if multiple `try` inside of the same block halt execution upon failure of one of them.
         try? productResultsController.performFetch()
         try? productVariationResultsController.performFetch()
         try? refundResultsController.performFetch()

@@ -667,6 +667,7 @@
 		2688642125D323C600821BA5 /* EditAttributesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2688642025D323C600821BA5 /* EditAttributesViewController.xib */; };
 		2688643D25D470C000821BA5 /* EditAttributesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2688643C25D470C000821BA5 /* EditAttributesViewModel.swift */; };
 		2688644325D471C700821BA5 /* EditAttributesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2688644225D471C700821BA5 /* EditAttributesViewModelTests.swift */; };
+		268D7C9C2984752A00D38709 /* SupportForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268D7C9B2984752A00D38709 /* SupportForm.swift */; };
 		268EC45F26CEA50C00716F5C /* EditCustomerNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268EC45E26CEA50C00716F5C /* EditCustomerNote.swift */; };
 		268EC46126D3F67800716F5C /* EditCustomerNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268EC46026D3F67800716F5C /* EditCustomerNoteViewModel.swift */; };
 		268EC46426D3F9C100716F5C /* EditCustomerNoteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268EC46326D3F9C100716F5C /* EditCustomerNoteViewModelTests.swift */; };
@@ -2758,6 +2759,7 @@
 		2688642025D323C600821BA5 /* EditAttributesViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditAttributesViewController.xib; sourceTree = "<group>"; };
 		2688643C25D470C000821BA5 /* EditAttributesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAttributesViewModel.swift; sourceTree = "<group>"; };
 		2688644225D471C700821BA5 /* EditAttributesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAttributesViewModelTests.swift; sourceTree = "<group>"; };
+		268D7C9B2984752A00D38709 /* SupportForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportForm.swift; sourceTree = "<group>"; };
 		268EC45E26CEA50C00716F5C /* EditCustomerNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNote.swift; sourceTree = "<group>"; };
 		268EC46026D3F67800716F5C /* EditCustomerNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNoteViewModel.swift; sourceTree = "<group>"; };
 		268EC46326D3F9C100716F5C /* EditCustomerNoteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNoteViewModelTests.swift; sourceTree = "<group>"; };
@@ -8348,6 +8350,7 @@
 				E12FB785266E0CAE0039E9C2 /* ApllicationLogDetailView.swift */,
 				E1ED16E3266E10A10037B8DB /* ApplicationLogViewModel.swift */,
 				262EB5AC298C70BC009DCC36 /* SupportForm */,
+				268D7C9B2984752A00D38709 /* SupportForm.swift */,
 				DEC51AFE276AEE79009F3DF4 /* SystemStatusReport */,
 			);
 			path = Help;
@@ -10795,6 +10798,7 @@
 				26C6E8EA26E8FD3900C7BB0F /* LazyView.swift in Sources */,
 				7421344A210A323C00C13890 /* WooAnalyticsStat.swift in Sources */,
 				4567389D2745497C00743054 /* OrderStatusFilterViewController.swift in Sources */,
+				268D7C9C2984752A00D38709 /* SupportForm.swift in Sources */,
 				02A275BA23FE50AA005C560F /* ProductUIImageLoader.swift in Sources */,
 				02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */,
 				B5D6DC54214802740003E48A /* SyncCoordinator.swift in Sources */,

@@ -30,8 +30,8 @@ final class DomainSettingsCoordinator: Coordinator {
     func start() {
         let settingsNavigationController = WooNavigationController()
         let domainSettings = DomainSettingsHostingController(viewModel: .init(siteID: site.siteID,
-                                                                              stores: stores)) { [weak self] in
-            self?.showDomainSelector(from: settingsNavigationController)
+                                                                              stores: stores)) { [weak self] hasDomainCredit in
+            self?.showDomainSelector(from: settingsNavigationController, hasDomainCredit: hasDomainCredit)
         }
         settingsNavigationController.pushViewController(domainSettings, animated: false)
         navigationController.present(settingsNavigationController, animated: true)
@@ -40,20 +40,33 @@ final class DomainSettingsCoordinator: Coordinator {
 
 private extension DomainSettingsCoordinator {
     @MainActor
-    func showDomainSelector(from navigationController: UINavigationController) {
-        let viewModel = DomainSelectorViewModel(initialSearchTerm: site.name, dataProvider: PaidDomainSelectorDataProvider())
+    func showDomainSelector(from navigationController: UINavigationController, hasDomainCredit: Bool) {
+        let viewModel = DomainSelectorViewModel(initialSearchTerm: site.name,
+                                                dataProvider: PaidDomainSelectorDataProvider(stores: stores,
+                                                                                             hasDomainCredit: hasDomainCredit))
         let domainSelector = PaidDomainSelectorHostingController(viewModel: viewModel) { [weak self] domain in
             guard let self else { return }
             let domainToPurchase = DomainToPurchase(name: domain.name,
                                                     productID: domain.productID,
                                                     supportsPrivacy: domain.supportsPrivacy)
-            do {
-                try await self.createCart(domain: domainToPurchase)
-                self.showWebCheckout(from: navigationController, domain: domainToPurchase)
-            } catch {
-                // TODO: 8558 - error handling
-                print("⛔️ Error creating cart with the selected domain \(domain): \(error)")
+            if hasDomainCredit {
+                do {
+                    try await self.redeemDomainCredit(domain: domainToPurchase)
+                    self.showSuccessView(from: navigationController, domainName: domain.name)
+                } catch {
+                    // TODO: 8558 - error handling
+                    print("⛔️ Error creating cart with the selected domain \(domain) with domain credit: \(error)")
+                }
+            } else {
+                do {
+                    try await self.createCart(domain: domainToPurchase)
+                    self.showWebCheckout(from: navigationController, domain: domainToPurchase)
+                } catch {
+                    // TODO: 8558 - error handling
+                    print("⛔️ Error creating cart with the selected domain \(domain): \(error)")
+                }
             }
+
         } onSupport: {
             // TODO: 8558 - remove support action
         }
@@ -89,6 +102,16 @@ private extension DomainSettingsCoordinator {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(DomainAction.createDomainShoppingCart(siteID: site.siteID,
                                                                   domain: domain) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
+    @MainActor
+    func redeemDomainCredit(domain: DomainToPurchase) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(DomainAction.redeemDomainCredit(siteID: site.siteID,
+                                                            domain: domain) { result in
                 continuation.resume(with: result)
             })
         }

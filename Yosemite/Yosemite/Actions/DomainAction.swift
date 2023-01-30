@@ -9,6 +9,9 @@ public enum DomainAction: Action {
     case createDomainShoppingCart(siteID: Int64,
                                   domain: DomainToPurchase,
                                   completion: (Result<Void, Error>) -> Void)
+    case redeemDomainCredit(siteID: Int64,
+                            domain: DomainToPurchase,
+                            completion: (Result<Void, Error>) -> Void)
 }
 
 /// Necessary data for the domain selector flow with paid domains.

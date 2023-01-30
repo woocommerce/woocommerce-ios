@@ -46,6 +46,8 @@ public final class DomainStore: Store {
             loadDomains(siteID: siteID, completion: completion)
         case .createDomainShoppingCart(let siteID, let domain, let completion):
             createDomainShoppingCart(siteID: siteID, domain: domain, completion: completion)
+        case .redeemDomainCredit(let siteID, let domain, let completion):
+            redeemDomainCredit(siteID: siteID, domain: domain, completion: completion)
         }
     }
 }
@@ -103,9 +105,28 @@ private extension DomainStore {
                 try await paymentRemote.createCart(siteID: siteID,
                                                    domain: .init(name: domain.name,
                                                                  productID: domain.productID,
-                                                                 supportsPrivacy: domain.supportsPrivacy))
+                                                                 supportsPrivacy: domain.supportsPrivacy),
+                                                   isTemporary: false)
             }
             completion(result.map { _ in () })
+        }
+    }
+
+    func redeemDomainCredit(siteID: Int64,
+                            domain: DomainToPurchase,
+                            completion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let cart = try await paymentRemote.createCart(siteID: siteID,
+                                                              domain: .init(name: domain.name,
+                                                                            productID: domain.productID,
+                                                                            supportsPrivacy: domain.supportsPrivacy),
+                                                              isTemporary: true)
+                try await paymentRemote.checkoutCartWithDomainCredit(cart: cart)
+                completion(.success(()))
+            } catch {
+                completion(.failure(error))
+            }
         }
     }
 }

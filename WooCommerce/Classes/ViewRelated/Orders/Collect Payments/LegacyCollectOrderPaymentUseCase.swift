@@ -100,6 +100,8 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, LegacyCollectOrderPaymen
     /// Coordinates emailing a receipt after payment success.
     private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
 
+    private let orderDurationRecorder: OrderDurationRecorderProtocol
+
     init(siteID: Int64,
          order: Order,
          formattedAmount: String,
@@ -109,6 +111,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, LegacyCollectOrderPaymen
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          paymentCaptureCelebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
+         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.order = order
@@ -119,6 +122,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, LegacyCollectOrderPaymen
         self.configuration = configuration
         self.stores = stores
         self.paymentCaptureCelebration = paymentCaptureCelebration
+        self.orderDurationRecorder = orderDurationRecorder
         self.analytics = analytics
     }
 
@@ -326,7 +330,6 @@ private extension LegacyCollectOrderPaymentUseCase {
     ///
     func handleSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData,
                                  onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        let orderDurationRecorder = OrderDurationRecorder.shared
         // Record success
         analytics.track(event: WooAnalyticsEvent.InPersonPayments
                             .collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID,

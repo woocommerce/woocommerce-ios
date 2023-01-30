@@ -5,6 +5,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import protocol Storage.StorageManagerType
+@testable import AutomatticTracks
 
 final class AppCoordinatorTests: XCTestCase {
     private var sessionManager: SessionManager!
@@ -325,10 +326,15 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         stores.deauthenticate()
         let analytics = MockAnalyticsProvider()
+
+        let mockABTestVariationProvider = MockABTestVariationProvider()
+        mockABTestVariationProvider.mockVariationValue = .control
+
         let appCoordinator = makeCoordinator(window: window,
                                              stores: stores,
                                              authenticationManager: authenticationManager,
-                                             analytics: WooAnalytics(analyticsProvider: analytics))
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             abTestVariationProvider: mockABTestVariationProvider)
 
         // When
         appCoordinator.start()
@@ -336,7 +342,9 @@ final class AppCoordinatorTests: XCTestCase {
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == "rest_api_login_experiment" }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-        XCTAssertNotNil(eventProperties["experiment_variant"] as? String)
+
+        let variant = try XCTUnwrap(eventProperties["experiment_variant"] as? String)
+        XCTAssertEqual(variant, "control")
     }
 
     // MARK: - Login reminder analytics
@@ -453,7 +461,8 @@ private extension AppCoordinatorTests {
                          analytics: Analytics = ServiceLocator.analytics,
                          loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-                         featureFlagService: FeatureFlagService = MockFeatureFlagService()) -> AppCoordinator {
+                         featureFlagService: FeatureFlagService = MockFeatureFlagService(),
+                         abTestVariationProvider: ABTestVariationProvider = DefaultABTestVariationProvider()) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
                               storageManager: storageManager ?? self.storageManager,
@@ -462,6 +471,15 @@ private extension AppCoordinatorTests {
                               analytics: analytics,
                               loggedOutAppSettings: loggedOutAppSettings,
                               pushNotesManager: pushNotesManager,
-                              featureFlagService: featureFlagService)
+                              featureFlagService: featureFlagService,
+                              abTestVariationProvider: abTestVariationProvider)
+    }
+}
+
+private class MockABTestVariationProvider: ABTestVariationProvider {
+    var mockVariationValue: Variation!
+
+    func variation(for abTest: ABTest) -> Variation {
+        mockVariationValue
     }
 }

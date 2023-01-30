@@ -9,7 +9,7 @@ final class PaidDomainSelectorDataProviderTests: XCTestCase {
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
-        dataProvider = PaidDomainSelectorDataProvider(stores: stores)
+        dataProvider = PaidDomainSelectorDataProvider(stores: stores, hasDomainCredit: false)
     }
 
     override func tearDown() {

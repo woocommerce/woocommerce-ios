@@ -55,7 +55,7 @@ private extension DomainSettingsCoordinator {
                     self.showSuccessView(from: navigationController, domainName: domain.name)
                 } catch {
                     // TODO: 8558 - error handling
-                    print("⛔️ Error creating cart with the selected domain \(domain) with domain credit: \(error)")
+                    print("⛔️ Error redeeming domain credit with the selected domain \(domain): \(error)")
                 }
             } else {
                 do {

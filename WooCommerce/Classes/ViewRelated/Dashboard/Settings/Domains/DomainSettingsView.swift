@@ -2,7 +2,8 @@ import SwiftUI
 
 /// Hosting controller that wraps the `DomainSettingsView` view.
 final class DomainSettingsHostingController: UIHostingController<DomainSettingsView> {
-    init(viewModel: DomainSettingsViewModel, addDomain: @escaping () -> Void) {
+    init(viewModel: DomainSettingsViewModel,
+         addDomain: @escaping (_ hasDomainCredit: Bool) -> Void) {
         super.init(rootView: DomainSettingsView(viewModel: viewModel,
                                                 addDomain: addDomain))
     }
@@ -21,9 +22,9 @@ final class DomainSettingsHostingController: UIHostingController<DomainSettingsV
 /// Shows a site's domains with actions to add a domain or redeem a domain credit.
 struct DomainSettingsView: View {
     @ObservedObject private var viewModel: DomainSettingsViewModel
-    private let addDomain: () -> Void
+    private let addDomain: (_ hasDomainCredit: Bool) -> Void
 
-    init(viewModel: DomainSettingsViewModel, addDomain: @escaping () -> Void) {
+    init(viewModel: DomainSettingsViewModel, addDomain: @escaping (Bool) -> Void) {
         self.viewModel = viewModel
         self.addDomain = addDomain
     }
@@ -41,13 +42,13 @@ struct DomainSettingsView: View {
 
                 if viewModel.hasDomainCredit {
                     DomainSettingsDomainCreditView() {
-                        addDomain()
+                        addDomain(viewModel.hasDomainCredit)
                     }
                 }
 
                 if viewModel.domains.isNotEmpty {
                     DomainSettingsListView(domains: viewModel.domains) {
-                        addDomain()
+                        addDomain(viewModel.hasDomainCredit)
                     }
                 }
             }
@@ -60,7 +61,7 @@ struct DomainSettingsView: View {
                         .frame(height: Layout.dividerHeight)
                         .foregroundColor(Color(.separator))
                     Button(Localization.searchDomainButton) {
-                        addDomain()
+                        addDomain(viewModel.hasDomainCredit)
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(Layout.bottomContentPadding)
@@ -141,7 +142,7 @@ struct DomainSettingsView_Previews: PreviewProvider {
                                 ]),
                                 // The site has domain credit.
                                 sitePlanResult: .success(.init(hasDomainCredit: true)))),
-                                   addDomain: {})
+                                   addDomain: { _ in })
             }
 
             NavigationView {
@@ -153,7 +154,7 @@ struct DomainSettingsView_Previews: PreviewProvider {
                                     .init(name: "free.test", isPrimary: true)
                                 ]),
                                 sitePlanResult: .success(.init(hasDomainCredit: true)))),
-                                   addDomain: {})
+                                   addDomain: { _ in })
             }
         }
     }

@@ -214,7 +214,8 @@ private extension AddAttributeViewController {
                                                             self?.doneButtonPressed()
                                                          }, inputFormatter: nil,
                                                          keyboardType: .default,
-                                                         returnKeyType: .next)
+                                                         returnKeyType: .next,
+                                                         autocapitalizationType: .words)
         cell.configure(viewModel: viewModel)
         cell.applyStyle(style: .body)
     }

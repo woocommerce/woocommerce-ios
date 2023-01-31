@@ -104,8 +104,7 @@ final class PaidDomainSelectorDataProvider: DomainSelectorDataProvider {
 
     @MainActor
     func loadDomainSuggestions(query: String) async throws -> [PaidDomainSuggestionViewModel] {
-        let hasDomainCredit = hasDomainCredit
-        return try await withCheckedThrowingContinuation { continuation in
+        return try await withCheckedThrowingContinuation { [hasDomainCredit] continuation in
             stores.dispatch(DomainAction.loadPaidDomainSuggestions(query: query) { result in
                 continuation.resume(with: result.map { $0.map { PaidDomainSuggestionViewModel(domainSuggestion: $0,
                                                                                               hasDomainCredit: hasDomainCredit) } })

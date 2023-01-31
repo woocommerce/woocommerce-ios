@@ -16,54 +16,56 @@ final class ProductVariationListMapperTests: XCTestCase {
     /// Verifies that all of the ProductVariation Fields are parsed correctly.
     ///
     func test_ProductVariation_fields_are_properly_parsed() throws {
-        let productVariation = try XCTUnwrap(mapLoadProductVariationListResponse()?.first)
+        let productVariations = [try XCTUnwrap(mapLoadProductVariationListResponse()?.first),
+                                 try XCTUnwrap(mapLoadProductVariationListResponseWithoutDataEnvelope()?.first)]
+        for productVariation in productVariations {
+            XCTAssertEqual(productVariation.siteID, dummySiteID)
+            XCTAssertEqual(productVariation.productID, dummyProductID)
+            XCTAssertEqual(productVariation.productVariationID, 1275)
+            XCTAssertEqual(productVariation.permalink, "https://chocolate.com/marble")
 
-        XCTAssertEqual(productVariation.siteID, dummySiteID)
-        XCTAssertEqual(productVariation.productID, dummyProductID)
-        XCTAssertEqual(productVariation.productVariationID, 1275)
-        XCTAssertEqual(productVariation.permalink, "https://chocolate.com/marble")
+            let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-11-14T12:40:55")
+            let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-11-14T13:06:42")
+            XCTAssertEqual(productVariation.dateCreated, dateCreated)
+            XCTAssertEqual(productVariation.dateModified, dateModified)
 
-        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-11-14T12:40:55")
-        let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-11-14T13:06:42")
-        XCTAssertEqual(productVariation.dateCreated, dateCreated)
-        XCTAssertEqual(productVariation.dateModified, dateModified)
+            XCTAssertEqual(productVariation.description, "<p>Nutty chocolate marble, 99% and organic.</p>\n")
+            XCTAssertEqual(productVariation.sku, "99%-nuts-marble")
 
-        XCTAssertEqual(productVariation.description, "<p>Nutty chocolate marble, 99% and organic.</p>\n")
-        XCTAssertEqual(productVariation.sku, "99%-nuts-marble")
+            XCTAssertEqual(productVariation.price, "12")
+            XCTAssertEqual(productVariation.regularPrice, "12")
+            XCTAssertEqual(productVariation.salePrice, "8")
+            XCTAssertFalse(productVariation.onSale)
 
-        XCTAssertEqual(productVariation.price, "12")
-        XCTAssertEqual(productVariation.regularPrice, "12")
-        XCTAssertEqual(productVariation.salePrice, "8")
-        XCTAssertFalse(productVariation.onSale)
+            XCTAssertTrue(productVariation.purchasable)
+            XCTAssertFalse(productVariation.virtual)
 
-        XCTAssertTrue(productVariation.purchasable)
-        XCTAssertFalse(productVariation.virtual)
+            XCTAssertTrue(productVariation.downloadable)
+            XCTAssertEqual(productVariation.downloadLimit, -1)
+            XCTAssertEqual(productVariation.downloadExpiry, 0)
 
-        XCTAssertTrue(productVariation.downloadable)
-        XCTAssertEqual(productVariation.downloadLimit, -1)
-        XCTAssertEqual(productVariation.downloadExpiry, 0)
+            XCTAssertEqual(productVariation.taxStatusKey, "taxable")
+            XCTAssertEqual(productVariation.taxClass, "")
 
-        XCTAssertEqual(productVariation.taxStatusKey, "taxable")
-        XCTAssertEqual(productVariation.taxClass, "")
+            XCTAssertTrue(productVariation.manageStock)
+            XCTAssertEqual(productVariation.stockQuantity, 16.5)
 
-        XCTAssertTrue(productVariation.manageStock)
-        XCTAssertEqual(productVariation.stockQuantity, 16.5)
+            XCTAssertEqual(productVariation.backordersKey, "notify")
+            XCTAssertTrue(productVariation.backordersAllowed)
+            XCTAssertFalse(productVariation.backordered)
 
-        XCTAssertEqual(productVariation.backordersKey, "notify")
-        XCTAssertTrue(productVariation.backordersAllowed)
-        XCTAssertFalse(productVariation.backordered)
+            XCTAssertEqual(productVariation.weight, "2.5")
+            XCTAssertEqual(productVariation.dimensions, ProductDimensions(length: "10", width: "2.5", height: ""))
 
-        XCTAssertEqual(productVariation.weight, "2.5")
-        XCTAssertEqual(productVariation.dimensions, ProductDimensions(length: "10", width: "2.5", height: ""))
+            XCTAssertEqual(productVariation.shippingClass, "")
+            XCTAssertEqual(productVariation.shippingClassID, 0)
 
-        XCTAssertEqual(productVariation.shippingClass, "")
-        XCTAssertEqual(productVariation.shippingClassID, 0)
+            XCTAssertNotNil(productVariation.image)
 
-        XCTAssertNotNil(productVariation.image)
+            XCTAssertEqual(productVariation.attributes.count, 3)
 
-        XCTAssertEqual(productVariation.attributes.count, 3)
-
-        XCTAssertEqual(productVariation.menuOrder, 8)
+            XCTAssertEqual(productVariation.menuOrder, 8)
+        }
     }
 
     /// Verifies that the fields of the ProductVariation with alternative types are parsed correctly when they have different types than in the struct.
@@ -124,6 +126,12 @@ private extension ProductVariationListMapperTests {
     ///
     func mapLoadProductVariationListResponse() -> [ProductVariation]? {
         return mapProductVariations(from: "product-variations-load-all")
+    }
+
+    /// Returns the ProductVariationListMapper output upon receiving `product`
+    ///
+    func mapLoadProductVariationListResponseWithoutDataEnvelope() -> [ProductVariation]? {
+        return mapProductVariations(from: "product-variations-load-all-without-data")
     }
 
     /// Returns the ProductVariationListMapper output upon receiving `product-alternative-types`

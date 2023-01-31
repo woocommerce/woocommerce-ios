@@ -679,7 +679,7 @@ private extension LegacyCardReaderConnectionController {
         }
 
         guard case CardReaderServiceError.connection(let underlyingError) = error else {
-            return alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
+            return alerts.connectingFailed(from: from, error: error, continueSearch: continueSearch, cancelSearch: cancelSearch)
         }
 
         switch underlyingError {
@@ -695,7 +695,7 @@ private extension LegacyCardReaderConnectionController {
         case .bluetoothConnectionFailedBatteryCriticallyLow:
             alerts.connectingFailedCriticallyLowBattery(from: from, retrySearch: retrySearch, cancelSearch: cancelSearch)
         default:
-            alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
+            alerts.connectingFailed(from: from, error: error, continueSearch: continueSearch, cancelSearch: cancelSearch)
         }
     }
 

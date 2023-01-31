@@ -2,16 +2,12 @@ import SwiftUI
 
 /// Hosting controller that wraps the `StoreCreationSummaryView`.
 final class StoreCreationSummaryHostingController: UIHostingController<StoreCreationSummaryView> {
-    private let onContinueToPayment: () -> Void
-
     init(viewModel: StoreCreationSummaryViewModel,
-         onContinueToPayment: @escaping () -> Void) {
-        self.onContinueToPayment = onContinueToPayment
-        super.init(rootView: StoreCreationSummaryView(viewModel: viewModel))
-
-        rootView.onContinueToPayment = { [weak self] in
-            self?.onContinueToPayment()
-        }
+         onContinueToPayment: @escaping () -> Void,
+         onSupport: @escaping () -> Void) {
+        super.init(rootView: StoreCreationSummaryView(viewModel: viewModel,
+                                                      onContinueToPayment: onContinueToPayment,
+                                                      onSupport: onSupport))
     }
 
     @available(*, unavailable)
@@ -45,17 +41,24 @@ struct StoreCreationSummaryViewModel {
     let storeSlug: String
     /// Optional category name from the previous profiler question.
     let categoryName: String?
+    /// Country code for the store location.
+    /// `nil` only when the `storeCreationM3Profiler` feature flag is disabled.
+    let countryCode: SiteAddress.CountryCode?
 }
 
 /// Displays a summary of the store creation flow with the store information (e.g. store name, store slug).
 struct StoreCreationSummaryView: View {
-    /// Set in the hosting controller.
-    var onContinueToPayment: (() -> Void) = {}
+    private let onContinueToPayment: () -> Void
+    private let onSupport: () -> Void
 
     private let viewModel: StoreCreationSummaryViewModel
 
-    init(viewModel: StoreCreationSummaryViewModel) {
+    init(viewModel: StoreCreationSummaryViewModel,
+         onContinueToPayment: @escaping () -> Void,
+         onSupport: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onContinueToPayment = onContinueToPayment
+        self.onSupport = onSupport
     }
 
     var body: some View {
@@ -77,7 +80,7 @@ struct StoreCreationSummaryView: View {
                         }
                         .background(Color(.systemColor(.systemGray6)))
 
-                        VStack {
+                        VStack(alignment: .leading, spacing: 16) {
                             VStack(alignment: .leading, spacing: Layout.spacingBetweenStoreNameAndDomain) {
                                 // Store name.
                                 Text(viewModel.storeName)
@@ -86,12 +89,18 @@ struct StoreCreationSummaryView: View {
                                 Text(viewModel.storeSlug)
                                     .foregroundColor(Color(.secondaryLabel))
                                     .bodyStyle()
-                                // Store category (optional).
-                                if let categoryName = viewModel.categoryName {
-                                    Text(categoryName)
-                                        .foregroundColor(Color(.label))
-                                        .bodyStyle()
-                                }
+                            }
+                            // Store country.
+                            if let country = viewModel.country {
+                                Text(country)
+                                    .foregroundColor(Color(.label))
+                                    .bodyStyle()
+                            }
+                            // Store category (optional).
+                            if let categoryName = viewModel.categoryName {
+                                Text(categoryName)
+                                    .foregroundColor(Color(.label))
+                                    .bodyStyle()
                             }
                         }
                         .padding(Layout.storeInfoPadding)
@@ -115,6 +124,13 @@ struct StoreCreationSummaryView: View {
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(Layout.defaultButtonPadding)
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                SupportButton {
+                    onSupport()
+                }
             }
         }
         .navigationTitle(Localization.title)
@@ -146,12 +162,29 @@ private extension StoreCreationSummaryView {
     }
 }
 
+private extension StoreCreationSummaryViewModel {
+    /// Text for the store country label.
+    var country: String? {
+        countryCode.map { [$0.readableCountry, $0.flagEmoji].compactMap { $0 }.joined(separator: " ") }
+    }
+}
+
 struct StoreCreationSummaryView_Previews: PreviewProvider {
     static var previews: some View {
         StoreCreationSummaryView(viewModel:
-                .init(storeName: "Fruity shop", storeSlug: "fruityshop.com", categoryName: "Arts and Crafts"))
+                .init(storeName: "Fruity shop",
+                      storeSlug: "fruityshop.com",
+                      categoryName: "Arts and Crafts",
+                      countryCode: .UG),
+                                 onContinueToPayment: {},
+                                 onSupport: {})
         StoreCreationSummaryView(viewModel:
-                .init(storeName: "Fruity shop", storeSlug: "fruityshop.com", categoryName: "Arts and Crafts"))
+                .init(storeName: "Fruity shop",
+                      storeSlug: "fruityshop.com",
+                      categoryName: "Arts and Crafts",
+                      countryCode: nil),
+                                 onContinueToPayment: {},
+                                 onSupport: {})
         .preferredColorScheme(.dark)
     }
 }

@@ -17,7 +17,13 @@ struct SystemPluginMapper: Mapper {
             .siteID: siteID
         ]
 
-        let systemStatus = try decoder.decode(SystemStatusEnvelope.self, from: response).systemStatus
+        let systemStatus: SystemStatus = try {
+            do {
+                return try decoder.decode(SystemStatusEnvelope.self, from: response).systemStatus
+            } catch {
+                return try decoder.decode(SystemStatus.self, from: response)
+            }
+        }()
 
         /// Active and in-active plugins share identical structure, but are stored in separate parts of the remote response
         /// (and without an active attribute in the response). So... we use the same decoder for active and in-active plugins

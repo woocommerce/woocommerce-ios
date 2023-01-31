@@ -14,6 +14,10 @@ final class JetpackRequestTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 1234
 
+    /// Sample site address
+    ///
+    private let sampleSiteAddress = "https://wordpress.com"
+
     /// RPC Sample Method Path
     ///
     private let sampleRPC = "sample"
@@ -119,6 +123,42 @@ final class JetpackRequestTests: XCTestCase {
 
         let output = try! request.asURLRequest()
         XCTAssertTrue((output.url?.absoluteString.contains("locale=fr_FR"))!)
+    }
+
+    // MARK: `RESTRequest` conversion
+
+    func test_it_is_converted_into_RESTRequest_when_availableAsRESTRequest_is_true() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: sampleParameters,
+                                     availableAsRESTRequest: true)
+
+        // When
+        let output = try XCTUnwrap(request.asRESTRequest(with: sampleSiteAddress))
+
+        // Then
+        XCTAssertEqual(output.apiVersionPath, WooAPIVersion.mark3.path)
+        XCTAssertEqual(output.method, .post)
+        XCTAssertEqual(output.path, sampleRPC)
+        let params = try XCTUnwrap(output.parameters as? [String: String])
+        XCTAssertEqual(params, sampleParameters)
+        XCTAssertEqual(output.siteURL, sampleSiteAddress)
+    }
+
+    func test_converting_into_RESTRequest_is_nil_when_availableAsRESTRequest_is_false() {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: sampleParameters,
+                                     availableAsRESTRequest: false)
+
+        // Then
+        XCTAssertNil(request.asRESTRequest(with: sampleSiteAddress))
     }
 }
 

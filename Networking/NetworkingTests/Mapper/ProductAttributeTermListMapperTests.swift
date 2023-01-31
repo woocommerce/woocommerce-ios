@@ -15,6 +15,16 @@ final class ProductAttributeTermListMapperTests: XCTestCase {
 
         XCTAssertEqual(secondTerm, expectedTerm)
     }
+
+    func test_productAttributeTerm_fields_are_correctly_mapped_when_response_has_no_data_envelope() throws {
+        let terms = try mapLoadAllProductAttributeTermsResponseWithoutDataEnvelope()
+        XCTAssertEqual(terms.count, 3)
+
+        let secondTerm = terms[1]
+        let expectedTerm = ProductAttributeTerm(siteID: dummySiteID, termID: 27, name: "Medium", slug: "medium", count: 1)
+
+        XCTAssertEqual(secondTerm, expectedTerm)
+    }
 }
 
 // MARK: Helpers
@@ -29,5 +39,9 @@ private extension ProductAttributeTermListMapperTests {
 
     func mapLoadAllProductAttributeTermsResponse() throws -> [ProductAttributeTerm] {
         return try mapProductAttributeTerms(from: "product-attribute-terms")
+    }
+
+    func mapLoadAllProductAttributeTermsResponseWithoutDataEnvelope() throws -> [ProductAttributeTerm] {
+        return try mapProductAttributeTerms(from: "product-attribute-terms-without-data")
     }
 }

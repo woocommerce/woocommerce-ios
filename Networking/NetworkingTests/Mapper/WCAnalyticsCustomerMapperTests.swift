@@ -59,4 +59,22 @@ class WCAnalyticsCustomerMapperTests: XCTestCase {
         XCTAssertEqual(customers[3].userID, 3)
         XCTAssertEqual(customers[3].name, "John Doe")
     }
+
+    func test_WCAnalyticsCustomer_array_maps_all_available_entities_if_response_has_no_data_envelope() {
+        // Given
+        let mapper = WCAnalyticsCustomerMapper(siteID: dummySiteID)
+        var customers: [WCAnalyticsCustomer] = []
+
+        XCTAssertEqual(customers.count, 0)
+
+        // When
+        guard let data = Loader.contentsOf("wc-analytics-customers-without-data") else {
+            XCTFail("Data couldn't be loaded")
+            return
+        }
+        customers = try! mapper.map(response: data)
+
+        // Then
+        XCTAssertEqual(customers.count, 2)
+    }
 }

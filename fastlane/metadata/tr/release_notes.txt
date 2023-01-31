@@ -1,1 +1,1 @@
-İyi haber! Uygulamaya yeni bir analiz bölümü ekledik! Gelir ve Siparişler'le ilgili daha ayrıntılı bilgileri kontrol etmek için mağaza istatistiklerinin altındaki Daha Fazlasını Gör düğmesine tıklamanız yeterlidir. Bu son değil - önümüzdeki birkaç hafta içinde daha fazla güncelleme gelecek!
+Ürün durumunu ve fiyatları toplu olarak güncellemek artık mümkün! Denemek için Ürünler sekmesine gidip üstteki çoklu seçim simgesine tıklamanız yeterli.

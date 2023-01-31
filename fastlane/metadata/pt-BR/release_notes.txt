@@ -1,1 +1,1 @@
-Boas notícias! Incluímos uma nova seção de análise no aplicativo! Basta clicar no botão Ver mais abaixo das estatísticas da loja para conferir informações mais detalhadas de receita e pedidos. E não para por aí: tem mais atualizações a caminho para as próximas semanas!
+Agora é possível atualizar preços e status de produto em massa! Basta acessar a guia Produtos e clicar no ícone de seleção múltipla na parte superior para experimentar.

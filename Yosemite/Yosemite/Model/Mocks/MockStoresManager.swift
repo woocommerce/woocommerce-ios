@@ -185,6 +185,10 @@ public class MockStoresManager: StoresManager {
         true
     }
 
+    public var isAuthenticatedWithoutWPCom: Bool {
+        false
+    }
+
     public var needsDefaultStore: Bool {
         sessionManager.defaultStoreID == nil
     }

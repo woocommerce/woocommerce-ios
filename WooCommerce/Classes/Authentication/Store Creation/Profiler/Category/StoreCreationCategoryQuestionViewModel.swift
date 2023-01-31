@@ -1,16 +1,20 @@
 import Combine
 import Foundation
 
+/// Necessary data from the answer of the store creation category question.
+struct StoreCreationCategoryAnswer: Equatable {
+    /// Display name of the selected category.
+    let name: String
+    /// Raw value of the category (industry) to be sent to the backend.
+    let value: String
+    /// Raw value of the category group (industry group) to be sent to the backend.
+    let groupValue: String
+}
+
 /// View model for `StoreCreationCategoryQuestionView`, an optional profiler question about store category in the store creation flow.
 @MainActor
 final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
-    /// Contains necessary information about a category.
-    struct Category: Equatable {
-        /// Display name for the category.
-        let name: String
-        /// Value that is sent to the API.
-        let value: String
-    }
+    typealias Answer = StoreCreationCategoryAnswer
 
     let topHeader: String
 
@@ -20,49 +24,13 @@ final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestio
 
     /// Question content.
     /// TODO: 8376 - update values when API is ready.
-    let categories: [Category] = [
-        .init(name: NSLocalizedString("Art & Photography",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Books & Magazines",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Electronics and Software",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Construction & Industrial",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Design & Marketing",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Fashion and Apparel",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Food and Drink",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Arts and Crafts",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Health and Beauty",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Pets Pet Care",
-                                      comment: "Option in the store creation category question."),
-              value: ""),
-        .init(name: NSLocalizedString("Sports and Recreation",
-                                      comment: "Option in the store creation category question."),
-              value: "")
-    ]
-
     @Published private(set) var selectedCategory: Category?
 
-    private let onContinue: (String) -> Void
+    private let onContinue: (Answer) -> Void
     private let onSkip: () -> Void
 
     init(storeName: String,
-         onContinue: @escaping (String) -> Void,
+         onContinue: @escaping (Answer) -> Void,
          onSkip: @escaping () -> Void) {
         self.topHeader = storeName
         self.onContinue = onContinue
@@ -72,11 +40,12 @@ final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestio
 
 extension StoreCreationCategoryQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
     func continueButtonTapped() async {
-        guard let selectedCategory else {
+        guard let selectedCategory,
+        let categoryGroup = categorySections.first(where: { $0.categories.contains(selectedCategory) })?.group else {
             return onSkip()
         }
 
-        onContinue(selectedCategory.name)
+        onContinue(.init(name: selectedCategory.name, value: selectedCategory.rawValue, groupValue: categoryGroup.rawValue))
     }
 
     func skipButtonTapped() {

@@ -210,6 +210,12 @@ extension UIImage {
         return UIImage.gridicon(.comment)
     }
 
+    /// Comment Content Icon
+    ///
+    static var commentContent: UIImage {
+        return UIImage(named: "icon-comment-content") ?? UIImage.gridicon(.comment)
+    }
+
     /// Credit Card Icon
     ///
     static var creditCardImage: UIImage {
@@ -236,6 +242,12 @@ extension UIImage {
     ///
     static var deleteCellImage: UIImage {
         return UIImage.gridicon(.cross, size: CGSize(width: 22, height: 22))
+    }
+
+    /// Domain credit image.
+    ///
+    static var domainCreditImage: UIImage {
+        return UIImage(named: "domain-credit")!
     }
 
     /// Domain search placeholder image.
@@ -359,6 +371,12 @@ extension UIImage {
     ///
     static var heartOutlineImage: UIImage {
         return UIImage.gridicon(.heartOutline)
+    }
+
+    /// Help Outline
+    ///
+    static var helpOutlineImage: UIImage {
+        return UIImage.gridicon(.helpOutline)
     }
 
     /// House Image
@@ -502,18 +520,6 @@ extension UIImage {
     ///
     static var cardReaderScanning: UIImage {
         return UIImage(named: "card-reader-scanning")!
-    }
-
-    static var tempBuiltInReaderCheck: UIImage {
-        return UIImage(named: "temp-woo-tap-on-mobile-check")!
-    }
-
-    static var tempBuiltInReaderPrepare: UIImage {
-        return UIImage(named: "temp-woo-tap-on-mobile-prepare")!
-    }
-
-    static var tempBuiltInReaderPayment: UIImage {
-        return UIImage(named: "temp-woo-tap-on-mobile")!
     }
 
     /// Found Card Reader
@@ -702,6 +708,12 @@ extension UIImage {
     static var moreImage: UIImage {
         let tintColor = UIColor.primary
         return ellipsisImage.imageWithTintColor(tintColor)!
+    }
+
+    /// Select multiple items icon
+    ///
+    static var multiSelectIcon: UIImage {
+        return UIImage(named: "icon-multiselect")!
     }
 
     /// Payment celebration
@@ -1142,6 +1154,37 @@ extension UIImage {
     ///
     static var calendar: UIImage {
         return UIImage.gridicon(.calendar)
+    }
+
+    // MARK: - Tap on Mobile flow images
+    /// Select reader type
+    ///
+    static var cardPaymentsSelectReaderType: UIImage {
+        return UIImage(named: "card-payments-select-reader-type")!
+    }
+
+    /// Preparing built-in card reader: intended for use before we're ready to take payment
+    ///
+    static var preparingBuiltInReader: UIImage {
+        return UIImage(named: "built-in-reader-preparing")!
+    }
+
+    /// Built-in reader Processing: intended for use when a payment is
+    /// underway with the iPhone's built in reader.
+    ///
+    static var builtInReaderProcessing: UIImage {
+        return UIImage(named: "built-in-reader-processing")!
+    }
+
+    /// Built-in reader Success: intended for use when a transaction is complete
+    /// with the built-in reader
+    ///
+    static var builtInReaderSuccess: UIImage {
+        return UIImage(named: "built-in-reader-payment-success")!
+    }
+
+    static var builtInReaderError: UIImage {
+        return UIImage(named: "built-in-reader-error")!
     }
 }
 

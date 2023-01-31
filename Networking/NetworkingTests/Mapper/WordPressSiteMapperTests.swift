@@ -13,6 +13,8 @@ final class WordPressSiteMapperTests: XCTestCase {
         XCTAssertEqual(site.url, "https://test.com")
         XCTAssertEqual(site.gmtOffset, "0")
         XCTAssertEqual(site.timezone, "")
+        XCTAssertFalse(site.namespaces.isEmpty)
+        XCTAssertFalse(site.isWooCommerceActive)
     }
 }
 

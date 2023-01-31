@@ -54,7 +54,7 @@ final class AppCoordinatorTests: XCTestCase {
     func test_starting_app_logged_in_without_selected_site_presents_store_picker_if_there_are_connected_stores() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = nil
 
         let site = Site.fake().copy(siteID: 123, isWooCommerceActive: true)
@@ -72,7 +72,7 @@ final class AppCoordinatorTests: XCTestCase {
     func test_starting_app_logged_in_without_selected_site_presents_store_picker_if_there_are_no_connected_stores() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = nil
 
         let site = Site.fake().copy(siteID: 123, isWooCommerceActive: false)
@@ -87,10 +87,25 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
     }
 
+    func test_starting_app_logged_in_with_wporg_credentials_but_no_selected_site_shows_prologue_screen() {
+        // Given
+        // Authenticates the app without selecting a site, so that the prologue screen is shown.
+        stores.authenticate(credentials: SessionSettings.wporgCredentials)
+        sessionManager.defaultStoreID = nil
+
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
+    }
+
     func test_starting_app_logged_in_without_selected_site_presents_account_mismatched_if_there_is_no_store_matching_the_error_site_address() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = nil
 
         let site = Site.fake().copy(siteID: 123, url: "https://abc.com", isWooCommerceActive: true)
@@ -118,7 +133,7 @@ final class AppCoordinatorTests: XCTestCase {
     func test_starting_app_logged_in_without_selected_site_presents_error_if_the_error_site_address_does_not_have_woo() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = nil
 
         let siteURL = "https://test.com"
@@ -146,7 +161,7 @@ final class AppCoordinatorTests: XCTestCase {
 
     func test_starting_app_logged_in_with_selected_site_stays_on_tabbar() throws {
         // Given
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             guard case let AppSettingsAction.loadEligibilityErrorInfo(completion) = action else {
                 return
@@ -164,9 +179,29 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
     }
 
+    func test_starting_app_logged_in_with_wporg_credentials_and_selected_site_stays_on_tabbar() throws {
+        // Given
+        stores.authenticate(credentials: SessionSettings.wporgCredentials)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            guard case let AppSettingsAction.loadEligibilityErrorInfo(completion) = action else {
+                return
+            }
+            // any failure except `.insufficientRole` will be treated as having an eligible status.
+            completion(.failure(SampleError.first))
+        }
+        sessionManager.defaultStoreID = WooConstants.placeholderStoreID
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
+    }
+
     func test_starting_app_logged_in_with_selected_site_and_ineligible_status_presents_role_error() throws {
         // Given
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             guard case let AppSettingsAction.loadEligibilityErrorInfo(completion) = action else {
                 return
@@ -192,7 +227,7 @@ final class AppCoordinatorTests: XCTestCase {
 
     func test_starting_app_logged_in_then_logging_out_presents_authentication() throws {
         // Given
-        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = 134
         let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
 
@@ -283,7 +318,32 @@ final class AppCoordinatorTests: XCTestCase {
         appCoordinator.start()
 
         // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.loginOnboardingShown.rawValue])
+        _ = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginOnboardingShown.rawValue}))
+    }
+
+    func test_trackRestAPILoginExperimentVariation_is_tracked_after_presenting_onboarding() throws {
+        // Given
+        stores.deauthenticate()
+        let analytics = MockAnalyticsProvider()
+
+        let mockABTestVariationProvider = MockABTestVariationProvider()
+        mockABTestVariationProvider.mockVariationValue = .control
+
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             abTestVariationProvider: mockABTestVariationProvider)
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == "rest_api_login_experiment" }))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+
+        let variant = try XCTUnwrap(eventProperties["experiment_variant"] as? String)
+        XCTAssertEqual(variant, "control")
     }
 
     // MARK: - Login reminder analytics
@@ -305,10 +365,12 @@ final class AppCoordinatorTests: XCTestCase {
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.loginLocalNotificationTapped.rawValue])
-        let actionPropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["action"] as? String)
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginLocalNotificationTapped.rawValue}))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+
+        let actionPropertyValue = try XCTUnwrap(eventProperties["action"] as? String)
         XCTAssertEqual(actionPropertyValue, "contact_support")
-        let typePropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["type"] as? String)
+        let typePropertyValue = try XCTUnwrap(eventProperties["type"] as? String)
         XCTAssertEqual(typePropertyValue, "site_address_error")
     }
 
@@ -329,10 +391,12 @@ final class AppCoordinatorTests: XCTestCase {
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.loginLocalNotificationTapped.rawValue])
-        let actionPropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["action"] as? String)
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginLocalNotificationTapped.rawValue}))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+
+        let actionPropertyValue = try XCTUnwrap(eventProperties["action"] as? String)
         XCTAssertEqual(actionPropertyValue, "login_with_wpcom")
-        let typePropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["type"] as? String)
+        let typePropertyValue = try XCTUnwrap(eventProperties["type"] as? String)
         XCTAssertEqual(typePropertyValue, "site_address_error")
     }
 
@@ -353,10 +417,12 @@ final class AppCoordinatorTests: XCTestCase {
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.loginLocalNotificationTapped.rawValue])
-        let actionPropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["action"] as? String)
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginLocalNotificationTapped.rawValue}))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+
+        let actionPropertyValue = try XCTUnwrap(eventProperties["action"] as? String)
         XCTAssertEqual(actionPropertyValue, "default")
-        let typePropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["type"] as? String)
+        let typePropertyValue = try XCTUnwrap(eventProperties["type"] as? String)
         XCTAssertEqual(typePropertyValue, "site_address_error")
     }
 
@@ -377,8 +443,10 @@ final class AppCoordinatorTests: XCTestCase {
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.loginLocalNotificationDismissed.rawValue])
-        let typePropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["type"] as? String)
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginLocalNotificationDismissed.rawValue}))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+
+        let typePropertyValue = try XCTUnwrap(eventProperties["type"] as? String)
         XCTAssertEqual(typePropertyValue, "site_address_error")
     }
 }
@@ -392,7 +460,8 @@ private extension AppCoordinatorTests {
                          analytics: Analytics = ServiceLocator.analytics,
                          loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-                         featureFlagService: FeatureFlagService = MockFeatureFlagService()) -> AppCoordinator {
+                         featureFlagService: FeatureFlagService = MockFeatureFlagService(),
+                         abTestVariationProvider: ABTestVariationProvider = DefaultABTestVariationProvider()) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
                               storageManager: storageManager ?? self.storageManager,
@@ -401,6 +470,7 @@ private extension AppCoordinatorTests {
                               analytics: analytics,
                               loggedOutAppSettings: loggedOutAppSettings,
                               pushNotesManager: pushNotesManager,
-                              featureFlagService: featureFlagService)
+                              featureFlagService: featureFlagService,
+                              abTestVariationProvider: abTestVariationProvider)
     }
 }

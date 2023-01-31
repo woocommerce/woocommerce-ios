@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-12-14 18:00:06+0000 */
+/* Translation-Revision-Date: 2023-01-25 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -71,6 +71,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "%1$@ 환불 요청됨(%2$@)";
+
+/* Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected */
+"%1$@ selected" = "%1$@ 선택됨";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
 "%1$@ total" = "총 %1$@개";
@@ -235,6 +238,9 @@ which should be translated separately and considered part of this sentence. */
 /* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
 "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery." = "계산에 \"대면 결제\" 옵션이 있으면 계산 또는 배송 시 카드 또는 현금 결제를 수락할 수 있습니다.";
 
+/* Industry option in the store creation category question. */
+"A C And Heating Contractors" = "냉난방 계약자";
+
 /* Instruction text to explain magic link login step. */
 "A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "워드프레스닷컴 계정이 스토어 자격 증명에 연결되어 있습니다. 계속하시겠다면 위의 이메일 주소에 대한 확인 링크를 보내드리겠습니다.";
 
@@ -298,11 +304,20 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "할인된 배송률을 이용하세요. 현재 DHL과 USPS에서 사용할 수 있고, 앞으로 추가될 예정입니다.";
 
+/* Industry option in the store creation category question. */
+"Accessories" = "액세서리";
+
+/* Industry option in the store creation category question. */
+"Accessories For Tobacco And Marijuana" = "담배 및 마리화나 액세서리";
+
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "계좌 유형";
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "계정 연결됨";
+
+/* Industry option in the store creation category question. */
+"Accounting, Auditing, Or Tax Prep" = "회계, 감사 또는 세금 준비";
 
 /* Title for the section related to actions inside In-Person Payments settings */
 "Actions" = "조치";
@@ -406,17 +421,18 @@ which should be translated separately and considered part of this sentence. */
    Add tracking screen - title. */
 "Add Tracking" = "추적 추가";
 
-/* Title on empty state button when the product has attributes but no variations */
+/* Title on empty state button when the product has attributes but no variations
+   Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "변형 추가";
-
-/* Title for the button on the Products onboarding banner */
-"Add a Product" = "상품 추가";
 
 /* Button title on the store picker for store creation */
 "Add a Store" = "스토어 추가";
 
 /* Title for the Add a Different Address switch in the Address form */
 "Add a different shipping address" = "다른 배송 주소 추가";
+
+/* Title of button to add a domain in domain settings. */
+"Add a domain" = "도메인 추가";
 
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "새 신용카드 추가";
@@ -429,7 +445,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "변형이 스토어에 표시되도록 가격 추가";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+   The action to add a product
+   Title for the button on the Products onboarding banner */
 "Add a product" = "제품 추가";
 
 /* Cell text in Add / Edit product when there are no images. */
@@ -468,6 +485,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "새 태그를 쉼표로 구분하여 추가하세요.";
+
+/* Title for the option to generate just one variation */
+"Add new variation" = "새 변형 추가";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "제품 링크 추가";
@@ -527,14 +547,32 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "주문에 변형을 추가합니다.";
 
+/* Industry option in the store creation category question. */
+"Adult Content Or Services" = "성인용 콘텐츠 또는 서비스";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "성인 서명 필수(+%1$@)";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "앱 상태를 검토하는 고급 도구";
 
+/* Country option for a site address. */
+"Afghanistan" = "아프가니스탄";
+
+/* Industry option in the store creation category question. */
+"Airlines And Air Carriers" = "항공사 및 항공 운송회사";
+
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
+
+/* Country option for a site address. */
+"Albania" = "알바니아";
+
+/* Industry option in the store creation category question. */
+"Alcohol" = "술";
+
+/* Country option for a site address. */
+"Algeria" = "알제리";
 
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "모든 주문";
@@ -561,6 +599,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "필요한 모든 기능이 이미 구축되어 있음";
+
+/* Message for the notice when there were no variations to generate */
+"All variations are already generated." = "모든 변형이 이미 생성되었습니다.";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "허용";
@@ -593,6 +634,12 @@ which should be translated separately and considered part of this sentence. */
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "또는:";
 
+/* Option in the store creation selling platforms question. */
+"Amazon" = "Amazon";
+
+/* Country option for a site address. */
+"American Samoa" = "아메리칸사모아";
+
 /* Title of the Amount label on Coupon Details screen */
 "Amount" = "금액";
 
@@ -612,6 +659,9 @@ which should be translated separately and considered part of this sentence. */
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
 "Amount Paid" = "결제한 금액";
+
+/* Industry option in the store creation category question. */
+"Amusement Parks, Carnivals, Or Circuses" = "놀이공원, 카니발 또는 서커스";
 
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
 "An HTTP error code %i was returned." = "HTTP 오류 코드(%i)가 반환되었습니다.";
@@ -668,6 +718,24 @@ which should be translated separately and considered part of this sentence. */
 /* Message when enabling analytics succeeds */
 "Analytics enabled successfully." = "분석이 활성화되었습니다.";
 
+/* Country option for a site address. */
+"Andorra" = "안도라";
+
+/* Country option for a site address. */
+"Angola" = "앙골라";
+
+/* Country option for a site address. */
+"Anguilla" = "앵귈라";
+
+/* Country option for a site address. */
+"Antarctica" = "남극";
+
+/* Country option for a site address. */
+"Antigua and Barbuda" = "앤티가바부다";
+
+/* Industry option in the store creation category question. */
+"Antiques" = "골동품";
+
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
    Label for one of the filters in order date range
@@ -691,8 +759,12 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "애플리케이션 이름";
 
+/* Message to display when the constructed admin or login URL for the logged-in site is not accessible */
+"Application password cannot be generated due to a custom login or admin URL on your site." = "사이트의 사용자 정의 로그인 또는 관리 URL로 인해 애플리케이션 비밀번호를 생성할 수 없습니다.";
+
 /* Apply navigation button in custom range date picker
-   Change order status screen - button title to apply selection */
+   Change order status screen - button title to apply selection
+   Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "적용";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
@@ -713,6 +785,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "댓글 승인";
+
+/* Industry option in the store creation category question. */
+"Apps" = "앱";
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "제품 유형을 변경하시겠습니까?";
@@ -747,6 +822,21 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed in the alert for dismissing all the inbox notes. */
 "Are you sure? Inbox messages will be dismissed forever." = "계속할까요? 받은 편지함 메시지가 영원히 무시됩니다.";
 
+/* Country option for a site address. */
+"Argentina" = "아르헨티나";
+
+/* Country option for a site address. */
+"Armenia" = "아르메니아";
+
+/* Country option for a site address. */
+"Aruba" = "아루바";
+
+/* Industry option in the store creation category question. */
+"Assisted Living" = "생활 보조";
+
+/* Industry option in the store creation category question. */
+"Attorneys And Lawyers" = "검사 및 변호사";
+
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "속성 이름";
 
@@ -756,6 +846,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Primary text for the generate first variation screen */
 "Attributes added!" = "속성이 추가되었습니다!";
+
+/* Country option for a site address. */
+"Australia" = "오스트레일리아";
+
+/* Country option for a site address. */
+"Austria" = "오스트리아";
 
 /* No comment provided by engineer. */
 "Authenticating" = "인증하기";
@@ -767,6 +863,12 @@ which should be translated separately and considered part of this sentence. */
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "호스트 인증 필요: %@";
 
+/* Industry option in the store creation category question. */
+"Auto Parts And Accessories" = "자동차 부품 및 액세서리";
+
+/* Industry option in the store creation category question. */
+"Auto Services" = "자동차 서비스";
+
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "이 사이트에서 자동으로 관리됨";
 
@@ -776,6 +878,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic 가족";
 
+/* Industry group option in the store creation category question. */
+"Autos (Sales and Service)" = "자동차(판매 및 서비스)";
+
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "평균 주문 값";
 
@@ -784,6 +889,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
 "Awaiting payment via %@" = "%@을(를) 통한 결제 대기 중";
+
+/* Country option for a site address. */
+"Azerbaijan" = "아제르바이잔";
 
 /* Details section title in the Edit Address Form */
 "BILLING ADDRESS" = "청구 주소";
@@ -800,7 +908,7 @@ which should be translated separately and considered part of this sentence. */
 "Back to Order" = "주문으로 돌아가기";
 
 /* Text for the button to dismiss the store picker error screen */
-"Back to Sites" = "사이트로 돌아가기";
+"Back to sites" = "사이트로 돌아가기";
 
 /* Title of a button to dismiss the survey complete screen */
 "Back to store" = "스토어로 돌아가기";
@@ -812,8 +920,62 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "이월 주문";
 
+/* Country option for a site address. */
+"Bahamas" = "바하마";
+
+/* Country option for a site address. */
+"Bahrain" = "바레인";
+
+/* Industry option in the store creation category question. */
+"Bail Bonds" = "보석 보증금";
+
+/* Country option for a site address. */
+"Bangladesh" = "방글라데시";
+
+/* Industry option in the store creation category question. */
+"Bankruptcy Services" = "파산 서비스";
+
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "표시줄 번호 %1$i, %2$@, ";
+
+/* Country option for a site address. */
+"Barbados" = "바베이도스";
+
+/* Industry option in the store creation category question. */
+"Bars And Nightclubs" = "바 및 나이트클럽";
+
+/* Industry option in the store creation category question. */
+"Beauty Products" = "미용 상품";
+
+/* Country option for a site address. */
+"Belarus" = "벨라루스";
+
+/* Country option for a site address. */
+"Belau" = "벨라우";
+
+/* Country option for a site address. */
+"Belgium" = "벨기에";
+
+/* Country option for a site address. */
+"Belize" = "벨리즈";
+
+/* Country option for a site address. */
+"Benin" = "베냉";
+
+/* Country option for a site address. */
+"Bermuda" = "버뮤다";
+
+/* Industry option in the store creation category question. */
+"Betting Or Fantasy Sports" = "베팅 또는 판타지 스포츠";
+
+/* Country option for a site address. */
+"Bhutan" = "부탄";
+
+/* Option in the store creation selling platforms question. */
+"Big Cartel" = "Big Cartel";
+
+/* Option in the store creation selling platforms question. */
+"Big Commerce" = "Big Commerce";
 
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data
@@ -829,14 +991,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's blog */
 "Blog" = "블로그";
 
+/* Industry option in the store creation category question. */
+"Blogs And Written Content" = "블로그 및 서면 콘텐츠";
+
 /* The button title on the reader type alert, for the user to choose a bluetooth reader. */
 "Bluetooth Reader" = "블루투스 리더";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "블루투스 권한 필수";
 
+/* Industry option in the store creation category question. */
+"Boat Sales" = "보트 판매";
+
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "굵게";
+
+/* Country option for a site address. */
+"Bolivia" = "볼리비아";
+
+/* Country option for a site address. */
+"Bonaire, Saint Eustatius and Saba" = "보나이러, 세인트 유스타티우스 및 사바";
+
+/* Industry option in the store creation category question. */
+"Books" = "책";
 
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "고객에게 특별한 혜택과 할인을 발송하여 비즈니스를 증진하세요.";
@@ -844,15 +1021,54 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Linked Products announcement banner */
 "Boost your sales with linked products" = "연결 상품으로 매출 증대";
 
+/* Country option for a site address. */
+"Bosnia and Herzegovina" = "보스니아헤르체고비나";
+
+/* Country option for a site address. */
+"Botswana" = "보츠와나";
+
+/* Country option for a site address. */
+"Bouvet Island" = "부베섬";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "상자";
+
+/* Country option for a site address. */
+"Brazil" = "브라질";
+
+/* Country option for a site address. */
+"British Indian Ocean Territory" = "영국령 인도양 식민지";
+
+/* Country option for a site address. */
+"British Virgin Islands" = "영국령 버진아일랜드";
+
+/* Country option for a site address. */
+"Brunei" = "브루나이";
 
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "판매하려는 품목을 추가하여 카탈로그를 제작하세요.";
 
+/* Industry group option in the store creation category question. */
+"Building Services" = "건물 서비스";
+
+/* Country option for a site address. */
+"Bulgaria" = "불가리아";
+
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
 "Bulk Update" = "일괄 업데이트";
+
+/* Title of a button that presents a menu with possible products bulk update options */
+"Bulk update" = "대량 업데이트";
+
+/* Country option for a site address. */
+"Burkina Faso" = "부르키나파소";
+
+/* Country option for a site address. */
+"Burundi" = "부룬디";
+
+/* Industry option in the store creation category question. */
+"Business And Secretarial Schools" = "경영 및 비서 양성 학교";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "버튼 텍스트";
@@ -876,6 +1092,12 @@ which should be translated separately and considered part of this sentence. */
    Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
 "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "젯팩 연결 버튼을 클릭하면 워드프레스닷컴의 %1$@ 및 %2$@에 동의하는 것입니다.";
 
+/* Header of a list of other countries in the store creation country question. */
+"COUNTRIES" = "국가";
+
+/* Header of the current country in the store creation country question. */
+"CURRENT LOCATION" = "현재 위치";
+
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "사용자 정의 패키지";
 
@@ -885,8 +1107,14 @@ which should be translated separately and considered part of this sentence. */
 /* Call phone number button title */
 "Call" = "전화";
 
+/* Country option for a site address. */
+"Cambodia" = "캄보디아";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "카메라 캡처가 지원할 수 없는 미디어 유형: %@";
+
+/* Country option for a site address. */
+"Cameroon" = "카메룬";
 
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "링크를 요청할 수 없음";
@@ -900,9 +1128,13 @@ which should be translated separately and considered part of this sentence. */
 /* Local notification title when the user encounters an error with WP.com password. */
 "Can't remember your password?" = "비밀번호가 기억나지 않나요?";
 
+/* Country option for a site address. */
+"Canada" = "캐나다";
+
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
+   Button text to confirm that we don't want to generate all variations
    Button title Cancel in Discard Changes Action Sheet
    Button title Cancel in Downloadable File More Options Action Sheet
    Button title Cancel in Downloadable Files More Options Action Sheet
@@ -957,7 +1189,8 @@ which should be translated separately and considered part of this sentence. */
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
-   Title for the button to cancel the simple payments screen */
+   Title for the button to cancel the simple payments screen
+   Title of an option to dismiss the bulk edit action sheet */
 "Cancel" = "취소";
 
 /* Action button to cancel Jetpack installation. */
@@ -991,6 +1224,9 @@ which should be translated separately and considered part of this sentence. */
    The title of the alert when there is an error updating the product */
 "Cannot update product" = "제품을 업데이트할 수 없음";
 
+/* Title of the notice when there is an error updating selected products */
+"Cannot update products" = "상품을 업데이트할 수 없음";
+
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "이미지를 업로드할 수 없습니다.";
@@ -1001,9 +1237,21 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "사이트의 우커머스 설치를 확인할 수 없습니다.";
 
+/* Country option for a site address. */
+"Cape Verde" = "카보베르데";
+
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "스토어에 대한 수준 높은 제품 리뷰 캡처";
+
+/* Industry option in the store creation category question. */
+"Car Rentals" = "자동차 대여";
+
+/* Industry option in the store creation category question. */
+"Car Sales" = "자동차 판매";
+
+/* Industry option in the store creation category question. */
+"Car Washes" = "세차";
 
 /* Card method title on the select payment method screen */
 "Card" = "카드";
@@ -1022,6 +1270,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "카드를 너무 일찍 제거했음 - 거래를 다시 시도하세요.";
+
+/* Industry option in the store creation category question. */
+"Carpentry Contractors" = "목공 계약자";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "배송업체 및 요금";
@@ -1042,11 +1293,23 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "카테고리";
 
+/* Industry option in the store creation category question. */
+"Caterers" = "케이터링 업체";
+
+/* Country option for a site address. */
+"Cayman Islands" = "케이맨 제도";
+
+/* Country option for a site address. */
+"Central African Republic" = "중앙아프리카공화국";
+
 /* Error message when local validation fails in Shipping Label Address Validation */
 "Certain required fields need attention." = "특정 필수 필드를 유의해야 합니다.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "인증서 오류";
+
+/* Country option for a site address. */
+"Chad" = "차드";
 
 /* Message title of bottom sheet for selecting a product type */
 "Change product type" = "제품 유형 변경";
@@ -1059,6 +1322,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the row that has a switch when creating a simple payment */
 "Charge Taxes" = "세금 청구";
+
+/* Industry option in the store creation category question. */
+"Charities Or Social Service Organizations" = "자선단체 또는 사회봉사단체";
+
+/* Industry option in the store creation category question. */
+"Check Cashing" = "수표 현금화";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "입력한 URL이 올바른지 확인합니다.";
@@ -1078,6 +1347,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the WPCOM checkout web view. */
 "Checkout" = "계산";
 
+/* Industry option in the store creation category question. */
+"Child Care Services" = "보육 서비스";
+
+/* Country option for a site address. */
+"Chile" = "칠레";
+
+/* Country option for a site address. */
+"China" = "중국";
+
+/* Industry option in the store creation category question. */
+"Chiropractors" = "척추지압사";
+
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "용지 크기 선택";
 
@@ -1086,6 +1367,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title on the shipping label states of a country selector screen */
 "Choose a State" = "주 선택";
+
+/* Subtitle of the store creation profiler question about the store category. */
+"Choose a category that defines your business the best." = "비즈니스를 가장 잘 정의하는 카테고리를 선택합니다.";
 
 /* Title of the domain selector. */
 "Choose a domain" = "도메인 선택하기";
@@ -1108,12 +1392,18 @@ which should be translated separately and considered part of this sentence. */
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "결제 수단 선택";
 
+/* Country option for a site address. */
+"Christmas Island" = "크리스마스 섬";
+
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
 "City" = "도시";
 
 /* Error showed in Shipping Label Address Validation for the city field */
 "City missing" = "구\/군\/시 누락";
+
+/* Industry option in the store creation category question. */
+"Civic, Fraternal, Or Social Associations" = "시민단체, 친목단체 또는 사회단체";
 
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
@@ -1149,6 +1439,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "계정 종료 중…";
 
+/* Industry option in the store creation category question. */
+"Clothing And Accessories" = "의류 및 액세서리";
+
+/* Country option for a site address. */
+"Cocos (Keeling) Islands" = "코코스(킬링) 제도";
+
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "축소됨";
 
@@ -1165,8 +1461,23 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the collect payment flow with a user name. */
 "Collect payment from %1$@" = "%1$@에서 결제받기";
 
+/* Industry option in the store creation category question. */
+"Collections Agencies" = "추심 대행사";
+
+/* Industry option in the store creation category question. */
+"Colleges Or Universities" = "단과대학 또는 종합대학";
+
+/* Country option for a site address. */
+"Colombia" = "콜롬비아";
+
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store" = "곧 다시 오셔서 더 많은 스토어 성장 팁과 인사이트를 확인하세요.";
+
+/* Industry option in the store creation category question. */
+"Commuter Transportation" = "통근 교통";
+
+/* Country option for a site address. */
+"Comoros" = "코모로";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1180,6 +1491,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "새 주문 메모를 작성합니다.";
+
+/* Industry option in the store creation category question. */
+"Computer Repair" = "컴퓨터 수리";
 
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "구성 업데이트됨";
@@ -1195,6 +1509,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title Discard Changes in Discard Changes Action Sheet */
 "Confirm and leave" = "확인 및 종료";
+
+/* Title of the store creation profiler question about the store country. */
+"Confirm your location" = "위치 확인";
+
+/* Country option for a site address. */
+"Congo (Brazzaville)" = "콩고(브라자빌)";
+
+/* Country option for a site address. */
+"Congo (Kinshasa)" = "콩고(킨샤사)";
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "수고하셨습니다. 다 읽으셨습니다!";
@@ -1270,6 +1593,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "스토어 연결 중";
 
+/* Industry option in the store creation category question. */
+"Consulting" = "컨설팅";
+
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "고객에게 문의";
 
@@ -1280,10 +1606,10 @@ which should be translated separately and considered part of this sentence. */
 "Contact Email" = "연락처 이메일";
 
 /* Action button to contact support when Jetpack install fails
+   Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
-   The title of the button to contact support in the Error Loading Data banner
    Title of the button to contact support for help accessing a store after Jetpack setup */
 "Contact Support" = "지원팀에 문의";
 
@@ -1291,7 +1617,8 @@ which should be translated separately and considered part of this sentence. */
 "Contact WooCommerce Payments Support" = "WooCommerce 결제 지원 문의";
 
 /* Action button to contact support on enable analytics screen
-   Local notification action to contact support. */
+   Local notification action to contact support.
+   The title of the button to contact support in the Error Loading Data banner */
 "Contact support" = "지원팀에 문의";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
@@ -1312,17 +1639,18 @@ which should be translated separately and considered part of this sentence. */
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
    Title of the button on the store creation store name form to continue.
+   Title of the button to continue with a profiler question.
    Title of the button to continue with a selected domain. */
 "Continue" = "계속";
-
-/* Call to Action to finish the setup of In-Person Payments in the Menu */
-"Continue Setup" = "설정 계속";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "워드프레스닷컴 계속";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "계속 읽기";
+
+/* Call to Action to finish the setup of In-Person Payments in the Menu */
+"Continue setup" = "설정 계속";
 
 /* Title of the button on the store creation summary view to continue to payment. */
 "Continue to Payment" = "결제 계속";
@@ -1336,8 +1664,17 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Apple로 계속하기";
 
+/* Industry option in the store creation category question. */
+"Convenience Stores" = "편의점";
+
 /* Conversion stat label on dashboard. */
 "Conversion" = "전환";
+
+/* Label for the conversion rate (orders per visitor) in the Analytics Hub */
+"Conversion Rate" = "전환율";
+
+/* Country option for a site address. */
+"Cook Islands" = "쿡 제도";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "복사";
@@ -1353,6 +1690,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
 "Copy tracking number" = "추적 번호 복사";
+
+/* Country option for a site address. */
+"Costa Rica" = "코스타리카";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "별로";
@@ -1384,10 +1724,16 @@ which should be translated separately and considered part of this sentence. */
 /* Error title displayed when unable to close user account. */
 "Couldn’t close account automatically" = "계정을 자동으로 닫을 수 없습니다.";
 
+/* Industry option in the store creation category question. */
+"Counseling Services" = "상담 서비스";
+
 /* Text field country in Edit Address Form
    Text field country in Shipping Label Address Validation
    Title to select country from the edit address screen */
 "Country" = "국가";
+
+/* Industry option in the store creation category question. */
+"Country Clubs" = "컨트리클럽";
 
 /* Error showed in Shipping Label Address Validation for the country field */
 "Country missing" = "국가 누락";
@@ -1425,6 +1771,9 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "쿠폰";
+
+/* Industry option in the store creation category question. */
+"Courier Services" = "택배 서비스";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "충돌 디버그 메뉴";
@@ -1480,6 +1829,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "새 패키지 생성";
 
+/* Description for the option to generate just one variation */
+"Create one new variation. Manually set which attributes belong to the variable product." = "새 변형 하나를 생성합니다. 변형 가능한 상품에 속하는 속성을 수동으로 설정합니다.";
+
 /* Title of the banner notice in the Orders tab */
 "Create orders!" = "주문을 생성합니다!";
 
@@ -1489,11 +1841,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "첫 번째 변형 생성";
 
+/* Description for the option to generate all possible variations */
+"Creates variations for all combinations of your attributes." = "속성의 모든 조합에 대한 변형을 생성합니다.";
+
 /* Loading text while creating a product from a template */
 "Creating Template Product..." = "템플릿 상품 생성 중...";
 
+/* Blocking indicator text when creating multiple variations remotely. */
+"Creating Variations..." = "변형 생성 중...";
+
 /* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
 "Creating your store" = "스토어 생성하기";
+
+/* Industry option in the store creation category question. */
+"Credit Counseling Or Credit Repair" = "신용 상담 또는 신용 회복";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "신용카드";
@@ -1504,23 +1865,48 @@ which should be translated separately and considered part of this sentence. */
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "워드프레스닷컴 계정 %1$@<%2$@>에서 신용카드가 검색되었습니다.";
 
+/* Country option for a site address. */
+"Croatia" = "크로아티아";
+
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "교차 판매";
 
+/* Industry option in the store creation category question. */
+"Cruise Lines" = "크루즈 라인";
+
+/* Industry option in the store creation category question. */
+"Cryptocurrencies" = "암호화폐";
+
+/* Country option for a site address. */
+"Cuba" = "쿠바";
+
+/* Country option for a site address. */
+"Curacao" = "퀴라소";
+
+/* Industry option in the store creation category question. */
+"Currency Exchanges" = "환전";
+
 /* Cell title: the current date. */
 "Current" = "현재";
 
-/* Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
+/* Message in the footer of bulk price setting screen with the current price, when it is the same for all products
+   Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
 "Current price is %@." = "현재 가격은 %@입니다.";
 
-/* Message in the footer of bulk price setting screen, when none of the variations have price value. */
+/* Message in the footer of bulk price setting screen, when none of the products have price value.
+   Message in the footer of bulk price setting screen, when none of the variations have price value. */
 "Current price is not set." = "현재 가격이 설정되지 않았습니다.";
 
-/* Message in the footer of bulk price setting screen, when variations have different price values. */
+/* Message in the footer of bulk price setting screen, when products have different price values.
+   Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "현재 가격이 뒤섞였습니다.";
 
-/* Name of the section for custom shipment tracking carriers */
+/* Error description for when there are too many variations to generate. */
+"Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "현재 최대 100개 변형의 생성이 지원됩니다. 이 상품의 변형을 생성하면 %d개 변형이 생성됩니다.";
+
+/* Name of the section for custom shipment tracking carriers
+   Title of the Analytics Hub Custom selection range */
 "Custom" = "사용자 정의";
 
 /* Title text of the row that shows the provided amount when creating a simple payment */
@@ -1589,6 +1975,12 @@ which should be translated separately and considered part of this sentence. */
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "집에서 모바일 장치로 배송 레이블을 할인된 요금으로 인쇄하여 우체국에 가는 시간을 줄이세요!";
 
+/* Country option for a site address. */
+"Cyprus" = "사이프러스";
+
+/* Country option for a site address. */
+"Czech Republic" = "체코";
+
 /* Details section title in the Edit Address Form */
 "DETAILS" = "상세 정보";
 
@@ -1610,6 +2002,12 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "날짜: 오래된 순";
 
+/* Industry option in the store creation category question. */
+"Dating Services" = "데이트 서비스";
+
+/* Industry option in the store creation category question. */
+"Debt Reduction Services" = "채무 탕감 서비스";
+
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "기본";
 
@@ -1624,6 +2022,12 @@ which should be translated separately and considered part of this sentence. */
 /* Delete tracking button title */
 "Delete Tracking" = "추적 삭제";
 
+/* Country option for a site address. */
+"Denmark" = "덴마크";
+
+/* Industry option in the store creation category question. */
+"Dentists And Orthodontists" = "치과 의사 및 치열 교정 전문의";
+
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "제품 설명";
 
@@ -1635,11 +2039,23 @@ which should be translated separately and considered part of this sentence. */
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "설명";
 
+/* Industry option in the store creation category question. */
+"Designer Products" = "디자이너 상품";
+
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "카탈로그에서 제품 위치를 결정합니다. 숫자 값이 낮을수록 아이템이 제품 목록에서 더 위에 옵니다. 음수 값도 사용할 수 있습니다";
 
 /* Instructions after a Magic Link was sent, but email is incorrect. */
 "Didn't mean to create a new account? Go back to re-enter your email address." = "새 계정을 만들 계획이 없으신가요? 뒤로 이동하여 이메일 주소를 다시 입력하세요.";
+
+/* Industry option in the store creation category question. */
+"Digital Marketing" = "디지털 마케팅";
+
+/* Industry group option in the store creation category question. */
+"Digital Products" = "디지털 상품";
+
+/* Industry option in the store creation category question. */
+"Digital Wallets" = "디지털 지갑";
 
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
 "Dimensions: %1$@ x %2$@ %3$@" = "크기: %1$@ x %2$@%3$@";
@@ -1709,6 +2125,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "모든 메시지 무시";
 
+/* Country option for a site address. */
+"Djibouti" = "지부티";
+
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "허용하지 않음";
 
@@ -1721,13 +2140,27 @@ which should be translated separately and considered part of this sentence. */
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "이 제품을 휴지통에 버리시겠습니까?";
 
+/* Industry option in the store creation category question. */
+"Doctors And Physicians" = "개업의 및 의사";
+
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "문서";
+
+/* Navigates to domain settings screen.
+   Navigation bar title of the domain settings screen. */
+"Domain" = "도메인";
+
+/* Country option for a site address. */
+"Dominica" = "도미니카";
+
+/* Country option for a site address. */
+"Dominican Republic" = "도미니카공화국";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "아직 계정이 없으신가요? _가입_";
 
-/* Alert button text on a feature announcement which prevents the banner being shown again */
+/* Alert button text on a feature announcement which prevents the banner being shown again
+   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "다시 보지 않음";
 
 /* Action title to select products to add to a grouped product from search results
@@ -1845,8 +2278,14 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "고유 코드로 제품을 간편하게 식별합니다.";
 
+/* Option in the store creation selling platforms question. */
+"Ebay" = "이베이";
+
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Ecommerce reports" = "전자상거래 보고서";
+
+/* Country option for a site address. */
+"Ecuador" = "에콰도르";
 
 /* Button to edit a customer on the New Order screen
    Button to edit an order on Order Details screen
@@ -1892,6 +2331,30 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit customer note on the New Order screen */
 "Edit customer note" = "고객 메모 편집";
 
+/* Action to start bulk editing of products */
+"Edit products" = "상품 편집";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
+"Edit status or price for multiple products at once" = "한 번에 여러 상품의 상태 또는 가격 편집";
+
+/* Industry group option in the store creation category question. */
+"Education" = "교육";
+
+/* Industry option in the store creation category question. */
+"Educational Services" = "교육 서비스";
+
+/* Country option for a site address. */
+"Egypt" = "이집트";
+
+/* Country option for a site address. */
+"El Salvador" = "엘살바도르";
+
+/* Industry option in the store creation category question. */
+"Electrical Contractors" = "전기 계약자";
+
+/* Industry option in the store creation category question. */
+"Elementary Or Secondary Schools" = "초등학교 또는 중고등학교";
+
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "무료 수령에 적합";
 
@@ -1922,6 +2385,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "이메일: %@";
+
+/* Industry option in the store creation category question. */
+"Employment Agencies" = "직업소개소";
 
 /* Accessibility text for Unit Input cell */
 "Empty" = "비우기";
@@ -1956,6 +2422,9 @@ which should be translated separately and considered part of this sentence. */
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
 "End Date" = "종료 날짜";
+
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Enjoyed your in-person payment?" = "직접 결제가 편하셨나요?";
 
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "WooCommerce 앱이 마음에 드시나요?";
@@ -2062,9 +2531,6 @@ which should be translated separately and considered part of this sentence. */
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "%@ 계정 정보를 입력하세요.";
 
-/* Sign in instructions on the 'log in using WordPress.com account' screen. */
-"Enter your email address to get started." = "이메일 주소를 입력하여 시작하기";
-
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "이메일 주소를 입력하여 로그인하거나 워드프레스닷컴 계정을 만드세요.";
 
@@ -2081,8 +2547,17 @@ which should be translated separately and considered part of this sentence. */
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
 "Enter your store credentials for %@." = "%@에 대한 스토어 자격 증명을 입력하세요.";
 
+/* Industry group option in the store creation category question. */
+"Entertainment And Recreation" = "엔터테인먼트 및 레크리에이션";
+
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "봉투";
+
+/* Country option for a site address. */
+"Equatorial Guinea" = "적도 기니";
+
+/* Country option for a site address. */
+"Eritrea" = "에리트레아";
 
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "오류";
@@ -2093,14 +2568,23 @@ which should be translated separately and considered part of this sentence. */
 /* Error title when Jetpack connection fails */
 "Error authorizing connection to Jetpack" = "젯팩에 연결하는 권한 부여 중 오류 발생";
 
+/* Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication */
+"Error checking for the WooCommerce plugin." = "우커머스 플러그인 확인 오류입니다.";
+
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "오류 코드 %1$d";
 
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "분석을 활성화하는 동안 오류가 발생했습니다. 다시 시도하세요.";
 
+/* Error message displayed when application password cannot be fetched after authentication. */
+"Error fetching application password for your site." = "사이트 애플리케이션 비밀번호 가져오기 오류입니다.";
+
 /* Title for the error alert when fetching system status report fails */
 "Error fetching report" = "보고서 가져오기 오류";
+
+/* Error message displayed when user information cannot be fetched after authentication. */
+"Error fetching user information." = "사용자 정보 가져오기 오류입니다.";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Maps에서 주소를 찾는 중 오류 발생";
@@ -2126,6 +2610,18 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "주문 #%1$d 업데이트 중 오류 발생";
 
+/* Country option for a site address. */
+"Estonia" = "에스토니아";
+
+/* Country option for a site address. */
+"Ethiopia" = "에티오피아";
+
+/* Option in the store creation selling platforms question. */
+"Etsy" = "Etsy";
+
+/* Industry option in the store creation category question. */
+"Event Ticketing" = "이벤트 발권";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "누구나 좋아하는 딜";
@@ -2148,8 +2644,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action button to add excluded product categories on Coupon Usage Restrictions screen. The number of selected items is mentioned between the brackets. Reads like: Exclude Product Categories (4) */
 "Exclude Product Categories (%1$d)" = "상품 카테고리 제외(%1$d개)";
 
-/* Title for the screen to exclude products for a coupon
-   Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
+/* Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
 "Exclude Products" = "상품 제외";
 
 /* Title of the action button to add excluded products on Coupon Usage Restrictions screen. The number of selected items is included between the brackets. Reads like: Exclude Products (2) */
@@ -2160,6 +2655,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Exclude Categories screen */
 "Exclude categories" = "카테고리 제외";
+
+/* Title for the screen to exclude products for a coupon */
+"Exclude products" = "상품 제외";
 
 /* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
 "Excludes sale items" = "세일 아이템 제외";
@@ -2192,6 +2690,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "외부\/연계";
 
+/* Option in the store creation selling platforms question. */
+"Facebook Marketplace" = "페이스북 마켓플레이스";
+
 /* Display label for failed order status. */
 "Failed" = "실패함";
 
@@ -2215,6 +2716,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
 "Failed to undo fulfillment of order #%1$d" = "주문 #%1$d 처리 실행 취소 실패";
+
+/* Country option for a site address. */
+"Falkland Islands" = "포클랜드 제도";
+
+/* Country option for a site address. */
+"Faroe Islands" = "페로 제도";
+
+/* Industry option in the store creation category question. */
+"Fast Food Restaurants" = "패스트푸드 식당";
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
@@ -2241,6 +2751,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info message shown when the order contains multiple fee lines */
 "Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "수수료가 완전하지 않습니다.\n모든 수수료를 편집하려면 우커머스 스토어 관리자에서 주문을 확인하세요.";
+
+/* Blocking indicator text when fetching existing variations prior generating them. */
+"Fetching Variations..." = "변형을 가져오는 중…";
+
+/* Country option for a site address. */
+"Fiji" = "피지";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2280,6 +2796,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title format for filtering a list of products with filters applied. */
 "Filters (%ld)" = "필터(%ld)";
 
+/* Industry option in the store creation category question. */
+"Financial Information And Research" = "금융 정보 및 조사";
+
+/* Industry group option in the store creation category question. */
+"Financial Services" = "금융 서비스";
+
 /* Button linking to webview explaining how to find your connected emailPresented when logging in with a store address that does not match the account entered */
 "Find your connected email" = "연결한 이메일 찾기";
 
@@ -2295,6 +2817,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "스토어 관리자에서 %1$@ 설정 마무리";
 
+/* Country option for a site address. */
+"Finland" = "핀란드";
+
 /* Text field name in Edit Address Form */
 "First name" = "이름";
 
@@ -2307,14 +2832,38 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "정률 상품 할인";
 
+/* Industry option in the store creation category question. */
+"Flowers" = "꽃";
+
 /* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
 "Follow reader instructions to pay" = "리더의 결제 지침을 따르세요.";
 
 /* User role badge */
 "Follower" = "팔로워";
 
+/* Industry group option in the store creation category question. */
+"Food And Drink" = "음식 및 음료";
+
+/* Industry option in the store creation category question. */
+"Fortune Tellers" = "점술가";
+
 /* Next web page */
 "Forward" = "전달";
+
+/* Country option for a site address. */
+"France" = "프랑스";
+
+/* Industry option in the store creation category question. */
+"Freight Forwarders" = "운송주선인";
+
+/* Country option for a site address. */
+"French Guiana" = "프랑스령 기아나";
+
+/* Country option for a site address. */
+"French Polynesia" = "프랑스령 폴리네시아";
+
+/* Country option for a site address. */
+"French Southern Territories" = "프랑스 남부 영토";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "발신:";
@@ -2325,11 +2874,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "기기에서";
 
+/* Industry option in the store creation category question. */
+"Fuel Dispensers" = "주유소";
+
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "우커머스 배송으로 주문 처리";
 
+/* Industry option in the store creation category question. */
+"Funeral Services" = "장례 서비스";
+
+/* Country option for a site address. */
+"Gabon" = "가봉";
+
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "스토어의 상품 실적에 대한 인사이트 확인";
+
+/* Country option for a site address. */
+"Gambia" = "감비아";
+
+/* Industry option in the store creation category question. */
+"Games" = "게임";
+
+/* Industry option in the store creation category question. */
+"General Contractors" = "일반 계약자";
 
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "새 변형 생성";
@@ -2337,8 +2904,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action to generate the first variation */
 "Generate Variation" = "변형 생성";
 
+/* Title for the option to generate all possible variations */
+"Generate all variations" = "모든 변형 생성";
+
+/* Alert title to allow the user confirm if they want to generate all variations */
+"Generate all variations?" = "모든 변형 생성 여부";
+
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "변형 생성 중";
+
+/* Error title for when there are too many variations to generate. */
+"Generation limit exceeded" = "생성 한도 초과됨";
+
+/* Country option for a site address. */
+"Georgia" = "그루지야";
+
+/* Country option for a site address. */
+"Germany" = "독일";
 
 /* Button displayed on the prologue screen of the simplified login flow to create a new store
    Title of install action in the Jetpack Install view.
@@ -2388,16 +2970,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented with a spinner while the reader is being prepared */
 "Getting ready to collect payment" = "결제받기 준비하기";
 
+/* Country option for a site address. */
+"Ghana" = "가나";
+
+/* Country option for a site address. */
+"Gibraltar" = "지브롤터";
+
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "선물";
-
-/* Title of the feedback action button on the coupon list screen */
-"Give Feedback" = "피드백 보내기";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
    Title of the button to give feedback about the Orders features
+   Title of the feedback action button on the coupon list screen
+   Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "피드백 보내기";
 
@@ -2410,8 +2997,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button to navigate to the home screen after Jetpack setup completes */
 "Go to Store" = "스토어로 이동";
 
+/* Option in the store creation selling platforms question. */
+"Google Shopping" = "Google 쇼핑";
+
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google 가입에 실패했습니다.";
+
+/* Industry option in the store creation category question. */
+"Government Services" = "Government Services";
+
+/* Country option for a site address. */
+"Greece" = "그리스";
+
+/* Country option for a site address. */
+"Greenland" = "그린란드";
+
+/* Country option for a site address. */
+"Grenada" = "그레나다";
+
+/* Industry option in the store creation category question. */
+"Grocery Stores" = "식료품점";
 
 /* Display label for grouped product type. */
 "Grouped" = "그룹";
@@ -2425,9 +3030,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "그룹화된 제품";
 
+/* Country option for a site address. */
+"Guadeloupe" = "과들루프";
+
+/* Country option for a site address. */
+"Guam" = "괌";
+
+/* Country option for a site address. */
+"Guatemala" = "과테말라";
+
+/* Country option for a site address. */
+"Guernsey" = "건지";
+
 /* In Order Details, the name of the billed person when there are no name and last name.
    In Order List, the name of the billed person when there are no first and last name. */
 "Guest" = "비회원";
+
+/* Country option for a site address. */
+"Guinea" = "기니";
+
+/* Country option for a site address. */
+"Guinea-Bissau" = "기니비사우";
+
+/* Country option for a site address. */
+"Guyana" = "가이아나";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "어떻게 도와드릴까요?";
@@ -2444,6 +3070,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "HTML 콘텐츠";
+
+/* Country option for a site address. */
+"Haiti" = "아이티";
+
+/* Industry option in the store creation category question. */
+"Hardware Stores" = "철물점";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "스토어 자격 증명을 준비하세요.";
@@ -2484,6 +3116,15 @@ which should be translated separately and considered part of this sentence. */
 /* H6 Aztec Style */
 "Heading 6" = "헤딩 6";
 
+/* Industry option in the store creation category question. */
+"Health And Beauty Spas" = "건강 및 미용 스파";
+
+/* Industry option in the store creation category question. */
+"Health And Wellness Coaching" = "건강 및 웰빙 코칭";
+
+/* Country option for a site address. */
+"Heard Island and McDonald Islands" = "허드 아일랜드와 맥도널드 제도";
+
 /* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Height */
 "Height" = "높이";
@@ -2501,7 +3142,8 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > Help and Feedback settings section title */
 "Help & Feedback" = "도움말 및 피드백";
 
-/* Contact Support Action */
+/* Accessibility label for the Help & Support image navigation bar button in the store creation flow.
+   Contact Support Action */
 "Help & Support" = "도움 및 지원";
 
 /* Browse our help documentation website title */
@@ -2514,14 +3156,44 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's catalog visibility */
 "Hidden" = "숨김";
 
+/* Industry option in the store creation category question. */
+"Home Electronics" = "가전제품";
+
+/* Industry option in the store creation category question. */
+"Home Goods And Furniture" = "가정용품 및 가구";
+
+/* Country option for a site address. */
+"Honduras" = "온두라스";
+
+/* Country option for a site address. */
+"Hong Kong" = "홍콩";
+
+/* Industry option in the store creation category question. */
+"Hospitals" = "병원";
+
+/* Industry option in the store creation category question. */
+"Hotels, Inns, Or Motels" = "호텔, 여관 또는 모텔";
+
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "어떻게 개선할 수 있을까요?";
 
 /* Message subtitle of bottom sheet for selecting a template or manual product */
 "How do you want to start?" = "어떻게 시작하시겠어요?";
 
+/* Country option for a site address. */
+"Hungary" = "헝가리";
+
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "좋아요";
+
+/* Option in the store creation selling status question. */
+"I am already selling online" = "이미 온라인 판매 중";
+
+/* Option in the store creation selling status question. */
+"I am just starting to sell" = "이제 판매 시작";
+
+/* Option in the store creation selling status question. */
+"I am selling offline" = "오프라인 판매 중";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "주문을 처리할 아이템";
@@ -2534,6 +3206,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
 "ITN is required for shipping items valued over $2,500 per tariff number" = "가격이 관세 번호당 $2,500를 초과하는 아이템을 배송하려면 ITN이 필요합니다.";
+
+/* Country option for a site address. */
+"Iceland" = "아이슬란드";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "해제된 경우 메모는 비공개가 됩니다.";
@@ -2563,6 +3238,9 @@ which should be translated separately and considered part of this sentence. */
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "재고 있음";
 
+/* Title of the store creation profiler question about the store selling platforms. */
+"In which platform are you currently selling?" = "현재 어떤 플랫폼에서 판매 중이신가요?";
+
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "사이트 관리자의 연결 > 계정 연결 아래 Jetpack 대시보드에서 워드프레스닷컴에 연결하는 데 사용한 이메일을 찾을 수 있습니다.";
 
@@ -2570,12 +3248,8 @@ which should be translated separately and considered part of this sentence. */
 "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "%2$@ blog_id %3$@에 대한 주문 #%1$@의 대면 결제";
 
 /* Navigates to In-Person Payments screen
-   Title for a dismissal alert on the upsell card reader feature announcement banner
-   Title for the In-Person Payments settings screen */
+   Title for a dismissal alert on the upsell card reader feature announcement banner */
 "In-Person Payments" = "대면 결제";
-
-/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
-"In-Person Payments Setup is incomplete." = "대면 결제 설정이 완료되지 않았습니다.";
 
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "이러한 결제 제공업체 중 하나를 통해 대면 결제를 처리할 수 있습니다. 어떤 제공업체를 사용하시겠어요?";
@@ -2587,6 +3261,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "이 스토어에서 대면 결제 사용 불가능";
+
+/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
+"In-Person Payments setup is incomplete." = "대면 결제 설정이 완료되지 않았습니다.";
 
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "앱 내 구매";
@@ -2623,6 +3300,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "상향 판매 및 교차 판매로 판매 늘리기";
 
+/* Country option for a site address. */
+"India" = "인도";
+
 /* Title for the individual use only row in coupon usage restrictions screen. */
 "Individual Use Only" = "개별 사용만";
 
@@ -2631,6 +3311,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "개별적으로 배송한 아이템";
+
+/* Country option for a site address. */
+"Indonesia" = "인도네시아";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "삽입";
@@ -2686,6 +3369,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "젯팩 설치하기";
 
+/* Industry option in the store creation category question. */
+"Insurance" = "보험";
+
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
 "Insurance (%1$@)" = "보험(%1$@)";
 
@@ -2736,6 +3422,24 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "재고";
 
+/* Industry option in the store creation category question. */
+"Investment Services" = "투자 서비스";
+
+/* Country option for a site address. */
+"Iran" = "이란";
+
+/* Country option for a site address. */
+"Iraq" = "이라크";
+
+/* Country option for a site address. */
+"Ireland" = "아일랜드";
+
+/* Country option for a site address. */
+"Isle of Man" = "맨섬";
+
+/* Country option for a site address. */
+"Israel" = "이스라엘";
+
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "환불 발행";
 
@@ -2761,11 +3465,17 @@ which should be translated separately and considered part of this sentence. */
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "잘못된 비밀번호를 입력하신 것 같습니다. 다시 시도해보시겠어요?";
 
+/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
+"It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "%@ 사이트에서 애플리케이션 비밀번호가 비활성화된 것 같습니다. 우커머스 앱을 사용하려면 활성화하세요.";
+
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "%@ 사이트가 플러그인을 설치할 수 없는 간이 워드프레스닷컴 사이트인 것으로 보입니다. 요금제를 업그레이드하여 우커머스를 사용하세요.";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "이탤릭체";
+
+/* Country option for a site address. */
+"Italy" = "이탈리아";
 
 /* Error message for missing value in Description row in Customs screen of Shipping Label flow */
 "Item description is required" = "아이템 설명이 필요합니다.";
@@ -2783,6 +3493,18 @@ which should be translated separately and considered part of this sentence. */
    Title for the items sold column on the products card on the analytics hub screen. */
 "Items Sold" = "판매된 아이템";
 
+/* Country option for a site address. */
+"Ivory Coast" = "아이보리 해안";
+
+/* Country option for a site address. */
+"Jamaica" = "자메이카";
+
+/* Country option for a site address. */
+"Japan" = "일본";
+
+/* Country option for a site address. */
+"Jersey" = "저지";
+
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "젯팩 설정";
 
@@ -2795,6 +3517,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "어디서나 참여";
 
+/* Country option for a site address. */
+"Jordan" = "요르단";
+
+/* Country option for a site address. */
+"Kazakhstan" = "카자흐스탄";
+
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "편집 계속";
 
@@ -2804,11 +3532,29 @@ which should be translated separately and considered part of this sentence. */
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "이것은 지원 티켓이 아니며 저희는 개별적인 피드백을 해결할 수 없습니다.";
 
+/* Country option for a site address. */
+"Kenya" = "케냐";
+
+/* Country option for a site address. */
+"Kiribati" = "키리바시";
+
+/* Country option for a site address. */
+"Kuwait" = "쿠웨이트";
+
+/* Country option for a site address. */
+"Kyrgyzstan" = "키르기스스탄";
+
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "레이블(4 x 6in)";
 
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "레이블 형식 옵션";
+
+/* Industry option in the store creation category question. */
+"Landscaping Services" = "조경 서비스";
+
+/* Country option for a site address. */
+"Laos" = "라오스";
 
 /* Label for one of the filters in order date range */
 "Last 2 Days" = "마지막 2일";
@@ -2840,8 +3586,17 @@ which should be translated separately and considered part of this sentence. */
 /* Text field name in Edit Address Form */
 "Last name" = "성";
 
+/* Country option for a site address. */
+"Latvia" = "라트비아";
+
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Wormholy 디버그 시작";
+
+/* Industry option in the store creation category question. */
+"Laundry Or Cleaning Services" = "세탁 또는 청소 서비스";
+
+/* Industry option in the store creation category question. */
+"Lead Generation" = "가망 고객 생성";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -2862,14 +3617,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Jetpack에 대해 자세히 알아보기";
 
-/* Title of button in the simplified login prologue screen for learning more about WooCommerce. */
-"Learn more about WooCommerce" = "우커머스 더 알아보기";
-
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "모바일 장치로 레이블 만들기에 대해 자세히 알아보기";
 
 /* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "역할 및 권한에 대해 더 알아보기";
+
+/* Country option for a site address. */
+"Lebanon" = "레바논";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "법률 문서(8.5 x 14in)";
@@ -2881,8 +3636,26 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Shipping Settings > Length */
 "Length" = "길이";
 
+/* Country option for a site address. */
+"Lesotho" = "레소토";
+
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Let us know how we can help" = "어떻게 도와드릴 수 있을지 알려주세요.";
+
+/* Title of the In-Person Payments feedback banner in the Orders tab */
+"Let us know what you think" = "회원님의 생각을 알려주세요.";
+
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "편지지(8.5 x 11in)";
+
+/* Country option for a site address. */
+"Liberia" = "라이베리아";
+
+/* Country option for a site address. */
+"Libya" = "리비아";
+
+/* Country option for a site address. */
+"Liechtenstein" = "리히텐슈타인";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "X개 아이템으로 사용 제한";
@@ -2922,6 +3695,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "제품 이미지 목록";
 
+/* Country option for a site address. */
+"Lithuania" = "리투아니아";
+
 /* Accessibility label for loading indicator (spinner) at the bottom of a list */
 "Loading" = "로드하기";
 
@@ -2943,8 +3719,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Loading. Verb */
 "Loading..." = "로딩 중...";
 
-/* Button title in the simplified login prologue screen. Takes the user to the login flow.
-   Button title.  Tapping takes the user to the login form.
+/* Industry option in the store creation category question. */
+"Loans Or Lending" = "대출 또는 대부";
+
+/* Button title.  Tapping takes the user to the login form.
    Log In button label.
    View title during the log in process. */
 "Log In" = "로그인";
@@ -2953,6 +3731,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
+   Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled.
+   Button to restart the login flow.
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "다른 계정으로 로그인";
 
@@ -2986,6 +3766,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "이메일 주소로 워드프레스닷컴 계정에 로그인하세요.";
 
+/* Button that will navigate to the authentication flow with WP.com */
+"Log in with WordPress.com" = "워드프레스닷컴으로 로그인";
+
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "다른 계정으로 로그인";
 
@@ -3014,6 +3797,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button. */
 "Lost your password?" = "비밀번호 분실?";
 
+/* Industry option in the store creation category question. */
+"Lotteries" = "복권";
+
+/* Country option for a site address. */
+"Luxembourg" = "룩셈부르크";
+
+/* Country option for a site address. */
+"Macao S.A.R., China" = "마카오 특별 행정구 중국";
+
+/* Country option for a site address. */
+"Macedonia" = "마케도니아";
+
+/* Country option for a site address. */
+"Madagascar" = "마다가스카르";
+
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "많은 사랑을 받는 Automattic 제품 <a href=\"https:\/\/automattic.com\/work-with-us\/\">함께할 직원을 채용 중입니다!<\/a>";
 
@@ -3028,6 +3826,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "태그를 사용하여 제품을 더 쉽게 찾을 수 있습니다.";
+
+/* Country option for a site address. */
+"Malawi" = "말라위";
+
+/* Country option for a site address. */
+"Malaysia" = "말레이시아";
+
+/* Country option for a site address. */
+"Maldives" = "몰디브";
+
+/* Country option for a site address. */
+"Mali" = "말리";
+
+/* Country option for a site address. */
+"Malta" = "몰타";
 
 /* Card reader settings screen title
    Settings > Manage Card Reader > Title for the no-reader-connected screen in settings.
@@ -3058,6 +3871,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "매핑된 도메인";
 
+/* Industry option in the store creation category question. */
+"Marijuana Dispensaries" = "마리화나 진료소";
+
+/* Industry option in the store creation category question. */
+"Marijuana-related Products" = "마리화나 관련 상품";
+
 /* Title for the swipe order action to mark it as completed */
 "Mark Completed" = "완료됨으로 표시";
 
@@ -3083,14 +3902,50 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "이 주문을 완료로 표시하고 고객에게 알립니다.";
 
+/* Country option for a site address. */
+"Marshall Islands" = "마셜 제도";
+
+/* Country option for a site address. */
+"Martinique" = "마르티니크";
+
+/* Industry option in the store creation category question. */
+"Massage Parlors" = "안마시술소";
+
+/* Country option for a site address. */
+"Mauritania" = "모리타니";
+
+/* Country option for a site address. */
+"Mauritius" = "모리셔스";
+
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "최대 지출(%1$@)";
 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "최대 %1$@ 지출";
 
+/* Country option for a site address. */
+"Mayotte" = "마요트";
+
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "미디어에 업로드할 관련 파일이 없습니다.";
+
+/* Industry option in the store creation category question. */
+"Medical Devices" = "의료기기";
+
+/* Industry option in the store creation category question. */
+"Medical Laboratories" = "의료연구소";
+
+/* Industry option in the store creation category question. */
+"Medical Organizations" = "의료단체";
+
+/* Industry group option in the store creation category question. */
+"Medical Services" = "의료 서비스";
+
+/* Industry group option in the store creation category question. */
+"Membership Organizations" = "멤버십 단체";
+
+/* Industry option in the store creation category question. */
+"Mental Health Services" = "정신 건강 서비스";
 
 /* Title of the Menu tab */
 "Menu" = "메뉴";
@@ -3111,6 +3966,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message phone number button title */
 "Message" = "메시지";
 
+/* Country option for a site address. */
+"Mexico" = "멕시코";
+
+/* Country option for a site address. */
+"Micronesia" = "미크로네시아";
+
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
@@ -3126,11 +3987,32 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
 "Mixed" = "혼합";
 
+/* Country option for a site address. */
+"Moldova" = "몰도바";
+
+/* Country option for a site address. */
+"Monaco" = "모나코";
+
+/* Industry option in the store creation category question. */
+"Money Orders" = "우편환";
+
+/* Industry option in the store creation category question. */
+"Money Services Or Transmission" = "자금 서비스 또는 송금";
+
+/* Country option for a site address. */
+"Mongolia" = "몽골";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "제품 리뷰 모니터링 및 승인";
 
+/* Country option for a site address. */
+"Montenegro" = "몬테네그로";
+
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "월간 누계";
+
+/* Country option for a site address. */
+"Montserrat" = "몬세라트";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -3142,6 +4024,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "추가 옵션";
+
+/* Country option for a site address. */
+"Morocco" = "모로코";
+
+/* Industry option in the store creation category question. */
+"Mortgage Consulting Services" = "모기지 컨설팅 서비스";
 
 /* Button on each order item of the Package Details screen in Shipping Labels flow. */
 "Move" = "이동";
@@ -3158,11 +4046,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "댓글을 휴지통으로 이동";
 
+/* Industry option in the store creation category question. */
+"Movie Theaters" = "영화 상영관";
+
+/* Country option for a site address. */
+"Mozambique" = "모잠비크";
+
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
 "Multiple Contactless Cards Detected" = "여러 비접촉 카드 감지됨";
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "여러 가지 결제 옵션";
+
+/* Industry option in the store creation category question. */
+"Music Or Other Media" = "음악 또는 기타 미디어";
+
+/* Industry option in the store creation category question. */
+"Musicians, Bands, Or Orchestras" = "음악가, 밴드 또는 오케스트라";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "내 스토어";
@@ -3174,6 +4074,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the store creation summary screen. */
 "My store" = "내 스토어";
 
+/* Country option for a site address. */
+"Myanmar" = "미얀마";
+
 /* Name text field placeholder
    Text field name in Shipping Label Address Validation
    Title for the name field on the Shipping Line Details screen during order creation */
@@ -3181,6 +4084,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "이름 누락";
+
+/* Country option for a site address. */
+"Namibia" = "나미비아";
+
+/* Country option for a site address. */
+"Nauru" = "나우루";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "배송 레이블이 필요하신가요?";
@@ -3205,6 +4114,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
 "Need some help? %1$@" = "도움말이 필요하신가요? %1$@";
 
+/* Country option for a site address. */
+"Nepal" = "네팔";
+
 /* The title for the net amount paid cell */
 "Net Payment" = "순 결제";
 
@@ -3215,6 +4127,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Top performers — label for the total sales of a product */
 "Net sales: %@" = "순매출액: %@";
 
+/* Country option for a site address. */
+"Netherlands" = "네덜란드";
+
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "네트워크 활성화 플러그인";
 
@@ -3224,8 +4139,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "새 속성 이름";
 
+/* Country option for a site address. */
+"New Caledonia" = "뉴칼레도니아";
+
 /* Title for the order creation screen */
 "New Order" = "새 주문";
+
+/* Country option for a site address. */
+"New Zealand" = "뉴질랜드";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "새로운 분석 보기에서 방문자, 보고서 등을 확인할 수 있습니다.";
@@ -3248,6 +4169,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of a button. The text should be capitalized.
    Title of the next button in the issue refund screen */
 "Next" = "다음";
+
+/* Country option for a site address. */
+"Nicaragua" = "니카라과";
+
+/* Country option for a site address. */
+"Niger" = "니제르";
+
+/* Country option for a site address. */
+"Nigeria" = "나이지리아";
+
+/* Country option for a site address. */
+"Niue" = "니우에";
 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "제한 없음";
@@ -3337,8 +4270,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "아직 세금 클래스가 없음";
 
+/* Title for the notice when there were no variations to generate */
+"No variations to generate" = "생성할 변형 없음";
+
 /* Message for a dismissal alert on the upsell card reader feature announcement banner */
 "No worries! You can always get started with In-Person Payments in Settings" = "걱정하지 마세요! 언제든지 설정에서 대면 결제를 시작하실 수 있습니다.";
+
+/* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
+"No worries! You can always go to Settings in the Menu to send us feedback." = "걱정하지 마세요! 언제든지 메뉴의 설정으로 이동하여 피드백을 보내실 수 있습니다.";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
@@ -3347,6 +4286,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    The description in product variations bulk update, of a value, that is missing from all variations
    Value for fields in Coupon Usage Restrictions screen when no value is set */
 "None" = "없음";
+
+/* Country option for a site address. */
+"Norfolk Island" = "노퍽섬";
+
+/* Country option for a site address. */
+"North Korea" = "북한";
+
+/* Country option for a site address. */
+"Northern Mariana Islands" = "북마리아나 제도";
+
+/* Country option for a site address. */
+"Norway" = "노르웨이";
 
 /* Action title to dismiss enabling Analytics for a store
    Button in the CTA View for installing WCShip extension for dismissing the view
@@ -3368,7 +4319,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "이제 속성을 추가했으니 첫 번째 변형을 만드실 수 있습니다!";
 
+/* Industry option in the store creation category question. */
+"Nursing Or Personal Care Facilities" = "간호 또는 요양 시설";
+
 /* Alert dismissal title
+   Button text to confirm that we want to generate all variations
+   Button title to cancel the alert when the user cannot create a store.
+   Button title to dismiss the alert when the created store never becomes a Jetpack site in the store creation flow.
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
    Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow.
    Button title. An acknowledgement of the message displayed in a prompt.
@@ -3408,6 +4365,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Weeks Section Header */
 "Older than a Week" = "1주 이상 지남";
 
+/* Country option for a site address. */
+"Oman" = "오만";
+
 /* Spoken label to indicate switch control is turned on */
 "On" = "켬";
 
@@ -3416,6 +4376,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for on hold order status. */
 "On hold" = "보류됨";
+
+/* Industry option in the store creation category question. */
+"Online Gambling" = "온라인 도박";
 
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "변형당 하나의 사진만 표시할 수 있습니다.";
@@ -3465,6 +4428,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint to open web page in Safari */
 "Opens the web page in Safari" = "웹 페이지를 사파리로 열기";
 
+/* Industry option in the store creation category question. */
+"Opticians And Eyeglasses" = "안경원 및 안경";
+
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "옵션 이름";
 
@@ -3481,6 +4447,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "옵션";
+
+/* Industry option in the store creation category question. */
+"Optometrists and Ophthalmologists" = "검안사 및 안과 의사";
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "또는";
@@ -3546,14 +4515,56 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "원래 포장";
 
+/* Industry option in the store creation category question. */
+"Osteopaths" = "접골사";
+
 /* Generic name of non-default discount types
    My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "기타";
 
+/* Industry option in the store creation category question. */
+"Other Building Services" = "기타 건물 서비스";
+
+/* Industry option in the store creation category question. */
+"Other Business Services" = "기타 비즈니스 서비스";
+
+/* Industry option in the store creation category question. */
+"Other Digital Goods" = "기타 디지털 상품";
+
+/* Industry option in the store creation category question. */
+"Other Entertainment And Recreation" = "기타 엔터테인먼트 및 레크리에이션";
+
+/* Industry option in the store creation category question. */
+"Other Financial Institutions" = "기타 금융기관";
+
+/* Industry option in the store creation category question. */
+"Other Food And Dining" = "기타 음식 및 식사";
+
+/* Industry option in the store creation category question. */
+"Other Marketing Services" = "기타 마케팅 서비스";
+
+/* Industry option in the store creation category question. */
+"Other Medical Services" = "기타 의료 서비스";
+
+/* Industry option in the store creation category question. */
+"Other Membership Organizations" = "기타 멤버십 단체";
+
+/* Industry option in the store creation category question. */
+"Other Merchandise" = "기타 물품";
+
+/* Industry option in the store creation category question. */
+"Other Personal Services" = "기타 개인 서비스";
+
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "기타 사이트";
+
+/* Industry option in the store creation category question. */
+"Other Transportation Services" = "기타 교통 서비스";
+
+/* Industry option in the store creation category question. */
+"Other Travel And Lodging" = "기타 여행 및 숙박";
 
 /* Display label for the product's inventory stock status */
 "Out of stock" = "품절";
@@ -3600,11 +4611,29 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title for the customer payment cell */
 "Paid" = "유료";
 
+/* Country option for a site address. */
+"Pakistan" = "파키스탄";
+
+/* Country option for a site address. */
+"Palestinian Territory" = "팔레스타인 영토";
+
+/* Country option for a site address. */
+"Panama" = "파나마";
+
 /* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "용지 크기";
 
+/* Country option for a site address. */
+"Papua New Guinea" = "파푸아뉴기니";
+
+/* Country option for a site address. */
+"Paraguay" = "파라과이";
+
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "상위 카테고리";
+
+/* Industry option in the store creation category question. */
+"Parking Lots" = "주차장";
 
 /* Title of the banner when the order is not editable */
 "Parts of this order are not currently editable" = "이 주문 중 일부는 현재 편집할 수 없습니다.";
@@ -3676,7 +4705,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment" = "불특정한 사유로 결제가 거부되었습니다. 다른 결제 수단 시도";
 
-/* Title of the hub menu payments button */
+/* Title for the Payments settings screen
+   Title of the hub menu payments button */
 "Payments" = "결제";
 
 /* Display label for pending order status.
@@ -3704,12 +4734,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "영구적으로 계정 종료";
 
+/* Industry option in the store creation category question. */
+"Personal Fundraising Or Crowdfunding" = "개인 모금 또는 크라우드펀딩";
+
+/* Industry group option in the store creation category question. */
+"Personal Services" = "개인 서비스";
+
+/* Country option for a site address. */
+"Peru" = "페루";
+
+/* Industry option in the store creation category question. */
+"Pharmacies Or Pharmaceuticals" = "약국 또는 제약";
+
+/* Country option for a site address. */
+"Philippines" = "필리핀";
+
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "전화";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "전화번호: %@";
+
+/* Industry option in the store creation category question. */
+"Photography Studios" = "사진 스튜디오";
 
 /* Product images (Product images page title) */
 "Photos" = "사진";
@@ -3722,6 +4770,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Pick up an order, then just pay, print, package, and post." = "주문을 픽업한 다음에 결제하고 인쇄하고 포장하고 글을 작성하시면 됩니다.";
+
+/* Option in the store creation selling platforms question. */
+"Pinterest" = "Pinterest";
+
+/* Country option for a site address. */
+"Pitcairn" = "핏케언";
 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "제품을 휴지통에 버리는 중";
@@ -3808,6 +4862,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* A short prompt asking the user to properly fill out all login fields. */
 "Please fill out all the fields" = "모든 란을 채워주세요";
+
+/* Message explaining that the site entered doesn't have WooCommerce installed or activated. */
+"Please install and activate WooCommerce plugin on your site to use the app." = "앱을 사용하려면 사이트에 우커머스 플러그인을 설치하고 활성화하세요.";
 
 /* Error message on the Jetpack setup required screen. */
 "Please install the free Jetpack plugin to access your store on this app." = "이 앱에서 스토어에 접근하려면 무료 젯팩 플러그인을 설치하세요.";
@@ -3901,6 +4958,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message of the in-progress UI while saving a Variation remotely */
 "Please wait while we save your latest changes" = "마지막 변경 사항을 저장하는 동안 기다려 주세요.";
 
+/* Message of the in-progress UI while bulk updating selected products remotely */
+"Please wait while we update these products on your store" = "스토어에서 이러한 상품을 업데이트하는 동안 기다려 주세요.";
+
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
 "Please wait while we update your store details" = "스토어 세부정보를 업데이트하는 동안 기다려 주세요.";
@@ -3917,6 +4977,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Navigates to Plugins screen.
    Title of the Plugin List screen */
 "Plugins" = "플러그인";
+
+/* Industry option in the store creation category question. */
+"Podiatrists and Chiropodists" = "족부 전문의 및 발 치료사";
+
+/* Country option for a site address. */
+"Poland" = "폴란드";
+
+/* Industry option in the store creation category question. */
+"Political Organizations" = "정치단체";
+
+/* Country option for a site address. */
+"Portugal" = "포르투갈";
 
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
@@ -3959,8 +5031,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Price Settings > Price */
 "Price" = "가격";
 
+/* Title of the notice when a user updated price for selected products */
+"Price updated" = "가격 업데이트됨";
+
+/* Message in the footer of bulk price setting screen, when variable products are selected */
+"Prices for variations won't be updated." = "변형의 가격은 업데이트되지 않습니다.";
+
 /* Notice title when updating the price via the bulk variation screen */
 "Prices updated successfully." = "가격이 업데이트되었습니다.";
+
+/* Title for a free domain if the domain is the primary site address. */
+"Primary site address" = "주요 사이트 주소";
 
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
 "Print" = "인쇄";
@@ -4000,6 +5081,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of in-progress modal when requesting document with multiple shipping labels for printing */
 "Printing Labels" = "레이블 인쇄";
+
+/* Industry option in the store creation category question. */
+"Printing and Publishing" = "인쇄 및 출판";
 
 /* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "캘리포니아 사용자를 위한 개인정보 공지";
@@ -4108,6 +5192,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "현재 보이는 제품 대신에 프로모션하는 제품(즉, 수익성이 더 높은 제품)";
 
+/* Industry group option in the store creation category question. */
+"Professional Services" = "전문 서비스";
+
+/* Industry option in the store creation category question. */
+"Property Rentals" = "부동산 임대";
+
+/* Industry option in the store creation category question. */
+"Protective Or Security Services" = "보호 또는 보안 서비스";
+
 /* One of the possible options in Product Visibility */
 "Public" = "공개";
 
@@ -4123,8 +5216,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "제품을 게시하는 중...";
 
-/* Title for the button on the feature announcement banner intended to upsell card readers
-   Title for the WebView opened to upsell card readers */
+/* Country option for a site address. */
+"Puerto Rico" = "푸에르토리코";
+
+/* Title for the WebView opened to upsell card readers */
 "Purchase Card Reader" = "카드 리더 구매";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
@@ -4137,6 +5232,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Purchase note label in Product Settings */
 "Purchase Note" = "구매 메모";
 
+/* Title for the button on the feature announcement banner intended to upsell card readers */
+"Purchase card reader" = "카드 리더 구매";
+
 /* Title for purchase note alert. */
 "Purchase note" = "구매 메모";
 
@@ -4148,6 +5246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Quantity abbreviation for section title */
 "QTY" = "수량";
+
+/* Country option for a site address. */
+"Qatar" = "카타르";
 
 /* Quantity abbreviation for section title */
 "Qty" = "수량";
@@ -4177,6 +5278,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "평가하기";
+
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Rate your first in-person payment experience." = "첫 번째 직접 결제 경험을 평가하세요.";
 
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "결제 관련 질문에 대한 답변을 도와드릴 수 있는 해피니스 엔지니어에게 연락하기";
@@ -4208,6 +5312,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "%1$@에서 받은 영수증";
+
+/* Industry option in the store creation category question. */
+"Recreational Camps" = "레크리에이션 캠프";
 
 /* Button label to refresh a web page */
 "Refresh" = "새로 고침";
@@ -4289,7 +5396,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "정상 가격: %@";
 
-/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time */
+/* Industry group option in the store creation category question. */
+"Regulated And Age-Restricted Products" = "규제 및 연령 제한 상품";
+
+/* Industry option in the store creation category question. */
+"Religious Organizations" = "종교단체";
+
+/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
+   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "나중에 다시 알림";
 
 /* Confirm button on the alert when the user taps to delete a Product image
@@ -4339,6 +5453,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation title for the Rename Attributes screen */
 "Rename Attribute" = "속성 이름 변경";
 
+/* Renewal date of a site's domain in domain settings. Reads like `Renews on October 11, 2023`. */
+"Renews on %1$@" = "%1$@에 갱신";
+
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "사진 바꾸기";
 
@@ -4373,6 +5490,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "비밀번호 재설정하기";
 
+/* Industry option in the store creation category question. */
+"Restaurants And Nightlife" = "식당 및 밤 문화";
+
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "이메일(%1$@)이 있는 고객으로 제한됨";
 
@@ -4381,6 +5501,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Restriction Type row in Customs screen of Shipping Label flow */
 "Restriction Type" = "제한 유형";
+
+/* Industry group option in the store creation category question. */
+"Retail" = "소매";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search coupons. */
 "Retrieves a list of coupons that contain a given keyword." = "지정된 키워드가 있는 쿠폰 목록을 검색합니다.";
@@ -4416,6 +5539,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "패키지를 배송할 수 없는 경우 보낸 사람에게 반송";
 
+/* Country option for a site address. */
+"Reunion" = "레위니옹";
+
 /* Revenue stat label on dashboard. */
 "Revenue" = "수익";
 
@@ -4434,6 +5560,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Post Rich content */
 "Rich Content" = "풍부한 콘텐츠";
+
+/* Industry option in the store creation category question. */
+"Ridesharing" = "승차 공유";
+
+/* Country option for a site address. */
+"Romania" = "루마니아";
+
+/* Country option for a site address. */
+"Russia" = "러시아";
+
+/* Country option for a site address. */
+"Rwanda" = "르완다";
+
+/* Title for sessions section in the Analytics Hub */
+"SESSIONS" = "세션";
 
 /* Details section title in the Edit Address Form */
 "SHIPPING ADDRESS" = "배송지";
@@ -4464,6 +5605,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button label to open web page in Safari */
 "Safari" = "사파리";
 
+/* Country option for a site address. */
+"Saint Barthélemy" = "생바르텔레미";
+
+/* Country option for a site address. */
+"Saint Helena" = "세인트헬레나";
+
+/* Country option for a site address. */
+"Saint Kitts and Nevis" = "세인트키츠네비스";
+
+/* Country option for a site address. */
+"Saint Lucia" = "세인트루시아";
+
+/* Country option for a site address. */
+"Saint Martin (Dutch part)" = "세인트마틴(네덜란드령)";
+
+/* Country option for a site address. */
+"Saint Martin (French part)" = "세인트마틴(프랑스령)";
+
+/* Country option for a site address. */
+"Saint Pierre and Miquelon" = "생피에르앤드미클롱";
+
+/* Country option for a site address. */
+"Saint Vincent and the Grenadines" = "세인트빈센트그레나딘";
+
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "판매 날짜: %@";
 
@@ -4482,11 +5647,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Sales channels" = "판매 채널";
 
+/* Industry option in the store creation category question. */
+"Salons Or Barbers" = "미용실 또는 이발소";
+
+/* Country option for a site address. */
+"Samoa" = "사모아";
+
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "샘플";
 
+/* Country option for a site address. */
+"San Marino" = "산마리노";
+
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary \/ Phytosanitary Inspection" = "위생\/식물검역 검사";
+
+/* Country option for a site address. */
+"Saudi Arabia" = "사우디아라비아";
 
 /* Action for saving a Coupon remotely
    Action for saving a Product remotely
@@ -4562,6 +5739,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Search Coupons button */
 "Search coupons" = "쿠폰 검색";
 
+/* Title of the button on the domain settings screen to search for a domain. */
+"Search for a Domain" = "도메인 검색";
+
 /* Search Orders */
 "Search orders" = "주문 검색";
 
@@ -4571,6 +5751,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "검색 결과만";
+
+/* Industry option in the store creation category question. */
+"Security Brokers Or Dealers" = "증권 중개인 또는 딜러";
 
 /* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
    Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
@@ -4609,9 +5792,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to select specific categories applicable for a coupon in the view for adding or editing a coupon. */
 "Select Product Categories" = "상품 카테고리 선택";
 
-/* Title for the screen to select products for a coupon */
-"Select Products" = "상품 선택";
-
 /* Page title for the select a different store screen */
 "Select Store" = "스토어 선택";
 
@@ -4623,6 +5803,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "제품 유형 선택";
+
+/* Title of a button that selects all products for bulk update */
+"Select all" = "모두 선택";
 
 /* Text field placeholder in Edit Address Form */
 "Select an option" = "옵션 선택";
@@ -4636,8 +5819,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "종료 날짜 선택";
 
+/* Title that appears on top of the Product List screen when bulk editing starts. */
+"Select items" = "아이템 선택";
+
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "단락 스타일 선택";
+
+/* Title for the screen to select products for a coupon */
+"Select products" = "상품 선택";
 
 /* The title for the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Select reader type" = "리더 유형 선택";
@@ -4669,6 +5858,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title. Sends a email verification link (Magin link) for signing in. */
 "Send email verification link" = "이메일 확인 링크 보내기";
 
+/* Country option for a site address. */
+"Senegal" = "세네갈";
+
+/* Country option for a site address. */
+"Serbia" = "세르비아";
+
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "서비스 패키지";
 
@@ -4695,6 +5890,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "리더를 몇 개 찾음";
 
+/* Country option for a site address. */
+"Seychelles" = "세이셸";
+
 /* Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
 "Share" = "공유";
@@ -4706,11 +5904,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "결제 링크 공유";
 
+/* Title of the feedback action button on the In-Person Payments feedback banner */
+"Share feedback" = "피드백 공유";
+
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "워드프레스닷컴 계정에 로그인되어 있는 동안 이용하는 서비스에 대한 정보를 워드프레스의 분석 도구와 공유합니다.";
 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
 "Share with Friends" = "친구와 공유";
+
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Share your own experience or how you collect in-person payments." = "회원님의 경험 또는 직접 결제 방식을 공유하세요.";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title
@@ -4766,6 +5970,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping method title for customer info section */
 "Shipping Method" = "배송 방법";
 
+/* Industry option in the store creation category question. */
+"Shipping Or Forwarding" = "배송 또는 포워딩";
+
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "배송비 환불";
 
@@ -4799,11 +6006,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's tax status setting option */
 "Shipping only" = "배송만";
 
+/* Industry option in the store creation category question. */
+"Shoes" = "신발";
+
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "상점 및 검색 결과";
 
 /* Display label for the product's catalog visibility */
 "Shop only" = "상점만";
+
+/* Option in the store creation selling platforms question. */
+"Shopify" = "Shopify";
 
 /* The navigation bar title of the edit short description screen.
    Title of the product form bottom sheet action for editing short description.
@@ -4847,6 +6060,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "옵션 더 보기.";
 
+/* Country option for a site address. */
+"Sierra Leone" = "시에라리온";
+
 /* View title during the sign up process. */
 "Sign Up" = "가입";
 
@@ -4880,6 +6096,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
 "Simple virtual product" = "단순한 가상 제품";
 
+/* Country option for a site address. */
+"Singapore" = "싱가포르";
+
 /* Describes a site redirect domain */
 "Site Redirect" = "사이트 리디렉팅";
 
@@ -4890,19 +6109,38 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Site address must be at least 4 characters." = "사이트 주소는 최소한 4 글자 이상이어야 합니다.";
 
 /* The button title on the login onboarding screen to skip to the prologue screen.
-   Title for the button to skip the onboarding step informing the merchant of pending account requirements */
+   Title for the button to skip the onboarding step informing the merchant of pending account requirements
+   Title of the button to skip a profiler question. */
 "Skip" = "생략하기";
 
 /* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
 "Skip for now" = "지금은 건너뛰기";
+
+/* Country option for a site address. */
+"Slovakia" = "슬로바키아";
+
+/* Country option for a site address. */
+"Slovenia" = "슬로베니아";
 
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "슬러그";
 
+/* Industry option in the store creation category question. */
+"Software" = "소프트웨어";
+
+/* Industry option in the store creation category question. */
+"Software As A Service" = "SaaS(Software as a Service)";
+
 /* Dialog title that displays when a software update just finished installing */
 "Software updated" = "소프트웨어 업데이트됨";
+
+/* Country option for a site address. */
+"Solomon Islands" = "솔로몬 제도";
+
+/* Country option for a site address. */
+"Somalia" = "소말리아";
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "일부 이메일 주소가 유효하지 않습니다.";
@@ -4922,6 +6160,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "환불에 문제가 발생했습니다. 다시 시도하세요.";
+
+/* Error message for when we can't create variations remotely
+   Error message for when we can't fetch existing variations. */
+"Something went wrong, please try again later." = "문제가 발생했습니다. 나중에 다시 시도하세요.";
+
+/* Message of the alert when the user cannot create a store because they already created one before. */
+"Sorry, but you can only create one store. Your account is already associated with an active store." = "죄송합니다. 스토어는 하나만 생성할 수 있습니다. 계정이 이미 활성 스토어와 연결되어 있습니다.";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "죄송합니다, 사용자명에 잘못된 구문 %@이 포함되어 있습니다";
@@ -4990,12 +6235,42 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the toolbar button to sort products in different ways. */
 "Sort by" = "정렬 기준";
 
+/* Country option for a site address. */
+"South Africa" = "남아프리카공화국";
+
+/* Country option for a site address. */
+"South Georgia\/Sandwich Islands" = "사우스조지아\/샌드위치 제도";
+
+/* Country option for a site address. */
+"South Korea" = "대한민국";
+
+/* Country option for a site address. */
+"South Sudan" = "남수단";
+
+/* Country option for a site address. */
+"Spain" = "스페인";
+
 /* Display label for the review's spam status
    Verb, spam a comment */
 "Spam" = "스팸";
 
 /* Option to select the Spark email app when logging in with magic links */
 "Spark" = "Spark";
+
+/* Industry option in the store creation category question. */
+"Special Trade Contractors" = "특수 거래 계약자";
+
+/* Industry option in the store creation category question. */
+"Sports Forecasting Or Prediction Services" = "스포츠 예상 또는 예측 서비스";
+
+/* Option in the store creation selling platforms question. */
+"Square" = "정사각형";
+
+/* Option in the store creation selling platforms question. */
+"Squarespace" = "Squarespace";
+
+/* Country option for a site address. */
+"Sri Lanka" = "스리랑카";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "표준 요율";
@@ -5028,6 +6303,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Status label in Product Settings */
 "Status" = "상태";
 
+/* Title of the notice when a user updated status for selected products */
+"Status updated" = "상태 업데이트됨";
+
 /* Button title to contact support to get help with deprecated stats */
 "Still need help? Contact us" = "도움이 더 필요하세요? 문의하기";
 
@@ -5043,6 +6321,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "스토어 설정";
+
+/* Title of the alert when the created store never becomes a Jetpack site in the store creation flow. */
+"Store creation still in progress" = "아직 스토어 생성 진행 중";
 
 /* Text field prompt on the store name form in the store creation flow. */
 "Store name" = "스토어 이름";
@@ -5080,6 +6361,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice text after updating the order successfully */
 "Successfully updated" = "업데이트 성공";
 
+/* Country option for a site address. */
+"Sudan" = "수단";
+
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "제품 및 패키지 무게 합계";
 
@@ -5088,6 +6372,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
 "Summary: Order #%1$@" = "요약: 주문 #%1$@";
+
+/* Industry option in the store creation category question. */
+"Supplements Or Nutraceuticals" = "보충제 또는 기능식품";
+
+/* Country option for a site address. */
+"Suriname" = "수리남";
+
+/* Country option for a site address. */
+"Svalbard and Jan Mayen" = "스발바르와 얀마옌";
+
+/* Country option for a site address. */
+"Swaziland" = "스와질란드";
+
+/* Country option for a site address. */
+"Sweden" = "스웨덴";
 
 /* Message from the in-person payment card reader prompting user to swipe their card */
 "Swipe Card" = "카드 긋기";
@@ -5122,6 +6421,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "기본 글꼴 크기로 전환";
 
+/* Country option for a site address. */
+"Switzerland" = "스위스";
+
+/* Country option for a site address. */
+"Syria" = "시리아";
+
 /* Navigation title of system status report screen
    View system status report cell title on Help screen */
 "System Status Report" = "시스템 상태 보고서";
@@ -5132,10 +6437,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when attempting to pay for a live transaction with a test card. */
 "System test cards are not permitted for payment. Try another means of payment" = "시스템 테스트 카드는 결제에 사용할 수 없습니다. 다른 결제 수단 시도";
 
+/* Country option for a site address. */
+"São Tomé and Príncipe" = "상투메 프린시페";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
 "Tags" = "태그";
+
+/* Country option for a site address. */
+"Taiwan" = "대만";
+
+/* Country option for a site address. */
+"Tajikistan" = "타지키스탄";
 
 /* Title for the simple payments screen */
 "Take Payment" = "결제하기";
@@ -5149,6 +6463,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "결제 수령으로 다시 이동하기";
+
+/* Country option for a site address. */
+"Tanzania" = "탄자니아";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap card to pay" = "결제할 카드 누르기";
@@ -5272,6 +6589,24 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "스토어 주소를 기준으로 세금이 자동으로 계산됩니다.";
 
+/* Industry option in the store creation category question. */
+"Taxis And Limos" = "택시 및 리무진";
+
+/* Industry option in the store creation category question. */
+"Telecom Equipment" = "통신 장비";
+
+/* Industry option in the store creation category question. */
+"Telecom Services" = "통신 서비스";
+
+/* Industry option in the store creation category question. */
+"Telemarketing" = "텔레마케팅";
+
+/* Industry option in the store creation category question. */
+"Telemedicine And Telehealth" = "원격의료 및 원격보건";
+
+/* Content of the In-Person Payments feedback banner in the Orders tab */
+"Tell us all about your experience with in-person payments." = "직접 결제를 경험해보니 어떤지 말씀해 주세요.";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@에 대한 정보를 알려주세요...";
 
@@ -5282,7 +6617,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Terms of Service" = "서비스 약관";
 
 /* Cell description on beta features screen to enable in-app purchases */
-"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 15.5 or above." = "출시 준비가 되면 스마트폰에 내장된 카드 리더를 사용하여 대면 결제를 테스트해 보세요. iOS 15.5 이상이 실행되는 iPhone XS 이상 기종에서 지원됩니다.";
+"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 16 or above, for US-based stores." = "시작할 준비가 되면 스마트폰에 내장된 카드 리더를 사용하여 직접 결제를 테스트해 보세요. 미국 기반 스토어의 경우 iOS 16 이상이 실행되는 iPhone XS 이상 기종에서 지원됩니다.";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "시작할 준비가 되었으니 앱 내 구매를 테스트해 보세요.";
@@ -5296,9 +6631,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "출시 준비가 끝나면 주문 애드온 테스트해 보기";
 
+/* Industry option in the store creation category question. */
+"Testing Laboratories" = "시험연구소";
+
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
 "Text me a code instead" = "코드를 문자로 대신 받기";
+
+/* Country option for a site address. */
+"Thailand" = "태국";
 
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "의견을 공유해 주셔서 감사합니다.";
@@ -5364,7 +6705,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The attribute couldn't be saved." = "속성을 저장할 수 없습니다.";
 
 /* Error message shown when the built-in reader cannot be used because there is a call in progress */
-"The built-in reader cannot be used during a phone call. Please try again after you finish your call" = "통화 중에는 기본 제공 리더를 사용할 수 없습니다. 통화를 마치고 다시 시도하세요.";
+"The built-in reader cannot be used during a phone call. Please try again after you finish your call." = "통화 중에는 기본 제공 리더를 사용할 수 없습니다. 통화를 마치고 다시 시도하세요.";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "카드에서 이 통화가 지원되지 않습니다. 다른 결제 수단 시도";
@@ -5441,6 +6782,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The message of the alert when another service package has the same name */
 "The new service package name is not unique." = "새 서비스 패키지 이름이 고유하지 않습니다.";
 
+/* Message of the alert when the created store never becomes a Jetpack site in the store creation flow. */
+"The new store will be available soon in the store picker. If you have any issues, please contact support." = "스토어 선택기에서 곧 새 스토어가 제공됩니다. 문제가 발생하면 지원팀에 문의하세요.";
+
 /* Message when the presented card does not allow the purchase amount. */
 "The payment amount is not allowed for the card presented. Try another means of payment." = "결제 금액이 표시된 카드에서 허용되지 않습니다. 다른 결제 수단을 시도하세요.";
 
@@ -5450,6 +6794,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "결제 수단에서 자동 환불을 지원하지 않습니다. 고객에게 금액을 수동으로 송금하여 환불을 완료하세요.";
 
+/* Error message when the cancel button on the reader is used. */
+"The payment was canceled on the reader" = "리더에서 결제가 취소되었습니다.";
+
+/* Error shown when the built-in card reader payment is interrupted by activity on the phone */
+"The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "결제가 중단되었으며 계속할 수 없습니다. 주문 화면에서 결제를 다시 시도하실 수 있습니다.";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "전화번호가 유효하지 않거나 이 기기에서 고객에게 전화를 걸 수 없습니다.";
 
@@ -5458,6 +6808,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "이 제품의 가격입니다. 편집 가능합니다.";
+
+/* Message in the footer of bulk price setting screen (singular). */
+"The price will be updated for %d product." = "%d개 상품의 가격이 업데이트됩니다.";
+
+/* Message in the footer of bulk price setting screen (plurar). */
+"The price will be updated for %d products." = "%d개 상품의 가격이 업데이트됩니다.";
 
 /* Message in the footer of bulk price setting screen (singular). */
 "The price will be updated for %d variation." = "%d개 변형 가격이 업데이트됩니다.";
@@ -5689,8 +7045,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "활성 구독이 있는 동안에는 이 사용자 계정을 종료할 수 없습니다.";
 
+/* Alert description to allow the user confirm if they want to generate all variations */
+"This will create a variation for each and every possible combination of variation attributes (%d variations)." = "각각의 변형과 변형 속성의 가능한 모든 조합이 생성됩니다(%d개 변형).";
+
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "그러면 WooCommerce 외부에서 수신한 주문(전체)이 완료로 표시됩니다.";
+
+/* Industry option in the store creation category question. */
+"Timeshares" = "공동 소유";
+
+/* Country option for a site address. */
+"Timor-Leste" = "동티모르";
 
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "팁";
@@ -5742,8 +7107,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "이 계정으로 진행하려면 먼저 워드프레스닷컴 비밀번호로 로그인하세요. 이 메시지는 한 번만 표시됩니다.";
 
+/* Subtitle of the store creation profiler question about the store selling status. */
+"To speed things up, we’ll tailor your WooCommerce experience for you based on your response." = "빠르게 진행되도록 응답에 따라 우커머스 경험을 알맞게 조정합니다.";
+
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "%@에 이 앱을 사용하려면 스토어에 설치되고 연결된 Jetpack 플러그인이 있어야 합니다.";
+
+/* Industry option in the store creation category question. */
+"Tobacco Or Cigars" = "담배 또는 시가";
 
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
@@ -5764,6 +7135,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Identifier for the Aztec Unordered List Style */
 "Toggles the unordered list style" = "순서 없는 목록 스타일 전환";
 
+/* Country option for a site address. */
+"Togo" = "토고";
+
+/* Country option for a site address. */
+"Tokelau" = "토켈라우";
+
+/* Country option for a site address. */
+"Tonga" = "통가";
+
 /* Header label for Top Performers section of My Store tab. */
 "Top Performers" = "최고 인기 상품";
 
@@ -5781,6 +7161,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight */
 "Total package weight: %1$@" = "총 패키지 무게: %1$@";
+
+/* Industry option in the store creation category question. */
+"Tourist Attractions" = "관광명소";
+
+/* Industry option in the store creation category question. */
+"Towing Services" = "견인 서비스";
 
 /* Track shipment button title */
 "Track Shipment" = "배송 추적";
@@ -5805,12 +7191,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "추적 번호 %@";
 
+/* Industry option in the store creation category question. */
+"Trailer Parks and Campgrounds" = "트레일러 주차장 및 캠프장";
+
+/* Industry group option in the store creation category question. */
+"Transportation" = "교통";
+
 /* Display label for the review's trash status
    Move a comment to the trash */
 "Trash" = "휴지통";
 
+/* Industry option in the store creation category question. */
+"Travel Agencies" = "여행사";
+
+/* Industry group option in the store creation category question. */
+"Travel And Lodging" = "여행 및 숙박";
+
+/* Country option for a site address. */
+"Trinidad and Tobago" = "트리니다드 토바고";
+
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "문제 해결";
+
+/* Industry option in the store creation category question. */
+"Truck Stop" = "화물 자동차 휴게소";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "신뢰함";
@@ -5819,6 +7223,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Activating Again" = "다시 활성화 시도";
 
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
+   Button to refetch application password for the current site
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
    Button to try again. Presented to users after a failure occurs
@@ -5867,6 +7272,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when a card is declined due to a potentially temporary problem. */
 "Trying again may succeed, or try another means of payment" = "다시 시도하면 성공할 수 있습니다. 아니면 다른 결제 수단을 시도하세요.";
 
+/* Country option for a site address. */
+"Tunisia" = "튀니지";
+
+/* Country option for a site address. */
+"Turkey" = "터키";
+
+/* Country option for a site address. */
+"Turkmenistan" = "투르크메니스탄";
+
+/* Country option for a site address. */
+"Turks and Caicos Islands" = "터크스 케이커스 제도";
+
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "카드 리더 켜기 및 모바일 장치 옆에 놓기";
 
@@ -5878,6 +7295,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "쿠폰을 세일 아이템에 적용하지 않으려면 이 기능을 사용하세요. 세일 아이템이 아닌 경우에만 아이템당 쿠폰이 적용됩니다. 장바구니에 있는 아이템이 세일 아이템이 아닌 경우에만 장바구니당 쿠폰이 적용됩니다.";
+
+/* Country option for a site address. */
+"Tuvalu" = "투발루";
 
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "트위터";
@@ -5895,6 +7315,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "URL";
+
+/* Country option for a site address. */
+"Uganda" = "우간다";
+
+/* Country option for a site address. */
+"Ukraine" = "우크라이나";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "연결할 수 없음";
@@ -5932,6 +7358,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "새 주문을 생성할 수 없음";
 
+/* Error title for when we can't create variations remotely. */
+"Unable to create variations" = "변형을 생성할 수 없음";
+
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "%1$d번 주문에 대한 추적을 삭제할 수 없음";
 
@@ -5940,6 +7369,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error notice when we fail to load country information in the edit address screen. */
 "Unable to fetch country information, please try again later." = "국가 정보를 가져올 수 없습니다. 나중에 다시 시도하세요.";
+
+/* Error title for when we can't fetch existing variations. */
+"Unable to fetch variations" = "변형을 가져올 수 없음";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "%1$d번 주문을 처리할 수 없음";
@@ -5967,6 +7399,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text displayed when there is an error loading revenue stats data. */
 "Unable to load revenue analytics" = "수익 분석을 로드할 수 없음";
+
+/* Text displayed when there is an error loading session stats data. */
+"Unable to load session analytics" = "세션 분석을 로드할 수 없습니다.";
 
 /* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "주문에 대한 세금을 로드할 수 없음";
@@ -6056,6 +7491,21 @@ This part is the link to the website, and forms part of a longer sentence which 
    The message of the alert when there is an unexpected error updating the product */
 "Unexpected error" = "예기치 않은 오류";
 
+/* Country option for a site address. */
+"United Arab Emirates" = "아랍에미리트";
+
+/* Country option for a site address. */
+"United Kingdom" = "영국";
+
+/* Country option for a site address. */
+"United States" = "미국";
+
+/* Country option for a site address. */
+"United States Minor Outlying Islands" = "미국령 군소 제도";
+
+/* Country option for a site address. */
+"United States Virgin Islands" = "미국령 버진아일랜드";
+
 /* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
@@ -6132,11 +7582,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
 "Update available" = "업데이트 사용 가능";
 
+/* Title of an option that opens bulk products price update flow */
+"Update price" = "가격 업데이트";
+
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "제품 인벤토리 및 SKU 업데이트";
 
 /* Accessibility label to update products' downloadable files' info remotely */
 "Update products' downloadable files' info remotely" = "제품의 다운로드 가능한 파일 정보를 원격으로 업데이트";
+
+/* Title of an option that opens bulk products status update flow */
+"Update status" = "상태 업데이트";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "이 앱을 계속 사용하려면 WooCommerce 3.5로 업데이트하세요.";
@@ -6168,9 +7624,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
 "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "리더의 배터리가 %.0f%% 충전되어 리더 소프트웨어를 업데이트하지 못했습니다. 다시 시도하기 전에 리더를 50%% 넘게 충전하세요.";
 
+/* Title of the in-progress UI while bulk updating selected products remotely */
+"Updating your products..." = "상품 업데이트 중...";
+
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "상향 판매";
+
+/* Country option for a site address. */
+"Uruguay" = "우루과이";
 
 /* Header of the section usage details in the view for adding or editing a coupon. */
 "Usage Details" = "사용 상세 정보";
@@ -6181,12 +7643,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the usage limit per user row in coupon usage restrictions screen. */
 "Usage Limit Per User" = "사용자별 사용 한도";
 
-/* Field in the view for adding or editing a coupon.
-   Title for the usage restrictions section on coupon usage restrictions screen */
+/* Field in the view for adding or editing a coupon. */
 "Usage Restrictions" = "사용 제한";
 
 /* Title of the Usage details row in Coupon Details screen */
 "Usage details" = "사용 상세 정보";
+
+/* Title for the usage restrictions section on coupon usage restrictions screen */
+"Usage restrictions" = "사용 제한";
 
 /* Action to use the address in Shipping Label Suggested screen as entered placeholder */
 "Use Address Entered" = "입력된 주소 사용";
@@ -6225,11 +7689,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "사용자명은 최소한 4글자 이상이어야 합니다.";
 
+/* Industry option in the store creation category question. */
+"Utilities" = "유틸리티";
+
+/* Country option for a site address. */
+"Uzbekistan" = "우즈베키스탄";
+
 /* Message to be displayed when a Jetpack connection is being authorized */
 "Validating" = "확인 중";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "가격(개당 %1$@)";
+
+/* Country option for a site address. */
+"Vanuatu" = "바누아투";
+
+/* Industry option in the store creation category question. */
+"Vapes, E-cigarettes, E-juice Or Related Products" = "전자담배 기기, 전자담배, 전자담배 액상 또는 관련 상품";
 
 /* Display label for variable product type. */
 "Variable" = "옵션";
@@ -6251,8 +7727,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the variations attributes row on Product screen */
 "Variations Attributes" = "변형 속성";
 
+/* Title for the notice when after variations were created */
+"Variations created successfully" = "변형 생성됨";
+
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "사이트에 대한 다양한 시스템 정보";
+
+/* Country option for a site address. */
+"Vatican" = "바티칸";
+
+/* Country option for a site address. */
+"Venezuela" = "베네수엘라";
 
 /* two factor code placeholder */
 "Verification code" = "확인 코드";
@@ -6268,6 +7753,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Displays the connected reader software version */
 "Version: %1$@" = "버전: %1$@";
+
+/* Industry option in the store creation category question. */
+"Veterinary Services" = "수의학 서비스";
+
+/* Country option for a site address. */
+"Vietnam" = "베트남";
 
 /* Action title in an in-app notification to view more details.
    Title of the action to view product details from a notice about an image upload failure in the background. */
@@ -6323,8 +7814,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* User role badge */
 "Viewer" = "독자";
 
+/* Label for total store views in the Analytics Hub */
+"Views" = "뷰";
+
 /* Display label for simple virtual product type. */
 "Virtual" = "가상";
+
+/* Industry option in the store creation category question. */
+"Virtual Currencies" = "가상화폐";
 
 /* Virtual Product label in Product Settings */
 "Virtual Product" = "가상 제품";
@@ -6335,6 +7832,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "방문자";
+
+/* Industry option in the store creation category question. */
+"Vocational Schools And Trade Schools" = "전문학교 및 직업학교";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "메모 작성";
@@ -6347,6 +7847,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* View title during the Google auth process. */
 "Waiting..." = "대기 중...";
+
+/* Country option for a site address. */
+"Wallis and Futuna" = "월리스푸투나 제도";
+
+/* Industry option in the store creation category question. */
+"Warranty Services" = "보증 서비스";
 
 /* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
 "We are getting ready for your store creation" = "스토어 생성을 준비 중입니다.";
@@ -6436,6 +7942,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "현재 URL에서 젯팩 사이트에 연결할 수 없습니다. 도움이 필요하면 연락하세요.";
 
+/* Message of the alert when the user cannot create a store for some reason. */
+"We're sorry, but store creation is not currently available in the app." = "죄송합니다. 현재 앱에서 스토어를 생성할 수 없습니다.";
+
+/* Message of the alert when the user cannot create a store because their App Store country is not supported. */
+"We're sorry, but store creation is not currently available in your country in the app." = "죄송합니다. 해당 국가에서는 현재 앱에서 스토어를 생성할 수 없습니다.";
+
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
 "We're sorry, we couldn't find any order that match %@" = "죄송합니다. %@과(와) 일치하는 주문을 찾을 수 없습니다.";
 
@@ -6453,6 +7965,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "새로운 워드프레스닷컴 계정을 만들 수 있는 등록 링크를 이메일로 보내드렸습니다. 이 기기에서 이메일을 확인하고 워드프레스닷컴에서 받은 이메일의 링크를 누르세요.";
+
+/* Industry option in the store creation category question. */
+"Weapons Or Munitions" = "무기 또는 군수품";
 
 /* Title of a button linking to the app's website */
 "Website" = "웹사이트";
@@ -6472,11 +7987,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "무게: %1$@%2$@";
 
+/* Country option for a site address. */
+"Western Sahara" = "서사하라";
+
+/* Subtitle of the store creation profiler question about the store country. */
+"We’ll use this information to get a head start on setting up payments, shipping, and taxes." = "이 정보를 사용하여 결제, 배송 및 세금 설정을 원활하게 시작하도록 이 정보를 사용합니다.";
+
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "사용하시는 기기에서 쿠폰 보기 및 편집이 가능하도록 만들려고 노력하고 있습니다.";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "로그인할 때 어떤 이메일을 사용하나요?";
+
+/* Button that will navigate to a web page explaining Application Password */
+"What is Application Password?" = "애플리케이션 비밀번호가 무엇인가요?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
@@ -6500,11 +8024,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of Whats New Component */
 "What’s New in WooCommerce" = "WooCommerce의 새로운 기능";
 
+/* Title of the store creation profiler question about the store category. */
+"What’s your business about?" = "비즈니스 분야가 무엇인가요?";
+
 /* Title label on the store name form in the store creation flow. */
 "What’s your store name?" = "스토어 이름은 무엇인가요?";
 
 /* Shipping Labels: info description about WooCommerce Services discount */
 "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "WooCommerce를 통해 배송 레이블을 구매하면 할인된 시중 가격을 이용하실 수 있습니다.";
+
+/* Title of the store creation profiler question about the store selling status. */
+"Where are you on your commerce journey?" = "상거래 여정의 어디쯤 계시는가요?";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "문제가 발생하여 로그인할 수 없습니다. 다시 시도하세요.";
@@ -6515,6 +8045,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the row to enter the package width on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Width */
 "Width" = "가로";
+
+/* Industry option in the store creation category question. */
+"Wire Transfers" = "송금";
+
+/* Option in the store creation selling platforms question. */
+"Wix" = "Wix";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
@@ -6543,6 +8079,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Caption displayed in the simplified prologue screen */
 "WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "우커머스는 워드프레스에 구축된 사용자 정의 가능한 오픈 소스 전자상거래 플랫폼입니다.";
 
+/* Option in the store creation selling platforms question. */
+"WordPress" = "워드프레스";
+
 /* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "WordPress API Error: [%1$@] %2$@" = "워드프레스 API 오류: [%1$@] %2$@";
 
@@ -6565,6 +8104,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Year to Date selection range */
 "Year to Date" = "연간 누계";
 
+/* Country option for a site address. */
+"Yemen" = "예멘";
+
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "예. 변경합니다.";
 
@@ -6574,6 +8116,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "이 블로그에 접근할 권한이 없습니다.";
+
+/* Subtitle of the store creation profiler question about the store selling platforms. */
+"You can choose multiple ones." = "여러 개를 선택할 수 있습니다.";
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "웹 대시보드에서 상품 애드온을 편집하실 수 있습니다.";
@@ -6639,8 +8184,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "해당 이메일은 워드프레스닷컴 계정에서 사용되지 않습니다.";
 
+/* Title of the free domain view. */
+"Your free store address" = "무료 스토어 주소";
+
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
-"Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth." = "iPhone을 카드 리더로 사용하거나, 블루투스를 통해 외부 리더에 연결할 수 있습니다.";
+"Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "iPhone을 카드 리더로 사용하거나, 블루투스를 통해 외부 리더에 연결할 수 있습니다.";
 
 /* Label that displays when a configuration update is happening */
 "Your iPhone needs to be configured to collect payments." = "결제받도록 iPhone을 구성해야 합니다.";
@@ -6666,6 +8214,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Safari에서 사이트를 방문하면 화면 위쪽의 표시줄에 사이트 주소가 표시됩니다.";
 
+/* Header text of the site's domain list in domain settings. */
+"Your site domains" = "사이트 도메인";
+
 /* Title of the store creation success screen. */
 "Your store has been created!" = "스토어가 생성되었습니다!";
 
@@ -6677,6 +8228,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
 "You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "거의 완료되었습니다! 직접 결제를 수락하려면 %1$@ 설정을 마무리하세요.";
+
+/* Country option for a site address. */
+"Zambia" = "잠비아";
+
+/* Country option for a site address. */
+"Zimbabwe" = "짐바브웨";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[댓글]";
@@ -6840,6 +8397,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Google로 로그인합니다.";
+
+/* Country option for a site address. */
+"Åland Islands" = "올란드 제도";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 주문 완료됨";

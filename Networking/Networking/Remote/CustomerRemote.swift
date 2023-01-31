@@ -14,8 +14,8 @@ public class CustomerRemote: Remote {
                                      method: .get,
                                      siteID: siteID,
                                      path: path,
-                                     parameters: nil
-        )
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
 
         let mapper = CustomerMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)

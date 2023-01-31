@@ -137,9 +137,12 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(viewModel is NoSecureConnectionErrorViewModel)
     }
 
-    func test_it_presents_username_and_password_controller_for_non_jetpack_site() {
+    func test_it_presents_email_controller_for_non_jetpack_site_when_not_using_application_password_authentication() {
         // Given
-        let manager = AuthenticationManager()
+        let mockABTestVariationProvider = MockABTestVariationProvider()
+        mockABTestVariationProvider.mockVariationValue = .control
+
+        let manager = AuthenticationManager(abTestVariationProvider: mockABTestVariationProvider)
         let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false])
         var result: WordPressAuthenticatorResult?
         let completionHandler: (WordPressAuthenticatorResult) -> Void = { completionResult in
@@ -151,6 +154,27 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // Then
         guard case .presentEmailController = result else {
+            return XCTFail("Unexpected result returned for non-Jetpack site")
+        }
+    }
+
+    func test_it_presents_username_and_password_controller_for_non_jetpack_site_when_using_application_password_authentication() {
+        // Given
+        let mockABTestVariationProvider = MockABTestVariationProvider()
+        mockABTestVariationProvider.mockVariationValue = .treatment
+
+        let manager = AuthenticationManager(abTestVariationProvider: mockABTestVariationProvider)
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false])
+        var result: WordPressAuthenticatorResult?
+        let completionHandler: (WordPressAuthenticatorResult) -> Void = { completionResult in
+            result = completionResult
+        }
+
+        // When
+        manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: completionHandler)
+
+        // Then
+        guard case .presentPasswordController = result else {
             return XCTFail("Unexpected result returned for non-Jetpack site")
         }
     }
@@ -206,9 +230,12 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(rootController is ULAccountMismatchViewController)
     }
 
-    func test_it_can_display_jetpack_error_for_org_site_credentials_sign_in() {
+    func test_it_can_display_jetpack_error_for_org_site_credentials_sign_in_when_not_using_application_password_authentication() {
         // Given
-        let manager = AuthenticationManager()
+        let mockABTestVariationProvider = MockABTestVariationProvider()
+        mockABTestVariationProvider.mockVariationValue = .control
+
+        let manager = AuthenticationManager(abTestVariationProvider: mockABTestVariationProvider)
         let testSite = "http://test.com"
         let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false, "urlAfterRedirects": testSite])
         let wporgCredentials = WordPressOrgCredentials(username: "cba", password: "password", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
@@ -222,6 +249,27 @@ final class AuthenticationManagerTests: XCTestCase {
         // Then
         let rootController = navigationController.viewControllers.first
         XCTAssertTrue(rootController is ULErrorViewController)
+    }
+
+    func test_it_does_not_display_jetpack_error_for_org_site_credentials_sign_in_when_using_application_password_authentication() {
+        // Given
+        let mockABTestVariationProvider = MockABTestVariationProvider()
+        mockABTestVariationProvider.mockVariationValue = .treatment
+
+        let manager = AuthenticationManager(abTestVariationProvider: mockABTestVariationProvider)
+        let testSite = "http://test.com"
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false, "urlAfterRedirects": testSite])
+        let wporgCredentials = WordPressOrgCredentials(username: "cba", password: "password", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
+        let credentials = AuthenticatorCredentials(wpcom: nil, wporg: wporgCredentials)
+        let navigationController = UINavigationController()
+
+        // When
+        manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { _ in })
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, source: nil, onDismiss: {})
+
+        // Then
+        let rootController = navigationController.viewControllers.first
+        XCTAssertFalse(rootController is ULErrorViewController)
     }
 
     func test_errorViewController_display_account_mismatch_screen_if_no_site_matches_the_given_self_hosted_site() {
@@ -456,10 +504,32 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_active"] as? Bool))
         XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_connected"] as? Bool))
     }
+
+    func test_shouldPresentUsernamePasswordController_tracks_fetched_site_info() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: true, hasJetpack: true, isJetpackActive: true, isJetpackConnected: true)
+        let storage = MockStorageManager()
+        let manager = AuthenticationManager(storageManager: storage, analytics: analytics)
+
+        // When
+        manager.shouldPresentUsernamePasswordController(for: siteInfo) { _ in }
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.loginSiteAddressSiteInfoFetched.rawValue])
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_wordpress"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_wp_com"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["has_jetpack"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_active"] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_connected"] as? Bool))
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["url_after_redirects"] as? String, siteInfo.url)
+    }
 }
 
 private extension AuthenticationManagerTests {
-    func siteInfo(url: String = "",
+    func siteInfo(url: String = "https://test.com",
                   exists: Bool = false,
                   hasWordPress: Bool = false,
                   isWordPressCom: Bool = false,

@@ -60,9 +60,9 @@ final class ProductVariationStoreTests: XCTestCase {
         let action = ProductVariationAction.synchronizeProductVariations(siteID: sampleSiteID,
                                                                          productID: sampleProductID,
                                                                          pageNumber: defaultPageNumber,
-                                                                         pageSize: defaultPageSize) { error in
+                                                                         pageSize: defaultPageSize) { result in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 8)
-            XCTAssertNil(error)
+            XCTAssertTrue(result.isSuccess)
 
             let sampleProductVariationID: Int64 = 1275
             let storedProductVariation = self.viewStorage.loadProductVariation(siteID: self.sampleSiteID, productVariationID: sampleProductVariationID)
@@ -90,8 +90,8 @@ final class ProductVariationStoreTests: XCTestCase {
         let action = ProductVariationAction.synchronizeProductVariations(siteID: sampleSiteID,
                                                                          productID: sampleProductID,
                                                                          pageNumber: defaultPageNumber,
-                                                                         pageSize: defaultPageSize) { error in
-            XCTAssertNil(error)
+                                                                         pageSize: defaultPageSize) { result in
+            XCTAssertTrue(result.isSuccess)
 
             let storedProductVariations = self.viewStorage.loadProductVariations(siteID: self.sampleSiteID, productID: self.sampleProductID)
             XCTAssertEqual(storedProductVariations?.count, 8)
@@ -103,8 +103,8 @@ final class ProductVariationStoreTests: XCTestCase {
             let action = ProductVariationAction.synchronizeProductVariations(siteID: self.sampleSiteID,
                                                                              productID: self.sampleProductID,
                                                                              pageNumber: self.defaultPageNumber,
-                                                                             pageSize: self.defaultPageSize) { error in
-                XCTAssertNil(error)
+                                                                             pageSize: self.defaultPageSize) { result in
+                XCTAssertTrue(result.isSuccess)
 
                 let storedProductVariations = self.viewStorage.loadProductVariations(siteID: self.sampleSiteID, productID: self.sampleProductID)
                 XCTAssertEqual(storedProductVariations?.count, 8)
@@ -192,8 +192,8 @@ final class ProductVariationStoreTests: XCTestCase {
         let action = ProductVariationAction.synchronizeProductVariations(siteID: siteID1,
                                                                          productID: productID,
                                                                          pageNumber: Store.Default.firstPageNumber,
-                                                                         pageSize: defaultPageSize) { error in
-            XCTAssertNil(error)
+                                                                         pageSize: defaultPageSize) { result in
+            XCTAssertTrue(result.isSuccess)
 
             // The previously upserted ProductVariation for siteID1 should be deleted.
             let storedVariationForSite1 = self.viewStorage.loadProductVariation(siteID: siteID1, productVariationID: variationID)
@@ -234,8 +234,8 @@ final class ProductVariationStoreTests: XCTestCase {
         let action = ProductVariationAction.synchronizeProductVariations(siteID: siteID,
                                                                          productID: productID,
                                                                          pageNumber: 3,
-                                                                         pageSize: defaultPageSize) { error in
-            XCTAssertNil(error)
+                                                                         pageSize: defaultPageSize) { result in
+            XCTAssertTrue(result.isSuccess)
 
             // The previously upserted ProductVariation's should stay in storage.
             let storedVariation = self.viewStorage.loadProductVariation(siteID: siteID, productVariationID: variationID)
@@ -288,6 +288,24 @@ final class ProductVariationStoreTests: XCTestCase {
 
         store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_sync_product_variations_indicates_when_there_are_more_variations_to_fetch() {
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+        let pageSize = 8 // "product-variations-load-all" currently has 8 variations
+
+
+        let hasMoreVariationsToFetch: Bool = waitFor { promise in
+            let action = ProductVariationAction.synchronizeProductVariations(siteID: self.sampleSiteID,
+                                                                             productID: self.sampleProductID,
+                                                                             pageNumber: self.defaultPageNumber,
+                                                                             pageSize: pageSize) { result in
+                promise((try? result.get()) ?? false)
+            }
+            store.onAction(action)
+        }
+        XCTAssertTrue(hasMoreVariationsToFetch)
     }
 
     // MARK: - ProductVariationAction.retrieveProductVariation
@@ -449,6 +467,31 @@ final class ProductVariationStoreTests: XCTestCase {
 
         let readOnlyStoredProductVariation = storedProductVariation?.toReadOnly()
         XCTAssertEqual(readOnlyStoredProductVariation, expectedProductVariation)
+    }
+
+    func test_creating_product_variations_properly_stores_them_locally() {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/batch", filename: "product-variations-bulk-create")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+
+        let createdProductVariation = CreateProductVariation(regularPrice: "", attributes: sampleProductVariationAttributes())
+
+        // When
+        let result = waitFor { promise in
+            let action = ProductVariationAction.createProductVariations(siteID: self.sampleSiteID,
+                                                                        productID: self.sampleProductID,
+                                                                        productVariations: [createdProductVariation]) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertTrue(result.isSuccess)
     }
 
     /// Verifies that `ProductVariationAction.createProductVariation` returns an error whenever there is an error response from the backend.

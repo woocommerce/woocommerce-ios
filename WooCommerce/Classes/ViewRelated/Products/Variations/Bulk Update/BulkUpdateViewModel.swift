@@ -85,23 +85,22 @@ final class BulkUpdateViewModel {
         // There is a limitof 100 objects for bulk update API
         let pageNumber = Constants.pageNumber
         let action = ProductVariationAction
-            .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: numberOfObjects) { [weak self] error in
+            .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: numberOfObjects) { [weak self] result in
                 guard let self = self else { return }
 
-                if let error = error {
-                    self.syncState = .error
-
-                    DDLogError("⛔️ Error synchronizing product variations: \(error)")
-                } else {
+                switch result {
+                case .success:
                     self.configureResultsControllerAndFetchData { [weak self] error in
                         guard let self = self else { return }
-
                         if error != nil {
                             self.syncState = .error
                         } else {
                             self.syncState = .synced(self.sections)
                         }
                     }
+                case .failure(let error):
+                    self.syncState = .error
+                    DDLogError("⛔️ Error synchronizing product variations: \(error)")
                 }
             }
 

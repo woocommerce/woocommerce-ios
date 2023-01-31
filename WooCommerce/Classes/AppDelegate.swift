@@ -303,7 +303,10 @@ private extension AppDelegate {
     /// Push Notifications: Authorization + Registration!
     ///
     func setupPushNotificationsManagerIfPossible() {
-        guard ServiceLocator.stores.isAuthenticated, ServiceLocator.stores.needsDefaultStore == false else {
+        let stores = ServiceLocator.stores
+        guard stores.isAuthenticated,
+              stores.needsDefaultStore == false,
+              stores.isAuthenticatedWithoutWPCom == false else {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
                 ServiceLocator.pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: true, onCompletion: nil)
             }

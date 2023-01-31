@@ -9,7 +9,7 @@ public class ReportRemote: Remote {
     ///
     public func loadOrdersTotals(for siteID: Int64, completion: @escaping (Result<[OrderStatus], Error>) -> Void) {
         let path = Constants.orderTotalsPath
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil, availableAsRESTRequest: true)
         let mapper = ReportOrderTotalsMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

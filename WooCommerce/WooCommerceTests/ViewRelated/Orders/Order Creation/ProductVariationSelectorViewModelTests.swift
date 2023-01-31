@@ -70,7 +70,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
             switch action {
             case let .synchronizeProductVariations(_, _, _, _, onCompletion):
                 XCTAssertTrue(viewModel.shouldShowScrollIndicator, "Scroll indicator is not enabled during sync")
-                onCompletion(nil)
+                onCompletion(.success(false))
             default:
                 XCTFail("Unsupported Action")
             }
@@ -91,7 +91,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
             switch action {
             case let .synchronizeProductVariations(_, _, _, _, onCompletion):
                 XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
-                onCompletion(nil)
+                onCompletion(.success(false))
             default:
                 XCTFail("Unsupported Action")
             }
@@ -113,7 +113,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
             case let .synchronizeProductVariations(_, _, _, _, onCompletion):
                 XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
                 self.insert(self.sampleProductVariation)
-                onCompletion(nil)
+                onCompletion(.success(false))
             default:
                 XCTFail("Unsupported Action")
             }
@@ -136,7 +136,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
             switch action {
             case let .synchronizeProductVariations(_, _, _, _, onCompletion):
                 XCTAssertEqual(viewModel.syncStatus, .results)
-                onCompletion(nil)
+                onCompletion(.success(false))
             default:
                 XCTFail("Unsupported Action")
             }
@@ -192,7 +192,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
             case let .synchronizeProductVariations(_, _, _, _, onCompletion):
-                onCompletion(NSError(domain: "Error", code: 0))
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }

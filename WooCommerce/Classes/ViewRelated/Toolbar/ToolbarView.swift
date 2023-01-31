@@ -23,7 +23,21 @@ final class ToolbarView: UIView {
     func setup() {
         translatesAutoresizingMaskIntoConstraints = false
         addSubview(stackView)
-        pinSubviewToAllEdges(stackView)
+        pinSubviewToSafeArea(stackView)
+    }
+
+    func addDividerOnTop() {
+        let divider = UIView()
+        divider.backgroundColor = .divider
+        divider.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(divider)
+
+        NSLayoutConstraint.activate([
+            divider.heightAnchor.constraint(equalToConstant: 1/UIScreen.main.scale),
+            divider.topAnchor.constraint(equalTo: topAnchor),
+            divider.leadingAnchor.constraint(equalTo: leadingAnchor),
+            divider.trailingAnchor.constraint(equalTo: trailingAnchor)
+        ])
     }
 
     func setSubviews(leftViews: [UIView], rightViews: [UIView]) {

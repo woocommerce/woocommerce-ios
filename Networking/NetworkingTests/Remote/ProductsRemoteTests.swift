@@ -583,6 +583,32 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    // MARK: - Products batch update
+
+    /// Verifies that updateProducts properly parses the `products-batch-update` sample response.
+    ///
+    func test_bulk_update_products_properly_returns_parsed_products() {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/batch", filename: "products-batch-update")
+
+        // When
+        let sampleProducts = [sampleProduct()]
+        let updatedProducts = waitFor { promise in
+            remote.updateProducts(siteID: self.sampleSiteID, products: sampleProducts) { result in
+                // Then
+                guard case let .success(products) = result else {
+                    XCTFail("Unexpected result: \(result)")
+                    return
+                }
+                promise(products)
+            }
+        }
+
+        // Then
+        assertEqual(updatedProducts, sampleProducts)
+    }
+
     // MARK: - Product IDs
 
     /// Verifies that loadProductIDs properly parses the `products-ids-only` sample response.

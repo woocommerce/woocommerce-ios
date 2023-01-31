@@ -7,7 +7,7 @@ struct ApplicationPasswordStorage {
     ///
     private let keychain: Keychain
 
-    init(keychain: Keychain = Keychain(service: KeychainServiceName.name)) {
+    init(keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
         self.keychain = keychain
     }
 
@@ -15,10 +15,11 @@ struct ApplicationPasswordStorage {
     ///
     var applicationPassword: ApplicationPassword? {
         guard let password = keychain.password,
-              let username = keychain.username else {
+              let username = keychain.username,
+              let uuid = keychain.uuid else {
             return nil
         }
-        return ApplicationPassword(wpOrgUsername: username, password: Secret(password))
+        return ApplicationPassword(wpOrgUsername: username, password: Secret(password), uuid: uuid)
     }
 
     /// Saves application password into keychain
@@ -28,6 +29,7 @@ struct ApplicationPasswordStorage {
     func saveApplicationPassword(_ password: ApplicationPassword) {
         keychain.username = password.wpOrgUsername
         keychain.password = password.password.secretValue
+        keychain.uuid = password.uuid
     }
 
     /// Removes the currently saved password from storage
@@ -36,16 +38,7 @@ struct ApplicationPasswordStorage {
         // Delete password from keychain
         keychain.username = nil
         keychain.password = nil
-    }
-}
-
-// MARK: - Constants
-//
-private extension ApplicationPasswordStorage {
-    enum KeychainServiceName {
-        /// Matching `WooConstants.keychainServiceName`
-        ///
-        static let name = "com.automattic.woocommerce"
+        keychain.uuid = nil
     }
 }
 
@@ -54,6 +47,7 @@ private extension ApplicationPasswordStorage {
 private extension Keychain {
     private static let keychainApplicationPassword = "ApplicationPassword"
     private static let keychainApplicationPasswordUsername = "ApplicationPasswordUsername"
+    private static let keychainApplicationPasswordUUID = "ApplicationPasswordUUID"
 
     var password: String? {
         get { self[Keychain.keychainApplicationPassword] }
@@ -63,5 +57,10 @@ private extension Keychain {
     var username: String? {
         get { self[Keychain.keychainApplicationPasswordUsername] }
         set { self[Keychain.keychainApplicationPasswordUsername] = newValue }
+    }
+
+    var uuid: String? {
+        get { self[Keychain.keychainApplicationPasswordUUID] }
+        set { self[Keychain.keychainApplicationPasswordUUID] = newValue }
     }
 }

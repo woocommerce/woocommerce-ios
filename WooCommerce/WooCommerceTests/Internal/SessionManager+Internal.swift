@@ -17,11 +17,14 @@ extension SessionManager {
 
     /// Create an instance of unit testing.
     ///
-    static func makeForTesting(authenticated: Bool = false) -> SessionManager {
+    static func makeForTesting(authenticated: Bool = false, isWPCom: Bool = true) -> SessionManager {
         let manager = SessionManager(defaults: SessionSettings.defaults, keychainServiceName: SessionSettings.keychainServiceName)
         // Force setting to `nil` if `authenticated` is `false` so that any auto-loaded credentials
         // will be removed.
-        manager.defaultCredentials = authenticated ? SessionSettings.credentials : nil
+        let credentials: Credentials = {
+            isWPCom ? SessionSettings.wpcomCredentials : SessionSettings.wporgCredentials
+        }()
+        manager.defaultCredentials = authenticated ? credentials : nil
         manager.setStoreId(nil)
         return manager
     }
@@ -39,7 +42,8 @@ extension SessionManagerProtocol {
 // MARK: - Testing Constants
 //
 enum SessionSettings {
-    static let credentials = Credentials(username: "username", authToken: "authToken", siteAddress: "siteAddress")
+    static let wpcomCredentials = Credentials(username: "username", authToken: "authToken", siteAddress: "siteAddress")
+    static let wporgCredentials = Credentials(username: "username", password: "password", siteAddress: "siteAddress")
     static let defaults = UserDefaults(suiteName: "storesManagerTests")!
     static let keychainServiceName = "com.woocommerce.storesmanagertests"
 }

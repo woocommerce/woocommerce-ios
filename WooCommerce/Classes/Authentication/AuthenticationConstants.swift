@@ -25,13 +25,6 @@ struct AuthenticationConstants {
         comment: "Sign in instructions on the 'log in using WordPress.com account' screen."
     )
 
-    /// Get started instructions when simplified login is enabled.
-    /// 
-    static let getStartedInstructionsForSimplifiedLogin = NSLocalizedString(
-        "Enter your email address to get started.",
-        comment: "Sign in instructions on the 'log in using WordPress.com account' screen."
-    )
-
     /// What is WordPress.com? link (Continue with WordPress.com)
     ///
     static let whatIsWPComLinkTitle = NSLocalizedString(
@@ -63,13 +56,6 @@ struct AuthenticationConstants {
     static let applePasswordInstructions = NSLocalizedString(
         "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once.",
         comment: "Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process"
-    )
-
-    /// Simplified Log In button
-    ///
-    static let loginButtonTitle = NSLocalizedString(
-        "Log In",
-        comment: "Button title in the simplified login prologue screen. Takes the user to the login flow."
     )
 
     /// Title of "Continue With WordPress.com" button in Login Prologue

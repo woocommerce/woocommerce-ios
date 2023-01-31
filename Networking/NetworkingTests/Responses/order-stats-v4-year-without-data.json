@@ -1,0 +1,38 @@
+{
+    "totals": {
+        "orders_count": 3,
+        "num_items_sold": 5,
+        "total_sales": 800,
+        "coupons": 0,
+        "coupons_count": 0,
+        "refunds": 0,
+        "taxes": 0,
+        "shipping": 0,
+        "net_revenue": 800,
+        "products": 2,
+        "avg_order_value": 266,
+        "segments": []
+    },
+    "intervals": [
+        {
+            "interval": "2019",
+            "date_start": "2019-07-09 00:00:00",
+            "date_start_gmt": "2019-07-09 00:00:00",
+            "date_end": "2019-07-09 23:59:59",
+            "date_end_gmt": "2019-07-09 23:59:59",
+            "subtotals": {
+                "orders_count": 3,
+                "num_items_sold": 5,
+                "total_sales": 800,
+                "coupons": 0,
+                "coupons_count": 0,
+                "refunds": 0,
+                "taxes": 0,
+                "shipping": 0,
+                "net_revenue": 800,
+                "avg_order_value": 266,
+                "segments": []
+            }
+        }
+    ]
+}

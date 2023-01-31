@@ -41,6 +41,7 @@ public protocol ProductsRemoteProtocol {
                    completion: @escaping (Result<String, Error>) -> Void)
     func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void)
+    func updateProducts(siteID: Int64, products: [Product], completion: @escaping (Result<[Product], Error>) -> Void)
     func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Int64], Error>) -> Void)
     func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void)
 }
@@ -72,7 +73,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             let parameters = try product.toDictionary()
             let siteID = product.siteID
             let path = Path.products
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
             let mapper = ProductMapper(siteID: siteID)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
@@ -89,7 +90,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
         let path = "\(Path.products)/\(productID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: siteID, path: path, parameters: nil, availableAsRESTRequest: true)
         let mapper = ProductMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -142,7 +143,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         ].merging(filterParameters, uniquingKeysWith: { (first, _) in first })
 
         let path = Path.products
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ProductListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -178,7 +179,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.perPage: String(pageSize),
         ]
         let path = Path.products
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ProductListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -194,7 +195,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
         let path = "\(Path.products)/\(productID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil, availableAsRESTRequest: true)
         let mapper = ProductMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -239,7 +240,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         ].merging(filterParameters, uniquingKeysWith: { (first, _) in first })
 
         let path = Path.products
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ProductListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -264,7 +265,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.perPage: String(pageSize)
         ]
         let path = Path.products
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ProductListMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -285,7 +286,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         ]
 
         let path = Path.products
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ProductSkuMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -303,7 +304,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             let productID = product.productID
             let siteID = product.siteID
             let path = "\(Path.products)/\(productID)"
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
             let mapper = ProductMapper(siteID: siteID)
 
             enqueue(request, mapper: mapper, completion: completion)
@@ -316,8 +317,33 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         do {
             let parameters = try ([ParameterKey.images: images]).toDictionary()
             let path = "\(Path.products)/\(productID)"
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
             let mapper = ProductMapper(siteID: siteID)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    /// Updates provided `Products`.
+    ///
+    /// - Parameters:
+    ///     - siteID: site which hosts the Products.
+    ///     - products: the Products to update remotely.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateProducts(siteID: Int64, products: [Product], completion: @escaping (Result<[Product], Error>) -> Void) {
+        do {
+            let parameters = try products.map { try $0.toDictionary() }
+            let path = "\(Path.products)/batch"
+            let request = JetpackRequest(wooApiVersion: .mark3,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: ["update": parameters],
+                                         availableAsRESTRequest: true)
+            let mapper = ProductsBulkUpdateMapper(siteID: siteID)
 
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
@@ -344,7 +370,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         ]
 
         let path = Path.products
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ProductIDMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -357,7 +383,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     public func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void) {
         let parameters = [ParameterKey.templateName: template.rawValue]
         let path = Path.templateProducts
-        let request = JetpackRequest(wooApiVersion: .wcAdmin, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .wcAdmin, method: .post, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = EntityIDMapper()
 
         enqueue(request, mapper: mapper, completion: completion)

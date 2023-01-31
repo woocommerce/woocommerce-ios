@@ -1,20 +1,17 @@
 import SwiftUI
 
-/// Hosting controller that wraps the `DomainSelectorView` view.
-final class DomainSelectorHostingController: UIHostingController<DomainSelectorView> {
-    private let viewModel: DomainSelectorViewModel
-
+/// Hosting controller that wraps the `DomainSelectorView` view with free domains.
+final class FreeDomainSelectorHostingController: UIHostingController<DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>> {
     /// - Parameters:
     ///   - viewModel: View model for the domain selector.
-    ///   - onDomainSelection: Called when the user continues with a selected domain name.
-    init(viewModel: DomainSelectorViewModel,
-         onDomainSelection: @escaping (String) async -> Void) {
-        self.viewModel = viewModel
-        super.init(rootView: DomainSelectorView(viewModel: viewModel))
-
-        rootView.onDomainSelection = { domain in
-            await onDomainSelection(domain)
-        }
+    ///   - onDomainSelection: Called when the user continues with a selected domain.
+    ///   - onSupport: Called when the user taps to contact support.
+    init(viewModel: DomainSelectorViewModel<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>,
+         onDomainSelection: @escaping (FreeDomainSuggestionViewModel) async -> Void,
+         onSupport: @escaping () -> Void) {
+        super.init(rootView: DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(viewModel: viewModel,
+                                                                                                               onDomainSelection: onDomainSelection,
+                                                                                                               onSupport: onSupport))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -24,54 +21,60 @@ final class DomainSelectorHostingController: UIHostingController<DomainSelectorV
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigationBarAppearance()
+        configureTransparentNavigationBar()
     }
 }
 
-private extension DomainSelectorHostingController {
-    /// Shows a transparent navigation bar without a bottom border.
-    func configureNavigationBarAppearance() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = .systemBackground
+/// Hosting controller that wraps the `DomainSelectorView` view with paid domains.
+final class PaidDomainSelectorHostingController: UIHostingController<DomainSelectorView<PaidDomainSelectorDataProvider, PaidDomainSuggestionViewModel>> {
+    /// - Parameters:
+    ///   - viewModel: View model for the domain selector.
+    ///   - onDomainSelection: Called when the user continues with a selected domain.
+    ///   - onSupport: Called when the user taps to contact support.
+    init(viewModel: DomainSelectorViewModel<PaidDomainSelectorDataProvider, PaidDomainSuggestionViewModel>,
+         onDomainSelection: @escaping (PaidDomainSuggestionViewModel) async -> Void,
+         onSupport: @escaping () -> Void) {
+        super.init(rootView: DomainSelectorView<PaidDomainSelectorDataProvider, PaidDomainSuggestionViewModel>(viewModel: viewModel,
+                                                                                                      onDomainSelection: onDomainSelection,
+                                                                                                      onSupport: onSupport))
+    }
 
-        navigationItem.standardAppearance = appearance
-        navigationItem.scrollEdgeAppearance = appearance
-        navigationItem.compactAppearance = appearance
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        configureTransparentNavigationBar()
     }
 }
 
 /// Allows the user to search for a domain and then select one to continue.
-struct DomainSelectorView: View {
-    /// The state of the main view below the fixed header.
-    enum ViewState: Equatable {
-        /// When loading domain suggestions.
-        case loading
-        /// Shown when the search query is empty.
-        case placeholder
-        /// When there is an error loading domain suggestions.
-        case error(message: String)
-        /// When domain suggestions are displayed.
-        case results(domains: [String])
-    }
-
-    /// Set in the hosting controller.
-    var onDomainSelection: ((String) async -> Void) = { _ in }
+struct DomainSelectorView<DataProvider: DomainSelectorDataProvider,
+                          DomainSuggestion: Equatable & DomainSuggestionViewProperties>: View
+where DataProvider.DomainSuggestion == DomainSuggestion {
+    private let onDomainSelection: (DomainSuggestion) async -> Void
+    private let onSupport: () -> Void
 
     /// View model to drive the view.
-    @ObservedObject private var viewModel: DomainSelectorViewModel
+    @ObservedObject private var viewModel: DomainSelectorViewModel<DataProvider, DomainSuggestion>
 
-    /// Currently selected domain name.
+    /// Currently selected domain.
     /// If this property is kept in the view model, a SwiftUI error appears `Publishing changes from within view updates`
     /// when a domain row is selected.
-    @State private var selectedDomainName: String?
+    @State private var selectedDomain: DomainSuggestion?
 
     @State private var isWaitingForDomainSelectionCompletion: Bool = false
 
     @FocusState private var textFieldIsFocused: Bool
 
-    init(viewModel: DomainSelectorViewModel) {
+    init(viewModel: DomainSelectorViewModel<DataProvider, DomainSuggestion>,
+         onDomainSelection: @escaping (DomainSuggestion) async -> Void,
+         onSupport: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onDomainSelection = onDomainSelection
+        self.onSupport = onSupport
     }
 
     var body: some View {
@@ -138,17 +141,19 @@ struct DomainSelectorView: View {
                         .padding(.vertical, insets: .init(top: 14, leading: 0, bottom: 8, trailing: 0))
 
                     LazyVStack {
-                        ForEach(domains, id: \.self) { domain in
+                        ForEach(domains, id: \.name) { domain in
                             Button {
                                 textFieldIsFocused = false
-                                selectedDomainName = domain
+                                selectedDomain = domain
                             } label: {
                                 VStack(alignment: .leading) {
-                                    DomainRowView(viewModel: .init(domainName: domain,
-                                                                   searchQuery: viewModel.searchTerm,
-                                                                   isSelected: domain == selectedDomainName))
+                                    DomainRowView(viewModel:
+                                            .init(domainName: domain.name,
+                                                  attributedDetail: domain.attributedDetail,
+                                                  searchQuery: viewModel.searchTerm,
+                                                  isSelected: domain == selectedDomain))
                                     Divider()
-                                        .frame(height: Layout.dividerHeight)
+                                        .dividerStyle()
                                         .padding(.leading, Layout.defaultHorizontalPadding)
                                 }
                             }
@@ -159,15 +164,14 @@ struct DomainSelectorView: View {
         }
         .safeAreaInset(edge: .bottom) {
             // Continue button when a domain is selected.
-            if let selectedDomainName {
+            if let selectedDomain {
                 VStack {
                     Divider()
-                        .frame(height: Layout.dividerHeight)
-                        .foregroundColor(Color(.separator))
+                        .dividerStyle()
                     Button(Localization.continueButtonTitle) {
                         Task { @MainActor in
                             isWaitingForDomainSelectionCompletion = true
-                            await onDomainSelection(selectedDomainName)
+                            await onDomainSelection(selectedDomain)
                             isWaitingForDomainSelectionCompletion = false
                         }
                     }
@@ -177,32 +181,49 @@ struct DomainSelectorView: View {
                 .background(Color(.systemBackground))
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                SupportButton {
+                    onSupport()
+                }
+            }
+        }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.large)
         .onChange(of: viewModel.isLoadingDomainSuggestions) { isLoadingDomainSuggestions in
             // Resets selected domain when loading domain suggestions.
             if isLoadingDomainSuggestions {
-                selectedDomainName = nil
+                selectedDomain = nil
             }
         }
     }
 }
 
+/// Constants are computed static properties since stored properties are not supported in generic types.
 private extension DomainSelectorView {
     enum Layout {
-        static let defaultHorizontalPadding: CGFloat = 16
-        static let dividerHeight: CGFloat = 1
-        static let defaultPadding: EdgeInsets = .init(top: 10, leading: 16, bottom: 10, trailing: 16)
+        static var defaultHorizontalPadding: CGFloat { 16 }
+        static var defaultPadding: EdgeInsets { .init(top: 10, leading: 16, bottom: 10, trailing: 16) }
     }
 
     enum Localization {
-        static let title = NSLocalizedString("Choose a domain", comment: "Title of the domain selector.")
-        static let subtitle = NSLocalizedString(
-            "This is where people will find you on the Internet. You can add another domain later.",
-            comment: "Subtitle of the domain selector.")
-        static let searchPlaceholder = NSLocalizedString("Type a name for your store", comment: "Placeholder of the search text field on the domain selector.")
-        static let suggestionsHeader = NSLocalizedString("SUGGESTIONS", comment: "Header label of the domain suggestions on the domain selector.")
-        static let continueButtonTitle = NSLocalizedString("Continue", comment: "Title of the button to continue with a selected domain.")
+        static var title: String {
+            NSLocalizedString("Choose a domain", comment: "Title of the domain selector.")
+        }
+        static var subtitle: String {
+            NSLocalizedString(
+                "This is where people will find you on the Internet. You can add another domain later.",
+                comment: "Subtitle of the domain selector.")
+        }
+        static var searchPlaceholder: String {
+            NSLocalizedString("Type a name for your store", comment: "Placeholder of the search text field on the domain selector.")
+        }
+        static var suggestionsHeader: String {
+            NSLocalizedString("SUGGESTIONS", comment: "Header label of the domain suggestions on the domain selector.")
+        }
+        static var continueButtonTitle: String {
+            NSLocalizedString("Continue", comment: "Title of the button to continue with a selected domain.")
+        }
     }
 }
 
@@ -213,18 +234,25 @@ import enum Networking.DotcomError
 
 /// StoresManager that specifically handles `DomainAction` for `DomainSelectorView` previews.
 final class DomainSelectorViewStores: DefaultStoresManager {
-    private let result: Result<[FreeDomainSuggestion], Error>?
+    private let freeDomainsResult: Result<[FreeDomainSuggestion], Error>?
+    private let paidDomainsResult: Result<[PaidDomainSuggestion], Error>?
 
-    init(result: Result<[FreeDomainSuggestion], Error>?) {
-        self.result = result
+    init(freeDomainsResult: Result<[FreeDomainSuggestion], Error>? = nil,
+         paidDomainsResult: Result<[PaidDomainSuggestion], Error>? = nil) {
+        self.freeDomainsResult = freeDomainsResult
+        self.paidDomainsResult = paidDomainsResult
         super.init(sessionManager: ServiceLocator.stores.sessionManager)
     }
 
     override func dispatch(_ action: Action) {
         if let action = action as? DomainAction {
             if case let .loadFreeDomainSuggestions(_, completion) = action {
-                if let result {
-                    completion(result)
+                if let freeDomainsResult {
+                    completion(freeDomainsResult)
+                }
+            } else if case let .loadPaidDomainSuggestions(_, completion) = action {
+                if let paidDomainsResult {
+                    completion(paidDomainsResult)
                 }
             }
         }
@@ -235,31 +263,77 @@ struct DomainSelectorView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             // Empty query state.
-            DomainSelectorView(viewModel:
-                    .init(initialSearchTerm: "",
-                          stores: DomainSelectorViewStores(result: nil)))
-            // Results state.
-            DomainSelectorView(viewModel:
-                    .init(initialSearchTerm: "Fruit smoothie",
-                          stores: DomainSelectorViewStores(result: .success([
-                            .init(name: "grapefruitsmoothie.com", isFree: true),
-                            .init(name: "fruitsmoothie.com", isFree: true),
-                            .init(name: "grapefruitsmoothiee.com", isFree: true),
-                            .init(name: "freesmoothieeee.com", isFree: true),
-                            .init(name: "greatfruitsmoothie1.com", isFree: true),
-                            .init(name: "tropicalsmoothie.com", isFree: true)
-                          ]))))
+            DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
+                viewModel:
+                        .init(initialSearchTerm: "",
+                              dataProvider: FreeDomainSelectorDataProvider(
+                                stores: DomainSelectorViewStores()
+                              )),
+                onDomainSelection: { _ in },
+                onSupport: {}
+            )
+            // Results state for free domains.
+            DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
+                viewModel:
+                        .init(initialSearchTerm: "",
+                              dataProvider: FreeDomainSelectorDataProvider(
+                                stores: DomainSelectorViewStores(freeDomainsResult: .success([
+                                    .init(name: "grapefruitsmoothie.com", isFree: true),
+                                    .init(name: "fruitsmoothie.com", isFree: true),
+                                    .init(name: "grapefruitsmoothiee.com", isFree: true),
+                                    .init(name: "freesmoothieeee.com", isFree: true),
+                                    .init(name: "greatfruitsmoothie1.com", isFree: true),
+                                    .init(name: "tropicalsmoothie.com", isFree: true)
+                                ]))
+                              )),
+                onDomainSelection: { _ in },
+                onSupport: {}
+            )
+            // Results state for paid domains.
+            DomainSelectorView<PaidDomainSelectorDataProvider, PaidDomainSuggestionViewModel>(
+                viewModel:
+                        .init(initialSearchTerm: "fruit",
+                              dataProvider: PaidDomainSelectorDataProvider(
+                                stores: DomainSelectorViewStores(paidDomainsResult: .success([
+                                    .init(productID: 1,
+                                          supportsPrivacy: true,
+                                          name: "grapefruitsmoothie.com",
+                                          term: "year",
+                                          cost: "NT$154.00"),
+                                    .init(productID: 2,
+                                          supportsPrivacy: true,
+                                          name: "fruitsmoothie.com",
+                                          term: "year",
+                                          cost: "NT$610.00",
+                                          saleCost: "NT$154.00")
+                                ])),
+                                hasDomainCredit: true)),
+                onDomainSelection: { _ in },
+                onSupport: {}
+            )
             // Error state.
-            DomainSelectorView(viewModel:
-                    .init(initialSearchTerm: "test",
-                          stores: DomainSelectorViewStores(result: .failure(
-                            DotcomError.unknown(code: "invalid_query",
-                                                message: "Domain searches must contain a word with the following characters.")
-                          ))))
+            DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
+                viewModel:
+                        .init(initialSearchTerm: "test",
+                              dataProvider:
+                                FreeDomainSelectorDataProvider(
+                                    stores: DomainSelectorViewStores(freeDomainsResult:
+                                            .failure(DotcomError.unknown(code: "invalid_query",
+                                                                         message: "Domain searches must contain a word with the following characters.")
+                                    )))),
+                              onDomainSelection: { _ in },
+                              onSupport: {}
+            )
             // Loading state.
-            DomainSelectorView(viewModel:
-                    .init(initialSearchTerm: "test",
-                          stores: DomainSelectorViewStores(result: nil)))
+            DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
+                viewModel:
+                        .init(initialSearchTerm: "",
+                              dataProvider: FreeDomainSelectorDataProvider(
+                                stores: DomainSelectorViewStores()
+                              )),
+                onDomainSelection: { _ in },
+                onSupport: {}
+            )
         }
     }
 }

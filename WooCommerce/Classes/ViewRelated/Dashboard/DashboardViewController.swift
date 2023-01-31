@@ -52,6 +52,8 @@ final class DashboardViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .listForeground(modal: false)
         view.axis = .vertical
+        view.directionalLayoutMargins = .init(top: 0, leading: 0, bottom: Constants.tabStripSpacing, trailing: 0)
+        view.spacing = Constants.headerStackViewSpacing
         return view
     }()
 
@@ -541,6 +543,12 @@ private extension DashboardViewController {
             return
         }
 
+        // Resets the Auto Layout constraint that pins the previous content view to the bottom of the header view.
+        // Otherwise, if `contentTopToHeaderConstraint?.isActive = true` is called after the previous content view is removed
+        // in the next line `remove(previousDashboardUI)`, the app crashes because the content view is no longer in the
+        // view hierarchy.
+        contentTopToHeaderConstraint = nil
+
         // Tears down the previous child view controller.
         if let previousDashboardUI = dashboardUI {
             remove(previousDashboardUI)
@@ -719,5 +727,7 @@ private extension DashboardViewController {
         static let backgroundColor: UIColor = .systemBackground
         static let iPhoneCollapsedNavigationBarHeight = CGFloat(44)
         static let iPadCollapsedNavigationBarHeight = CGFloat(50)
+        static let tabStripSpacing = CGFloat(12)
+        static let headerStackViewSpacing = CGFloat(4)
     }
 }

@@ -29,6 +29,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let dependencies = Dependencies(stores: stores)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
@@ -54,6 +55,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let dependencies = Dependencies(stores: stores)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
@@ -90,6 +92,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                         storage: storage)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
@@ -118,6 +121,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let dependencies = Dependencies(stores: stores)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
@@ -148,6 +152,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let dependencies = Dependencies(presentNoticeSubject: noticeSubject, stores: stores)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
@@ -185,6 +190,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let dependencies = Dependencies(presentNoticeSubject: noticeSubject, stores: stores)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
@@ -232,6 +238,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                         analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
@@ -265,10 +272,11 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
-        viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
+        viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {})
 
         // Then
         assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
@@ -283,6 +291,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let dependencies = Dependencies(analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
@@ -314,6 +323,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                         analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
@@ -346,10 +356,11 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
-        viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
+        viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {})
 
         // Then
         assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.paymentsFlowFailed.rawValue)
@@ -365,6 +376,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                         analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
@@ -382,6 +394,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let dependencies = Dependencies(analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
@@ -405,10 +418,11 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
-        viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
+        viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {})
 
         // Then
         assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.paymentsFlowCollect.rawValue)
@@ -433,6 +447,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 orderID: 111,
                                                 formattedTotal: "$5.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // Then
@@ -456,6 +471,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 orderID: 111,
                                                 formattedTotal: "$5.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // Then
@@ -479,6 +495,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 orderID: 111,
                                                 formattedTotal: "$5.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // Then
@@ -502,6 +519,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 orderID: 111,
                                                 formattedTotal: "$5.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // Then
@@ -539,6 +557,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 orderID: 111,
                                                 formattedTotal: "$5.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // Then
@@ -576,6 +595,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 orderID: 111,
                                                 formattedTotal: "$5.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // Then
@@ -584,7 +604,10 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
     func test_paymentLinkRow_is_hidden_if_payment_link_is_not_available() {
         // Given
-        let viewModel = PaymentMethodsViewModel(paymentLink: nil, formattedTotal: "$12.00", flow: .simplePayment)
+        let viewModel = PaymentMethodsViewModel(paymentLink: nil,
+                                                formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false)
 
         // Then
         XCTAssertFalse(viewModel.showPaymentLinkRow)
@@ -594,7 +617,10 @@ final class PaymentMethodsViewModelTests: XCTestCase {
     func test_paymentLinkRow_is_shown_if_payment_link_is_available() {
         // Given
         let paymentURL = URL(string: "http://www.automattic.com")
-        let viewModel = PaymentMethodsViewModel(paymentLink: paymentURL, formattedTotal: "$12.00", flow: .simplePayment)
+        let viewModel = PaymentMethodsViewModel(paymentLink: paymentURL,
+                                                formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false)
 
         // Then
         XCTAssertTrue(viewModel.showPaymentLinkRow)
@@ -607,6 +633,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let dependencies = Dependencies(presentNoticeSubject: noticeSubject)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
@@ -651,6 +678,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                         storage: storage)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
@@ -665,7 +693,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             }
             .store(in: &self.subscriptions)
 
-            viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
+            viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {})
         }
 
         // Then
@@ -690,13 +718,17 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                         storage: storage)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
         let calledOnSuccess: Bool = waitFor { promise in
-            viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {
+            viewModel.collectPayment(on: UIViewController(),
+                                     useCase: useCase,
+                                     onSuccess: {
                 promise(true)
-            })
+            },
+                                     onFailure: {})
         }
 
         // Then
@@ -723,6 +755,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                         storage: storage)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When
@@ -735,7 +768,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                     XCTFail("Unexpected action: \(action)")
                 }
             }
-            viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
+            viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {})
         }
 
         // Then

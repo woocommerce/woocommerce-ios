@@ -29,27 +29,19 @@ final class HubMenuViewModel: ObservableObject {
         return url
     }
 
-    var storeTitle: String {
-        stores.sessionManager.defaultSite?.name ?? Localization.myStore
-    }
+    @Published private(set) var storeTitle = Localization.myStore
 
-    var storeURL: URL {
-        guard let urlString = stores.sessionManager.defaultSite?.url, let url = URL(string: urlString) else {
-            return WooConstants.URLs.blog.asURL()
-        }
-        return url
-    }
-    var woocommerceAdminURL: URL {
-        guard let urlString = stores.sessionManager.defaultSite?.adminURL, let url = URL(string: urlString) else {
-            return stores.sessionManager.defaultSite?.adminURLWithFallback() ??
-            WooConstants.URLs.blog.asURL()
-        }
-        return url
-    }
+    @Published private(set) var storeURL = WooConstants.URLs.blog.asURL()
+
+    @Published private(set) var woocommerceAdminURL = WooConstants.URLs.blog.asURL()
 
     /// Child items
     ///
     @Published private(set) var menuElements: [HubMenuItem] = []
+
+    /// The switch store button should be hidden when logged in with site credentials only.
+    ///
+    @Published private(set) var switchStoreEnabled = false
 
     @Published var showingReviewDetail = false
 
@@ -61,8 +53,6 @@ final class HubMenuViewModel: ObservableObject {
 
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    private var cancellables = Set<AnyCancellable>()
-
     init(siteID: Int64,
          navigationController: UINavigationController? = nil,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -73,6 +63,7 @@ final class HubMenuViewModel: ObservableObject {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
+        self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
         observeSiteForUIUpdates()
     }
 
@@ -139,9 +130,27 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     private func observeSiteForUIUpdates() {
-        stores.site.sink { site in
-            // This will be useful in the future for updating some info of the screen depending on the store site info
-        }.store(in: &cancellables)
+        stores.site
+            .compactMap { site -> URL? in
+                guard let urlString = site?.url, let url = URL(string: urlString) else {
+                    return nil
+                }
+                return url
+            }
+            .assign(to: &$storeURL)
+
+        stores.site
+            .compactMap { $0?.name }
+            .assign(to: &$storeTitle)
+
+        stores.site
+            .compactMap { site -> URL? in
+                guard let urlString = site?.adminURL, let url = URL(string: urlString) else {
+                    return site?.adminURLWithFallback()
+                }
+                return url
+            }
+            .assign(to: &$woocommerceAdminURL)
     }
 }
 

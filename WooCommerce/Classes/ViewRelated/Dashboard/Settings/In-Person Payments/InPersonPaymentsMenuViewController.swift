@@ -8,7 +8,6 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     private let stores: StoresManager
     private var pluginState: CardPresentPaymentsPluginState?
     private var sections = [Section]()
-    private let configurationLoader: CardPresentConfigurationLoader
     private let featureFlagService: FeatureFlagService
     private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
     private var cancellables: Set<AnyCancellable> = []
@@ -18,19 +17,14 @@ final class InPersonPaymentsMenuViewController: UIViewController {
                            formatText: Localization.toggleEnableCashOnDeliveryLearnMoreFormat,
                            tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(
                             reason: "reason",
-                            countryCode: configurationLoader.configuration.countryCode))
+                            countryCode: viewModel.cardPresentPaymentsConfiguration.countryCode))
     }()
+
+    private lazy var inPersonPaymentsLearnMoreViewModel = LearnMoreViewModel.inPersonPayments()
 
     private let viewModel: InPersonPaymentsMenuViewModel = InPersonPaymentsMenuViewModel()
 
     private let cashOnDeliveryToggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel
-
-    /// No Manuals to be shown in a country where IPP is not supported
-    /// 
-    private var enableCardReaderManualsCell: Bool {
-        !(cardPresentPaymentsOnboardingUseCase.state == .loading ||
-        cardPresentPaymentsOnboardingUseCase.state.isCountryNotSupported)
-    }
 
     private var enableManageCardReaderCell: Bool {
         cardPresentPaymentsOnboardingUseCase.state.isCompleted
@@ -49,13 +43,22 @@ final class InPersonPaymentsMenuViewController: UIViewController {
 
     private var activityIndicator: UIActivityIndicatorView?
 
+    private var inPersonPaymentsLearnMoreButton: UIButton {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(learnMoreAboutInPersonPaymentsButtonWasTapped), for: .touchUpInside)
+        button.setAttributedTitle(inPersonPaymentsLearnMoreViewModel.learnMoreAttributedString, for: .normal)
+        button.naturalContentHorizontalAlignment = .leading
+        button.configuration = UIButton.Configuration.plain()
+
+        return button
+    }
+
     init(stores: StoresManager = ServiceLocator.stores,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
     ) {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
-        configurationLoader = CardPresentConfigurationLoader()
         self.cashOnDeliveryToggleRowViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
 
         super.init(nibName: nil, bundle: nil)
@@ -73,7 +76,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         configureTableView()
         registerTableViewCells()
         configureTableReload()
-        runCardPresentPaymentsOnboarding()
+        runCardPresentPaymentsOnboardingIfPossible()
         configureWebViewPresentation()
         viewModel.viewDidLoad()
     }
@@ -82,7 +85,11 @@ final class InPersonPaymentsMenuViewController: UIViewController {
 // MARK: - Card Present Payments Readiness
 
 private extension InPersonPaymentsMenuViewController {
-    func runCardPresentPaymentsOnboarding() {
+    func runCardPresentPaymentsOnboardingIfPossible() {
+        guard viewModel.isEligibleForCardPresentPayments else {
+            return
+        }
+
         cardPresentPaymentsOnboardingUseCase.refresh()
 
         cardPresentPaymentsOnboardingUseCase.$state
@@ -174,11 +181,13 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureSections() {
-        sections = [
-            actionsSection,
-            cardReadersSection,
-            paymentOptionsSection
-        ].compactMap { $0 }
+        var composingSections: [Section?] = [actionsSection]
+
+        if viewModel.isEligibleForCardPresentPayments {
+            composingSections.append(contentsOf: [cardReadersSection, paymentOptionsSection])
+        }
+
+        sections = composingSections.compactMap { $0 }
     }
 
     var actionsSection: Section? {
@@ -282,11 +291,9 @@ private extension InPersonPaymentsMenuViewController {
 
     func configureCardReaderManuals(cell: LeftImageTableViewCell) {
         cell.imageView?.tintColor = .text
-        cell.accessoryType = enableCardReaderManualsCell ? .disclosureIndicator : .none
-        cell.selectionStyle = enableCardReaderManualsCell ? .default : .none
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
         cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals.localizedCapitalized)
-
-        updateEnabledState(in: cell, shouldBeEnabled: enableCardReaderManualsCell)
     }
 
     func configureCollectPayment(cell: LeftImageTableViewCell) {
@@ -361,16 +368,12 @@ extension InPersonPaymentsMenuViewController {
             fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
         }
 
-        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList(configuration: configurationLoader.configuration)
+        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList(configuration: viewModel.cardPresentPaymentsConfiguration)
         viewController.configure(viewModelsAndViews: viewModelsAndViews)
         show(viewController, sender: self)
     }
 
     func cardReaderManualsWasPressed() {
-        guard enableCardReaderManualsCell else {
-            return
-        }
-
         ServiceLocator.analytics.track(.paymentsMenuCardReadersManualsTapped)
         let view = UIHostingController(rootView: CardReaderManualsView())
         navigationController?.pushViewController(view, animated: true)
@@ -401,6 +404,11 @@ extension InPersonPaymentsMenuViewController {
 
         SimplePaymentsAmountFlowOpener.openSimplePaymentsAmountFlow(from: navigationController, siteID: siteID)
     }
+
+    @objc func learnMoreAboutInPersonPaymentsButtonWasTapped() {
+        WebviewHelper.launch(inPersonPaymentsLearnMoreViewModel.url, with: self)
+    }
+
 }
 
 // MARK: - UITableViewDataSource
@@ -423,6 +431,14 @@ extension InPersonPaymentsMenuViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        guard section == sections.firstIndex(where: { $0 == cardReadersSection }) else {
+            return nil
+        }
+
+        return inPersonPaymentsLearnMoreButton
     }
 }
 
@@ -525,10 +541,19 @@ private extension InPersonPaymentsMenuViewController {
             "Continue setup",
             comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
         )
+
+        static let learnMoreLink = NSLocalizedString(
+            "cardPresent.modalScanningForReader.learnMore.link",
+            value: "Learn more",
+            comment: """
+                     A label prompting users to learn more about In-Person Payments.
+                     This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
+                     """
+        )
     }
 }
 
-private struct Section {
+private struct Section: Equatable {
     let header: String
     let rows: [Row]
 }

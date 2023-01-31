@@ -8,35 +8,49 @@ struct BuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidin
 
     func scanningFailed(error: Error,
                         close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalScanningFailed(error: error, primaryAction: close)
+        CardPresentModalScanningFailed(error: error, image: .builtInReaderError, primaryAction: close)
     }
 
     func connectingToReader() -> CardPresentPaymentsModalViewModel {
         CardPresentModalBuiltInConnectingToReader()
     }
 
-    func connectingFailed(continueSearch: @escaping () -> Void,
+    func connectingFailed(error: Error,
+                          retrySearch: @escaping () -> Void,
                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalConnectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch)
+        CardPresentModalBuiltInConnectingFailed(error: error,
+                                                continueSearch: retrySearch,
+                                                cancelSearch: cancelSearch)
     }
+
+    func connectingFailedNonRetryable(error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalBuiltInConnectingFailedNonRetryable(error: error,
+                                                            close: close)
+    }
+
 
     func connectingFailedIncompleteAddress(openWCSettings: ((UIViewController) -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalConnectingFailedUpdateAddress(openWCSettings: openWCSettings, retrySearch: retrySearch, cancelSearch: cancelSearch)
+        CardPresentModalConnectingFailedUpdateAddress(image: .builtInReaderError,
+                                                      openWCSettings: openWCSettings,
+                                                      retrySearch: retrySearch,
+                                                      cancelSearch: cancelSearch)
     }
 
     func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalConnectingFailedUpdatePostalCode(retrySearch: retrySearch, cancelSearch: cancelSearch)
+        CardPresentModalConnectingFailedUpdatePostalCode(image: .builtInReaderError,
+                                                         retrySearch: retrySearch,
+                                                         cancelSearch: cancelSearch)
     }
 
     func updatingFailed(tryAgain: (() -> Void)?,
                         close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if let tryAgain = tryAgain {
-            return CardPresentModalUpdateFailed(tryAgain: tryAgain, close: close)
+            return CardPresentModalUpdateFailed(image: .builtInReaderError, tryAgain: tryAgain, close: close)
         } else {
-            return CardPresentModalUpdateFailedNonRetryable(close: close)
+            return CardPresentModalUpdateFailedNonRetryable(image: .builtInReaderError, close: close)
         }
     }
 

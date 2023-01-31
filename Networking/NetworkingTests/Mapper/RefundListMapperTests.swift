@@ -17,39 +17,40 @@ final class RefundListMapperTests: XCTestCase {
     /// Verifies that all the Refund fields are parsed correctly.
     ///
     func test_Refund_fields_are_properly_parsed() {
-        let refunds = mapLoadAllRefundsResponse()
-        XCTAssertEqual(refunds.count, 2)
+        let result = [mapLoadAllRefundsResponse(), mapLoadAllRefundsResponseWithoutDataEnvelope()]
+        for refunds in result {
+            XCTAssertEqual(refunds.count, 2)
 
-        let firstRefund = refunds[0]
-        XCTAssertEqual(firstRefund.siteID, dummySiteID)
-        XCTAssertEqual(firstRefund.orderID, orderID)
-        XCTAssertEqual(firstRefund.refundID, 590)
+            let firstRefund = refunds[0]
+            XCTAssertEqual(firstRefund.siteID, dummySiteID)
+            XCTAssertEqual(firstRefund.orderID, orderID)
+            XCTAssertEqual(firstRefund.refundID, 590)
 
-        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-09T16:18:23")
-        XCTAssertEqual(firstRefund.dateCreated, dateCreated)
+            let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-09T16:18:23")
+            XCTAssertEqual(firstRefund.dateCreated, dateCreated)
 
-        XCTAssertEqual(firstRefund.amount, "18.00")
-        XCTAssertEqual(firstRefund.reason, "Only 1 black hoodie left. Inventory count was off. My bad!")
-        XCTAssertEqual(firstRefund.refundedByUserID, 1)
+            XCTAssertEqual(firstRefund.amount, "18.00")
+            XCTAssertEqual(firstRefund.reason, "Only 1 black hoodie left. Inventory count was off. My bad!")
+            XCTAssertEqual(firstRefund.refundedByUserID, 1)
+            if let isAutomated = firstRefund.isAutomated {
+                XCTAssertTrue(isAutomated)
+            }
 
-        if let isAutomated = firstRefund.isAutomated {
-            XCTAssertTrue(isAutomated)
-        }
+            let secondRefund = refunds[1]
+            XCTAssertEqual(secondRefund.siteID, dummySiteID)
+            XCTAssertEqual(secondRefund.orderID, orderID)
+            XCTAssertEqual(secondRefund.refundID, 562)
 
-        let secondRefund = refunds[1]
-        XCTAssertEqual(secondRefund.siteID, dummySiteID)
-        XCTAssertEqual(secondRefund.orderID, orderID)
-        XCTAssertEqual(secondRefund.refundID, 562)
+            let dateCreated2 = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-01T19:33:46")
+            XCTAssertEqual(secondRefund.dateCreated, dateCreated2)
 
-        let dateCreated2 = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-01T19:33:46")
-        XCTAssertEqual(secondRefund.dateCreated, dateCreated2)
+            XCTAssertEqual(secondRefund.amount, "27.00")
+            XCTAssertEqual(secondRefund.reason, "My pet hamster ate the sleeve off of one of the Blue XL hoodies. Sorry! No longer for sale.")
+            XCTAssertEqual(secondRefund.refundedByUserID, 1)
 
-        XCTAssertEqual(secondRefund.amount, "27.00")
-        XCTAssertEqual(secondRefund.reason, "My pet hamster ate the sleeve off of one of the Blue XL hoodies. Sorry! No longer for sale.")
-        XCTAssertEqual(secondRefund.refundedByUserID, 1)
-
-        if let isAutomated = secondRefund.isAutomated {
-            XCTAssertTrue(isAutomated)
+            if let isAutomated = secondRefund.isAutomated {
+                XCTAssertTrue(isAutomated)
+            }
         }
     }
 
@@ -128,5 +129,11 @@ private extension RefundListMapperTests {
     ///
     func mapLoadAllRefundsResponse() -> [Refund] {
         return mapRefunds(from: "refunds-all")
+    }
+
+    /// Returns the RefundListMapper output upon receiving `refunds-all-without-data`
+    ///
+    func mapLoadAllRefundsResponseWithoutDataEnvelope() -> [Refund] {
+        return mapRefunds(from: "refunds-all-without-data")
     }
 }

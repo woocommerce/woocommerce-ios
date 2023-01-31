@@ -11,7 +11,7 @@ final class CardPresentModalRetryableError: CardPresentPaymentsModalViewModel {
 
     var topSubtitle: String?
 
-    let image: UIImage = .paymentErrorImage
+    let image: UIImage
 
     let primaryButtonTitle: String? = Localization.tryAgain
 
@@ -27,7 +27,9 @@ final class CardPresentModalRetryableError: CardPresentPaymentsModalViewModel {
         return topTitle
     }
 
-    init(primaryAction: @escaping () -> Void) {
+    init(image: UIImage = .paymentErrorImage,
+         primaryAction: @escaping () -> Void) {
+        self.image = image
         self.primaryAction = primaryAction
     }
 

@@ -10,7 +10,6 @@ enum LoginProloguePageType: CaseIterable {
     case products
     case reviews
     case getStarted
-    case simplifiedLoginI1Intro
 
     var title: String {
         switch self {
@@ -26,7 +25,7 @@ enum LoginProloguePageType: CaseIterable {
         case .reviews:
             return NSLocalizedString("Monitor and approve your product reviews",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
-        case .getStarted, .simplifiedLoginI1Intro:
+        case .getStarted:
             return NSLocalizedString("WooCommerce is a customizable, open-source eCommerce platform built on WordPress.",
                                      comment: "Caption displayed in the simplified prologue screen")
         }
@@ -58,7 +57,7 @@ enum LoginProloguePageType: CaseIterable {
             return UIImage.prologueProductsImage
         case .reviews:
             return UIImage.prologueReviewsImage
-        case .getStarted, .simplifiedLoginI1Intro:
+        case .getStarted:
             return UIImage.prologueWooMobileImage
         }
     }
@@ -144,7 +143,7 @@ private extension LoginProloguePageTypeViewController {
 
         // Label style & layout
         titleLabel.font = {
-            if pageType == .simplifiedLoginI1Intro || pageType == .getStarted {
+            if pageType == .getStarted {
                 return .headline
             } else if showsSubtitle {
                 return .font(forStyle: .title2, weight: .semibold)

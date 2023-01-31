@@ -36,6 +36,22 @@ final class PaymentGatewayMapperTests: XCTestCase {
 
         XCTAssertEqual(paymentGateway, expectedPaymentGateway)
     }
+
+    /// Verifies that the fields are all parsed correctly
+    ///
+    func test_PaymentGatewaysList_map_parses_all_fields_in_result_when_response_has_no_data_envelope() throws {
+        let paymentGateway = try mapRetrievePaymentGatewayResponseWithoutDataEnvelope()
+
+        let expectedPaymentGateway = PaymentGateway(siteID: dummySiteID,
+                                                    gatewayID: "cod",
+                                                    title: "Cash on delivery",
+                                                    description: "Pay with cash upon delivery.",
+                                                    enabled: true,
+                                                    features: [.products],
+                                                    instructions: "Pay with cash upon delivery.")
+
+        XCTAssertEqual(paymentGateway, expectedPaymentGateway)
+    }
 }
 
 
@@ -53,10 +69,16 @@ private extension PaymentGatewayMapperTests {
         return try PaymentGatewayMapper(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the PaymentGatewayMapper output from `payment-gateway-cod.json`
+    /// Returns the PaymentGateway output from `payment-gateway-cod.json`
     ///
     func mapRetrievePaymentGatewayResponse() throws -> PaymentGateway {
         return try mapPaymentGateway(from: "payment-gateway-cod")
+    }
+
+    /// Returns the PaymentGateway output from `payment-gateway-cod-without-data.json`
+    ///
+    func mapRetrievePaymentGatewayResponseWithoutDataEnvelope() throws -> PaymentGateway {
+        return try mapPaymentGateway(from: "payment-gateway-cod-without-data")
     }
 
     struct FileNotFoundError: Error {}

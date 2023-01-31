@@ -132,6 +132,10 @@ final class IconsTests: XCTestCase {
         XCTAssertEqual(deleteCellImage.size, CGSize(width: 22, height: 22))
     }
 
+    func test_domainCreditImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.domainCreditImage)
+    }
+
     func test_domainSearchPlaceholderImage_is_not_nil() {
         XCTAssertNotNil(UIImage.domainSearchPlaceholderImage)
     }
@@ -202,6 +206,10 @@ final class IconsTests: XCTestCase {
 
     func testHeartOutlineImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.heartOutlineImage)
+    }
+
+    func test_helpOutlineImage_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.helpOutlineImage)
     }
 
     func testHouseImageIconIsNotNil() {
@@ -308,6 +316,10 @@ final class IconsTests: XCTestCase {
 
     func testMoreImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.moreImage)
+    }
+
+    func test_multiSelectIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.multiSelectIcon)
     }
 
     func test_multipleUsers_image_is_not_nil() {

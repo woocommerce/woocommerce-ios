@@ -319,7 +319,12 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                                                             .decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
             ?? ""
 
-        let purchasable = try container.decode(Bool.self, forKey: .purchasable)
+        // Even though WooCommerce Core returns Bool values,
+        // some plugins alter the field value from Bool to Int (1 or 0)
+        let purchasable = container.failsafeDecodeIfPresent(targetType: Bool.self, forKey: .purchasable,
+                                                            alternativeTypes: [
+                                                                .integer(transform: { ($0 as NSNumber).boolValue })])
+        ?? true
         let totalSales = container.failsafeDecodeIfPresent(Int.self, forKey: .totalSales) ?? 0
         let virtual = try container.decode(Bool.self, forKey: .virtual)
 
@@ -464,6 +469,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(productID, forKey: .productID)
 
         try container.encode(images, forKey: .images)
 
@@ -661,4 +668,13 @@ private extension Product {
 //
 enum ProductDecodingError: Error {
     case missingSiteID
+}
+
+// MARK: - Hashable Conformance
+//
+extension Product: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(siteID)
+        hasher.combine(productID)
+    }
 }

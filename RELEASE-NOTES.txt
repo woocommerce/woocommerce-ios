@@ -1,9 +1,29 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.2
+-----
+- [*] Fix: Adding a new attribute will auto-capitalize the first letter for each word in the attribute name. [https://github.com/woocommerce/woocommerce-ios/pull/8772]
+
+12.1
+-----
+- [*] Adds an In-Person Payments survey banner on top of the Orders view [https://github.com/woocommerce/woocommerce-ios/issues/8530]
+- [*] Fix: Allow product's `purchasable` to be a number as some third-party plugins could alter the type in the API. This could help with the Products tab not loading due to product decoding errors. [https://github.com/woocommerce/woocommerce-ios/pull/8718]
+- [***] [Internal] Start the AB test for allowing login to the app using site credentials [https://github.com/woocommerce/woocommerce-ios/pull/8744]
+12.0
+-----
+- [**] Adds a feature of bulk updating products from the product's list. [https://github.com/woocommerce/woocommerce-ios/pull/8704]
+- [internal] Store creation flow now includes 3 profiler questions: store category, selling status, and store country. [https://github.com/woocommerce/woocommerce-ios/pull/8667]
+
+11.9
+-----
+- [**] Now you can generate all possible variations for a product's attributes [https://github.com/woocommerce/woocommerce-ios/pull/8619]
+- [*] Mobile payments: fixed card reader manuals links. [https://github.com/woocommerce/woocommerce-ios/pull/8628]
+
 11.8
 -----
 - [*] Design refresh: Buttons, links, and other calls to action are now purple instead of pink. [https://github.com/woocommerce/woocommerce-ios/pull/8451]
 - [internal] Design: Updated capitalization for various pages, links, and buttons to match new design guidelines. [https://github.com/woocommerce/woocommerce-ios/pull/8455]
+- [internal] Remove A/B testing and release native Jetpack installation flow for all users. [https://github.com/woocommerce/woocommerce-ios/pull/8533]
 
 11.7
 -----

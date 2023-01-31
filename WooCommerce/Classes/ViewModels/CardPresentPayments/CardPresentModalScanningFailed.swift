@@ -17,7 +17,7 @@ final class CardPresentModalScanningFailed: CardPresentPaymentsModalViewModel {
 
     var topSubtitle: String? = nil
 
-    let image: UIImage = .paymentErrorImage
+    let image: UIImage
 
     let primaryButtonTitle: String? = Localization.dismiss
 
@@ -35,8 +35,9 @@ final class CardPresentModalScanningFailed: CardPresentPaymentsModalViewModel {
         return topTitle + error.localizedDescription
     }
 
-    init(error: Error, primaryAction: @escaping () -> Void) {
+    init(error: Error, image: UIImage = .paymentErrorImage, primaryAction: @escaping () -> Void) {
         self.error = error
+        self.image = image
         self.primaryAction = primaryAction
     }
 

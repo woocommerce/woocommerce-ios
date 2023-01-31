@@ -1,1 +1,1 @@
-Goed nieuws! We hebben een nieuw analyse-gedeelte aan de app toegevoegd! Je klikt gewoon op de knop Meer zien onder de winkelstatistieken om meer gedetailleerde informatie te zien over Omzet en Bestellingen. Dit zijn nog niet de laatste wijzigingen, de komende weken komen er nog meer updates!
+Het is nu mogelijk om productstatus en prijzen in bulk bij te werken! Ga naar het tabblad Producten en klik op het pictogram meerdere selecteren bovenaan om het uit te proberen.

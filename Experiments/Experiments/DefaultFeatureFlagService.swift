@@ -40,10 +40,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .storeCreationM2WithInAppPurchasesEnabled:
             return false
         case .storeCreationM3Profiler:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .justInTimeMessagesOnDashboard:
             return true
         case .systemStatusReportInSupportRequest:
+            return true
+        case .IPPInAppFeedbackBanner:
             return true
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
@@ -55,9 +57,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .alpha
         case .tapToPayOnIPhone:
             return buildConfig == .localDeveloper
-        case .applicationPasswordAuthenticationForSiteCredentialLogin:
-            // Enable this to test application password authentication (WIP)
-            return false
+        case .domainSettings:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

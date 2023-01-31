@@ -76,7 +76,8 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
                                      method: .get,
                                      siteID: siteID,
                                      path: Path.notes,
-                                     parameters: parameters)
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
 
         let mapper = InboxNoteListMapper(siteID: siteID)
 
@@ -100,7 +101,8 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
                                      method: .delete,
                                      siteID: siteID,
                                      path: Path.notes + "/delete/\(noteID)",
-                                     parameters: [ParameterKey.fields: ParameterValue.noteFields])
+                                     parameters: [ParameterKey.fields: ParameterValue.noteFields],
+                                     availableAsRESTRequest: true)
 
         let mapper = InboxNoteMapper(siteID: siteID)
 
@@ -148,7 +150,8 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
                                      method: .delete,
                                      siteID: siteID,
                                      path: Path.notes + "/delete/all",
-                                     parameters: parameters)
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
 
         let mapper = InboxNoteListMapper(siteID: siteID)
 
@@ -175,7 +178,8 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
                                      method: .post,
                                      siteID: siteID,
                                      path: Path.notes + "/\(noteID)/action/\(actionID)",
-                                     parameters: [ParameterKey.fields: ParameterValue.noteFields])
+                                     parameters: [ParameterKey.fields: ParameterValue.noteFields],
+                                     availableAsRESTRequest: true)
 
         let mapper = InboxNoteMapper(siteID: siteID)
 

@@ -183,7 +183,9 @@ private extension MockNetwork {
     ///
     private func path(for request: URLRequestConvertible) -> String {
         switch request {
-        case let request as AuthenticatedRequest:
+        case let request as AuthenticatedDotcomRequest:
+            return path(for: request.request)
+        case let request as AuthenticatedRESTRequest:
             return path(for: request.request)
         case let request as UnauthenticatedRequest:
             return path(for: request.request)

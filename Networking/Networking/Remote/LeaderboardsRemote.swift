@@ -30,7 +30,12 @@ public class LeaderboardsRemote: Remote {
             ParameterKeys.forceRefresh: forceRefresh
         ]
 
-        let request = JetpackRequest(wooApiVersion: .wcAnalytics, method: .get, siteID: siteID, path: Constants.path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Constants.path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = LeaderboardListMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -62,7 +67,12 @@ public class LeaderboardsRemote: Remote {
             ParameterKeys.forceRefresh: forceRefresh
         ]
 
-        let request = JetpackRequest(wooApiVersion: .wcAnalytics, method: .get, siteID: siteID, path: Constants.pathDeprecated, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Constants.pathDeprecated,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = LeaderboardListMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }

@@ -75,6 +75,12 @@ extension WooAnalyticsEvent {
         case orderCreation = "order_creation"
         /// Shown in beta feature banner for coupon management.
         case couponManagement = "coupon_management"
+        /// Shown in IPP banner for eligible merchants with no IPP transactions.
+        case inPersonPaymentsCashOnDeliveryBanner
+        /// Shown in IPP banner for eligible merchants with a few IPP transactions.
+        case inPersonPaymentsFirstTransactionBanner
+        /// Shown in IPP banner for eligible merchants with a significant number of IPP transactions.
+        case inPersonPaymentsPowerUsersBanner
     }
 
     /// The action performed on the survey screen.
@@ -223,6 +229,7 @@ extension WooAnalyticsEvent {
             static let serverTime = "time"
             static let errorDescription = "error_description"
             static let field = "field"
+            static let variationsCount = "variations_count"
         }
 
         enum BulkUpdateField: String {
@@ -310,6 +317,26 @@ extension WooAnalyticsEvent {
         static func bulkUpdateFieldFailed(field: BulkUpdateField, error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationBulkUpdateFieldFail, properties: [Keys.field: field.rawValue], error: error)
         }
+
+        static func productVariationGenerationRequested() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationRequested, properties: [:])
+        }
+
+        static func productVariationGenerationConfirmed(count: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationConfirmed, properties: [Keys.variationsCount: count])
+        }
+
+        static func productVariationGenerationLimitReached(count: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationLimitReached, properties: [Keys.variationsCount: count])
+        }
+
+        static func productVariationGenerationSuccess() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationSuccess, properties: [:])
+        }
+
+        static func productVariationGenerationFailure() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationGenerationFailure, properties: [:])
+        }
     }
 }
 
@@ -386,6 +413,10 @@ extension WooAnalyticsEvent {
             case creation
             case editing
             case list
+        }
+
+        enum GlobalKeys {
+            static let millisecondsSinceOrderAddNew = "milliseconds_since_order_add_new"
         }
 
         private enum Keys {
@@ -490,8 +521,14 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderCreationSuccess() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderCreationSuccess, properties: [:])
+        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [:]
+
+            if let lapseSinceLastOrderAddNew = millisecondsSinceSinceOrderAddNew {
+                properties[GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            }
+
+            return WooAnalyticsEvent(statName: .orderCreationSuccess, properties: properties)
         }
 
         static func orderCreationFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
@@ -575,6 +612,52 @@ extension WooAnalyticsEvent {
 
     static func featureAnnouncementShown(source: Source) -> WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .featureAnnouncementShown, properties: [Source.key: source.rawValue])
+    }
+}
+
+// MARK: - InPersonPayments Feedback Banner
+extension WooAnalyticsEvent {
+    enum InPersonPaymentsFeedbackBanner {
+        /// Possible sources for the Feedback Banner
+        ///
+        enum Source: String {
+            case orderList = "order_list"
+        }
+
+        /// Keys for the Feedback Banner properties
+        ///
+        private enum Keys {
+            static let campaign = "campaign"
+            static let source = "source"
+            static let remindLater = "remind_later"
+        }
+
+        static func shown(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .inPersonPaymentsBannerShown,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
+                              ])
+        }
+
+        static func ctaTapped(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .inPersonPaymentsBannerTapped,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
+                              ])
+        }
+
+        static func dismissed(source: Source,
+                              campaign: FeatureAnnouncementCampaign,
+                              remindLater: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .inPersonPaymentsBannerDismissed,
+                              properties: [
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue,
+                                Keys.remindLater: remindLater
+                              ])
+        }
     }
 }
 
@@ -817,9 +900,15 @@ extension WooAnalyticsEvent {
                                                                           Keys.source: source.rawValue])
         }
 
-        static func paymentsFlowCollect(flow: Flow, method: PaymentMethod) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .paymentsFlowCollect, properties: [Keys.flow: flow.rawValue,
-                                                                           Keys.paymentMethod: method.rawValue])
+        static func paymentsFlowCollect(flow: Flow, method: PaymentMethod, millisecondsSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
+                              Keys.paymentMethod: method.rawValue]
+
+            if let lapseSinceLastOrderAddNew = millisecondsSinceOrderAddNew {
+                properties[Orders.GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            }
+
+            return WooAnalyticsEvent(statName: .paymentsFlowCollect, properties: properties)
         }
     }
 }
@@ -875,12 +964,77 @@ extension WooAnalyticsEvent {
             static let softwareUpdateType = "software_update_type"
             static let source = "source"
             static let enabled = "enabled"
+            static let cancellationSource = "cancellation_source"
+            static let millisecondsSinceCardCollectPaymentFlow = "milliseconds_since_card_collect_payment_flow"
         }
 
         static let unknownGatewayID = "unknown"
 
         static func gatewayID(forGatewayID gatewayID: String?) -> String {
             gatewayID ?? unknownGatewayID
+        }
+
+        /// Tracked when we ask the user to choose between Built In and Bluetooth readers
+        /// at the start of the connection flow
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderSelectTypeShown(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSelectTypeShown,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                              ]
+            )
+        }
+
+        /// Tracked when the user to chooses the Built In reader
+        /// at the start of the connection flow
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderSelectTypeBuiltInTapped(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSelectTypeBuiltInTapped,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                              ]
+            )
+        }
+
+        /// Tracked when the user to chooses the Bluetooth reader
+        /// at the start of the connection flow
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderSelectTypeBluetoothTapped(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSelectTypeBluetoothTapped,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                              ]
+            )
+        }
+
+        /// Tracked when we automatically disconnect a Built In reader, when Manage Card Reader is opened
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func manageCardReadersBuiltInReaderAutoDisconnect(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .manageCardReadersBuiltInReaderAutoDisconnect,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                              ]
+            )
         }
 
         /// Tracked when card reader discovery fails
@@ -1150,14 +1304,32 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func collectPaymentCanceled(forGatewayID: String?, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
+        static func collectPaymentCanceled(forGatewayID: String?,
+                                           countryCode: String,
+                                           cardReaderModel: String,
+                                           cancellationSource: CancellationSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentCanceled,
                               properties: [
                                 Keys.cardReaderModel: cardReaderModel,
                                 Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.cancellationSource: cancellationSource.rawValue
                               ]
             )
+        }
+
+        enum CancellationSource: String {
+            case appleTOSAcceptance = "apple_tap_to_pay_terms_acceptance"
+            case reader = "card_reader"
+            case selectReaderType = "preflight_select_reader_type"
+            case searchingForReader = "searching_for_reader"
+            case foundReader = "found_reader"
+            case foundSeveralReaders = "found_several_readers"
+            case paymentPreparingReader = "payment_preparing_reader"
+            case paymentWaitingForInput = "payment_waiting_for_input"
+            case connectionError = "connection_error"
+            case readerSoftwareUpdate = "reader_software_update"
+            case other = "unknown"
         }
 
         /// Tracked when payment collection succeeds
@@ -1171,14 +1343,26 @@ extension WooAnalyticsEvent {
         static func collectPaymentSuccess(forGatewayID: String?,
                                           countryCode: String,
                                           paymentMethod: PaymentMethod,
-                                          cardReaderModel: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentSuccess,
-                              properties: [
-                                Keys.cardReaderModel: cardReaderModel,
-                                Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                                Keys.paymentMethodType: paymentMethod.analyticsValue
-                              ]
+                                          cardReaderModel: String,
+                                          millisecondsSinceOrderAddNew: Int64?,
+                                          millisecondsSinceCardPaymentStarted: Int64?) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Keys.cardReaderModel: cardReaderModel,
+                Keys.countryCode: countryCode,
+                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                Keys.paymentMethodType: paymentMethod.analyticsValue
+              ]
+
+            if let lapseSinceLastOrderAddNew = millisecondsSinceOrderAddNew {
+                properties[Orders.GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            }
+
+            if let timeIntervalSinceCardCollectPaymentFlow = millisecondsSinceCardPaymentStarted {
+                properties[Keys.millisecondsSinceCardCollectPaymentFlow] = timeIntervalSinceCardCollectPaymentFlow
+            }
+
+            return WooAnalyticsEvent(statName: .collectPaymentSuccess,
+                              properties: properties
             )
         }
 
@@ -1196,7 +1380,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: cardReaderModel,
                                 Keys.countryCode: countryCode,
-                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
+                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID)
                               ])
         }
 
@@ -1774,6 +1958,44 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Products List
+//
+extension WooAnalyticsEvent {
+    enum ProductsList {
+        enum Keys: String {
+            case property
+            case selectedProductsCount = "selected_products_count"
+        }
+
+        enum BulkUpdateField: String {
+            case price
+            case status
+        }
+
+        static func bulkUpdateRequested(field: BulkUpdateField, selectedProductsCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateRequested, properties: [Keys.property.rawValue: field.rawValue,
+                                                                                      Keys.selectedProductsCount.rawValue: Int64(selectedProductsCount)])
+        }
+
+        static func bulkUpdateConfirmed(field: BulkUpdateField, selectedProductsCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateConfirmed, properties: [Keys.property.rawValue: field.rawValue,
+                                                                                      Keys.selectedProductsCount.rawValue: Int64(selectedProductsCount)])
+        }
+
+        static func bulkUpdateSuccess(field: BulkUpdateField) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateSuccess, properties: [Keys.property.rawValue: field.rawValue])
+        }
+
+        static func bulkUpdateFailure(field: BulkUpdateField) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateFailure, properties: [Keys.property.rawValue: field.rawValue])
+        }
+
+        static func bulkUpdateSelectAllTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListBulkUpdateSelectAllTapped, properties: [:])
+        }
+    }
+}
+
 // MARK: - Analytics Hub
 //
 extension WooAnalyticsEvent {
@@ -1809,6 +2031,67 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .analyticsHubDateRangeSelectionFailed, properties: [Keys.option.rawValue: option.tracksIdentifier,
                                                                                             Keys.calendar.rawValue: Locale.current.calendar.debugDescription,
                                                                                             Keys.timezone.rawValue: TimeZone.current.debugDescription])
+        }
+    }
+}
+
+// MARK: - REST API Login
+//
+extension WooAnalyticsEvent {
+    enum Login {
+        enum Key: String {
+            case step
+            case currentRoles = "current_roles"
+            case exists
+            case hasWordPress = "is_wordpress"
+            case isWPCom = "is_wp_com"
+            case isJetpackInstalled = "has_jetpack"
+            case isJetpackActive = "is_jetpack_active"
+            case isJetpackConnected = "is_jetpack_connected"
+            case urlAfterRedirects = "url_after_redirects"
+        }
+
+        enum LoginSiteCredentialStep: String {
+            case authentication
+            case applicationPasswordGeneration = "application_password_generation"
+            case wooStatus = "woo_status"
+            case userRole = "user_role"
+        }
+
+        /// Tracks when the user attempts to log in with insufficient roles.
+        ///
+        static func insufficientRole(currentRoles: [String]) -> WooAnalyticsEvent {
+            let roles = String(currentRoles.sorted().joined(by: ","))
+            return WooAnalyticsEvent(statName: .loginInsufficientRole,
+                                     properties: [Key.currentRoles.rawValue: roles])
+        }
+
+        /// Tracks when the login with site credentials failed.
+        ///
+        static func siteCredentialFailed(step: LoginSiteCredentialStep, error: Error?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsFailed,
+                              properties: [Key.step.rawValue: step.rawValue],
+                              error: error)
+        }
+
+        /// Tracks when site info is fetched during site address login.
+        ///
+        static func siteInfoFetched(exists: Bool,
+                                    hasWordPress: Bool,
+                                    isWPCom: Bool,
+                                    isJetpackInstalled: Bool,
+                                    isJetpackActive: Bool,
+                                    isJetpackConnected: Bool,
+                                    urlAfterRedirects: String) -> WooAnalyticsEvent {
+            .init(statName: .loginSiteAddressSiteInfoFetched, properties: [
+                Key.exists.rawValue: exists,
+                Key.hasWordPress.rawValue: hasWordPress,
+                Key.isWPCom.rawValue: isWPCom,
+                Key.isJetpackInstalled.rawValue: isJetpackInstalled,
+                Key.isJetpackActive.rawValue: isJetpackActive,
+                Key.isJetpackConnected.rawValue: isJetpackConnected,
+                Key.urlAfterRedirects.rawValue: urlAfterRedirects
+            ])
         }
     }
 }

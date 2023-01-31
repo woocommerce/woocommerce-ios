@@ -1,1 +1,1 @@
-Bonne nouvelle ! Nous avons ajouté une nouvelle section d’analyses à l’application. Cliquez simplement sur le bouton En savoir plus sous les statistiques de la boutique pour obtenir plus d’informations sur les revenus et les commandes. Ce n’est pas tout : d’autres mises à jour sont à venir dans les prochaines semaines !
+Il est maintenant possible de mettre à jour de façon groupée l’état et le prix des produits ! Il suffit d’accéder à l’onglet « Produits » et de cliquer sur l’icône de sélection multiple pour essayer.

@@ -423,28 +423,32 @@ final class RemoteTests: XCTestCase {
         XCTAssertNotNil(result)
     }
 
-    /// Verifies that WordPressOrg request parses WordPressApiError
+    /// Verifies that RESTRequest request doesn't parse WordPressApiError
     ///
-    func test_wordpress_org_request_parses_wordpress_api_error() async throws {
+    func test_wordpress_org_request_does_not_parse_wordpress_api_error() async throws {
         // Given
         let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
-        let request = WordPressOrgRequest(baseURL: "https://example.com", method: .get, path: "mock")
+        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "mock")
 
-        network.simulateResponse(requestUrlSuffix: "mock", filename: "error-wp-rest-forbidden")
+        network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
 
-        await assertThrowsError({ _ = try await remote.enqueue(request, mapper: mapper)}, errorAssert: { $0 is WordPressApiError })
+        // When
+        let result = try await remote.enqueue(request, mapper: mapper)
+
+        // Then
+        XCTAssertNotNil(result)
     }
 
-    /// Verifies that WordPressOrg request doesn't parse DotcomError
+    /// Verifies that RESTRequest request doesn't parse DotcomError
     ///
     func test_wordpress_org_request_does_not_parse_dotcom_error() async throws {
         // Given
         let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
-        let request = WordPressOrgRequest(baseURL: "https://example.com", method: .get, path: "mock")
+        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "mock")
 
         network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
 

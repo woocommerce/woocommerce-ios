@@ -1,0 +1,52 @@
+[
+    {
+        "id": 2260,
+        "date_created": "2018-06-23T12:05:55",
+        "date_created_gmt": "2018-06-23T16:05:55",
+        "note": "This order is going to be a problem.",
+        "customer_note": false,
+        "author": "someadmin",
+        "_links": {
+            "self": [
+                {
+                    "href": "https:\/\/jamosova3.mystagingwebsite.com\/wp-json\/wc\/v2\/orders\/1044\/notes\/2260"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https:\/\/jamosova3.mystagingwebsite.com\/wp-json\/wc\/v2\/orders\/1044\/notes"
+                }
+            ],
+            "up": [
+                {
+                    "href": "https:\/\/jamosova3.mystagingwebsite.com\/wp-json\/wc\/v2\/orders\/1044"
+                }
+            ]
+        }
+    },
+    {
+        "id": 2261,
+        "date_created": "2018-06-23T13:06:55",
+        "date_created_gmt": "2018-06-23T17:06:55",
+        "note": "I love your products!",
+        "customer_note": true,
+        "author": "someuser",
+        "_links": {
+            "self": [
+                {
+                    "href": "https:\/\/jamosova3.mystagingwebsite.com\/wp-json\/wc\/v2\/orders\/1044\/notes\/2261"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https:\/\/jamosova3.mystagingwebsite.com\/wp-json\/wc\/v2\/orders\/1044\/notes"
+                }
+            ],
+            "up": [
+                {
+                    "href": "https:\/\/jamosova3.mystagingwebsite.com\/wp-json\/wc\/v2\/orders\/1044"
+                }
+            ]
+        }
+    }
+]

@@ -40,4 +40,8 @@ public struct MockSessionManager: SessionManagerProtocol {
     public func reset() {
         // Do nothing
     }
+
+    public func deleteApplicationPassword() {
+        // Do nothing
+    }
 }

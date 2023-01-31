@@ -1,6 +1,18 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 12.1
+This release includes a few bug fixes and improvements to products and in person payments. Please continue to send us feedback – we are listening!
+
+## 12.0
+It's now possible to bulk update product status and prices! Simply go to the Products tab and click on the multi select icon on the top to try it out. 
+
+## 11.9
+Exciting news! It's possible to generate every variation combinations from your attributes. Please try it out and share your feedback!
+
+## 11.8
+You’ll notice some nice visual changes to the look of the app! Take a look and please share your feedback – more updates to come in the next few weeks!
+
 ## 11.7
 Did you know we've added a new analytics section? It's now possible to select custom date ranges when viewing your stats! Simply click on the See More button under the store stats to check it out.
 

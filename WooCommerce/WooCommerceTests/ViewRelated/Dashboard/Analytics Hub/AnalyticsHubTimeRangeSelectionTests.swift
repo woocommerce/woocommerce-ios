@@ -3,12 +3,12 @@ import XCTest
 
 final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
     private var testTimezone: TimeZone = {
-        TimeZone(abbreviation: "UTC") ?? TimeZone.current
+        TimeZone(abbreviation: "PDT") ?? TimeZone.current
     }()
 
     private var testCalendar: Calendar = {
         var calendar = Calendar(identifier: .iso8601)
-        calendar.timeZone = TimeZone(abbreviation: "UTC") ?? TimeZone.current
+        calendar.timeZone = TimeZone(abbreviation: "PDT") ?? TimeZone.current
         return calendar
     }()
 
@@ -26,7 +26,7 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
         // Then
         XCTAssertEqual(currentTimeRange.start, startDate(from: "2020-01-01"))
-        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2020-02-29"))
+        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2020-02-29").endOfYear(timezone: testTimezone))
 
         XCTAssertEqual(previousTimeRange.start, startDate(from: "2019-01-01"))
         XCTAssertEqual(previousTimeRange.end, currentDate(from: "2019-02-28"))
@@ -66,7 +66,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
         // Then
         XCTAssertEqual(currentTimeRange.start, startDate(from: "2022-01-01"))
-        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2022-02-15"))
+        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2022-02-15")
+            .endOfQuarter(timezone: testTimezone, calendar: testCalendar))
 
         XCTAssertEqual(previousTimeRange.start, startDate(from: "2021-10-01"))
         XCTAssertEqual(previousTimeRange.end, currentDate(from: "2021-11-15"))
@@ -106,7 +107,7 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
         // Then
         XCTAssertEqual(currentTimeRange.start, startDate(from: "2010-07-01"))
-        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2010-07-31"))
+        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2010-07-31").endOfMonth(timezone: testTimezone))
 
         XCTAssertEqual(previousTimeRange.start, startDate(from: "2010-06-01"))
         XCTAssertEqual(previousTimeRange.end, currentDate(from: "2010-06-30"))
@@ -146,7 +147,7 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
         // Then
         XCTAssertEqual(currentTimeRange.start, startDate(from: "2022-06-27"))
-        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2022-07-01"))
+        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2022-07-01").endOfWeek(timezone: testTimezone))
 
         XCTAssertEqual(previousTimeRange.start, startDate(from: "2022-06-20"))
         XCTAssertEqual(previousTimeRange.end, currentDate(from: "2022-06-24"))
@@ -186,7 +187,7 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
         // Then
         XCTAssertEqual(currentTimeRange.start, startDate(from: "2022-07-01"))
-        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2022-07-01"))
+        XCTAssertEqual(currentTimeRange.end, currentDate(from: "2022-07-01").endOfDay(timezone: testTimezone))
 
         XCTAssertEqual(previousTimeRange.start, startDate(from: "2022-06-30"))
         XCTAssertEqual(previousTimeRange.end, currentDate(from: "2022-06-30"))
@@ -280,7 +281,7 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         XCTAssertEqual(previousRangeDescription, "Oct 1 - Dec 31, 2021")
     }
 
-    func test_when_time_range_inits_with_monthToDate_then_generate_expected_descriptions() throws {
+    func test_when_time_range_inits_with_monthToDate_in_month_last_day_then_generate_expected_descriptions() throws {
         // Given
         let today = currentDate(from: "2022-07-31")
         let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .monthToDate,
@@ -295,6 +296,23 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         // Then
         XCTAssertEqual(currentRangeDescription, "Jul 1 - 31, 2022")
         XCTAssertEqual(previousRangeDescription, "Jun 1 - 30, 2022")
+    }
+
+    func test_when_time_range_inits_with_monthToDate_then_generate_expected_descriptions() throws {
+        // Given
+        let today = currentDate(from: "2022-07-20")
+        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .monthToDate,
+                                                       currentDate: today,
+                                                       timezone: testTimezone,
+                                                       calendar: testCalendar)
+
+        // When
+        let currentRangeDescription = timeRange.currentRangeDescription
+        let previousRangeDescription = timeRange.previousRangeDescription
+
+        // Then
+        XCTAssertEqual(currentRangeDescription, "Jul 1 - 20, 2022")
+        XCTAssertEqual(previousRangeDescription, "Jun 1 - 20, 2022")
     }
 
     func test_when_time_range_inits_with_lastMonth_then_generate_expected_descriptions() throws {

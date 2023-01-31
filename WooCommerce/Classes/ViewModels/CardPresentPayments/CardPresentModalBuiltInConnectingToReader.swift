@@ -3,14 +3,14 @@ import UIKit
 /// Modal presented when we are connecting to a reader
 ///
 final class CardPresentModalBuiltInConnectingToReader: CardPresentPaymentsModalViewModel {
-    let textMode: PaymentsModalTextMode = .reducedBottomInfo
+    let textMode: PaymentsModalTextMode = .fullInfo
     let actionsMode: PaymentsModalActionsMode = .none
 
     let topTitle: String = Localization.title
 
     var topSubtitle: String?
 
-    let image: UIImage = .tempBuiltInReaderCheck
+    let image: UIImage = .preparingBuiltInReader
 
     let primaryButtonTitle: String? = nil
 
@@ -18,9 +18,9 @@ final class CardPresentModalBuiltInConnectingToReader: CardPresentPaymentsModalV
 
     let auxiliaryButtonTitle: String? = nil
 
-    let bottomTitle: String? = Localization.instruction
+    let bottomTitle: String? = nil
 
-    var bottomSubtitle: String?
+    var bottomSubtitle: String? = Localization.instruction
 
     var accessibilityLabel: String? {
         return topTitle + Localization.instruction
@@ -38,7 +38,7 @@ final class CardPresentModalBuiltInConnectingToReader: CardPresentPaymentsModalV
 private extension CardPresentModalBuiltInConnectingToReader {
     enum Localization {
         static let title = NSLocalizedString(
-            "Preparing iPhone card reader...",
+            "Preparing iPhone card reader",
             comment: "Title label for modal dialog that appears when connecting to a built in card reader"
         )
 

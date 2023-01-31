@@ -84,12 +84,19 @@ extension UIFont {
         return UIFontMetrics(forTextStyle: style).scaledFont(for: noticonFont)
     }
 
-    /// Returns a UIFont instance for the specified Style + Weight.
+    /// Returns a UIFont instance for the specified Style + Weight + Max Size.
     ///
-    class func font(forStyle style: UIFont.TextStyle, weight: UIFont.Weight) -> UIFont {
+    class func font(forStyle style: UIFont.TextStyle, weight: UIFont.Weight, maxFontSize: CGFloat? = nil) -> UIFont {
         let descriptor = UIFontDescriptor
             .preferredFontDescriptor(withTextStyle: style)
             .addingAttributes([.traits: [UIFontDescriptor.TraitKey.weight: weight]])
+
+        // Limit the font size if needed
+        if let maxFontSize, descriptor.pointSize > maxFontSize {
+            return UIFont(descriptor: descriptor, size: maxFontSize)
+        }
+
+        // Return font without a predefined size.
         return UIFont(descriptor: descriptor, size: 0)
     }
 

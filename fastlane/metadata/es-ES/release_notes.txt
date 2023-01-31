@@ -1,1 +1,1 @@
-¡Buenas noticias! Hemos añadido una nueva sección de estadísticas a la aplicación. Para consultar información más detallada sobre ingresos y pedidos, haz clic en el botón para ver más, que encontrarás debajo de las estadísticas de la tienda. Pero eso no es todo, y en las próximas semanas llegarán aún más novedades.
+¡Ahora puedes actualizar precios y estados de producto en lote! Para probar esta función, solo tienes que ir a la pestaña Productos y hacer clic en el icono de selección múltiple de la parte superior.

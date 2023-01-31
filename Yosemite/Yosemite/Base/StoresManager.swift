@@ -45,6 +45,10 @@ public protocol StoresManager {
     ///
     var isAuthenticated: Bool { get }
 
+    /// Indicates if the StoresManager is currently authenticated with site credentials only.
+    ///
+    var isAuthenticatedWithoutWPCom: Bool { get }
+
     /// Publishes signal that indicates if the user is currently logged in with credentials.
     ///
     var isLoggedInPublisher: AnyPublisher<Bool, Never> { get }

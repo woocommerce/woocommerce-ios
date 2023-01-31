@@ -107,7 +107,7 @@ public extension DateFormatter {
         /// Date formatter used for creating the properly-formatted date range info. Typically
         /// used when setting the end date on `AnalyticsHubTimeRangeGenerator`.
         ///
-        public static func createAnalyticsHubDayMonthYearFormatter(timezone: TimeZone) -> DateFormatter {
+        public static func createDayMonthYearFormatter(timezone: TimeZone) -> DateFormatter {
             let formatter = DateFormatter()
             formatter.timeZone = timezone
             formatter.dateFormat = "MMM d, yyyy"
@@ -117,7 +117,7 @@ public extension DateFormatter {
         /// Date formatter used for creating the properly-formatted date range info. Typically
         /// used when setting the end date of a same-month range on `AnalyticsHubTimeRangeGenerator`.
         ///
-        public static func createAnalyticsHubDayYearFormatter(timezone: TimeZone) -> DateFormatter {
+        public static func createDayYearFormatter(timezone: TimeZone) -> DateFormatter {
             let formatter = DateFormatter()
             formatter.timeZone = timezone
             formatter.dateFormat = "d, yyyy"
@@ -127,7 +127,7 @@ public extension DateFormatter {
         /// Date formatter used for creating the properly-formatted date range info. Typically
         /// used when setting the start date on `AnalyticsHubTimeRangeGenerator`.
         ///
-        public static func createAnalyticsHubDayMonthFormatter(timezone: TimeZone) -> DateFormatter {
+        public static func createDayMonthFormatter(timezone: TimeZone) -> DateFormatter {
             let formatter = DateFormatter()
             formatter.timeZone = timezone
             formatter.dateFormat = "MMM d"

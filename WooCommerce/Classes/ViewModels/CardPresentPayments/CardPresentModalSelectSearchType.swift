@@ -10,7 +10,7 @@ final class CardPresentModalSelectSearchType: CardPresentPaymentsModalViewModel 
 
     var topSubtitle: String? = nil
 
-    var image: UIImage = .paymentsLoading
+    var image: UIImage = .cardPaymentsSelectReaderType
 
     var primaryButtonTitle: String?
 
@@ -64,7 +64,7 @@ private extension CardPresentModalSelectSearchType {
             "reader type. Only shown when supported on their device.")
 
         static let description = NSLocalizedString(
-            "Your iPhone can be used as a card reader, or you can connect to an external reader via bluetooth.",
+            "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth.",
             comment: "The description on the alert shown when connecting a card reader, asking the user to choose a " +
             "reader type. Only shown when supported on their device.")
 

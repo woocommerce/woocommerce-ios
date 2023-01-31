@@ -1,1 +1,1 @@
-Did you know we've added a new analytics section? It's now possible to select custom date ranges when viewing your stats! Simply click on the See More button under the store stats to check it out.
+This release includes a few bug fixes and improvements to products and in person payments. Please continue to send us feedback – we are listening!

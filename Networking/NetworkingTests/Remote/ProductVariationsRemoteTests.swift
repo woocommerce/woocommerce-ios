@@ -208,6 +208,25 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(result).isFailure)
     }
 
+    func test_create_product_variations_returns_parsed_variations() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/batch", filename: "product-variations-bulk-create")
+
+        // When
+        let result = waitFor { promise in
+            remote.createProductVariations(siteID: self.sampleSiteID, productID: self.sampleProductID, productVariations: []) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let sampleProductVariationID: Int64 = 2783
+        let expectedVariations = [sampleProductVariation(siteID: sampleSiteID, productID: sampleProductID, id: sampleProductVariationID)]
+        let createdVariations = try result.get()
+        XCTAssertEqual(createdVariations, expectedVariations)
+    }
+
     // MARK: - Update ProductVariation
 
     /// Verifies that updateProductVariation properly parses the `product-variation-update` sample response.

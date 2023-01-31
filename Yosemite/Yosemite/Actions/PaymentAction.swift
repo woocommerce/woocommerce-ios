@@ -10,6 +10,13 @@ public enum PaymentAction: Action {
     case loadPlan(productID: Int64,
                   completion: (Result<WPComPlan, Error>) -> Void)
 
+    /// Loads a site's current WPCOM plan.
+    /// - Parameters:
+    ///   - siteID: The ID of a site.
+    ///   - completion: Invoked when the site's current plan is loaded.
+    case loadSiteCurrentPlan(siteID: Int64,
+                             completion: (Result<WPComSitePlan, Error>) -> Void)
+
     /// Creates a cart with a WPCOM plan.
     /// - Parameters:
     ///   - productID: The ID of the WPCOM plan product. It is of string type to integrate with `InAppPurchasesForWPComPlansProtocol`.

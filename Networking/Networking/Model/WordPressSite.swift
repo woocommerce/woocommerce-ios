@@ -24,12 +24,49 @@ public struct WordPressSite: Decodable, Equatable {
     ///
     public let gmtOffset: String
 
-    public init(name: String, description: String, url: String, timezone: String, gmtOffset: String) {
+    /// Namespaces supported by the site.
+    ///
+    public let namespaces: [String]
+
+    /// Whether WooCommerce is one of the active plugins in the site.
+    ///
+    public var isWooCommerceActive: Bool {
+        namespaces.contains { $0.hasPrefix(Constants.wooNameSpace) }
+    }
+
+    public init(name: String, description: String, url: String, timezone: String, gmtOffset: String, namespaces: [String]) {
         self.name = name
         self.description = description
         self.url = url
         self.timezone = timezone
         self.gmtOffset = gmtOffset
+        self.namespaces = namespaces
+    }
+
+    /// Decodable Conformance.
+    ///
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let name = try container.decode(String.self, forKey: .name)
+        let description = try container.decode(String.self, forKey: .description)
+        let url = try container.decode(String.self, forKey: .url)
+        let timezone = try container.decode(String.self, forKey: .timezone)
+        let gmtOffset: String = try {
+            do {
+                return try container.decode(String.self, forKey: .gmtOffset)
+            } catch {
+                let double = try container.decode(Double.self, forKey: .gmtOffset)
+                return double.description
+            }
+        }()
+        let namespaces = try container.decode([String].self, forKey: .namespaces)
+
+        self.init(name: name,
+                  description: description,
+                  url: url,
+                  timezone: timezone,
+                  gmtOffset: gmtOffset,
+                  namespaces: namespaces)
     }
 }
 
@@ -47,7 +84,7 @@ public extension WordPressSite {
               plan: "",
               isJetpackThePluginInstalled: false,
               isJetpackConnected: false,
-              isWooCommerceActive: true, // we expect to only call this after checking Woo is active
+              isWooCommerceActive: isWooCommerceActive,
               isWordPressComStore: false,
               jetpackConnectionActivePlugins: [],
               timezone: timezone,
@@ -64,10 +101,12 @@ private extension WordPressSite {
         case url
         case timezone = "timezone_string"
         case gmtOffset = "gmt_offset"
+        case namespaces
     }
 
     enum Constants {
-        static let adminPath = "/wp-admin"
+        static let adminPath = "/wp-admin/"
         static let loginPath = "/wp-login.php"
+        static let wooNameSpace = "wc/"
     }
 }

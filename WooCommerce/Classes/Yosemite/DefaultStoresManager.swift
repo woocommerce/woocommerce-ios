@@ -27,6 +27,14 @@ class DefaultStoresManager: StoresManager {
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
 
+    /// Observes application password generation failure notification
+    ///
+    private var applicationPasswordGenerationFailureObserver: NSObjectProtocol?
+
+    /// NotificationCenter
+    ///
+    private let notificationCenter: NotificationCenter
+
     /// SessionManager: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
     private(set) var sessionManager: SessionManagerProtocol {
@@ -61,6 +69,15 @@ class DefaultStoresManager: StoresManager {
         return state is AuthenticatedState
     }
 
+    /// Indicates if the StoresManager is currently authenticated with site credentials only.
+    ///
+    var isAuthenticatedWithoutWPCom: Bool {
+        if case .wporg = sessionManager.defaultCredentials {
+            return true
+        }
+        return false
+    }
+
     @Published private var isLoggedIn: Bool = false
 
     var isLoggedInPublisher: AnyPublisher<Bool, Never> {
@@ -92,9 +109,11 @@ class DefaultStoresManager: StoresManager {
 
     /// Designated Initializer
     ///
-    init(sessionManager: SessionManagerProtocol) {
+    init(sessionManager: SessionManagerProtocol,
+         notificationCenter: NotificationCenter = .default) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
+        self.notificationCenter = notificationCenter
 
         isLoggedIn = isAuthenticated
 
@@ -123,6 +142,8 @@ class DefaultStoresManager: StoresManager {
     func authenticate(credentials: Credentials) -> StoresManager {
         state = AuthenticatedState(credentials: credentials)
         sessionManager.defaultCredentials = credentials
+
+        listenToApplicationPasswordGenerationFailureNotification()
 
         return self
     }
@@ -157,6 +178,7 @@ class DefaultStoresManager: StoresManager {
     /// Prepares for changing the selected store and remains Authenticated.
     ///
     func removeDefaultStore() {
+        sessionManager.deleteApplicationPassword()
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
         ServiceLocator.pushNotesManager.unregisterForRemoteNotifications()
@@ -166,6 +188,8 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func deauthenticate() -> StoresManager {
+        applicationPasswordGenerationFailureObserver = nil
+
         let resetAction = CardPresentPaymentAction.reset
         ServiceLocator.stores.dispatch(resetAction)
 
@@ -341,14 +365,18 @@ private extension DefaultStoresManager {
         }
         dispatch(productSettingsAction)
 
-        group.enter()
-        let sitePlanAction = AccountAction.synchronizeSitePlan(siteID: siteID) { result in
-            if case let .failure(error) = result {
-                errors.append(error)
+        /// skips synchronizing site plan if logged in with WPOrg credentials
+        /// because this requires a WPCom endpoint.
+        if isAuthenticatedWithoutWPCom {
+            group.enter()
+            let sitePlanAction = AccountAction.synchronizeSitePlan(siteID: siteID) { result in
+                if case let .failure(error) = result {
+                    errors.append(error)
+                }
+                group.leave()
             }
-            group.leave()
+            dispatch(sitePlanAction)
         }
-        dispatch(sitePlanAction)
 
         group.notify(queue: .main) {
             if errors.isEmpty {
@@ -567,6 +595,16 @@ private extension DefaultStoresManager {
 
         // Reload widgets UI
         WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    /// Deauthenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
+    ///
+    func listenToApplicationPasswordGenerationFailureNotification() {
+        applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
+                                                                                      object: nil,
+                                                                                      queue: .main) { [weak self] note in
+            _ = self?.deauthenticate()
+        }
     }
 }
 

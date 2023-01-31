@@ -82,6 +82,12 @@ public enum WooAnalyticsStat: String {
     case loginInvalidEmailScreenViewed = "login_invalid_email_screen_viewed"
     case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
     case createAccountOnInvalidEmailScreenTapped = "create_account_on_invalid_email_screen"
+    case loginInsufficientRole = "login_insufficient_role"
+
+    // MARK: REST API login
+    //
+    case loginSiteAddressSiteInfoFetched = "login_site_address_site_info_fetched"
+    case loginSiteCredentialsFailed = "login_site_credentials_login_failed"
 
     // MARK: Site credentials
     //
@@ -182,6 +188,7 @@ public enum WooAnalyticsStat: String {
     case siteCreationStep = "site_creation_step"
     case siteCreationSitePreviewed = "site_creation_site_previewed"
     case siteCreationManageStoreTapped = "site_creation_store_management_opened"
+    case siteCreationProfilerData = "site_creation_profiler_data"
     case loginPrologueCreateSiteTapped = "login_prologue_create_site_tapped"
     case signupFormLoginTapped = "signup_login_button_tapped"
     case signupSubmitted = "signup_submitted"
@@ -234,6 +241,9 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Card Reader Connection Events
     //
+    case cardReaderSelectTypeShown = "card_present_select_reader_type_shown"
+    case cardReaderSelectTypeBuiltInTapped = "card_present_select_reader_type_built_in_tapped"
+    case cardReaderSelectTypeBluetoothTapped = "card_present_select_reader_type_bluetooth_tapped"
     case cardReaderDiscoveryTapped = "card_reader_discovery_tapped"
     case cardReaderDiscoveryFailed = "card_reader_discovery_failed"
     case cardReaderDiscoveredReader = "card_reader_discovery_reader_discovered"
@@ -241,6 +251,7 @@ public enum WooAnalyticsStat: String {
     case cardReaderConnectionFailed = "card_reader_connection_failed"
     case cardReaderConnectionSuccess = "card_reader_connection_success"
     case cardReaderDisconnectTapped = "card_reader_disconnect_tapped"
+    case manageCardReadersBuiltInReaderAutoDisconnect = "manage_card_readers_automatic_disconnect_built_in_reader"
 
     // MARK: Card Reader Software Update Events
     //
@@ -473,6 +484,14 @@ public enum WooAnalyticsStat: String {
     case productListAddProductTapped = "product_list_add_product_button_tapped"
     case productListClearFiltersTapped = "product_list_clear_filters_button_tapped"
 
+    // MARK: Product List Bulk Editing Events
+    //
+    case productListBulkUpdateRequested = "product_list_bulk_update_requested"
+    case productListBulkUpdateConfirmed = "product_list_bulk_update_confirmed"
+    case productListBulkUpdateSuccess = "product_list_bulk_update_success"
+    case productListBulkUpdateFailure = "product_list_bulk_update_failure"
+    case productListBulkUpdateSelectAllTapped = "product_list_bulk_update_select_all_tapped"
+
     // MARK: Add Product Events
     //
     case addProductCreationTypeSelected = "add_product_creation_type_selected"
@@ -672,6 +691,12 @@ public enum WooAnalyticsStat: String {
     case editProductVariationAttributeOptionsRowTapped = "edit_product_variation_attribute_options_row_tapped"
     case editProductVariationAttributeOptionsDoneButtonTapped = "edit_product_variation_attribute_options_done_button_tapped"
 
+    case productVariationGenerationRequested = "product_variation_generation_requested"
+    case productVariationGenerationLimitReached = "product_variation_generation_limit_reached"
+    case productVariationGenerationConfirmed = "product_variation_generation_confirmed"
+    case productVariationGenerationSuccess = "product_variation_generation_success"
+    case productVariationGenerationFailure = "product_variation_generation_failure"
+
     // MARK: What's New Component events
     //
     case featureAnnouncementShown = "feature_announcement_shown"
@@ -680,6 +705,11 @@ public enum WooAnalyticsStat: String {
     case featureCardShown = "feature_card_shown"
     case featureCardDismissed = "feature_card_dismissed"
     case featureCardCtaTapped = "feature_card_cta_tapped"
+
+    // MARK: In-Person Payments survey feedback events
+    case inPersonPaymentsBannerShown = "survey_banner_shown"
+    case inPersonPaymentsBannerTapped = "survey_banner_cta_tapped"
+    case inPersonPaymentsBannerDismissed = "survey_banner_dismissed"
 
     // MARK: Just In Time Messages events
     case justInTimeMessageCallToActionTapped = "jitm_cta_tapped"
@@ -787,6 +817,11 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Widgets
     case widgetTapped = "widget_tapped"
+
+    // MARK: Application password Events
+    case applicationPasswordsNewPasswordCreated = "application_passwords_new_password_created"
+    case applicationPasswordsGenerationFailed = "application_passwords_generation_failed"
+    case trackRestAPILoginExperimentVariation = "rest_api_login_experiment"
 }
 
 public extension WooAnalyticsStat {

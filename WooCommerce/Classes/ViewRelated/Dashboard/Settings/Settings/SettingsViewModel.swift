@@ -221,6 +221,10 @@ private extension SettingsViewModel {
         let storeSettingsSection: Section? = {
             var rows: [Row] = []
 
+            if featureFlagService.isFeatureFlagEnabled(.domainSettings) && stores.sessionManager.defaultSite?.isWordPressComStore == true {
+                rows.append(.domain)
+            }
+
             if stores.sessionManager.defaultSite?.isJetpackCPConnected == true {
                 rows.append(.installJetpack)
             }

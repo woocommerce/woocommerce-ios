@@ -15,18 +15,13 @@ public enum ABTest: String, CaseIterable {
     /// Experiment ref: pbxNRc-1S0-p2
     case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202212_v2"
 
-    /// A/B test to measure the sign-in success rate when only WPCom login is enabled.
-    /// Experiment ref: pbxNRc-27s-p2
-    ///
-    case abTestLoginWithWPComOnly = "woocommerceios_login_wpcom_only"
-
-    /// A/B test to measure the sign-in success rate when native Jetpack installation experience is enabled
-    /// Experiment ref: pbxNRc-29W-p2
-    ///
-    case nativeJetpackSetupFlow = "woocommerceios_login_jetpack_setup_flow_v2"
+    /// A/B test for the REST API project
+    /// Experiment ref: pbxNRc-2i4-p2
+    case applicationPasswordAuthentication = "woocommerceios_login_rest_api_project_202301_v2"
 
     /// Returns a variation for the given experiment
-    public var variation: Variation {
+    ///
+    var variation: Variation {
         ExPlat.shared?.experiment(rawValue) ?? .control
     }
 
@@ -35,9 +30,9 @@ public enum ABTest: String, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .aaTestLoggedIn, .nativeJetpackSetupFlow:
+        case .aaTestLoggedIn:
             return .loggedIn
-        case .aaTestLoggedOut, .abTestLoginWithWPComOnly:
+        case .aaTestLoggedOut, .applicationPasswordAuthentication:
             return .loggedOut
         case .null:
             return .none
@@ -73,8 +68,10 @@ public extension Variation {
         switch self {
         case .control:
             return "control"
-        case .treatment(let string):
-            return string.map { "treatment: \($0)" } ?? "treatment"
+        case .treatment:
+            return "treatment"
+        case .customTreatment(let name):
+            return "treatment: \(name)"
         }
     }
 }

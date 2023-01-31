@@ -25,6 +25,16 @@ final class ProductVariationsViewModel {
         useCase.generateVariation(onCompletion: onCompletion)
     }
 
+    /// Generates all missing variations for a product. Up to 100 variations.
+    /// Parameters:
+    /// - `Product`: Product on which we will be creating the variations
+    /// - `onStateChanged`: Closure invoked every time there is a significant state change in the generation process.
+    ///
+    func generateAllVariations(for product: Product, onStateChanged: @escaping (GenerateAllVariationsUseCase.State) -> Void) {
+        let useCase = GenerateAllVariationsUseCase(stores: stores)
+        useCase.generateAllVariations(for: product, onStateChanged: onStateChanged)
+    }
+
     /// Updates the internal `formType` to `edit` if  the given product exists remotely and previous formType was `.add`
     ///
     func updatedFormTypeIfNeeded(newProduct: Product) {

@@ -411,25 +411,25 @@ extension UnderlyingError: LocalizedError {
 
             // MARK: - Built-in reader errors
         case .passcodeNotEnabled:
-            return NSLocalizedString("Your device needs a lock screen passcode set to use the built-in card reader",
+            return NSLocalizedString("You need to set a lock screen passcode to use Tap to Pay on iPhone",
                                      comment: "Error message shown when the built-in reader cannot be used because " +
                                      "the device does not have a passcode set.")
         case .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn:
-            return NSLocalizedString("Please sign in to iCloud on this device, so you can use the built-in card reader",
+            return NSLocalizedString("Please sign in to iCloud on this device to use Tap to Pay on iPhone",
                                      comment: "Error message shown when the built-in reader cannot be used because " +
                                      "the device is not signed in to iCloud.")
         case .nfcDisabled:
-            return NSLocalizedString("The app could not enable the card reader, because the NFC chip is disabled. " +
+            return NSLocalizedString("The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. " +
                                      "Please contact support for more details.",
                                      comment: "Error message shown when the built-in reader cannot be used because " +
                                      "the device's NFC chipset has been disabled by a device management policy.")
         case .appleBuiltInReaderFailedToPrepare, .readerNotAccessibleInBackground:
-            return NSLocalizedString("There was an issue preparing the built in reader for payment – please try again.",
+            return NSLocalizedString("There was an issue preparing to use Tap to Pay on iPhone – please try again.",
                                      comment: "Error message shown when the built-in reader cannot be used because " +
                                      "there was some issue with the connection. Retryable.")
         case .appleBuiltInReaderTOSAcceptanceCanceled, .appleBuiltInReaderTOSNotYetAccepted:
-            return NSLocalizedString("Please try again, and accept Apple's Terms of Service, so you can use the " +
-                                     "built-in card reader",
+            return NSLocalizedString("Please try again, and accept Apple's Terms of Service, so you can use Tap to " +
+                                     "Pay on iPhone",
                                      comment: "Error message shown when the built-in reader cannot be used because " +
                                      "the merchant cancelled or did not complete the Terms of Service acceptance flow")
         case .appleBuiltInReaderTOSAcceptanceFailed:
@@ -439,7 +439,7 @@ extension UnderlyingError: LocalizedError {
                                      "the Terms of Service acceptance flow failed, possibly due to issues with " +
                                      "the Apple ID")
         case .appleBuiltInReaderMerchantBlocked, .appleBuiltInReaderInvalidMerchant, .appleBuiltInReaderDeviceBanned:
-            return NSLocalizedString("Please contact support – there was an issue connecting to the built-in reader",
+            return NSLocalizedString("Please contact support – there was an issue starting Tap to Pay on iPhone",
                                      comment: "Error message shown when the built-in reader cannot be used because " +
                                      "there is an issue with the merchant account or device")
         case .unsupportedMobileDeviceConfiguration:
@@ -449,17 +449,17 @@ extension UnderlyingError: LocalizedError {
                                      comment: "Error message shown when the built-in reader cannot be used because " +
                                      "the device does not meet minimum requirements.")
         case .commandNotAllowedDuringCall:
-            return NSLocalizedString("The built-in reader cannot be used during a phone call. Please try again after " +
-                                     "you finish your call",
+            return NSLocalizedString("Tap to Pay on iPhone cannot be used during a phone call. Please try again after " +
+                                     "you finish your call.",
                                      comment: "Error message shown when the built-in reader cannot be used because " +
                                      "there is a call in progress")
         case .invalidAmount:
-            return NSLocalizedString("The amount is not supported by the built in reader – please try a hardware " +
+            return NSLocalizedString("The amount is not supported for Tap to Pay on iPhone – please try a hardware " +
                                      "reader or another payment method.",
                                      comment: "Error message shown when the built-in reader cannot be used because " +
                                      "the amount for payment is not supported by the built in reader.")
         case .invalidCurrency:
-            return NSLocalizedString("The currency is not supported by the built in reader – please try a hardware " +
+            return NSLocalizedString("The currency is not supported for Tap to Pay on iPhone – please try a hardware " +
                                      "reader or another payment method.",
                                      comment: "Error message shown when the built-in reader cannot be used because " +
                                      "the currency for payment is not supported by the built in reader.")

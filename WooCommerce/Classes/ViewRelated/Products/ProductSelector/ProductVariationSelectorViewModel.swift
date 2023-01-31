@@ -182,20 +182,21 @@ extension ProductVariationSelectorViewModel: SyncingCoordinatorDelegate {
         let action = ProductVariationAction.synchronizeProductVariations(siteID: siteID,
                                                                          productID: productID,
                                                                          pageNumber: pageNumber,
-                                                                         pageSize: pageSize) { [weak self] error in
+                                                                         pageSize: pageSize) { [weak self] result in
             guard let self = self else { return }
 
-            if let error = error {
+            switch result {
+            case .success:
+                self.updateProductVariationsResultsController()
+            case .failure(let error):
                 self.notice = NoticeFactory.productVariationSyncNotice() { [weak self] in
                     self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
                 }
                 DDLogError("⛔️ Error synchronizing product variations during order creation: \(error)")
-            } else {
-                self.updateProductVariationsResultsController()
             }
 
             self.transitionToResultsUpdatedState()
-            onCompletion?(error == nil)
+            onCompletion?(result.isSuccess)
         }
         stores.dispatch(action)
     }

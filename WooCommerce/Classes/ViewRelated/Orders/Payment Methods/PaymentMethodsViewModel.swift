@@ -86,6 +86,8 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     private let flow: WooAnalyticsEvent.PaymentsFlow.Flow
 
+    private let orderDurationRecorder: OrderDurationRecorderProtocol
+
     /// Stored orders.
     /// We need to fetch this from our storage layer because we are only provide IDs as dependencies
     /// To keep previews/UIs decoupled from our business logic.
@@ -99,7 +101,7 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     /// Retains the use-case so it can perform all of its async tasks.
     ///
-    private var legacyCollectPaymentsUseCase: CollectOrderPaymentProtocol?
+    private var legacyCollectPaymentsUseCase: LegacyCollectOrderPaymentProtocol?
 
     private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
 
@@ -112,6 +114,8 @@ final class PaymentMethodsViewModel: ObservableObject {
               configuration: upsellCardReadersCampaign.configuration)
     }
 
+    private let isTapToPayOnIPhoneEnabled: Bool
+
     struct Dependencies {
         let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
         let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
@@ -119,13 +123,15 @@ final class PaymentMethodsViewModel: ObservableObject {
         let storage: StorageManagerType
         let analytics: Analytics
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+        let orderDurationRecorder: OrderDurationRecorderProtocol
 
         init(presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
              stores: StoresManager = ServiceLocator.stores,
              storage: StorageManagerType = ServiceLocator.storageManager,
              analytics: Analytics = ServiceLocator.analytics,
-             cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration? = nil) {
+             cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration? = nil,
+             orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared) {
             self.presentNoticeSubject = presentNoticeSubject
             self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
             self.stores = stores
@@ -133,6 +139,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             self.analytics = analytics
             let configuration = cardPresentPaymentsConfiguration ?? CardPresentConfigurationLoader(stores: stores).configuration
             self.cardPresentPaymentsConfiguration = configuration
+            self.orderDurationRecorder = orderDurationRecorder
         }
     }
 
@@ -141,12 +148,15 @@ final class PaymentMethodsViewModel: ObservableObject {
          paymentLink: URL? = nil,
          formattedTotal: String,
          flow: WooAnalyticsEvent.PaymentsFlow.Flow,
+         isTapToPayOnIPhoneEnabled: Bool = ServiceLocator.generalAppSettings.settings.isTapToPayOnIPhoneSwitchEnabled,
          dependencies: Dependencies = Dependencies()) {
         self.siteID = siteID
         self.orderID = orderID
         self.paymentLink = paymentLink
         self.formattedTotal = formattedTotal
         self.flow = flow
+        self.orderDurationRecorder = dependencies.orderDurationRecorder
+        self.isTapToPayOnIPhoneEnabled = isTapToPayOnIPhoneEnabled
         presentNoticeSubject = dependencies.presentNoticeSubject
         cardPresentPaymentsOnboardingPresenter = dependencies.cardPresentPaymentsOnboardingPresenter
         stores = dependencies.stores
@@ -199,20 +209,23 @@ final class PaymentMethodsViewModel: ObservableObject {
     /// - parameter useCase: Assign a custom useCase object for testing purposes. If not provided `CollectOrderPaymentUseCase` will be used.
     ///
     func collectPayment(on rootViewController: UIViewController?,
-                        useCase: CollectOrderPaymentProtocol? = nil,
-                        onSuccess: @escaping () -> ()) {
-        switch ServiceLocator.generalAppSettings.settings.isTapToPayOnIPhoneSwitchEnabled {
+                        useCase: LegacyCollectOrderPaymentProtocol? = nil,
+                        onSuccess: @escaping () -> (),
+                        onFailure: @escaping () -> ()) {
+        switch isTapToPayOnIPhoneEnabled {
         case true:
-            newCollectPayment(on: rootViewController, useCase: useCase, onSuccess: onSuccess)
+            newCollectPayment(on: rootViewController, onSuccess: onSuccess, onFailure: onFailure)
         case false:
             legacyCollectPayment(on: rootViewController, useCase: useCase, onSuccess: onSuccess)
         }
     }
 
     func newCollectPayment(on rootViewController: UIViewController?,
-                        useCase: CollectOrderPaymentProtocol? = nil,
-                        onSuccess: @escaping () -> ()) {
+                           useCase: CollectOrderPaymentProtocol? = nil,
+                           onSuccess: @escaping () -> (),
+                           onFailure: @escaping () -> ()) {
         trackCollectIntention(method: .card)
+        orderDurationRecorder.recordCardPaymentStarted()
 
         guard let rootViewController = rootViewController else {
             DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
@@ -243,9 +256,12 @@ final class PaymentMethodsViewModel: ObservableObject {
                         configuration: CardPresentConfigurationLoader().configuration)
 
                     self.collectPaymentsUseCase?.collectPayment(
-                        onCollect: { [weak self] result in
-                            guard result.isFailure else { return }
+                        onFailure: { [weak self] error in
                             self?.trackFlowFailed()
+                            // Update order in case its status and/or other details are updated after a failed in-person payment
+                            self?.updateOrderAsynchronously()
+
+                            onFailure()
                         },
                         onCancel: {
                             // No tracking required because the flow remains on screen to choose other payment methods.
@@ -273,9 +289,10 @@ final class PaymentMethodsViewModel: ObservableObject {
     }
 
     func legacyCollectPayment(on rootViewController: UIViewController?,
-                        useCase: CollectOrderPaymentProtocol? = nil,
-                        onSuccess: @escaping () -> ()) {
+                              useCase: LegacyCollectOrderPaymentProtocol? = nil,
+                              onSuccess: @escaping () -> ()) {
         trackCollectIntention(method: .card)
+        orderDurationRecorder.recordCardPaymentStarted()
 
         guard let rootViewController = rootViewController else {
             DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
@@ -424,7 +441,10 @@ private extension PaymentMethodsViewModel {
     /// Tracks `paymentsFlowCollect` event.
     ///
     func trackCollectIntention(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod) {
-        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCollect(flow: flow, method: method))
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCollect(flow: flow,
+                                                                                  method: method,
+                                                                                  millisecondsSinceOrderAddNew:
+                                                                                    try? orderDurationRecorder.millisecondsSinceOrderAddNew()))
     }
 }
 

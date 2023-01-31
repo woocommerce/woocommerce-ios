@@ -14,7 +14,7 @@ public final class UserRemote: Remote {
             "context": "edit",
             "fields": "id,username,id_wpcom,email,first_name,last_name,nickname,roles"
         ]
-        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = UserMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

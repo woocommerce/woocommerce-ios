@@ -64,6 +64,7 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
+
     private lazy var stateCoordinator: PaginatedListViewControllerStateCoordinator = {
         let stateCoordinator = PaginatedListViewControllerStateCoordinator(onLeavingState: { [weak self] state in
             self?.didLeave(state: state)
@@ -443,7 +444,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
 private extension ProductVariationsViewController {
     func createVariationFromEmptyState() {
         if product.attributesForVariations.isNotEmpty {
-            createVariation()
+            presentGenerateVariationOptions()
         } else {
             navigateToAddAttributeViewController()
         }
@@ -473,7 +474,7 @@ private extension ProductVariationsViewController {
 
         let editAttributesViewModel = EditAttributesViewModel(product: product, allowVariationCreation: allowVariationCreation)
         let editAttributeViewController = EditAttributesViewController(viewModel: editAttributesViewModel)
-        editAttributeViewController.onVariationCreation = { [weak self] (updatedProduct, _) in
+        editAttributeViewController.onVariationCreation = { [weak self] updatedProduct in
             self?.product = updatedProduct
             self?.onFirstVariationCreated()
         }
@@ -506,7 +507,11 @@ private extension ProductVariationsViewController {
     /// Presents a notice alerting that the variation was created and navigates back to the `initialViewController` if possible.
     ///
     private func onFirstVariationCreated() {
-        noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
+        // Only show a notice when one variation is created.
+        // When creating multiple variations, the notice presentation is handled on `GenerateAllVariationsPresenter`
+        if product.variations.count == 1 {
+            noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
+        }
 
         guard let initialViewController = initialViewController else {
             navigationController?.popViewController(animated: true)
@@ -563,7 +568,7 @@ private extension ProductVariationsViewController {
 
     @objc func addButtonTapped() {
         analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
-        createVariation()
+        presentGenerateVariationOptions()
     }
 
     /// More Options Action Sheet
@@ -594,6 +599,20 @@ private extension ProductVariationsViewController {
 
         present(actionSheet, animated: true)
     }
+
+    /// Displays a bottom sheet allowing the merchant to choose whether to generate one variation or to generate all variations.
+    ///
+    private func presentGenerateVariationOptions() {
+        let presenter = GenerateVariationsOptionsPresenter(baseViewController: self)
+        presenter.presentGenerationOptions(sourceView: topStackView) { [weak self] selectedOption in
+            switch selectedOption {
+            case .single:
+                self?.createVariation()
+            case .all:
+                self?.generateAllVariations()
+            }
+        }
+    }
 }
 
 // MARK: - Placeholders
@@ -623,22 +642,23 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
         transitionToSyncingState(pageNumber: pageNumber)
 
         let action = ProductVariationAction
-            .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
+            .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
                 guard let self = self else {
                     return
                 }
 
-                if let error = error {
+                switch result {
+                case .success:
+                    ServiceLocator.analytics.track(.productVariationListLoaded)
+                case .failure(let error):
                     ServiceLocator.analytics.track(.productVariationListLoadError, withError: error)
 
                     DDLogError("⛔️ Error synchronizing product variations: \(error)")
                     self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
-                } else {
-                    ServiceLocator.analytics.track(.productVariationListLoaded)
                 }
 
                 self.transitionToResultsUpdatedState()
-                onCompletion?(error == nil)
+                onCompletion?(result.isSuccess)
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -662,6 +682,25 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
             case .failure(let error):
                 self.noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
                 DDLogError("⛔️ Error generating variation: \(error)")
+            }
+        }
+    }
+
+    /// Generates all possible variations for the product attributes.
+    ///
+    private func generateAllVariations() {
+        let presenter = GenerateAllVariationsPresenter(baseViewController: self)
+        viewModel.generateAllVariations(for: product) { [weak self, presenter] currentState in
+            // Perform Presentation Actions
+            presenter.handleStateChanges(state: currentState)
+
+            // Perform other side effects
+            switch currentState {
+            case .finished(let variationsCreated, let updatedProduct):
+                if variationsCreated {
+                    self?.product = updatedProduct
+                }
+            default: break
             }
         }
     }

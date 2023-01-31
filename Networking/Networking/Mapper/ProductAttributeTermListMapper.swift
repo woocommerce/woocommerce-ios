@@ -17,7 +17,11 @@ struct ProductAttributeTermListMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(ProductAttributeTermListEnvelope.self, from: response).productAttributeTerms
+        do {
+            return try decoder.decode(ProductAttributeTermListEnvelope.self, from: response).productAttributeTerms
+        } catch {
+            return try decoder.decode([ProductAttributeTerm].self, from: response)
+        }
     }
 }
 

@@ -175,6 +175,8 @@ final class InAppPurchaseStoreTests: XCTestCase {
         XCTAssert(error is WordPressApiError)
     }
 
+    // TODO: re-enable the test case when it can pass consistently. More details:
+    // https://github.com/woocommerce/woocommerce-ios/pull/8256#pullrequestreview-1199236279
     func test_user_is_entitled_to_product_returns_false_when_not_entitled() throws {
         // Given
 
@@ -191,6 +193,8 @@ final class InAppPurchaseStoreTests: XCTestCase {
         XCTAssertFalse(isEntitled)
     }
 
+    // TODO: re-enable the test case when it can pass consistently. More details:
+    // https://github.com/woocommerce/woocommerce-ios/pull/8256#pullrequestreview-1199236279
     func test_user_is_entitled_to_product_returns_true_when_entitled() throws {
         // Given
         try storeKitSession.buyProduct(productIdentifier: sampleProductID)

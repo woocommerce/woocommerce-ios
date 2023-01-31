@@ -2,10 +2,15 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import KeychainAccess
+@testable import Networking
 
 /// SessionManager Unit Tests
 ///
 class SessionManagerTests: XCTestCase {
+
+    /// Sample Application Password
+    ///
+    private let applicationPassword = ApplicationPassword(wpOrgUsername: "username", password: .init("password"), uuid: "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e")
 
     /// CredentialsStorage Unit-Testing Instance
     ///
@@ -58,6 +63,50 @@ class SessionManagerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(retrieved, Settings.wporgCredentials)
+    }
+
+    /// Verifies that application password is deleted upon calling `deleteApplicationPassword`
+    ///
+    func test_deleteApplicationPassword_deletes_password_from_keychain() {
+        // Given
+        manager.defaultCredentials = Settings.wporgCredentials
+        let storage = ApplicationPasswordStorage(keychain: Keychain(service: Settings.keychainServiceName))
+
+        // When
+        storage.saveApplicationPassword(applicationPassword)
+
+        // Then
+        XCTAssertNotNil(storage.applicationPassword)
+
+        // When
+        manager.deleteApplicationPassword()
+
+        // Then
+        waitUntil {
+            storage.applicationPassword == nil
+        }
+    }
+
+    /// Verifies that application password is deleted upon reset
+    ///
+    func test_application_password_is_deleted_upon_reset() {
+        // Given
+        manager.defaultCredentials = Settings.wporgCredentials
+        let storage = ApplicationPasswordStorage(keychain: Keychain(service: Settings.keychainServiceName))
+
+        // When
+        storage.saveApplicationPassword(applicationPassword)
+
+        // Then
+        XCTAssertNotNil(storage.applicationPassword)
+
+        // When
+        manager.reset()
+
+        // Then
+        waitUntil {
+            storage.applicationPassword == nil
+        }
     }
 
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain

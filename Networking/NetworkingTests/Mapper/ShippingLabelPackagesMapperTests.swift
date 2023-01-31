@@ -18,6 +18,15 @@ final class ShippingLabelPackagesMapperTests: XCTestCase {
         XCTAssertTrue(shippingLabelPackages.unactivatedPredefinedOptions.contains(sampleShippingLabelUnactivatedPredefinedOption()))
         XCTAssertFalse(shippingLabelPackages.unactivatedPredefinedOptions.contains(sampleShippingLabelPredefinedOptions()[1]))
     }
+
+    /// Verifies that all of the ShippingLabelPackagesResponse Fields are parsed correctly.
+    ///
+    func test_ShippingLabelPackages_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
+        let shippingLabelPackages = try XCTUnwrap(mapLoadShippingLabelPackagesResponseWithoutDataEnvelope())
+
+        XCTAssertEqual(shippingLabelPackages.storeOptions, sampleShippingLabelStoreOptions())
+        XCTAssertEqual(shippingLabelPackages.customPackages.first?.title, "Small box")
+    }
 }
 
 /// Private Helpers
@@ -33,10 +42,17 @@ private extension ShippingLabelPackagesMapperTests {
         return try? ShippingLabelPackagesMapper().map(response: response)
     }
 
-    /// Returns the ShippingLabelPackagesMapper output upon receiving `filename`
+    /// Returns the ShippingLabelPackagesMapper output upon receiving `shipping-label-packages-success`
     ///
     func mapLoadShippingLabelPackagesResponse() -> ShippingLabelPackagesResponse? {
         return mapShippingLabelPackages(from: "shipping-label-packages-success")
+    }
+
+    /// Returns the ShippingLabelPackagesMapper output upon receiving
+    /// `shipping-label-packages-success-without-data`
+    ///
+    func mapLoadShippingLabelPackagesResponseWithoutDataEnvelope() -> ShippingLabelPackagesResponse? {
+        return mapShippingLabelPackages(from: "shipping-label-packages-success-without-data")
     }
 }
 

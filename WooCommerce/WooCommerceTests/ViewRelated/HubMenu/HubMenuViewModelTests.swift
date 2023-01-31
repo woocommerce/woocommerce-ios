@@ -271,6 +271,40 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.woocommerceAdminURL)
         XCTAssertEqual(viewModel.woocommerceAdminURL, try URL(string: expectedAdminURL)?.asURL())
     }
+
+    func test_switchStoreEnabled_returns_true_when_logged_in_with_wpcom() {
+        // Given
+        let sampleStoreURL = "https://testshop.com"
+        let sampleAdminURL = ""
+        let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: true)
+        let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL)
+        sessionManager.defaultSite = site
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         stores: stores)
+
+        // Then
+        XCTAssertTrue(viewModel.switchStoreEnabled)
+    }
+
+    func test_switchStoreEnabled_returns_false_when_logged_in_with_wpcom() {
+        // Given
+        let sampleStoreURL = "https://testshop.com"
+        let sampleAdminURL = ""
+        let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: false)
+        let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL)
+        sessionManager.defaultSite = site
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         stores: stores)
+
+        // Then
+        XCTAssertFalse(viewModel.switchStoreEnabled)
+    }
 }
 
 private extension HubMenuViewModelTests {

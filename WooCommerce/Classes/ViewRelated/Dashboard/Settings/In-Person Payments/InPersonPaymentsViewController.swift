@@ -103,8 +103,8 @@ struct InPersonPaymentsView: View {
 
     enum Localization {
         static let title = NSLocalizedString(
-            "In-Person Payments",
-            comment: "Title for the In-Person Payments settings screen"
+            "Payments",
+            comment: "Title for the Payments settings screen"
         )
     }
 }

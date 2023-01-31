@@ -99,6 +99,10 @@ public enum FeatureFlag: Int {
     ///
     case systemStatusReportInSupportRequest
 
+    /// IPP in-app feedback banner
+    ///
+    case IPPInAppFeedbackBanner
+
     // MARK: - Performance Monitoring
     //
     // These flags are not transient. That is, they are not here to help us rollout a feature,
@@ -134,7 +138,7 @@ public enum FeatureFlag: Int {
     /// - Note: The app will ignore this if `performanceMonitoring` is `false`.
     case performanceMonitoringViewController
 
-    /// Whether application password authentication should be used when a user logs in with site credentials.
+    /// Whether to enable domain updates from the settings for a WPCOM site.
     ///
-    case applicationPasswordAuthenticationForSiteCredentialLogin
+    case domainSettings
 }

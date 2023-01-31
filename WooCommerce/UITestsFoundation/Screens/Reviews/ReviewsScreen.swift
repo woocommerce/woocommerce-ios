@@ -3,14 +3,15 @@ import XCTest
 
 public final class ReviewsScreen: ScreenObject {
 
-    // TODO: Remove force `try` once `ScreenObject` migration is completed
-    public let tabBar = try! TabNavComponent()
+    public let tabBar: TabNavComponent
 
     static var isVisible: Bool {
         (try? ReviewsScreen().isLoaded) ?? false
     }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
+        tabBar = try TabNavComponent(app: app)
+
         try super.init(
             expectedElementGetters: [ { $0.tables["reviews-table"] } ],
             app: app

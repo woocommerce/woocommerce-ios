@@ -167,6 +167,54 @@ final class SettingsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.closeAccount) })
     }
+
+    func test_domain_is_hidden_when_domainSettings_feature_is_disabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDomainSettingsEnabled: false)
+        stores.updateDefaultStore(.fake().copy(isWordPressComStore: true))
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          featureFlagService: featureFlagService,
+                                          appleIDCredentialChecker: appleIDCredentialChecker)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.domain) })
+    }
+
+    func test_domain_is_hidden_when_domainSettings_feature_is_enabled_and_site_is_not_wpcom() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDomainSettingsEnabled: true)
+        sessionManager.defaultSite = .fake().copy(isWordPressComStore: false)
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          featureFlagService: featureFlagService,
+                                          appleIDCredentialChecker: appleIDCredentialChecker)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.domain) })
+    }
+
+    func test_domain_is_shown_when_domainSettings_feature_is_enabled_and_site_is_wpcom() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDomainSettingsEnabled: true)
+        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          featureFlagService: featureFlagService,
+                                          appleIDCredentialChecker: appleIDCredentialChecker)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.domain) })
+    }
 }
 
 private final class MockSettingsPresenter: SettingsViewPresenter {

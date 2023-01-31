@@ -13,7 +13,12 @@ public class SitePluginsRemote: Remote {
     public func loadPlugins(for siteID: Int64,
                             completion: @escaping (Result<[SitePlugin], Error>) -> Void) {
         let path = Constants.sitePluginsPath
-        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .none,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = SitePluginsMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

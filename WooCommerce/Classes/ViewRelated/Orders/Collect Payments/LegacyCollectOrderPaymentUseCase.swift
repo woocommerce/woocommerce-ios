@@ -5,10 +5,24 @@ import MessageUI
 import WooFoundation
 import protocol Storage.StorageManagerType
 
+
+/// Protocol to abstract the `LegacyCollectOrderPaymentUseCase`.
+/// Currently only used to facilitate unit tests.
+///
+protocol LegacyCollectOrderPaymentProtocol {
+    /// Starts the collect payment flow.
+    ///
+    ///
+    /// - Parameter onCollect: Closure Invoked after the collect process has finished.
+    /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
+    /// - Parameter onCancel: Closure invoked after the flow is cancelled
+    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCancel: @escaping () -> (), onCompleted: @escaping () -> ())
+}
+
 /// Use case to collect payments from an order.
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
-final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
+final class LegacyCollectOrderPaymentUseCase: NSObject, LegacyCollectOrderPaymentProtocol {
     /// Currency Formatter
     ///
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
@@ -86,6 +100,8 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProto
     /// Coordinates emailing a receipt after payment success.
     private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
 
+    private let orderDurationRecorder: OrderDurationRecorderProtocol
+
     init(siteID: Int64,
          order: Order,
          formattedAmount: String,
@@ -95,6 +111,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProto
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          paymentCaptureCelebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
+         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.order = order
@@ -105,6 +122,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProto
         self.configuration = configuration
         self.stores = stores
         self.paymentCaptureCelebration = paymentCaptureCelebration
+        self.orderDurationRecorder = orderDurationRecorder
         self.analytics = analytics
     }
 
@@ -287,7 +305,7 @@ private extension LegacyCollectOrderPaymentUseCase {
 
             }, onProcessingMessage: { [weak self] in
                 // Waiting message
-                self?.alerts.processingPayment()
+                self?.alerts.processingPayment(title: Localization.collectPaymentTitle(username: self?.order.billingAddress?.firstName))
             }, onDisplayMessage: { [weak self] message in
                 // Reader messages. EG: Remove Card
                 self?.alerts.displayReaderMessage(message: message)
@@ -317,7 +335,10 @@ private extension LegacyCollectOrderPaymentUseCase {
                             .collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID,
                                                    countryCode: configuration.countryCode,
                                                    paymentMethod: capturedPaymentData.paymentMethod,
-                                                   cardReaderModel: connectedReader?.readerType.model ?? ""))
+                                                   cardReaderModel: connectedReader?.readerType.model ?? "",
+                                                   millisecondsSinceOrderAddNew: try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
+                                                   millisecondsSinceCardPaymentStarted: try? orderDurationRecorder.millisecondsSinceCardPaymentStarted()))
+        orderDurationRecorder.reset()
 
         // Success Callback
         onCompletion(.success(capturedPaymentData))
@@ -375,7 +396,8 @@ private extension LegacyCollectOrderPaymentUseCase {
     func trackPaymentCancelation() {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                                          countryCode: configuration.countryCode,
-                                                                                         cardReaderModel: connectedReader?.readerType.model ?? ""))
+                                                                                         cardReaderModel: connectedReader?.readerType.model ?? "",
+                                                                                         cancellationSource: .other))
     }
 
     /// Allow merchants to print or email the payment receipt.
@@ -385,17 +407,17 @@ private extension LegacyCollectOrderPaymentUseCase {
         alerts.success(printReceipt: { [order, configuration, weak self] in
             guard let self = self else { return }
 
-            // Inform about flow completion.
-            onCompleted()
-
             // Delegate print action
-            ReceiptActionCoordinator.printReceipt(for: order,
-                                                  params: receiptParameters,
-                                                  countryCode: configuration.countryCode,
-                                                  cardReaderModel: self.connectedReader?.readerType.model,
-                                                  stores: self.stores,
-                                                  analytics: self.analytics)
-
+            Task { @MainActor in
+                await ReceiptActionCoordinator.printReceipt(for: order,
+                                                      params: receiptParameters,
+                                                      countryCode: configuration.countryCode,
+                                                      cardReaderModel: self.connectedReader?.readerType.model,
+                                                      stores: self.stores,
+                                                      analytics: self.analytics)
+                // Inform about flow completion.
+                onCompleted()
+            }
         }, emailReceipt: { [order, analytics, paymentOrchestrator, configuration, weak self] in
             guard let self = self else { return }
 

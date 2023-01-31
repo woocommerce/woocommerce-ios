@@ -21,7 +21,11 @@ struct OrderListMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(OrderListEnvelope.self, from: response).orders
+        do {
+            return try decoder.decode(OrderListEnvelope.self, from: response).orders
+        } catch {
+            return try decoder.decode([Order].self, from: response)
+        }
     }
 }
 

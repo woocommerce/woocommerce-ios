@@ -5,6 +5,8 @@ import WordPressAuthenticator
 import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
+import protocol Experiments.ABTestVariationProvider
+import struct Experiments.DefaultABTestVariationProvider
 
 /// Coordinates app navigation based on authentication state: tab bar UI is shown when the app is logged in, and authentication UI is shown
 /// when the app is logged out.
@@ -26,6 +28,7 @@ final class AppCoordinator {
     private var authStatesSubscription: AnyCancellable?
     private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
+    private let abTestVariationProvider: ABTestVariationProvider
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
@@ -39,7 +42,8 @@ final class AppCoordinator {
          analytics: Analytics = ServiceLocator.analytics,
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         abTestVariationProvider: ABTestVariationProvider = DefaultABTestVariationProvider()) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -56,8 +60,12 @@ final class AppCoordinator {
         self.loggedOutAppSettings = loggedOutAppSettings
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
+        self.abTestVariationProvider = abTestVariationProvider
 
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
+
+        // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
+        configureAuthenticator()
     }
 
     func start() {
@@ -139,6 +147,9 @@ private extension AppCoordinator {
         } else {
             configureAndDisplayAuthenticator()
         }
+
+        let applicationPasswordABTestVariation = abTestVariationProvider.variation(for: .applicationPasswordAuthentication)
+        analytics.track(event: .ApplicationPassword.restAPILoginExperiment(variation: applicationPasswordABTestVariation.analyticsValue))
     }
 
     /// Configures the WPAuthenticator and sets the authenticator UI as the window's root view.
@@ -216,6 +227,11 @@ private extension AppCoordinator {
             return
         }
 
+        /// If authenticating with site credentials only is incomplete,
+        /// show the prologue screen to force the user to log in again.
+        guard stores.isAuthenticatedWithoutWPCom == false else {
+            return displayAuthenticatorWithOnboardingIfNeeded()
+        }
         configureAuthenticator()
 
         let matcher = ULAccountMatcher(storageManager: storageManager)
@@ -268,6 +284,7 @@ private extension AppCoordinator {
 
         // this needs to be wrapped within a navigation controller to properly show the right bar button for Help.
         setWindowRootViewControllerAndAnimateIfNeeded(WooNavigationController(rootViewController: errorViewController))
+        ServiceLocator.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
     }
 
     /// Synchronously check if there's any `EligibilityErrorInfo` stored locally. If there is, then let's show the role error UI instead.

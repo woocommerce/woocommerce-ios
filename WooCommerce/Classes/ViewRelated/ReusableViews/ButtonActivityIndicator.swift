@@ -4,7 +4,7 @@ import UIKit
 ///
 final class ButtonActivityIndicator: UIButton {
 
-    private let indicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .medium)
+    let indicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .medium)
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -25,17 +25,13 @@ final class ButtonActivityIndicator: UIButton {
         guard subviews.contains(indicator) == false else {
             return
         }
+        titleLabel?.isHidden = true
         indicator.isUserInteractionEnabled = false
         indicator.center = CGPoint(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
         indicator.hidesWhenStopped = true
         // If `hideActivityIndicator()` is called immediately after this method, it will find the indicator and remove it
         addSubview(indicator)
-        UIView.transition(with: self, duration: Constants.animationDuration, options: .curveEaseOut, animations: { [weak self] in
-            self?.titleLabel?.alpha = 0.0
-        }) { [weak self] (_) in
-            guard let self = self else { return }
-            self.indicator.startAnimating()
-        }
+        indicator.startAnimating()
     }
 
     /// Hide the loader indicator inside the button
@@ -46,10 +42,7 @@ final class ButtonActivityIndicator: UIButton {
         }
         indicator.stopAnimating()
         indicator.removeFromSuperview()
-        UIView.transition(with: self, duration: Constants.animationDuration, options: .curveEaseIn, animations: { [weak self] in
-            self?.titleLabel?.alpha = 1.0
-        }) { (finished) in
-        }
+        titleLabel?.isHidden = false
     }
 }
 

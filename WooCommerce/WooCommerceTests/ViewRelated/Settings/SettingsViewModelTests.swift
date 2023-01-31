@@ -233,6 +233,37 @@ final class SettingsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.domain) })
     }
+
+    // MARK: - `accountName` tests
+    func test_accountName_is_correct_when_authenticated_without_wpcom() {
+        // Given
+        let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: false)
+        let stores = DefaultStoresManager(sessionManager: sessionManager)
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          appleIDCredentialChecker: appleIDCredentialChecker)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertEqual(viewModel.accountName, SessionSettings.wporgCredentials.username)
+    }
+
+    func test_accountName_is_correct_when_authenticated_with_wpcom() {
+        // Given
+        let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: true)
+        let stores = DefaultStoresManager(sessionManager: sessionManager)
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          appleIDCredentialChecker: appleIDCredentialChecker)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertEqual(viewModel.accountName, SessionSettings.wpcomCredentials.username)
+    }
 }
 
 private final class MockSettingsPresenter: SettingsViewPresenter {

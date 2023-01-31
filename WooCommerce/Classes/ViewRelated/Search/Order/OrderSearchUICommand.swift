@@ -101,7 +101,11 @@ final class OrderSearchUICommand: SearchUICommand {
 
 private extension OrderSearchUICommand {
     func configureResultsController() {
-        try? statusResultsController.performFetch()
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Order search results for Site \(siteID): \(error)")
+        }
     }
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {

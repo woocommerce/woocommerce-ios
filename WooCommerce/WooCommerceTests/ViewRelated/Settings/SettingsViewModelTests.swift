@@ -168,6 +168,24 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.closeAccount) })
     }
 
+    func test_closeAccount_section_is_hidden_when_authenticated_without_wpcom() {
+        // Given
+        let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: false)
+        let featureFlagService = MockFeatureFlagService(isStoreCreationMVPEnabled: true, isStoreCreationM2Enabled: true)
+        let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: false)
+        let stores = DefaultStoresManager(sessionManager: sessionManager)
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          featureFlagService: featureFlagService,
+                                          appleIDCredentialChecker: appleIDCredentialChecker)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.closeAccount) })
+    }
+
     func test_domain_is_hidden_when_domainSettings_feature_is_disabled() {
         // Given
         let featureFlagService = MockFeatureFlagService(isDomainSettingsEnabled: false)

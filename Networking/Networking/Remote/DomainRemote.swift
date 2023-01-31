@@ -1,3 +1,4 @@
+import Codegen
 import Foundation
 
 /// Protocol for `DomainRemote` mainly used for mocking.
@@ -166,7 +167,7 @@ public struct SiteDomain: Decodable, Equatable {
 }
 
 /// Contact info required for redeeming a domain with domain credit.
-public struct DomainContactInfo: Codable {
+public struct DomainContactInfo: Codable, GeneratedFakeable {
     public let firstName: String
     public let lastName: String
     public let organization: String

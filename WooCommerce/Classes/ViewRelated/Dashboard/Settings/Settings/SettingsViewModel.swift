@@ -65,7 +65,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     /// Main Account's displayName
     ///
     var accountName: String {
-        stores.sessionManager.defaultCredentials?.username ?? ""
+        stores.sessionManager.defaultAccount?.displayName ?? String()
     }
 
     /// Announcement for the current app version

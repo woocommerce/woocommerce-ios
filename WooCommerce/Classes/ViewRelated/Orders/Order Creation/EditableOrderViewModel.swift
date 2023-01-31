@@ -254,13 +254,16 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private let orderSynchronizer: OrderSynchronizer
 
+    private let orderDurationRecorder: OrderDurationRecorderProtocol
+
     init(siteID: Int64,
          flow: Flow = .creation,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -269,6 +272,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.analytics = analytics
         self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, flow: flow, stores: stores, currencySettings: currencySettings)
         self.featureFlagService = featureFlagService
+        self.orderDurationRecorder = orderDurationRecorder
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -839,7 +843,8 @@ private extension EditableOrderViewModel {
     /// Tracks an order creation success
     ///
     func trackCreateOrderSuccess() {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess())
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess(millisecondsSinceSinceOrderAddNew:
+                                                                                try? orderDurationRecorder.millisecondsSinceOrderAddNew()))
     }
 
     /// Tracks an order creation failure

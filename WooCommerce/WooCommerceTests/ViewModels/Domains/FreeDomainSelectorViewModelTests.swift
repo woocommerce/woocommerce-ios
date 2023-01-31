@@ -4,7 +4,7 @@ import Yosemite
 import enum Networking.DotcomError
 @testable import WooCommerce
 
-final class DomainSelectorViewModelTests: XCTestCase {
+final class FreeDomainSelectorViewModelTests: XCTestCase {
     typealias ViewModel = DomainSelectorViewModel<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>
     private var stores: MockStoresManager!
     private var viewModel: ViewModel!
@@ -125,7 +125,7 @@ final class DomainSelectorViewModelTests: XCTestCase {
     }
 }
 
-private extension DomainSelectorViewModelTests {
+private extension FreeDomainSelectorViewModelTests {
     func mockDomainSuggestionsSuccess(suggestions: [FreeDomainSuggestion]) {
         stores.whenReceivingAction(ofType: DomainAction.self) { action in
             switch action {

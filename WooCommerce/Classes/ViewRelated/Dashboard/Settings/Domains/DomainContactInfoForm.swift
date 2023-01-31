@@ -23,7 +23,7 @@ final class DomainContactInfoFormHostingController: UIHostingController<DomainCo
     }
 }
 
-/// Allows the user to edit contact info for a domain.
+/// Allows the user to edit contact info when claiming a domain with domain credit.
 struct DomainContactInfoForm: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
     @State private var showingCustomerSearch: Bool = false

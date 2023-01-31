@@ -77,8 +77,10 @@ struct DomainContactInfoForm: View {
             Button(Localization.done) {
                 Task { @MainActor in
                     do {
+                        viewModel.performingNetworkRequest.send(true)
                         let contactInfo = try await viewModel.validateContactInfo()
                         await onCompletion(contactInfo)
+                        viewModel.performingNetworkRequest.send(false)
                     }
                 }
             }

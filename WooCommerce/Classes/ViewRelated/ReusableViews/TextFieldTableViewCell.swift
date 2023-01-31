@@ -4,7 +4,7 @@ import UIKit
 ///
 final class TextFieldTableViewCell: UITableViewCell {
     struct ViewModel {
-        internal init(text: String? = nil, placeholder: String? = nil, onTextChange: ((String?) -> Void)? = nil,
+        init(text: String? = nil, placeholder: String? = nil, onTextChange: ((String?) -> Void)? = nil,
                       onTextDidBeginEditing: (() -> Void)? = nil, onTextDidReturn: ((String?) -> Void)? = nil,
                       inputFormatter: UnitInputFormatter? = nil, keyboardType: UIKeyboardType,
                       returnKeyType: UIReturnKeyType = .default, autocapitalizationType: UITextAutocapitalizationType = .none) {

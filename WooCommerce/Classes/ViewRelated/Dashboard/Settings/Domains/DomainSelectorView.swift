@@ -306,8 +306,8 @@ struct DomainSelectorView_Previews: PreviewProvider {
                                           term: "year",
                                           cost: "NT$610.00",
                                           saleCost: "NT$154.00")
-                                ]))
-                              )),
+                                ])),
+                                hasDomainCredit: true)),
                 onDomainSelection: { _ in },
                 onSupport: {}
             )

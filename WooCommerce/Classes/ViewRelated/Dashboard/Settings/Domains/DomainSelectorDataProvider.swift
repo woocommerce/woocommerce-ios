@@ -52,8 +52,9 @@ struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable 
     // Properties for cart creation after a domain is selected.
     let productID: Int64
     let supportsPrivacy: Bool
+    let hasDomainCredit: Bool
 
-    init(domainSuggestion: PaidDomainSuggestion) {
+    init(domainSuggestion: PaidDomainSuggestion, hasDomainCredit: Bool) {
         self.name = domainSuggestion.name
         self.attributedDetail = {
             var attributedCost = AttributedString(.init(format: Localization.priceFormat, domainSuggestion.cost, domainSuggestion.term))
@@ -77,6 +78,7 @@ struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable 
         }()
         self.productID = domainSuggestion.productID
         self.supportsPrivacy = domainSuggestion.supportsPrivacy
+        self.hasDomainCredit = hasDomainCredit
     }
 }
 
@@ -93,16 +95,19 @@ extension PaidDomainSuggestionViewModel {
 /// Provides domain suggestions that are paid.
 final class PaidDomainSelectorDataProvider: DomainSelectorDataProvider {
     private let stores: StoresManager
+    private let hasDomainCredit: Bool
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores, hasDomainCredit: Bool) {
         self.stores = stores
+        self.hasDomainCredit = hasDomainCredit
     }
 
     @MainActor
     func loadDomainSuggestions(query: String) async throws -> [PaidDomainSuggestionViewModel] {
-        try await withCheckedThrowingContinuation { continuation in
+        return try await withCheckedThrowingContinuation { [hasDomainCredit] continuation in
             stores.dispatch(DomainAction.loadPaidDomainSuggestions(query: query) { result in
-                continuation.resume(with: result.map { $0.map { PaidDomainSuggestionViewModel(domainSuggestion: $0) } })
+                continuation.resume(with: result.map { $0.map { PaidDomainSuggestionViewModel(domainSuggestion: $0,
+                                                                                              hasDomainCredit: hasDomainCredit) } })
             })
         }
     }

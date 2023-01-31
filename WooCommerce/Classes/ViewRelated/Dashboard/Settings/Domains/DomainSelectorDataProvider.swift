@@ -61,7 +61,16 @@ struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable 
             attributedCost.font = .body
             attributedCost.foregroundColor = .init(.secondaryLabel)
 
-            if let saleCost = domainSuggestion.saleCost {
+            if hasDomainCredit {
+                // Strikethrough style for the original cost string.
+                attributedCost.strikethroughStyle = .single
+
+                var attributedDomainCreditPricing = AttributedString(Localization.domainCreditPricing)
+                attributedDomainCreditPricing.font = .body
+                attributedDomainCreditPricing.foregroundColor = .init(.domainCreditPricing)
+
+                return attributedCost + .init(" ") + attributedDomainCreditPricing
+            } else if let saleCost = domainSuggestion.saleCost {
                 // Strikethrough style for the original cost string.
                 if let range = attributedCost.range(of: domainSuggestion.cost) {
                     attributedCost[range].strikethroughStyle = .single
@@ -88,6 +97,10 @@ extension PaidDomainSuggestionViewModel {
             "%1$@ / %2$@",
             comment: "The original price of a domain. %1$@ is the price per term. " +
             "%2$@ is the duration of each pricing term, usually year."
+        )
+        static let domainCreditPricing = NSLocalizedString(
+            "Free for the first year",
+            comment: "Label shown for domains that are free for the first year with available domain credit."
         )
     }
 }

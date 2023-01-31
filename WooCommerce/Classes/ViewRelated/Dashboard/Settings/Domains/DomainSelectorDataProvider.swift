@@ -67,9 +67,9 @@ struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable 
 
                 var attributedDomainCreditPricing = AttributedString(Localization.domainCreditPricing)
                 attributedDomainCreditPricing.font = .body
-                attributedDomainCreditPricing.foregroundColor = .init(.info)
+                attributedDomainCreditPricing.foregroundColor = .init(.domainCreditPricing)
 
-                return attributedDomainCreditPricing + .init(" ") + attributedCost
+                return attributedCost + .init(" ") + attributedDomainCreditPricing
             } else if let saleCost = domainSuggestion.saleCost {
                 // Strikethrough style for the original cost string.
                 if let range = attributedCost.range(of: domainSuggestion.cost) {

@@ -104,6 +104,6 @@ final class PaidDomainSelectorDataProviderTests: XCTestCase {
         XCTAssertEqual(viewModel.productID, 18)
         let viewModelPrice = String(format: PaidDomainSuggestionViewModel.Localization.priceFormat, "US$25.00", "year")
         let viewModelDetailText = try XCTUnwrap(viewModel.attributedDetail)
-        XCTAssertEqual(String(viewModelDetailText.characters), "\(PaidDomainSuggestionViewModel.Localization.domainCreditPricing) \(viewModelPrice)")
+        XCTAssertEqual(String(viewModelDetailText.characters), "\(viewModelPrice) \(PaidDomainSuggestionViewModel.Localization.domainCreditPricing)")
     }
 }

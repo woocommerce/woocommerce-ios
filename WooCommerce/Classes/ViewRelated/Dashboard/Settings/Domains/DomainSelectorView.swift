@@ -292,7 +292,7 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Results state for paid domains.
             DomainSelectorView<PaidDomainSelectorDataProvider, PaidDomainSuggestionViewModel>(
                 viewModel:
-                        .init(initialSearchTerm: "",
+                        .init(initialSearchTerm: "fruit",
                               dataProvider: PaidDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores(paidDomainsResult: .success([
                                     .init(productID: 1,

@@ -86,6 +86,8 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     private let flow: WooAnalyticsEvent.PaymentsFlow.Flow
 
+    private let orderDurationRecorder: OrderDurationRecorderProtocol
+
     /// Stored orders.
     /// We need to fetch this from our storage layer because we are only provide IDs as dependencies
     /// To keep previews/UIs decoupled from our business logic.
@@ -121,13 +123,15 @@ final class PaymentMethodsViewModel: ObservableObject {
         let storage: StorageManagerType
         let analytics: Analytics
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+        let orderDurationRecorder: OrderDurationRecorderProtocol
 
         init(presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
              stores: StoresManager = ServiceLocator.stores,
              storage: StorageManagerType = ServiceLocator.storageManager,
              analytics: Analytics = ServiceLocator.analytics,
-             cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration? = nil) {
+             cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration? = nil,
+             orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared) {
             self.presentNoticeSubject = presentNoticeSubject
             self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
             self.stores = stores
@@ -135,6 +139,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             self.analytics = analytics
             let configuration = cardPresentPaymentsConfiguration ?? CardPresentConfigurationLoader(stores: stores).configuration
             self.cardPresentPaymentsConfiguration = configuration
+            self.orderDurationRecorder = orderDurationRecorder
         }
     }
 
@@ -150,6 +155,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         self.paymentLink = paymentLink
         self.formattedTotal = formattedTotal
         self.flow = flow
+        self.orderDurationRecorder = dependencies.orderDurationRecorder
         self.isTapToPayOnIPhoneEnabled = isTapToPayOnIPhoneEnabled
         presentNoticeSubject = dependencies.presentNoticeSubject
         cardPresentPaymentsOnboardingPresenter = dependencies.cardPresentPaymentsOnboardingPresenter
@@ -219,6 +225,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                            onSuccess: @escaping () -> (),
                            onFailure: @escaping () -> ()) {
         trackCollectIntention(method: .card)
+        orderDurationRecorder.recordCardPaymentStarted()
 
         guard let rootViewController = rootViewController else {
             DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
@@ -285,6 +292,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                               useCase: LegacyCollectOrderPaymentProtocol? = nil,
                               onSuccess: @escaping () -> ()) {
         trackCollectIntention(method: .card)
+        orderDurationRecorder.recordCardPaymentStarted()
 
         guard let rootViewController = rootViewController else {
             DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
@@ -433,7 +441,10 @@ private extension PaymentMethodsViewModel {
     /// Tracks `paymentsFlowCollect` event.
     ///
     func trackCollectIntention(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod) {
-        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCollect(flow: flow, method: method))
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCollect(flow: flow,
+                                                                                  method: method,
+                                                                                  millisecondsSinceOrderAddNew:
+                                                                                    try? orderDurationRecorder.millisecondsSinceOrderAddNew()))
     }
 }
 

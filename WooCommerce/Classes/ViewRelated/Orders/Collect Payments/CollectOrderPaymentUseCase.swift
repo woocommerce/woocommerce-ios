@@ -96,6 +96,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     private var preflightController: CardPresentPaymentPreflightController?
 
+    private let orderDurationRecorder: OrderDurationRecorderProtocol
+
     private var cancellables: Set<AnyCancellable> = []
 
     init(siteID: Int64,
@@ -106,6 +108,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          paymentCaptureCelebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
+         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.order = order
@@ -116,6 +119,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.configuration = configuration
         self.stores = stores
         self.paymentCaptureCelebration = paymentCaptureCelebration
+        self.orderDurationRecorder = orderDurationRecorder
         self.analytics = analytics
     }
 
@@ -305,7 +309,10 @@ private extension CollectOrderPaymentUseCase {
                             .collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID,
                                                    countryCode: configuration.countryCode,
                                                    paymentMethod: capturedPaymentData.paymentMethod,
-                                                   cardReaderModel: connectedReader?.readerType.model ?? ""))
+                                                   cardReaderModel: connectedReader?.readerType.model ?? "",
+                                                   millisecondsSinceOrderAddNew: try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
+                                                   millisecondsSinceCardPaymentStarted: try? orderDurationRecorder.millisecondsSinceCardPaymentStarted()))
+        orderDurationRecorder.reset()
 
         // Success Callback
         onCompletion(.success(capturedPaymentData))

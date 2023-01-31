@@ -66,7 +66,6 @@ private extension DomainSettingsCoordinator {
                     print("⛔️ Error creating cart with the selected domain \(domain): \(error)")
                 }
             }
-
         } onSupport: {
             // TODO: 8558 - remove support action
         }

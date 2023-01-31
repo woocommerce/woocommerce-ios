@@ -60,22 +60,20 @@ struct InAppPurchasesDebugView: View {
                 }.disabled(!inAppPurchasesAreSupported || entitledProductIDs.isEmpty)
             }
 
-            if !inAppPurchasesAreSupported {
-                Section {
-                    Text("In-App Purchases are not supported for this user")
-                        .foregroundColor(.red)
-                }
+            Section {
+                Text("In-App Purchases are not supported for this user")
+                    .foregroundColor(.red)
             }
+            .renderedIf(!inAppPurchasesAreSupported)
 
-            if ProcessInfo.processInfo.environment["wpcom-api-base-url"] == nil {
-                Section {
-                    Text("⚠️ Your WPCOM Sandbox URL is not setup")
-                        .headlineStyle()
-                    Text("To test In-App Purchases in sandbox please make sure that the WPCOM requests are pointing " +
-                         "to your sandbox environment and you have the billing system sandbox-mode enabled there.")
-                    .padding()
-                }
+            Section {
+                Text("⚠️ Your WPCOM Sandbox URL is not setup")
+                    .headlineStyle()
+                Text("To test In-App Purchases in sandbox please make sure that the WPCOM requests are pointing " +
+                     "to your sandbox environment and you have the billing system sandbox-mode enabled there.")
+                .padding()
             }
+            .renderedIf(ProcessInfo.processInfo.environment["wpcom-api-base-url"] == nil)
         }
         .navigationTitle("IAP Debug")
         .task {

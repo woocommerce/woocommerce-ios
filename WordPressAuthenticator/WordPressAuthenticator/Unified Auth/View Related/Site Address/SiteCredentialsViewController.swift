@@ -450,8 +450,15 @@ private extension SiteCredentialsViewController {
                                             password: loginFields.password,
                                             xmlrpc: "",
                                             options: [:])
-        delegate.handleSiteCredentialLogin(credentials: wporg, onLoading: { [weak self] shouldShowLoading in
+        delegate.handleSiteCredentialLogin(credentials: wporg,
+                                           in: navigationController,
+                                           onLoading: { [weak self] shouldShowLoading in
             self?.configureViewLoading(shouldShowLoading)
+        }, onSuccess: { [weak self] in
+            self?.finishedLogin(withUsername: wporg.username,
+                                password: wporg.password,
+                                xmlrpc: wporg.xmlrpc,
+                                options: wporg.options)
         })
     }
 

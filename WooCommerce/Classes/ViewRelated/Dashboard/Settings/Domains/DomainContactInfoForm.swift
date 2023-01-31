@@ -82,7 +82,6 @@ struct DomainContactInfoForm: View {
                     }
                 }
             }
-            .accessibilityIdentifier("order-customer-details-done-button")
             .disabled(!enabled)
         case .loading:
             ProgressView()
@@ -92,7 +91,7 @@ struct DomainContactInfoForm: View {
 
 private extension DomainContactInfoForm {
     enum Localization {
-        static let done = NSLocalizedString("Done", comment: "Text for the done button in the Edit Address Form")
+        static let done = NSLocalizedString("Done", comment: "Text for the done button in the domain contact info form.")
     }
 }
 

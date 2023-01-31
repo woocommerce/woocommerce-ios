@@ -87,7 +87,7 @@ private extension DomainContactInfoFormViewModel {
 private extension DomainContactInfoFormViewModel {
     // MARK: Constants
     enum Localization {
-        static let title = NSLocalizedString("Register domain", comment: "Title for the Edit Shipping Address Form")
-        static let addressSection = NSLocalizedString("ADDRESS", comment: "Details section title in the Edit Address Form")
+        static let title = NSLocalizedString("Register domain", comment: "Title of the domain contact info form.")
+        static let addressSection = NSLocalizedString("ADDRESS", comment: "Address section title in the domain contact info form.")
     }
 }

@@ -315,7 +315,6 @@ private extension OrderDetailsResultsControllers {
     /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
     /// involves more than one results controller.
     func refetchAllResultsControllers() {
-        // TODO: Test if multiple `try` inside of the same block halt execution upon failure of one of them.
         try? productResultsController.performFetch()
         try? productVariationResultsController.performFetch()
         try? refundResultsController.performFetch()

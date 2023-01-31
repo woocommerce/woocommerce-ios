@@ -153,7 +153,12 @@ final class OrdersRootViewController: UIViewController {
         ServiceLocator.analytics.track(.orderListViewFilterOptionsTapped)
 
         // Fetch stored statuses
-        try? statusResultsController.performFetch()
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch stored statuses for Site \(siteID): \(error)")
+        }
+
         let allowedStatuses = statusResultsController.fetchedObjects.map { $0 }
 
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses)
@@ -257,7 +262,11 @@ private extension OrdersRootViewController {
             self.resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
         }
 
-        try? statusResultsController.performFetch()
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch stored statuse for Site \(siteID): \(error)")
+        }
         resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: statusResultsController.fetchedObjects)
     }
 

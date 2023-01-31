@@ -4,10 +4,15 @@ import UIKit
 ///
 final class TextFieldTableViewCell: UITableViewCell {
     struct ViewModel {
-        init(text: String? = nil, placeholder: String? = nil, onTextChange: ((String?) -> Void)? = nil,
-                      onTextDidBeginEditing: (() -> Void)? = nil, onTextDidReturn: ((String?) -> Void)? = nil,
-                      inputFormatter: UnitInputFormatter? = nil, keyboardType: UIKeyboardType,
-                      returnKeyType: UIReturnKeyType = .default, autocapitalizationType: UITextAutocapitalizationType = .none) {
+        init(text: String? = nil,
+             placeholder: String? = nil,
+             onTextChange: ((String?) -> Void)? = nil,
+             onTextDidBeginEditing: (() -> Void)? = nil,
+             onTextDidReturn: ((String?) -> Void)? = nil,
+             inputFormatter: UnitInputFormatter? = nil,
+             keyboardType: UIKeyboardType,
+             returnKeyType: UIReturnKeyType = .default,
+             autocapitalizationType: UITextAutocapitalizationType = .none) {
             self.text = text
             self.placeholder = placeholder
             self.onTextChange = onTextChange
@@ -54,9 +59,9 @@ final class TextFieldTableViewCell: UITableViewCell {
         textField.borderStyle = .none
         textField.keyboardType = viewModel.keyboardType
         textField.returnKeyType = viewModel.returnKeyType
+        textField.autocapitalizationType = viewModel.autocapitalizationType
         textField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
         textField.addTarget(self, action: #selector(textFieldDidBegin(textField:)), for: .editingDidBegin)
-        textField.autocapitalizationType = viewModel.autocapitalizationType
     }
 
     @discardableResult

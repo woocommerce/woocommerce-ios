@@ -444,7 +444,8 @@ private extension SiteAddressViewController {
         checkSiteExistence(url: url) { [weak self] in
             guard let self = self else { return }
             // skips XMLRPC check for site discovery if needed
-            if self.isSiteDiscovery && self.configuration.skipXMLRPCCheckForSiteDiscovery {
+            if (self.isSiteDiscovery && self.configuration.skipXMLRPCCheckForSiteDiscovery) ||
+                self.configuration.skipXMLRPCCheckForSiteAddressLogin {
                 self.fetchSiteInfo()
                 return
             }

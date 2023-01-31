@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.2
+-----
+- [internal] Logging: Improvements on logging potential errors when loading Order Details [https://github.com/woocommerce/woocommerce-ios/pull/8781]
+
 12.1
 -----
 - [*] Adds an In-Person Payments survey banner on top of the Orders view [https://github.com/woocommerce/woocommerce-ios/issues/8530]

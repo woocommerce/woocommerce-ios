@@ -190,7 +190,7 @@ private extension OrderDetailsResultsControllers {
             self.refetchAllResultsControllers()
             onReload()
         }
-        
+
         do {
             try trackingResultsController.performFetch()
         } catch {
@@ -210,7 +210,7 @@ private extension OrderDetailsResultsControllers {
             self.refetchAllResultsControllers()
             onReload()
         }
-        
+
         do {
             try productResultsController.performFetch()
         } catch {

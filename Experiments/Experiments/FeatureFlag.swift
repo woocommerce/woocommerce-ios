@@ -141,4 +141,8 @@ public enum FeatureFlag: Int {
     /// Whether to enable domain updates from the settings for a WPCOM site.
     ///
     case domainSettings
+
+    /// Whether to enable Simplified Products Editing flow.
+    ///
+    case simplifyProductsEditing
 }

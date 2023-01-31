@@ -285,6 +285,10 @@ private extension SettingsViewModel {
 
         // Close account
         let closeAccountSection: Section? = {
+            // Do not show the Close Account CTA when authenticated with application password
+            guard stores.isAuthenticatedWithoutWPCom == false else {
+                return nil
+            }
             guard appleIDCredentialChecker.hasAppleUserID()
                     || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
                     || featureFlagService.isFeatureFlagEnabled(.storeCreationM2) else {

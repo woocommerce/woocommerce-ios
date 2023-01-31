@@ -110,6 +110,15 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?)
 
+    /// Sends site credentials to the host app so that it can handle login locally.
+    /// This method is only triggered when the config `skipXMLRPCCheckForSiteAddressLogin` is enabled.
+    ///
+    /// - Parameters:
+    ///     - credentials: WordPress.org credentials submitted in the site credentials form.
+    ///     - onLoading: the block to update the loading state on the site credentials form when necessary.
+    ///
+    func handleSiteCredentialLogin(credentials: WordPressOrgCredentials, onLoading: (Bool) -> Void)
+
     /// Signals to the Host App to navigate to the site creation flow.
     /// This method is currently used only in the simplified login flow
     /// when the configs `enableSimplifiedLoginI1` and `enableSiteCreationForSimplifiedLoginI1` is enabled
@@ -140,6 +149,10 @@ public extension WordPressAuthenticatorDelegate {
     }
 
     func showSiteCreation(in navigationController: UINavigationController) {
+        // No-op
+    }
+
+    func handleSiteCredentialLogin(credentials: WordPressOrgCredentials, onLoading: (Bool) -> Void) {
         // No-op
     }
 }

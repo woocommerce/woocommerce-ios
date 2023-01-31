@@ -42,8 +42,8 @@ extension SessionManagerProtocol {
 // MARK: - Testing Constants
 //
 enum SessionSettings {
-    static let wpcomCredentials = Credentials(username: "wpcomUsername", authToken: "authToken", siteAddress: "siteAddress")
-    static let wporgCredentials = Credentials(username: "wporgUsername", password: "password", siteAddress: "siteAddress")
+    static let wpcomCredentials = Credentials(username: "username", authToken: "authToken", siteAddress: "siteAddress")
+    static let wporgCredentials = Credentials(username: "username", password: "password", siteAddress: "siteAddress")
     static let defaults = UserDefaults(suiteName: "storesManagerTests")!
     static let keychainServiceName = "com.woocommerce.storesmanagertests"
 }

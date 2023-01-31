@@ -35,8 +35,9 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
 
     /// Validates and returns the contact info on success.
     /// - Returns: Contact info after it is validated remotely.
+    @MainActor
     func validateContactInfo() async throws -> DomainContactInfo {
-        guard validateEmail() else {
+        guard fields.email.isNotEmpty, validateEmail() else {
             notice = AddressFormViewModel.NoticeFactory.createInvalidEmailNotice()
             throw ContactInfoError.invalidEmail
         }

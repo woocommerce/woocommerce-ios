@@ -81,6 +81,8 @@ struct DomainContactInfoForm: View {
                         let contactInfo = try await viewModel.validateContactInfo()
                         await onCompletion(contactInfo)
                         viewModel.performingNetworkRequest.send(false)
+                    } catch {
+                        viewModel.performingNetworkRequest.send(false)
                     }
                 }
             }

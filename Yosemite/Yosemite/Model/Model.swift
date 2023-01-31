@@ -24,6 +24,7 @@ public typealias CreateAccountError = Networking.CreateAccountError
 public typealias Credentials = Networking.Credentials
 public typealias CreateProductVariation = Networking.CreateProductVariation
 public typealias Customer = Networking.Customer
+public typealias DomainContactInfo = Networking.DomainContactInfo
 public typealias DomainToPurchase = Networking.PaidDomainSuggestion
 public typealias DotcomDevice = Networking.DotcomDevice
 public typealias DotcomUser = Networking.DotcomUser

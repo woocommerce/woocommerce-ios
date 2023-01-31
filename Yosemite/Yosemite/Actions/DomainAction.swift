@@ -11,6 +11,7 @@ public enum DomainAction: Action {
                                   completion: (Result<Void, Error>) -> Void)
     case redeemDomainCredit(siteID: Int64,
                             domain: DomainToPurchase,
+                            contactInfo: DomainContactInfo,
                             completion: (Result<Void, Error>) -> Void)
 }
 

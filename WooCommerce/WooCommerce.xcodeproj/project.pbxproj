@@ -35,6 +35,8 @@
 		020624F027951113000D024C /* StoreStatsDataOrRedactedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020624EF27951113000D024C /* StoreStatsDataOrRedactedView.swift */; };
 		02063C8929260AA000130906 /* StoreCreationSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02063C8829260A9F00130906 /* StoreCreationSuccessView.swift */; };
 		0206483A23FA4160008441BB /* OrdersRootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0206483923FA4160008441BB /* OrdersRootViewController.swift */; };
+		020732042988AB7B000A53C2 /* DomainContactInfoForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020732032988AB7B000A53C2 /* DomainContactInfoForm.swift */; };
+		020732062988AC4D000A53C2 /* DomainContactInfoFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020732052988AC4D000A53C2 /* DomainContactInfoFormViewModel.swift */; };
 		02077F72253816FF005A78EF /* ProductFormActionsFactory+ReadonlyProductTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02077F71253816FF005A78EF /* ProductFormActionsFactory+ReadonlyProductTests.swift */; };
 		020886572499E643001D784E /* ProductExternalLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020886562499E642001D784E /* ProductExternalLinkViewController.swift */; };
 		020A55F127F6C605007843F0 /* CardReaderConnectionAnalyticsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020A55F027F6C605007843F0 /* CardReaderConnectionAnalyticsTracker.swift */; };
@@ -2123,6 +2125,8 @@
 		020624EF27951113000D024C /* StoreStatsDataOrRedactedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsDataOrRedactedView.swift; sourceTree = "<group>"; };
 		02063C8829260A9F00130906 /* StoreCreationSuccessView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreCreationSuccessView.swift; sourceTree = "<group>"; };
 		0206483923FA4160008441BB /* OrdersRootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRootViewController.swift; sourceTree = "<group>"; };
+		020732032988AB7B000A53C2 /* DomainContactInfoForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainContactInfoForm.swift; sourceTree = "<group>"; };
+		020732052988AC4D000A53C2 /* DomainContactInfoFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainContactInfoFormViewModel.swift; sourceTree = "<group>"; };
 		02077F71253816FF005A78EF /* ProductFormActionsFactory+ReadonlyProductTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormActionsFactory+ReadonlyProductTests.swift"; sourceTree = "<group>"; };
 		020886562499E642001D784E /* ProductExternalLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductExternalLinkViewController.swift; sourceTree = "<group>"; };
 		020A55F027F6C605007843F0 /* CardReaderConnectionAnalyticsTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionAnalyticsTracker.swift; sourceTree = "<group>"; };
@@ -4591,6 +4595,8 @@
 				028203CE297662A200217369 /* DomainSelectorDataProvider.swift */,
 				02F36F462978349500D97EA0 /* DomainPurchaseSuccessView.swift */,
 				022C7D782979778E0036568D /* DomainSettingsDomainCreditView.swift */,
+				020732032988AB7B000A53C2 /* DomainContactInfoForm.swift */,
+				020732052988AC4D000A53C2 /* DomainContactInfoFormViewModel.swift */,
 			);
 			path = Domains;
 			sourceTree = "<group>";
@@ -10291,6 +10297,7 @@
 				684AB83A2870677F003DFDD1 /* CardReaderManualsView.swift in Sources */,
 				E1BAAEA026BBECEF00F2C037 /* ButtonStyles.swift in Sources */,
 				CC13C0CB278E021300C0B5B5 /* ProductVariationSelectorViewModel.swift in Sources */,
+				020732042988AB7B000A53C2 /* DomainContactInfoForm.swift in Sources */,
 				DE2FE595292737330018040A /* LoginJetpackSetupView.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
 				024DF3072372C18D006658FE /* AztecUIConfigurator.swift in Sources */,
@@ -11039,6 +11046,7 @@
 				02E3B63129066858007E0F13 /* StoreCreationCoordinator.swift in Sources */,
 				B554E1792152F20000F31188 /* UINavigationBar+Appearance.swift in Sources */,
 				26AE31B0251E602D004B1BCE /* RefundShippingDetailsTableViewCell.swift in Sources */,
+				020732062988AC4D000A53C2 /* DomainContactInfoFormViewModel.swift in Sources */,
 				262A09A5262F65690033AD20 /* OrderAddOnTopBanner.swift in Sources */,
 				4515262E2577D56C0076B03C /* AddAttributeViewController.swift in Sources */,
 				57EBC92024EEE61800C1D45B /* WooAnalyticsEvent.swift in Sources */,

@@ -165,6 +165,59 @@ public struct SiteDomain: Decodable, Equatable {
     }
 }
 
+/// Contact info required for redeeming a domain with domain credit.
+public struct DomainContactInfo: Codable {
+    public let firstName: String
+    public let lastName: String
+    public let organization: String
+    public let address1: String
+    public let address2: String?
+    public let postcode: String
+    public let city: String
+    public let state: String
+    public let countryCode: String
+    public let phone: String?
+    public let email: String?
+
+    public init(firstName: String,
+                lastName: String,
+                organization: String,
+                address1: String,
+                address2: String?,
+                postcode: String,
+                city: String,
+                state: String,
+                countryCode: String,
+                phone: String?,
+                email: String?) {
+        self.firstName = firstName
+        self.lastName = lastName
+        self.organization = organization
+        self.address1 = address1
+        self.address2 = address2
+        self.postcode = postcode
+        self.city = city
+        self.state = state
+        self.countryCode = countryCode
+        self.phone = phone
+        self.email = email
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case firstName = "first_name"
+        case lastName = "last_name"
+        case organization
+        case address1 = "address_1"
+        case address2 = "address_2"
+        case postcode = "postal_code"
+        case city
+        case state
+        case countryCode = "country_code"
+        case phone
+        case email
+    }
+}
+
 /// Maps to a list of domains to match the API response.
 private struct SiteDomainEnvelope: Decodable {
     let domains: [SiteDomain]

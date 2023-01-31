@@ -52,6 +52,10 @@ class AuthenticationManager: Authentication {
     /// Keeps a reference to the checker
     private var postSiteCredentialLoginChecker: PostSiteCredentialLoginChecker?
 
+    private var enableSiteAddressLoginOnly: Bool {
+        abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment
+    }
+
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
@@ -68,7 +72,6 @@ class AuthenticationManager: Authentication {
         let isWPComMagicLinkPreferredToPassword = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let isStoreCreationMVPEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
-        let enableSiteAddressLoginOnly = abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -347,7 +350,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         /// save the site to memory to check for jetpack requirement in epilogue
         currentSelfHostedSite = site
 
-        let enableWPComOnlyForWPComSites = abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment
+        let enableWPComOnlyForWPComSites = enableSiteAddressLoginOnly
 
         switch (enableWPComOnlyForWPComSites, site.isWPCom) {
         case (true, true), (false, _):
@@ -392,8 +395,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         /// If the user logged in with site credentials and application password feature flag is enabled,
         /// check if they can use the app and navigates to the home screen.
-        if let siteCredentials = credentials.wporg,
-           abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment {
+        if let siteCredentials = credentials.wporg, enableSiteAddressLoginOnly {
             return didAuthenticateUser(to: siteURL,
                                        with: siteCredentials,
                                        in: navigationController)
@@ -504,8 +506,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Synchronizes the specified WordPress Account.
     ///
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
-        if let wporg = credentials.wporg,
-           abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment {
+        if let wporg = credentials.wporg, enableSiteAddressLoginOnly {
             ServiceLocator.stores.authenticate(credentials: .wporg(username: wporg.username,
                                                                    password: wporg.password,
                                                                    siteAddress: wporg.siteURL))

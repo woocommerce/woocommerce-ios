@@ -230,50 +230,41 @@ final class PaymentMethodsViewModel: ObservableObject {
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
 
-        let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGateway in
-            guard let paymentGateway = paymentGateway else {
-                return DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
-            }
+        collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(
+            siteID: self.siteID,
+            order: order,
+            formattedAmount: self.formattedTotal,
+            rootViewController: rootViewController,
+            onboardingPresenter: self.cardPresentPaymentsOnboardingPresenter,
+            configuration: CardPresentConfigurationLoader().configuration)
 
-            self.collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(
-                siteID: self.siteID,
-                order: order,
-                formattedAmount: self.formattedTotal,
-                paymentGatewayAccount: paymentGateway,
-                rootViewController: rootViewController,
-                onboardingPresenter: self.cardPresentPaymentsOnboardingPresenter,
-                configuration: CardPresentConfigurationLoader().configuration)
+        collectPaymentsUseCase?.collectPayment(
+            onFailure: { [weak self] error in
+                self?.trackFlowFailed()
+                // Update order in case its status and/or other details are updated after a failed in-person payment
+                self?.updateOrderAsynchronously()
 
-            self.collectPaymentsUseCase?.collectPayment(
-                onFailure: { [weak self] error in
-                    self?.trackFlowFailed()
-                    // Update order in case its status and/or other details are updated after a failed in-person payment
-                    self?.updateOrderAsynchronously()
+                onFailure()
+            },
+            onCancel: {
+                // No tracking required because the flow remains on screen to choose other payment methods.
+            },
+            onCompleted: { [weak self] in
+                // Update order in case its status and/or other details are updated after a successful in-person payment
+                self?.updateOrderAsynchronously()
 
-                    onFailure()
-                },
-                onCancel: {
-                    // No tracking required because the flow remains on screen to choose other payment methods.
-                },
-                onCompleted: { [weak self] in
-                    // Update order in case its status and/or other details are updated after a successful in-person payment
-                    self?.updateOrderAsynchronously()
+                // Inform success to consumer
+                onSuccess()
 
-                    // Inform success to consumer
-                    onSuccess()
+                // Sent notice request
+                self?.presentNoticeSubject.send(.completed)
 
-                    // Sent notice request
-                    self?.presentNoticeSubject.send(.completed)
+                // Make sure we free all the resources
+                self?.collectPaymentsUseCase = nil
 
-                    // Make sure we free all the resources
-                    self?.collectPaymentsUseCase = nil
-
-                    // Tracks completion
-                    self?.trackFlowCompleted(method: .card)
-                })
-        }
-
-        self.stores.dispatch(action)
+                // Tracks completion
+                self?.trackFlowCompleted(method: .card)
+            })
     }
 
     func legacyCollectPayment(on rootViewController: UIViewController?,

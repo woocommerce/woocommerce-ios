@@ -55,7 +55,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     /// Payment Gateway Account to use.
     ///
-    private let paymentGatewayAccount: PaymentGatewayAccount
+    private var paymentGatewayAccount: PaymentGatewayAccount? = nil
 
     /// Stores manager.
     ///
@@ -105,7 +105,6 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     init(siteID: Int64,
          order: Order,
          formattedAmount: String,
-         paymentGatewayAccount: PaymentGatewayAccount,
          rootViewController: UIViewController,
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          configuration: CardPresentPaymentsConfiguration,
@@ -115,7 +114,6 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.siteID = siteID
         self.order = order
         self.formattedAmount = formattedAmount
-        self.paymentGatewayAccount = paymentGatewayAccount
         self.rootViewController = rootViewController
         self.onboardingPresenter = onboardingPresenter
         self.alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
@@ -148,7 +146,6 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         }
 
         preflightController = CardPresentPaymentPreflightController(siteID: siteID,
-                                                                    paymentGatewayAccount: paymentGatewayAccount,
                                                                     configuration: configuration,
                                                                     rootViewController: rootViewController,
                                                                     alertsPresenter: alertsPresenter,
@@ -156,8 +153,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         preflightController?.readerConnection.sink { [weak self] connectionResult in
             guard let self = self else { return }
             switch connectionResult {
-            case .connected(let reader):
+            case .completed(let reader, let paymentGatewayAccount):
                 self.connectedReader = reader
+                self.paymentGatewayAccount = paymentGatewayAccount
                 let paymentAlertProvider = reader.paymentAlertProvider()
                 self.attemptPayment(alertProvider: paymentAlertProvider, onCompletion: { [weak self] result in
                     guard let self = self else { return }
@@ -175,7 +173,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                                                  onCompleted: onCompleted)
                     }
                 })
-            case .canceled(let cancellationSource):
+            case .canceled(let cancellationSource, let paymentGatewayAccount):
+                self.paymentGatewayAccount = paymentGatewayAccount
                 self.handlePaymentCancellation(from: cancellationSource)
                 onCancel()
             case .none:
@@ -246,6 +245,11 @@ private extension CollectOrderPaymentUseCase {
             return
         }
 
+        guard let paymentGatewayAccount = paymentGatewayAccount else {
+            onCompletion(.failure(CollectOrderPaymentError.paymentGatewayNotFound))
+            return
+        }
+
         // Start collect payment process
         paymentOrchestrator.collectPayment(
             for: order,
@@ -310,7 +314,7 @@ private extension CollectOrderPaymentUseCase {
                                  onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         // Record success
         analytics.track(event: WooAnalyticsEvent.InPersonPayments
-                            .collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID,
+                            .collectPaymentSuccess(forGatewayID: paymentGatewayAccount?.gatewayID,
                                                    countryCode: configuration.countryCode,
                                                    paymentMethod: capturedPaymentData.paymentMethod,
                                                    cardReaderModel: connectedReader?.readerType.model ?? ""))
@@ -354,7 +358,7 @@ private extension CollectOrderPaymentUseCase {
 
     private func trackPaymentFailure(with error: Error) {
         // Record error
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount.gatewayID,
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount?.gatewayID,
                                                                                        error: error,
                                                                                        countryCode: configuration.countryCode,
                                                                                        cardReaderModel: connectedReader?.readerType.model))
@@ -437,7 +441,7 @@ private extension CollectOrderPaymentUseCase {
     }
 
     func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: paymentGatewayAccount.gatewayID,
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: paymentGatewayAccount?.gatewayID,
                                                                                          countryCode: configuration.countryCode,
                                                                                          cardReaderModel: connectedReader?.readerType.model ?? "",
                                                                                          cancellationSource: cancelationSource))
@@ -525,7 +529,7 @@ private extension CollectOrderPaymentUseCase {
         switch paymentMethod {
         case .interacPresent:
             analytics.track(event: .InPersonPayments
-                .collectInteracPaymentSuccess(gatewayID: paymentGatewayAccount.gatewayID,
+                .collectInteracPaymentSuccess(gatewayID: paymentGatewayAccount?.gatewayID,
                                               countryCode: configuration.countryCode,
                                               cardReaderModel: connectedReader?.readerType.model ?? ""))
         default:
@@ -604,5 +608,9 @@ extension CollectOrderPaymentUseCase {
                 comment: "Error message when the order amount is below the minimum amount allowed."
             )
         }
+    }
+
+    enum CollectOrderPaymentError: Error {
+        case paymentGatewayNotFound
     }
 }

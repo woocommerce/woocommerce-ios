@@ -45,19 +45,15 @@ public extension ABTest {
     @MainActor
     static func start(for context: ExperimentContext) async {
         let experiments = ABTest.allCases.filter { $0.context == context }
+        await start(experiments: experiments)
+    }
 
-        await withCheckedContinuation { continuation in
-            guard !experiments.isEmpty else {
-                return continuation.resume(returning: ())
-            }
-
-            let experimentNames = experiments.map { $0.rawValue }
-            ExPlat.shared?.register(experiments: experimentNames)
-
-            ExPlat.shared?.refresh {
-                continuation.resume(returning: ())
-            }
-        } as Void
+    /// Start the AB Testing platform for all experiments
+    ///
+    @MainActor
+    static func start() async {
+        let experiments = ABTest.allCases
+        await start(experiments: experiments)
     }
 }
 
@@ -81,4 +77,24 @@ public enum ExperimentContext: Equatable {
     case loggedOut
     case loggedIn
     case none // For the `null` experiment case
+}
+
+private extension ABTest {
+    /// Start the AB Testing platform using the given `experiments`
+    ///
+    @MainActor
+    static func start(experiments: [ABTest]) async {
+        await withCheckedContinuation { continuation in
+            guard !experiments.isEmpty else {
+                return continuation.resume(returning: ())
+            }
+
+            let experimentNames = experiments.map { $0.rawValue }
+            ExPlat.shared?.register(experiments: experimentNames)
+
+            ExPlat.shared?.refresh {
+                continuation.resume(returning: ())
+            }
+        } as Void
+    }
 }

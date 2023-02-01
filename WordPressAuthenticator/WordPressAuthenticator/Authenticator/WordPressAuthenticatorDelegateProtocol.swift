@@ -116,15 +116,15 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     /// - Parameters:
     ///     - siteURL: The site to log in to
     ///     - credentials: WordPress.org credentials submitted in the site credentials form.
-    ///     - navigationController: the current navigation stack of the site credential login flow.
     ///     - onLoading: the block to update the loading state on the site credentials form when necessary.
     ///     - onSuccess: the block to finish the login flow after login succeeds.
+    ///     - onFailure: the block to trigger error handling
     ///
     func handleSiteCredentialLogin(siteURL: String,
                                    credentials: WordPressOrgCredentials,
-                                   in navigationController: UINavigationController?,
                                    onLoading: (Bool) -> Void,
-                                   onSuccess: () -> Void)
+                                   onSuccess: () -> Void,
+                                   onFailure: (Error) -> Void)
 
     /// Signals to the Host App to navigate to the site creation flow.
     /// This method is currently used only in the simplified login flow
@@ -161,9 +161,9 @@ public extension WordPressAuthenticatorDelegate {
 
     func handleSiteCredentialLogin(siteURL: String,
                                    credentials: WordPressOrgCredentials,
-                                   in navigationController: UINavigationController?,
                                    onLoading: (Bool) -> Void,
-                                   onSuccess: () -> Void) {
+                                   onSuccess: () -> Void,
+                                   onFailure: (Error) -> Void) {
         // No-op
     }
 }

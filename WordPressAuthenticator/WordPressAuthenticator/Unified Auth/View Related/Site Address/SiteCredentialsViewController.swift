@@ -452,7 +452,6 @@ private extension SiteCredentialsViewController {
                                             options: [:])
         delegate.handleSiteCredentialLogin(siteURL: loginFields.siteAddress,
                                            credentials: wporg,
-                                           in: navigationController,
                                            onLoading: { [weak self] shouldShowLoading in
             self?.configureViewLoading(shouldShowLoading)
         }, onSuccess: { [weak self] in
@@ -460,6 +459,8 @@ private extension SiteCredentialsViewController {
                                 password: wporg.password,
                                 xmlrpc: wporg.xmlrpc,
                                 options: wporg.options)
+        }, onFailure: { [weak self] error in
+            self?.displayRemoteError(error)
         })
     }
 
@@ -555,7 +556,7 @@ extension SiteCredentialsViewController {
     override func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
         let err = error as NSError
-        if err.code == 403 {
+        if err.code == 403 || err.code == 401 {
             let message = NSLocalizedString("It looks like this username/password isn't associated with this site.",
                                             comment: "An error message shown during log in when the username or password is incorrect.")
             displayError(message: message, moveVoiceOverFocus: true)

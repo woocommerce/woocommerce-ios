@@ -1912,6 +1912,7 @@
 		DEE183F1292E0ED0008818AB /* LoginJetpackSetupInterruptedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183F0292E0ED0008818AB /* LoginJetpackSetupInterruptedView.swift */; };
 		DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */; };
 		DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437726D8DAD900888A75 /* InProgressView.swift */; };
+		DEEDA239298A11FB0088256B /* SiteCredentialLoginUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */; };
 		DEF13C522963D0B20024A02B /* PostSiteCredentialLoginChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF13C512963D0B20024A02B /* PostSiteCredentialLoginChecker.swift */; };
 		DEF13C542963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF13C532963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift */; };
 		DEF3300C270444070073AE29 /* ShippingLabelSelectedRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF3300B270444060073AE29 /* ShippingLabelSelectedRate.swift */; };
@@ -4015,6 +4016,7 @@
 		DEE183F0292E0ED0008818AB /* LoginJetpackSetupInterruptedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginJetpackSetupInterruptedView.swift; sourceTree = "<group>"; };
 		DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintCustomsFormsView.swift; sourceTree = "<group>"; };
 		DEE6437726D8DAD900888A75 /* InProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InProgressView.swift; sourceTree = "<group>"; };
+		DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginUseCase.swift; sourceTree = "<group>"; };
 		DEF13C512963D0B20024A02B /* PostSiteCredentialLoginChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSiteCredentialLoginChecker.swift; sourceTree = "<group>"; };
 		DEF13C532963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSiteCredentialLoginCheckerTests.swift; sourceTree = "<group>"; };
 		DEF3300B270444060073AE29 /* ShippingLabelSelectedRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSelectedRate.swift; sourceTree = "<group>"; };
@@ -7236,6 +7238,7 @@
 				02759B8F28FFA06F00918176 /* Store Creation */,
 				B55D4C0520B6027100D7A50F /* AuthenticationManager.swift */,
 				DEF13C512963D0B20024A02B /* PostSiteCredentialLoginChecker.swift */,
+				DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */,
 				CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */,
 				027A2E132513124E00DA6ACB /* Keychain+Entries.swift */,
 				027A2E152513356100DA6ACB /* AppleIDCredentialChecker.swift */,
@@ -11095,6 +11098,7 @@
 				03191AE628E1DF0600670723 /* WooCommercePluginViewModel.swift in Sources */,
 				CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */,
 				02BA12852461674B008D8325 /* Optional+String.swift in Sources */,
+				DEEDA239298A11FB0088256B /* SiteCredentialLoginUseCase.swift in Sources */,
 				744F00D221B582A9007EFA93 /* StarRatingView.swift in Sources */,
 				45F627B9253603AE00894B86 /* ProductDownloadSettingsViewModel.swift in Sources */,
 				031B10E3274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift in Sources */,

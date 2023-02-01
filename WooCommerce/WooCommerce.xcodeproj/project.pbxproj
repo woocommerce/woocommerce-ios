@@ -1913,6 +1913,7 @@
 		DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */; };
 		DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437726D8DAD900888A75 /* InProgressView.swift */; };
 		DEEDA239298A11FB0088256B /* SiteCredentialLoginUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */; };
+		DEEDA23B298A1FD60088256B /* MockSiteCredentialLoginUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDA23A298A1FD60088256B /* MockSiteCredentialLoginUseCase.swift */; };
 		DEF13C522963D0B20024A02B /* PostSiteCredentialLoginChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF13C512963D0B20024A02B /* PostSiteCredentialLoginChecker.swift */; };
 		DEF13C542963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF13C532963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift */; };
 		DEF3300C270444070073AE29 /* ShippingLabelSelectedRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF3300B270444060073AE29 /* ShippingLabelSelectedRate.swift */; };
@@ -4017,6 +4018,7 @@
 		DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintCustomsFormsView.swift; sourceTree = "<group>"; };
 		DEE6437726D8DAD900888A75 /* InProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InProgressView.swift; sourceTree = "<group>"; };
 		DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginUseCase.swift; sourceTree = "<group>"; };
+		DEEDA23A298A1FD60088256B /* MockSiteCredentialLoginUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSiteCredentialLoginUseCase.swift; sourceTree = "<group>"; };
 		DEF13C512963D0B20024A02B /* PostSiteCredentialLoginChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSiteCredentialLoginChecker.swift; sourceTree = "<group>"; };
 		DEF13C532963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSiteCredentialLoginCheckerTests.swift; sourceTree = "<group>"; };
 		DEF3300B270444060073AE29 /* ShippingLabelSelectedRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSelectedRate.swift; sourceTree = "<group>"; };
@@ -6814,6 +6816,7 @@
 				AEB4DB98290AE8F300AE4340 /* MockCookieJar.swift */,
 				02660503293D8D24004084EA /* PaymentCaptureCelebration.swift */,
 				EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */,
+				DEEDA23A298A1FD60088256B /* MockSiteCredentialLoginUseCase.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -11434,6 +11437,7 @@
 				DEC51AA0274F9922009F3DF4 /* JetpackInstallStepsViewModelTests.swift in Sources */,
 				E1068058285C787100668B46 /* BetaFeaturesTests.swift in Sources */,
 				26C6E8E426E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift in Sources */,
+				DEEDA23B298A1FD60088256B /* MockSiteCredentialLoginUseCase.swift in Sources */,
 				0269A5E72913FD22003B20EB /* StoreCreationCoordinatorTests.swift in Sources */,
 				02CE4307276994920006EAEF /* ProductSKUBarcodeScannerCoordinatorTests.swift in Sources */,
 				0999877427D2819F00F82C65 /* BulkUpdateViewControllerTests.swift in Sources */,

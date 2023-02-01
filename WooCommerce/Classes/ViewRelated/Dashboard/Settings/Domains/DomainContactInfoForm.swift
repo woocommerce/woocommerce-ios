@@ -101,6 +101,8 @@ private extension DomainContactInfoForm {
 
 struct DomainContactInfoForm_Previews: PreviewProvider {
     static let sampleViewModel = DomainContactInfoFormViewModel(siteID: 134,
+                                                                contactInfoToEdit: nil,
+                                                                domain: "",
                                                                 stores: ServiceLocator.stores)
 
     static var previews: some View {

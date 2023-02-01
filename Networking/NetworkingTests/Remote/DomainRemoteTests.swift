@@ -117,4 +117,71 @@ final class DomainRemoteTests: XCTestCase {
 
         await assertThrowsError({_ = try await remote.loadDomains(siteID: 23)}, errorAssert: { ($0 as? NetworkError) == .notFound })
     }
+
+    // MARK: - `loadDomainContactInfo`
+
+    func test_loadDomainContactInfo_returns_contact_info_on_success() async throws {
+        // Given
+        let remote = DomainRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "me/domain-contact-information", filename: "domain-contact-info")
+
+        // When
+        let contactInfo = try await remote.loadDomainContactInfo()
+
+        // Then
+        XCTAssertEqual(contactInfo, .init(firstName: "Woo",
+                                          lastName: "Merch",
+                                          organization: nil,
+                                          address1: "No 77",
+                                          address2: nil,
+                                          postcode: "94111",
+                                          city: "SF",
+                                          state: nil,
+                                          countryCode: "US",
+                                          phone: "+886.123456",
+                                          email: "woo@merch.com"))
+    }
+
+    func test_loadDomainContactInfo_returns_error_on_empty_response() async throws {
+        // Given
+        let remote = DomainRemote(network: network)
+
+        await assertThrowsError({ _ = try await remote.loadDomainContactInfo() }, errorAssert: { ($0 as? NetworkError) == .notFound })
+    }
+
+    // MARK: - `validateDomainContactInfo`
+
+    func test_validateDomainContactInfo_returns_contact_info_on_success() async throws {
+        // Given
+        let remote = DomainRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "domain-contact-information/validate", filename: "validate-domain-contact-info-success")
+
+        // When
+        do {
+            try await remote.validate(domainContactInfo: .fake(), domain: "")
+        } catch {
+            // Then
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
+
+    func test_validateDomainContactInfo_returns_invalid_error_on_validation_failure() async throws {
+        // Given
+        let remote = DomainRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "domain-contact-information/validate", filename: "validate-domain-contact-info-failure")
+
+        // When/Then
+        let error = DomainContactInfoError.invalid(messagesByField: [.lastName: ["Enter your last name."],
+                                                                     .phone: ["Enter a valid country code followed by a dot (for example +1.6285550199)."]])
+        await assertThrowsError({ _ = try await remote.validate(domainContactInfo: .fake(), domain: "") },
+                                errorAssert: { ($0 as? DomainContactInfoError) == error })
+    }
+
+    func test_validateDomainContactInfo_returns_error_on_empty_response() async throws {
+        // Given
+        let remote = DomainRemote(network: network)
+
+        await assertThrowsError({_ = try await remote.validate(domainContactInfo: .fake(), domain: "")},
+                                errorAssert: { ($0 as? NetworkError) == .notFound })
+    }
 }

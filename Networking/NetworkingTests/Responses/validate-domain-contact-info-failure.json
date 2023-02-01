@@ -1,0 +1,15 @@
+{
+    "success": false,
+    "messages": {
+        "last_name": [
+            "Enter your last name."
+        ],
+        "phone": [
+            "Enter a valid country code followed by a dot (for example +1.6285550199)."
+        ]
+    },
+    "messages_simple": [
+        "There was an error validating your contact information. The field \"Last Name\" is not valid.",
+        "There was an error validating your contact information. The field \"Phone\" is not valid."
+    ]
+}

@@ -50,7 +50,8 @@ private extension DomainSettingsCoordinator {
                                                     productID: domain.productID,
                                                     supportsPrivacy: domain.supportsPrivacy)
             if hasDomainCredit {
-                self.showContactInfoForm(from: navigationController, domain: domainToPurchase)
+                let contactInfo = try? await self.loadDomainContactInfo()
+                self.showContactInfoForm(from: navigationController, contactInfo: contactInfo, domain: domainToPurchase)
             } else {
                 do {
                     try await self.createCart(domain: domainToPurchase)
@@ -85,8 +86,12 @@ private extension DomainSettingsCoordinator {
 private extension DomainSettingsCoordinator {
     @MainActor
     func showContactInfoForm(from navigationController: UINavigationController,
+                             contactInfo: DomainContactInfo?,
                              domain: DomainToPurchase) {
-        let contactInfoForm = DomainContactInfoFormHostingController(viewModel: .init(siteID: site.siteID, stores: stores)) { [weak self] contactInfo in
+        let contactInfoForm = DomainContactInfoFormHostingController(viewModel: .init(siteID: site.siteID,
+                                                                                      contactInfoToEdit: contactInfo,
+                                                                                      domain: domain.name,
+                                                                                      stores: stores)) { [weak self] contactInfo in
             guard let self else { return }
             do {
                 try await self.redeemDomainCredit(domain: domain, contactInfo: contactInfo)
@@ -115,6 +120,15 @@ private extension DomainSettingsCoordinator {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(DomainAction.createDomainShoppingCart(siteID: site.siteID,
                                                                   domain: domain) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
+    @MainActor
+    func loadDomainContactInfo() async throws -> DomainContactInfo {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(DomainAction.loadDomainContactInfo { result in
                 continuation.resume(with: result)
             })
         }

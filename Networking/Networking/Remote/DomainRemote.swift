@@ -21,6 +21,10 @@ public protocol DomainRemoteProtocol {
     /// - Parameter siteID: ID of the site to load the domains for.
     /// - Returns: A list of domains.
     func loadDomains(siteID: Int64) async throws -> [SiteDomain]
+
+    func loadDomainContactInfo() async throws -> DomainContactInfo
+
+    func validate(domainContactInfo: DomainContactInfo, domain: String) async throws
 }
 
 /// Domain: Remote Endpoints
@@ -62,6 +66,25 @@ public class DomainRemote: Remote, DomainRemoteProtocol {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
         let response: SiteDomainEnvelope = try await enqueue(request)
         return response.domains
+    }
+
+    public func loadDomainContactInfo() async throws -> DomainContactInfo {
+        let path = Path.domainContactInfo
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
+        return try await enqueue(request)
+    }
+
+    public func validate(domainContactInfo: DomainContactInfo, domain: String) async throws {
+        let path = "\(Path.domainContactInfo)/validate"
+        let parameters: [String: Any] = [
+            ParameterKey.domainContactInfo: domainContactInfo,
+            ParameterKey.domainNames: domain
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        let response: DomainContactInfoValidationResponse = try await enqueue(request)
+        guard response.success else {
+            throw DomainContactInfoError.invalid(messagesByField: response.errorMessagesByField)
+        }
     }
 }
 
@@ -167,27 +190,27 @@ public struct SiteDomain: Decodable, Equatable {
 }
 
 /// Contact info required for redeeming a domain with domain credit.
-public struct DomainContactInfo: Codable, GeneratedFakeable {
+public struct DomainContactInfo: Codable, GeneratedFakeable, Equatable {
     public let firstName: String
     public let lastName: String
-    public let organization: String
+    public let organization: String?
     public let address1: String
     public let address2: String?
     public let postcode: String
     public let city: String
-    public let state: String
+    public let state: String?
     public let countryCode: String
     public let phone: String?
     public let email: String?
 
     public init(firstName: String,
                 lastName: String,
-                organization: String,
+                organization: String?,
                 address1: String,
                 address2: String?,
                 postcode: String,
                 city: String,
-                state: String,
+                state: String?,
                 countryCode: String,
                 phone: String?,
                 email: String?) {
@@ -219,9 +242,59 @@ public struct DomainContactInfo: Codable, GeneratedFakeable {
     }
 }
 
+public enum DomainContactInfoError: Error, Equatable {
+    case invalid(messagesByField: [DomainContactInfoFormField: [String]]?)
+}
+
+public enum DomainContactInfoFormField: String, Decodable {
+    case countryCode = "country_code"
+    case postalCode = "postal_code"
+    case address1 = "address_1"
+    case address2 = "address_2"
+    case city
+    case email
+    case firstName = "first_name"
+    case lastName = "last_name"
+    case organization
+    case phone
+    case state
+}
+
 /// Maps to a list of domains to match the API response.
 private struct SiteDomainEnvelope: Decodable {
     let domains: [SiteDomain]
+}
+
+private struct DomainContactInfoValidationResponse: Decodable {
+    let success: Bool
+    let errorMessagesByField: [DomainContactInfoFormField: [String]]?
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let success = try container.decode(Bool.self, forKey: .success)
+
+        // Messages field needs to be decoded manually because Dictionary's Codable conformance currently only properly handle String and Int keys.
+        // Ref: https://stackoverflow.com/a/44726160/9185596
+        let messagesByFieldString = try container.decodeIfPresent([String: [String]].self, forKey: .messages)
+        let messagesByField: [DomainContactInfoFormField: [String]]? = messagesByFieldString?.keys
+            .compactMap { DomainContactInfoFormField(rawValue: $0) }.reduce([:], { partialResult, field in
+                var result = partialResult
+                result[field] = messagesByFieldString?[field.rawValue]
+                return result
+            })
+        self.init(success: success, errorMessagesByField: messagesByField)
+    }
+
+    init(success: Bool, errorMessagesByField: [DomainContactInfoFormField: [String]]? = nil) {
+        self.success = success
+        self.errorMessagesByField = errorMessagesByField
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case success
+        case messages
+    }
 }
 
 // MARK: - Constants
@@ -240,11 +313,16 @@ private extension DomainRemote {
         static let wordPressDotComSubdomainsOnly = "only_wordpressdotcom"
         /// The type of WPCOM products.
         static let domainProductType = "type"
+        /// Domain contact info parameter for validating contact info.
+        static let domainContactInfo = "contact_information"
+        /// Domain names parameter for validating contact info.
+        static let domainNames = "domain_names"
     }
 
     enum Path {
         static let domainSuggestions = "domains/suggestions"
         static let domainProducts = "products"
         static let domains = "domains"
+        static let domainContactInfo = "me/domain-contact-information"
     }
 }

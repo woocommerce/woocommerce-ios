@@ -48,6 +48,10 @@ public final class DomainStore: Store {
             createDomainShoppingCart(siteID: siteID, domain: domain, completion: completion)
         case .redeemDomainCredit(let siteID, let domain, let contactInfo, let completion):
             redeemDomainCredit(siteID: siteID, domain: domain, contactInfo: contactInfo, completion: completion)
+        case .loadDomainContactInfo(let completion):
+            loadDomainContactInfo(completion: completion)
+        case .validate(let domainContactInfo, let domain, let completion):
+            validate(domainContactInfo: domainContactInfo, domain: domain, completion: completion)
         }
     }
 }
@@ -128,6 +132,20 @@ private extension DomainStore {
             } catch {
                 completion(.failure(error))
             }
+        }
+    }
+
+    func loadDomainContactInfo(completion: @escaping (Result<DomainContactInfo, Error>) -> Void) {
+        Task { @MainActor in
+            let result = await Result { try await remote.loadDomainContactInfo() }
+            completion(result)
+        }
+    }
+
+    func validate(domainContactInfo: DomainContactInfo, domain: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            let result = await Result { try await remote.validate(domainContactInfo: domainContactInfo, domain: domain) }
+            completion(result)
         }
     }
 }

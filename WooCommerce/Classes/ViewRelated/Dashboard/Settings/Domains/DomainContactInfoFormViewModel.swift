@@ -5,6 +5,7 @@ import protocol Storage.StorageManagerType
 /// View model for `DomainContactInfoForm`.
 final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormViewModelProtocol {
     let siteID: Int64
+    private let domain: String
 
     private var contactInfo: DomainContactInfo {
         .init(firstName: fields.firstName,
@@ -21,13 +22,33 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
     }
 
     init(siteID: Int64,
+         contactInfoToEdit: DomainContactInfo?,
+         domain: String,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
+        self.domain = domain
+
+        let addressToEdit: Address = {
+            guard let contactInfoToEdit else {
+                return .empty
+            }
+            return .init(firstName: contactInfoToEdit.firstName,
+                         lastName: contactInfoToEdit.lastName,
+                         company: contactInfoToEdit.organization,
+                         address1: contactInfoToEdit.address1,
+                         address2: contactInfoToEdit.address2,
+                         city: contactInfoToEdit.city,
+                         state: contactInfoToEdit.state ?? "",
+                         postcode: contactInfoToEdit.postcode,
+                         country: contactInfoToEdit.countryCode,
+                         phone: contactInfoToEdit.phone,
+                         email: contactInfoToEdit.email)
+        }()
 
         super.init(siteID: siteID,
-                   address: .empty,
+                   address: addressToEdit,
                    storageManager: storageManager,
                    stores: stores,
                    analytics: analytics)
@@ -42,7 +63,11 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
             throw ContactInfoError.invalidEmail
         }
 
-        // TODO: 8558 - validate contact info remotely
+        do {
+            try await validate()
+        } catch {
+            notice = .init(title: error.localizedDescription, feedbackType: .error)
+        }
 
         return contactInfo
     }
@@ -76,6 +101,17 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
 
     func userDidCancelFlow() {
         // TODO: 8558 - analytics
+    }
+}
+
+private extension DomainContactInfoFormViewModel {
+    @MainActor
+    func validate() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(DomainAction.validate(domainContactInfo: contactInfo, domain: domain) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 }
 

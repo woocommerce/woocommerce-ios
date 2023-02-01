@@ -51,11 +51,23 @@ final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
     }
 
     func handleLogin(username: String, password: String) {
+        // Old cookies can make the login succeeds even with incorrect credentials
+        // So we need to clear all cookies before login.
+        clearAllCookies()
         loginAndAttemptFetchingJetpackPluginDetails(username: username, password: password)
     }
 }
 
 private extension SiteCredentialLoginUseCase {
+    func clearAllCookies() {
+        let cookieJar = HTTPCookieStorage.shared
+        if let cookies = cookieJar.cookies {
+            for cookie in cookies {
+                cookieJar.deleteCookie(cookie)
+            }
+        }
+    }
+
     func loginAndAttemptFetchingJetpackPluginDetails(username: String, password: String) {
         handleCookieAuthentication(username: username, password: password)
         retrieveJetpackPluginDetails()

@@ -170,13 +170,6 @@ final class CardPresentPaymentPreflightController {
         }
     }
 
-    /// Configure the CardPresentPaymentStore to use the appropriate backend
-    ///
-    private func configureBackend() {
-        let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
-        stores.dispatch(setAccount)
-    }
-
     private func observeConnectedReaders() {
         let action = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
             self?.connectedReader = readers.first

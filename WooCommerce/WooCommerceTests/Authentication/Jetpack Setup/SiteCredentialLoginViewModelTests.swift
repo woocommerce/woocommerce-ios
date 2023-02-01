@@ -2,7 +2,6 @@ import XCTest
 @testable import WooCommerce
 import WordPressAuthenticator
 import Yosemite
-import enum Alamofire.AFError
 
 final class SiteCredentialLoginViewModelTests: XCTestCase {
 
@@ -36,89 +35,40 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.primaryButtonDisabled)
     }
 
-    func test_isLoggingIn_is_updated_appropriately_when_login_fails() {
+    func test_isLoggingIn_is_updated_appropriately_when_the_useCase_returns_true_for_loading_state() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com", stores: stores)
+        let useCase = MockSiteCredentialLoginUseCase()
+        useCase.mockedLoadingState = true
+        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com", useCase: useCase)
         XCTAssertFalse(viewModel.isLoggingIn)
-
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .retrieveJetpackPluginDetails(let completion):
-                let error = NSError(domain: "Test", code: 1)
-                completion(.failure(error))
-            default:
-                break
-            }
-        }
 
         // When
         viewModel.handleLogin()
 
         // Then
-        XCTAssertFalse(viewModel.isLoggingIn)
+        XCTAssertTrue(viewModel.isLoggingIn)
     }
 
-    func test_isLoggingIn_is_updated_appropriately_when_login_succeeds() {
+    func test_isLoggingIn_is_updated_appropriately_when_the_useCase_returns_false_for_loading_state() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com", stores: stores)
+        let useCase = MockSiteCredentialLoginUseCase()
+        useCase.mockedLoadingState = false
+        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com", useCase: useCase)
         XCTAssertFalse(viewModel.isLoggingIn)
 
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .retrieveJetpackPluginDetails(let completion):
-                completion(.success(SitePlugin.fake()))
-            default:
-                break
-            }
-        }
         // When
         viewModel.handleLogin()
 
         // Then
         XCTAssertFalse(viewModel.isLoggingIn)
-    }
-
-    func test_shouldShowErrorAlert_is_true_when_login_fails() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com", stores: stores)
-        XCTAssertFalse(viewModel.shouldShowErrorAlert)
-
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .retrieveJetpackPluginDetails(let completion):
-                let error = NSError(domain: "Test", code: 1)
-                completion(.failure(error))
-            default:
-                break
-            }
-        }
-
-        // When
-        viewModel.handleLogin()
-
-        // Then
-        XCTAssertTrue(viewModel.shouldShowErrorAlert)
-        XCTAssertEqual(viewModel.errorMessage, SiteCredentialLoginViewModel.Localization.genericFailure)
     }
 
     func test_errorMessage_is_correct_when_login_fails_with_incorrect_credentials() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com", stores: stores)
+        let useCase = MockSiteCredentialLoginUseCase()
+        useCase.mockedLoginError = .wrongCredentials
+        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com", useCase: useCase)
         XCTAssertFalse(viewModel.shouldShowErrorAlert)
-
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .retrieveJetpackPluginDetails(let completion):
-                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
-                completion(.failure(error))
-            default:
-                break
-            }
-        }
 
         // When
         viewModel.handleLogin()
@@ -128,93 +78,37 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.errorMessage, SiteCredentialLoginViewModel.Localization.wrongCredentials)
     }
 
-    func test_authentication_and_successHandler_are_triggered_when_fetching_plugin_succeeds() {
+    func test_errorMessage_is_correct_when_login_fails_with_generic_error() {
         // Given
-        var successHandlerTriggered = false
-        var triggeredAuthentication = false
-        let siteURL = "https://test.com"
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) {
-            successHandlerTriggered = true
-        }
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .authenticate:
-                triggeredAuthentication = true
-            case .retrieveJetpackPluginDetails(let completion):
-                completion(.success(SitePlugin.fake()))
-            default:
-                break
-            }
-        }
+        let useCase = MockSiteCredentialLoginUseCase()
+        useCase.mockedLoginError = .genericFailure(underlyingError: NSError(domain: "test", code: 500))
+        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com", useCase: useCase)
+        XCTAssertFalse(viewModel.shouldShowErrorAlert)
 
         // When
         viewModel.handleLogin()
 
         // Then
-        XCTAssertFalse(viewModel.shouldShowErrorAlert)
-        XCTAssertTrue(triggeredAuthentication)
-        XCTAssertTrue(successHandlerTriggered)
+        XCTAssertTrue(viewModel.shouldShowErrorAlert)
+        XCTAssertEqual(viewModel.errorMessage, SiteCredentialLoginViewModel.Localization.genericFailure)
     }
 
-    func test_authentication_and_successHandler_are_triggered_when_fetching_plugin_fails_with_404() {
+    func test_successHandler_is_triggered_when_login_succeeds() {
         // Given
-        var successHandlerTriggered = false
-        var triggeredAuthentication = false
-        let siteURL = "https://test.com"
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) {
-            successHandlerTriggered = true
-        }
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .authenticate:
-                triggeredAuthentication = true
-            case .retrieveJetpackPluginDetails(let completion):
-                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
-                completion(.failure(error))
-            default:
-                break
-            }
-        }
+        let useCase = MockSiteCredentialLoginUseCase()
+        useCase.shouldMockLoginSuccess = true
+        var isLoginSuccess = false
+        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com",
+                                                     useCase: useCase,
+                                                     onLoginSuccess: { isLoginSuccess = true })
+        XCTAssertFalse(viewModel.shouldShowErrorAlert)
 
         // When
         viewModel.handleLogin()
 
         // Then
         XCTAssertFalse(viewModel.shouldShowErrorAlert)
-        XCTAssertTrue(triggeredAuthentication)
-        XCTAssertTrue(successHandlerTriggered)
-    }
-
-    func test_authentication_and_successHandler_are_triggered_when_fetching_plugin_fails_with_403() {
-        // Given
-        var successHandlerTriggered = false
-        var triggeredAuthentication = false
-        let siteURL = "https://test.com"
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) {
-            successHandlerTriggered = true
-        }
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .authenticate:
-                triggeredAuthentication = true
-            case .retrieveJetpackPluginDetails(let completion):
-                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))
-                completion(.failure(error))
-            default:
-                break
-            }
-        }
-
-        // When
-        viewModel.handleLogin()
-
-        // Then
-        XCTAssertFalse(viewModel.shouldShowErrorAlert)
-        XCTAssertTrue(triggeredAuthentication)
-        XCTAssertTrue(successHandlerTriggered)
+        XCTAssertTrue(isLoginSuccess)
     }
 
     // MARK: - Analytics
@@ -248,20 +142,12 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
     func test_it_tracks_login_jetpack_site_credential_did_show_error_alert_when_displaying_remote_error() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let siteURL = "https://test.com"
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores, analytics: analytics)
-
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(MockError()))
-            default:
-                break
-            }
-        }
+        let useCase = MockSiteCredentialLoginUseCase()
+        useCase.mockedLoginError = .wrongCredentials
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics, useCase: useCase)
 
         // When
         viewModel.handleLogin()
@@ -272,20 +158,12 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
     func test_it_tracks_login_jetpack_site_credential_did_finish_login_when_login_finishes() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let siteURL = "https://test.com"
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores, analytics: analytics)
-
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .retrieveJetpackPluginDetails(let completion):
-                completion(.success(SitePlugin.fake()))
-            default:
-                break
-            }
-        }
+        let useCase = MockSiteCredentialLoginUseCase()
+        useCase.shouldMockLoginSuccess = true
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics, useCase: useCase)
 
         // When
         viewModel.handleLogin()

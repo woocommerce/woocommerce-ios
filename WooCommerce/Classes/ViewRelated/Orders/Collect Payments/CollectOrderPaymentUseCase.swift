@@ -8,10 +8,6 @@ import protocol Storage.StorageManagerType
 import enum Hardware.CardReaderServiceError
 import enum Hardware.UnderlyingError
 
-enum CollectOrderPaymentUseCaseError: Error {
-    case flowCanceledByUser
-}
-
 /// Protocol to abstract the `CollectOrderPaymentUseCase`.
 /// Currently only used to facilitate unit tests.
 ///
@@ -246,7 +242,7 @@ private extension CollectOrderPaymentUseCase {
         }
 
         guard let paymentGatewayAccount = paymentGatewayAccount else {
-            onCompletion(.failure(CollectOrderPaymentError.paymentGatewayNotFound))
+            onCompletion(.failure(CollectOrderPaymentUseCaseError.paymentGatewayNotFound))
             return
         }
 
@@ -610,7 +606,8 @@ extension CollectOrderPaymentUseCase {
         }
     }
 
-    enum CollectOrderPaymentError: Error {
+    enum CollectOrderPaymentUseCaseError: Error {
+        case flowCanceledByUser
         case paymentGatewayNotFound
     }
 }

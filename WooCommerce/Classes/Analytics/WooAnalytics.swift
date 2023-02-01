@@ -65,10 +65,8 @@ public extension WooAnalytics {
         // Refreshes A/B experiments since `ExPlat.shared` is reset after each `TracksProvider.refreshUserData` call
         // and any A/B test assignments that come back after the shared instance is reset won't be saved for later
         // access.
-        let context: ExperimentContext = ServiceLocator.stores.isAuthenticated ?
-            .loggedIn: .loggedOut
-        Task { @MainActor in
-            await ABTest.start(for: context)
+        Task {
+            await ABTest.start()
         }
     }
 

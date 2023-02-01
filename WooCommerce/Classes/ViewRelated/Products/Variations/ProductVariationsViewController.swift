@@ -340,11 +340,12 @@ private extension ProductVariationsViewController {
     func createResultsController() -> ResultsController<StorageProductVariation> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "product.siteID == %lld AND product.productID == %lld", siteID, productID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
+        let menuOrderDescriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
+        let variationIdDescriptor = NSSortDescriptor(keyPath: \StorageProductVariation.productVariationID, ascending: false)
 
         return ResultsController<StorageProductVariation>(storageManager: storageManager,
                                                           matching: predicate,
-                                                          sortedBy: [descriptor])
+                                                          sortedBy: [menuOrderDescriptor, variationIdDescriptor])
     }
 
     func configureResultsController(_ resultsController: ResultsController<StorageProductVariation>) {

@@ -15,7 +15,7 @@ final class SiteCredentialLoginViewModel: ObservableObject {
     @Published var shouldShowErrorAlert = false
 
     private let analytics: Analytics
-    private var useCase: SiteCredentialLoginUseCase?
+    private var useCase: SiteCredentialLoginProtocol?
     private let successHandler: () -> Void
 
     private var loginFields: LoginFields {
@@ -30,10 +30,12 @@ final class SiteCredentialLoginViewModel: ObservableObject {
     init(siteURL: String,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
+         useCase: SiteCredentialLoginProtocol? = nil, // this is for mocking and testing
          onLoginSuccess: @escaping () -> Void = {}) {
         self.siteURL = siteURL
         self.analytics = analytics
         self.successHandler = onLoginSuccess
+        self.useCase = useCase
 
         configurePrimaryButton()
         configureUseCase()
@@ -59,7 +61,7 @@ private extension SiteCredentialLoginViewModel {
     }
 
     func configureUseCase() {
-        useCase = .init(siteURL: siteURL, onLoading: { [weak self] isLoading in
+        useCase = SiteCredentialLoginUseCase(siteURL: siteURL, onLoading: { [weak self] isLoading in
             self?.isLoggingIn = isLoading
         }, onLoginSuccess: { [weak self] in
             self?.handleCompletion()
@@ -68,7 +70,7 @@ private extension SiteCredentialLoginViewModel {
         })
     }
 
-    func handleError(_ error: SiteCredentialLoginUseCase.LoginError) {
+    func handleError(_ error: SiteCredentialLoginError) {
         switch error {
         case .wrongCredentials:
             errorMessage = Localization.wrongCredentials

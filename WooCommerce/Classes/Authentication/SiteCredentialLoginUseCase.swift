@@ -3,23 +3,49 @@ import struct Networking.CookieNonceAuthenticatorConfiguration
 import class Networking.WordPressOrgNetwork
 import Yosemite
 
+protocol SiteCredentialLoginProtocol {
+    init(siteURL: String,
+         stores: StoresManager,
+         onLoading: @escaping (Bool) -> Void,
+         onLoginSuccess: @escaping () -> Void,
+         onLoginFailure: @escaping (SiteCredentialLoginError) -> Void)
+
+    func handleLogin(username: String, password: String)
+}
+
+enum SiteCredentialLoginError: Error {
+    case wrongCredentials
+    case genericFailure(underlyingError: Error)
+
+    /// Used for tracking error code
+    ///
+    var underlyingError: NSError {
+        switch self {
+        case .wrongCredentials:
+            return NSError(domain: "SiteCredentialLogin", code: 401, userInfo: nil)
+        case .genericFailure(let underlyingError):
+            return underlyingError as NSError
+        }
+    }
+}
+
 /// This use case handles site credential login without the need to use XMLRPC API.
 /// Steps for login:
 /// - Handle cookie authentication with provided credentials.
 /// - Attempt retrieving plugin details. If the request fails with 401 error, the authentication fails.
 ///
-final class SiteCredentialLoginUseCase {
+final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
     private let siteURL: String
     private let stores: StoresManager
     private let loadingHandler: (Bool) -> Void
     private let successHandler: () -> Void
-    private let errorHandler: (LoginError) -> Void
+    private let errorHandler: (SiteCredentialLoginError) -> Void
 
     init(siteURL: String,
          stores: StoresManager = ServiceLocator.stores,
          onLoading: @escaping (Bool) -> Void,
          onLoginSuccess: @escaping () -> Void,
-         onLoginFailure: @escaping (LoginError) -> Void) {
+         onLoginFailure: @escaping (SiteCredentialLoginError) -> Void) {
         self.siteURL = siteURL
         self.stores = stores
         self.loadingHandler = onLoading
@@ -89,22 +115,6 @@ private extension SiteCredentialLoginUseCase {
 }
 
 extension SiteCredentialLoginUseCase {
-    enum LoginError: Error {
-        case wrongCredentials
-        case genericFailure(underlyingError: Error)
-
-        /// Used for tracking error code
-        ///
-        var underlyingError: NSError {
-            switch self {
-            case .wrongCredentials:
-                return NSError(domain: "SiteCredentialLogin", code: 401, userInfo: nil)
-            case .genericFailure(let underlyingError):
-                return underlyingError as NSError
-            }
-        }
-    }
-
     enum Constants {
         static let loginPath = "/wp-login.php"
         static let adminPath = "/wp-admin/"

@@ -52,6 +52,9 @@ class AuthenticationManager: Authentication {
     /// Keeps a reference to the checker
     private var postSiteCredentialLoginChecker: PostSiteCredentialLoginChecker?
 
+    /// Keeps a reference to the use case
+    private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
+
     private var enableSiteAddressLoginOnly: Bool {
         abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment
     }
@@ -100,6 +103,7 @@ class AuthenticationManager: Authentication {
                                                                 wpcomPasswordInstructions:
                                                                 AuthenticationConstants.wpcomPasswordInstructions,
                                                                 skipXMLRPCCheckForSiteDiscovery: true,
+                                                                skipXMLRPCCheckForSiteAddressLogin: enableSiteAddressLoginOnly,
                                                                 useEnterEmailAddressAsStepValueForGetStartedVC: true,
                                                                 enableSiteAddressLoginOnlyInPrologue: enableSiteAddressLoginOnly)
 
@@ -379,6 +383,20 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         let errorUI = errorUI(for: site, in: navigationController)
         navigationController.show(errorUI, sender: nil)
+    }
+
+    /// Handles site credential login
+    func handleSiteCredentialLogin(credentials: WordPressOrgCredentials,
+                                   onLoading: @escaping (Bool) -> Void,
+                                   onSuccess: @escaping () -> Void,
+                                   onFailure: @escaping  (Error) -> Void) {
+        let useCase = SiteCredentialLoginUseCase(siteURL: credentials.siteURL)
+        useCase.setupHandlers(onLoading: onLoading, onLoginSuccess: onSuccess, onLoginFailure: {
+            onFailure($0.underlyingError)
+        })
+        self.siteCredentialLoginUseCase = useCase
+
+        useCase.handleLogin(username: credentials.username, password: credentials.password)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.

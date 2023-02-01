@@ -1,10 +1,13 @@
 import Foundation
 import Yosemite
 import WordPressAuthenticator
+import enum Alamofire.AFError
+import struct Networking.CookieNonceAuthenticatorConfiguration
+import class Networking.WordPressOrgNetwork
 
 /// View model for `SiteCredentialLoginView`.
 ///
-final class SiteCredentialLoginViewModel: ObservableObject {
+final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     let siteURL: String
 
     @Published var username: String = ""
@@ -14,9 +17,9 @@ final class SiteCredentialLoginViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
     @Published var shouldShowErrorAlert = false
 
-    private let analytics: Analytics
-    private var useCase: SiteCredentialLoginProtocol
+    private let stores: StoresManager
     private let successHandler: () -> Void
+    private let analytics: Analytics
 
     private var loginFields: LoginFields {
         let loginFields = LoginFields()
@@ -30,20 +33,18 @@ final class SiteCredentialLoginViewModel: ObservableObject {
     init(siteURL: String,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         useCase: SiteCredentialLoginProtocol? = nil, // this is for mocking and testing
          onLoginSuccess: @escaping () -> Void = {}) {
         self.siteURL = siteURL
+        self.stores = stores
         self.analytics = analytics
         self.successHandler = onLoginSuccess
-        self.useCase = useCase ?? SiteCredentialLoginUseCase(siteURL: siteURL, stores: stores)
-
+        super.init()
         configurePrimaryButton()
-        configureUseCase()
     }
 
     func handleLogin() {
         analytics.track(.loginJetpackSiteCredentialInstallTapped)
-        useCase.handleLogin(username: username, password: password)
+        loginAndAttemptFetchingJetpackPluginDetails()
     }
 
     func resetPassword() {
@@ -60,25 +61,63 @@ private extension SiteCredentialLoginViewModel {
             .assign(to: &$primaryButtonDisabled)
     }
 
-    func configureUseCase() {
-        useCase.setupHandlers(onLoading: { [weak self] isLoading in
-            self?.isLoggingIn = isLoading
-        }, onLoginSuccess: { [weak self] in
-            self?.handleCompletion()
-        }, onLoginFailure: { [weak self] error in
-            self?.handleError(error)
-        })
+    func loginAndAttemptFetchingJetpackPluginDetails() {
+        // Makes sure the loading indicator is shown
+        isLoggingIn = true
+
+        handleCookieAuthentication()
+        retrieveJetpackPluginDetails()
     }
 
-    func handleError(_ error: SiteCredentialLoginError) {
+    func handleCookieAuthentication() {
+        guard let loginURL = URL(string: siteURL + Constants.loginPath),
+              let adminURL = URL(string: siteURL + Constants.adminPath) else {
+            DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteURL)")
+            isLoggingIn = false
+            return
+        }
+        // Prepares the authenticator with username and password
+        let config = CookieNonceAuthenticatorConfiguration(username: username,
+                                                           password: password,
+                                                           loginURL: loginURL,
+                                                           adminURL: adminURL)
+        let network = WordPressOrgNetwork(configuration: config)
+        let authenticationAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        stores.dispatch(authenticationAction)
+    }
+
+    func retrieveJetpackPluginDetails() {
+        // Retrieves Jetpack plugin details to see if the authentication succeeds.
+        let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
+            guard let self else { return }
+            self.isLoggingIn = false
+            switch result {
+            case .success:
+                // Success to get the details means the authentication succeeds.
+                self.handleCompletion()
+            case .failure(let error):
+                self.handleRemoteError(error)
+            }
+        }
+        stores.dispatch(jetpackAction)
+    }
+
+    func handleRemoteError(_ error: Error) {
         switch error {
-        case .wrongCredentials:
+        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)),
+            AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
+            // Error 404 means Jetpack is not installed. Allow this to come through.
+            // Error 403 means the lack of permission to manage plugins. Also allow this error
+            // since we want to show the error on the next screen.
+            return handleCompletion()
+        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401)):
             errorMessage = Localization.wrongCredentials
-        case .genericFailure:
+        default:
             errorMessage = Localization.genericFailure
         }
+
         shouldShowErrorAlert = true
-        analytics.track(.loginJetpackSiteCredentialDidShowErrorAlert, withError: error.underlyingError)
+        analytics.track(.loginJetpackSiteCredentialDidShowErrorAlert, withError: error)
     }
 
     func handleCompletion() {
@@ -94,5 +133,10 @@ extension SiteCredentialLoginViewModel {
             comment: "An error message shown during login when the username or password is incorrect."
         )
         static let genericFailure = NSLocalizedString("Login failed. Please try again.", comment: "A generic error during site credential login")
+    }
+
+    enum Constants {
+        static let loginPath = "/wp-login.php"
+        static let adminPath = "/wp-admin/"
     }
 }

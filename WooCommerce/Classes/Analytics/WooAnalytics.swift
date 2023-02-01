@@ -3,6 +3,7 @@ import Foundation
 import UIKit
 import WordPressShared
 import WidgetKit
+import enum Alamofire.AFError
 
 public class WooAnalytics: Analytics {
 
@@ -143,10 +144,28 @@ public extension WooAnalytics {
         guard let error = error else {
             return nil
         }
-        let err = error as NSError
-        return [Constants.errorKeyCode: "\(err.code)",
-                Constants.errorKeyDomain: err.domain,
-                Constants.errorKeyDescription: err.description]
+
+        var errorCode = ""
+        var errorDomain = ""
+        var errorDescription = ""
+
+        if let error = error as? AFError {
+            errorCode = "\(error.responseCode ?? 0)"
+            // TODO: We lose the error domain if AFError?
+            errorDescription = error.localizedDescription
+        }
+        // TODO: Conditional cast from 'any Error' to 'NSError' always succeeds
+        else if let error = error as? NSError {
+            errorCode = "\(error.code)"
+            errorDomain = error.domain
+            errorDescription = error.description
+        }
+
+        return [
+            Constants.errorKeyCode: errorCode,
+            Constants.errorKeyDomain: errorDomain,
+            Constants.errorKeyDescription: errorDescription
+        ]
     }
 }
 

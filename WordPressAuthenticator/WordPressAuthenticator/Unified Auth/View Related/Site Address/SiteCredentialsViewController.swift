@@ -446,13 +446,13 @@ private extension SiteCredentialsViewController {
         guard let delegate = WordPressAuthenticator.shared.delegate else {
             fatalError("Error: Where did the delegate go?")
         }
+        // manually construct the XMLRPC since this is needed to get the site address later
+        let xmlrpc = loginFields.siteAddress + "/xmlrpc.php"
         let wporg = WordPressOrgCredentials(username: loginFields.username,
                                             password: loginFields.password,
-                                            xmlrpc: "",
+                                            xmlrpc: xmlrpc,
                                             options: [:])
-        delegate.handleSiteCredentialLogin(siteURL: loginFields.siteAddress,
-                                           credentials: wporg,
-                                           onLoading: { [weak self] shouldShowLoading in
+        delegate.handleSiteCredentialLogin(credentials: wporg, onLoading: { [weak self] shouldShowLoading in
             self?.configureViewLoading(shouldShowLoading)
         }, onSuccess: { [weak self] in
             self?.finishedLogin(withUsername: wporg.username,

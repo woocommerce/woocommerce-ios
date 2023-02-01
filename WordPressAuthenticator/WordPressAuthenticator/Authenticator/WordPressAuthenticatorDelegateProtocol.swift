@@ -114,14 +114,12 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     /// This method is only triggered when the config `skipXMLRPCCheckForSiteAddressLogin` is enabled.
     ///
     /// - Parameters:
-    ///     - siteURL: The site to log in to
     ///     - credentials: WordPress.org credentials submitted in the site credentials form.
     ///     - onLoading: the block to update the loading state on the site credentials form when necessary.
     ///     - onSuccess: the block to finish the login flow after login succeeds.
     ///     - onFailure: the block to trigger error handling
     ///
-    func handleSiteCredentialLogin(siteURL: String,
-                                   credentials: WordPressOrgCredentials,
+    func handleSiteCredentialLogin(credentials: WordPressOrgCredentials,
                                    onLoading: @escaping (Bool) -> Void,
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping (Error) -> Void)
@@ -159,8 +157,7 @@ public extension WordPressAuthenticatorDelegate {
         // No-op
     }
 
-    func handleSiteCredentialLogin(siteURL: String,
-                                   credentials: WordPressOrgCredentials,
+    func handleSiteCredentialLogin(credentials: WordPressOrgCredentials,
                                    onLoading: @escaping (Bool) -> Void,
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping (Error) -> Void) {

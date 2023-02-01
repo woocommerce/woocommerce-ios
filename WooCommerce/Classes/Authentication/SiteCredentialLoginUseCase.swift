@@ -4,11 +4,9 @@ import class Networking.WordPressOrgNetwork
 import Yosemite
 
 protocol SiteCredentialLoginProtocol {
-    init(siteURL: String,
-         stores: StoresManager,
-         onLoading: @escaping (Bool) -> Void,
-         onLoginSuccess: @escaping () -> Void,
-         onLoginFailure: @escaping (SiteCredentialLoginError) -> Void)
+    func setupHandlers(onLoading: @escaping (Bool) -> Void,
+                       onLoginSuccess: @escaping () -> Void,
+                       onLoginFailure: @escaping (SiteCredentialLoginError) -> Void)
 
     func handleLogin(username: String, password: String)
 }
@@ -37,17 +35,19 @@ enum SiteCredentialLoginError: Error {
 final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
     private let siteURL: String
     private let stores: StoresManager
-    private let loadingHandler: (Bool) -> Void
-    private let successHandler: () -> Void
-    private let errorHandler: (SiteCredentialLoginError) -> Void
+    private var loadingHandler: ((Bool) -> Void)?
+    private var successHandler: (() -> Void)?
+    private var errorHandler: ((SiteCredentialLoginError) -> Void)?
 
     init(siteURL: String,
-         stores: StoresManager = ServiceLocator.stores,
-         onLoading: @escaping (Bool) -> Void,
-         onLoginSuccess: @escaping () -> Void,
-         onLoginFailure: @escaping (SiteCredentialLoginError) -> Void) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteURL = siteURL
         self.stores = stores
+    }
+
+    func setupHandlers(onLoading: @escaping (Bool) -> Void,
+                       onLoginSuccess: @escaping () -> Void,
+                       onLoginFailure: @escaping (SiteCredentialLoginError) -> Void) {
         self.loadingHandler = onLoading
         self.successHandler = onLoginSuccess
         self.errorHandler = onLoginFailure
@@ -60,7 +60,7 @@ final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
 
 private extension SiteCredentialLoginUseCase {
     func loginAndAttemptFetchingJetpackPluginDetails(username: String, password: String) {
-        loadingHandler(true)
+        loadingHandler?(true)
         handleCookieAuthentication(username: username, password: password)
         retrieveJetpackPluginDetails()
     }
@@ -69,7 +69,7 @@ private extension SiteCredentialLoginUseCase {
         guard let loginURL = URL(string: siteURL + Constants.loginPath),
               let adminURL = URL(string: siteURL + Constants.adminPath) else {
             DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteURL)")
-            loadingHandler(false)
+            loadingHandler?(false)
             return
         }
         // Prepares the authenticator with username and password
@@ -86,11 +86,11 @@ private extension SiteCredentialLoginUseCase {
         // Retrieves Jetpack plugin details to see if the authentication succeeds.
         let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
             guard let self else { return }
-            self.loadingHandler(false)
+            self.loadingHandler?(false)
             switch result {
             case .success:
                 // Success to get the details means the authentication succeeds.
-                self.successHandler()
+                self.successHandler?()
             case .failure(let error):
                 self.handleRemoteError(error)
             }
@@ -105,11 +105,11 @@ private extension SiteCredentialLoginUseCase {
             // Error 404 means Jetpack is not installed. Allow this to come through.
             // Error 403 means the lack of permission to manage plugins. Also allow this error
             // since we want to show the error on the next screen.
-            successHandler()
+            successHandler?()
         case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401)):
-            errorHandler(.wrongCredentials)
+            errorHandler?(.wrongCredentials)
         default:
-            errorHandler(.genericFailure(underlyingError: error))
+            errorHandler?(.genericFailure(underlyingError: error))
         }
     }
 }

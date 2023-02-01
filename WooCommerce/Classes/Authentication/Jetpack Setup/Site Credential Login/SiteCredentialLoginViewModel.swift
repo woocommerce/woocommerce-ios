@@ -15,7 +15,7 @@ final class SiteCredentialLoginViewModel: ObservableObject {
     @Published var shouldShowErrorAlert = false
 
     private let analytics: Analytics
-    private var useCase: SiteCredentialLoginProtocol?
+    private var useCase: SiteCredentialLoginProtocol
     private let successHandler: () -> Void
 
     private var loginFields: LoginFields {
@@ -35,7 +35,7 @@ final class SiteCredentialLoginViewModel: ObservableObject {
         self.siteURL = siteURL
         self.analytics = analytics
         self.successHandler = onLoginSuccess
-        self.useCase = useCase
+        self.useCase = useCase ?? SiteCredentialLoginUseCase(siteURL: siteURL, stores: stores)
 
         configurePrimaryButton()
         configureUseCase()
@@ -43,7 +43,7 @@ final class SiteCredentialLoginViewModel: ObservableObject {
 
     func handleLogin() {
         analytics.track(.loginJetpackSiteCredentialInstallTapped)
-        useCase?.handleLogin(username: username, password: password)
+        useCase.handleLogin(username: username, password: password)
     }
 
     func resetPassword() {
@@ -61,7 +61,7 @@ private extension SiteCredentialLoginViewModel {
     }
 
     func configureUseCase() {
-        useCase = SiteCredentialLoginUseCase(siteURL: siteURL, onLoading: { [weak self] isLoading in
+        useCase.setupHandlers(onLoading: { [weak self] isLoading in
             self?.isLoggingIn = isLoading
         }, onLoginSuccess: { [weak self] in
             self?.handleCompletion()

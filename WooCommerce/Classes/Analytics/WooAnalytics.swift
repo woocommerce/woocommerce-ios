@@ -149,16 +149,13 @@ public extension WooAnalytics {
         var errorDomain = ""
         var errorDescription = ""
 
-        if let error = error as? AFError {
-            errorCode = "\(error.responseCode ?? 0)"
-            // TODO: We lose the error domain if AFError?
-            errorDescription = error.localizedDescription
-        }
-        // TODO: Conditional cast from 'any Error' to 'NSError' always succeeds
-        else if let error = error as? NSError {
-            errorCode = "\(error.code)"
-            errorDomain = error.domain
-            errorDescription = error.description
+        let err = error as NSError
+        errorCode = "\(err.code)"
+        errorDomain = err.domain
+        errorDescription = err.description
+
+        if let networkError = error as? AFError {
+            errorCode = "\(networkError.responseCode ?? 0)"
         }
 
         return [

@@ -56,7 +56,7 @@ class AuthenticationManager: Authentication {
     private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
 
     private var enableSiteAddressLoginOnly: Bool {
-        abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment
+        true
     }
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -391,12 +391,14 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping  (Error) -> Void) {
         let useCase = SiteCredentialLoginUseCase(siteURL: credentials.siteURL)
-        useCase.setupHandlers(onLoading: onLoading, onLoginSuccess: onSuccess, onLoginFailure: {
+        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: {
+            onLoading(false)
             onFailure($0.underlyingError)
         })
         self.siteCredentialLoginUseCase = useCase
 
         useCase.handleLogin(username: credentials.username, password: credentials.password)
+        onLoading(true)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.

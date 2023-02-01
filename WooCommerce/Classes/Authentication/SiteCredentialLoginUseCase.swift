@@ -4,14 +4,14 @@ import class Networking.WordPressOrgNetwork
 import Yosemite
 
 protocol SiteCredentialLoginProtocol {
-    func setupHandlers(onLoading: @escaping (Bool) -> Void,
-                       onLoginSuccess: @escaping () -> Void,
+    func setupHandlers(onLoginSuccess: @escaping () -> Void,
                        onLoginFailure: @escaping (SiteCredentialLoginError) -> Void)
 
     func handleLogin(username: String, password: String)
 }
 
 enum SiteCredentialLoginError: Error {
+    static let errorDomain = "SiteCredentialLogin"
     case wrongCredentials
     case genericFailure(underlyingError: Error)
 
@@ -20,7 +20,7 @@ enum SiteCredentialLoginError: Error {
     var underlyingError: NSError {
         switch self {
         case .wrongCredentials:
-            return NSError(domain: "SiteCredentialLogin", code: 401, userInfo: nil)
+            return NSError(domain: Self.errorDomain, code: 401, userInfo: nil)
         case .genericFailure(let underlyingError):
             return underlyingError as NSError
         }
@@ -35,7 +35,6 @@ enum SiteCredentialLoginError: Error {
 final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
     private let siteURL: String
     private let stores: StoresManager
-    private var loadingHandler: ((Bool) -> Void)?
     private var successHandler: (() -> Void)?
     private var errorHandler: ((SiteCredentialLoginError) -> Void)?
 
@@ -45,10 +44,8 @@ final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
         self.stores = stores
     }
 
-    func setupHandlers(onLoading: @escaping (Bool) -> Void,
-                       onLoginSuccess: @escaping () -> Void,
+    func setupHandlers(onLoginSuccess: @escaping () -> Void,
                        onLoginFailure: @escaping (SiteCredentialLoginError) -> Void) {
-        self.loadingHandler = onLoading
         self.successHandler = onLoginSuccess
         self.errorHandler = onLoginFailure
     }
@@ -60,7 +57,6 @@ final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
 
 private extension SiteCredentialLoginUseCase {
     func loginAndAttemptFetchingJetpackPluginDetails(username: String, password: String) {
-        loadingHandler?(true)
         handleCookieAuthentication(username: username, password: password)
         retrieveJetpackPluginDetails()
     }
@@ -69,7 +65,8 @@ private extension SiteCredentialLoginUseCase {
         guard let loginURL = URL(string: siteURL + Constants.loginPath),
               let adminURL = URL(string: siteURL + Constants.adminPath) else {
             DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteURL)")
-            loadingHandler?(false)
+            let error = NSError(domain: SiteCredentialLoginError.errorDomain, code: -1)
+            errorHandler?(.genericFailure(underlyingError: error))
             return
         }
         // Prepares the authenticator with username and password
@@ -86,7 +83,6 @@ private extension SiteCredentialLoginUseCase {
         // Retrieves Jetpack plugin details to see if the authentication succeeds.
         let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
             guard let self else { return }
-            self.loadingHandler?(false)
             switch result {
             case .success:
                 // Success to get the details means the authentication succeeds.

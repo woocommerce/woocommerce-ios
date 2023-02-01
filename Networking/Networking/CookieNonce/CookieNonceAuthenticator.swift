@@ -159,7 +159,7 @@ private extension CookieNonceAuthenticator {
         var parameters = [URLQueryItem]()
         parameters.append(URLQueryItem(name: "log", value: username))
         parameters.append(URLQueryItem(name: "pwd", value: password))
-        parameters.append(URLQueryItem(name: "rememberme", value: "true"))
+        parameters.append(URLQueryItem(name: "rememberme", value: "false"))
         var components = URLComponents()
         components.queryItems = parameters
         request.httpBody = components.percentEncodedQuery?.data(using: .utf8)

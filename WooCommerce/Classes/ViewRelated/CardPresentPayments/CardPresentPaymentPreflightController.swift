@@ -1,9 +1,6 @@
 import Foundation
 import Yosemite
 import Combine
-#if !targetEnvironment(simulator)
-import ProximityReader
-#endif
 
 enum CardReaderPreflightResult {
     case completed(CardReader, PaymentGatewayAccount)

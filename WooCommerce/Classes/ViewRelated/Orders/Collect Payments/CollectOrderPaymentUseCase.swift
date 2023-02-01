@@ -605,9 +605,9 @@ extension CollectOrderPaymentUseCase {
             )
         }
     }
+}
 
-    enum CollectOrderPaymentUseCaseError: Error {
-        case flowCanceledByUser
-        case paymentGatewayNotFound
-    }
+enum CollectOrderPaymentUseCaseError: Error {
+    case flowCanceledByUser
+    case paymentGatewayNotFound
 }

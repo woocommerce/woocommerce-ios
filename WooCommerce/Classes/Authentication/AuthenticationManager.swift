@@ -777,6 +777,11 @@ private extension AuthenticationManager {
         }
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
         checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
+            // clear scheduled local notifications
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
+                ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: LocalNotification.Scenario.allCases)
+            }
+
             // navigates to home screen immediately with a placeholder store ID
             self?.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
         }

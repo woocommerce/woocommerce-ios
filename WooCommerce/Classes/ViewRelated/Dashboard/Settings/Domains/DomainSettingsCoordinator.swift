@@ -50,13 +50,7 @@ private extension DomainSettingsCoordinator {
                                                     productID: domain.productID,
                                                     supportsPrivacy: domain.supportsPrivacy)
             if hasDomainCredit {
-                do {
-                    try await self.redeemDomainCredit(domain: domainToPurchase)
-                    self.showSuccessView(from: navigationController, domainName: domain.name)
-                } catch {
-                    // TODO: 8558 - error handling
-                    print("⛔️ Error redeeming domain credit with the selected domain \(domain): \(error)")
-                }
+                self.showContactInfoForm(from: navigationController, domain: domainToPurchase)
             } else {
                 do {
                     try await self.createCart(domain: domainToPurchase)
@@ -72,6 +66,7 @@ private extension DomainSettingsCoordinator {
         navigationController.show(domainSelector, sender: nil)
     }
 
+    @MainActor
     func showWebCheckout(from navigationController: UINavigationController, domain: DomainToPurchase) {
         guard let siteURLHost = URLComponents(string: site.url)?.host else {
             // TODO: 8558 - error handling
@@ -85,7 +80,26 @@ private extension DomainSettingsCoordinator {
         let checkoutController = AuthenticatedWebViewController(viewModel: checkoutViewModel)
         navigationController.pushViewController(checkoutController, animated: true)
     }
+}
 
+private extension DomainSettingsCoordinator {
+    @MainActor
+    func showContactInfoForm(from navigationController: UINavigationController,
+                             domain: DomainToPurchase) {
+        let contactInfoForm = DomainContactInfoFormHostingController(viewModel: .init(siteID: site.siteID, stores: stores)) { [weak self] contactInfo in
+            guard let self else { return }
+            do {
+                try await self.redeemDomainCredit(domain: domain, contactInfo: contactInfo)
+                self.showSuccessView(from: navigationController, domainName: domain.name)
+            } catch {
+                // TODO: 8558 - error handling
+                print("⛔️ Error redeeming domain credit with the selected domain \(domain): \(error)")
+            }
+        }
+        navigationController.pushViewController(contactInfoForm, animated: true)
+    }
+
+    @MainActor
     func showSuccessView(from navigationController: UINavigationController,
                          domainName: String) {
         let successController = DomainPurchaseSuccessHostingController(viewModel: .init(domainName: domainName)) {
@@ -107,10 +121,11 @@ private extension DomainSettingsCoordinator {
     }
 
     @MainActor
-    func redeemDomainCredit(domain: DomainToPurchase) async throws {
+    func redeemDomainCredit(domain: DomainToPurchase, contactInfo: DomainContactInfo) async throws {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(DomainAction.redeemDomainCredit(siteID: site.siteID,
-                                                            domain: domain) { result in
+                                                            domain: domain,
+                                                            contactInfo: contactInfo) { result in
                 continuation.resume(with: result)
             })
         }

@@ -230,7 +230,8 @@ final class DomainStoreTests: XCTestCase {
         let result = waitFor { promise in
             self.store.onAction(DomainAction.redeemDomainCredit(siteID: 606, domain: .init(name: "",
                                                                                            productID: 1,
-                                                                                           supportsPrivacy: true)) { result in
+                                                                                           supportsPrivacy: true),
+                                                                contactInfo: .fake()) { result in
                 promise(result)
             })
         }
@@ -247,7 +248,8 @@ final class DomainStoreTests: XCTestCase {
         let result = waitFor { promise in
             self.store.onAction(DomainAction.redeemDomainCredit(siteID: 606, domain: .init(name: "",
                                                                                            productID: 1,
-                                                                                           supportsPrivacy: true)) { result in
+                                                                                           supportsPrivacy: true),
+                                                                contactInfo: .fake()) { result in
                 promise(result)
             })
         }
@@ -267,7 +269,8 @@ final class DomainStoreTests: XCTestCase {
         let result = waitFor { promise in
             self.store.onAction(DomainAction.redeemDomainCredit(siteID: 606, domain: .init(name: "",
                                                                                            productID: 1,
-                                                                                           supportsPrivacy: true)) { result in
+                                                                                           supportsPrivacy: true),
+                                                                contactInfo: .fake()) { result in
                 promise(result)
             })
         }

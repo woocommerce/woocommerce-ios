@@ -256,6 +256,10 @@ extension WooConstants {
         /// URL for creating a store.
         case storeCreation = "https://woocommerce.com/start"
 
+        /// URL with un-escaped characters for testing purposes. It should read as `https://test.com/test-%E2%80%93-survey`
+        ///
+        case testURLStringWithSpecialCharacters = "https://test.com/test-–-survey"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

@@ -280,4 +280,93 @@ final class DomainStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, .notFound)
     }
+
+    // MARK: - `loadDomainContactInfo`
+
+    func test_loadDomainContactInfo_returns_contact_info_on_success() throws {
+        // Given
+        let contactInfo = DomainContactInfo(firstName: "woo",
+                                            lastName: "Merch",
+                                            organization: "Woo",
+                                            address1: "No 300",
+                                            address2: nil,
+                                            postcode: "18888",
+                                            city: "SF",
+                                            state: "CA",
+                                            countryCode: "US",
+                                            phone: "181800",
+                                            email: "woo@merch.com")
+        remote.whenLoadingDomainContactInfo(thenReturn: .success(.init(firstName: "woo",
+                                                                       lastName: "Merch",
+                                                                       organization: "Woo",
+                                                                       address1: "No 300",
+                                                                       address2: nil,
+                                                                       postcode: "18888",
+                                                                       city: "SF",
+                                                                       state: "CA",
+                                                                       countryCode: "US",
+                                                                       phone: "181800",
+                                                                       email: "woo@merch.com")))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(DomainAction.loadDomainContactInfo { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_loadDomainContactInfo_returns_error_on_failure() throws {
+        // Given
+        remote.whenLoadingDomainContactInfo(thenReturn: .failure(NetworkError.timeout))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(DomainAction.loadDomainContactInfo { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, .timeout)
+    }
+
+    // MARK: - `validateDomainContactInfo`
+
+    func test_validateDomainContactInfo_returns_on_success() throws {
+        // Given
+        remote.whenValidatingDomainContactInfo(thenReturn: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(DomainAction.validate(domainContactInfo: .fake(), domain: "") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_validateDomainContactInfo_returns_error_on_failure() throws {
+        // Given
+        remote.whenValidatingDomainContactInfo(thenReturn: .failure(NetworkError.timeout))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(DomainAction.validate(domainContactInfo: .fake(), domain: "") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, .timeout)
+    }
 }

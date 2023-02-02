@@ -22,8 +22,14 @@ public protocol DomainRemoteProtocol {
     /// - Returns: A list of domains.
     func loadDomains(siteID: Int64) async throws -> [SiteDomain]
 
+    /// Loads the contact info for domain registration.
+    /// - Returns: pre-existing contact info from WPCOM if available.
     func loadDomainContactInfo() async throws -> DomainContactInfo
 
+    /// Validates the contact info for domain registration.
+    /// - Parameters:
+    ///   - domainContactInfo: Contact info to validate.
+    ///   - domain: Domain name for domain registration. The validation rules vary between domains.
     func validate(domainContactInfo: DomainContactInfo, domain: String) async throws
 }
 

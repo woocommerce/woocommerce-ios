@@ -2,7 +2,7 @@ import AutomatticTracks
 
 /// ABTest adds A/B testing experiments and runs the tests based on their variations from the ExPlat service.
 ///
-public enum ABTest: String, CaseIterable {
+public enum ABTest: String, CaseIterable, Codable {
     /// Throwaway case, to prevent a compiler error:
     /// `An enum with no cases cannot declare a raw type`
     case null

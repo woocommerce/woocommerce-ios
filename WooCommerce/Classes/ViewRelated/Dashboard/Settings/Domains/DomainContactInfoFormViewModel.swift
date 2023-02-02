@@ -49,6 +49,7 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
 
         super.init(siteID: siteID,
                    address: addressToEdit,
+                   isDoneButtonAlwaysEnabled: true,
                    storageManager: storageManager,
                    stores: stores,
                    analytics: analytics)

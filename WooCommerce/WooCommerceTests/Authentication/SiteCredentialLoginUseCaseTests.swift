@@ -9,7 +9,8 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         // Given
         let cookieJar = MockCookieJar()
         cookieJar.setWordPressComCookie(username: "lalala")
-        let useCase = SiteCredentialLoginUseCase(siteURL: "https://test.com", cookieJar: cookieJar)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let useCase = SiteCredentialLoginUseCase(siteURL: "https://test.com", stores: stores, cookieJar: cookieJar)
         // confidence check
         let cookies = try XCTUnwrap(cookieJar.cookies)
         XCTAssertTrue(cookies.isNotEmpty)

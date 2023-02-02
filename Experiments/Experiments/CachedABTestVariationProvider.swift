@@ -11,6 +11,9 @@ public struct CachedABTestVariationProvider: ABTestVariationProvider {
     }
 
     public func variation(for abTest: ABTest) -> Variation {
+        // We cache only logged out ABTests as they are assigned based on `anonId` by `ExPlat`.
+        // There will be one value assigned to one device and it won't change.
+        //
         guard abTest.context == .loggedOut else {
             return abTest.variation ?? .control
         }

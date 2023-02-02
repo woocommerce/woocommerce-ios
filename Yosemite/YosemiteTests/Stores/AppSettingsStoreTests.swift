@@ -919,7 +919,6 @@ extension AppSettingsStoreTests {
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
 
         let currentTime = Date()
-        let datePrior = Date(timeIntervalSince1970: 100)
         let date = Date()
 
         let settings = createAppSettings(featureAnnouncementCampaignSettings: [.test: .init(dismissedDate: date, remindAfter: nil)])

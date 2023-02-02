@@ -59,19 +59,19 @@ PODS:
   - WPMediaPicker (1.8.1)
   - wpxmlrpc (0.10.0)
   - XLPagerTabStrip (9.0.0)
-  - ZendeskCommonUISDK (6.1.1)
-  - ZendeskCoreSDK (2.5.1)
-  - ZendeskMessagingAPISDK (3.8.2):
-    - ZendeskSDKConfigurationsSDK (~> 1.1.8)
-  - ZendeskMessagingSDK (3.8.2):
-    - ZendeskCommonUISDK (~> 6.1.1)
-    - ZendeskMessagingAPISDK (~> 3.8.2)
-  - ZendeskSDKConfigurationsSDK (1.1.8)
-  - ZendeskSupportProvidersSDK (5.3.0):
-    - ZendeskCoreSDK (~> 2.5.1)
-  - ZendeskSupportSDK (5.3.0):
-    - ZendeskMessagingSDK (~> 3.8.2)
-    - ZendeskSupportProvidersSDK (~> 5.3.0)
+  - ZendeskCommonUISDK (7.0.0)
+  - ZendeskCoreSDK (3.0.0)
+  - ZendeskMessagingAPISDK (4.0.0):
+    - ZendeskSDKConfigurationsSDK (= 2.0.0)
+  - ZendeskMessagingSDK (4.0.0):
+    - ZendeskCommonUISDK (= 7.0.0)
+    - ZendeskMessagingAPISDK (= 4.0.0)
+  - ZendeskSDKConfigurationsSDK (2.0.0)
+  - ZendeskSupportProvidersSDK (6.0.0):
+    - ZendeskCoreSDK (= 3.0.0)
+  - ZendeskSupportSDK (6.0.0):
+    - ZendeskMessagingSDK (= 4.0.0)
+    - ZendeskSupportProvidersSDK (= 6.0.0)
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
@@ -91,7 +91,7 @@ DEPENDENCIES:
   - Wormholy (~> 1.6.5)
   - WPMediaPicker (~> 1.8.1)
   - XLPagerTabStrip (~> 9.0)
-  - ZendeskSupportSDK (~> 5.0)
+  - ZendeskSupportSDK (~> 6.0)
 
 SPEC REPOS:
   https://github.com/wordpress-mobile/cocoapods-specs.git:
@@ -170,13 +170,13 @@ SPEC CHECKSUMS:
   WPMediaPicker: 9011a0ec1f468c039af7485c244576b4c9889a0f
   wpxmlrpc: 68db063041e85d186db21f674adf08d9c70627fd
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
-  ZendeskCommonUISDK: 5808802951ad2bb424f0bed4259dc3c0ce9b52ec
-  ZendeskCoreSDK: 19a18e5ef2edcb18f4dbc0ea0d12bd31f515712a
-  ZendeskMessagingAPISDK: 144e0fb0e633a3c4e73149b781ab65338938d5a8
-  ZendeskMessagingSDK: 500e83d9413481e95180c37ddca0d4ef9d515600
-  ZendeskSDKConfigurationsSDK: 8371b468db0d09e9198f6c5a97818826943ee1ee
-  ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
-  ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
+  ZendeskCommonUISDK: f06dbac6c9e74c3afff75ecdc6bec3832b23258c
+  ZendeskCoreSDK: ce6dbb5eb4d61d2d061547a92bd0b0fe98602e9d
+  ZendeskMessagingAPISDK: 95a99f1eab9482b4106ec88466b93a89f9f7c5fa
+  ZendeskMessagingSDK: 4f5f3d43766bb3b2ea6411d1331cfe609ff33618
+  ZendeskSDKConfigurationsSDK: a5c21010e17b71d02bc2cfe73dcc9da1efa0a7b2
+  ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
+  ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
 PODFILE CHECKSUM: a09e3ee200fbf92e30759055ee99fd73f879837d
 

@@ -107,7 +107,7 @@ target 'WooCommerce' do
   cocoa_lumberjack
   keychain
   pod 'XLPagerTabStrip', '~> 9.0'
-  pod 'ZendeskSupportSDK', '~> 5.0'
+  pod 'ZendeskSupportSDK', '~> 6.0'
   stripe_terminal
   pod 'Kingfisher', '~> 7.2.2'
   pod 'Wormholy', '~> 1.6.5', configurations: ['Debug']

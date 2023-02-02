@@ -5,26 +5,9 @@ import enum Alamofire.AFError
 
 final class SiteCredentialLoginUseCaseTests: XCTestCase {
 
-    func test_onLoading_is_triggered_appropriately_when_login_starts() {
+    func test_onLoginFailure_is_triggered_appropriately_when_login_fails() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        var isLoading = false
-        let useCase = SiteCredentialLoginUseCase(siteURL: "https://test.com", stores: stores)
-
-        // When
-        useCase.setupHandlers(onLoading: { isLoading = $0 },
-                              onLoginSuccess: {},
-                              onLoginFailure: { _ in })
-        useCase.handleLogin(username: "test", password: "secret")
-
-        // Then
-        XCTAssertTrue(isLoading)
-    }
-
-    func test_onLoading_and_onLoginFailure_are_triggered_appropriately_when_login_fails() throws {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        var isLoading = false
         var error: Error?
         let expectedError = NSError(domain: "Test", code: 1)
         let useCase = SiteCredentialLoginUseCase(siteURL: "https://test.com",
@@ -41,21 +24,18 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         }
 
         // When
-        useCase.setupHandlers(onLoading: { isLoading = $0 },
-                              onLoginSuccess: {},
+        useCase.setupHandlers(onLoginSuccess: {},
                               onLoginFailure: { error = $0 })
         useCase.handleLogin(username: "test", password: "secret")
 
         // Then
-        XCTAssertFalse(isLoading)
         let loginError = try XCTUnwrap(error as? SiteCredentialLoginError)
         XCTAssertEqual(loginError.underlyingError, expectedError)
     }
 
-    func test_onLoading_and_onLoginSuccess_are_triggered_appropriately_when_login_succeeds() {
+    func test_onLoginSuccess_is_triggered_appropriately_when_login_succeeds() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        var isLoading = false
         var isSuccess = false
         let useCase = SiteCredentialLoginUseCase(siteURL: "https://test.com",
                                                  stores: stores)
@@ -70,13 +50,11 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         }
 
         // When
-        useCase.setupHandlers(onLoading: { isLoading = $0 },
-                              onLoginSuccess: { isSuccess = true },
+        useCase.setupHandlers(onLoginSuccess: { isSuccess = true },
                               onLoginFailure: { _ in })
         useCase.handleLogin(username: "test", password: "secret")
 
         // Then
-        XCTAssertFalse(isLoading)
         XCTAssertTrue(isSuccess)
     }
 
@@ -101,8 +79,7 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         }
 
         // When
-        useCase.setupHandlers(onLoading: { _ in },
-                              onLoginSuccess: { successHandlerTriggered = true },
+        useCase.setupHandlers(onLoginSuccess: { successHandlerTriggered = true },
                               onLoginFailure: { error = $0 })
         useCase.handleLogin(username: "test", password: "secret")
 
@@ -135,8 +112,7 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         }
 
         // When
-        useCase.setupHandlers(onLoading: { _ in },
-                              onLoginSuccess: { successHandlerTriggered = true },
+        useCase.setupHandlers(onLoginSuccess: { successHandlerTriggered = true },
                               onLoginFailure: { error = $0 })
         useCase.handleLogin(username: "test", password: "secret")
 
@@ -168,8 +144,7 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         }
 
         // When
-        useCase.setupHandlers(onLoading: { _ in },
-                              onLoginSuccess: { successHandlerTriggered = true },
+        useCase.setupHandlers(onLoginSuccess: { successHandlerTriggered = true },
                               onLoginFailure: { error = $0 })
         useCase.handleLogin(username: "test", password: "secret")
 
@@ -198,8 +173,7 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         }
 
         // When
-        useCase.setupHandlers(onLoading: { _ in },
-                              onLoginSuccess: { successHandlerTriggered = true },
+        useCase.setupHandlers(onLoginSuccess: { successHandlerTriggered = true },
                               onLoginFailure: { error = $0 })
         useCase.handleLogin(username: "test", password: "secret")
 

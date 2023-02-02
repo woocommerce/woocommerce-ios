@@ -136,7 +136,9 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let skipXMLRPCCheckForSiteDiscovery: Bool
 
-    /// If enabled, site address login will not check for XMLRPC URL.
+    /// If enabled, site address login will not check for XMLRPC URL or use XMLRPC API to handle login.
+    /// Important: make sure to implement the delegate method `handleSiteCredentialLogin` when enabling this config.
+    ///
     ///
     let skipXMLRPCCheckForSiteAddressLogin: Bool
 

@@ -461,7 +461,7 @@ private extension AppCoordinatorTests {
                          loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                          featureFlagService: FeatureFlagService = MockFeatureFlagService(),
-                         abTestVariationProvider: ABTestVariationProvider = DefaultABTestVariationProvider()) -> AppCoordinator {
+                         abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider()) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
                               storageManager: storageManager ?? self.storageManager,

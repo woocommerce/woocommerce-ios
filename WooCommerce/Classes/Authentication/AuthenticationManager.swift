@@ -10,7 +10,7 @@ import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
 import class Networking.DefaultApplicationPasswordUseCase
 import protocol Experiments.ABTestVariationProvider
-import struct Experiments.DefaultABTestVariationProvider
+import struct Experiments.CachedABTestVariationProvider
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
@@ -55,7 +55,7 @@ class AuthenticationManager: Authentication {
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
-         abTestVariationProvider: ABTestVariationProvider = DefaultABTestVariationProvider()) {
+         abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider()) {
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.analytics = analytics

@@ -171,8 +171,10 @@ final class DomainRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "domain-contact-information/validate", filename: "validate-domain-contact-info-failure")
 
         // When/Then
-        let error = DomainContactInfoError.invalid(messagesByField: [.lastName: ["Enter your last name."],
-                                                                     .phone: ["Enter a valid country code followed by a dot (for example +1.6285550199)."]])
+        let error = DomainContactInfoError.invalid(messages: [
+            "There was an error validating your contact information. The field \"Last Name\" is not valid.",
+            "There was an error validating your contact information. The field \"Phone\" is not valid."
+        ])
         await assertThrowsError({ _ = try await remote.validate(domainContactInfo: .fake(), domain: "") },
                                 errorAssert: { ($0 as? DomainContactInfoError) == error })
     }

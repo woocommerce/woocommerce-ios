@@ -76,14 +76,15 @@ public class DomainRemote: Remote, DomainRemoteProtocol {
 
     public func validate(domainContactInfo: DomainContactInfo, domain: String) async throws {
         let path = "\(Path.domainContactInfo)/validate"
+        let domainContactInfoDictionary = try domainContactInfo.toDictionary()
         let parameters: [String: Any] = [
-            ParameterKey.domainContactInfo: domainContactInfo,
+            ParameterKey.domainContactInfo: domainContactInfoDictionary,
             ParameterKey.domainNames: domain
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
         let response: DomainContactInfoValidationResponse = try await enqueue(request)
         guard response.success else {
-            throw DomainContactInfoError.invalid(messagesByField: response.errorMessagesByField)
+            throw DomainContactInfoError.invalid(messages: response.errorMessages)
         }
     }
 }
@@ -243,7 +244,7 @@ public struct DomainContactInfo: Codable, GeneratedFakeable, Equatable {
 }
 
 public enum DomainContactInfoError: Error, Equatable {
-    case invalid(messagesByField: [DomainContactInfoFormField: [String]]?)
+    case invalid(messages: [String]?)
 }
 
 public enum DomainContactInfoFormField: String, Decodable {
@@ -267,33 +268,11 @@ private struct SiteDomainEnvelope: Decodable {
 
 private struct DomainContactInfoValidationResponse: Decodable {
     let success: Bool
-    let errorMessagesByField: [DomainContactInfoFormField: [String]]?
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        let success = try container.decode(Bool.self, forKey: .success)
-
-        // Messages field needs to be decoded manually because Dictionary's Codable conformance currently only properly handle String and Int keys.
-        // Ref: https://stackoverflow.com/a/44726160/9185596
-        let messagesByFieldString = try container.decodeIfPresent([String: [String]].self, forKey: .messages)
-        let messagesByField: [DomainContactInfoFormField: [String]]? = messagesByFieldString?.keys
-            .compactMap { DomainContactInfoFormField(rawValue: $0) }.reduce([:], { partialResult, field in
-                var result = partialResult
-                result[field] = messagesByFieldString?[field.rawValue]
-                return result
-            })
-        self.init(success: success, errorMessagesByField: messagesByField)
-    }
-
-    init(success: Bool, errorMessagesByField: [DomainContactInfoFormField: [String]]? = nil) {
-        self.success = success
-        self.errorMessagesByField = errorMessagesByField
-    }
+    let errorMessages: [String]?
 
     private enum CodingKeys: String, CodingKey {
         case success
-        case messages
+        case errorMessages = "messages_simple"
     }
 }
 

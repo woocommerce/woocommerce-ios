@@ -65,11 +65,15 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
 
         do {
             try await validate()
+            return contactInfo
+        } catch DomainContactInfoError.invalid(let messages) {
+            let message = messages?.joined(separator: "\n") ?? Localization.defaultValidationErrorMessage
+            notice = .init(title: message, feedbackType: .error)
+            throw DomainContactInfoError.invalid(messages: messages)
         } catch {
             notice = .init(title: error.localizedDescription, feedbackType: .error)
+            throw error
         }
-
-        return contactInfo
     }
 
     // MARK: - Protocol conformance
@@ -126,5 +130,9 @@ private extension DomainContactInfoFormViewModel {
     enum Localization {
         static let title = NSLocalizedString("Register domain", comment: "Title of the domain contact info form.")
         static let addressSection = NSLocalizedString("ADDRESS", comment: "Address section title in the domain contact info form.")
+        static let defaultValidationErrorMessage = NSLocalizedString(
+            "Some unexpected error with the validation. Please check the fields and try again.",
+            comment: "Message in the error notice when an unknown validation error occurs after submitting domain contact info."
+        )
     }
 }

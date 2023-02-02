@@ -145,18 +145,15 @@ public extension WooAnalytics {
             return nil
         }
 
-        var errorCode = ""
-        var errorDomain = ""
-        var errorDescription = ""
-
         let err = error as NSError
-        errorCode = "\(err.code)"
-        errorDomain = err.domain
-        errorDescription = err.description
-
-        if let networkError = error as? AFError {
-            errorCode = "\(networkError.responseCode ?? 0)"
-        }
+        let errorCode: String = {
+            if let networkError = error as? AFError {
+                return "\(networkError.responseCode ?? 0)"
+            }
+            return "\(err.code)"
+        }()
+        let errorDomain = err.domain
+        let errorDescription = err.description
 
         return [
             Constants.errorKeyCode: errorCode,

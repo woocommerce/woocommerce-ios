@@ -56,7 +56,7 @@ class AuthenticationManager: Authentication {
     private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
 
     private var enableSiteAddressLoginOnly: Bool {
-        true
+        abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment
     }
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,

@@ -270,10 +270,14 @@ private extension WooConstants.URLs {
     /// Convert a `string` to a `URL`. Crash if it is malformed.
     ///
     private static func trustedURL(_ url: String) -> URL {
-        guard let url = URL(string: url) else {
-            let fallback = URL(string: url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed) ?? "")
-            return fallback ?? URL(string: "")!
+
+        if let url = URL(string: url) {
+            return url
+        } else if let escapedString = url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed),
+                  let escapedURL = URL(string: escapedString) {
+            return escapedURL
+        } else {
+            fatalError("Expected URL \(url) to be a well-formed URL.")
         }
-        return url
     }
 }

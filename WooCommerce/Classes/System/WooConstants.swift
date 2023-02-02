@@ -162,9 +162,9 @@ extension WooConstants {
         /// URL for the IPP feedback survey for testing purposes
         ///
 #if DEBUG
-        case inPersonPaymentsCashOnDeliveryFeedback,
-             inPersonPaymentsFirstTransactionFeedback,
-             inPersonPaymentsPowerUsersFeedback = "https://automattic.survey.fm/woo-app-ipp-in-app-feedback-testing"
+        case inPersonPaymentsCashOnDeliveryFeedback = "https://automattic.survey.fm/woo-app-–-cod-survey"
+        case inPersonPaymentsFirstTransactionFeedback = "https://automattic.survey.fm/woo-app-–-ipp-first-transaction-survey"
+        case inPersonPaymentsPowerUsersFeedback = "https://automattic.survey.fm/woo-app-–-ipp-survey-for-power-users"
 #else
         /// URL for the IPP feedback survey (COD case). Used when merchants have COD enabled, but no IPP transactions.
         ///
@@ -270,10 +270,10 @@ private extension WooConstants.URLs {
     /// Convert a `string` to a `URL`. Crash if it is malformed.
     ///
     private static func trustedURL(_ url: String) -> URL {
-        if let url = URL(string: url) {
-            return url
-        } else {
-            fatalError("Expected URL \(url) to be a well-formed URL.")
+        guard let url = URL(string: url) else {
+            let fallback = URL(string: url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed) ?? "")
+            return fallback ?? URL(string: "")!
         }
+        return url
     }
 }

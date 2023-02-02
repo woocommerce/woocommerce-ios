@@ -35,13 +35,16 @@ enum SiteCredentialLoginError: Error {
 final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
     private let siteURL: String
     private let stores: StoresManager
+    private let cookieJar: HTTPCookieStorage
     private var successHandler: (() -> Void)?
     private var errorHandler: ((SiteCredentialLoginError) -> Void)?
 
     init(siteURL: String,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         cookieJar: HTTPCookieStorage = HTTPCookieStorage.shared) {
         self.siteURL = siteURL
         self.stores = stores
+        self.cookieJar = cookieJar
     }
 
     func setupHandlers(onLoginSuccess: @escaping () -> Void,
@@ -60,7 +63,6 @@ final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
 
 private extension SiteCredentialLoginUseCase {
     func clearAllCookies() {
-        let cookieJar = HTTPCookieStorage.shared
         if let cookies = cookieJar.cookies {
             for cookie in cookies {
                 cookieJar.deleteCookie(cookie)

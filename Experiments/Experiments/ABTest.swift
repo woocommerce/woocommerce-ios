@@ -2,10 +2,9 @@ import AutomatticTracks
 
 /// ABTest adds A/B testing experiments and runs the tests based on their variations from the ExPlat service.
 ///
-public enum ABTest: String, CaseIterable, Codable {
-    /// Throwaway case, to prevent a compiler error:
-    /// `An enum with no cases cannot declare a raw type`
-    case null
+public enum ABTest: String, Codable, CaseIterable {
+    /// Mocks for unit testing
+    case mockLoggedIn, mockLoggedOut
 
     /// A/A test to make sure there is no bias in the logged out state.
     /// Experiment ref: pbxNRc-1QS-p2
@@ -18,9 +17,6 @@ public enum ABTest: String, CaseIterable, Codable {
     /// A/B test for the REST API project
     /// Experiment ref: pbxNRc-2i4-p2
     case applicationPasswordAuthentication = "woocommerceios_login_rest_api_project_202301_v2"
-
-    /// Mocks for unit testing
-    case mockLoggedIn, mockLoggedOut
 
     /// Returns a variation for the given experiment
     ///
@@ -37,13 +33,18 @@ public enum ABTest: String, CaseIterable, Codable {
             return .loggedIn
         case .aaTestLoggedOut, .applicationPasswordAuthentication:
             return .loggedOut
-        case .null:
-            return .none
+        // Mocks
         case .mockLoggedIn:
             return .loggedIn
         case .mockLoggedOut:
             return .loggedOut
         }
+    }
+
+    // Returns only the genuine ABTest cases. (After removing unit test mocks)
+    //
+    static var genuineCases: [ABTest] {
+        ABTest.allCases.filter { [.mockLoggedIn, .mockLoggedOut].contains($0) == false }
     }
 }
 
@@ -52,7 +53,7 @@ public extension ABTest {
     ///
     @MainActor
     static func start(for context: ExperimentContext) async {
-        let experiments = ABTest.allCases.filter { $0.context == context }
+        let experiments = ABTest.genuineCases.filter { $0.context == context }
 
         await withCheckedContinuation { continuation in
             guard !experiments.isEmpty else {

@@ -16,28 +16,16 @@ final class WooConstantsTests: XCTestCase {
         }
     }
 
-    func test_URLs_that_contains_special_characters_when_are_escaped_properly_then_do_not_return_nil() throws {
+    func test_URL_that_contains_special_characters_when_is_escaped_properly_then_does_not_return_nil() throws {
         // Given
-        let urlsWithSpecialCharacters = [
-            WooConstants.URLs.inPersonPaymentsCashOnDeliveryFeedback,
-            WooConstants.URLs.inPersonPaymentsFirstTransactionFeedback,
-            WooConstants.URLs.inPersonPaymentsPowerUsersFeedback
-        ]
-
-        let escapedURLsWithSpecialCharacters = [
-            "https://automattic.survey.fm/woo-app-%E2%80%93-cod-survey",
-            "https://automattic.survey.fm/woo-app-%E2%80%93-ipp-first-transaction-survey",
-            "https://automattic.survey.fm/woo-app-%E2%80%93-ipp-survey-for-power-users"
-        ]
+        let urlStringWithSpecialCharacters = "https://test.com/test-–-survey"
+        let escapedURLStringWithSpecialCharacter = "https://test.com/test-%E2%80%93-survey"
 
         // When
-        let _ = urlsWithSpecialCharacters.map { trustedURL in
-            XCTAssertNotNil(trustedURL)
-        }
+        let trustedURL = try urlStringWithSpecialCharacters.asURL()
 
         // Then
-        XCTAssertEqual(urlsWithSpecialCharacters[0].asURL().absoluteString, escapedURLsWithSpecialCharacters[0])
-        XCTAssertEqual(urlsWithSpecialCharacters[1].asURL().absoluteString, escapedURLsWithSpecialCharacters[1])
-        XCTAssertEqual(urlsWithSpecialCharacters[2].asURL().absoluteString, escapedURLsWithSpecialCharacters[2])
+        XCTAssertNotNil(trustedURL)
+        XCTAssertEqual(trustedURL.absoluteString, escapedURLStringWithSpecialCharacter)
     }
 }

@@ -38,11 +38,11 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
     /// Creates a support request using the API-Providers SDK.
     ///
     func createSupportRequest(formID: Int64,
-                              customFields: [CustomField],
+                              customFields: [Int64: String],
                               tags: [String],
                               subject: String,
                               description: String,
-                              onCompletion: (Result<Void, Error>) -> Void)
+                              onCompletion: @escaping (Result<Void, Error>) -> Void)
 
     var zendeskEnabled: Bool { get }
     func userSupportEmail() -> String?
@@ -78,11 +78,11 @@ struct NoZendeskManager: ZendeskManagerProtocol {
     }
 
     func createSupportRequest(formID: Int64,
-                              customFields: [CustomField],
+                              customFields: [Int64: String],
                               tags: [String],
                               subject: String,
                               description: String,
-                              onCompletion: (Result<Void, Error>) -> Void) {
+                              onCompletion: @escaping (Result<Void, Error>) -> Void) {
         // no-op
     }
 
@@ -382,11 +382,11 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// Creates a support request using the API-Providers SDK.
     ///
     func createSupportRequest(formID: Int64,
-                              customFields: [CustomField],
+                              customFields: [Int64: String],
                               tags: [String],
                               subject: String,
                               description: String,
-                              onCompletion: (Result<Void, Error>) -> Void) {
+                              onCompletion: @escaping (Result<Void, Error>) -> Void) {
 
         let requestProvider = ZDKRequestProvider()
         let request = createAPIRequest(formID: formID, customFields: customFields, tags: tags, subject: subject, description: description)
@@ -788,13 +788,14 @@ private extension ZendeskManager {
 
     /// Creates a Zendesk Request to be consumed by a Request Provider.
     ///
-    func createAPIRequest(formID: Int64, customFields: [CustomField], tags: [String], subject: String, description: String) -> ZDKCreateRequest {
+    func createAPIRequest(formID: Int64, customFields: [Int64: String], tags: [String], subject: String, description: String) -> ZDKCreateRequest {
         let request = ZDKCreateRequest()
         request.ticketFormId = formID as NSNumber
-        request.customFields = customFields
+        request.customFields = customFields.map { CustomField(fieldId: $0, value: $1) }
         request.tags = tags
         request.subject = subject
         request.requestDescription = description
+        return request
     }
 
     // MARK: - View

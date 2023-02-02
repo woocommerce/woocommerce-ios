@@ -253,20 +253,6 @@ public enum DomainContactInfoError: Error, Equatable {
     case invalid(messages: [String]?)
 }
 
-public enum DomainContactInfoFormField: String, Decodable {
-    case countryCode = "country_code"
-    case postalCode = "postal_code"
-    case address1 = "address_1"
-    case address2 = "address_2"
-    case city
-    case email
-    case firstName = "first_name"
-    case lastName = "last_name"
-    case organization
-    case phone
-    case state
-}
-
 /// Maps to a list of domains to match the API response.
 private struct SiteDomainEnvelope: Decodable {
     let domains: [SiteDomain]

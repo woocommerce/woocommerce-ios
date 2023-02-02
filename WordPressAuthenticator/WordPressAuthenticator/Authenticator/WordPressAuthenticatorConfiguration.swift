@@ -136,11 +136,13 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let skipXMLRPCCheckForSiteDiscovery: Bool
 
-    /// If enabled, site address login will not check for XMLRPC URL or use XMLRPC API to handle login.
-    /// Important: make sure to implement the delegate method `handleSiteCredentialLogin` when enabling this config.
-    ///
+    /// If enabled, site address login will not check for XMLRPC URL.
     ///
     let skipXMLRPCCheckForSiteAddressLogin: Bool
+
+    /// If enabled, the library will trigger the delegate method `handleSiteCredentialLogin`
+    /// instead of using the XMLRPC API for handling site credential login.
+    let manualSiteCredentialLogin: Bool
 
     /// Used to determine the `step` value for `unified_login_step` analytics event in `GetStartedViewController`
     ///
@@ -188,6 +190,7 @@ public struct WordPressAuthenticatorConfiguration {
                  wpcomPasswordInstructions: String? = nil,
                  skipXMLRPCCheckForSiteDiscovery: Bool = false,
                  skipXMLRPCCheckForSiteAddressLogin: Bool = false,
+                 manualSiteCredentialLogin: Bool = false,
                  useEnterEmailAddressAsStepValueForGetStartedVC: Bool = false,
                  enableSiteAddressLoginOnlyInPrologue: Bool = false) {
 
@@ -221,6 +224,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.wpcomPasswordInstructions = wpcomPasswordInstructions
         self.skipXMLRPCCheckForSiteDiscovery = skipXMLRPCCheckForSiteDiscovery
         self.skipXMLRPCCheckForSiteAddressLogin = skipXMLRPCCheckForSiteAddressLogin
+        self.manualSiteCredentialLogin = manualSiteCredentialLogin
         self.useEnterEmailAddressAsStepValueForGetStartedVC = useEnterEmailAddressAsStepValueForGetStartedVC
         self.enableSiteAddressLoginOnlyInPrologue = enableSiteAddressLoginOnlyInPrologue
     }

@@ -510,7 +510,7 @@ extension SiteCredentialsViewController {
     /// proceeds with the submit action.
     ///
     @objc func validateForm() {
-        guard WordPressAuthenticator.shared.configuration.skipXMLRPCCheckForSiteAddressLogin else {
+        guard WordPressAuthenticator.shared.configuration.manualSiteCredentialLogin else {
             return validateFormAndLogin() // handles login with XMLRPC normally
         }
 

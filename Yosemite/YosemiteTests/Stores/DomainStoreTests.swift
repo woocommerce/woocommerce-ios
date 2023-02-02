@@ -218,4 +218,66 @@ final class DomainStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, .timeout)
     }
+
+    // MARK: - `redeemDomainCredit`
+
+    func test_redeemDomainCredit_returns_response_on_success() throws {
+        // Given
+        paymentRemote.whenCreatingDomainCart(thenReturn: .success([:]))
+        paymentRemote.whenCheckingOutCartWithDomainCredit(thenReturn: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(DomainAction.redeemDomainCredit(siteID: 606, domain: .init(name: "",
+                                                                                           productID: 1,
+                                                                                           supportsPrivacy: true),
+                                                                contactInfo: .fake()) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_redeemDomainCredit_returns_createCart_error_on_failure() throws {
+        // Given
+        paymentRemote.whenCreatingDomainCart(thenReturn: .failure(NetworkError.timeout))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(DomainAction.redeemDomainCredit(siteID: 606, domain: .init(name: "",
+                                                                                           productID: 1,
+                                                                                           supportsPrivacy: true),
+                                                                contactInfo: .fake()) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, .timeout)
+    }
+
+    func test_redeemDomainCredit_returns_checkoutCartWithDomainCredit_error_on_failure() throws {
+        // Given
+        paymentRemote.whenCreatingDomainCart(thenReturn: .success([:]))
+        paymentRemote.whenCheckingOutCartWithDomainCredit(thenReturn: .failure(NetworkError.notFound))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(DomainAction.redeemDomainCredit(siteID: 606, domain: .init(name: "",
+                                                                                           productID: 1,
+                                                                                           supportsPrivacy: true),
+                                                                contactInfo: .fake()) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, .notFound)
+    }
 }

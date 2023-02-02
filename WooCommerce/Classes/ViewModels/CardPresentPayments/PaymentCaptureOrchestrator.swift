@@ -49,12 +49,6 @@ final class PaymentCaptureOrchestrator {
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         onPreparingReader()
 
-        /// Set state of CardPresentPaymentStore
-        ///
-        let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
-
-        stores.dispatch(setAccount)
-
         let parameters = paymentParameters(order: order,
                                            orderTotal: orderTotal,
                                            country: paymentGatewayAccount.country,

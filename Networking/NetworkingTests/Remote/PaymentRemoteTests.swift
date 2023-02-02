@@ -155,7 +155,9 @@ final class PaymentRemoteTests: XCTestCase {
 
         // When
         do {
-            let response = try await remote.createCart(siteID: siteID, domain: .init(name: "fun.toys", productID: 254, supportsPrivacy: true))
+            let response = try await remote.createCart(siteID: siteID,
+                                                       domain: .init(name: "fun.toys", productID: 254, supportsPrivacy: true),
+                                                       isTemporary: false)
             // Then
             XCTAssertFalse(response.values.isEmpty)
         } catch {
@@ -172,7 +174,7 @@ final class PaymentRemoteTests: XCTestCase {
 
         // When
         await assertThrowsError {
-            _ = try await remote.createCart(siteID: siteID, domain: .init(name: "fun.toys", productID: 685, supportsPrivacy: true))
+            _ = try await remote.createCart(siteID: siteID, domain: .init(name: "fun.toys", productID: 685, supportsPrivacy: true), isTemporary: false)
         } errorAssert: { error in
             // Then
             (error as? CreateCartError) == .productNotInCart
@@ -185,7 +187,36 @@ final class PaymentRemoteTests: XCTestCase {
 
         // When
         await assertThrowsError {
-            _ = try await remote.createCart(siteID: 606, domain: .init(name: "fun.toys", productID: 254, supportsPrivacy: true))
+            _ = try await remote.createCart(siteID: 606, domain: .init(name: "fun.toys", productID: 254, supportsPrivacy: true), isTemporary: false)
+        } errorAssert: { error in
+            // Then
+            (error as? NetworkError) == .notFound
+        }
+    }
+
+    // MARK: - `checkoutCartWithDomainCredit` with a domain
+
+    func test_checkoutCartWithDomainCredit_returns_on_success() async throws {
+        // Given
+        let remote = PaymentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "me/transactions", filename: "checkout-doman-cart-with-domain-credit-success")
+
+        // When
+        do {
+            try await remote.checkoutCartWithDomainCredit(cart: [:], contactInfo: .fake())
+        } catch {
+            // Then
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
+
+    func test_checkoutCartWithDomainCredit_throws_notFound_error_when_no_response() async throws {
+        // Given
+        let remote = PaymentRemote(network: network)
+
+        // When
+        await assertThrowsError {
+            try await remote.checkoutCartWithDomainCredit(cart: [:], contactInfo: .fake())
         } errorAssert: { error in
             // Then
             (error as? NetworkError) == .notFound

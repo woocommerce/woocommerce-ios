@@ -9,6 +9,8 @@ import struct Networking.Settings
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
 import class Networking.DefaultApplicationPasswordUseCase
+import protocol Experiments.ABTestVariationProvider
+import struct Experiments.DefaultABTestVariationProvider
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
@@ -45,15 +47,26 @@ class AuthenticationManager: Authentication {
 
     private let analytics: Analytics
 
+    private let abTestVariationProvider: ABTestVariationProvider
+
     /// Keeps a reference to the checker
     private var postSiteCredentialLoginChecker: PostSiteCredentialLoginChecker?
 
+    /// Keeps a reference to the use case
+    private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
+
+    private var enableSiteAddressLoginOnly: Bool {
+        abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment
+    }
+
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         abTestVariationProvider: ABTestVariationProvider = DefaultABTestVariationProvider()) {
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.analytics = analytics
+        self.abTestVariationProvider = abTestVariationProvider
     }
 
     /// Initializes the WordPress Authenticator.
@@ -62,7 +75,6 @@ class AuthenticationManager: Authentication {
         let isWPComMagicLinkPreferredToPassword = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let isStoreCreationMVPEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
-        let enableSiteAddressLoginOnly = ABTest.applicationPasswordAuthentication.variation == .treatment
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -91,6 +103,8 @@ class AuthenticationManager: Authentication {
                                                                 wpcomPasswordInstructions:
                                                                 AuthenticationConstants.wpcomPasswordInstructions,
                                                                 skipXMLRPCCheckForSiteDiscovery: true,
+                                                                skipXMLRPCCheckForSiteAddressLogin: enableSiteAddressLoginOnly,
+                                                                enableManualSiteCredentialLogin: enableSiteAddressLoginOnly,
                                                                 useEnterEmailAddressAsStepValueForGetStartedVC: true,
                                                                 enableSiteAddressLoginOnlyInPrologue: enableSiteAddressLoginOnly)
 
@@ -341,7 +355,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         /// save the site to memory to check for jetpack requirement in epilogue
         currentSelfHostedSite = site
 
-        let enableWPComOnlyForWPComSites = ABTest.applicationPasswordAuthentication.variation == .treatment
+        let enableWPComOnlyForWPComSites = enableSiteAddressLoginOnly
 
         switch (enableWPComOnlyForWPComSites, site.isWPCom) {
         case (true, true), (false, _):
@@ -372,6 +386,28 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         navigationController.show(errorUI, sender: nil)
     }
 
+    /// Handles site credential login
+    func handleSiteCredentialLogin(credentials: WordPressOrgCredentials,
+                                   onLoading: @escaping (Bool) -> Void,
+                                   onSuccess: @escaping () -> Void,
+                                   onFailure: @escaping  (Error, Bool) -> Void) {
+        let useCase = SiteCredentialLoginUseCase(siteURL: credentials.siteURL)
+        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { error in
+            onLoading(false)
+            let incorrectCredentials: Bool = {
+                if case .wrongCredentials = error {
+                    return true
+                }
+                return false
+            }()
+            onFailure(error.underlyingError, incorrectCredentials)
+        })
+        self.siteCredentialLoginUseCase = useCase
+
+        useCase.handleLogin(username: credentials.username, password: credentials.password)
+        onLoading(true)
+    }
+
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController,
@@ -386,8 +422,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         /// If the user logged in with site credentials and application password feature flag is enabled,
         /// check if they can use the app and navigates to the home screen.
-        if let siteCredentials = credentials.wporg,
-           ABTest.applicationPasswordAuthentication.variation == .treatment {
+        if let siteCredentials = credentials.wporg, enableSiteAddressLoginOnly {
             return didAuthenticateUser(to: siteURL,
                                        with: siteCredentials,
                                        in: navigationController)
@@ -498,8 +533,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Synchronizes the specified WordPress Account.
     ///
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
-        if let wporg = credentials.wporg,
-           ABTest.applicationPasswordAuthentication.variation == .treatment {
+        if let wporg = credentials.wporg, enableSiteAddressLoginOnly {
             ServiceLocator.stores.authenticate(credentials: .wporg(username: wporg.username,
                                                                    password: wporg.password,
                                                                    siteAddress: wporg.siteURL))
@@ -770,8 +804,14 @@ private extension AuthenticationManager {
         }
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
         checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
+            guard let self else { return }
+            // clear scheduled local notifications
+            if self.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
+                ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: LocalNotification.Scenario.allCases)
+            }
+
             // navigates to home screen immediately with a placeholder store ID
-            self?.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+            self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
         }
         self.postSiteCredentialLoginChecker = checker
     }

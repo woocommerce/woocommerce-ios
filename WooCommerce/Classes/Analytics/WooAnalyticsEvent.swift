@@ -415,6 +415,10 @@ extension WooAnalyticsEvent {
             case list
         }
 
+        enum GlobalKeys {
+            static let millisecondsSinceOrderAddNew = "milliseconds_since_order_add_new"
+        }
+
         private enum Keys {
             static let flow = "flow"
             static let hasDifferentShippingDetails = "has_different_shipping_details"
@@ -517,8 +521,14 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderCreationSuccess() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderCreationSuccess, properties: [:])
+        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [:]
+
+            if let lapseSinceLastOrderAddNew = millisecondsSinceSinceOrderAddNew {
+                properties[GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            }
+
+            return WooAnalyticsEvent(statName: .orderCreationSuccess, properties: properties)
         }
 
         static func orderCreationFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
@@ -890,9 +900,15 @@ extension WooAnalyticsEvent {
                                                                           Keys.source: source.rawValue])
         }
 
-        static func paymentsFlowCollect(flow: Flow, method: PaymentMethod) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .paymentsFlowCollect, properties: [Keys.flow: flow.rawValue,
-                                                                           Keys.paymentMethod: method.rawValue])
+        static func paymentsFlowCollect(flow: Flow, method: PaymentMethod, millisecondsSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
+                              Keys.paymentMethod: method.rawValue]
+
+            if let lapseSinceLastOrderAddNew = millisecondsSinceOrderAddNew {
+                properties[Orders.GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            }
+
+            return WooAnalyticsEvent(statName: .paymentsFlowCollect, properties: properties)
         }
     }
 }
@@ -949,6 +965,7 @@ extension WooAnalyticsEvent {
             static let source = "source"
             static let enabled = "enabled"
             static let cancellationSource = "cancellation_source"
+            static let millisecondsSinceCardCollectPaymentFlow = "milliseconds_since_card_collect_payment_flow"
         }
 
         static let unknownGatewayID = "unknown"
@@ -1326,14 +1343,26 @@ extension WooAnalyticsEvent {
         static func collectPaymentSuccess(forGatewayID: String?,
                                           countryCode: String,
                                           paymentMethod: PaymentMethod,
-                                          cardReaderModel: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentSuccess,
-                              properties: [
-                                Keys.cardReaderModel: cardReaderModel,
-                                Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                                Keys.paymentMethodType: paymentMethod.analyticsValue
-                              ]
+                                          cardReaderModel: String,
+                                          millisecondsSinceOrderAddNew: Int64?,
+                                          millisecondsSinceCardPaymentStarted: Int64?) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Keys.cardReaderModel: cardReaderModel,
+                Keys.countryCode: countryCode,
+                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                Keys.paymentMethodType: paymentMethod.analyticsValue
+              ]
+
+            if let lapseSinceLastOrderAddNew = millisecondsSinceOrderAddNew {
+                properties[Orders.GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
+            }
+
+            if let timeIntervalSinceCardCollectPaymentFlow = millisecondsSinceCardPaymentStarted {
+                properties[Keys.millisecondsSinceCardCollectPaymentFlow] = timeIntervalSinceCardCollectPaymentFlow
+            }
+
+            return WooAnalyticsEvent(statName: .collectPaymentSuccess,
+                              properties: properties
             )
         }
 
@@ -1351,7 +1380,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: cardReaderModel,
                                 Keys.countryCode: countryCode,
-                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
+                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID)
                               ])
         }
 

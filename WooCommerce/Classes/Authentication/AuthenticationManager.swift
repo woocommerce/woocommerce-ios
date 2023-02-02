@@ -104,6 +104,7 @@ class AuthenticationManager: Authentication {
                                                                 AuthenticationConstants.wpcomPasswordInstructions,
                                                                 skipXMLRPCCheckForSiteDiscovery: true,
                                                                 skipXMLRPCCheckForSiteAddressLogin: enableSiteAddressLoginOnly,
+                                                                manualSiteCredentialLogin: enableSiteAddressLoginOnly,
                                                                 useEnterEmailAddressAsStepValueForGetStartedVC: true,
                                                                 enableSiteAddressLoginOnlyInPrologue: enableSiteAddressLoginOnly)
 
@@ -389,11 +390,17 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func handleSiteCredentialLogin(credentials: WordPressOrgCredentials,
                                    onLoading: @escaping (Bool) -> Void,
                                    onSuccess: @escaping () -> Void,
-                                   onFailure: @escaping  (Error) -> Void) {
+                                   onFailure: @escaping  (Error, Bool) -> Void) {
         let useCase = SiteCredentialLoginUseCase(siteURL: credentials.siteURL)
-        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: {
+        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { error in
             onLoading(false)
-            onFailure($0.underlyingError)
+            let incorrectCredentials: Bool = {
+                if case .wrongCredentials = error {
+                    return true
+                }
+                return false
+            }()
+            onFailure(error.underlyingError, incorrectCredentials)
         })
         self.siteCredentialLoginUseCase = useCase
 

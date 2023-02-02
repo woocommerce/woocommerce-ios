@@ -11,7 +11,7 @@ final class CachedABTestVariationProviderTests: XCTestCase {
         let provider = CachedABTestVariationProvider(cache: cache)
 
         // Then
-        XCTAssertEqual(provider.variation(for: .applicationPasswordAuthentication), .control)
+        XCTAssertEqual(provider.variation(for: .mockLoggedOut), .control)
     }
 
     func test_correct_variation_is_returned_after_caching_it() throws {
@@ -21,9 +21,9 @@ final class CachedABTestVariationProviderTests: XCTestCase {
         let provider = CachedABTestVariationProvider(cache: cache)
 
         // When
-        try cache.assign(variation: .treatment, for: .applicationPasswordAuthentication)
+        try cache.assign(variation: .treatment, for: .mockLoggedOut)
 
         // Then
-        XCTAssertEqual(provider.variation(for: .applicationPasswordAuthentication), .treatment)
+        XCTAssertEqual(provider.variation(for: .mockLoggedOut), .treatment)
     }
 }

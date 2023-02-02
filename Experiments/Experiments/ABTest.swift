@@ -19,6 +19,9 @@ public enum ABTest: String, CaseIterable, Codable {
     /// Experiment ref: pbxNRc-2i4-p2
     case applicationPasswordAuthentication = "woocommerceios_login_rest_api_project_202301_v2"
 
+    /// Mocks for unit testing
+    case mockLoggedIn, mockLoggedOut
+
     /// Returns a variation for the given experiment
     ///
     public var variation: Variation? {
@@ -36,6 +39,10 @@ public enum ABTest: String, CaseIterable, Codable {
             return .loggedOut
         case .null:
             return .none
+        case .mockLoggedIn:
+            return .loggedIn
+        case .mockLoggedOut:
+            return .loggedOut
         }
     }
 }

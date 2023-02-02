@@ -10,7 +10,7 @@ final class VariationCacheTests: XCTestCase {
         let cache = VariationCache(userDefaults: userDefaults)
 
         // Then
-        XCTAssertNil(cache.variation(for: .applicationPasswordAuthentication))
+        XCTAssertNil(cache.variation(for: .mockLoggedOut))
     }
 
     func test_correct_variation_is_returned_after_setting_it() throws {
@@ -19,10 +19,10 @@ final class VariationCacheTests: XCTestCase {
         let cache = VariationCache(userDefaults: userDefaults)
 
         // When
-        try cache.assign(variation: .treatment, for: .applicationPasswordAuthentication)
+        try cache.assign(variation: .treatment, for: .mockLoggedOut)
 
         // Then
-        XCTAssertEqual(cache.variation(for: .applicationPasswordAuthentication), .treatment)
+        XCTAssertEqual(cache.variation(for: .mockLoggedOut), .treatment)
     }
 
     func test_it_throws_when_trying_to_cache_logged_in_experiment() throws {
@@ -31,6 +31,6 @@ final class VariationCacheTests: XCTestCase {
         let cache = VariationCache(userDefaults: userDefaults)
 
         // When
-        XCTAssertThrowsError(try cache.assign(variation: .treatment, for: .aaTestLoggedIn))
+        XCTAssertThrowsError(try cache.assign(variation: .treatment, for: .mockLoggedIn))
     }
 }

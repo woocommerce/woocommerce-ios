@@ -296,17 +296,7 @@ final class DomainStoreTests: XCTestCase {
                                             countryCode: "US",
                                             phone: "181800",
                                             email: "woo@merch.com")
-        remote.whenLoadingDomainContactInfo(thenReturn: .success(.init(firstName: "woo",
-                                                                       lastName: "Merch",
-                                                                       organization: "Woo",
-                                                                       address1: "No 300",
-                                                                       address2: nil,
-                                                                       postcode: "18888",
-                                                                       city: "SF",
-                                                                       state: "CA",
-                                                                       countryCode: "US",
-                                                                       phone: "181800",
-                                                                       email: "woo@merch.com")))
+        remote.whenLoadingDomainContactInfo(thenReturn: .success(contactInfo))
 
         // When
         let result = waitFor { promise in
@@ -317,6 +307,8 @@ final class DomainStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
+        let returnedContactInfo = try XCTUnwrap(result.get())
+        XCTAssertEqual(returnedContactInfo, contactInfo)
     }
 
     func test_loadDomainContactInfo_returns_error_on_failure() throws {

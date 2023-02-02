@@ -35,6 +35,15 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
     func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String?)
     func showNewWCPayRequestIfPossible(from controller: UIViewController)
 
+    /// Creates a support request using the API-Providers SDK.
+    ///
+    func createSupportRequest(formID: Int64,
+                              customFields: [CustomField],
+                              tags: [String],
+                              subject: String,
+                              description: String,
+                              onCompletion: (Result<Void, Error>) -> Void)
+
     var zendeskEnabled: Bool { get }
     func userSupportEmail() -> String?
     func showHelpCenter(from controller: UIViewController)
@@ -65,6 +74,15 @@ struct NoZendeskManager: ZendeskManagerProtocol {
     }
 
     func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String?) {
+        // no-op
+    }
+
+    func createSupportRequest(formID: Int64,
+                              customFields: [CustomField],
+                              tags: [String],
+                              subject: String,
+                              description: String,
+                              onCompletion: (Result<Void, Error>) -> Void) {
         // no-op
     }
 
@@ -358,6 +376,25 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
             let newRequestConfig = self.createWCPayRequest(supportSourceTag: sourceTag)
             let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
             self.showZendeskView(newRequestController, from: controller)
+        }
+    }
+
+    /// Creates a support request using the API-Providers SDK.
+    ///
+    func createSupportRequest(formID: Int64,
+                              customFields: [CustomField],
+                              tags: [String],
+                              subject: String,
+                              description: String,
+                              onCompletion: (Result<Void, Error>) -> Void) {
+
+        let requestProvider = ZDKRequestProvider()
+        let request = createAPIRequest(formID: formID, customFields: customFields, tags: tags, subject: subject, description: description)
+        requestProvider.createRequest(request) { _, error in
+            if let error {
+                return onCompletion(.failure(error))
+            }
+            onCompletion(.success(()))
         }
     }
 
@@ -747,6 +784,17 @@ private extension ZendeskManager {
         // No extra config needed to attach an image. Hooray!
 
         return requestConfig
+    }
+
+    /// Creates a Zendesk Request to be consumed by a Request Provider.
+    ///
+    func createAPIRequest(formID: Int64, customFields: [CustomField], tags: [String], subject: String, description: String) -> ZDKCreateRequest {
+        let request = ZDKCreateRequest()
+        request.ticketFormId = formID as NSNumber
+        request.customFields = customFields
+        request.tags = tags
+        request.subject = subject
+        request.requestDescription = description
     }
 
     // MARK: - View

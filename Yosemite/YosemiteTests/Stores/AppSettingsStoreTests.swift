@@ -849,12 +849,12 @@ extension AppSettingsStoreTests {
         subject?.onAction(action)
 
         // Then
-        var savedSettings: GeneralAppSettings? = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        let savedSettings: GeneralAppSettings? = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
         XCTAssertNil(savedSettings)
         guard let savedSettings else {
             return
         }
-        var savedDate: Date? = try XCTUnwrap( savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
+        let savedDate: Date? = try XCTUnwrap( savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
         XCTAssertNil(savedDate)
     }
 

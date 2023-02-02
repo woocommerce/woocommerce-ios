@@ -459,11 +459,21 @@ private extension SiteCredentialsViewController {
                                 password: wporg.password,
                                 xmlrpc: wporg.xmlrpc,
                                 options: wporg.options)
-        }, onFailure: { [weak self] error in
-            self?.displayRemoteError(error)
+        }, onFailure: { [weak self] error, incorrectCredentials in
+            self?.handleLoginFailure(error: error, incorrectCredentials: incorrectCredentials)
         })
     }
 
+    func handleLoginFailure(error: Error, incorrectCredentials: Bool) {
+        configureViewLoading(false)
+        if incorrectCredentials {
+            let message = NSLocalizedString("It looks like this username/password isn't associated with this site.",
+                                            comment: "An error message shown during log in when the username or password is incorrect.")
+            displayError(message: message, moveVoiceOverFocus: true)
+        } else {
+            displayError(error as NSError, sourceTag: sourceTag)
+        }
+    }
     // MARK: - Private Constants
 
     /// Rows listed in the order they were created.
@@ -556,7 +566,7 @@ extension SiteCredentialsViewController {
     override func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
         let err = error as NSError
-        if err.code == 403 || err.code == 401 {
+        if err.code == 403 {
             let message = NSLocalizedString("It looks like this username/password isn't associated with this site.",
                                             comment: "An error message shown during log in when the username or password is incorrect.")
             displayError(message: message, moveVoiceOverFocus: true)

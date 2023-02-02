@@ -443,7 +443,7 @@ private extension SiteAddressViewController {
         // Checks that the site exists
         checkSiteExistence(url: url) { [weak self] in
             guard let self = self else { return }
-            // skips XMLRPC check for site discovery if needed
+            // skips XMLRPC check for site discovery or site address login if needed
             if (self.isSiteDiscovery && self.configuration.skipXMLRPCCheckForSiteDiscovery) ||
                 self.configuration.skipXMLRPCCheckForSiteAddressLogin {
                 self.fetchSiteInfo()

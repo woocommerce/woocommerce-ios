@@ -18,11 +18,11 @@ public struct CachedABTestVariationProvider: ABTestVariationProvider {
             return abTest.variation ?? .control
         }
 
-        if let cachedVariation = cache.variation(for: abTest) {
-            return cachedVariation
-        } else if let variation = abTest.variation {
+        if let variation = abTest.variation {
             try? cache.assign(variation: variation, for: abTest)
             return variation
+        } else if let cachedVariation = cache.variation(for: abTest) {
+            return cachedVariation
         } else {
             return .control
         }

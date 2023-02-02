@@ -70,7 +70,7 @@ extension BetaFeature {
         case .inAppPurchases:
             return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchases)
         case .tapToPayOnIPhone:
-            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhone)
+            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhone) && !UIDevice.isPad()
         default:
             return true
         }

@@ -104,7 +104,7 @@ class AuthenticationManager: Authentication {
                                                                 AuthenticationConstants.wpcomPasswordInstructions,
                                                                 skipXMLRPCCheckForSiteDiscovery: true,
                                                                 skipXMLRPCCheckForSiteAddressLogin: enableSiteAddressLoginOnly,
-                                                                manualSiteCredentialLogin: enableSiteAddressLoginOnly,
+                                                                enableManualSiteCredentialLogin: enableSiteAddressLoginOnly,
                                                                 useEnterEmailAddressAsStepValueForGetStartedVC: true,
                                                                 enableSiteAddressLoginOnlyInPrologue: enableSiteAddressLoginOnly)
 

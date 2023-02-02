@@ -52,6 +52,9 @@ class AuthenticationManager: Authentication {
     /// Keeps a reference to the checker
     private var postSiteCredentialLoginChecker: PostSiteCredentialLoginChecker?
 
+    /// Keeps a reference to the use case
+    private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
+
     private var enableSiteAddressLoginOnly: Bool {
         abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment
     }
@@ -100,6 +103,8 @@ class AuthenticationManager: Authentication {
                                                                 wpcomPasswordInstructions:
                                                                 AuthenticationConstants.wpcomPasswordInstructions,
                                                                 skipXMLRPCCheckForSiteDiscovery: true,
+                                                                skipXMLRPCCheckForSiteAddressLogin: enableSiteAddressLoginOnly,
+                                                                enableManualSiteCredentialLogin: enableSiteAddressLoginOnly,
                                                                 useEnterEmailAddressAsStepValueForGetStartedVC: true,
                                                                 enableSiteAddressLoginOnlyInPrologue: enableSiteAddressLoginOnly)
 
@@ -379,6 +384,28 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         let errorUI = errorUI(for: site, in: navigationController)
         navigationController.show(errorUI, sender: nil)
+    }
+
+    /// Handles site credential login
+    func handleSiteCredentialLogin(credentials: WordPressOrgCredentials,
+                                   onLoading: @escaping (Bool) -> Void,
+                                   onSuccess: @escaping () -> Void,
+                                   onFailure: @escaping  (Error, Bool) -> Void) {
+        let useCase = SiteCredentialLoginUseCase(siteURL: credentials.siteURL)
+        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { error in
+            onLoading(false)
+            let incorrectCredentials: Bool = {
+                if case .wrongCredentials = error {
+                    return true
+                }
+                return false
+            }()
+            onFailure(error.underlyingError, incorrectCredentials)
+        })
+        self.siteCredentialLoginUseCase = useCase
+
+        useCase.handleLogin(username: credentials.username, password: credentials.password)
+        onLoading(true)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.

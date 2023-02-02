@@ -21,8 +21,8 @@ public enum ABTest: String, CaseIterable, Codable {
 
     /// Returns a variation for the given experiment
     ///
-    var variation: Variation {
-        ExPlat.shared?.experiment(rawValue) ?? .control
+    public var variation: Variation? {
+        ExPlat.shared?.experiment(rawValue)
     }
 
     /// Returns the context for the given experiment.

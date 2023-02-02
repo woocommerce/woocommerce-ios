@@ -919,9 +919,8 @@ extension AppSettingsStoreTests {
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
 
         let currentTime = Date()
-        let date = Date()
 
-        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.test: .init(dismissedDate: date, remindAfter: nil)])
+        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.test: .init(dismissedDate: currentTime, remindAfter: nil)])
         try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
 
         // When
@@ -937,7 +936,7 @@ extension AppSettingsStoreTests {
 
         let otherCampaignDismissDate = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.test]?.dismissedDate)
 
-        assertEqual(date, otherCampaignDismissDate)
+        assertEqual(currentTime, otherCampaignDismissDate)
     }
 
     func test_getFeatureAnnouncementVisibility_without_stored_setting_calls_completion_with_visibility_true() throws {

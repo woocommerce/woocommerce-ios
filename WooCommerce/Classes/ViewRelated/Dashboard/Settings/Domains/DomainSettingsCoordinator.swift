@@ -43,7 +43,8 @@ private extension DomainSettingsCoordinator {
     func showDomainSelector(from navigationController: UINavigationController, hasDomainCredit: Bool, freeStagingDomain: String?) {
         let subtitle = freeStagingDomain
             .map { String(format: Localization.domainSelectorSubtitleFormat, $0) } ?? Localization.domainSelectorSubtitleWithoutFreeStagingDomain
-        let viewModel = DomainSelectorViewModel(subtitle: subtitle,
+        let viewModel = DomainSelectorViewModel(title: Localization.domainSelectorTitle,
+                                                subtitle: subtitle,
                                                 initialSearchTerm: site.name,
                                                 dataProvider: PaidDomainSelectorDataProvider(stores: stores,
                                                                                              hasDomainCredit: hasDomainCredit))
@@ -151,6 +152,10 @@ private extension DomainSettingsCoordinator {
 
 private extension DomainSettingsCoordinator {
     enum Localization {
+        static let domainSelectorTitle = NSLocalizedString(
+            "Search domains",
+            comment: "Title of the domain selector in domain settings."
+        )
         static let domainSelectorSubtitleFormat = NSLocalizedString(
             "The domain purchased will redirect users to **%1$@**",
             comment: "Subtitle of the domain selector in domain settings. %1$@ is the free domain of the site from WordPress.com."

@@ -27,6 +27,7 @@ where DataProvider.DomainSuggestion == DomainSuggestion {
         case results(domains: [DomainSuggestion])
     }
 
+    let title: String
     let subtitle: String
 
     /// Current search term entered by the user.
@@ -51,10 +52,12 @@ where DataProvider.DomainSuggestion == DomainSuggestion {
     private let dataProvider: DataProvider
     private let debounceDuration: Double
 
-    init(subtitle: String,
+    init(title: String,
+         subtitle: String,
          initialSearchTerm: String = "",
          dataProvider: DataProvider,
          debounceDuration: Double = Constants.fieldDebounceDuration) {
+        self.title = title
         self.subtitle = subtitle
 
         self.dataProvider = dataProvider

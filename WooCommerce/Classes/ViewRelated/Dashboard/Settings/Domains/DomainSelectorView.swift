@@ -189,7 +189,7 @@ where DataProvider.DomainSuggestion == DomainSuggestion {
                 }
             }
         }
-        .navigationTitle(Localization.title)
+        .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.large)
         .onChange(of: viewModel.isLoadingDomainSuggestions) { isLoadingDomainSuggestions in
             // Resets selected domain when loading domain suggestions.
@@ -208,9 +208,6 @@ private extension DomainSelectorView {
     }
 
     enum Localization {
-        static var title: String {
-            NSLocalizedString("Choose a domain", comment: "Title of the domain selector.")
-        }
         static var searchPlaceholder: String {
             NSLocalizedString("Type a name for your store", comment: "Placeholder of the search text field on the domain selector.")
         }
@@ -261,7 +258,8 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Empty query state.
             DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
                 viewModel:
-                        .init(subtitle: "Your domain",
+                        .init(title: "Choose a domain",
+                              subtitle: "Your domain",
                               initialSearchTerm: "",
                               dataProvider: FreeDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores()
@@ -272,7 +270,8 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Results state for free domains.
             DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
                 viewModel:
-                        .init(subtitle: "Your domain",
+                        .init(title: "Choose a domain",
+                              subtitle: "Your domain",
                               initialSearchTerm: "",
                               dataProvider: FreeDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores(freeDomainsResult: .success([
@@ -290,7 +289,8 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Results state for paid domains.
             DomainSelectorView<PaidDomainSelectorDataProvider, PaidDomainSuggestionViewModel>(
                 viewModel:
-                        .init(subtitle: "Your domain mapped to **other.domain**",
+                        .init(title: "Search domains",
+                              subtitle: "Your domain mapped to **other.domain**",
                               initialSearchTerm: "fruit",
                               dataProvider: PaidDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores(paidDomainsResult: .success([
@@ -313,7 +313,8 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Error state.
             DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
                 viewModel:
-                        .init(subtitle: "Your domain",
+                        .init(title: "Search domains",
+                              subtitle: "Your domain",
                               initialSearchTerm: "test",
                               dataProvider:
                                 FreeDomainSelectorDataProvider(
@@ -327,7 +328,8 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Loading state.
             DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
                 viewModel:
-                        .init(subtitle: "Your domain",
+                        .init(title: "Search domains",
+                              subtitle: "Your domain",
                               initialSearchTerm: "",
                               dataProvider: FreeDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores()

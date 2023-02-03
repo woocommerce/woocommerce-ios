@@ -54,6 +54,15 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
     func fetchSystemStatusReport()
     func initialize()
     func reset()
+
+    /// To Refactor: These methods would end-up living outside this class. Exposing them here temporarily.
+    /// https://github.com/woocommerce/woocommerce-ios/issues/8795
+    ///
+    func generalTags() -> [String]
+    func wcPayTags() -> [String]
+
+    func generalCustomFields() -> [[Int64: String]]
+    func wcPayCustomFields() -> [[Int64: String]]
 }
 
 struct NoZendeskManager: ZendeskManagerProtocol {
@@ -122,6 +131,27 @@ struct NoZendeskManager: ZendeskManagerProtocol {
 
     func reset() {
         // no-op
+    }
+}
+
+/// To Refactor: These methods would end-up living outside this class. Exposing them here temporarily.
+/// https://github.com/woocommerce/woocommerce-ios/issues/8795
+///
+extension NoZendeskManager {
+    func generalTags() -> [String] {
+        []
+    }
+
+    func wcPayTags() -> [String] {
+        []
+    }
+
+    func generalCustomFields() -> [[Int64: String]] {
+        []
+    }
+
+    func wcPayCustomFields() -> [[Int64: String]] {
+        []
     }
 }
 
@@ -491,6 +521,35 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         }
 
         return decoratedTags
+    }
+}
+
+/// To Refactor: These methods would end-up living outside this class. Exposing them here temporarily.
+/// https://github.com/woocommerce/woocommerce-ios/issues/8795
+///
+extension ZendeskManager {
+    func generalTags() -> [String] {
+        getTags(supportSourceTag: nil)
+    }
+
+    func wcPayTags() -> [String] {
+        getWCPayTags(supportSourceTag: nil)
+    }
+
+    func generalCustomFields() -> [[Int64: String]] {
+        // Extracts the custom fields from the `createRequest` method
+        createRequest(supportSourceTag: nil).customFields.compactMap { field in
+            guard let value = field.value as? String else { return nil } // Guards that all values are string
+            return [field.fieldId: value]
+        }
+    }
+
+    func wcPayCustomFields() -> [[Int64: String]] {
+        // Extracts the custom fields from the `createWCPayRequest` method.
+        createWCPayRequest(supportSourceTag: nil).customFields.compactMap { field in
+            guard let value = field.value as? String else { return nil } // Guards that all values are string
+            return [field.fieldId: value]
+        }
     }
 }
 

@@ -269,7 +269,7 @@ private extension OrdersRootViewController {
         do {
             try statusResultsController.performFetch()
         } catch {
-            DDLogError("⛔️ Unable to fetch stored statuse for Site \(siteID): \(error)")
+            DDLogError("⛔️ Unable to fetch stored order statuses for Site \(siteID): \(error)")
         }
         resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: statusResultsController.fetchedObjects)
     }

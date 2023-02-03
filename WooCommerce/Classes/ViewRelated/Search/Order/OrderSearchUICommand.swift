@@ -104,7 +104,7 @@ private extension OrderSearchUICommand {
         do {
             try statusResultsController.performFetch()
         } catch {
-            DDLogError("⛔️ Unable to fetch Order search results for Site \(siteID): \(error)")
+            DDLogError("⛔️ Unable to fetch Order statuses in order search for Site \(siteID): \(error)")
         }
     }
 

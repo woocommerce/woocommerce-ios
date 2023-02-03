@@ -254,7 +254,7 @@ private extension OrderDetailsResultsControllers {
         do {
             try refundResultsController.performFetch()
         } catch {
-            DDLogError("⛔️ Unable to fetch Refund details for Site \(siteID) and Order \(order.orderID): \(error)")
+            DDLogError("⛔️ Unable to fetch Refunds for Site \(siteID) and Order \(order.orderID): \(error)")
         }
     }
 
@@ -272,7 +272,7 @@ private extension OrderDetailsResultsControllers {
         do {
             try shippingLabelResultsController.performFetch()
         } catch {
-            DDLogError("⛔️ Unable to fetch ShippingLabel for Site \(siteID) and Order \(order.orderID): \(error)")
+            DDLogError("⛔️ Unable to fetch ShippingLabels for Site \(siteID) and Order \(order.orderID): \(error)")
         }
     }
 
@@ -290,7 +290,7 @@ private extension OrderDetailsResultsControllers {
         do {
             try addOnGroupResultsController.performFetch()
         } catch {
-            DDLogError("⛔️ Unable to fetch AddOnGroup Site \(siteID): \(error)")
+            DDLogError("⛔️ Unable to fetch AddOnGroups for Site \(siteID): \(error)")
         }
     }
 

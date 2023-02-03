@@ -102,5 +102,5 @@ do {
 **Not Preferred:**
 
 ```swift
-let fetchResults = try? resultsController.performFetch()
+let fetchResults = resultsController.performFetch()
 ```

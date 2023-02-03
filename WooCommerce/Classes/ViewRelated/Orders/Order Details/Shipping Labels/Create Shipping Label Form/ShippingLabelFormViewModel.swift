@@ -608,7 +608,7 @@ private extension ShippingLabelFormViewModel {
         let storageManager = ServiceLocator.storageManager
 
         let resultsController = ResultsController<StorageAccountSettings>(storageManager: storageManager, sortedBy: [])
-        try? resultsController.performFetch()
+        resultsController.performFetch()
         return resultsController.fetchedObjects.first
     }
 
@@ -706,19 +706,19 @@ private extension ShippingLabelFormViewModel {
             self.handlePaymentMethodValueChanges(settings: fetchedAccountSettings, editable: true)
         }
 
-        try? accountSettingsResultsController.performFetch()
+        accountSettingsResultsController.performFetch()
     }
 }
 
 // MARK: - Remote API
 extension ShippingLabelFormViewModel {
     func fetchCountries() {
-        try? resultsController.performFetch()
+        resultsController.performFetch()
         let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
             guard let self = self else { return }
             switch result {
             case .success:
-                try? self.resultsController.performFetch()
+                self.resultsController.performFetch()
             case .failure:
                 break
             }

@@ -152,7 +152,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 
         // Fetch parent product
         // Needed because the parent product contains the product name & attributes.
-        try? productResultsController.performFetch()
+        productResultsController.performFetch()
 
         guard let parentProduct = productResultsController.fetchedObjects.first,
               let selectedVariation = productVariations.first(where: { $0.productVariationID == variationID }) else {

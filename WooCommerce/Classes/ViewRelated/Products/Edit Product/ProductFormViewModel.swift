@@ -617,7 +617,7 @@ private extension ProductFormViewModel {
         let descriptor = NSSortDescriptor(keyPath: \StorageProductVariation.productVariationID, ascending: true)
         let controller = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
 
-        try? controller.performFetch()
+        controller.performFetch()
         controller.onDidChangeContent = { [weak self] in
             self?.updateVariationsPriceState()
         }

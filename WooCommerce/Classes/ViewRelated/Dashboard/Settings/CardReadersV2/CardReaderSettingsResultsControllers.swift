@@ -45,13 +45,13 @@ final class CardReaderSettingsResultsControllers {
             onReload()
         }
 
-        try? paymentGatewayAccountResultsController.performFetch()
+        paymentGatewayAccountResultsController.performFetch()
     }
 
     /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
     /// involves more than one results controller.
     func refetchAllResultsControllers() {
-        try? paymentGatewayAccountResultsController.performFetch()
+        paymentGatewayAccountResultsController.performFetch()
     }
 
     /// Payment Gateway Accounts for the Site (i.e. that can be used to collect payment for an order)

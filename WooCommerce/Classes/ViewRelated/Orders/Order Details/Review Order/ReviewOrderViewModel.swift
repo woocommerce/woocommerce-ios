@@ -408,7 +408,7 @@ private extension ReviewOrderViewModel {
             onReload()
         }
 
-        try? trackingResultsController.performFetch()
+        trackingResultsController.performFetch()
     }
 
     /// Trigger reload UI on change / reset of Shipping Labels
@@ -424,7 +424,7 @@ private extension ReviewOrderViewModel {
             onReload()
         }
 
-        try? shippingLabelResultsController.performFetch()
+        shippingLabelResultsController.performFetch()
     }
 
     /// Trigger reload UI on change / reset of Add-on Groups
@@ -440,7 +440,7 @@ private extension ReviewOrderViewModel {
             onReload()
         }
 
-        try? addOnGroupResultsController.performFetch()
+        addOnGroupResultsController.performFetch()
     }
 
     /// Trigger reload UI on change / reset of Refunds
@@ -456,15 +456,15 @@ private extension ReviewOrderViewModel {
             onReload()
         }
 
-        try? refundResultsController.performFetch()
+        refundResultsController.performFetch()
     }
 
     /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
     /// involves more than one results controller.
     func refetchAllResultsControllers() {
-        try? trackingResultsController.performFetch()
-        try? shippingLabelResultsController.performFetch()
-        try? addOnGroupResultsController.performFetch()
-        try? refundResultsController.performFetch()
+        trackingResultsController.performFetch()
+        shippingLabelResultsController.performFetch()
+        addOnGroupResultsController.performFetch()
+        refundResultsController.performFetch()
     }
 }

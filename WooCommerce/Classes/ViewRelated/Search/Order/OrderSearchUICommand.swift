@@ -101,7 +101,7 @@ final class OrderSearchUICommand: SearchUICommand {
 
 private extension OrderSearchUICommand {
     func configureResultsController() {
-        try? statusResultsController.performFetch()
+        statusResultsController.performFetch()
     }
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {

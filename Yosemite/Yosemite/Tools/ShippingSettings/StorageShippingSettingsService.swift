@@ -43,7 +43,7 @@ private extension StorageShippingSettingsService {
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
         let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.product.rawValue)
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
-        try? resultsController.performFetch()
+        resultsController.performFetch()
         resultsController.fetchedObjects.forEach {
             updateShippingSettings(with: $0)
         }

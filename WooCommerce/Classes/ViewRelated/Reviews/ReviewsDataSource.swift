@@ -96,11 +96,11 @@ final class ReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
     }
 
     private func observeProducts() {
-        try? productsResultsController.performFetch()
+        productsResultsController.performFetch()
     }
 
     private func observeNotifications() {
-        try? notificationsResultsController.performFetch()
+        notificationsResultsController.performFetch()
     }
 
     /// Predicate to filter only Product Reviews that are either approved or on hold

@@ -24,7 +24,7 @@ final class AddProductCoordinator: Coordinator {
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
         let predicate = \StorageProduct.siteID == siteID
         let controller = ResultsController<StorageProduct>(storageManager: storage, matching: predicate, sortedBy: [])
-        try? controller.performFetch()
+        controller.performFetch()
         return controller
     }()
 

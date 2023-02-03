@@ -129,7 +129,7 @@ final class ShippingProvidersViewModel {
             self?.dataWasUpdated()
         }
 
-        try? providersExcludingStoreCountry.performFetch()
+        providersExcludingStoreCountry.performFetch()
 
         providersForStoreCountry.onDidChangeContent = { [weak self] in
             self?.dataWasUpdated()
@@ -139,7 +139,7 @@ final class ShippingProvidersViewModel {
             self?.dataWasUpdated()
         }
 
-        try? providersForStoreCountry.performFetch()
+        providersForStoreCountry.performFetch()
     }
 
     /// Filter results by text

@@ -95,7 +95,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     private lazy var ordersResultController: ResultsController<StorageOrder> = {
         let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", siteID, orderID)
         let controller = ResultsController<StorageOrder>(storageManager: storage, matching: predicate, sortedBy: [])
-        try? controller.performFetch()
+        controller.performFetch()
         return controller
     }()
 
@@ -376,7 +376,7 @@ private extension PaymentMethodsViewModel {
     ///
     func bindStoreCPPState() {
         ordersResultController.onDidChangeContent = updateCardPaymentVisibility
-        try? ordersResultController.performFetch()
+        ordersResultController.performFetch()
     }
 
     func updateCardPaymentVisibility() {

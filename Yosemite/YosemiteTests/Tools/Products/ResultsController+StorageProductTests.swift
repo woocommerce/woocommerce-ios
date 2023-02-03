@@ -34,7 +34,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .nameAscending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Assert
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)
@@ -53,7 +53,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .nameDescending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Assert
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)
@@ -77,7 +77,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .dateAscending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Assert
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)
@@ -101,7 +101,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .dateDescending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Assert
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)
@@ -121,11 +121,11 @@ final class ResultsController_StorageProductTests: XCTestCase {
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .nameDescending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Act
         resultsController.updateSortOrder(.nameAscending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Assert
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)
@@ -143,11 +143,11 @@ final class ResultsController_StorageProductTests: XCTestCase {
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .nameAscending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Act
         resultsController.updateSortOrder(.nameDescending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Assert
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)
@@ -170,11 +170,11 @@ final class ResultsController_StorageProductTests: XCTestCase {
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .nameDescending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Act
         resultsController.updateSortOrder(.dateAscending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Assert
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)
@@ -197,11 +197,11 @@ final class ResultsController_StorageProductTests: XCTestCase {
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .nameAscending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Act
         resultsController.updateSortOrder(.dateDescending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Assert
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)
@@ -233,11 +233,11 @@ final class ResultsController_StorageProductTests: XCTestCase {
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .dateDescending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Act
         resultsController.updateSortOrder(.dateDescending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Assert
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)

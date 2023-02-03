@@ -48,6 +48,6 @@ private extension RefundDetailsResultController {
             onReload()
         }
 
-        try? productResultsController.performFetch()
+        productResultsController.performFetch()
     }
 }

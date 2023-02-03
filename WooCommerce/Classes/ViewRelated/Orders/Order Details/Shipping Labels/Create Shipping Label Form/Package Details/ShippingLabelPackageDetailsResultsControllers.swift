@@ -13,21 +13,21 @@ final class ShippingLabelPackageDetailsResultsControllers {
     /// Get the products found in Core Data and that match the predicate.
     ///
     var products: [Product] {
-        try? productResultsController.performFetch()
+        productResultsController.performFetch()
         return productResultsController.fetchedObjects
     }
 
     /// Get the product variations in Core Data and that match the predicate.
     ///
     var productVariations: [ProductVariation] {
-        try? productVariationResultsController.performFetch()
+        productVariationResultsController.performFetch()
         return productVariationResultsController.fetchedObjects
     }
 
     /// Get the account settings in Core Data and that match the predicate.
     ///
     var accountSettings: ShippingLabelAccountSettings? {
-        try? accountSettingsResultsController.performFetch()
+        accountSettingsResultsController.performFetch()
         return accountSettingsResultsController.fetchedObjects.first
     }
 
@@ -77,7 +77,7 @@ final class ShippingLabelPackageDetailsResultsControllers {
 
         productResultsController.onDidResetContent = { [weak self] in
             guard let self = self else { return }
-            try? self.productResultsController.performFetch()
+            self.productResultsController.performFetch()
             onReload(self.productResultsController.fetchedObjects)
         }
 
@@ -96,7 +96,7 @@ final class ShippingLabelPackageDetailsResultsControllers {
 
         productVariationResultsController.onDidResetContent = { [weak self] in
             guard let self = self else { return }
-            try? self.productVariationResultsController.performFetch()
+            self.productVariationResultsController.performFetch()
             onReload(self.productVariationResultsController.fetchedObjects)
         }
 

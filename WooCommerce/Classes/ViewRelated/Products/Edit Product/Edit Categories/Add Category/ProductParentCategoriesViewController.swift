@@ -44,7 +44,7 @@ final class ProductParentCategoriesViewController: UIViewController {
         registerTableViewCells()
         configureTableView()
 
-        try? resultController.performFetch()
+        resultController.performFetch()
         let fetchedCategories = resultController.fetchedObjects
         categoryViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: [])
     }

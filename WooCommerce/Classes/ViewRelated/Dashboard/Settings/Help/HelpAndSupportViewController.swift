@@ -136,7 +136,7 @@ private extension HelpAndSupportViewController {
             onReload()
         }
 
-        try? paymentGatewayAccountsResultsController?.performFetch()
+        paymentGatewayAccountsResultsController?.performFetch()
     }
 
     /// Disable Zendesk if configuration on ZD init fails.

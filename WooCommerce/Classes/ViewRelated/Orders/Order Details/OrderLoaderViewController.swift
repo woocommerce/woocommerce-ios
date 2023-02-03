@@ -114,7 +114,7 @@ private extension OrderLoaderViewController {
     ///
     func configureResultsController() {
         // Order status FRC
-        try? statusResultsController.performFetch()
+        statusResultsController.performFetch()
     }
 
     /// Setup: Navigation

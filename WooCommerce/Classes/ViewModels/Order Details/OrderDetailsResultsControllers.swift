@@ -171,7 +171,7 @@ private extension OrderDetailsResultsControllers {
     }
 
     func configureStatusResultsController() {
-        try? statusResultsController.performFetch()
+        statusResultsController.performFetch()
     }
 
     private func configureTrackingResultsController(onReload: @escaping () -> Void) {
@@ -187,7 +187,7 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? trackingResultsController.performFetch()
+        trackingResultsController.performFetch()
     }
 
     private func configureProductResultsController(onReload: @escaping () -> Void) {
@@ -203,7 +203,7 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? productResultsController.performFetch()
+        productResultsController.performFetch()
     }
 
     private func configureProductVariationResultsController(onReload: @escaping () -> Void) {
@@ -239,7 +239,7 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? refundResultsController.performFetch()
+        refundResultsController.performFetch()
     }
 
     private func configureShippingLabelResultsController(onReload: @escaping () -> Void) {
@@ -253,7 +253,7 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? shippingLabelResultsController.performFetch()
+        shippingLabelResultsController.performFetch()
     }
 
     private func configureAddOnGroupResultsController(onReload: @escaping () -> Void) {
@@ -267,7 +267,7 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? addOnGroupResultsController.performFetch()
+        addOnGroupResultsController.performFetch()
     }
 
     private func configureSitePluginsResultsController(onReload: @escaping () -> Void) {
@@ -281,19 +281,19 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? sitePluginsResultsController.performFetch()
+        sitePluginsResultsController.performFetch()
     }
 
     /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
     /// involves more than one results controller.
     func refetchAllResultsControllers() {
-        try? productResultsController.performFetch()
-        try? productVariationResultsController.performFetch()
-        try? refundResultsController.performFetch()
-        try? trackingResultsController.performFetch()
-        try? statusResultsController.performFetch()
-        try? shippingLabelResultsController.performFetch()
-        try? addOnGroupResultsController.performFetch()
-        try? sitePluginsResultsController.performFetch()
+        productResultsController.performFetch()
+        productVariationResultsController.performFetch()
+        refundResultsController.performFetch()
+        trackingResultsController.performFetch()
+        statusResultsController.performFetch()
+        shippingLabelResultsController.performFetch()
+        addOnGroupResultsController.performFetch()
+        sitePluginsResultsController.performFetch()
     }
 }

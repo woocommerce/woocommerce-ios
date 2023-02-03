@@ -360,8 +360,8 @@ private extension SettingsViewModel {
     /// Perform fetch all results controllers.
     ///
     private func fetchAllResultsControllers() {
-        try? sitesResultsController.performFetch()
-        try? paymentGatewayAccountsResultsController?.performFetch()
+        sitesResultsController.performFetch()
+        paymentGatewayAccountsResultsController?.performFetch()
     }
 
     /// Returns `true` for the add-ons workaround.

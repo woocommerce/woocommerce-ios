@@ -668,7 +668,7 @@ extension OrderDetailsViewModel {
     private func arePluginsSynced() -> Bool {
         let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
         let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storageManager, matching: predicate, sortedBy: [])
-        try? resultsController.performFetch()
+        resultsController.performFetch()
         return !resultsController.isEmpty
     }
 }

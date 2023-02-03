@@ -56,7 +56,7 @@ extension SelectedSiteSettings {
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
         let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.general.rawValue)
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
-        try? resultsController.performFetch()
+        resultsController.performFetch()
         let fetchedObjects = resultsController.fetchedObjects
         siteSettings = fetchedObjects
         fetchedObjects.forEach {

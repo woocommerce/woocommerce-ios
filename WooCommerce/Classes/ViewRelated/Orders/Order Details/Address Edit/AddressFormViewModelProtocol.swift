@@ -536,7 +536,7 @@ private extension AddressFormViewModel {
     ///
     func fetchStoredCountriesAndTriggerSyncIfNeeded() {
         // Initial fetch
-        try? countriesResultsController.performFetch()
+        countriesResultsController.performFetch()
 
         // Updates the initial fields when/if the data store changes(after sync).
         countriesResultsController.onDidChangeContent = { [weak self] in

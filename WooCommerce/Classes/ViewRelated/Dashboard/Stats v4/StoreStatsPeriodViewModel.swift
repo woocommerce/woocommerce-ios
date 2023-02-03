@@ -277,7 +277,7 @@ private extension StoreStatsPeriodViewModel {
         orderStatsResultsController.onDidResetContent = { [weak self] in
             self?.updateOrderDataIfNeeded()
         }
-        try? orderStatsResultsController.performFetch()
+        orderStatsResultsController.performFetch()
     }
 
     func configureSiteStatsResultsController() {
@@ -287,7 +287,7 @@ private extension StoreStatsPeriodViewModel {
         siteStatsResultsController.onDidResetContent = { [weak self] in
             self?.updateSiteVisitDataIfNeeded()
         }
-        try? siteStatsResultsController.performFetch()
+        siteStatsResultsController.performFetch()
     }
 
     func configureSummaryStatsResultsController() {
@@ -297,7 +297,7 @@ private extension StoreStatsPeriodViewModel {
         summaryStatsResultsController.onDidResetContent = { [weak self] in
             self?.updateSiteSummaryDataIfNeeded()
         }
-        try? summaryStatsResultsController.performFetch()
+        summaryStatsResultsController.performFetch()
     }
 }
 

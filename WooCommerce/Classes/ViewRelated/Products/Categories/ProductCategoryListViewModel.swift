@@ -114,7 +114,7 @@ final class ProductCategoryListViewModel {
         self.onProductCategorySelection = onProductCategorySelection
         self.initiallySelectedIDs = selectedCategoryIDs
 
-        try? resultController.performFetch()
+        resultController.performFetch()
         updateViewModelsArray()
         configureProductSearch()
     }
@@ -245,7 +245,7 @@ final class ProductCategoryListViewModel {
                     // Resets the results to the full product list when there is no search query.
                     self.resultController.predicate = NSPredicate(format: "siteID = %lld", self.siteID)
                 }
-                try? self.resultController.performFetch()
+                self.resultController.performFetch()
                 self.updateViewModelsArray()
                 self.reloadData()
             }

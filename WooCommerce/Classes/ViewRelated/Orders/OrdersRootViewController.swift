@@ -157,7 +157,7 @@ final class OrdersRootViewController: UIViewController {
         ServiceLocator.analytics.track(.orderListViewFilterOptionsTapped)
 
         // Fetch stored statuses
-        try? statusResultsController.performFetch()
+        statusResultsController.performFetch()
         let allowedStatuses = statusResultsController.fetchedObjects.map { $0 }
 
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses)
@@ -261,7 +261,7 @@ private extension OrdersRootViewController {
             self.resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
         }
 
-        try? statusResultsController.performFetch()
+        statusResultsController.performFetch()
         resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: statusResultsController.fetchedObjects)
     }
 

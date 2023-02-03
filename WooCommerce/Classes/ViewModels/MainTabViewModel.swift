@@ -112,7 +112,7 @@ private extension MainTabViewModel {
             self?.processBadgeCount(updatedOrdersStatus)
         }
 
-        try? statusResultsController?.performFetch()
+        statusResultsController?.performFetch()
         updateBadgeFromCache()
     }
 

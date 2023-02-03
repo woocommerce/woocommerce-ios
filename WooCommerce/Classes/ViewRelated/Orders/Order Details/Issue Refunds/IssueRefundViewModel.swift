@@ -102,7 +102,7 @@ final class IssueRefundViewModel {
     ///
     private lazy var products: [Product] = {
         let resultsController = createProductsResultsController()
-        try? resultsController.performFetch()
+        resultsController.performFetch()
         return resultsController.fetchedObjects
     }()
 
@@ -110,7 +110,7 @@ final class IssueRefundViewModel {
     ///
     private lazy var paymentGateway: PaymentGateway? = {
         let resultsController = createPaymentGatewayResultsController()
-        try? resultsController.performFetch()
+        resultsController.performFetch()
         return resultsController.fetchedObjects.first
     }()
 
@@ -126,7 +126,7 @@ final class IssueRefundViewModel {
         guard let resultsController = createWcPayChargeResultsController() else {
             return nil
         }
-        try? resultsController.performFetch()
+        resultsController.performFetch()
         return resultsController
     }()
 

@@ -56,7 +56,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: predicate,
                                                                   sortOrder: .nameAscending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Assert
         XCTAssertEqual(resultsController.fetchedObjects, expectedProducts)
@@ -80,7 +80,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: predicate,
                                                                   sortOrder: .nameAscending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Assert
         XCTAssertFalse(resultsController.fetchedObjects.contains(otherProduct))
@@ -105,7 +105,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: predicate,
                                                                   sortOrder: .nameAscending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Assert
         XCTAssertFalse(resultsController.fetchedObjects.contains(otherProduct))
@@ -130,7 +130,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: predicate,
                                                                   sortOrder: .nameAscending)
-        try? resultsController.performFetch()
+        resultsController.performFetch()
 
         // Assert
         XCTAssertFalse(resultsController.fetchedObjects.contains(otherProduct))

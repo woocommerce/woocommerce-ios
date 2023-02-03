@@ -131,7 +131,7 @@ final class AddAttributeOptionsViewModel {
             self?.state.existingOptions = controller.fetchedObjects.map { .global(option: $0) }
         }
 
-        try? controller.performFetch()
+        controller.performFetch()
         return controller
     }()
 

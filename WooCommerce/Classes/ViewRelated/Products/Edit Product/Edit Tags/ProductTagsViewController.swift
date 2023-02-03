@@ -18,7 +18,7 @@ final class ProductTagsViewController: UIViewController, GhostableViewController
     private let originalTagNames: [String]
 
     private var fetchedTags: [ProductTag] {
-        try? resultController.performFetch()
+        resultController.performFetch()
         return resultController.fetchedObjects
     }
 

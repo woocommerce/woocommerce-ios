@@ -159,7 +159,7 @@ class CommentRemoteTests: XCTestCase {
         // Given
         let remote = CommentRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)/replies/new", filename: "comment-moderate-approved")
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments", filename: "comment-moderate-approved")
 
         // When
         var result: Result<CommentStatus, Error>?
@@ -178,8 +178,7 @@ class CommentRemoteTests: XCTestCase {
     func test_replyToComment_properly_parses_error_responses() throws {
         // Given
         let remote = CommentRemote(network: network)
-
-        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)/replies/new", filename: "generic_error")
+        network.simulateError(requestUrlSuffix: "sites/\(sampleSiteID)/comments", error: NetworkError.timeout)
 
         // When
         var result: Result<CommentStatus, Error>?

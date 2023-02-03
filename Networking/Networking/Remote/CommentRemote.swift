@@ -71,6 +71,7 @@ public class CommentRemote: Remote {
                                productID: Int64,
                                content: String,
                                completion: @escaping (Result<CommentStatus, Error>) -> Void) {
+        let path = "sites/\(siteID)/\(Paths.comments)"
         let parameters: [String: Any] = [
             ParameterKeys.content: content,
             ParameterKeys.parent: commentID,
@@ -80,7 +81,7 @@ public class CommentRemote: Remote {
         do {
             let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
                                             method: .post,
-                                            path: Paths.comments,
+                                            path: path,
                                             parameters: parameters,
                                             availableAsRESTRequest: true)
             enqueue(request, mapper: mapper, completion: completion)

@@ -380,7 +380,11 @@ private extension StoreCreationCoordinator {
                             sellingStatus: StoreCreationSellingStatusAnswer?,
                             countryCode: SiteAddress.CountryCode?,
                             planToPurchase: WPComPlanProduct) {
-        let domainSelector = FreeDomainSelectorHostingController(viewModel: .init(initialSearchTerm: storeName, dataProvider: FreeDomainSelectorDataProvider()),
+        let domainSelector = FreeDomainSelectorHostingController(viewModel:
+                .init(title: Localization.domainSelectorTitle,
+                      subtitle: Localization.domainSelectorSubtitle,
+                      initialSearchTerm: storeName,
+                      dataProvider: FreeDomainSelectorDataProvider()),
                                                                  onDomainSelection: { [weak self] domain in
             guard let self else { return }
             await self.createStoreAndContinueToStoreSummary(from: navigationController,
@@ -639,6 +643,15 @@ private extension StoreCreationCoordinator {
     }
 
     enum Localization {
+        static var domainSelectorTitle: String {
+            NSLocalizedString("Choose a domain", comment: "Title of the domain selector in the store creation flow.")
+        }
+        static var domainSelectorSubtitle: String {
+            NSLocalizedString(
+                "This is where people will find you on the Internet. You can add another domain later.",
+                comment: "Subtitle of the domain selector in the store creation flow.")
+        }
+
         enum WaitingForIAPEligibility {
             static let title = NSLocalizedString(
                 "We are getting ready for your store creation",

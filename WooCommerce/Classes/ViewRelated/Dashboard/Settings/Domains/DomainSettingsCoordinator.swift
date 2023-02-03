@@ -30,8 +30,8 @@ final class DomainSettingsCoordinator: Coordinator {
     func start() {
         let settingsNavigationController = WooNavigationController()
         let domainSettings = DomainSettingsHostingController(viewModel: .init(siteID: site.siteID,
-                                                                              stores: stores)) { [weak self] hasDomainCredit in
-            self?.showDomainSelector(from: settingsNavigationController, hasDomainCredit: hasDomainCredit)
+                                                                              stores: stores)) { [weak self] hasDomainCredit, freeStagingDomain in
+            self?.showDomainSelector(from: settingsNavigationController, hasDomainCredit: hasDomainCredit, freeStagingDomain: freeStagingDomain)
         }
         settingsNavigationController.pushViewController(domainSettings, animated: false)
         navigationController.present(settingsNavigationController, animated: true)
@@ -40,11 +40,15 @@ final class DomainSettingsCoordinator: Coordinator {
 
 private extension DomainSettingsCoordinator {
     @MainActor
-    func showDomainSelector(from navigationController: UINavigationController, hasDomainCredit: Bool) {
-        let viewModel = DomainSelectorViewModel(initialSearchTerm: site.name,
+    func showDomainSelector(from navigationController: UINavigationController, hasDomainCredit: Bool, freeStagingDomain: String?) {
+        let subtitle = freeStagingDomain
+            .map { String(format: Localization.domainSelectorSubtitleFormat, $0) } ?? Localization.domainSelectorSubtitleWithoutFreeStagingDomain
+        let viewModel = DomainSelectorViewModel(title: Localization.domainSelectorTitle,
+                                                subtitle: subtitle,
+                                                initialSearchTerm: site.name,
                                                 dataProvider: PaidDomainSelectorDataProvider(stores: stores,
                                                                                              hasDomainCredit: hasDomainCredit))
-        let domainSelector = PaidDomainSelectorHostingController(viewModel: viewModel) { [weak self] domain in
+        let domainSelector = PaidDomainSelectorHostingController(viewModel: viewModel, onDomainSelection: { [weak self] domain in
             guard let self else { return }
             let domainToPurchase = DomainToPurchase(name: domain.name,
                                                     productID: domain.productID,
@@ -61,9 +65,7 @@ private extension DomainSettingsCoordinator {
                     print("⛔️ Error creating cart with the selected domain \(domain): \(error)")
                 }
             }
-        } onSupport: {
-            // TODO: 8558 - remove support action
-        }
+        }, onSupport: nil)
         navigationController.show(domainSelector, sender: nil)
     }
 
@@ -143,5 +145,22 @@ private extension DomainSettingsCoordinator {
                 continuation.resume(with: result)
             })
         }
+    }
+}
+
+private extension DomainSettingsCoordinator {
+    enum Localization {
+        static let domainSelectorTitle = NSLocalizedString(
+            "Search domains",
+            comment: "Title of the domain selector in domain settings."
+        )
+        static let domainSelectorSubtitleFormat = NSLocalizedString(
+            "The domain purchased will redirect users to **%1$@**",
+            comment: "Subtitle of the domain selector in domain settings. %1$@ is the free domain of the site from WordPress.com."
+        )
+        static let domainSelectorSubtitleWithoutFreeStagingDomain = NSLocalizedString(
+            "The domain purchased will redirect users to the current staging domain",
+            comment: "Subtitle of the domain selector in domain settings when a free staging domain is unavailable."
+        )
     }
 }

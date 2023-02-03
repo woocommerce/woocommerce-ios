@@ -66,7 +66,11 @@ public class CommentRemote: Remote {
     ///    - content: the text of the comment reply
     ///    - completion: callback to be executed on completion
     ///
-    public func replyToComment(siteID: Int64, commentID: Int64, productID: Int64, content: String, completion: @escaping (Result<CommentStatus, Error>) -> Void) {
+    public func replyToComment(siteID: Int64,
+                               commentID: Int64,
+                               productID: Int64,
+                               content: String,
+                               completion: @escaping (Result<CommentStatus, Error>) -> Void) {
         let parameters: [String: Any] = [
             ParameterKeys.content: content,
             ParameterKeys.parent: commentID,

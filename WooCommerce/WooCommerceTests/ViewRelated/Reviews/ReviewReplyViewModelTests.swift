@@ -9,11 +9,13 @@ class ReviewReplyViewModelTests: XCTestCase {
 
     private let sampleReviewID: Int64 = 7
 
+    private let sampleProductID: Int64 = 123
+
     private var subscriptions: [AnyCancellable] = []
 
     func test_send_button_is_disabled_when_reply_content_is_empty() {
         // Given
-        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID)
+        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, productID: sampleProductID)
 
         // When
         let navigationItem = viewModel.navigationTrailingItem
@@ -24,7 +26,7 @@ class ReviewReplyViewModelTests: XCTestCase {
 
     func test_send_button_is_enabled_when_reply_is_entered() {
         // Given
-        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID)
+        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, productID: sampleProductID)
 
         // When
         viewModel.newReply = "New reply"
@@ -36,7 +38,7 @@ class ReviewReplyViewModelTests: XCTestCase {
     func test_loading_indicator_enabled_during_network_request() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, stores: stores)
+        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, productID: sampleProductID, stores: stores)
         viewModel.newReply = "New reply"
 
         // When
@@ -59,10 +61,10 @@ class ReviewReplyViewModelTests: XCTestCase {
     func test_send_button_renabled_after_network_request_completes() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, stores: stores)
+        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, productID: sampleProductID, stores: stores)
         stores.whenReceivingAction(ofType: CommentAction.self) { action in
             switch action {
-            case let .replyToComment(_, _, _, onCompletion):
+            case let .replyToComment(_, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -84,10 +86,10 @@ class ReviewReplyViewModelTests: XCTestCase {
     func test_sendReply_completion_block_returns_true_after_successful_network_request() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, stores: stores)
+        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, productID: sampleProductID, stores: stores)
         stores.whenReceivingAction(ofType: CommentAction.self) { action in
             switch action {
-            case let .replyToComment(_, _, _, onCompletion):
+            case let .replyToComment(_, _, _, _, onCompletion):
                 onCompletion(.success(.approved))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -109,10 +111,10 @@ class ReviewReplyViewModelTests: XCTestCase {
     func test_sendReply_completion_block_returns_false_after_failed_network_request() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, stores: stores)
+        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, productID: sampleProductID, stores: stores)
         stores.whenReceivingAction(ofType: CommentAction.self) { action in
             switch action {
-            case let .replyToComment(_, _, _, onCompletion):
+            case let .replyToComment(_, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -134,10 +136,10 @@ class ReviewReplyViewModelTests: XCTestCase {
     func test_view_model_triggers_success_notice_after_reply_is_sent_successfully() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, stores: stores)
+        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, productID: sampleProductID, stores: stores)
         stores.whenReceivingAction(ofType: CommentAction.self) { action in
             switch action {
-            case let .replyToComment(_, _, _, onCompletion):
+            case let .replyToComment(_, _, _, _, onCompletion):
                 onCompletion(.success(.approved))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -160,10 +162,10 @@ class ReviewReplyViewModelTests: XCTestCase {
     func test_view_model_triggers_error_notice_using_modal_notice_presenter_after_reply_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, stores: stores)
+        let viewModel = ReviewReplyViewModel(siteID: sampleSiteID, reviewID: sampleReviewID, productID: sampleProductID, stores: stores)
         stores.whenReceivingAction(ofType: CommentAction.self) { action in
             switch action {
-            case let .replyToComment(_, _, _, onCompletion):
+            case let .replyToComment(_, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")

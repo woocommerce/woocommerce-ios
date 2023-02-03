@@ -332,7 +332,7 @@ private extension ReviewDetailsViewController {
         commentCell.isTrashEnabled    = true
         commentCell.isSpamEnabled     = true
         commentCell.isApproveSelected = productReview.status == .approved
-        commentCell.isReplyEnabled    = ServiceLocator.stores.isAuthenticatedWithoutWPCom == false
+        commentCell.isReplyEnabled    = true
 
         let reviewID = productReview.reviewID
         let reviewSiteID = productReview.siteID
@@ -383,7 +383,7 @@ private extension ReviewDetailsViewController {
         commentCell.onReply = { [weak self] in
             guard let self else { return }
 
-            let reviewReplyViewModel = ReviewReplyViewModel(siteID: self.siteID, reviewID: self.productReview.reviewID)
+            let reviewReplyViewModel = ReviewReplyViewModel(siteID: self.siteID, reviewID: self.productReview.reviewID, productID: self.productReview.productID)
             let reviewReplyViewController = ReviewReplyHostingController(viewModel: reviewReplyViewModel)
             self.present(reviewReplyViewController, animated: true)
         }

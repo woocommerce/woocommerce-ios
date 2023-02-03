@@ -849,12 +849,12 @@ extension AppSettingsStoreTests {
         subject?.onAction(action)
 
         // Then
-        var savedSettings: GeneralAppSettings? = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        let savedSettings: GeneralAppSettings? = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
         XCTAssertNil(savedSettings)
         guard let savedSettings else {
             return
         }
-        var savedDate: Date? = try XCTUnwrap( savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
+        let savedDate: Date? = try XCTUnwrap( savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
         XCTAssertNil(savedDate)
     }
 
@@ -919,10 +919,8 @@ extension AppSettingsStoreTests {
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
 
         let currentTime = Date()
-        let datePrior = Date(timeIntervalSince1970: 100)
-        let date = Date()
 
-        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.test: .init(dismissedDate: date, remindAfter: nil)])
+        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.test: .init(dismissedDate: currentTime, remindAfter: nil)])
         try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
 
         // When
@@ -938,7 +936,7 @@ extension AppSettingsStoreTests {
 
         let otherCampaignDismissDate = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.test]?.dismissedDate)
 
-        assertEqual(date, otherCampaignDismissDate)
+        assertEqual(currentTime, otherCampaignDismissDate)
     }
 
     func test_getFeatureAnnouncementVisibility_without_stored_setting_calls_completion_with_visibility_true() throws {

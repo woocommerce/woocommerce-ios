@@ -4,7 +4,7 @@ import Yosemite
 import enum Networking.DotcomError
 @testable import WooCommerce
 
-final class DomainSelectorViewModelTests: XCTestCase {
+final class FreeDomainSelectorViewModelTests: XCTestCase {
     typealias ViewModel = DomainSelectorViewModel<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>
     private var stores: MockStoresManager!
     private var viewModel: ViewModel!
@@ -13,13 +13,24 @@ final class DomainSelectorViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
-        viewModel = .init(dataProvider: FreeDomainSelectorDataProvider(stores: stores), debounceDuration: 0)
+        viewModel = .init(title: "", subtitle: "", dataProvider: FreeDomainSelectorDataProvider(stores: stores), debounceDuration: 0)
     }
 
     override func tearDown() {
         viewModel = nil
         stores = nil
         super.tearDown()
+    }
+
+    func test_title_and_subtitle_are_set_by_init_parameter() {
+        // When
+        let viewModel = DomainSelectorViewModel<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
+            title: "title", subtitle: "Subtitle", dataProvider: FreeDomainSelectorDataProvider(stores: stores), debounceDuration: 0
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.title, "title")
+        XCTAssertEqual(viewModel.subtitle, "Subtitle")
     }
 
     func test_DomainAction_is_not_dispatched_when_searchTerm_is_empty() {
@@ -125,7 +136,7 @@ final class DomainSelectorViewModelTests: XCTestCase {
     }
 }
 
-private extension DomainSelectorViewModelTests {
+private extension FreeDomainSelectorViewModelTests {
     func mockDomainSuggestionsSuccess(suggestions: [FreeDomainSuggestion]) {
         stores.whenReceivingAction(ofType: DomainAction.self) { action in
             switch action {

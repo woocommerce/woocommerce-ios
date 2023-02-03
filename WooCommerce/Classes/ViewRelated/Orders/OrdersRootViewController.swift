@@ -65,13 +65,17 @@ final class OrdersRootViewController: UIViewController {
 
     private let featureFlagService: FeatureFlagService
 
+    private let orderDurationRecorder: OrderDurationRecorderProtocol
+
     // MARK: View Lifecycle
 
     init(siteID: Int64,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
+        self.orderDurationRecorder = orderDurationRecorder
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
@@ -153,7 +157,12 @@ final class OrdersRootViewController: UIViewController {
         ServiceLocator.analytics.track(.orderListViewFilterOptionsTapped)
 
         // Fetch stored statuses
-        try? statusResultsController.performFetch()
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch stored statuses for Site \(siteID): \(error)")
+        }
+
         let allowedStatuses = statusResultsController.fetchedObjects.map { $0 }
 
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses)
@@ -257,7 +266,11 @@ private extension OrdersRootViewController {
             self.resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
         }
 
-        try? statusResultsController.performFetch()
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch stored order statuses for Site \(siteID): \(error)")
+        }
         resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: statusResultsController.fetchedObjects)
     }
 
@@ -377,6 +390,7 @@ private extension OrdersRootViewController {
         }
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
+        orderDurationRecorder.startRecording()
     }
 
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.

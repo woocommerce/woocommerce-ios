@@ -1,7 +1,12 @@
 import Foundation
+import struct Alamofire.JSONEncoding
+import struct Alamofire.URLEncoding
+import protocol Alamofire.ParameterEncoding
 
 /// Protocol for `PaymentRemote` mainly used for mocking.
 public protocol PaymentRemoteProtocol {
+    typealias CartResponse = Dictionary<String, AnyCodable>
+
     /// Loads the WPCOM plan remotely that matches the product ID.
     /// - Parameter productID: The ID of the WPCOM plan product.
     /// - Returns: The WPCOM plan that matches the given product ID.
@@ -18,6 +23,21 @@ public protocol PaymentRemoteProtocol {
     ///   - productID: The ID of the product to be added to the site.
     /// - Returns: The remote response from creating a cart.
     func createCart(siteID: Int64, productID: Int64) async throws
+
+    /// Creates a cart with the given domain for the site ID.
+    /// - Parameters:
+    ///   - siteID: The ID of the site that the domain is being mapped to.
+    ///   - domain: The domain product to purchase.
+    ///   - isTemporary: Whether the cart is temporary.
+    ///   When the cart is being passed to a subsequent API request for checkout, this needs to be `true`.
+    ///   When it's necessary to create a persistent cart for later checkout, this is set to `false`. The default value is `true`.
+    /// - Returns: The remote response from creating a cart.
+    func createCart(siteID: Int64, domain: PaidDomainSuggestion, isTemporary: Bool) async throws -> CartResponse
+
+    /// Checks out the given cart using domain credit as the payment method.
+    /// - Parameter cart: Cart generated from one of the `createCart` functions.
+    /// - Parameter contactInfo: Contact info for the domain that needs to be validated beforehand.
+    func checkoutCartWithDomainCredit(cart: CartResponse, contactInfo: DomainContactInfo) async throws
 }
 
 /// WPCOM Payment Endpoints
@@ -44,8 +64,6 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
     }
 
     public func createCart(siteID: Int64, productID: Int64) async throws {
-        let path = "\(Path.cartCreation)/\(siteID)"
-
         let parameters: [String: Any] = [
             "products": [
                 [
@@ -56,11 +74,56 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
             // Necessary to create a persistent cart for later checkout, the default value is `true`.
             "temporary": false
         ]
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
-        let response: CreateCartResponse = try await enqueue(request)
+        let response: CreateCartResponse = try await createCart(siteID: siteID, parameters: parameters)
         guard response.products.contains(where: { $0.productID == productID }) else {
             throw CreateCartError.productNotInCart
         }
+    }
+
+    public func createCart(siteID: Int64, domain: PaidDomainSuggestion, isTemporary: Bool) async throws -> CartResponse {
+        let parameters: [String: Any] = [
+            "products": [
+                [
+                    "product_id": domain.productID,
+                    "volume": 1,
+                    "meta": domain.name,
+                    "extra": [
+                        "privacy": domain.supportsPrivacy
+                    ]
+                ]
+            ],
+            "temporary": isTemporary
+        ]
+        let response: CartResponse = try await createCart(siteID: siteID, parameters: parameters, encoding: JSONEncoding.default)
+
+        // Casting the values of `[String: Any]` to fixed-size integer types like `Int64` results in `nil`.
+        // https://stackoverflow.com/questions/36786883/swift-cast-any-object-to-int64-nil
+        guard let productsInCart = response["products"]?.value as? [[String: Any]],
+              productsInCart.contains(where: { ($0["product_id"] as? Int) == Int(domain.productID) }) else {
+            throw CreateCartError.productNotInCart
+        }
+        return response
+    }
+
+    public func checkoutCartWithDomainCredit(cart: CartResponse, contactInfo: DomainContactInfo) async throws {
+        let path = "\(Path.cartCheckout)"
+        let cartDictionary = try cart.toDictionary()
+        let contactInformationDictionary = try contactInfo.toDictionary()
+        let parameters: [String: Any] = [
+            "cart": cartDictionary,
+            "domain_details": contactInformationDictionary,
+            "payment": ["payment_method": PaymentMethod.credit.rawValue]
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters, encoding: JSONEncoding.default)
+        let _: DomainCreditCheckoutCartResponse = try await enqueue(request)
+    }
+}
+
+private extension PaymentRemote {
+    func createCart<T: Decodable>(siteID: Int64, parameters: [String: Any], encoding: ParameterEncoding = URLEncoding.default) async throws -> T {
+        let path = "\(Path.cartCreation)/\(siteID)"
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters, encoding: encoding)
+        return try await enqueue(request)
     }
 }
 
@@ -140,11 +203,27 @@ private extension CreateCartResponse {
     }
 }
 
+private struct DomainCreditCheckoutCartResponse: Decodable {
+    /// A valid receipt ID is expected in the cart checkout response with a domain credit.
+    let receiptID: Int64
+
+    private enum CodingKeys: String, CodingKey {
+        case receiptID = "receipt_id"
+    }
+}
+
+/// Payment method type for WPCOM cart checkout.
+/// Its raw value is used as the value in the cart checkout request body.
+private enum PaymentMethod: String {
+    case credit = "WPCOM_Billing_WPCOM"
+}
+
 // MARK: - Constants
 //
 private extension PaymentRemote {
     enum Path {
         static let products = "plans"
         static let cartCreation = "me/shopping-cart"
+        static let cartCheckout = "me/transactions"
     }
 }

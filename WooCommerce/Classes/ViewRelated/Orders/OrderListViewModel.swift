@@ -134,7 +134,7 @@ final class OrderListViewModel {
 
     /// If true, no IPP feedback banner will be shown as the user has told us that they are not interested in this information.
     /// It is persisted through app sessions.
-    /// 
+    ///
     @Published var hideIPPFeedbackBanner: Bool = true
 
     init(siteID: Int64,

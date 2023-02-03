@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 12.2
+We’ve made a few enhancements to manage your business. It’s now easier to set up your store when logging in. Adding attributes from the app just became a whole lot easier! Keep your feedback coming!
+
 ## 12.1
 This release includes a few bug fixes and improvements to products and in person payments. Please continue to send us feedback – we are listening!
 

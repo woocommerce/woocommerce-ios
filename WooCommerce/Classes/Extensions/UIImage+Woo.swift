@@ -244,6 +244,18 @@ extension UIImage {
         return UIImage.gridicon(.cross, size: CGSize(width: 22, height: 22))
     }
 
+    /// Domain credit image.
+    ///
+    static var domainCreditImage: UIImage {
+        return UIImage(named: "domain-credit")!
+    }
+
+    /// Domain purchase success image.
+    ///
+    static var domainPurchaseSuccessImage: UIImage {
+        return UIImage(named: "domain-purchase-success")!
+    }
+
     /// Domain search placeholder image.
     ///
     static var domainSearchPlaceholderImage: UIImage {

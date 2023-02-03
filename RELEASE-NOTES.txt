@@ -4,12 +4,14 @@
 -----
 - [*] Fix: Adding a new attribute will auto-capitalize the first letter for each word in the attribute name. [https://github.com/woocommerce/woocommerce-ios/pull/8772]
 - [internal] Logging: Improvements on logging potential errors when loading Order Details [https://github.com/woocommerce/woocommerce-ios/pull/8781]
+- [Internal] Now we track the specific error code when a networking-related operation fails [https://github.com/woocommerce/woocommerce-ios/issues/8527]
 
 12.1
 -----
 - [*] Adds an In-Person Payments survey banner on top of the Orders view [https://github.com/woocommerce/woocommerce-ios/issues/8530]
 - [*] Fix: Allow product's `purchasable` to be a number as some third-party plugins could alter the type in the API. This could help with the Products tab not loading due to product decoding errors. [https://github.com/woocommerce/woocommerce-ios/pull/8718]
 - [***] [Internal] Start the AB test for allowing login to the app using site credentials [https://github.com/woocommerce/woocommerce-ios/pull/8744]
+
 12.0
 -----
 - [**] Adds a feature of bulk updating products from the product's list. [https://github.com/woocommerce/woocommerce-ios/pull/8704]

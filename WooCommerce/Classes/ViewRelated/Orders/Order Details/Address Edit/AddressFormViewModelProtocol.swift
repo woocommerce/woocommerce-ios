@@ -244,6 +244,10 @@ open class AddressFormViewModel: ObservableObject {
     ///
     let analytics: Analytics
 
+    /// Whether the Done button in the navigation bar is always enabled.
+    ///
+    private let isDoneButtonAlwaysEnabled: Bool
+
     /// Store for publishers subscriptions
     ///
     private var subscriptions = Set<AnyCancellable>()
@@ -251,6 +255,7 @@ open class AddressFormViewModel: ObservableObject {
     init(siteID: Int64,
          address: Address,
          secondaryAddress: Address? = nil,
+         isDoneButtonAlwaysEnabled: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -261,6 +266,9 @@ open class AddressFormViewModel: ObservableObject {
 
         self.secondaryOriginalAddress = secondaryAddress ?? .empty
         self.secondaryFields = .init(with: secondaryOriginalAddress)
+
+        self.isDoneButtonAlwaysEnabled = isDoneButtonAlwaysEnabled
+        self.navigationTrailingItem = .done(enabled: isDoneButtonAlwaysEnabled)
 
         self.storageManager = storageManager
         self.stores = stores
@@ -313,7 +321,7 @@ open class AddressFormViewModel: ObservableObject {
     /// Active navigation bar trailing item.
     /// Defaults to a disabled done button.
     ///
-    @Published private(set) var navigationTrailingItem: AddressFormNavigationItem = .done(enabled: false)
+    @Published private(set) var navigationTrailingItem: AddressFormNavigationItem
 
     /// Define if the view should show placeholders instead of the real elements.
     ///
@@ -501,13 +509,17 @@ private extension AddressFormViewModel {
     ///
     func bindNavigationTrailingItemPublisher() {
         Publishers.CombineLatest4($fields, $secondaryFields, $showDifferentAddressForm, performingNetworkRequest)
-            .map { [originalAddress, secondaryOriginalAddress]
+            .map { [isDoneButtonAlwaysEnabled, originalAddress, secondaryOriginalAddress]
                 fields, secondaryFields, showDifferentAddressForm, performingNetworkRequest -> AddressFormNavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
 
                 guard !fields.useAsToggle else {
+                    return .done(enabled: true)
+                }
+
+                guard !isDoneButtonAlwaysEnabled else {
                     return .done(enabled: true)
                 }
 

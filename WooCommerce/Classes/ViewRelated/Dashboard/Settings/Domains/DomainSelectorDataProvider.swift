@@ -52,15 +52,25 @@ struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable 
     // Properties for cart creation after a domain is selected.
     let productID: Int64
     let supportsPrivacy: Bool
+    let hasDomainCredit: Bool
 
-    init(domainSuggestion: PaidDomainSuggestion) {
+    init(domainSuggestion: PaidDomainSuggestion, hasDomainCredit: Bool) {
         self.name = domainSuggestion.name
         self.attributedDetail = {
             var attributedCost = AttributedString(.init(format: Localization.priceFormat, domainSuggestion.cost, domainSuggestion.term))
             attributedCost.font = .body
             attributedCost.foregroundColor = .init(.secondaryLabel)
 
-            if let saleCost = domainSuggestion.saleCost {
+            if hasDomainCredit {
+                // Strikethrough style for the original cost string.
+                attributedCost.strikethroughStyle = .single
+
+                var attributedDomainCreditPricing = AttributedString(Localization.domainCreditPricing)
+                attributedDomainCreditPricing.font = .body
+                attributedDomainCreditPricing.foregroundColor = .init(.domainCreditPricing)
+
+                return attributedCost + .init(" ") + attributedDomainCreditPricing
+            } else if let saleCost = domainSuggestion.saleCost {
                 // Strikethrough style for the original cost string.
                 if let range = attributedCost.range(of: domainSuggestion.cost) {
                     attributedCost[range].strikethroughStyle = .single
@@ -77,6 +87,7 @@ struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable 
         }()
         self.productID = domainSuggestion.productID
         self.supportsPrivacy = domainSuggestion.supportsPrivacy
+        self.hasDomainCredit = hasDomainCredit
     }
 }
 
@@ -87,22 +98,29 @@ extension PaidDomainSuggestionViewModel {
             comment: "The original price of a domain. %1$@ is the price per term. " +
             "%2$@ is the duration of each pricing term, usually year."
         )
+        static let domainCreditPricing = NSLocalizedString(
+            "Free for the first year",
+            comment: "Label shown for domains that are free for the first year with available domain credit."
+        )
     }
 }
 
 /// Provides domain suggestions that are paid.
 final class PaidDomainSelectorDataProvider: DomainSelectorDataProvider {
     private let stores: StoresManager
+    private let hasDomainCredit: Bool
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores, hasDomainCredit: Bool) {
         self.stores = stores
+        self.hasDomainCredit = hasDomainCredit
     }
 
     @MainActor
     func loadDomainSuggestions(query: String) async throws -> [PaidDomainSuggestionViewModel] {
-        try await withCheckedThrowingContinuation { continuation in
+        return try await withCheckedThrowingContinuation { [hasDomainCredit] continuation in
             stores.dispatch(DomainAction.loadPaidDomainSuggestions(query: query) { result in
-                continuation.resume(with: result.map { $0.map { PaidDomainSuggestionViewModel(domainSuggestion: $0) } })
+                continuation.resume(with: result.map { $0.map { PaidDomainSuggestionViewModel(domainSuggestion: $0,
+                                                                                              hasDomainCredit: hasDomainCredit) } })
             })
         }
     }

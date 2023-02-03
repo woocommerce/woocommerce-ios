@@ -196,6 +196,25 @@ extension Networking.Customer {
         )
     }
 }
+extension Networking.DomainContactInfo {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.DomainContactInfo {
+        .init(
+            firstName: .fake(),
+            lastName: .fake(),
+            organization: .fake(),
+            address1: .fake(),
+            address2: .fake(),
+            postcode: .fake(),
+            city: .fake(),
+            state: .fake(),
+            countryCode: .fake(),
+            phone: .fake(),
+            email: .fake()
+        )
+    }
+}
 extension DotcomError {
     /// Returns a "ready to use" type filled with fake values.
     ///

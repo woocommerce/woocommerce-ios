@@ -30,10 +30,10 @@ final class PaidDomainSelectorHostingController: UIHostingController<DomainSelec
     /// - Parameters:
     ///   - viewModel: View model for the domain selector.
     ///   - onDomainSelection: Called when the user continues with a selected domain.
-    ///   - onSupport: Called when the user taps to contact support.
+    ///   - onSupport: Called when the user taps to contact support. If `nil`, the contact support CTA is not shown.
     init(viewModel: DomainSelectorViewModel<PaidDomainSelectorDataProvider, PaidDomainSuggestionViewModel>,
          onDomainSelection: @escaping (PaidDomainSuggestionViewModel) async -> Void,
-         onSupport: @escaping () -> Void) {
+         onSupport: (() -> Void)?) {
         super.init(rootView: DomainSelectorView<PaidDomainSelectorDataProvider, PaidDomainSuggestionViewModel>(viewModel: viewModel,
                                                                                                       onDomainSelection: onDomainSelection,
                                                                                                       onSupport: onSupport))
@@ -55,7 +55,7 @@ struct DomainSelectorView<DataProvider: DomainSelectorDataProvider,
                           DomainSuggestion: Equatable & DomainSuggestionViewProperties>: View
 where DataProvider.DomainSuggestion == DomainSuggestion {
     private let onDomainSelection: (DomainSuggestion) async -> Void
-    private let onSupport: () -> Void
+    private let onSupport: (() -> Void)?
 
     /// View model to drive the view.
     @ObservedObject private var viewModel: DomainSelectorViewModel<DataProvider, DomainSuggestion>
@@ -71,7 +71,7 @@ where DataProvider.DomainSuggestion == DomainSuggestion {
 
     init(viewModel: DomainSelectorViewModel<DataProvider, DomainSuggestion>,
          onDomainSelection: @escaping (DomainSuggestion) async -> Void,
-         onSupport: @escaping () -> Void) {
+         onSupport: (() -> Void)?) {
         self.viewModel = viewModel
         self.onDomainSelection = onDomainSelection
         self.onSupport = onSupport
@@ -81,7 +81,8 @@ where DataProvider.DomainSuggestion == DomainSuggestion {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 // Header label.
-                Text(Localization.subtitle)
+                // The subtitle is in an `.init` in order to support markdown.
+                Text(.init(viewModel.subtitle))
                     .foregroundColor(Color(.secondaryLabel))
                     .bodyStyle()
                     .padding(.horizontal, Layout.defaultHorizontalPadding)
@@ -183,12 +184,14 @@ where DataProvider.DomainSuggestion == DomainSuggestion {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                SupportButton {
-                    onSupport()
+                if let onSupport {
+                    SupportButton {
+                        onSupport()
+                    }
                 }
             }
         }
-        .navigationTitle(Localization.title)
+        .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.large)
         .onChange(of: viewModel.isLoadingDomainSuggestions) { isLoadingDomainSuggestions in
             // Resets selected domain when loading domain suggestions.
@@ -207,14 +210,6 @@ private extension DomainSelectorView {
     }
 
     enum Localization {
-        static var title: String {
-            NSLocalizedString("Choose a domain", comment: "Title of the domain selector.")
-        }
-        static var subtitle: String {
-            NSLocalizedString(
-                "This is where people will find you on the Internet. You can add another domain later.",
-                comment: "Subtitle of the domain selector.")
-        }
         static var searchPlaceholder: String {
             NSLocalizedString("Type a name for your store", comment: "Placeholder of the search text field on the domain selector.")
         }
@@ -265,7 +260,9 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Empty query state.
             DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
                 viewModel:
-                        .init(initialSearchTerm: "",
+                        .init(title: "Choose a domain",
+                              subtitle: "Your domain",
+                              initialSearchTerm: "",
                               dataProvider: FreeDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores()
                               )),
@@ -275,7 +272,9 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Results state for free domains.
             DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
                 viewModel:
-                        .init(initialSearchTerm: "",
+                        .init(title: "Choose a domain",
+                              subtitle: "Your domain",
+                              initialSearchTerm: "",
                               dataProvider: FreeDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores(freeDomainsResult: .success([
                                     .init(name: "grapefruitsmoothie.com", isFree: true),
@@ -292,7 +291,9 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Results state for paid domains.
             DomainSelectorView<PaidDomainSelectorDataProvider, PaidDomainSuggestionViewModel>(
                 viewModel:
-                        .init(initialSearchTerm: "fruit",
+                        .init(title: "Search domains",
+                              subtitle: "Your domain mapped to **other.domain**",
+                              initialSearchTerm: "fruit",
                               dataProvider: PaidDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores(paidDomainsResult: .success([
                                     .init(productID: 1,
@@ -306,15 +307,17 @@ struct DomainSelectorView_Previews: PreviewProvider {
                                           term: "year",
                                           cost: "NT$610.00",
                                           saleCost: "NT$154.00")
-                                ]))
-                              )),
+                                ])),
+                                hasDomainCredit: true)),
                 onDomainSelection: { _ in },
                 onSupport: {}
             )
             // Error state.
             DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
                 viewModel:
-                        .init(initialSearchTerm: "test",
+                        .init(title: "Search domains",
+                              subtitle: "Your domain",
+                              initialSearchTerm: "test",
                               dataProvider:
                                 FreeDomainSelectorDataProvider(
                                     stores: DomainSelectorViewStores(freeDomainsResult:
@@ -327,7 +330,9 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Loading state.
             DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
                 viewModel:
-                        .init(initialSearchTerm: "",
+                        .init(title: "Search domains",
+                              subtitle: "Your domain",
+                              initialSearchTerm: "",
                               dataProvider: FreeDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores()
                               )),

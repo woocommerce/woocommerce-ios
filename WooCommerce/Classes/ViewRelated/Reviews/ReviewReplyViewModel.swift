@@ -11,6 +11,10 @@ final class ReviewReplyViewModel: ObservableObject {
     /// ID for the product review being replied to.
     ///
     private let reviewID: Int64
+    
+    /// ID for the product associated with the review.
+    ///
+    private let productID: Int64
 
     /// New reply to send
     ///
@@ -38,10 +42,12 @@ final class ReviewReplyViewModel: ObservableObject {
 
     init(siteID: Int64,
          reviewID: Int64,
+         productID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.reviewID = reviewID
+        self.productID = productID
         self.stores = stores
         self.analytics = analytics
         bindNavigationTrailingItemPublisher()
@@ -56,7 +62,7 @@ final class ReviewReplyViewModel: ObservableObject {
             return
         }
 
-        let action = CommentAction.replyToComment(siteID: siteID, commentID: reviewID, content: newReply) { [weak self] result in
+        let action = CommentAction.replyToComment(siteID: siteID, commentID: reviewID, productID: productID, content: newReply) { [weak self] result in
             guard let self = self else { return }
 
             self.performingNetworkRequest.send(false)

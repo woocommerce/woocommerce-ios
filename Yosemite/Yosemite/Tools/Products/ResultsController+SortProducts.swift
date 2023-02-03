@@ -10,7 +10,7 @@ extension ResultsController where T: StorageProduct {
         self.init(storageManager: storageManager,
                   sectionNameKeyPath: sectionNameKeyPath,
                   matching: predicate,
-                  sortedBy: sortOrder.sortDescriptors ?? [])
+                  sortedBy: sortOrder.sortDescriptors)
     }
 
     public func updateSortOrder(_ sortOrder: ProductsSortOrder) {
@@ -19,7 +19,7 @@ extension ResultsController where T: StorageProduct {
 }
 
 private extension ProductsSortOrder {
-    var sortDescriptors: [NSSortDescriptor]? {
+    var sortDescriptors: [NSSortDescriptor] {
         switch self {
         case .dateAscending:
             return [NSSortDescriptor(keyPath: \StorageProduct.date, ascending: true)]

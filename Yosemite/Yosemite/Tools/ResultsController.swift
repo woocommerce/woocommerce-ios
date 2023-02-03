@@ -31,7 +31,7 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Results's Sort Descriptor.
     ///
-    public var sortDescriptors: [NSSortDescriptor]? {
+    public var sortDescriptors: [NSSortDescriptor] {
         didSet {
             refreshFetchedObjects(sortDescriptors: sortDescriptors)
         }
@@ -119,8 +119,13 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Executes the fetch request on the store to get objects.
     ///
-    public func performFetch() throws {
-        try controller.performFetch()
+    public func performFetch() {
+        do {
+            try controller.performFetch()
+        }
+        catch {
+            DDLogError("Unexpected failure to fetch: \(error)")
+        }
     }
 
     /// Returns the fetched object at a given indexPath.
@@ -205,14 +210,14 @@ public class ResultsController<T: ResultsControllerMutableType> {
     ///
     private func refreshFetchedObjects(predicate: NSPredicate?) {
         controller.fetchRequest.predicate = predicate
-        try? controller.performFetch()
+        performFetch()
     }
 
     /// Refreshes all of the Fetched Objects, so that the new sort descriptors are applied.
     ///
-    private func refreshFetchedObjects(sortDescriptors: [NSSortDescriptor]?) {
+    private func refreshFetchedObjects(sortDescriptors: [NSSortDescriptor]) {
         controller.fetchRequest.sortDescriptors = sortDescriptors
-        try? controller.performFetch()
+        performFetch()
     }
 
     /// Initializes the FetchedResultsController
@@ -262,8 +267,8 @@ public class ResultsController<T: ResultsControllerMutableType> {
     @objc func storageWasReset() {
         DDLogInfo("<> ResultsController: Re-Fetching")
 
-        try? self.controller.performFetch()
-        self.onDidResetContent?()
+        performFetch()
+        onDidResetContent?()
     }
 }
 

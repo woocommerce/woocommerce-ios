@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-25 15:54:05+0000 */
+/* Translation-Revision-Date: 2023-02-02 19:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -1153,6 +1153,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the site credential login screen
@@ -1421,6 +1422,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Text for the close button in the Add Product screen
    Text for the close button in the Edit Address Form
@@ -4796,7 +4798,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please connect your store to Jetpack to access it on this app." = "Bu uygulamada mağazanıza erişmek için lütfen mağazanızı Jetpack'e bağlayın.";
 
 /* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
-"Please contact support – there was an issue connecting to the built-in reader" = "Lütfen destek ile iletişime geçin – dahili okuyucuya bağlantıda bir sorun oldu.";
+"Please contact support – there was an issue starting Tap to Pay on iPhone" = "Lütfen destekle iletişime geçin. Tap to Pay on iPhone özelliği başlatılırken bir sorun oluştu";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Uygulamayı kullanmak için mağaza yöneticisi veya yönetici olarak siteye davet için lütfen site sahibiyle iletişime geçin.";
@@ -4886,7 +4888,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please select a package" = "Lütfen bir paket seçin";
 
 /* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device, so you can use the built-in card reader" = "Dahili kart okuyucuyu kullanabilmeniz için lütfen bu cihazda iCloud ile oturum açın.";
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "Tap to Pay on iPhone özelliğini kullanmak için lütfen bu cihazda iCloud'a giriş yapın";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "Lütfen farklı bir alan adı deneyin.";
@@ -4907,7 +4909,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again or reach out to us and we'll be happy to assist you!" = "Lütfen tekrar deneyin veya bize ulaşın, size yardımcı olmaktan memnuniyet duyarız!";
 
 /* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "Lütfen tekrar deneyin ve dahili kart okuyucuyu kullanabilmeniz için Apple'ın Hizmet Koşullarını kabul edin.";
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "Lütfen tekrar deneyin ve Tap to Pay on iPhone özelliğini kullanabilmeniz için Apple'ın Hizmet Koşullarını kabul edin";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "Lütfen tekrar deneyin veya ekrandan çıkın ve önceden ödeme işlemi devam ederken ödeme ekranından ayrıldıysanız mağazanızı tekrar kontrol edin.";
@@ -5010,7 +5012,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Preparing document" = "Belge hazırlanıyor";
 
 /* Title label for modal dialog that appears when connecting to a built in card reader */
-"Preparing iPhone card reader..." = "iPhone kart okuyucu hazırlanıyor...";
+"Preparing iPhone card reader" = "iPhone kart okuyucu hazırlanıyor...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "Ödemek için kartı gösterin";
@@ -5110,8 +5112,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for processing order status. */
 "Processing" = "İşlemde";
 
-/* VoiceOver accessibility label. Indicates that a payment is being processed */
+/* Alert title when processing a payment without a user name.
+   VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "Ödeme işleniyor";
+
+/* Alert title when processing a payment with a user name. */
+"Processing payment from %1$@" = "%1$@ ödemesi işleniyor";
 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "Ödeme işleniyor...";
@@ -5887,6 +5893,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Settings navigation title */
 "Settings" = "Ayarlar";
 
+/* Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails */
+"Setup failed" = "Kurulum başarısız oldu";
+
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "Birkaç okuyucu bulundu";
 
@@ -6486,6 +6495,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "iPhone'da Öde'ye için Dokun";
 
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "Tap to Pay on iPhone özelliği telefon araması sırasında kullanılamaz. Görüşmenizi bitirdikten sonra lütfen tekrar deneyin.";
+
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Yatay Cetvel eklemek için dokunun";
 
@@ -6693,19 +6705,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The URL is missing a valid host." = "URL'de geçerli ana bilgisayar yok.";
 
 /* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
-"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "Tutar dahili okuyucu tarafından desteklenmiyor – lütfen bir donanım okuyucu veya başka bir ödeme yöntemi deneyin.";
+"The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Tap to Pay on iPhone özelliği için tutar desteklenmiyor. Lütfen bir donanım okuyucu veya başka bir ödeme yöntemi deneyin.";
 
 /* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
-"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "NFC çipi devre dışı olduğu için uygulama kart okuyucuyu etkinleştiremedi. Daha fazla ayrıntı için lütfen destek hizmetleriyle iletişime geçin.";
+"The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "NFC çipi devre dışı olduğu için Tap to Pay on iPhone özelliği etkinleştiremedi. Daha fazla ayrıntı için lütfen destek hizmetleriyle iletişime geçin.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Nitelik kaldırılamadı.";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "Özellik kaydedilemedi.";
-
-/* Error message shown when the built-in reader cannot be used because there is a call in progress */
-"The built-in reader cannot be used during a phone call. Please try again after you finish your call." = "Dahili okuyucu telefon görüşmesi sırasında kullanılamaz. Görüşmenizi bitirdikten sonra lütfen tekrar deneyin.";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "Kart bu para birimini desteklemiyor. Başka bir ödeme yöntemi deneyin";
@@ -6768,7 +6777,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The coupon code couldn't be empty" = "Kupon kodu boş olamaz";
 
 /* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
-"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "Para birimi dahili okuyucu tarafından desteklenmiyor – lütfen bir donanım okuyucu veya başka bir ödeme yöntemi deneyin.";
+"The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Tap to Pay on iPhone özelliği için para birimi desteklenmiyor. Lütfen bir donanım okuyucu veya başka bir ödeme yöntemi deneyin.";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "Sipariş tamamlandığında müşteri bir e-posta alacak.";
@@ -6957,7 +6966,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was an error while trying to collect the payment." = "Ödeme tahsil edilmeye çalışılırken bir hata oluştu.";
 
 /* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
-"There was an issue preparing the built in reader for payment – please try again." = "Ödeme için dahili okuyucunun hazırlanmasında bir sorun var – lütfen tekrar deneyin.";
+"There was an issue preparing to use Tap to Pay on iPhone – please try again." = "Tap to Pay on iPhone özelliğini kullanmaya hazırlanırken bir sorun oluştu. Lütfen tekrar deneyin.";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "Risk yoktur, 30 gün içinde iptal edip tam geri ödeme alabilirsiniz.";
@@ -7251,7 +7260,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Installing Again" = "Tekrar Kurmayı Deneyin";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
-   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
 "Try again" = "Tekrar deneyin";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
@@ -8160,6 +8170,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Ürününüzün parolayla korunmasını sağlamak için bir parola eklemelisiniz";
 
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"You need to set a lock screen passcode to use Tap to Pay on iPhone" = "Tap to Pay on iPhone özelliğini kullanmak için bir kilit ekranı parolası ayarlamanız gerekir";
+
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "DudaMobilden uygulamanın bloğunuza bağlanmasını engelleyen bir eklenti yüklemiş görünüyorsunuz ";
 
@@ -8174,9 +8187,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Ödeme almak için kart okuyucu yazılımınızın güncellenmesi gerekiyor.  İptal ederseniz okuyucu bağlantınız engellenir.";
-
-/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
-"Your device needs a lock screen passcode set to use the built-in card reader" = "Cihazınızın dahili kart okuyucuyu kullanması için kilit ekran parolasının ayarlanması gerekir.";
 
 /* Title of the email field on the account creation form. */
 "Your email address" = "E-posta adresiniz";
@@ -8249,17 +8259,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label within the modal dialog that appears when checking the built in card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "Cihazınızın Tap to Pay on iPhone özelliği için hazır olup olmadığını kontrol ederken lütfen bekleyin.";
-
-/* A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "Daha fazla bilgi edinin";
-
-/* A label prompting users to learn more about In-Person Payments.
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "%1$@‑Yüz yüze ödemeler hakkında";
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Cihazı kontrol ediyor";

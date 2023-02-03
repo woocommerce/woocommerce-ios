@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-25 09:54:03+0000 */
+/* Translation-Revision-Date: 2023-02-02 15:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -1153,6 +1153,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the site credential login screen
@@ -1421,6 +1422,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Text for the close button in the Add Product screen
    Text for the close button in the Edit Address Form
@@ -4796,7 +4798,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please connect your store to Jetpack to access it on this app." = "이 앱에서 스토어에 접근하려면 해당 스토어를 젯팩에 연결하세요.";
 
 /* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
-"Please contact support – there was an issue connecting to the built-in reader" = "지원팀에 문의하세요. 기본 제공 리더 연결 중 문제가 발생했습니다.";
+"Please contact support – there was an issue starting Tap to Pay on iPhone" = "지원팀에 문의하세요. iPhone에서 눌러서 결제를 시작하는 중 오류가 발생했습니다.";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "상점 관리자 또는 앱을 사용하는 관리자로 사이트에 초대받으려면 사이트 소유자에게 문의하세요.";
@@ -4886,7 +4888,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please select a package" = "패키지를 선택하세요.";
 
 /* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device, so you can use the built-in card reader" = "기본 제공 리더를 사용할 수 있도록 이 기기에서 iCloud에 로그인하세요.";
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "iPhone에서 눌러서 결제를 사용하려면 이 기기에서 iCloud에 로그인하세요.";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "다른 도메인을 시도하세요.";
@@ -4907,7 +4909,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again or reach out to us and we'll be happy to assist you!" = "다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
 
 /* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "다시 시도하고, 기본 제공 카드 리더를 사용할 수 있도록 Apple의 서비스 약관에 동의하세요.";
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "다시 시도하고, iPhone에서 눌러서 결제를 사용할 수 있도록 Apple의 서비스 약관에 동의하세요.";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "다시 시도하거나, 이전에 결제가 진행 중인 동안 계산 화면에서 나간 경우 화면을 종료하고 스토어를 다시 확인하세요.";
@@ -5010,7 +5012,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Preparing document" = "문서 준비 중";
 
 /* Title label for modal dialog that appears when connecting to a built in card reader */
-"Preparing iPhone card reader..." = "iPhone 카드 리더 준비 중...";
+"Preparing iPhone card reader" = "iPhone 카드 리더 준비 중...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "결제할 카드 제시";
@@ -5110,8 +5112,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for processing order status. */
 "Processing" = "처리 중";
 
-/* VoiceOver accessibility label. Indicates that a payment is being processed */
+/* Alert title when processing a payment without a user name.
+   VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "결제 처리 중";
+
+/* Alert title when processing a payment with a user name. */
+"Processing payment from %1$@" = "%1$@의 결제 처리 중";
 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "결제 처리 중...";
@@ -5887,6 +5893,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Settings navigation title */
 "Settings" = "설정";
 
+/* Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails */
+"Setup failed" = "설정 실패";
+
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "리더를 몇 개 찾음";
 
@@ -6486,6 +6495,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "iPhone에서 눌러서 결제";
 
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "전화 통화 중에는 iPhone에서 눌러서 결제를 사용할 수 없습니다. 통화를 마치고 다시 시도하세요.";
+
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "가로 눈금자를 삽입하려면 누르세요.";
 
@@ -6693,19 +6705,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The URL is missing a valid host." = "URL에 올바른 호스트가 없습니다.";
 
 /* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
-"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "금액이 기본 제공 리더에서 지원되지 않습니다. 하드웨어 리더 또는 다른 결제 수단을 시도하세요.";
+"The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "금액이 기본 제공 리더에서 지원되지 않습니다. 하드웨어 리더 또는 다른 결제 수단을 시도하세요.";
 
 /* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
-"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "NFC 칩이 비활성화되어서 카드 리더를 앱에서 활성화할 수 없습니다. 자세한 내용은 지원팀에 문의하세요.";
+"The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "NFC 칩이 비활성화되어서 iPhone에서 눌러서 결제를 앱에서 활성화할 수 없습니다. 자세한 내용은 지원팀에 문의하세요.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "속성을 제거할 수 없습니다.";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "속성을 저장할 수 없습니다.";
-
-/* Error message shown when the built-in reader cannot be used because there is a call in progress */
-"The built-in reader cannot be used during a phone call. Please try again after you finish your call." = "통화 중에는 기본 제공 리더를 사용할 수 없습니다. 통화를 마치고 다시 시도하세요.";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "카드에서 이 통화가 지원되지 않습니다. 다른 결제 수단 시도";
@@ -6768,7 +6777,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The coupon code couldn't be empty" = "쿠폰 코드는 비워둘 수 없음";
 
 /* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
-"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "통화가 기본 제공 리더에서 지원되지 않습니다. 하드웨어 리더 또는 다른 결제 수단을 시도하세요.";
+"The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "통화가 iPhone에서 눌러서 결제에서 지원되지 않습니다. 하드웨어 리더 또는 다른 결제 수단을 사용해 보세요.";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "주문이 완료되면 고객에게 이메일이 수신됩니다.";
@@ -6957,7 +6966,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was an error while trying to collect the payment." = "결제를 받는 동안 오류가 발생했습니다.";
 
 /* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
-"There was an issue preparing the built in reader for payment – please try again." = "기본 제공 리더를 결제용으로 준비하는 중 문제가 발생했습니다. 다시 시도하세요.";
+"There was an issue preparing to use Tap to Pay on iPhone – please try again." = "iPhone에서 눌러서 결제를 사용하려고 준비하는 중 오류가 발생했습니다. 다시 시도하세요.";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "30일 이내에 취소하면 전액 환불받을 수 있으며 손해가 발생하지 않습니다.";
@@ -7251,7 +7260,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Installing Again" = "다시 설치 시도";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
-   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
 "Try again" = "다시 시도";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
@@ -8160,6 +8170,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "제품을 비밀번호로 보호하려면 비밀번호를 추가해야 합니다.";
 
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"You need to set a lock screen passcode to use Tap to Pay on iPhone" = "iPhone에서 눌러서 결제를 사용하려면 잠금 화면 패스코드를 설정하셔야 합니다.";
+
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "DudaMobile에서 설치한 모바일 플러그인으로 인해 앱이 블로그에 연결할 수 없습니다.";
 
@@ -8174,9 +8187,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "결제 대금을 수령하려면 카드 리더 소프트웨어를 업데이트해야 합니다. 취소하면 리더 연결이 차단됩니다.";
-
-/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
-"Your device needs a lock screen passcode set to use the built-in card reader" = "기본 제공 카드 리더를 사용하도록 설정된 잠금 화면 패스코드가 기기에 필요합니다.";
 
 /* Title of the email field on the account creation form. */
 "Your email address" = "사용 중인 이메일 주소";
@@ -8249,17 +8259,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label within the modal dialog that appears when checking the built in card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "iPhone의 눌러서 결제가 기기에서 준비되었는지 확인하는 동안 기다려 주세요.";
-
-/* A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "더 알아보기";
-
-/* A label prompting users to learn more about In-Person Payments.
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "직접 결제에 대한 %1$@";
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "기기 확인 중";

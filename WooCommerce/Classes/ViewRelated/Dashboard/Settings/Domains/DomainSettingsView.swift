@@ -22,6 +22,7 @@ final class DomainSettingsHostingController: UIHostingController<DomainSettingsV
 /// Shows a site's domains with actions to add a domain or redeem a domain credit.
 struct DomainSettingsView: View {
     @ObservedObject private var viewModel: DomainSettingsViewModel
+    @State private var isFetchingDataOnAppear: Bool = false
     private let addDomain: (_ hasDomainCredit: Bool, _ freeStagingDomain: String?) -> Void
 
     init(viewModel: DomainSettingsViewModel, addDomain: @escaping (Bool, String?) -> Void) {
@@ -69,10 +70,14 @@ struct DomainSettingsView: View {
                 .background(Color(.systemBackground))
             }
         }
+        .redacted(reason: isFetchingDataOnAppear ? .placeholder: [])
+        .shimmering(active: isFetchingDataOnAppear)
         .navigationBarTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            viewModel.onAppear()
+        .task {
+            isFetchingDataOnAppear = true
+            await viewModel.onAppear()
+            isFetchingDataOnAppear = false
         }
     }
 }
@@ -104,10 +109,10 @@ import enum Networking.DotcomError
 
 /// StoresManager that specifically handles actions for `DomainSettingsView` previews.
 final class DomainSettingsViewStores: DefaultStoresManager {
-    private let domainsResult: Result<[SiteDomain], Error>
+    private let domainsResult: Result<[SiteDomain], Error>?
     private let sitePlanResult: Result<WPComSitePlan, Error>
 
-    init(domainsResult: Result<[SiteDomain], Error>,
+    init(domainsResult: Result<[SiteDomain], Error>?,
          sitePlanResult: Result<WPComSitePlan, Error>) {
         self.domainsResult = domainsResult
         self.sitePlanResult = sitePlanResult
@@ -117,7 +122,9 @@ final class DomainSettingsViewStores: DefaultStoresManager {
     override func dispatch(_ action: Action) {
         if let action = action as? DomainAction {
             if case let .loadDomains(_, completion) = action {
-                completion(domainsResult)
+                if let domainsResult {
+                    completion(domainsResult)
+                }
             }
         } else if let action = action as? PaymentAction {
             if case let .loadSiteCurrentPlan(_, completion) = action {
@@ -153,6 +160,17 @@ struct DomainSettingsView_Previews: PreviewProvider {
                                 domainsResult: .success([
                                     .init(name: "free.test", isPrimary: true)
                                 ]),
+                                sitePlanResult: .success(.init(hasDomainCredit: true)))),
+                                   addDomain: { _, _ in })
+            }
+
+            // Loading state.
+            NavigationView {
+                DomainSettingsView(viewModel:
+                        .init(siteID: 134,
+                              stores: DomainSettingsViewStores(
+                                // There is one free domain and no other paid domains.
+                                domainsResult: nil,
                                 sitePlanResult: .success(.init(hasDomainCredit: true)))),
                                    addDomain: { _, _ in })
             }

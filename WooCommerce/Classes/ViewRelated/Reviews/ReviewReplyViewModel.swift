@@ -11,7 +11,7 @@ final class ReviewReplyViewModel: ObservableObject {
     /// ID for the product review being replied to.
     ///
     private let reviewID: Int64
-    
+
     /// ID for the product associated with the review.
     ///
     private let productID: Int64

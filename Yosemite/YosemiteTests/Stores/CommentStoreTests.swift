@@ -262,7 +262,10 @@ class CommentStoreTests: XCTestCase {
 
         // When
         let result: Result<Yosemite.CommentStatus, Error> = waitFor { promise in
-            let action = CommentAction.replyToComment(siteID: self.sampleSiteID, commentID: self.sampleCommentID, content: "Test comment") { result in
+            let action = CommentAction.replyToComment(siteID: self.sampleSiteID,
+                                                      commentID: self.sampleCommentID,
+                                                      productID: 123,
+                                                      content: "Test comment") { result in
                 promise(result)
             }
             store.onAction(action)
@@ -281,7 +284,10 @@ class CommentStoreTests: XCTestCase {
 
         // When
         let result: Result<Yosemite.CommentStatus, Error> = waitFor { promise in
-            let action = CommentAction.replyToComment(siteID: self.sampleSiteID, commentID: self.sampleCommentID, content: "Test comment") { result in
+            let action = CommentAction.replyToComment(siteID: self.sampleSiteID,
+                                                      commentID: self.sampleCommentID,
+                                                      productID: 123,
+                                                      content: "Test comment") { result in
                 promise(result)
             }
             store.onAction(action)

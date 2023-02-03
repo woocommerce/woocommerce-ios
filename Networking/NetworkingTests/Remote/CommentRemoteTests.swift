@@ -164,7 +164,7 @@ class CommentRemoteTests: XCTestCase {
         // When
         var result: Result<CommentStatus, Error>?
         waitForExpectation { expectation in
-            remote.replyToComment(siteID: sampleSiteID, commentID: sampleCommentID, content: "Sample comment") { aResult in
+            remote.replyToComment(siteID: sampleSiteID, commentID: sampleCommentID, productID: 1234, content: "Sample comment") { aResult in
                 result = aResult
                 expectation.fulfill()
             }
@@ -184,7 +184,7 @@ class CommentRemoteTests: XCTestCase {
         // When
         var result: Result<CommentStatus, Error>?
         waitForExpectation { expectation in
-            remote.replyToComment(siteID: sampleSiteID, commentID: sampleCommentID, content: "Sample comment") { aResult in
+            remote.replyToComment(siteID: sampleSiteID, commentID: sampleCommentID, productID: 1234, content: "Sample comment") { aResult in
                 result = aResult
                 expectation.fulfill()
             }

@@ -58,6 +58,9 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
     /// To Refactor: These methods would end-up living outside this class. Exposing them here temporarily.
     /// https://github.com/woocommerce/woocommerce-ios/issues/8795
     ///
+    func formID() -> Int64
+    func wcPayFormID() -> Int64
+
     func generalTags() -> [String]
     func wcPayTags() -> [String]
 
@@ -138,6 +141,14 @@ struct NoZendeskManager: ZendeskManagerProtocol {
 /// https://github.com/woocommerce/woocommerce-ios/issues/8795
 ///
 extension NoZendeskManager {
+    func formID() -> Int64 {
+        .zero
+    }
+
+    func wcPayFormID() -> Int64 {
+        .zero
+    }
+
     func generalTags() -> [String] {
         []
     }
@@ -528,6 +539,14 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 /// https://github.com/woocommerce/woocommerce-ios/issues/8795
 ///
 extension ZendeskManager {
+    func formID() -> Int64 {
+        createRequest(supportSourceTag: nil).ticketFormID?.int64Value ?? .zero
+    }
+
+    func wcPayFormID() -> Int64 {
+        createWCPayRequest(supportSourceTag: nil).ticketFormID?.int64Value ?? .zero
+    }
+
     func generalTags() -> [String] {
         getTags(supportSourceTag: nil)
     }

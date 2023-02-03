@@ -13,7 +13,7 @@ public protocol SupportFormMetaDataSource {
 
     /// Zendesk Custom Fields
     ///
-    var customFields: [[AnyHashable: String]] { get }
+    var customFields: [[Int64: String]] { get }
 }
 
 

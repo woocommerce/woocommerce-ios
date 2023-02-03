@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-25 22:47:09+0000 */
+/* Translation-Revision-Date: 2023-02-02 15:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -1153,6 +1153,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the site credential login screen
@@ -1421,6 +1422,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Text for the close button in the Add Product screen
    Text for the close button in the Edit Address Form
@@ -4796,7 +4798,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please connect your store to Jetpack to access it on this app." = "请将您的商店连接到 Jetpack，以便在此应用程序上访问商店。";
 
 /* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
-"Please contact support – there was an issue connecting to the built-in reader" = "请联系支持团队 – 连接内置读卡器时遇到问题";
+"Please contact support – there was an issue starting Tap to Pay on iPhone" = "请联系支持人员 – 在 iPhone 上启动“点按付款”时出现问题";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "请联系站点所有者，以商店经理或管理员的身份邀请站点使用该应用程序。";
@@ -4886,7 +4888,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please select a package" = "请选择包裹";
 
 /* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device, so you can use the built-in card reader" = "请在该设备上登录 iCloud，以便您可以使用内置读卡器";
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "请在此设备上登录 iCloud，以便在 iPhone 上使用“点按付款”";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "请尝试其他域名。";
@@ -4907,7 +4909,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again or reach out to us and we'll be happy to assist you!" = "请重试或与我们联系，我们很乐意为您提供帮助！";
 
 /* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "请重试，并接受 Apple 的服务条款，以便您可以使用内置读卡器";
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "请重试，并接受 Apple 的服务条款，以便您可以在 iPhone 上使用“点按付款”";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "请重试，或者如果您之前在付款过程中离开了结账屏幕，请退出该屏幕并在您的商店上重新检查。";
@@ -5010,7 +5012,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Preparing document" = "正在准备文档";
 
 /* Title label for modal dialog that appears when connecting to a built in card reader */
-"Preparing iPhone card reader..." = "正在准备 iPhone 读卡器...";
+"Preparing iPhone card reader" = "正在准备 iPhone 读卡器...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "出示卡片以付款";
@@ -5110,8 +5112,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for processing order status. */
 "Processing" = "正在处理";
 
-/* VoiceOver accessibility label. Indicates that a payment is being processed */
+/* Alert title when processing a payment without a user name.
+   VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "正在处理付款";
+
+/* Alert title when processing a payment with a user name. */
+"Processing payment from %1$@" = "正在处理来自 %1$@ 的付款";
 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "正在处理付款...";
@@ -5887,6 +5893,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Settings navigation title */
 "Settings" = "设置";
 
+/* Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails */
+"Setup failed" = "设置失败";
+
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "找到多个读卡器";
 
@@ -6486,6 +6495,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "点击以在 iPhone 上付款";
 
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "通话期间无法在 iPhone 上使用“点按付款”。 请在结束通话后重试。";
+
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "轻点以插入水平标尺";
 
@@ -6693,19 +6705,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The URL is missing a valid host." = "URL 缺少有效主机。";
 
 /* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
-"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "内置读卡器不支持该金额 – 请尝试使用硬件读卡器或换一种付款方式。";
+"The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "iPhone 上的“点按付款”不支持该金额 – 请尝试使用硬件读卡器或换一种付款方式。";
 
 /* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
-"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "应用程序无法启用读卡器，因为已禁用 NFC 芯片。 请联系支持团队以了解详情。";
+"The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "此应用无法启用 iPhone 上的“点按付款”，因为已禁用 NFC 芯片。 请联系支持团队以了解详情。";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "无法删除属性。";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "无法保存属性。";
-
-/* Error message shown when the built-in reader cannot be used because there is a call in progress */
-"The built-in reader cannot be used during a phone call. Please try again after you finish your call." = "通话期间不能使用内置读卡器。请结束通话后再重试。";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "银行卡不支持当前币种。 请尝试其他付款方式";
@@ -6768,7 +6777,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The coupon code couldn't be empty" = "优惠券代码不能为空";
 
 /* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
-"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "内置读卡器不支持该币种 – 请尝试使用硬件读卡器或换一种付款方式。";
+"The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "iPhone 上的“点按付款”不支持该币种 – 请尝试使用硬件读卡器或换一种付款方式。";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "订单完成后，客户将收到一封电子邮件";
@@ -6957,7 +6966,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was an error while trying to collect the payment." = "收款时出错。";
 
 /* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
-"There was an issue preparing the built in reader for payment – please try again." = "在准备用于付款的内置读卡器时遇到问题 – 请重试。";
+"There was an issue preparing to use Tap to Pay on iPhone – please try again." = "准备在 iPhone 上使用“点按付款”时出现问题 – 请重试。";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "无任何风险，在 30 天内取消可获得全额退款。";
@@ -7251,7 +7260,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Installing Again" = "再次尝试安装";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
-   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
 "Try again" = "请重试";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
@@ -8160,6 +8170,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "您需要添加密码，以便通过密码保护产品";
 
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"You need to set a lock screen passcode to use Tap to Pay on iPhone" = "您需要设置锁屏密码，才能在 iPhone 上使用“点按付款”";
+
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "您似乎安装了来自 DudaMobile 的移动插件，该插件会阻止应用程序连接到您的博客";
 
@@ -8174,9 +8187,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "您的读卡器软件需要更新才能收款。 取消将阻断您的读卡器连接。";
-
-/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
-"Your device needs a lock screen passcode set to use the built-in card reader" = "您的设备需要设置锁屏密码才能使用内置读卡器";
 
 /* Title of the email field on the account creation form. */
 "Your email address" = "您的电子邮箱地址";
@@ -8249,17 +8259,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label within the modal dialog that appears when checking the built in card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "请稍等，我们将检查您的设备是否已准备就绪，可以使用“Tap to Pay on iPhone”功能。";
-
-/* A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "详细了解";
-
-/* A label prompting users to learn more about In-Person Payments.
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "%1$@现场付款";
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "正在检查设备";

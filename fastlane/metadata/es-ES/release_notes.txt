@@ -1,1 +1,1 @@
-¡Ahora puedes actualizar precios y estados de producto en lote! Para probar esta función, solo tienes que ir a la pestaña Productos y hacer clic en el icono de selección múltiple de la parte superior.
+Esta versión cuenta con algunas correcciones de errores y mejoras en los productos y los pagos en persona. Sigue enviando tus comentarios: ¡te escuchamos!

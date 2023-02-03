@@ -1,1 +1,1 @@
-Het is nu mogelijk om productstatus en prijzen in bulk bij te werken! Ga naar het tabblad Producten en klik op het pictogram meerdere selecteren bovenaan om het uit te proberen.
+Met deze release hebben we wat bugs verholpen en verbeteringen aangebracht aan producten en fysieke betalingen. Blijf ons feedback sturen – wij luisteren!

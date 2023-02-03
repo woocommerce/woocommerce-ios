@@ -1,1 +1,1 @@
-Det är nu möjligt att massuppdatera produktstatus och priser. Det är bara att gå till fliken Produkter och klicka på flervalsikonen längst upp för att testa.
+Den här versionen innehåller ett antal felkorrigeringar och förbättringar av produkter och personliga betalningar. Fortsätt att skicka feedback till oss – vi lyssnar!

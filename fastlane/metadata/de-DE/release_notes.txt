@@ -1,1 +1,1 @@
-Es ist jetzt möglich, Status und Preise von Produkten gesammelt zu aktualisieren. Gehe einfach auf den Tab „Produkte“ und klicke oben auf das Icon für die Mehrfachauswahl, um es auszuprobieren.
+Diese Version enthält einige Fehlerkorrekturen und Verbesserungen an Produkten und persönlichen Zahlungen. Sende uns bitte weiter Feedback – wir freuen uns darauf!

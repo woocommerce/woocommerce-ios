@@ -1,1 +1,1 @@
-Ora è possibile aggiornare in blocco lo stato e i prezzi dei prodotti. Vai semplicemente sulla scheda Prodotti e fai clic sull'icona per la multiselezione in alto per provare.
+Questa versione include alcune correzioni di bug e miglioramenti ai prodotti e ai pagamenti di persona. Continua a inviarci feedback: siamo lieti di ascoltarli.

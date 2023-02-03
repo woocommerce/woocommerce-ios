@@ -1,1 +1,1 @@
-Ürün durumunu ve fiyatları toplu olarak güncellemek artık mümkün! Denemek için Ürünler sekmesine gidip üstteki çoklu seçim simgesine tıklamanız yeterli.
+Bu sürüm, ürünlerde ve şahsen ödemelerde yapılan birkaç hata düzeltmesini ve iyileştirmeyi içerir. Lütfen bize geri bildirim göndermeye devam edin, sizi dinliyoruz.

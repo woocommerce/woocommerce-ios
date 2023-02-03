@@ -1,1 +1,1 @@
-Il est maintenant possible de mettre à jour de façon groupée l’état et le prix des produits ! Il suffit d’accéder à l’onglet « Produits » et de cliquer sur l’icône de sélection multiple pour essayer.
+Cette version comprend quelques résolutions de bogues ainsi que des améliorations apportées aux produits et aux paiements en personne. Continuez à nous envoyer vos commentaires. Votre avis nous intéresse !

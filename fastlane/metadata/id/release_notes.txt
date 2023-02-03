@@ -1,1 +1,1 @@
-Sekarang pembaruan banyak status dan harga produk sekaligus dapat dilakukan! Cukup buka tab Produk lalu klik ikon pilih banyak di bagian atas untuk mencobanya.
+Dalam rilis ini, terdapat beberapa perbaikan bug serta penyempurnaan pada produk dan pembayaran langsung. Mohon terus berikan umpan balik. Kami siap mendengarkan.

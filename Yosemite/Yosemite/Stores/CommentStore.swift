@@ -33,8 +33,8 @@ public class CommentStore: Store {
             updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: isSpam, onCompletion: onCompletion)
         case .updateTrashStatus(let siteID, let commentID, let isTrash, let onCompletion):
             updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: isTrash, onCompletion: onCompletion)
-        case .replyToComment(let siteID, let commentID, let content, let onCompletion):
-            replyToComment(siteID: siteID, commentID: commentID, content: content, onCompletion: onCompletion)
+        case .replyToComment(let siteID, let commentID, let productID, let content, let onCompletion):
+            replyToComment(siteID: siteID, commentID: commentID, productID: productID, content: content, onCompletion: onCompletion)
         }
     }
 }
@@ -73,8 +73,8 @@ private extension CommentStore {
 
     /// Creates a comment as a reply to another comment (including product reviews).
     ///
-    func replyToComment(siteID: Int64, commentID: Int64, content: String, onCompletion: @escaping (Result<CommentStatus, Error>) -> Void) {
-        remote.replyToComment(siteID: siteID, commentID: commentID, content: content) { result in
+    func replyToComment(siteID: Int64, commentID: Int64, productID: Int64, content: String, onCompletion: @escaping (Result<CommentStatus, Error>) -> Void) {
+        remote.replyToComment(siteID: siteID, commentID: commentID, productID: productID, content: content) { result in
             onCompletion(result)
         }
     }

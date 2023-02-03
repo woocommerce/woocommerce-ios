@@ -30,10 +30,10 @@ final class PaidDomainSelectorHostingController: UIHostingController<DomainSelec
     /// - Parameters:
     ///   - viewModel: View model for the domain selector.
     ///   - onDomainSelection: Called when the user continues with a selected domain.
-    ///   - onSupport: Called when the user taps to contact support.
+    ///   - onSupport: Called when the user taps to contact support. If `nil`, the contact support CTA is not shown.
     init(viewModel: DomainSelectorViewModel<PaidDomainSelectorDataProvider, PaidDomainSuggestionViewModel>,
          onDomainSelection: @escaping (PaidDomainSuggestionViewModel) async -> Void,
-         onSupport: @escaping () -> Void) {
+         onSupport: (() -> Void)?) {
         super.init(rootView: DomainSelectorView<PaidDomainSelectorDataProvider, PaidDomainSuggestionViewModel>(viewModel: viewModel,
                                                                                                       onDomainSelection: onDomainSelection,
                                                                                                       onSupport: onSupport))
@@ -55,7 +55,7 @@ struct DomainSelectorView<DataProvider: DomainSelectorDataProvider,
                           DomainSuggestion: Equatable & DomainSuggestionViewProperties>: View
 where DataProvider.DomainSuggestion == DomainSuggestion {
     private let onDomainSelection: (DomainSuggestion) async -> Void
-    private let onSupport: () -> Void
+    private let onSupport: (() -> Void)?
 
     /// View model to drive the view.
     @ObservedObject private var viewModel: DomainSelectorViewModel<DataProvider, DomainSuggestion>
@@ -71,7 +71,7 @@ where DataProvider.DomainSuggestion == DomainSuggestion {
 
     init(viewModel: DomainSelectorViewModel<DataProvider, DomainSuggestion>,
          onDomainSelection: @escaping (DomainSuggestion) async -> Void,
-         onSupport: @escaping () -> Void) {
+         onSupport: (() -> Void)?) {
         self.viewModel = viewModel
         self.onDomainSelection = onDomainSelection
         self.onSupport = onSupport
@@ -184,8 +184,10 @@ where DataProvider.DomainSuggestion == DomainSuggestion {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                SupportButton {
-                    onSupport()
+                if let onSupport {
+                    SupportButton {
+                        onSupport()
+                    }
                 }
             }
         }

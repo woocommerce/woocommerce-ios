@@ -48,7 +48,7 @@ private extension DomainSettingsCoordinator {
                                                 initialSearchTerm: site.name,
                                                 dataProvider: PaidDomainSelectorDataProvider(stores: stores,
                                                                                              hasDomainCredit: hasDomainCredit))
-        let domainSelector = PaidDomainSelectorHostingController(viewModel: viewModel) { [weak self] domain in
+        let domainSelector = PaidDomainSelectorHostingController(viewModel: viewModel, onDomainSelection: { [weak self] domain in
             guard let self else { return }
             let domainToPurchase = DomainToPurchase(name: domain.name,
                                                     productID: domain.productID,
@@ -65,9 +65,7 @@ private extension DomainSettingsCoordinator {
                     print("⛔️ Error creating cart with the selected domain \(domain): \(error)")
                 }
             }
-        } onSupport: {
-            // TODO: 8558 - remove support action
-        }
+        }, onSupport: nil)
         navigationController.show(domainSelector, sender: nil)
     }
 

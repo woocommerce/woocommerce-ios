@@ -62,17 +62,27 @@ public class CommentRemote: Remote {
     /// - Parameters:
     ///    - siteID: site ID which contains the comment
     ///    - commentID: ID of the comment to reply to
+    ///    - productID: ID of the product that the comment is associated to
     ///    - content: the text of the comment reply
     ///    - completion: callback to be executed on completion
     ///
-    public func replyToComment(siteID: Int64, commentID: Int64, content: String, completion: @escaping (Result<CommentStatus, Error>) -> Void) {
-        let path = "\(Paths.sites)/" + String(siteID) + "/" + "\(Paths.comments)/" + String(commentID) + "/\(Paths.commentReply)"
-        let parameters = [
-            ParameterKeys.content: content
+    public func replyToComment(siteID: Int64, commentID: Int64, productID: Int64, content: String, completion: @escaping (Result<CommentStatus, Error>) -> Void) {
+        let parameters: [String: Any] = [
+            ParameterKeys.content: content,
+            ParameterKeys.parent: commentID,
+            ParameterKeys.post: productID
         ]
         let mapper = CommentResultMapper()
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
-        enqueue(request, mapper: mapper, completion: completion)
+        do {
+            let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                            method: .post,
+                                            path: Paths.comments,
+                                            parameters: parameters,
+                                            availableAsRESTRequest: true)
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 }
 
@@ -90,6 +100,8 @@ private extension CommentRemote {
         static let status: String       = "status"
         static let context: String      = "context"
         static let content: String      = "content"
+        static let parent: String       = "parent"
+        static let post: String         = "post"
     }
 
     enum ParameterValues {

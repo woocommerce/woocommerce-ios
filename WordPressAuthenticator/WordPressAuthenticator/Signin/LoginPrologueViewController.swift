@@ -112,7 +112,10 @@ class LoginPrologueViewController: LoginViewController {
             tracker.set(step: .prologue)
         }
 
-        showiCloudKeychainLoginFlow()
+        // Only enable auto fill if WPCom login is available
+        if configuration.enableSiteAddressLoginOnlyInPrologue == false {
+            showiCloudKeychainLoginFlow()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {

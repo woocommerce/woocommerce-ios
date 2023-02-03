@@ -21,6 +21,16 @@ public protocol DomainRemoteProtocol {
     /// - Parameter siteID: ID of the site to load the domains for.
     /// - Returns: A list of domains.
     func loadDomains(siteID: Int64) async throws -> [SiteDomain]
+
+    /// Loads the contact info for domain registration.
+    /// - Returns: pre-existing contact info from WPCOM if available.
+    func loadDomainContactInfo() async throws -> DomainContactInfo
+
+    /// Validates the contact info for domain registration.
+    /// - Parameters:
+    ///   - domainContactInfo: Contact info to validate.
+    ///   - domain: Domain name for domain registration. The validation rules vary between domains.
+    func validate(domainContactInfo: DomainContactInfo, domain: String) async throws
 }
 
 /// Domain: Remote Endpoints
@@ -62,6 +72,26 @@ public class DomainRemote: Remote, DomainRemoteProtocol {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
         let response: SiteDomainEnvelope = try await enqueue(request)
         return response.domains
+    }
+
+    public func loadDomainContactInfo() async throws -> DomainContactInfo {
+        let path = Path.domainContactInfo
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
+        return try await enqueue(request)
+    }
+
+    public func validate(domainContactInfo: DomainContactInfo, domain: String) async throws {
+        let path = "\(Path.domainContactInfo)/validate"
+        let domainContactInfoDictionary = try domainContactInfo.toDictionary()
+        let parameters: [String: Any] = [
+            ParameterKey.domainContactInfo: domainContactInfoDictionary,
+            ParameterKey.domainNames: domain
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        let response: DomainContactInfoValidationResponse = try await enqueue(request)
+        guard response.success else {
+            throw DomainContactInfoError.invalid(messages: response.errorMessages)
+        }
     }
 }
 
@@ -167,27 +197,27 @@ public struct SiteDomain: Decodable, Equatable {
 }
 
 /// Contact info required for redeeming a domain with domain credit.
-public struct DomainContactInfo: Codable, GeneratedFakeable {
+public struct DomainContactInfo: Codable, GeneratedFakeable, Equatable {
     public let firstName: String
     public let lastName: String
-    public let organization: String
+    public let organization: String?
     public let address1: String
     public let address2: String?
     public let postcode: String
     public let city: String
-    public let state: String
+    public let state: String?
     public let countryCode: String
     public let phone: String?
     public let email: String?
 
     public init(firstName: String,
                 lastName: String,
-                organization: String,
+                organization: String?,
                 address1: String,
                 address2: String?,
                 postcode: String,
                 city: String,
-                state: String,
+                state: String?,
                 countryCode: String,
                 phone: String?,
                 email: String?) {
@@ -219,9 +249,23 @@ public struct DomainContactInfo: Codable, GeneratedFakeable {
     }
 }
 
+public enum DomainContactInfoError: Error, Equatable {
+    case invalid(messages: [String]?)
+}
+
 /// Maps to a list of domains to match the API response.
 private struct SiteDomainEnvelope: Decodable {
     let domains: [SiteDomain]
+}
+
+private struct DomainContactInfoValidationResponse: Decodable {
+    let success: Bool
+    let errorMessages: [String]?
+
+    private enum CodingKeys: String, CodingKey {
+        case success
+        case errorMessages = "messages_simple"
+    }
 }
 
 // MARK: - Constants
@@ -240,11 +284,16 @@ private extension DomainRemote {
         static let wordPressDotComSubdomainsOnly = "only_wordpressdotcom"
         /// The type of WPCOM products.
         static let domainProductType = "type"
+        /// Domain contact info parameter for validating contact info.
+        static let domainContactInfo = "contact_information"
+        /// Domain names parameter for validating contact info.
+        static let domainNames = "domain_names"
     }
 
     enum Path {
         static let domainSuggestions = "domains/suggestions"
         static let domainProducts = "products"
         static let domains = "domains"
+        static let domainContactInfo = "me/domain-contact-information"
     }
 }

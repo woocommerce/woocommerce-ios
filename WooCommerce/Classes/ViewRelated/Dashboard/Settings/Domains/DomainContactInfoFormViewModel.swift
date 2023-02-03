@@ -5,6 +5,7 @@ import protocol Storage.StorageManagerType
 /// View model for `DomainContactInfoForm`.
 final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormViewModelProtocol {
     let siteID: Int64
+    private let domain: String
 
     private var contactInfo: DomainContactInfo {
         .init(firstName: fields.firstName,
@@ -21,13 +22,34 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
     }
 
     init(siteID: Int64,
+         contactInfoToEdit: DomainContactInfo?,
+         domain: String,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
+        self.domain = domain
+
+        let addressToEdit: Address = {
+            guard let contactInfoToEdit else {
+                return .empty
+            }
+            return .init(firstName: contactInfoToEdit.firstName,
+                         lastName: contactInfoToEdit.lastName,
+                         company: contactInfoToEdit.organization,
+                         address1: contactInfoToEdit.address1,
+                         address2: contactInfoToEdit.address2,
+                         city: contactInfoToEdit.city,
+                         state: contactInfoToEdit.state ?? "",
+                         postcode: contactInfoToEdit.postcode,
+                         country: contactInfoToEdit.countryCode,
+                         phone: contactInfoToEdit.phone,
+                         email: contactInfoToEdit.email)
+        }()
 
         super.init(siteID: siteID,
-                   address: .empty,
+                   address: addressToEdit,
+                   isDoneButtonAlwaysEnabled: true,
                    storageManager: storageManager,
                    stores: stores,
                    analytics: analytics)
@@ -42,9 +64,17 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
             throw ContactInfoError.invalidEmail
         }
 
-        // TODO: 8558 - validate contact info remotely
-
-        return contactInfo
+        do {
+            try await validate()
+            return contactInfo
+        } catch DomainContactInfoError.invalid(let messages) {
+            let message = messages?.joined(separator: "\n") ?? Localization.defaultValidationErrorMessage
+            notice = .init(title: Localization.validationErrorTitle, message: message, feedbackType: .error)
+            throw DomainContactInfoError.invalid(messages: messages)
+        } catch {
+            notice = .init(title: error.localizedDescription, feedbackType: .error)
+            throw error
+        }
     }
 
     // MARK: - Protocol conformance
@@ -80,6 +110,17 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
 }
 
 private extension DomainContactInfoFormViewModel {
+    @MainActor
+    func validate() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(DomainAction.validate(domainContactInfo: contactInfo, domain: domain) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+}
+
+private extension DomainContactInfoFormViewModel {
     enum ContactInfoError: Error {
         case invalidEmail
     }
@@ -90,5 +131,13 @@ private extension DomainContactInfoFormViewModel {
     enum Localization {
         static let title = NSLocalizedString("Register domain", comment: "Title of the domain contact info form.")
         static let addressSection = NSLocalizedString("ADDRESS", comment: "Address section title in the domain contact info form.")
+        static let validationErrorTitle = NSLocalizedString(
+            "Form Validation Error",
+            comment: "Title in the error notice when a validation error occurs after submitting domain contact info."
+        )
+        static let defaultValidationErrorMessage = NSLocalizedString(
+            "Some unexpected error with the validation. Please check the fields and try again.",
+            comment: "Message in the error notice when an unknown validation error occurs after submitting domain contact info."
+        )
     }
 }

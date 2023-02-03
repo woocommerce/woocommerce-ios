@@ -519,12 +519,15 @@ private extension AddressFormViewModel {
                     return .done(enabled: true)
                 }
 
+                guard !isDoneButtonAlwaysEnabled else {
+                    return .done(enabled: true)
+                }
+
                 let addressesAreDifferentButSecondAddressSwitchIsDisabled = secondaryOriginalAddress != .empty &&
                 originalAddress != secondaryOriginalAddress &&
                 !showDifferentAddressForm
 
-                return .done(enabled: isDoneButtonAlwaysEnabled ||
-                             addressesAreDifferentButSecondAddressSwitchIsDisabled ||
+                return .done(enabled: addressesAreDifferentButSecondAddressSwitchIsDisabled ||
                              originalAddress != fields.toAddress() ||
                              secondaryOriginalAddress != secondaryFields.toAddress())
             }

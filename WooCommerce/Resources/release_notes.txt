@@ -1,4 +1,1 @@
-- [*] Fix: Adding a new attribute will auto-capitalize the first letter for each word in the attribute name. [https://github.com/woocommerce/woocommerce-ios/pull/8772]
-- [internal] Logging: Improvements on logging potential errors when loading Order Details [https://github.com/woocommerce/woocommerce-ios/pull/8781]
-- [Internal] Now we track the specific error code when a networking-related operation fails [https://github.com/woocommerce/woocommerce-ios/issues/8527]
-
+We’ve made a few enhancements to manage your business. It’s now easier to set up your store when logging in. Adding attributes from the app just became a whole lot easier! Keep your feedback coming!

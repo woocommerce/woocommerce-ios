@@ -81,7 +81,8 @@ where DataProvider.DomainSuggestion == DomainSuggestion {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 // Header label.
-                Text(Localization.subtitle)
+                // The subtitle is in an `.init` in order to support markdown.
+                Text(.init(viewModel.subtitle))
                     .foregroundColor(Color(.secondaryLabel))
                     .bodyStyle()
                     .padding(.horizontal, Layout.defaultHorizontalPadding)
@@ -210,11 +211,6 @@ private extension DomainSelectorView {
         static var title: String {
             NSLocalizedString("Choose a domain", comment: "Title of the domain selector.")
         }
-        static var subtitle: String {
-            NSLocalizedString(
-                "This is where people will find you on the Internet. You can add another domain later.",
-                comment: "Subtitle of the domain selector.")
-        }
         static var searchPlaceholder: String {
             NSLocalizedString("Type a name for your store", comment: "Placeholder of the search text field on the domain selector.")
         }
@@ -265,7 +261,8 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Empty query state.
             DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
                 viewModel:
-                        .init(initialSearchTerm: "",
+                        .init(subtitle: "Your domain",
+                              initialSearchTerm: "",
                               dataProvider: FreeDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores()
                               )),
@@ -275,7 +272,8 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Results state for free domains.
             DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
                 viewModel:
-                        .init(initialSearchTerm: "",
+                        .init(subtitle: "Your domain",
+                              initialSearchTerm: "",
                               dataProvider: FreeDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores(freeDomainsResult: .success([
                                     .init(name: "grapefruitsmoothie.com", isFree: true),
@@ -292,7 +290,8 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Results state for paid domains.
             DomainSelectorView<PaidDomainSelectorDataProvider, PaidDomainSuggestionViewModel>(
                 viewModel:
-                        .init(initialSearchTerm: "fruit",
+                        .init(subtitle: "Your domain mapped to **other.domain**",
+                              initialSearchTerm: "fruit",
                               dataProvider: PaidDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores(paidDomainsResult: .success([
                                     .init(productID: 1,
@@ -314,7 +313,8 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Error state.
             DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
                 viewModel:
-                        .init(initialSearchTerm: "test",
+                        .init(subtitle: "Your domain",
+                              initialSearchTerm: "test",
                               dataProvider:
                                 FreeDomainSelectorDataProvider(
                                     stores: DomainSelectorViewStores(freeDomainsResult:
@@ -327,7 +327,8 @@ struct DomainSelectorView_Previews: PreviewProvider {
             // Loading state.
             DomainSelectorView<FreeDomainSelectorDataProvider, FreeDomainSuggestionViewModel>(
                 viewModel:
-                        .init(initialSearchTerm: "",
+                        .init(subtitle: "Your domain",
+                              initialSearchTerm: "",
                               dataProvider: FreeDomainSelectorDataProvider(
                                 stores: DomainSelectorViewStores()
                               )),

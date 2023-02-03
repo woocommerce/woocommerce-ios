@@ -11,7 +11,7 @@ struct GeneralSupportDataSource: SupportFormMetaDataSource {
         ZendeskProvider.shared.generalTags()
     }
 
-    var customFields: [[Int64: String]] {
+    var customFields: [Int64: String] {
         ZendeskProvider.shared.generalCustomFields()
     }
 }
@@ -27,7 +27,7 @@ struct WCPaySupportDataSource: SupportFormMetaDataSource {
         ZendeskProvider.shared.wcPayTags()
     }
 
-    var customFields: [[Int64: String]] {
+    var customFields: [Int64: String] {
         ZendeskProvider.shared.wcPayCustomFields()
     }
 }

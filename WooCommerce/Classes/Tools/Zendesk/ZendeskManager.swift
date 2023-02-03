@@ -64,8 +64,8 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
     func generalTags() -> [String]
     func wcPayTags() -> [String]
 
-    func generalCustomFields() -> [[Int64: String]]
-    func wcPayCustomFields() -> [[Int64: String]]
+    func generalCustomFields() -> [Int64: String]
+    func wcPayCustomFields() -> [Int64: String]
 }
 
 struct NoZendeskManager: ZendeskManagerProtocol {
@@ -157,12 +157,12 @@ extension NoZendeskManager {
         []
     }
 
-    func generalCustomFields() -> [[Int64: String]] {
-        []
+    func generalCustomFields() -> [Int64: String] {
+        [:]
     }
 
-    func wcPayCustomFields() -> [[Int64: String]] {
-        []
+    func wcPayCustomFields() -> [Int64: String] {
+        [:]
     }
 }
 
@@ -555,19 +555,23 @@ extension ZendeskManager {
         getWCPayTags(supportSourceTag: nil)
     }
 
-    func generalCustomFields() -> [[Int64: String]] {
+    func generalCustomFields() -> [Int64: String] {
         // Extracts the custom fields from the `createRequest` method
-        createRequest(supportSourceTag: nil).customFields.compactMap { field in
-            guard let value = field.value as? String else { return nil } // Guards that all values are string
-            return [field.fieldId: value]
+        createRequest(supportSourceTag: nil).customFields.reduce([:]) { dict, field in
+            guard let value = field.value as? String else { return dict } // Guards that all values are string
+            var mutableDict = dict
+            mutableDict[field.fieldId] = value
+            return mutableDict
         }
     }
 
-    func wcPayCustomFields() -> [[Int64: String]] {
+    func wcPayCustomFields() -> [Int64: String] {
         // Extracts the custom fields from the `createWCPayRequest` method.
-        createWCPayRequest(supportSourceTag: nil).customFields.compactMap { field in
-            guard let value = field.value as? String else { return nil } // Guards that all values are string
-            return [field.fieldId: value]
+        createWCPayRequest(supportSourceTag: nil).customFields.reduce([:]) { dict, field in
+            guard let value = field.value as? String else { return dict } // Guards that all values are string
+            var mutableDict = dict
+            mutableDict[field.fieldId] = value
+            return mutableDict
         }
     }
 }

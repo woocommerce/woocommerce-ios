@@ -3,6 +3,7 @@ import Foundation
 import UIKit
 import WordPressShared
 import WidgetKit
+import enum Alamofire.AFError
 
 public class WooAnalytics: Analytics {
 
@@ -143,10 +144,22 @@ public extension WooAnalytics {
         guard let error = error else {
             return nil
         }
+
         let err = error as NSError
-        return [Constants.errorKeyCode: "\(err.code)",
-                Constants.errorKeyDomain: err.domain,
-                Constants.errorKeyDescription: err.description]
+        let errorCode: String = {
+            if let networkError = error as? AFError {
+                return "\(networkError.responseCode ?? 0)"
+            }
+            return "\(err.code)"
+        }()
+        let errorDomain = err.domain
+        let errorDescription = err.description
+
+        return [
+            Constants.errorKeyCode: errorCode,
+            Constants.errorKeyDomain: errorDomain,
+            Constants.errorKeyDescription: errorDescription
+        ]
     }
 }
 

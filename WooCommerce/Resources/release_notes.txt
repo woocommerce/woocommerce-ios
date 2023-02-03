@@ -1,1 +1,4 @@
-This release includes a few bug fixes and improvements to products and in person payments. Please continue to send us feedback – we are listening!
+- [*] Fix: Adding a new attribute will auto-capitalize the first letter for each word in the attribute name. [https://github.com/woocommerce/woocommerce-ios/pull/8772]
+- [internal] Logging: Improvements on logging potential errors when loading Order Details [https://github.com/woocommerce/woocommerce-ios/pull/8781]
+- [Internal] Now we track the specific error code when a networking-related operation fails [https://github.com/woocommerce/woocommerce-ios/issues/8527]
+

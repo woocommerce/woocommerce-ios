@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.3
+-----
+
+
 12.2
 -----
 - [*] Fix: Adding a new attribute will auto-capitalize the first letter for each word in the attribute name. [https://github.com/woocommerce/woocommerce-ios/pull/8772]

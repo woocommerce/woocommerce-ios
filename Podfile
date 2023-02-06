@@ -27,7 +27,7 @@ def aztec
 end
 
 def tracks
-  pod 'Automattic-Tracks-iOS', '~> 2.0.0-beta.1'
+  pod 'Automattic-Tracks-iOS', '~> 2.0.0'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'trunk'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => ''
   # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
@@ -35,7 +35,7 @@ end
 
 def wordpress_kit
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressKit', '~> 6.0-beta'
+  pod 'WordPressKit', '~> 6.0'
   # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
 end
 

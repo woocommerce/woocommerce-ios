@@ -21,6 +21,7 @@
 		3F4E64702990B7B3000DB555 /* Data+Base64URLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4E646F2990B7B3000DB555 /* Data+Base64URLTests.swift */; };
 		3F4E64722990B835000DB555 /* JWToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4E64712990B835000DB555 /* JWToken.swift */; };
 		3F4E64742990B92B000DB555 /* JWTokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4E64732990B92B000DB555 /* JWTokenTests.swift */; };
+		3F4E64782990BBD4000DB555 /* IDTokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4E64772990BBD4000DB555 /* IDTokenTests.swift */; };
 		3F550D4E23DA429B007E5897 /* AppSelectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F550D4D23DA429B007E5897 /* AppSelectorTests.swift */; };
 		3F550D5123DA4A9C007E5897 /* LinkMailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F550D5023DA4A9C007E5897 /* LinkMailPresenter.swift */; };
 		3F550D5323DA4AC6007E5897 /* URLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F550D5223DA4AC6007E5897 /* URLHandler.swift */; };
@@ -261,6 +262,7 @@
 		3F4E646F2990B7B3000DB555 /* Data+Base64URLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Base64URLTests.swift"; sourceTree = "<group>"; };
 		3F4E64712990B835000DB555 /* JWToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWToken.swift; sourceTree = "<group>"; };
 		3F4E64732990B92B000DB555 /* JWTokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTokenTests.swift; sourceTree = "<group>"; };
+		3F4E64772990BBD4000DB555 /* IDTokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDTokenTests.swift; sourceTree = "<group>"; };
 		3F550D4D23DA429B007E5897 /* AppSelectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelectorTests.swift; sourceTree = "<group>"; };
 		3F550D5023DA4A9C007E5897 /* LinkMailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkMailPresenter.swift; sourceTree = "<group>"; };
 		3F550D5223DA4AC6007E5897 /* URLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLHandler.swift; sourceTree = "<group>"; };
@@ -573,6 +575,7 @@
 				3F879FE7293A573E005C2B48 /* GoogleClientIdTests.swift */,
 				3F879FF3293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift */,
 				3F879FF7293E222E005C2B48 /* GoogleOAuthTokenGettingStub.swift */,
+				3F4E64772990BBD4000DB555 /* IDTokenTests.swift */,
 				3F4E64732990B92B000DB555 /* JWTokenTests.swift */,
 				3F879FE3293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift */,
 				3FE8071E2936558F0088420C /* URL+GoogleSignInTests.swift */,
@@ -1503,6 +1506,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F4E64782990BBD4000DB555 /* IDTokenTests.swift in Sources */,
 				F18DF0E5252500A600D83AFE /* WordPressAuthenticatorTests-Bridging-Header.h in Sources */,
 				3FE8071529364C410088420C /* Result+ConvenienceInitTests.swift in Sources */,
 				3F879FF0293A7EDE005C2B48 /* DataGettingStub.swift in Sources */,

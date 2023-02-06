@@ -26,16 +26,16 @@ class JWTokenTests: XCTestCase {
             ["key": "value", "other_key": "other_value"]
         )
     }
-
-    // Created with https://jwt.io/ with input:
-    //
-    // header: {
-    //   "alg": "HS256",
-    //   "typ": "JWT"
-    // }
-    // payload: {
-    //   "key": "value",
-    //   "other_key": "other_value"
-    // }
-    let validJWTString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJ2YWx1ZSIsIm90aGVyX2tleSI6Im90aGVyX3ZhbHVlIn0.Koc07zTGuATtQK7EvfAuwgZ-Nsr6P6J3HV4h3QLlXpM"
 }
+
+// Created with https://jwt.io/ with input:
+//
+// header: {
+//   "alg": "HS256",
+//   "typ": "JWT"
+// }
+// payload: {
+//   "key": "value",
+//   "other_key": "other_value"
+// }
+let validJWTString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJ2YWx1ZSIsIm90aGVyX2tleSI6Im90aGVyX3ZhbHVlIn0.Koc07zTGuATtQK7EvfAuwgZ-Nsr6P6J3HV4h3QLlXpM"

@@ -19,10 +19,16 @@ struct JWToken {
         // See:
         // - https://tools.ietf.org/html/rfc7515#appendix-C
         // - https://jwt.io/introduction
-        let headerData = Data(base64URLDecode: segments[0])
-        let payloadData = Data(base64URLDecode: segments[1])
 
         // Note: Splitting the guards is useful to know which one fails
+        guard let headerData = Data(base64URLEncoded: segments[0]) else {
+            return nil
+        }
+
+        guard let payloadData = Data(base64URLEncoded: segments[1]) else {
+            return nil
+        }
+
         guard let header = try? JSONSerialization.jsonObject(with: headerData, options: []) as? [String: Any] else {
             return nil
         }

@@ -6,8 +6,8 @@ extension Data {
     /// See:
     /// - https://tools.ietf.org/html/rfc4648#section-5
     /// - https://tools.ietf.org/html/rfc7515#appendix-C
-    init(base64URLDecode: String) {
-        let base64 = base64URLDecode
+    init?(base64URLEncoded: String) {
+        let base64 = base64URLEncoded
             .replacingOccurrences(of: "-", with: "+")
             .replacingOccurrences(of: "_", with: "/")
 
@@ -16,9 +16,9 @@ extension Data {
         let paddingLength = requiredLength - length
         if paddingLength > 0 {
             let padding = "".padding(toLength: Int(paddingLength), withPad: "=", startingAt: 0)
-            self.init(base64Encoded: base64 + padding, options: .ignoreUnknownCharacters)!
+            self.init(base64Encoded: base64 + padding, options: .ignoreUnknownCharacters)
         } else {
-            self.init(base64Encoded: base64, options: .ignoreUnknownCharacters)!
+            self.init(base64Encoded: base64, options: .ignoreUnknownCharacters)
         }
     }
 }

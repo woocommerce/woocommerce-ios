@@ -2,6 +2,8 @@
 ///
 /// See https://jwt.io/introduction
 struct JWToken {
+    let encodedValue: String
+
     let header: [String: Any]
     let payload: [String: Any]
     let signature: String
@@ -37,6 +39,7 @@ struct JWToken {
             return nil
         }
 
+        self.encodedValue = encodedString
         self.header = header
         self.payload = payload
         self.signature = segments[2]

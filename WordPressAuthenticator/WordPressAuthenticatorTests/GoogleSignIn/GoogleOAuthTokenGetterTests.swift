@@ -11,6 +11,7 @@ class GoogleOAuthTokenGetterTests: XCTestCase {
         do {
             _ = try await getter.getToken(
                 clientId: GoogleClientId(string: "a.b.c")!,
+                audience: "audience",
                 authCode: "abc",
                 pkce: ProofKeyForCodeExchange(codeVerifier: "code", method: .plain)
             )
@@ -35,6 +36,7 @@ class GoogleOAuthTokenGetterTests: XCTestCase {
 
         let response = try await getter.getToken(
             clientId: GoogleClientId(string: "a.b.c")!,
+            audience: "audience",
             authCode: "abc",
             pkce: ProofKeyForCodeExchange(codeVerifier: "code", method: .plain)
         )

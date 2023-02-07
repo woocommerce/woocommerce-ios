@@ -16,7 +16,12 @@ struct GoogleOAuthTokenGettingStub: GoogleOAuthTokenGetting {
         self.result = result
     }
 
-    func getToken(clientId: GoogleClientId, authCode: String, pkce: ProofKeyForCodeExchange) async throws -> OAuthTokenResponseBody {
+    func getToken(
+        clientId: GoogleClientId,
+        audience: String,
+        authCode: String,
+        pkce: ProofKeyForCodeExchange
+    ) async throws -> OAuthTokenResponseBody {
         switch result {
         case .success(let response): return response
         case .failure(let error): throw error

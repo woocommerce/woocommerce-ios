@@ -47,6 +47,16 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let googleLoginScheme: String
 
+    internal var googleClientId: GoogleClientId {
+        guard let clientId = GoogleClientId(string: googleLoginClientId) else {
+            fatalError("Could not init GoogleClientId from developer provided value.")
+        }
+
+        return clientId
+    }
+
+    let googleLoginWithoutSDK: Bool
+
     /// UserAgent
     ///
     let userAgent: String
@@ -192,7 +202,9 @@ public struct WordPressAuthenticatorConfiguration {
                  skipXMLRPCCheckForSiteAddressLogin: Bool = false,
                  enableManualSiteCredentialLogin: Bool = false,
                  useEnterEmailAddressAsStepValueForGetStartedVC: Bool = false,
-                 enableSiteAddressLoginOnlyInPrologue: Bool = false) {
+                 enableSiteAddressLoginOnlyInPrologue: Bool = false,
+                 googleLoginWithoutSDK: Bool = false
+    ) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -204,6 +216,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.googleLoginClientId =  googleLoginClientId
         self.googleLoginServerClientId = googleLoginServerClientId
         self.googleLoginScheme = googleLoginScheme
+        self.googleLoginWithoutSDK = googleLoginWithoutSDK
         self.userAgent = userAgent
         self.showLoginOptions = showLoginOptions
         self.enableSignUp = enableSignUp

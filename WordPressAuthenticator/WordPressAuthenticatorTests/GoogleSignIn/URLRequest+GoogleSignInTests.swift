@@ -6,6 +6,7 @@ class URLRequestOAuthTokenRequestTests: XCTestCase {
     let testBody = OAuthTokenRequestBody(
         clientId: "a",
         clientSecret: "b",
+        audience: "audience",
         code: "c",
         codeVerifier: "d",
         grantType: "e",

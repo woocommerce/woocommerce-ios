@@ -26,7 +26,7 @@ class GoogleOAuthTokenGetterTests: XCTestCase {
         let expectedResponse = OAuthTokenResponseBody(
             accessToken: "a",
             expiresIn: 1,
-            idToken: .none,
+            rawIDToken: .none,
             refreshToken: .none,
             scope: "s",
             tokenType: "t"

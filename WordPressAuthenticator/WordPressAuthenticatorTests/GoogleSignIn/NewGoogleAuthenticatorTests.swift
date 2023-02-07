@@ -64,7 +64,7 @@ class NewGoogleAuthenticatorTests: XCTestCase {
             scheme: "scheme",
             audience: "audience",
             contextProvider: FakeContextProvider(),
-            oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture(idToken: .none))
+            oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture(rawIDToken: .none))
         )
         let url = URL(string: "https://test.com?code=a_code")!
 
@@ -90,7 +90,7 @@ class NewGoogleAuthenticatorTests: XCTestCase {
             scheme: "scheme",
             audience: "audience",
             contextProvider: FakeContextProvider(),
-            oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture(idToken: "token"))
+            oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture(rawIDToken: validJWTStringWithEmail))
         )
         let url = URL(string: "https://test.com?code=a_code")!
 
@@ -101,7 +101,7 @@ class NewGoogleAuthenticatorTests: XCTestCase {
                 audience: "audience",
                 pkce: ProofKeyForCodeExchange()
             )
-            XCTAssertEqual(response, "token")
+            XCTAssertEqual(response.email, "test@email.com")
         } catch {
             XCTFail("Expected value, got error '\(error)'")
         }

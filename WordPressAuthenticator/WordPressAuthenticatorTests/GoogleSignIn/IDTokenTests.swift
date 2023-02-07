@@ -4,26 +4,14 @@ import XCTest
 class IDTokenTests: XCTestCase {
 
     func testInitWithJWTWithoutEmail() throws {
-        XCTAssertNil(IDToken(jwt: try XCTUnwrap(JSONWebToken(encodedString: validJWTString))))
+        XCTAssertNil(IDToken(jwt: try XCTUnwrap(JSONWebToken(encodedString: JSONWebToken.validJWTString))))
     }
 
     func testInitWithJWTWithEmail() throws {
-        let jwt = try XCTUnwrap(JSONWebToken(encodedString: validJWTStringWithEmail))
+        let jwt = try XCTUnwrap(JSONWebToken(encodedString: JSONWebToken.validJWTStringWithEmail))
         let token = try XCTUnwrap(IDToken(jwt: jwt))
 
-        XCTAssertEqual(token.email, "test@email.com")
+        XCTAssertEqual(token.email, JSONWebToken.emailFromValidJWTStringWithEmail)
     }
 
 }
-
-// Created with https://jwt.io/ with input:
-//
-// header: {
-//   "alg": "HS256",
-//   "typ": "JWT"
-// }
-// payload: {
-//   "key": "value",
-//   "email": "test@email.com"
-// }
-let validJWTStringWithEmail = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJ2YWx1ZSIsImVtYWlsIjoidGVzdEBlbWFpbC5jb20ifQ.b-2oTvjpc_qHM5dU6akk_ESe3eWUZwL21pvTsCmW2gE"

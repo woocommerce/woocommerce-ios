@@ -2,7 +2,7 @@
 
 extension OAuthTokenResponseBody {
 
-    static func fixture(rawIDToken: String? = validJWTString) -> Self {
+    static func fixture(rawIDToken: String? = JSONWebToken.validJWTString) -> Self {
         OAuthTokenResponseBody(
             accessToken: "access_token",
             expiresIn: 1,

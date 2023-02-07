@@ -20,6 +20,7 @@
 		3F30A6B4299F10BD0004452F /* Character+URLSafe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F30A6B3299F10BD0004452F /* Character+URLSafe.swift */; };
 		3F30A6BA299F12E30004452F /* Character+URLSafeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F30A6B9299F12E30004452F /* Character+URLSafeTests.swift */; };
 		3F338B6A289B877F0014ADC5 /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F338B69289B877F0014ADC5 /* BuildkiteTestCollector */; };
+		3F3694022991E244006E923E /* JSONWebToken+Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3694012991E244006E923E /* JSONWebToken+Fixtures.swift */; };
 		3F4E646C2990B732000DB555 /* Data+Base64URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4E646B2990B732000DB555 /* Data+Base64URL.swift */; };
 		3F4E64702990B7B3000DB555 /* Data+Base64URLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4E646F2990B7B3000DB555 /* Data+Base64URLTests.swift */; };
 		3F4E64722990B835000DB555 /* JSONWebToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4E64712990B835000DB555 /* JSONWebToken.swift */; };
@@ -269,6 +270,7 @@
 		3F30A6B3299F10BD0004452F /* Character+URLSafe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+URLSafe.swift"; sourceTree = "<group>"; };
 		3F30A6B9299F12E30004452F /* Character+URLSafeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+URLSafeTests.swift"; sourceTree = "<group>"; };
 		3F338B6B289B87E60014ADC5 /* UnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UnitTests.xctestplan; sourceTree = "<group>"; };
+		3F3694012991E244006E923E /* JSONWebToken+Fixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONWebToken+Fixtures.swift"; sourceTree = "<group>"; };
 		3F4E646B2990B732000DB555 /* Data+Base64URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Base64URL.swift"; sourceTree = "<group>"; };
 		3F4E646F2990B7B3000DB555 /* Data+Base64URLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Base64URLTests.swift"; sourceTree = "<group>"; };
 		3F4E64712990B835000DB555 /* JSONWebToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONWebToken.swift; sourceTree = "<group>"; };
@@ -581,6 +583,7 @@
 				3F879FF3293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift */,
 				3F879FF7293E222E005C2B48 /* GoogleOAuthTokenGettingStub.swift */,
 				3F4E64772990BBD4000DB555 /* IDTokenTests.swift */,
+				3F3694012991E244006E923E /* JSONWebToken+Fixtures.swift */,
 				3F4E64732990B92B000DB555 /* JWTokenTests.swift */,
 				3F879FDA293A49AA005C2B48 /* NewGoogleAuthenticatorTests.swift */,
 				3F879FE3293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift */,
@@ -1526,6 +1529,7 @@
 				BA53D64824DFDF97001F1ABF /* WordPressSourceTagTests.swift in Sources */,
 				3F30A6BA299F12E30004452F /* Character+URLSafeTests.swift in Sources */,
 				4A1DEF4B29341B1F00322608 /* LoggingTests.swift in Sources */,
+				3F3694022991E244006E923E /* JSONWebToken+Fixtures.swift in Sources */,
 				3F879FDF293A501D005C2B48 /* URLRequest+GoogleSignInTests.swift in Sources */,
 				D8610CEC2570A60C00A5DF27 /* NavigationToRootTests.swift in Sources */,
 				BA53D64D24DFE4E6001F1ABF /* ModalViewControllerPresentingSpy.swift in Sources */,

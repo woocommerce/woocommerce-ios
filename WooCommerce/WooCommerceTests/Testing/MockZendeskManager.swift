@@ -77,6 +77,41 @@ final class MockZendeskManager: ZendeskManagerProtocol {
     }
 }
 
+extension MockZendeskManager {
+    func createSupportRequest(formID: Int64,
+                              customFields: [Int64: String],
+                              tags: [String],
+                              subject: String,
+                              description: String,
+                              onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        // no-op
+    }
+
+    func formID() -> Int64 {
+        .zero
+    }
+
+    func wcPayFormID() -> Int64 {
+        .zero
+    }
+
+    func generalTags() -> [String] {
+        []
+    }
+
+    func wcPayTags() -> [String] {
+        []
+    }
+
+    func generalCustomFields() -> [Int64: String] {
+        [:]
+    }
+
+    func wcPayCustomFields() -> [Int64: String] {
+        [:]
+    }
+}
+
 extension MockZendeskManager: SupportManagerAdapter {
     /// Executed whenever the app receives a Push Notifications Token.
     ///

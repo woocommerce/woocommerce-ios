@@ -35,6 +35,15 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
     func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String?)
     func showNewWCPayRequestIfPossible(from controller: UIViewController)
 
+    /// Creates a support request using the API-Providers SDK.
+    ///
+    func createSupportRequest(formID: Int64,
+                              customFields: [Int64: String],
+                              tags: [String],
+                              subject: String,
+                              description: String,
+                              onCompletion: @escaping (Result<Void, Error>) -> Void)
+
     var zendeskEnabled: Bool { get }
     func userSupportEmail() -> String?
     func showHelpCenter(from controller: UIViewController)
@@ -45,6 +54,18 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
     func fetchSystemStatusReport()
     func initialize()
     func reset()
+
+    /// To Refactor: These methods would end-up living outside this class. Exposing them here temporarily.
+    /// https://github.com/woocommerce/woocommerce-ios/issues/8795
+    ///
+    func formID() -> Int64
+    func wcPayFormID() -> Int64
+
+    func generalTags() -> [String]
+    func wcPayTags() -> [String]
+
+    func generalCustomFields() -> [Int64: String]
+    func wcPayCustomFields() -> [Int64: String]
 }
 
 struct NoZendeskManager: ZendeskManagerProtocol {
@@ -65,6 +86,15 @@ struct NoZendeskManager: ZendeskManagerProtocol {
     }
 
     func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String?) {
+        // no-op
+    }
+
+    func createSupportRequest(formID: Int64,
+                              customFields: [Int64: String],
+                              tags: [String],
+                              subject: String,
+                              description: String,
+                              onCompletion: @escaping (Result<Void, Error>) -> Void) {
         // no-op
     }
 
@@ -104,6 +134,35 @@ struct NoZendeskManager: ZendeskManagerProtocol {
 
     func reset() {
         // no-op
+    }
+}
+
+/// To Refactor: These methods would end-up living outside this class. Exposing them here temporarily.
+/// https://github.com/woocommerce/woocommerce-ios/issues/8795
+///
+extension NoZendeskManager {
+    func formID() -> Int64 {
+        .zero
+    }
+
+    func wcPayFormID() -> Int64 {
+        .zero
+    }
+
+    func generalTags() -> [String] {
+        []
+    }
+
+    func wcPayTags() -> [String] {
+        []
+    }
+
+    func generalCustomFields() -> [Int64: String] {
+        [:]
+    }
+
+    func wcPayCustomFields() -> [Int64: String] {
+        [:]
     }
 }
 
@@ -361,6 +420,25 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         }
     }
 
+    /// Creates a support request using the API-Providers SDK.
+    ///
+    func createSupportRequest(formID: Int64,
+                              customFields: [Int64: String],
+                              tags: [String],
+                              subject: String,
+                              description: String,
+                              onCompletion: @escaping (Result<Void, Error>) -> Void) {
+
+        let requestProvider = ZDKRequestProvider()
+        let request = createAPIRequest(formID: formID, customFields: customFields, tags: tags, subject: subject, description: description)
+        requestProvider.createRequest(request) { _, error in
+            if let error {
+                return onCompletion(.failure(error))
+            }
+            onCompletion(.success(()))
+        }
+    }
+
     /// Displays the Zendesk Request List view from the given controller, allowing user to access their tickets.
     ///
     func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String?) {
@@ -454,6 +532,47 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         }
 
         return decoratedTags
+    }
+}
+
+/// To Refactor: These methods would end-up living outside this class. Exposing them here temporarily.
+/// https://github.com/woocommerce/woocommerce-ios/issues/8795
+///
+extension ZendeskManager {
+    func formID() -> Int64 {
+        createRequest(supportSourceTag: nil).ticketFormID?.int64Value ?? .zero
+    }
+
+    func wcPayFormID() -> Int64 {
+        createWCPayRequest(supportSourceTag: nil).ticketFormID?.int64Value ?? .zero
+    }
+
+    func generalTags() -> [String] {
+        getTags(supportSourceTag: nil)
+    }
+
+    func wcPayTags() -> [String] {
+        getWCPayTags(supportSourceTag: nil)
+    }
+
+    func generalCustomFields() -> [Int64: String] {
+        // Extracts the custom fields from the `createRequest` method
+        createRequest(supportSourceTag: nil).customFields.reduce([:]) { dict, field in
+            guard let value = field.value as? String else { return dict } // Guards that all values are string
+            var mutableDict = dict
+            mutableDict[field.fieldId] = value
+            return mutableDict
+        }
+    }
+
+    func wcPayCustomFields() -> [Int64: String] {
+        // Extracts the custom fields from the `createWCPayRequest` method.
+        createWCPayRequest(supportSourceTag: nil).customFields.reduce([:]) { dict, field in
+            guard let value = field.value as? String else { return dict } // Guards that all values are string
+            var mutableDict = dict
+            mutableDict[field.fieldId] = value
+            return mutableDict
+        }
     }
 }
 
@@ -747,6 +866,18 @@ private extension ZendeskManager {
         // No extra config needed to attach an image. Hooray!
 
         return requestConfig
+    }
+
+    /// Creates a Zendesk Request to be consumed by a Request Provider.
+    ///
+    func createAPIRequest(formID: Int64, customFields: [Int64: String], tags: [String], subject: String, description: String) -> ZDKCreateRequest {
+        let request = ZDKCreateRequest()
+        request.ticketFormId = formID as NSNumber
+        request.customFields = customFields.map { CustomField(fieldId: $0, value: $1) }
+        request.tags = tags
+        request.subject = subject
+        request.requestDescription = description
+        return request
     }
 
     // MARK: - View

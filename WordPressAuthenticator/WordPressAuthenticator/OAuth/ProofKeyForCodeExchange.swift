@@ -25,10 +25,10 @@ struct ProofKeyForCodeExchange {
         }
     }
 
-    let codeVerifier: String
+    let codeVerifier: CodeVerifier
     let method: Method
 
-    init(codeVerifier: String, method: Method) {
+    init(codeVerifier: CodeVerifier = CodeVerifier(), method: Method = .s256) {
         self.codeVerifier = codeVerifier
         self.method = method
     }
@@ -39,7 +39,7 @@ struct ProofKeyForCodeExchange {
             // TODO: code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
             fatalError()
         case .plain:
-            return codeVerifier
+            return codeVerifier.value
         }
     }
 }

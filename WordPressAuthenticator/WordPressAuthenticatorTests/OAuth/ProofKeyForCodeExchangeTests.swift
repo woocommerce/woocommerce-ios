@@ -4,9 +4,11 @@ import XCTest
 class ProofKeyForCodeExchangeTests: XCTestCase {
 
     func testCodeChallengeInPlainModeIsTheSameAsCodeVerifier() {
+        let codeVerifier = ProofKeyForCodeExchange.CodeVerifier()
+
         XCTAssertEqual(
-            ProofKeyForCodeExchange(codeVerifier: "abc", method: .plain).codeCallenge,
-            "abc"
+            ProofKeyForCodeExchange(codeVerifier: codeVerifier, method: .plain).codeCallenge,
+            codeVerifier.value
         )
     }
 

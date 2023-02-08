@@ -27,6 +27,33 @@ protocol ProductSettingsRowMediator {
 //
 enum ProductSettingsRows {
 
+    struct ProductType: ProductSettingsRowMediator {
+        private let settings: ProductSettings
+
+        init(_ settings: ProductSettings) {
+            self.settings = settings
+        }
+
+        func configure(cell: UITableViewCell) {
+            guard let cell = cell as? TitleAndValueTableViewCell else {
+                return
+            }
+
+            cell.accessoryType = .disclosureIndicator
+            cell.selectionStyle = .default
+            cell.apply(style: .regular)
+
+            cell.updateUI(title: Localization.productType, value: settings.productType.description)
+        }
+
+        func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+        }
+
+        let reuseIdentifier: String = TitleAndValueTableViewCell.reuseIdentifier
+
+        let cellTypes: [UITableViewCell.Type] = [TitleAndValueTableViewCell.self]
+    }
+
     struct Status: ProductSettingsRowMediator {
         private let settings: ProductSettings
 
@@ -345,6 +372,7 @@ enum ProductSettingsRows {
 
 extension ProductSettingsRows {
     enum Localization {
+        static let productType = NSLocalizedString("Product Type", comment: "Product Type label in Product Settings")
         static let status = NSLocalizedString("Status", comment: "Status label in Product Settings")
         static let visibility = NSLocalizedString("Visibility", comment: "Visibility label in Product Settings")
         static let catalogVisibility = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")

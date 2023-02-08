@@ -14,6 +14,17 @@ protocol ProductSettingsSectionMediator {
 // MARK: - Sections declaration for Product Settings
 //
 enum ProductSettingsSections {
+    /// Type Setting section
+    struct ProductTypeSetting: ProductSettingsSectionMediator {
+        let title = ""
+
+        let rows: [ProductSettingsRowMediator]
+
+        init(_ settings: ProductSettings) {
+            rows = [ProductSettingsRows.ProductType(settings)]
+        }
+    }
+
     /// Publish Settings section
     struct PublishSettings: ProductSettingsSectionMediator {
         let title = NSLocalizedString("Publish Settings", comment: "Title of the Publish Settings section on Product Settings screen")

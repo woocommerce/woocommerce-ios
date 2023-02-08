@@ -101,7 +101,8 @@ private extension ProductSettingsViewModel {
 //
 private extension ProductSettingsViewModel {
     static func configureSections(_ settings: ProductSettings) -> [ProductSettingsSectionMediator] {
-        return [ProductSettingsSections.PublishSettings(settings),
+        return [ProductSettingsSections.ProductTypeSetting(settings),
+                ProductSettingsSections.PublishSettings(settings),
                 ProductSettingsSections.MoreOptions(settings)
         ]
     }

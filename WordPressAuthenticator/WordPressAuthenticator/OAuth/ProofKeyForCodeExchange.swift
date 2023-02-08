@@ -51,14 +51,18 @@ extension ProofKeyForCodeExchange {
         let value: String
 
         // From the docs: using the unreserved characters [A-Z] / [a-z] / [0-9] / "-" / "." / "_" / "~"
-//        let _ = CharacterSet.urlQueryAllowed
-        private let allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~"
+        // That is, URL safe characters.
+        //
+        // Notice that Swift offers `CharacterSet.urlQueryAllowed` to represent this set of characters.
+        // However, there is no straightforward way to convert a `CharacterSet` to a `Set<Character>`.
+        // See for example https://nshipster.com/characterset/.
+        private let allowedCharacters = Set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~")
         private lazy var allowedCharactersCount = UInt32(allowedCharacters.count)
 
         /// `length` must be between 43 and 128, inclusive.
         init(length: Int = 128) {
             let constrainedLength = min(max(length, 43), 128)
-            value = String.randomString(usingCharacters: allowedCharacters, withLenght: constrainedLength)
+            value = String.randomString(using: allowedCharacters, withLenght: constrainedLength)
         }
     }
 }

@@ -42,11 +42,11 @@ struct ProofKeyForCodeExchange {
             //
             // We don't need the ASCII conversion, because we build `CodeVerifier` from URL safe
             // characters.
-            let rawData = codeVerifier.value.data(using: .utf8)!
+            let rawData = codeVerifier.rawValue.data(using: .utf8)!
             let hashedData: Data = rawData.sha256Hashed()
             return hashedData.base64URLEncodedString()
         case .plain:
-            return codeVerifier.value
+            return codeVerifier.rawValue
         }
     }
 }
@@ -55,7 +55,7 @@ extension ProofKeyForCodeExchange {
 
     struct CodeVerifier: Equatable {
 
-        let value: String
+        let rawValue: String
 
         // From the docs: using the unreserved characters [A-Z] / [a-z] / [0-9] / "-" / "." / "_" / "~"
         // That is, URL safe characters.
@@ -69,7 +69,7 @@ extension ProofKeyForCodeExchange {
         /// `length` must be between 43 and 128, inclusive.
         init(length: Int = 128) {
             let constrainedLength = min(max(length, 43), 128)
-            value = String.randomString(using: allowedCharacters, withLenght: constrainedLength)
+            rawValue = String.randomString(using: allowedCharacters, withLenght: constrainedLength)
         }
     }
 }
@@ -85,6 +85,6 @@ extension ProofKeyForCodeExchange.CodeVerifier {
 
         guard Set(value).isSubset(of: allowedCharacters) else { return nil }
 
-        self.value = value
+        self.rawValue = value
     }
 }

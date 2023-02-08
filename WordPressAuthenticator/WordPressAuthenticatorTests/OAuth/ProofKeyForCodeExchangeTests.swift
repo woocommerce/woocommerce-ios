@@ -8,7 +8,7 @@ class ProofKeyForCodeExchangeTests: XCTestCase {
 
         XCTAssertEqual(
             ProofKeyForCodeExchange(codeVerifier: codeVerifier, method: .plain).codeCallenge,
-            codeVerifier.value
+            codeVerifier.rawValue
         )
     }
 

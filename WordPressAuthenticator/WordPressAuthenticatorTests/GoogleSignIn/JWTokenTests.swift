@@ -4,17 +4,17 @@ import XCTest
 class JWTokenTests: XCTestCase {
 
     func testJWTokenDecodingFromInvalidStringFails() {
-        XCTAssertNil(JWToken(encodedString: "invalid"))
+        XCTAssertNil(JSONWebToken(encodedString: "invalid"))
     }
 
     func tsetJWTokenDecodingWithoutHeaderFails() {
         // split validJWTString by . and remove the first
         let inputWithoutHeader = validJWTString.split(separator: ".").dropFirst().joined(separator: ".")
-        XCTAssertNil(JWToken(encodedString: inputWithoutHeader))
+        XCTAssertNil(JSONWebToken(encodedString: inputWithoutHeader))
     }
 
     func testJWTokenDecodingFromValidString() throws {
-        let token = try XCTUnwrap(JWToken(encodedString: validJWTString))
+        let token = try XCTUnwrap(JSONWebToken(encodedString: validJWTString))
 
         XCTAssertEqual(
             token.header as? [String: String],

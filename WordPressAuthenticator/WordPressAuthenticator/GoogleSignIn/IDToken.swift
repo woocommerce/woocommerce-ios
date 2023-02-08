@@ -5,7 +5,7 @@ public struct IDToken {
     public let email: String
 
     // TODO: Validate token! – https://developers.google.com/identity/openid-connect/openid-connect#validatinganidtoken
-    init?(jwt: JWToken) {
+    init?(jwt: JSONWebToken) {
         guard let email = jwt.payload["email"] as? String else {
             return nil
         }

@@ -4,11 +4,11 @@ import XCTest
 class IDTokenTests: XCTestCase {
 
     func testInitWithJWTWithoutEmail() throws {
-        XCTAssertNil(IDToken(jwt: try XCTUnwrap(JWToken(encodedString: validJWTString))))
+        XCTAssertNil(IDToken(jwt: try XCTUnwrap(JSONWebToken(encodedString: validJWTString))))
     }
 
     func testInitWithJWTWithEmail() throws {
-        let jwt = try XCTUnwrap(JWToken(encodedString: validJWTStringWithEmail))
+        let jwt = try XCTUnwrap(JSONWebToken(encodedString: validJWTStringWithEmail))
         let token = try XCTUnwrap(IDToken(jwt: jwt))
 
         XCTAssertEqual(token.email, "test@email.com")

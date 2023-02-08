@@ -467,6 +467,18 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let containsAttributeAction = factory.settingsSectionActions().contains(ProductFormEditAction.attributes(editable: true))
         XCTAssertTrue(containsAttributeAction)
     }
+
+    func test_settings_actions_does_not_contain_product_type_when_it_is_disabled() {
+        // Given
+        let product = Fixtures.physicalSimpleProductWithoutImages
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isProductTypeActionEnabled: false)
+
+        // Then
+        XCTAssertFalse(factory.settingsSectionActions().contains(.productType(editable: true)))
+    }
 }
 
 private extension ProductFormActionsFactoryTests {

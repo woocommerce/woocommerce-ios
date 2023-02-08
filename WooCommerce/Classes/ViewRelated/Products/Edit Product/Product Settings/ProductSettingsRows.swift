@@ -58,6 +58,57 @@ enum ProductSettingsRows {
                 return
             }
 
+            let viewProperties = BottomSheetListSelectorViewProperties(subtitle: Localization.productTypeSheetTitle)
+            let productType = BottomSheetProductType(productType: settings.productType, isVirtual: settings.virtual)
+            let command = ProductTypeBottomSheetListSelectorCommand(selected: productType) { selectedProductType in
+                sourceViewController.dismiss(animated: true, completion: nil)
+
+                let originalProductType = settings.productType
+
+                ServiceLocator.analytics.track(.productTypeChanged, withProperties: [
+                    "from": originalProductType.rawValue,
+                    "to": selectedProductType.productType.rawValue
+                ])
+
+                presentProductTypeChangeAlert(for: originalProductType, on: sourceViewController, completion: { change in
+                    guard change else {
+                        return
+                    }
+
+                    self.settings.productType = selectedProductType.productType
+                    self.settings.virtual = selectedProductType.isVirtual
+                    onCompletion(self.settings)
+                })
+            }
+            let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
+            productTypesListPresenter.show(from: sourceViewController)
+        }
+
+        /// Product Type Change alert
+        ///
+        private func presentProductTypeChangeAlert(for productType: Yosemite.ProductType, on vc: UIViewController, completion: @escaping (Bool) -> ()) {
+            let body: String
+            switch productType {
+            case .variable:
+                body = Localization.Alert.productVariableTypeChangeMessage
+            default:
+                body = Localization.Alert.productTypeChangeMessage
+            }
+
+            let alertController = UIAlertController(title: Localization.Alert.productTypeChangeTitle,
+                                                    message: body,
+                                                    preferredStyle: .alert)
+            let cancel = UIAlertAction(title: Localization.Alert.productTypeChangeCancelButton,
+                                       style: .cancel) { (action) in
+                                           completion(false)
+                                       }
+            let confirm = UIAlertAction(title: Localization.Alert.productTypeChangeConfirmButton,
+                                        style: .default) { (action) in
+                                            completion(true)
+                                        }
+            alertController.addAction(cancel)
+            alertController.addAction(confirm)
+            vc.present(alertController, animated: true)
         }
 
         let reuseIdentifier: String = TitleAndValueTableViewCell.reuseIdentifier
@@ -384,6 +435,8 @@ enum ProductSettingsRows {
 extension ProductSettingsRows {
     enum Localization {
         static let productType = NSLocalizedString("Product Type", comment: "Product Type label in Product Settings")
+        static let productTypeSheetTitle = NSLocalizedString("Change product type",
+                                                             comment: "Message title of bottom sheet for selecting a product type")
         static let status = NSLocalizedString("Status", comment: "Status label in Product Settings")
         static let visibility = NSLocalizedString("Visibility", comment: "Visibility label in Product Settings")
         static let catalogVisibility = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
@@ -393,5 +446,21 @@ extension ProductSettingsRows {
         static let slug = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
         static let purchaseNote = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")
         static let menuOrder = NSLocalizedString("Menu Order", comment: "Menu order label in Product Settings")
+
+        enum Alert {
+            // Product type change
+            static let productTypeChangeTitle = NSLocalizedString("Are you sure you want to change the product type?",
+                                                                  comment: "Title of the alert when a user is changing the product type")
+            static let productTypeChangeMessage = NSLocalizedString("Changing the product type will modify some of the product data",
+                                                                    comment: "Body of the alert when a user is changing the product type")
+            static let productVariableTypeChangeMessage =
+                NSLocalizedString("Changing the product type will modify some of the product data and delete all your attributes and variations",
+                                  comment: "Body of the alert when a user is changing the product type")
+
+            static let productTypeChangeCancelButton =
+                NSLocalizedString("Cancel", comment: "Cancel button on the alert when the user is cancelling the action on changing product type")
+            static let productTypeChangeConfirmButton = NSLocalizedString("Yes, change",
+                                                                          comment: "Confirmation button on the alert when the user is changing product type")
+        }
     }
 }

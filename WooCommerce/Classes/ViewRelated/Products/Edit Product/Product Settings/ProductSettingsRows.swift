@@ -29,6 +29,7 @@ enum ProductSettingsRows {
 
     struct ProductType: ProductSettingsRowMediator {
         private let settings: ProductSettings
+        private let supportedTypes: [Yosemite.ProductType] = [.simple, .affiliate, .grouped, .variable]
 
         init(_ settings: ProductSettings) {
             self.settings = settings
@@ -39,14 +40,24 @@ enum ProductSettingsRows {
                 return
             }
 
-            cell.accessoryType = .disclosureIndicator
-            cell.selectionStyle = .default
-            cell.apply(style: .regular)
+            if supportedTypes.contains(settings.productType) {
+                cell.accessoryType = .none
+                cell.selectionStyle = .none
+                cell.apply(style: .nonSelectable)
+            } else {
+                cell.accessoryType = .disclosureIndicator
+                cell.selectionStyle = .default
+                cell.apply(style: .regular)
+            }
 
             cell.updateUI(title: Localization.productType, value: settings.productType.description)
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            guard supportedTypes.contains(settings.productType) else {
+                return
+            }
+
         }
 
         let reuseIdentifier: String = TitleAndValueTableViewCell.reuseIdentifier

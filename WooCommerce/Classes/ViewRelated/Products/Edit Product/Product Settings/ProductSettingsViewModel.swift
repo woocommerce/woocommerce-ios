@@ -101,10 +101,16 @@ private extension ProductSettingsViewModel {
 //
 private extension ProductSettingsViewModel {
     static func configureSections(_ settings: ProductSettings) -> [ProductSettingsSectionMediator] {
-        return [ProductSettingsSections.ProductTypeSetting(settings),
-                ProductSettingsSections.PublishSettings(settings),
-                ProductSettingsSections.MoreOptions(settings)
-        ]
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductsEditing) {
+            return [ProductSettingsSections.ProductTypeSetting(settings),
+                    ProductSettingsSections.PublishSettings(settings),
+                    ProductSettingsSections.MoreOptions(settings)
+            ]
+        } else {
+            return [ProductSettingsSections.PublishSettings(settings),
+                    ProductSettingsSections.MoreOptions(settings)
+            ]
+        }
     }
 }
 

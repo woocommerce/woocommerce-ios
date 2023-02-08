@@ -70,10 +70,20 @@ extension BetaFeature {
         case .inAppPurchases:
             return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchases)
         case .tapToPayOnIPhone:
-            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhone) && !UIDevice.isPad()
+            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhone) && deviceMaySupportTTP
         default:
             return true
         }
+    }
+
+    // Full checking for support of TTP requires a more complicated call.
+    // This is sufficient for whether the feature toggle should be shown, as full support checks
+    // are done when a payment is started. This is a temporary measure until full release.
+    private var deviceMaySupportTTP: Bool {
+        guard #available(iOS 16, *) else {
+            return false
+        }
+        return !UIDevice.isPad()
     }
 
     static var availableFeatures: [Self] {

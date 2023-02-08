@@ -11,8 +11,7 @@ final class ProductSettingsViewModel {
 
     var productSettings: ProductSettings {
         didSet {
-            sections = Self.configureSections(productSettings,
-                                              productType: product.productType)
+            sections = Self.configureSections(productSettings)
         }
     }
 
@@ -38,11 +37,9 @@ final class ProductSettingsViewModel {
         case .add:
             self.password = ""
             productSettings.password = ""
-            sections = Self.configureSections(productSettings,
-                                              productType: product.productType)
+            sections = Self.configureSections(productSettings)
         case .edit:
-            sections = Self.configureSections(productSettings,
-                                              productType: product.productType)
+            sections = Self.configureSections(productSettings)
             /// If nil, we fetch the password from site post API because it was never fetched
             /// Skip this if the user is not authenticated with WPCom.
             if password == nil && ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
@@ -56,13 +53,11 @@ final class ProductSettingsViewModel {
                     self.onPasswordRetrieved?(password)
                     self.password = password
                     self.productSettings.password = password
-                    self.sections = Self.configureSections(self.productSettings,
-                                                           productType: product.productType)
+                    self.sections = Self.configureSections(self.productSettings)
                 }
             }
         case .readonly:
-            sections = Self.configureSections(productSettings,
-                                              productType: product.productType)
+            sections = Self.configureSections(productSettings)
         }
     }
 
@@ -105,12 +100,9 @@ private extension ProductSettingsViewModel {
 // MARK: Configure sections and rows in Product Settings
 //
 private extension ProductSettingsViewModel {
-    static func configureSections(_ settings: ProductSettings,
-                                  productType: ProductType) -> [ProductSettingsSectionMediator] {
-        return [ProductSettingsSections.PublishSettings(settings,
-                                                        productType: productType),
-                ProductSettingsSections.MoreOptions(settings,
-                                                    productType: productType)
+    static func configureSections(_ settings: ProductSettings) -> [ProductSettingsSectionMediator] {
+        return [ProductSettingsSections.PublishSettings(settings),
+                ProductSettingsSections.MoreOptions(settings)
         ]
     }
 }

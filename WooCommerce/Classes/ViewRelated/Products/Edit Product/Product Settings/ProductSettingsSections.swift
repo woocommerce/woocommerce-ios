@@ -8,7 +8,7 @@ protocol ProductSettingsSectionMediator {
     var title: String { get }
     var rows: [ProductSettingsRowMediator] { get }
 
-    init(_ settings: ProductSettings, productType: ProductType)
+    init(_ settings: ProductSettings)
 }
 
 // MARK: - Sections declaration for Product Settings
@@ -20,8 +20,8 @@ enum ProductSettingsSections {
 
         let rows: [ProductSettingsRowMediator]
 
-        init(_ settings: ProductSettings, productType: ProductType) {
-            if productType == .simple {
+        init(_ settings: ProductSettings) {
+            if settings.productType == .simple {
                 let tempRows: [ProductSettingsRowMediator?] = [ProductSettingsRows.Status(settings),
                         ProductSettingsRows.Visibility(settings),
                         ProductSettingsRows.CatalogVisibility(settings),
@@ -43,7 +43,7 @@ enum ProductSettingsSections {
 
         let rows: [ProductSettingsRowMediator]
 
-        init(_ settings: ProductSettings, productType: ProductType) {
+        init(_ settings: ProductSettings) {
             rows = [ProductSettingsRows.ReviewsAllowed(settings),
             ProductSettingsRows.Slug(settings),
             ProductSettingsRows.PurchaseNote(settings),

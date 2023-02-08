@@ -10,7 +10,7 @@ public struct IDToken {
             return nil
         }
 
-        self.token = jwt.encodedValue
+        self.token = jwt.rawValue
         self.email = email
     }
 }

@@ -2,7 +2,7 @@
 ///
 /// See https://jwt.io/introduction
 struct JSONWebToken {
-    let encodedValue: String
+    let rawValue: String
 
     let header: [String: Any]
     let payload: [String: Any]
@@ -39,7 +39,7 @@ struct JSONWebToken {
             return nil
         }
 
-        self.encodedValue = encodedString
+        self.rawValue = encodedString
         self.header = header
         self.payload = payload
         self.signature = segments[2]

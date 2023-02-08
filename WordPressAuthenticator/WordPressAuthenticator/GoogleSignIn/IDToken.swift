@@ -1,7 +1,7 @@
 /// See https://developers.google.com/identity/openid-connect/openid-connect#obtainuserinfo
 public struct IDToken {
 
-    public let token: String
+    public let token: JSONWebToken
     public let email: String
 
     // TODO: Validate token! – https://developers.google.com/identity/openid-connect/openid-connect#validatinganidtoken
@@ -10,7 +10,7 @@ public struct IDToken {
             return nil
         }
 
-        self.token = jwt.rawValue
+        self.token = jwt
         self.email = email
     }
 }

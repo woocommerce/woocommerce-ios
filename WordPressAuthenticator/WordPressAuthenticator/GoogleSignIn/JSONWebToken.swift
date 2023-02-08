@@ -1,7 +1,7 @@
 /// Represents a JSON Web Token (JWT)
 ///
 /// See https://jwt.io/introduction
-struct JSONWebToken {
+public struct JSONWebToken {
     let rawValue: String
 
     let header: [String: Any]

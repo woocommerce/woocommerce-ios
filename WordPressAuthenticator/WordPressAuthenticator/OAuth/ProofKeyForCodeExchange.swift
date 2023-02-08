@@ -36,8 +36,15 @@ struct ProofKeyForCodeExchange {
     var codeCallenge: String {
         switch method {
         case .s256:
-            // TODO: code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
-            fatalError()
+            // The spec defines code_challenge for the s256 mode as:
+            //
+            // code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
+            //
+            // We don't need the ASCII conversion, because we build `CodeVerifier` from URL safe
+            // characters.
+            let rawData = codeVerifier.value.data(using: .utf8)!
+            let hashedData: Data = rawData.sha256Hashed()
+            return hashedData.base64URLEncodedString()
         case .plain:
             return codeVerifier.value
         }
@@ -64,5 +71,20 @@ extension ProofKeyForCodeExchange {
             let constrainedLength = min(max(length, 43), 128)
             value = String.randomString(using: allowedCharacters, withLenght: constrainedLength)
         }
+    }
+}
+
+// This is a helper for the tests.
+//
+// Unfortunately, it needs to be part of the production code because Swift doesn't allow adding
+// non-convenience initializers outside the module.
+extension ProofKeyForCodeExchange.CodeVerifier {
+
+    init?(value: String) {
+        guard value.count >= 43, value.count <= 128 else { return nil }
+
+        guard Set(value).isSubset(of: allowedCharacters) else { return nil }
+
+        self.value = value
     }
 }

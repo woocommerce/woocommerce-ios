@@ -21,4 +21,12 @@ extension Data {
             self.init(base64Encoded: base64, options: .ignoreUnknownCharacters)
         }
     }
+
+    // Funcion name to match the standar library's `base64EncodedString()`
+    func base64URLEncodedString() -> String {
+        base64EncodedString()
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "=", with: "")
+    }
 }

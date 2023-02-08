@@ -3,6 +3,8 @@ import XCTest
 
 class DataBase64URLDecoding: XCTestCase {
 
+    // MARK: - Decoding
+
     func testBase64URLDecoding() {
         XCTAssertEqual(
             Data(base64URLEncoded: "aGVsbG8gd29ybGQ"),
@@ -35,6 +37,19 @@ class DataBase64URLDecoding: XCTestCase {
         XCTAssertEqual(
             Data(base64URLEncoded: ""),
             Data()
+        )
+    }
+
+    // MARK: - Encoding
+
+    func testBase64URLEncoding() {
+        XCTAssertEqual(
+            "hello world".data(using: .utf8)!.base64URLEncodedString(),
+            "aGVsbG8gd29ybGQ"
+        )
+        XCTAssertEqual(
+            "Hello, /+ World!".data(using: .utf8)!.base64URLEncodedString(),
+            "SGVsbG8sIC8rIFdvcmxkIQ"
         )
     }
 }

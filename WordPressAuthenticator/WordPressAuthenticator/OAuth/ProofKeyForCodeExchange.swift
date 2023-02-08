@@ -69,7 +69,7 @@ extension ProofKeyForCodeExchange {
         /// `length` must be between 43 and 128, inclusive.
         init(length: Int = 128) {
             let constrainedLength = min(max(length, 43), 128)
-            rawValue = String.randomString(using: allowedCharacters, withLenght: constrainedLength)
+            rawValue = String.randomString(using: allowedCharacters, withLength: constrainedLength)
         }
     }
 }

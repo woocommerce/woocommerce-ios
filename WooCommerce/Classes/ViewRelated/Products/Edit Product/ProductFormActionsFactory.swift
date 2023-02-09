@@ -56,12 +56,14 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         .init(analytics: ServiceLocator.analytics,
               configuration: linkedProductsPromoCampaign.configuration)
     }
+    private let isConvertToVariableOptionEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
          formType: ProductFormType,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
+         isConvertToVariableOptionEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductsEditing),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
@@ -69,6 +71,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
+        self.isConvertToVariableOptionEnabled = isConvertToVariableOptionEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -142,7 +145,7 @@ private extension ProductFormActionsFactory {
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
             .productType(editable: canEditProductType),
-            .convertToVariable
+            isConvertToVariableOptionEnabled ? .convertToVariable : nil
         ]
         return actions.compactMap { $0 }
     }

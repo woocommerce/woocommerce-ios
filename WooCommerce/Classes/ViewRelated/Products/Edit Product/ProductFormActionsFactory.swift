@@ -55,12 +55,14 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         .init(analytics: ServiceLocator.analytics,
               configuration: linkedProductsPromoCampaign.configuration)
     }
+    private let isCategoriesActionAlwaysEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
          formType: ProductFormType,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
+         isCategoriesActionAlwaysEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductsEditing),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
@@ -68,6 +70,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
+        self.isCategoriesActionAlwaysEnabled = isCategoriesActionAlwaysEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -261,7 +264,7 @@ private extension ProductFormActionsFactory {
         case .addOns:
             return addOnsFeatureEnabled && product.hasAddOns
         case .categories:
-            return product.product.categories.isNotEmpty
+            return isCategoriesActionAlwaysEnabled || product.product.categories.isNotEmpty
         case .tags:
             return product.product.tags.isNotEmpty
         case .linkedProducts:

@@ -10,6 +10,7 @@ enum ProductFormBottomSheetAction {
     case editShortDescription
     case editSKU
     case editLinkedProducts
+    case editReviews
 
     init?(productFormAction: ProductFormEditAction) {
         switch productFormAction {
@@ -27,6 +28,8 @@ enum ProductFormBottomSheetAction {
             self = .editSKU
         case .linkedProducts:
             self = .editLinkedProducts
+        case .reviews:
+            self = .editReviews
         default:
             return nil
         }
@@ -57,6 +60,9 @@ extension ProductFormBottomSheetAction {
         case .editLinkedProducts:
             return NSLocalizedString("Linked products",
                                      comment: "Title of the product form bottom sheet action for editing linked products.")
+        case .editReviews:
+            return NSLocalizedString("Reviews",
+                                     comment: "Title of the product form bottom sheet action for reviews.")
         }
     }
 
@@ -83,6 +89,9 @@ extension ProductFormBottomSheetAction {
         case .editLinkedProducts:
             return NSLocalizedString("Increase sales with upsells and cross-sells",
                                      comment: "Subtitle of the product form bottom sheet action for linked products.")
+        case .editReviews:
+            return NSLocalizedString("Get your first reviews",
+                                     comment: "Subtitle of the product form bottom sheet action for reviews.")
         }
     }
 }

@@ -1191,6 +1191,20 @@ private extension ProductFormViewController {
     }
 
     func convertToVariableType() {
+        let originalProductType = product.productType
+        let selectedProductType = BottomSheetProductType.variable
+
+        ServiceLocator.analytics.track(.productTypeChanged, withProperties: [
+            "from": originalProductType.rawValue,
+            "to": selectedProductType.productType.rawValue
+        ])
+
+        presentProductTypeChangeAlert(for: originalProductType, completion: { [weak self] change in
+            guard change == true else {
+                return
+            }
+            self?.viewModel.updateProductType(productType: selectedProductType)
+        })
     }
 }
 

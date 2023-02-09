@@ -196,7 +196,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isCategoriesActionAlwaysEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -219,7 +219,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isCategoriesActionAlwaysEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -241,7 +241,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isCategoriesActionAlwaysEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -267,7 +267,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isCategoriesActionAlwaysEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -294,7 +294,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isCategoriesActionAlwaysEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -316,7 +316,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isCategoriesActionAlwaysEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]

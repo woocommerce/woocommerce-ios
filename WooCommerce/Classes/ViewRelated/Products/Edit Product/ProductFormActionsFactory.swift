@@ -55,12 +55,14 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         .init(analytics: ServiceLocator.analytics,
               configuration: linkedProductsPromoCampaign.configuration)
     }
+    private let isEmptyReviewsOptionHidden: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
          formType: ProductFormType,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
+         isEmptyReviewsOptionHidden: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductsEditing),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
@@ -68,6 +70,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
+        self.isEmptyReviewsOptionHidden = isEmptyReviewsOptionHidden
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -243,7 +246,11 @@ private extension ProductFormActionsFactory {
             // The price settings action is always visible in the settings section.
             return true
         case .reviews:
-            return product.ratingCount > 0
+            if isEmptyReviewsOptionHidden {
+                return product.ratingCount > 0
+            } else {
+                return true
+            }
         case .productType:
             // The product type action is always visible in the settings section.
             return true

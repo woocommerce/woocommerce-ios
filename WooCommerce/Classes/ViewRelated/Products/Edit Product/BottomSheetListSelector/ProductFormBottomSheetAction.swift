@@ -10,6 +10,7 @@ enum ProductFormBottomSheetAction {
     case editShortDescription
     case editSKU
     case editLinkedProducts
+    case convertToVariable
 
     init?(productFormAction: ProductFormEditAction) {
         switch productFormAction {
@@ -27,6 +28,8 @@ enum ProductFormBottomSheetAction {
             self = .editSKU
         case .linkedProducts:
             self = .editLinkedProducts
+        case .convertToVariable:
+            self = .convertToVariable
         default:
             return nil
         }
@@ -57,6 +60,9 @@ extension ProductFormBottomSheetAction {
         case .editLinkedProducts:
             return NSLocalizedString("Linked products",
                                      comment: "Title of the product form bottom sheet action for editing linked products.")
+        case .convertToVariable:
+            return NSLocalizedString("Add product variations",
+                                     comment: "Title of the product form bottom sheet action for switching to variable product type.")
         }
     }
 
@@ -83,6 +89,9 @@ extension ProductFormBottomSheetAction {
         case .editLinkedProducts:
             return NSLocalizedString("Increase sales with upsells and cross-sells",
                                      comment: "Subtitle of the product form bottom sheet action for linked products.")
+        case .convertToVariable:
+            return NSLocalizedString("Add sizes, colors, or other options",
+                                     comment: "Subtitle of the product form bottom sheet action for switching to variable product type.")
         }
     }
 }

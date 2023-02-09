@@ -16,6 +16,7 @@ enum ProductFormEditAction: Equatable {
     case tags(editable: Bool)
     case shortDescription(editable: Bool)
     case linkedProducts(editable: Bool)
+    case convertToVariable
     // Affiliate products only
     case sku(editable: Bool)
     case externalURL(editable: Bool)

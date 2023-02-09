@@ -739,6 +739,8 @@ private extension ProductFormViewController {
                                                                         case .editLinkedProducts:
                                                                             ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
                                                                             self?.editLinkedProducts()
+                                                                        case .convertToVariable:
+                                                                            self?.convertToVariableType()
                                                                         }
                                                                     }
         }
@@ -1186,6 +1188,9 @@ private extension ProductFormViewController {
         }
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
         productTypesListPresenter.show(from: self, sourceView: cell, arrowDirections: .any)
+    }
+
+    func convertToVariableType() {
     }
 }
 

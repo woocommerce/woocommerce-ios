@@ -141,7 +141,8 @@ private extension ProductFormActionsFactory {
             shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            .convertToVariable
         ]
         return actions.compactMap { $0 }
     }

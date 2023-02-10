@@ -459,6 +459,27 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         case .settings:
             let clearView = UIView(frame: .zero)
             clearView.backgroundColor = .listBackground
+
+            // Helper view that will hide top separator of 1st cell. Otherwise - 2 separators will blend together
+            let separatorBg = UIView(frame: .zero)
+            separatorBg.backgroundColor = .listForeground(modal: false)
+            separatorBg.translatesAutoresizingMaskIntoConstraints = false
+            clearView.addSubview(separatorBg)
+
+            NSLayoutConstraint.activate([
+                separatorBg.topAnchor.constraint(equalTo: clearView.bottomAnchor),
+                separatorBg.trailingAnchor.constraint(equalTo: clearView.trailingAnchor),
+                separatorBg.leadingAnchor.constraint(equalTo: clearView.leadingAnchor),
+                separatorBg.heightAnchor.constraint(equalToConstant: 1.0 / UIScreen.main.scale)
+            ])
+
+            // We need custom implementation for full-width separator on top of the section in plain tableview
+            let separator = UIView(frame: .zero)
+            separator.backgroundColor = .systemColor(.separator)
+            separator.translatesAutoresizingMaskIntoConstraints = false
+            separatorBg.addSubview(separator)
+            separatorBg.pinSubviewToAllEdges(separator)
+
             return clearView
         default:
             return nil

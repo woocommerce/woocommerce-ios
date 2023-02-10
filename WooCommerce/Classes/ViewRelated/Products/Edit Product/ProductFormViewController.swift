@@ -509,8 +509,7 @@ private extension ProductFormViewController {
         tableView.dataSource = tableViewDataSource
         tableView.delegate = self
 
-        tableView.backgroundColor = .listForeground(modal: false)
-        tableView.removeLastCellSeparator()
+        tableView.backgroundColor = .listBackground
 
         // Since the table view is in a container under a stack view, the safe area adjustment should be handled in the container view.
         tableView.contentInsetAdjustmentBehavior = .never

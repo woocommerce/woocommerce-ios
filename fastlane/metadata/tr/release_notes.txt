@@ -1,1 +1,1 @@
-Bu sürüm, ürünlerde ve şahsen ödemelerde yapılan birkaç hata düzeltmesini ve iyileştirmeyi içerir. Lütfen bize geri bildirim göndermeye devam edin, sizi dinliyoruz.
+İşletmenizi yönetmek için birkaç geliştirme yaptık. Oturum açarken mağazanızı kurmak artık daha kolay. Uygulamadan özellik eklemek çok daha kolay hale geldi! Görüşlerinizi bildirmeye devam edin!

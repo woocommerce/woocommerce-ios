@@ -600,6 +600,7 @@ platform :ios do
     upload_to_app_store(
       app_identifier: APP_STORE_VERSION_BUNDLE_IDENTIFIER,
       app_version: ios_get_app_version,
+      team_id: '299112',
       skip_binary_upload: true,
       screenshots_path: File.join(FASTLANE_DIR, 'promo_screenshots'),
       skip_screenshots: skip_screenshots,

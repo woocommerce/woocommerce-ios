@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-02-09 18:54:03+0000 */
+/* Translation-Revision-Date: 2023-02-10 12:22:55+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -6813,7 +6813,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The customer will receive an email once order is completed" = "De klant ontvangt een e-mail zodra de bestelling is afgerond";
 
 /* Subtitle of the domain selector in domain settings. %1$@ is the free domain of the site from WordPress.com. */
-"The domain purchased will redirect users to **%1$@**" = "Het aangeschafte domein zal gebruikers doorsturen naar **% $1@**.";
+"The domain purchased will redirect users to **%1$@**" = "Het aangeschafte domein zal gebruikers doorsturen naar **%1$@**.";
 
 /* Subtitle of the domain selector in domain settings when a free staging domain is unavailable. */
 "The domain purchased will redirect users to the current staging domain" = "Het aangeschafte domein zal gebruikers doorsturen naar het huidige staging-domein.";

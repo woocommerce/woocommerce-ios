@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.4
+-----
+
+
 12.3
 -----
 - [Internal] We have updated the Zendesk SDK to version 6.0 [https://github.com/woocommerce/woocommerce-ios/pull/8828]

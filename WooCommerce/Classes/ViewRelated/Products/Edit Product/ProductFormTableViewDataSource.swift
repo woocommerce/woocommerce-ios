@@ -73,8 +73,16 @@ private extension ProductFormTableViewDataSource {
         switch section {
         case .primaryFields(let rows):
             configureCellInPrimaryFieldsSection(cell, row: rows[indexPath.row])
+            // show full-width separator for last cell in section
+            if indexPath.row == rows.count - 1 {
+                cell.showSeparator(inset: .zero)
+            }
         case .settings(let rows):
             configureCellInSettingsFieldsSection(cell, row: rows[indexPath.row])
+            // show full-width separator for last cell in section
+            if indexPath.row == rows.count - 1 {
+                cell.showSeparator(inset: .zero)
+            }
         }
     }
 }

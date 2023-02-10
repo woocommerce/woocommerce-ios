@@ -444,13 +444,21 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .status:
                 break
             }
+        case .optionsCTA(let rows):
+            let row = rows[indexPath.row]
+            switch row {
+            case .addOptions:
+                moreDetailsButtonTapped(button: nil)
+            }
         }
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let section = tableViewModel.sections[section]
         switch section {
-        case .settings:
+        case .optionsCTA(let rows) where rows.isEmpty:
+            return 0
+        case .settings, .optionsCTA:
             return Constants.settingsHeaderHeight
         default:
             return 0
@@ -460,7 +468,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = tableViewModel.sections[section]
         switch section {
-        case .settings:
+        case .optionsCTA(let rows) where rows.isEmpty:
+            return nil
+        case .settings, .optionsCTA:
             let clearView = UIView(frame: .zero)
             clearView.backgroundColor = .listBackground
 
@@ -538,6 +548,12 @@ private extension ProductFormViewController {
                     }
                 }
             case .settings(let rows):
+                rows.forEach { row in
+                    row.cellTypes.forEach { cellType in
+                        tableView.registerNib(for: cellType)
+                    }
+                }
+            case .optionsCTA(let rows):
                 rows.forEach { row in
                     row.cellTypes.forEach { cellType in
                         tableView.registerNib(for: cellType)
@@ -739,7 +755,7 @@ private extension ProductFormViewController {
 // MARK: More details actions
 //
 private extension ProductFormViewController {
-    func moreDetailsButtonTapped(button: UIButton) {
+    func moreDetailsButtonTapped(button: UIButton?) {
         let title = NSLocalizedString("Add more details",
                                       comment: "Title of the bottom sheet from the product form to add more product details.")
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)

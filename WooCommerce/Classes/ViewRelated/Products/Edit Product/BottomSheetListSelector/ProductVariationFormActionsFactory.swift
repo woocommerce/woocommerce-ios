@@ -27,6 +27,11 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
         return visibleSettingsSectionActions()
     }
 
+    /// Returns an array of actions that are visible in the product form options CTA section.
+    func optionsCTASectionActions() -> [ProductFormEditAction] {
+        []
+    }
+
     /// Returns an array of actions that are visible in the product form bottom sheet.
     func bottomSheetActions() -> [ProductFormBottomSheetAction] {
         guard editable else {

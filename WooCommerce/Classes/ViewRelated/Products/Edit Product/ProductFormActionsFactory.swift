@@ -16,6 +16,7 @@ enum ProductFormEditAction: Equatable {
     case tags(editable: Bool)
     case shortDescription(editable: Bool)
     case linkedProducts(editable: Bool)
+    case addOptions
     // Affiliate products only
     case sku(editable: Bool)
     case externalURL(editable: Bool)
@@ -93,6 +94,11 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     /// Returns an array of actions that are visible in the product form settings section.
     func settingsSectionActions() -> [ProductFormEditAction] {
         return visibleSettingsSectionActions()
+    }
+
+    /// Returns an array of actions that are visible in the product form options CTA section.
+    func optionsCTASectionActions() -> [ProductFormEditAction] {
+        [.addOptions]
     }
 
     /// Returns an array of actions that are visible in the product form bottom sheet.

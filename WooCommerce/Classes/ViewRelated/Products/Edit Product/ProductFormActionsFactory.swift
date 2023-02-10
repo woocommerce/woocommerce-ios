@@ -56,12 +56,14 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         .init(analytics: ServiceLocator.analytics,
               configuration: linkedProductsPromoCampaign.configuration)
     }
+    private let isAddOptionsButtonEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
          formType: ProductFormType,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
+         isAddOptionsButtonEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductsEditing),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
@@ -69,6 +71,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
+        self.isAddOptionsButtonEnabled = isAddOptionsButtonEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -98,7 +101,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
 
     /// Returns an array of actions that are visible in the product form options CTA section.
     func optionsCTASectionActions() -> [ProductFormEditAction] {
-        [.addOptions]
+        isAddOptionsButtonEnabled ? [.addOptions] : []
     }
 
     /// Returns an array of actions that are visible in the product form bottom sheet.

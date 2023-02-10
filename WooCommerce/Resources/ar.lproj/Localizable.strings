@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-02-01 16:54:04+0000 */
+/* Translation-Revision-Date: 2023-02-09 11:54:20+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -32,6 +32,9 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (خاص بالعميل)";
+
+/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
+"%1$@ \/ %2$@" = "%1$@ \/ %2$@";
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "نسخ %1$@";
@@ -289,7 +292,8 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "إضافة خيارات";
 
-/* Details section title in the Edit Address Form */
+/* Address section title in the domain contact info form.
+   Details section title in the Edit Address Form */
 "ADDRESS" = "العنوان";
 
 /* Reads as 'AID'. Part of the mandatory data in receipts */
@@ -474,7 +478,7 @@ which should be translated separately and considered part of this sentence. */
 "Add credit card" = "إضافة بطاقة ائتمان";
 
 /* Footer of text field section in Add Attribute Options screen */
-"Add each option and press enter" = "إضافة كل الخيارات واضغط على مفتاح enter";
+"Add each option and press return" = "إضافة كل خيار والضغط على عودة";
 
 /* Title for the option to create product manually */
 "Add manually" = "إضافة يدويًا";
@@ -759,9 +763,6 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "اسم التطبيق";
 
-/* Message to display when the constructed admin or login URL for the logged-in site is not accessible */
-"Application password cannot be generated due to a custom login or admin URL on your site." = "يتعذر إنشاء كلمة مرور التطبيق بسبب وجود تسجيل دخول مخصص أو عنوان URL للمسؤول على موقعك.";
-
 /* Apply navigation button in custom range date picker
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
@@ -806,6 +807,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "هل أنت متأكد من رغبتك في تسجيل الخروج من الحساب %@؟";
+
+/* Alert message to confirm a user meant to log out. */
+"Are you sure you want to log out of your account?" = "هل أنت متأكد من رغبتك في تسجيل الخروج من حسابك؟";
 
 /* Alert message to confirm a user meant to mark all reviews as read. */
 "Are you sure you want to mark all reviews as read?" = "هل أنت متأكد من رغبتك في وسم جميع المراجعات كمقروءة؟";
@@ -1372,7 +1376,7 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the store creation profiler question about the store category. */
 "Choose a category that defines your business the best." = "اختر تصنيفًا يُعرّف عملك على أفضل وجه.";
 
-/* Title of the domain selector. */
+/* Title of the domain selector in the store creation flow. */
 "Choose a domain" = "اختيار نطاق";
 
 /* Title of the password field on the account creation form. */
@@ -1405,6 +1409,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Industry option in the store creation category question. */
 "Civic, Fraternal, Or Social Associations" = "الجمعيات المدنية أو الأخوية أو الاجتماعية";
+
+/* Title of button to redeem domain credit in the domain credit banner in domain settings. */
+"Claim Domain" = "المطالبة بالنطاق";
+
+/* Title of the domain credit banner in domain settings. */
+"Claim your free domain" = "طالب بنطاقك المجاني";
 
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
@@ -1523,6 +1533,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "تهانينا، لقد قرأت كل شيء!";
+
+/* Title of the domain purchase success screen. */
+"Congratulations on your purchase" = "تهانينا على إتمام عملية الشراء الخاصة بك";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "مبروك! يقوم القارئ الخاص بك بتشغيل أحدث البرامج";
@@ -2183,12 +2196,14 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
    Text for the done button in the Fee Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for the Done button on a WebView modal sheet */
+   Title for the Done button on a WebView modal sheet
+   Title of the button to finish the domain purchase success screen. */
 "Done" = "تم";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -2846,6 +2861,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry group option in the store creation category question. */
 "Food And Drink" = "الطعام والشراب";
 
+/* Title in the error notice when a validation error occurs after submitting domain contact info. */
+"Form Validation Error" = "خطأ في التحقق من النموذج";
+
 /* Industry option in the store creation category question. */
 "Fortune Tellers" = "العرَّافون";
 
@@ -2854,6 +2872,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "France" = "فرنسا";
+
+/* Label shown for domains that are free for the first year with available domain credit. */
+"Free for the first year" = "مجاني للسنة الأولى";
 
 /* Industry option in the store creation category question. */
 "Freight Forwarders" = "وكلاء الشحن";
@@ -5393,6 +5414,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button in the view for adding or editing a coupon code. */
 "Regenerate Coupon Code" = "إعادة إنشاء رمز القسيمة";
 
+/* Title of the domain contact info form. */
+"Register domain" = "تسجيل نطاق";
+
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "النطاق المُسجل";
 
@@ -5744,6 +5768,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for the Search Coupons button */
 "Search coupons" = "البحث عن القسائم";
+
+/* Title of the domain selector in domain settings. */
+"Search domains" = "البحث في النطاقات";
 
 /* Title of the button on the domain settings screen to search for a domain. */
 "Search for a Domain" = "البحث عن نطاق";
@@ -6153,6 +6180,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "جزء من عنوان البريد الإلكتروني غير صالح.";
+
+/* Message in the error notice when an unknown validation error occurs after submitting domain contact info. */
+"Some unexpected error with the validation. Please check the fields and try again." = "بعض الأخطاء غير المتوقعة في عملية التحقق. يُرجى التحقق من الحقول والمحاولة مرة أخرى.";
 
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "شخص ما";
@@ -6782,6 +6812,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "سيتلقى العميل بريدًا إلكترونيًا بمجرد اكتمال الطلب";
 
+/* Subtitle of the domain selector in domain settings. %1$@ is the free domain of the site from WordPress.com. */
+"The domain purchased will redirect users to **%1$@**" = "سيُعيد النطاق المشترى توجيه المستخدمين إلى **%1$@**";
+
+/* Subtitle of the domain selector in domain settings when a free staging domain is unavailable. */
+"The domain purchased will redirect users to the current staging domain" = "سيُعيد النطاق المشترى توجيه المستخدمين إلى نطاق التشغيل المرحلي الحالي";
+
+/* Footnote about the domain credit banner in domain settings. */
+"The domain purchased will redirect users to your primary address." = "سيُعيد النطاق المشترى توجيه المستخدمين إلى عنوان الأساسي.";
+
 /* Label within the modal dialog that appears when connecting to a built in card reader */
 "The first time you connect, you may be prompted to accept Apple's Terms of Service." = "في المرة الأولى التي تتصل فيها، قد تطالب بقبول شروط الخدمة التي تُقرها Apple.";
 
@@ -6838,6 +6877,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when a request times out. */
 "The request timed out - please try again" = "انتهت مهلة الطلب - يرجى المحاولة مجددًا";
+
+/* Message to display when the generating application password fails with unauthorized error */
+"The request to generate application password is not authorized." = "لم يتم السماح بطلب إنشاء كلمة مرور التطبيق.";
 
 /* Bulk price update error message, when the sale price is added but the regular price is not
    Product price error notice message, when the sale price is added but the regular price is not */
@@ -7023,7 +7065,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "هذا هو عنوان URL للمنتج الذي سيصل العملاء إليه. ينبغي ترميز عناوين URL التي تم إدخالها بالفعل";
 
-/* Subtitle of the domain selector. */
+/* Subtitle of the domain selector in the store creation flow. */
 "This is where people will find you on the Internet. You can add another domain later." = "هذا هو المكان الذي سيجدك فيه الأشخاص على الإنترنت. يمكنك إضافة نطاق آخر لاحقًا.";
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
@@ -8133,6 +8175,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "يمكنك تحرير وظائف المنتج الإضافية في لوحة تحكم الويب.";
 
+/* Instructions of the domain purchase success screen. */
+"You can find the domain settings in menu > settings" = "يمكنك العثور على إعدادات النطاق ضمن القائمة > الإعدادات.";
+
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "You can manage quickly and easily." = "يمكنك إدارتها بسرعة وسهولة.";
 
@@ -8160,6 +8205,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "ليس لديك الإذن اللازم لإدارة الإضافات على هذا المتجر.";
+
+/* Subtitle of the domain credit banner in domain settings. */
+"You have a free one-year domain registration included with your plan." = "لديك تسجيل نطاق مجاني مدته عام واحد ضمن خطتك.";
 
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "لديك طلب جديد! 🎉";
@@ -8223,6 +8271,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "يظهر عنوان موقعك في الشريط في الجزء العلوي من الشاشة عندما تقوم بزيارة موقعك في متصفح Safari.";
+
+/* Subtitle of the domain purchase success screen. */
+"Your site address is being set up. It may take up 30 minutes for your domain to start working." = "يجري إعداد عنوان موقعك. قد يستغرق الأمر ما يصل إلى 30 دقيقة لكي يبدأ نطاقك بالعمل.";
 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "نطاقات موقعك";

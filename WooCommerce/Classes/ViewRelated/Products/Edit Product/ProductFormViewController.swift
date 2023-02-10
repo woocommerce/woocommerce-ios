@@ -64,12 +64,15 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var newVariationsPriceSubscription: AnyCancellable?
     private var productImageStatusesSubscription: AnyCancellable?
 
+    private let showAddOptionsButton: Bool
+
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         showAddOptionsButton: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductsEditing)) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
@@ -84,6 +87,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
+        self.showAddOptionsButton = showAddOptionsButton
         super.init(nibName: "ProductFormViewController", bundle: nil)
         updateDataSourceActions()
     }
@@ -509,7 +513,12 @@ private extension ProductFormViewController {
         tableView.dataSource = tableViewDataSource
         tableView.delegate = self
 
-        tableView.backgroundColor = .listBackground
+        if showAddOptionsButton {
+            tableView.backgroundColor = .listBackground
+        } else {
+            tableView.backgroundColor = .listForeground(modal: false)
+            tableView.removeLastCellSeparator()
+        }
 
         // Since the table view is in a container under a stack view, the safe area adjustment should be handled in the container view.
         tableView.contentInsetAdjustmentBehavior = .never

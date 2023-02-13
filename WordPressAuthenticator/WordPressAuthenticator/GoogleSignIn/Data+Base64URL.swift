@@ -22,7 +22,9 @@ extension Data {
         }
     }
 
-    // Funcion name to match the standar library's `base64EncodedString()`
+    /// See https://tools.ietf.org/html/rfc4648#section-5
+    ///    
+    /// Function name to match the standard library's `base64EncodedString()`.
     func base64URLEncodedString() -> String {
         base64EncodedString()
             .replacingOccurrences(of: "/", with: "_")

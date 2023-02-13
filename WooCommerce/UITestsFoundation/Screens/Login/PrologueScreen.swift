@@ -43,4 +43,8 @@ public final class PrologueScreen: ScreenObject {
     public func isSiteAddressLoginAvailable() throws -> Bool {
         selectSiteButton.waitForExistence(timeout: 1)
     }
+
+    public func isWPComLoginAvailable() throws -> Bool {
+        continueButton.waitForExistence(timeout: 1)
+    }
 }

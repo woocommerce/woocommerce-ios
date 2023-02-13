@@ -143,9 +143,9 @@ struct DomainSettingsView_Previews: PreviewProvider {
                               stores: DomainSettingsViewStores(
                                 // There is one free domain and two paid domains.
                                 domainsResult: .success([
-                                    .init(name: "free.test", isPrimary: true),
-                                    .init(name: "one.test", isPrimary: false, renewalDate: .distantFuture),
-                                    .init(name: "duo.test", isPrimary: true, renewalDate: .now)
+                                    .init(name: "free.test", isPrimary: true, isWPCOMStagingDomain: true, type: .wpcom),
+                                    .init(name: "one.test", isPrimary: false, isWPCOMStagingDomain: false, type: .mapping, renewalDate: .distantFuture),
+                                    .init(name: "duo.test", isPrimary: true, isWPCOMStagingDomain: false, type: .mapping, renewalDate: .now)
                                 ]),
                                 // The site has domain credit.
                                 sitePlanResult: .success(.init(hasDomainCredit: true)))),
@@ -158,7 +158,7 @@ struct DomainSettingsView_Previews: PreviewProvider {
                               stores: DomainSettingsViewStores(
                                 // There is one free domain and no other paid domains.
                                 domainsResult: .success([
-                                    .init(name: "free.test", isPrimary: true)
+                                    .init(name: "free.test", isPrimary: true, isWPCOMStagingDomain: true, type: .wpcom)
                                 ]),
                                 sitePlanResult: .success(.init(hasDomainCredit: true)))),
                                    addDomain: { _, _ in })

@@ -162,12 +162,20 @@ public struct SiteDomain: Decodable, Equatable {
     /// Whether the domain is the site's primary domain.
     public let isPrimary: Bool
 
+    /// Whether the domain is a free staging domain from certain WPCOM plans.
+    public let isWPCOMStagingDomain: Bool
+
+    /// The type of domain, e.g. "wpcom" for WPCOM domains and "mapping" for other domains mapped to the WPCOM domains.
+    public let type: DomainType
+
     /// The next renewal date, if available.
     public let renewalDate: Date?
 
-    public init(name: String, isPrimary: Bool, renewalDate: Date? = nil) {
+    public init(name: String, isPrimary: Bool, isWPCOMStagingDomain: Bool, type: DomainType, renewalDate: Date? = nil) {
         self.name = name
         self.isPrimary = isPrimary
+        self.isWPCOMStagingDomain = isWPCOMStagingDomain
+        self.type = type
         self.renewalDate = renewalDate
     }
 
@@ -176,6 +184,8 @@ public struct SiteDomain: Decodable, Equatable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let name = try container.decode(String.self, forKey: .name)
         let isPrimary = try container.decode(Bool.self, forKey: .isPrimary)
+        let isWPCOMStagingDomain = try container.decode(Bool.self, forKey: .isWPCOMStagingDomain)
+        let type = try container.decode(DomainType.self, forKey: .type)
 
         let renewalDate: Date? = {
             guard let dateString = try? container.decodeIfPresent(String.self, forKey: .renewalDate) else {
@@ -186,13 +196,50 @@ public struct SiteDomain: Decodable, Equatable {
             return dateFormatter.date(from: dateString)
         }()
 
-        self.init(name: name, isPrimary: isPrimary, renewalDate: renewalDate)
+        self.init(name: name, isPrimary: isPrimary, isWPCOMStagingDomain: isWPCOMStagingDomain, type: type, renewalDate: renewalDate)
     }
 
     private enum CodingKeys: String, CodingKey {
         case name = "domain"
         case isPrimary = "primary_domain"
+        case isWPCOMStagingDomain = "is_wpcom_staging_domain"
+        case type
         case renewalDate = "auto_renewal_date"
+    }
+}
+
+public extension SiteDomain {
+    /// The type of domain. Most often we filter domains by WPCOM and non-WPCOM domains.
+    enum DomainType: Decodable, Equatable {
+        case wpcom
+        case mapping
+        case other(type: String)
+    }
+}
+
+extension SiteDomain.DomainType: RawRepresentable {
+    public init(rawValue: String) {
+        switch rawValue {
+        case Keys.wpcom:
+            self = .wpcom
+        case Keys.mapping:
+            self = .mapping
+        default:
+            self = .other(type: rawValue)
+        }
+    }
+
+    public var rawValue: String {
+        switch self {
+        case .wpcom: return Keys.wpcom
+        case .mapping: return Keys.mapping
+        case .other(let type):  return type
+        }
+    }
+
+    private enum Keys {
+        static let wpcom = "wpcom"
+        static let mapping = "mapping"
     }
 }
 

@@ -142,6 +142,7 @@
 		02312797277D4F650060E180 /* StoreStatsPeriodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02312796277D4F640060E180 /* StoreStatsPeriodViewModel.swift */; };
 		023453F22579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023453F12579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift */; };
 		0234680A282CEA5F00CFC503 /* ReceiptViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02346809282CEA5F00CFC503 /* ReceiptViewModelTests.swift */; };
+		0235354E2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235354D2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift */; };
 		0235595024496853004BE2B8 /* BottomSheetListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235594E24496853004BE2B8 /* BottomSheetListSelectorViewController.swift */; };
 		0235595124496853004BE2B8 /* BottomSheetListSelectorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0235594F24496853004BE2B8 /* BottomSheetListSelectorViewController.xib */; };
 		0235595324496A93004BE2B8 /* BottomSheetListSelectorViewProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235595224496A93004BE2B8 /* BottomSheetListSelectorViewProperties.swift */; };
@@ -2237,6 +2238,7 @@
 		02312796277D4F640060E180 /* StoreStatsPeriodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsPeriodViewModel.swift; sourceTree = "<group>"; };
 		023453F12579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPrintingInstructionsViewController.swift; sourceTree = "<group>"; };
 		02346809282CEA5F00CFC503 /* ReceiptViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptViewModelTests.swift; sourceTree = "<group>"; };
+		0235354D2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSettingsViewModelTests.swift; sourceTree = "<group>"; };
 		0235594E24496853004BE2B8 /* BottomSheetListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorViewController.swift; sourceTree = "<group>"; };
 		0235594F24496853004BE2B8 /* BottomSheetListSelectorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomSheetListSelectorViewController.xib; sourceTree = "<group>"; };
 		0235595224496A93004BE2B8 /* BottomSheetListSelectorViewProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorViewProperties.swift; sourceTree = "<group>"; };
@@ -5239,6 +5241,7 @@
 			children = (
 				02DAE7FE291B8C8A009342B7 /* FreeDomainSelectorViewModelTests.swift */,
 				022C7D7629793ABE0036568D /* PaidDomainSelectorDataProviderTests.swift */,
+				0235354D2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift */,
 			);
 			path = Domains;
 			sourceTree = "<group>";
@@ -11574,6 +11577,7 @@
 				FE3E427726A8545B00C596CE /* MockRoleEligibilityUseCase.swift in Sources */,
 				02F67FF525806E0100C3BAD2 /* ShippingLabelTrackingURLGeneratorTests.swift in Sources */,
 				2602A64227BD89CE00B347F1 /* NewOrderInitialStatusResolverTests.swift in Sources */,
+				0235354E2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift in Sources */,
 				4535EE80281BE4E0004212B4 /* CouponAmountInputFormatterTests.swift in Sources */,
 				570AAB052472FACB00516C0C /* OrderDetailsDataSourceTests.swift in Sources */,
 				CC77488E2719A07D0043CDD7 /* ShippingLabelAddressTopBannerFactoryTests.swift in Sources */,

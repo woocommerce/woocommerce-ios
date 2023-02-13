@@ -3,7 +3,7 @@ import Yosemite
 
 /// View model for `DomainSettingsView`.
 final class DomainSettingsViewModel: ObservableObject {
-    struct Domain {
+    struct Domain: Equatable {
         /// Whether the domain is the site's primary domain.
         let isPrimary: Bool
 
@@ -14,7 +14,7 @@ final class DomainSettingsViewModel: ObservableObject {
         let autoRenewalDate: Date?
     }
 
-    struct FreeStagingDomain {
+    struct FreeStagingDomain: Equatable {
         /// Whether the domain is the site's primary domain.
         let isPrimary: Bool
 
@@ -68,10 +68,10 @@ private extension DomainSettingsViewModel {
     func handleDomainsResult(_ result: Result<[SiteDomain], Error>) {
         switch result {
         case .success(let domains):
-            let stagingDomain = domains.first(where: { $0.renewalDate == nil })
+            let stagingDomain = domains.first(where: { $0.isWPCOMStagingDomain || $0.type == .wpcom })
             freeStagingDomain = stagingDomain
                 .map { FreeStagingDomain(isPrimary: $0.isPrimary, name: $0.name) }
-            self.domains = domains.filter { $0 != stagingDomain }
+            self.domains = domains.filter { $0 != stagingDomain && $0.type != .wpcom }
                 .map { Domain(isPrimary: $0.isPrimary, name: $0.name, autoRenewalDate: $0.renewalDate) }
         case .failure(let error):
             DDLogError("⛔️ Error retrieving domains for siteID \(siteID): \(error)")

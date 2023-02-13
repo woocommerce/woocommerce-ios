@@ -35,6 +35,11 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
     func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String?)
     func showNewWCPayRequestIfPossible(from controller: UIViewController)
 
+    /// Creates a Zendesk Identity to be able to submit support request tickets.
+    /// Uses the provided `ViewController` to present an alert for requesting email address when required.
+    ///
+    func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void)
+
     /// Creates a support request using the API-Providers SDK.
     ///
     func createSupportRequest(formID: Int64,
@@ -86,6 +91,10 @@ struct NoZendeskManager: ZendeskManagerProtocol {
     }
 
     func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String?) {
+        // no-op
+    }
+
+    func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
         // no-op
     }
 
@@ -420,6 +429,50 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         }
     }
 
+    /// Creates a Zendesk Identity to be able to submit support request tickets.
+    /// Uses the provided `ViewController` to present an alert for requesting email address when required.
+    ///
+    func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
+
+        // If we already have an identity, do nothing.
+        guard haveUserIdentity == false else {
+            DDLogDebug("Using existing Zendesk identity: \(userEmail ?? ""), \(userName ?? "")")
+            registerDeviceTokenIfNeeded()
+            completion(true)
+            return
+        }
+
+        /*
+         1. Attempt to get user information from User Defaults.
+         2. If we don't have the user's information yet, attempt to get it from the account/site.
+         3. Prompt the user for email & name, pre-populating with user information obtained in step 1.
+         4. Create Zendesk identity with user information.
+         */
+
+        if getUserProfile() {
+            createZendeskIdentity { success in
+                guard success else {
+                    DDLogInfo("Creating Zendesk identity failed.")
+                    completion(false)
+                    return
+                }
+                DDLogDebug("Using User Defaults for Zendesk identity.")
+                self.haveUserIdentity = true
+                self.registerDeviceTokenIfNeeded()
+                completion(true)
+                return
+            }
+        }
+
+        getUserInformationAndShowPrompt(withName: true, from: viewController) { (success, _) in
+            if success {
+                self.registerDeviceTokenIfNeeded()
+            }
+
+            completion(success)
+        }
+    }
+
     /// Creates a support request using the API-Providers SDK.
     ///
     func createSupportRequest(formID: Int64,
@@ -686,47 +739,6 @@ extension ZendeskManager: SupportManagerAdapter {
 // MARK: - Private Extension
 //
 private extension ZendeskManager {
-
-    func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
-
-        // If we already have an identity, do nothing.
-        guard haveUserIdentity == false else {
-            DDLogDebug("Using existing Zendesk identity: \(userEmail ?? ""), \(userName ?? "")")
-            registerDeviceTokenIfNeeded()
-            completion(true)
-            return
-        }
-
-        /*
-         1. Attempt to get user information from User Defaults.
-         2. If we don't have the user's information yet, attempt to get it from the account/site.
-         3. Prompt the user for email & name, pre-populating with user information obtained in step 1.
-         4. Create Zendesk identity with user information.
-         */
-
-        if getUserProfile() {
-            createZendeskIdentity { success in
-                guard success else {
-                    DDLogInfo("Creating Zendesk identity failed.")
-                    completion(false)
-                    return
-                }
-                DDLogDebug("Using User Defaults for Zendesk identity.")
-                self.haveUserIdentity = true
-                self.registerDeviceTokenIfNeeded()
-                completion(true)
-                return
-            }
-        }
-
-        getUserInformationAndShowPrompt(withName: true, from: viewController) { (success, _) in
-            if success {
-                self.registerDeviceTokenIfNeeded()
-            }
-
-            completion(success)
-        }
-    }
 
     func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
         presentInController = viewController

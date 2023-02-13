@@ -78,6 +78,10 @@ final class MockZendeskManager: ZendeskManagerProtocol {
 }
 
 extension MockZendeskManager {
+    func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
+        // no-op
+    }
+
     func createSupportRequest(formID: Int64,
                               customFields: [Int64: String],
                               tags: [String],

@@ -114,7 +114,7 @@ struct PaymentMethodsView: View {
                 viewModel: WebViewSheetViewModel(
                     url: viewModel.purchaseCardReaderUrl,
                     navigationTitle: UpsellCardReadersCampaign.Localization.cardReaderWebViewTitle,
-                    wpComAuthenticated: true),
+                    authenticated: true),
                 done: {
                     showingPurchaseCardReaderView = false
                 })

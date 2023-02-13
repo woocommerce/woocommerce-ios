@@ -169,6 +169,7 @@ public struct WordPressAuthenticatorConfiguration {
     let enableSiteAddressLoginOnlyInPrologue: Bool
 
     /// If enabled, the email login screen should not hide the site credential login CTA.
+    /// This is `true` by default.
     ///
     let enableSiteCredentialLoginForJetpackSites: Bool
 

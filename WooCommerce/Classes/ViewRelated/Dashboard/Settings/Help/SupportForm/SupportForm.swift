@@ -4,6 +4,11 @@ import SwiftUI
 struct SupportForm: View {
 
     @State private var favoriteColor = 0
+
+    @State private var subject = ""
+
+    @State private var description = ""
+
     var body: some View {
         VStack(spacing: Layout.sectionSpacing) {
 
@@ -24,8 +29,9 @@ struct SupportForm: View {
             VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                 Text(Localization.subject)
                     .bold()
-                TextField("", text: .constant(""))
-                    .titleStyle()
+                TextField("", text: $subject)
+                    .bodyStyle()
+                    .padding(Layout.subjectPadding)
                     .border(Color(.separator))
                     .cornerRadius(Layout.cornerRadius)
             }
@@ -33,7 +39,8 @@ struct SupportForm: View {
             VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                 Text(Localization.whatToDo)
                     .bold()
-                TextEditor(text: .constant(""))
+                TextEditor(text: $description)
+                    .bodyStyle()
                     .border(Color(.separator))
                     .cornerRadius(Layout.cornerRadius)
             }
@@ -68,6 +75,7 @@ private extension SupportForm {
         static let optionsSpacing: CGFloat = 8
         static let subSectionsSpacing: CGFloat = 2
         static let cornerRadius: CGFloat = 2
+        static let subjectPadding: CGFloat = 5
     }
 }
 

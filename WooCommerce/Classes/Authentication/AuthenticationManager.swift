@@ -381,11 +381,21 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Handles site credential login
     func handleSiteCredentialLogin(credentials: WordPressOrgCredentials,
+                                   in navigationController: UINavigationController,
                                    onLoading: @escaping (Bool) -> Void,
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping  (Error, Bool) -> Void) {
         let useCase = SiteCredentialLoginUseCase(siteURL: credentials.siteURL)
-        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { error in
+        useCase.setupHandlers(onLoginSuccess: { jetpackConnectedEmail in
+            if let jetpackConnectedEmail {
+                WordPressAuthenticator.showVerifyEmailForWPCom(from: navigationController,
+                                                               xmlrpc: credentials.xmlrpc,
+                                                               connectedEmail: jetpackConnectedEmail,
+                                                               siteURL: credentials.siteURL)
+            } else {
+                onSuccess()
+            }
+        }, onLoginFailure: { error in
             onLoading(false)
             let incorrectCredentials: Bool = {
                 if case .wrongCredentials = error {

@@ -4,7 +4,7 @@ import class Networking.WordPressOrgNetwork
 import Yosemite
 
 protocol SiteCredentialLoginProtocol {
-    func setupHandlers(onLoginSuccess: @escaping () -> Void,
+    func setupHandlers(onLoginSuccess: @escaping (_ jetpackConnectedEmail: String?) -> Void,
                        onLoginFailure: @escaping (SiteCredentialLoginError) -> Void)
 
     func handleLogin(username: String, password: String)
@@ -36,7 +36,7 @@ final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
     private let siteURL: String
     private let stores: StoresManager
     private let cookieJar: HTTPCookieStorage
-    private var successHandler: (() -> Void)?
+    private var successHandler: ((_ jetpackConnectedEmail: String?) -> Void)?
     private var errorHandler: ((SiteCredentialLoginError) -> Void)?
 
     init(siteURL: String,
@@ -47,7 +47,7 @@ final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
         self.cookieJar = cookieJar
     }
 
-    func setupHandlers(onLoginSuccess: @escaping () -> Void,
+    func setupHandlers(onLoginSuccess: @escaping (_ jetpackConnectedEmail: String?) -> Void,
                        onLoginFailure: @escaping (SiteCredentialLoginError) -> Void) {
         self.successHandler = onLoginSuccess
         self.errorHandler = onLoginFailure
@@ -57,7 +57,7 @@ final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
         // Old cookies can make the login succeeds even with incorrect credentials
         // So we need to clear all cookies before login.
         clearAllCookies()
-        loginAndAttemptFetchingJetpackPluginDetails(username: username, password: password)
+        loginAndAttemptFetchingJetpackConnectionDetails(username: username, password: password)
     }
 }
 
@@ -70,9 +70,9 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
-    func loginAndAttemptFetchingJetpackPluginDetails(username: String, password: String) {
+    func loginAndAttemptFetchingJetpackConnectionDetails(username: String, password: String) {
         handleCookieAuthentication(username: username, password: password)
-        retrieveJetpackPluginDetails()
+        retrieveJetpackConnectionDetails()
     }
 
     func handleCookieAuthentication(username: String, password: String) {
@@ -93,14 +93,13 @@ private extension SiteCredentialLoginUseCase {
         stores.dispatch(authenticationAction)
     }
 
-    func retrieveJetpackPluginDetails() {
+    func retrieveJetpackConnectionDetails() {
         // Retrieves Jetpack plugin details to see if the authentication succeeds.
-        let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
-            guard let self else { return }
+        let jetpackAction = JetpackConnectionAction.fetchJetpackUser { result in
             switch result {
-            case .success:
-                // Success to get the details means the authentication succeeds.
-                self.successHandler?()
+            case .success(let user):
+                let connectedEmail = user.wpcomUser?.email
+                self.successHandler?(connectedEmail)
             case .failure(let error):
                 self.handleRemoteError(error)
             }
@@ -110,12 +109,9 @@ private extension SiteCredentialLoginUseCase {
 
     func handleRemoteError(_ error: Error) {
         switch error {
-        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)),
-            AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
+        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
             // Error 404 means Jetpack is not installed. Allow this to come through.
-            // Error 403 means the lack of permission to manage plugins. Also allow this error
-            // since we want to show the error on the next screen.
-            successHandler?()
+            successHandler?(nil)
         case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401)):
             errorHandler?(.wrongCredentials)
         default:

@@ -52,4 +52,32 @@ class DataBase64URLDecoding: XCTestCase {
             "SGVsbG8sIC8rIFdvcmxkIQ"
         )
     }
+
+    // Verify against non UTF-8 characters to ensure it's okay to force unwrapping internally,
+    // as suggested by the following discussion in the forums
+    // https://forums.swift.org/t/can-encoding-string-to-data-with-utf8-fail/22437/4
+    func testBase64URLEncodingNonUTF8() {
+        // The Chinese character for "world" cannot be represented in the UTF-8 encoding.
+        XCTAssertNotNil(
+            "Hello, 世界".data(using: .utf8)!.base64URLEncodedString(),
+            "SGVsbG8sIOS4lueVjA"
+        )
+
+        // Notice that if you paste the input strings in the following examples
+        // in an online encoder, it'll return a different value. I think that
+        // has to do with the kind of UTF-8 allowances `Data` makes internally.
+        // For the scope in which we expect to use this code, i.e. only UTF-8
+        // encodable characters, that doesn't matter.
+
+        // \u{FF}, Unicode scalar 0xFF, is not a valid UTF-8
+        XCTAssertEqual(
+            "Hello, \u{FF}".data(using: .utf8)!.base64URLEncodedString(),
+            "SGVsbG8sIMO_"
+        )
+        // \0, null character, is not a valid UTF-8
+        XCTAssertEqual(
+            "Hello, \0 World!".data(using: .utf8)!.base64URLEncodedString(),
+            "SGVsbG8sIAAgV29ybGQh"
+        )
+    }
 }

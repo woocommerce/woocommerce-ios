@@ -7,18 +7,23 @@ struct SupportForm: View {
     var body: some View {
         VStack(spacing: 16) {
 
-            VStack(alignment: .leading, spacing: 8) {
-                Text("I need help with")
-                Picker("I need help with", selection: $favoriteColor) {
-                    Text("Payments").tag(0)
-                    Text("Mobile App").tag(1)
-                    Text("Other").tag(2)
+            HStack(spacing: -8) {
+                Text(Localization.iNeedHelp)
+                    .bold()
+                Picker(Localization.iNeedHelp, selection: $favoriteColor) {
+                    Text("Mobile App").tag(0)
+                    Text("Card Reader/In-Person Payments").tag(1)
+                    Text("WooCommerce Payments").tag(2)
+                    Text("WooCommerce Plugin").tag(3)
+                    Text("Other extension/plugin").tag(4)
                 }
-                .pickerStyle(.segmented)
+                .pickerStyle(.menu)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Subject")
+                Text(Localization.subject)
+                    .bold()
                 TextField("", text: .constant(""))
                     .titleStyle()
                     .border(Color(UIColor.gray(.shade5)))
@@ -26,7 +31,8 @@ struct SupportForm: View {
             }
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("What are you trying to do")
+                Text(Localization.whatToDo)
+                    .bold()
                 TextEditor(text: .constant(""))
                     .border(Color(UIColor.gray(.shade5)))
                     .cornerRadius(3)
@@ -35,15 +41,26 @@ struct SupportForm: View {
             Button {
                 // No Op
             } label: {
-                Text("Submit Support Request")
+                Text(Localization.submitRequest)
             }
             .buttonStyle(PrimaryButtonStyle())
 
         }
         .padding()
-        .navigationTitle("Contact Support")
+        .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .wooNavigationBarStyle()
+    }
+}
+
+// MARK: Constants
+private extension SupportForm {
+    enum Localization {
+        static let title = NSLocalizedString("Contact Support", comment: "Title of the view for contacting support.")
+        static let iNeedHelp = NSLocalizedString("I need help with", comment: "Text on the support form to refer to what area the user has problem with.")
+        static let subject = NSLocalizedString("Subject", comment: "Subject title on the support form")
+        static let whatToDo = NSLocalizedString("What are you trying to do?", comment: "Text on the support form to ask the user what are they trying to do.")
+        static let submitRequest = NSLocalizedString("Submit Support Request", comment: "Button title to submit a support request.")
     }
 }
 

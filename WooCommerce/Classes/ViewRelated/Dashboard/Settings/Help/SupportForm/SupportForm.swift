@@ -5,9 +5,9 @@ struct SupportForm: View {
 
     @State private var favoriteColor = 0
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Layout.sectionSpacing) {
 
-            HStack(spacing: -8) {
+            HStack(spacing: -Layout.optionsSpacing) {
                 Text(Localization.iNeedHelp)
                     .bold()
                 Picker(Localization.iNeedHelp, selection: $favoriteColor) {
@@ -21,21 +21,21 @@ struct SupportForm: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                 Text(Localization.subject)
                     .bold()
                 TextField("", text: .constant(""))
                     .titleStyle()
                     .border(Color(UIColor.gray(.shade5)))
-                    .cornerRadius(3)
+                    .cornerRadius(Layout.cornerRadius)
             }
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                 Text(Localization.whatToDo)
                     .bold()
                 TextEditor(text: .constant(""))
                     .border(Color(UIColor.gray(.shade5)))
-                    .cornerRadius(3)
+                    .cornerRadius(Layout.cornerRadius)
             }
 
             Button {
@@ -61,6 +61,13 @@ private extension SupportForm {
         static let subject = NSLocalizedString("Subject", comment: "Subject title on the support form")
         static let whatToDo = NSLocalizedString("What are you trying to do?", comment: "Text on the support form to ask the user what are they trying to do.")
         static let submitRequest = NSLocalizedString("Submit Support Request", comment: "Button title to submit a support request.")
+    }
+
+    enum Layout {
+        static let sectionSpacing: CGFloat = 16
+        static let optionsSpacing: CGFloat = 8
+        static let subSectionsSpacing: CGFloat = 2
+        static let cornerRadius: CGFloat = 3
     }
 }
 

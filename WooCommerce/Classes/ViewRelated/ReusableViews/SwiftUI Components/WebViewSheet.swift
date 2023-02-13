@@ -3,7 +3,7 @@ import SwiftUI
 struct WebViewSheetViewModel {
     let url: URL
     let navigationTitle: String
-    let wpComAuthenticated: Bool
+    let authenticated: Bool
 }
 
 struct WebViewSheet: View {
@@ -14,7 +14,7 @@ struct WebViewSheet: View {
     var body: some View {
         WooNavigationSheet(viewModel: .init(navigationTitle: viewModel.navigationTitle,
                                             done: done)) {
-            switch viewModel.wpComAuthenticated {
+            switch viewModel.authenticated {
             case true:
                 AuthenticatedWebView(isPresented: .constant(true),
                                      url: viewModel.url)
@@ -32,7 +32,7 @@ struct WebViewSheet_Previews: PreviewProvider {
             viewModel: WebViewSheetViewModel.init(
                 url: URL(string: "https://woocommerce.com")!,
                 navigationTitle: "WooCommerce.com",
-                wpComAuthenticated: true),
+                authenticated: true),
             done: { })
     }
 }

@@ -162,9 +162,9 @@ extension WooConstants {
         /// URL for the IPP feedback survey for testing purposes
         ///
 #if DEBUG
-        case inPersonPaymentsCashOnDeliveryFeedback,
-             inPersonPaymentsFirstTransactionFeedback,
-             inPersonPaymentsPowerUsersFeedback = "https://automattic.survey.fm/woo-app-ipp-in-app-feedback-testing"
+        case inPersonPaymentsCashOnDeliveryFeedback = "https://automattic.survey.fm/woo-app-–-cod-survey"
+        case inPersonPaymentsFirstTransactionFeedback = "https://automattic.survey.fm/woo-app-–-ipp-first-transaction-survey"
+        case inPersonPaymentsPowerUsersFeedback = "https://automattic.survey.fm/woo-app-–-ipp-survey-for-power-users"
 #else
         /// URL for the IPP feedback survey (COD case). Used when merchants have COD enabled, but no IPP transactions.
         ///
@@ -256,6 +256,10 @@ extension WooConstants {
         /// URL for creating a store.
         case storeCreation = "https://woocommerce.com/start"
 
+        /// URL with un-escaped characters for testing purposes. It should read as `https://test.com/test-%E2%80%93-survey`
+        ///
+        case testURLStringWithSpecialCharacters = "https://test.com/test-–-survey"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {
@@ -270,8 +274,12 @@ private extension WooConstants.URLs {
     /// Convert a `string` to a `URL`. Crash if it is malformed.
     ///
     private static func trustedURL(_ url: String) -> URL {
+
         if let url = URL(string: url) {
             return url
+        } else if let escapedString = url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed),
+                  let escapedURL = URL(string: escapedString) {
+            return escapedURL
         } else {
             fatalError("Expected URL \(url) to be a well-formed URL.")
         }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-27 14:05:28+0000 */
+/* Translation-Revision-Date: 2023-02-10 12:22:55+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -32,6 +32,9 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (aan klant)";
+
+/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
+"%1$@ \/ %2$@" = "%1$@\/%2$@";
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "%1$@ kopie";
@@ -289,7 +292,8 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "OPTIES TOEVOEGEN";
 
-/* Details section title in the Edit Address Form */
+/* Address section title in the domain contact info form.
+   Details section title in the Edit Address Form */
 "ADDRESS" = "ADRES";
 
 /* Reads as 'AID'. Part of the mandatory data in receipts */
@@ -474,7 +478,7 @@ which should be translated separately and considered part of this sentence. */
 "Add credit card" = "Creditcard toevoegen";
 
 /* Footer of text field section in Add Attribute Options screen */
-"Add each option and press enter" = "Voeg elke optie toe en druk op Enter";
+"Add each option and press return" = "Voeg elke optie toe en druk op terug";
 
 /* Title for the option to create product manually */
 "Add manually" = "Handmatig toevoegen";
@@ -759,9 +763,6 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Toepassingsnaam";
 
-/* Message to display when the constructed admin or login URL for the logged-in site is not accessible */
-"Application password cannot be generated due to a custom login or admin URL on your site." = "Applicatiewachtwoord dan niet worden gegenereerd wegens een aangepast inlogproces of een beheerders-URL op je site.";
-
 /* Apply navigation button in custom range date picker
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
@@ -806,6 +807,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Weet je zeker dat je wilt uitloggen bij het account %@?";
+
+/* Alert message to confirm a user meant to log out. */
+"Are you sure you want to log out of your account?" = "Weet je zeker dat je wilt uitloggen bij je account?";
 
 /* Alert message to confirm a user meant to mark all reviews as read. */
 "Are you sure you want to mark all reviews as read?" = "Weet je zeker dat je alle beoordelingen wilt markeren als gelezen?";
@@ -1153,6 +1157,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the site credential login screen
@@ -1371,7 +1376,7 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the store creation profiler question about the store category. */
 "Choose a category that defines your business the best." = "Kies een categorie die je winkel het beste weergeeft.";
 
-/* Title of the domain selector. */
+/* Title of the domain selector in the store creation flow. */
 "Choose a domain" = "Kies een domein";
 
 /* Title of the password field on the account creation form. */
@@ -1405,6 +1410,12 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Civic, Fraternal, Or Social Associations" = "Buurtvereniging, broederschap of sociale vereniging";
 
+/* Title of button to redeem domain credit in the domain credit banner in domain settings. */
+"Claim Domain" = "Domein ophalen";
+
+/* Title of the domain credit banner in domain settings. */
+"Claim your free domain" = "Claim je gratis domein";
+
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
 "Clear Filters" = "Filters wissen";
@@ -1421,6 +1432,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Text for the close button in the Add Product screen
    Text for the close button in the Edit Address Form
@@ -1521,6 +1533,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "Gefeliciteerd, je hebt alles gelezen!";
+
+/* Title of the domain purchase success screen. */
+"Congratulations on your purchase" = "Gefeliciteerd met je aankoop";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "Gefeliciteerd! Je lezer heeft nu de meest recente software";
@@ -2181,12 +2196,14 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
    Text for the done button in the Fee Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for the Done button on a WebView modal sheet */
+   Title for the Done button on a WebView modal sheet
+   Title of the button to finish the domain purchase success screen. */
 "Done" = "Klaar";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -2844,6 +2861,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry group option in the store creation category question. */
 "Food And Drink" = "Eten en drinken";
 
+/* Title in the error notice when a validation error occurs after submitting domain contact info. */
+"Form Validation Error" = "Validatiefoutformulier";
+
 /* Industry option in the store creation category question. */
 "Fortune Tellers" = "Waarzeggers";
 
@@ -2852,6 +2872,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "France" = "Frankrijk";
+
+/* Label shown for domains that are free for the first year with available domain credit. */
+"Free for the first year" = "Het eerste jaar gratis";
 
 /* Industry option in the store creation category question. */
 "Freight Forwarders" = "Expediteurs";
@@ -4796,7 +4819,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please connect your store to Jetpack to access it on this app." = "Verbind je winkel met Jetpack om toegang te krijgen op deze app.";
 
 /* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
-"Please contact support – there was an issue connecting to the built-in reader" = "Neem contact op met de klantenservice – er is iets fout gegaan bij het verbinden met de ingebouwde lezer";
+"Please contact support – there was an issue starting Tap to Pay on iPhone" = "Er is een fout opgetreden bij het starten van Tap to Pay on iPhone, neem contact op met de klantenservice";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Neem contact op met de eigenaar van de site voor een uitnodiging om als winkelmanager of beheerder de app te gebruiken.";
@@ -4886,7 +4909,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please select a package" = "Selecteer een pakket";
 
 /* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device, so you can use the built-in card reader" = "Login bij iCloud op dit apparaat, zodat je de ingebouwde kaartlezer kunt gebruiken";
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "Meld je op dit apparaat aan bij iCloud om Tap to Pay on iPhone te gebruiken";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "Probeer een ander domein.";
@@ -4907,7 +4930,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again or reach out to us and we'll be happy to assist you!" = "Probeer het opnieuw of neem contact met ons op zodat wij je kunnen helpen.";
 
 /* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "Probeer het opnieuw en ga akkoord met de servicevoorwaarden van Apple, zodat je de ingebouwde kaartlezer kunt gebruiken";
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "Probeer het opnieuw en ga akkoord met de servicevoorwaarden van Apple, zodat je Tap to Pay on iPhone kunt gebruiken";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "Probeer het opnieuw of sluit dit venster en ga terug naar je winkel als je het afrekenvenster hebt verlaten tijdens het betalen.";
@@ -5010,7 +5033,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Preparing document" = "Document voorbereiden";
 
 /* Title label for modal dialog that appears when connecting to a built in card reader */
-"Preparing iPhone card reader..." = "Kaartlezer van iPhone voorbereiden...";
+"Preparing iPhone card reader" = "Kaartlezer van iPhone voorbereiden...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "Geef kaart op om te betalen";
@@ -5110,8 +5133,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for processing order status. */
 "Processing" = "Bezig met verwerken";
 
-/* VoiceOver accessibility label. Indicates that a payment is being processed */
+/* Alert title when processing a payment without a user name.
+   VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "Betaling wordt verwerkt";
+
+/* Alert title when processing a payment with a user name. */
+"Processing payment from %1$@" = "Betaling van %1$@ wordt verwerkt";
 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "Betaling wordt verwerkt ...";
@@ -5386,6 +5413,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button in the view for adding or editing a coupon code. */
 "Regenerate Coupon Code" = "Couponcode opnieuw genereren";
+
+/* Title of the domain contact info form. */
+"Register domain" = "Registreer domein";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Geregistreerd domein";
@@ -5739,6 +5769,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Search Coupons button */
 "Search coupons" = "Zoek coupons";
 
+/* Title of the domain selector in domain settings. */
+"Search domains" = "Domeinen zoeken";
+
 /* Title of the button on the domain settings screen to search for a domain. */
 "Search for a Domain" = "Zoek naar een domein";
 
@@ -5886,6 +5919,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "Instellingen";
+
+/* Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails */
+"Setup failed" = "Instellen mislukt";
 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "Meerdere lezers gevonden";
@@ -6144,6 +6180,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "Een e-mailadres is niet geldig.";
+
+/* Message in the error notice when an unknown validation error occurs after submitting domain contact info. */
+"Some unexpected error with the validation. Please check the fields and try again." = "Er heeft zich een onverwachte fout voorgedaan bij de validatie. Controleer de velden en probeer het opnieuw.";
 
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Iemand";
@@ -6486,6 +6525,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "Tik om te betalen op iPhone";
 
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "Tap to Pay on iPhone kan niet worden gebruikt tijdens een telefoongesprek. Probeer het opnieuw na je gesprek.";
+
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Tik om een horizontale liniaal in te voeren";
 
@@ -6693,19 +6735,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The URL is missing a valid host." = "De URL heeft geen geldige host.";
 
 /* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
-"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "Het bedrag wordt niet ondersteund door de ingebouwde lezer – probeer een fysieke lezer of een andere betaalmethode.";
+"The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Het bedrag wordt niet ondersteund voor Tap to Pay on iPhone. Probeer het met een fysieke lezer of een andere betaalmethode.";
 
 /* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
-"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "De app kon de kaartlezer niet inschakelen omdat de NFC-chip is uitgeschakeld. Neem contact op met ondersteuning voor meer informatie.";
+"The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "De app kan Tap to Pay on iPhone niet inschakelen omdat de NFC-chip is uitgeschakeld. Neem contact op met ondersteuning voor meer informatie.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "De eigenschap kon niet worden verwijderd.";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "De eigenschap kon niet worden opgeslagen.";
-
-/* Error message shown when the built-in reader cannot be used because there is a call in progress */
-"The built-in reader cannot be used during a phone call. Please try again after you finish your call." = "De ingebouwde lezer kan niet worden gebruikt tijdens een telefoongesprek. Probeer het opnieuw na je gesprek.";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "De kaart ondersteunt deze valuta niet. Probeer een andere betaalmethode";
@@ -6768,10 +6807,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The coupon code couldn't be empty" = "De couponcode kan niet leeg zijn";
 
 /* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
-"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "De valuta wordt niet ondersteund door de ingebouwde lezer – probeer het met een fysieke lezer of een andere betaalmethode.";
+"The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "De valuta wordt niet ondersteund voor Tap to Pay on iPhone. Probeer het met een fysieke lezer of een andere betaalmethode.";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "De klant ontvangt een e-mail zodra de bestelling is afgerond";
+
+/* Subtitle of the domain selector in domain settings. %1$@ is the free domain of the site from WordPress.com. */
+"The domain purchased will redirect users to **%1$@**" = "Het aangeschafte domein zal gebruikers doorsturen naar **%1$@**.";
+
+/* Subtitle of the domain selector in domain settings when a free staging domain is unavailable. */
+"The domain purchased will redirect users to the current staging domain" = "Het aangeschafte domein zal gebruikers doorsturen naar het huidige staging-domein.";
+
+/* Footnote about the domain credit banner in domain settings. */
+"The domain purchased will redirect users to your primary address." = "Het aangeschafte domein zal gebruikers doorsturen naar je primaire adres.";
 
 /* Label within the modal dialog that appears when connecting to a built in card reader */
 "The first time you connect, you may be prompted to accept Apple's Terms of Service." = "Als je voor de eerste keer verbinding maakt, kan je worden gevraagd om akkoord te gaan met de servicevoorwaarden van Apple.";
@@ -6829,6 +6877,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when a request times out. */
 "The request timed out - please try again" = "Er heeft een time-out plaatsgevonden tijdens het verzoek - probeer het opnieuw";
+
+/* Message to display when the generating application password fails with unauthorized error */
+"The request to generate application password is not authorized." = "Je verzoek om een applicatiewachtwoord te genereren, is niet ingewilligd.";
 
 /* Bulk price update error message, when the sale price is added but the regular price is not
    Product price error notice message, when the sale price is added but the regular price is not */
@@ -6957,7 +7008,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was an error while trying to collect the payment." = "Er is een fout opgetreden bij het innen van de betaling.";
 
 /* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
-"There was an issue preparing the built in reader for payment – please try again." = "Er is een fout opgetreden bij het voorbereiden van de ingebouwde lezer voor betalingen – probeer het opnieuw.";
+"There was an issue preparing to use Tap to Pay on iPhone – please try again." = "Er is een fout opgetreden bij het voorbereiden van Tap to Pay on iPhone voor gebruik. Probeer het nog eens.";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "Er is geen risico aan gebonden; als je binnen 30 dagen annuleert, krijg je het volledige bedrag terugbetaald.";
@@ -7014,7 +7065,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Dit is de URL van het bestand die klanten tot hun beschikking zullen hebben. Ingevoerde URL's zouden al versleuteld moeten zijn.";
 
-/* Subtitle of the domain selector. */
+/* Subtitle of the domain selector in the store creation flow. */
 "This is where people will find you on the Internet. You can add another domain later." = "Dit is de plek waar mensen je online kunnen vinden. Je kunt later een ander domein toevoegen.";
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
@@ -7251,7 +7302,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Installing Again" = "Probeer opnieuw te installeren";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
-   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
 "Try again" = "Probeer opnieuw";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
@@ -8123,6 +8175,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Je kunt deze productaddons bewerken vanaf je webdashboard.";
 
+/* Instructions of the domain purchase success screen. */
+"You can find the domain settings in menu > settings" = "Je kunt de domeininstellingen vinden onder menu > instellingen";
+
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "You can manage quickly and easily." = "Je kunt ze snel en eenvoudig beheren.";
 
@@ -8151,6 +8206,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "Je hebt geen toestemming om plugins te beheren op deze winkel.";
 
+/* Subtitle of the domain credit banner in domain settings. */
+"You have a free one-year domain registration included with your plan." = "Je hebt een gratis eenjarige domeinregistratie bij je abonnement";
+
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "Je hebt een nieuwe bestelling!";
 
@@ -8159,6 +8217,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Je moet een wachtwoord toevoegen om je product met een wachtwoord te beschermen";
+
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"You need to set a lock screen passcode to use Tap to Pay on iPhone" = "Je moet een toegangscode instellen op je vergrendelscherm om Tap to Pay on iPhone te kunnen gebruiken";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Het lijkt erop dat je een mobiele plugin van DudaMobile hebt geïnstalleerd die voorkomt dat de app zich kan verbinden met je blog";
@@ -8174,9 +8235,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "De software van je kaartlezer moet worden bijgewerkt om betalingen te innen. Door te annuleren wordt de verbinding van je lezer geblokkeerd.";
-
-/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
-"Your device needs a lock screen passcode set to use the built-in card reader" = "Er moet op je apparaat een code voor schermontgrendeling zijn ingesteld om de ingebouwde kaartlezer te kunnen gebruiken";
 
 /* Title of the email field on the account creation form. */
 "Your email address" = "Je e-mailadres";
@@ -8214,6 +8272,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Het adres van je site wordt aan de bovenzijde van je scherm weergegeven wanneer je je site in Safari bekijkt.";
 
+/* Subtitle of the domain purchase success screen. */
+"Your site address is being set up. It may take up 30 minutes for your domain to start working." = "Je siteadres wordt ingesteld. Het kan tot 30 minuten duren voor je domein werkt.";
+
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "Je sitedomeinen";
 
@@ -8249,17 +8310,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label within the modal dialog that appears when checking the built in card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "Een moment geduld; we controleren of je apparaat gereed is voor Tap to Pay op iPhone.";
-
-/* A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "Meer informatie";
-
-/* A label prompting users to learn more about In-Person Payments.
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "%1$@ over fysieke betalingen";
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Apparaat aan het controleren";

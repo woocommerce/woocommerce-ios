@@ -1,8 +1,14 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.3
+-----
+- [Internal] We have updated the Zendesk SDK to version 6.0 [https://github.com/woocommerce/woocommerce-ios/pull/8828]
+
+
 12.2
 -----
 - [*] Fix: Adding a new attribute will auto-capitalize the first letter for each word in the attribute name. [https://github.com/woocommerce/woocommerce-ios/pull/8772]
+- [internal] Logging: Improvements on logging potential errors when loading Order Details [https://github.com/woocommerce/woocommerce-ios/pull/8781]
 - [Internal] Now we track the specific error code when a networking-related operation fails [https://github.com/woocommerce/woocommerce-ios/issues/8527]
 
 12.1

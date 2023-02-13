@@ -6,7 +6,7 @@ import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import protocol Experiments.ABTestVariationProvider
-import struct Experiments.DefaultABTestVariationProvider
+import struct Experiments.CachedABTestVariationProvider
 
 /// Coordinates app navigation based on authentication state: tab bar UI is shown when the app is logged in, and authentication UI is shown
 /// when the app is logged out.
@@ -43,7 +43,7 @@ final class AppCoordinator {
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         abTestVariationProvider: ABTestVariationProvider = DefaultABTestVariationProvider()) {
+         abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider()) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard

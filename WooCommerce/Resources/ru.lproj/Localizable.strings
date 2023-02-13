@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-24 09:54:05+0000 */
+/* Translation-Revision-Date: 2023-02-10 09:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -32,6 +32,9 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ — %2$@ (для заказчика)";
+
+/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
+"%1$@ \/ %2$@" = "%1$@\/%2$@";
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "%1$@ Копия";
@@ -289,7 +292,8 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "ДОБАВИТЬ ОПЦИИ";
 
-/* Details section title in the Edit Address Form */
+/* Address section title in the domain contact info form.
+   Details section title in the Edit Address Form */
 "ADDRESS" = "АДРЕС";
 
 /* Reads as 'AID'. Part of the mandatory data in receipts */
@@ -474,7 +478,7 @@ which should be translated separately and considered part of this sentence. */
 "Add credit card" = "Добавить кредитную карту";
 
 /* Footer of text field section in Add Attribute Options screen */
-"Add each option and press enter" = "Добавьте каждую опцию и нажмите \"Ввод\".";
+"Add each option and press return" = "Добавьте каждую опцию и нажмите \"Ввод\"";
 
 /* Title for the option to create product manually */
 "Add manually" = "Добавить вручную";
@@ -759,9 +763,6 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Название приложения";
 
-/* Message to display when the constructed admin or login URL for the logged-in site is not accessible */
-"Application password cannot be generated due to a custom login or admin URL on your site." = "Пароль приложения невозможно создать из-за пользовательского логина или администраторского URL-адреса на сайте.";
-
 /* Apply navigation button in custom range date picker
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
@@ -806,6 +807,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Вы уверены, что хотите выйти из учётной записи %@?";
+
+/* Alert message to confirm a user meant to log out. */
+"Are you sure you want to log out of your account?" = "Вы уверены, что хотите выйти из учетной записи?";
 
 /* Alert message to confirm a user meant to mark all reviews as read. */
 "Are you sure you want to mark all reviews as read?" = "Действительно отметить все отзывы как прочитанные?";
@@ -1153,6 +1157,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the site credential login screen
@@ -1371,7 +1376,7 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the store creation profiler question about the store category. */
 "Choose a category that defines your business the best." = "Выберите категорию, которая лучше всего характеризует ваш бизнес.";
 
-/* Title of the domain selector. */
+/* Title of the domain selector in the store creation flow. */
 "Choose a domain" = "Выбрать домен";
 
 /* Title of the password field on the account creation form. */
@@ -1405,6 +1410,12 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Civic, Fraternal, Or Social Associations" = "Гражданские, братские или социальные ассоциации";
 
+/* Title of button to redeem domain credit in the domain credit banner in domain settings. */
+"Claim Domain" = "Отправить заявку на домен";
+
+/* Title of the domain credit banner in domain settings. */
+"Claim your free domain" = "Получите свой домен бесплатно";
+
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
 "Clear Filters" = "Очистить фильтры";
@@ -1421,6 +1432,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Text for the close button in the Add Product screen
    Text for the close button in the Edit Address Form
@@ -1521,6 +1533,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "Поздравляем, вы прочитали все примечания!";
+
+/* Title of the domain purchase success screen. */
+"Congratulations on your purchase" = "Поздравляем с приобретением";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "Поздравляем! На вашем устройстве чтения установлена новейшая версия программы";
@@ -2181,12 +2196,14 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
    Text for the done button in the Fee Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for the Done button on a WebView modal sheet */
+   Title for the Done button on a WebView modal sheet
+   Title of the button to finish the domain purchase success screen. */
 "Done" = "Готово";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -2844,6 +2861,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry group option in the store creation category question. */
 "Food And Drink" = "Еда и напитки";
 
+/* Title in the error notice when a validation error occurs after submitting domain contact info. */
+"Form Validation Error" = "Ошибка проверки формы";
+
 /* Industry option in the store creation category question. */
 "Fortune Tellers" = "Гадалки";
 
@@ -2852,6 +2872,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "France" = "Франция";
+
+/* Label shown for domains that are free for the first year with available domain credit. */
+"Free for the first year" = "Бесплатно за первый год";
 
 /* Industry option in the store creation category question. */
 "Freight Forwarders" = "Грузоперевозчики";
@@ -4796,7 +4819,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please connect your store to Jetpack to access it on this app." = "Подключите магазин к Jetpack, чтобы работать с ним в этом приложении.";
 
 /* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
-"Please contact support – there was an issue connecting to the built-in reader" = "Обратитесь в службу поддержки — проблема с подключением к приложению чтения карт";
+"Please contact support – there was an issue starting Tap to Pay on iPhone" = "Обратитесь в службу поддержки. Возникла проблема при запуске Tap to Pay on iPhone.";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Чтобы использовать приложение, получите приглашение у владельца сайта, например у директора магазина или администратора.";
@@ -4886,7 +4909,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please select a package" = "Выберите посылку";
 
 /* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device, so you can use the built-in card reader" = "Войдите в iCloud на этом устройстве, чтобы использовать приложение чтения карт";
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "Войдите в iCloud на этом устройстве, чтобы использовать Tap to Pay on iPhone.";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "Выберите другой домен.";
@@ -4907,7 +4930,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again or reach out to us and we'll be happy to assist you!" = "Повторите попытку или обратитесь к нам.";
 
 /* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "Повторите попытку и примите условия предоставления услуг Apple, чтобы использовать приложение чтения карт";
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "Повторите попытку и примите условия предоставления услуг Apple, чтобы использовать Tap to Pay on iPhone.";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "Повторите попытку или закройте экран и вернитесь в магазин, если вы покинули экран оформления заказа в момент оплаты.";
@@ -5010,7 +5033,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Preparing document" = "Подготовка документа";
 
 /* Title label for modal dialog that appears when connecting to a built in card reader */
-"Preparing iPhone card reader..." = "Подготовка iPhone к чтению карт...";
+"Preparing iPhone card reader" = "Подготовка iPhone к чтению карт...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "Передайте карту для оплаты";
@@ -5110,8 +5133,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for processing order status. */
 "Processing" = "В обработке";
 
-/* VoiceOver accessibility label. Indicates that a payment is being processed */
+/* Alert title when processing a payment without a user name.
+   VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "Обработка платежа";
+
+/* Alert title when processing a payment with a user name. */
+"Processing payment from %1$@" = "Обработка платежа от %1$@";
 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "Обработка платежа…";
@@ -5386,6 +5413,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button in the view for adding or editing a coupon code. */
 "Regenerate Coupon Code" = "Создать код купона повторно";
+
+/* Title of the domain contact info form. */
+"Register domain" = "Зарегистрировать домен";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Зарегистрированный домен";
@@ -5739,6 +5769,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Search Coupons button */
 "Search coupons" = "Поиск купонов";
 
+/* Title of the domain selector in domain settings. */
+"Search domains" = "Поиск доменов";
+
 /* Title of the button on the domain settings screen to search for a domain. */
 "Search for a Domain" = "Поиск домена";
 
@@ -5886,6 +5919,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "Настройки";
+
+/* Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails */
+"Setup failed" = "Ошибка настройки";
 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "Найдено несколько устройств чтения";
@@ -6144,6 +6180,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "Один из адресов эл. почты недействителен.";
+
+/* Message in the error notice when an unknown validation error occurs after submitting domain contact info. */
+"Some unexpected error with the validation. Please check the fields and try again." = "Неожиданная ошибка при проверке. Проверьте поля и повторите попытку.";
 
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Кто-то";
@@ -6486,6 +6525,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "Оплата в касание с помощью iPhone";
 
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "Tap to Pay on iPhone нельзя использовать во время телефонного вызова. Повторите попытку после завершения вызова.";
+
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Нажмите, чтобы вставить горизонтальную линейку";
 
@@ -6693,19 +6735,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The URL is missing a valid host." = "В URL-адресе отсутствует допустимый хост.";
 
 /* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
-"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "Приложение чтения карт не поддерживает платежи на такую сумму. Используйте внешнее устройство чтения карт или другой способ оплаты.";
+"The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Tap to Pay on iPhone не поддерживает платежи на такую сумму. Используйте внешнее устройство чтения карт или другой способ оплаты.";
 
 /* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
-"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "Приложение не может читать карты, поскольку отключён модуль NFC. За подробной информацией обращайтесь в службу поддержки.";
+"The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "Приложение не может использовать Tap to Pay on iPhone, поскольку отключён модуль NFC. За подробной информацией обращайтесь в службу поддержки.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Не удалось удалить атрибут.";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "Невозможно сохранить атрибут.";
-
-/* Error message shown when the built-in reader cannot be used because there is a call in progress */
-"The built-in reader cannot be used during a phone call. Please try again after you finish your call." = "Приложение чтения карт нельзя использовать во время телефонного вызова. Повторите попытку после завершения вызова.";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "Карта не поддерживает эту валюту. Попробуйте другое средство платежа";
@@ -6768,10 +6807,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The coupon code couldn't be empty" = "Необходимо указать код купона";
 
 /* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
-"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "Приложение чтения карт не поддерживает эту валюту. Используйте внешнее устройство чтения карт или другой способ оплаты.";
+"The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Tap to Pay on iPhone не поддерживает эту валюту. Используйте внешнее устройство чтения карт или другой способ оплаты.";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "После выполнения заказа клиент получит сообщение по электронной почте.";
+
+/* Subtitle of the domain selector in domain settings. %1$@ is the free domain of the site from WordPress.com. */
+"The domain purchased will redirect users to **%1$@**" = "Приобретённый домен будет перенаправлять пользователей на **%1$@**.";
+
+/* Subtitle of the domain selector in domain settings when a free staging domain is unavailable. */
+"The domain purchased will redirect users to the current staging domain" = "Приобретённый домен будет перенаправлять пользователей на текущий промежуточный домен.";
+
+/* Footnote about the domain credit banner in domain settings. */
+"The domain purchased will redirect users to your primary address." = "Приобретённый домен будет перенаправлять пользователей на основной адрес.";
 
 /* Label within the modal dialog that appears when connecting to a built in card reader */
 "The first time you connect, you may be prompted to accept Apple's Terms of Service." = "При первом подключении, возможно, вам будет предложено принять условия предоставления услуг Apple.";
@@ -6829,6 +6877,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when a request times out. */
 "The request timed out - please try again" = "Истекло время ожидания запроса. Повторите попытку";
+
+/* Message to display when the generating application password fails with unauthorized error */
+"The request to generate application password is not authorized." = "Запрос на создание пароля приложения не прошёл авторизацию.";
 
 /* Bulk price update error message, when the sale price is added but the regular price is not
    Product price error notice message, when the sale price is added but the regular price is not */
@@ -6957,7 +7008,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was an error while trying to collect the payment." = "При сборе платежа произошла ошибка.";
 
 /* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
-"There was an issue preparing the built in reader for payment – please try again." = "При подготовке телефона к чтению карт возникла проблема. Повторите попытку.";
+"There was an issue preparing to use Tap to Pay on iPhone – please try again." = "Возникла проблема с подготовкой к использованию Tap to Pay on iPhone. Повторите попытку.";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "Никаких рисков: можно отменить подписку в течение 30 дней и получить полную компенсацию.";
@@ -7014,7 +7065,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Это URL-адрес файла, к которому клиенты получат доступ. Введенные URL-адреса должны быть уже закодированы. ";
 
-/* Subtitle of the domain selector. */
+/* Subtitle of the domain selector in the store creation flow. */
 "This is where people will find you on the Internet. You can add another domain later." = "Это место, где люди найдут вас в Интернете. Другой домен можно добавить позже.";
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
@@ -7251,7 +7302,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Installing Again" = "Повторить установку";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
-   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
 "Try again" = "Попробуйте снова";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
@@ -8123,6 +8175,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Дополнения к товару можно редактировать в веб-консоли.";
 
+/* Instructions of the domain purchase success screen. */
+"You can find the domain settings in menu > settings" = "Настройки домена находятся в \"Меню\" > \"Настройки\".";
+
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "You can manage quickly and easily." = "Простое и быстрое управление.";
 
@@ -8151,6 +8206,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "У вас нет разрешения на управление плагинами в этом магазине.";
 
+/* Subtitle of the domain credit banner in domain settings. */
+"You have a free one-year domain registration included with your plan." = "На вашем тарифе можно бесплатно зарегистрировать домен на один год.";
+
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "Поступил новый заказ! 🎉";
 
@@ -8159,6 +8217,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Добавьте пароль, чтобы защитить товар";
+
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"You need to set a lock screen passcode to use Tap to Pay on iPhone" = "Необходимо настроить пароль экрана блокировки, чтобы использовать функцию Tap to Pay on iPhone.";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Скорее всего, вы установили мобильный плагин DudaMobile, который не даёт приложению подключиться к вашему блогу";
@@ -8174,9 +8235,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Для сбора платежей требуется обновить ваш платёжный терминал. Отмена приведёт к блокировке подключения терминала.";
-
-/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
-"Your device needs a lock screen passcode set to use the built-in card reader" = "Чтобы использовать телефон для чтения карт, нужно настроить на нём пароль экрана блокировки";
 
 /* Title of the email field on the account creation form. */
 "Your email address" = "Ваш адрес электронной почты";
@@ -8214,6 +8272,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "При открытии сайта в браузере Safari его адрес отображается в строке в верхней части экрана.";
 
+/* Subtitle of the domain purchase success screen. */
+"Your site address is being set up. It may take up 30 minutes for your domain to start working." = "Выполняется настройка адреса сайта. Это может занять до 30 минут, после чего домен начнёт работать.";
+
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "Домены вашего сайта";
 
@@ -8249,17 +8310,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label within the modal dialog that appears when checking the built in card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "Подождите, пока мы проверяем готовность вашего iPhone к использованию функции Tap to Pay.";
-
-/* A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "Подробнее";
-
-/* A label prompting users to learn more about In-Person Payments.
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "%1$@ об очных платежах";
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Проверка устройства";

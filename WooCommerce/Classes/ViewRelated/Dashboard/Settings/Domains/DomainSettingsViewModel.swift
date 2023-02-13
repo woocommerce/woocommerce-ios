@@ -34,18 +34,37 @@ final class DomainSettingsViewModel: ObservableObject {
         self.stores = stores
     }
 
-    func onAppear() {
-        stores.dispatch(DomainAction.loadDomains(siteID: siteID) { [weak self] result in
-            self?.handleDomainsResult(result)
-        })
-
-        stores.dispatch(PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in
-            self?.handleSiteCurrentPlanResult(result)
-        })
+    @MainActor
+    func onAppear() async {
+        async let domainsResult = loadDomains()
+        async let siteCurrentPlanResult = loadSiteCurrentPlan()
+        handleDomainsResult(await domainsResult)
+        handleSiteCurrentPlanResult(await siteCurrentPlanResult)
     }
 }
 
 private extension DomainSettingsViewModel {
+    @MainActor
+    func loadDomains() async -> Result<[SiteDomain], Error> {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(DomainAction.loadDomains(siteID: siteID) { result in
+                continuation.resume(returning: result)
+            })
+        }
+    }
+
+    @MainActor
+    func loadSiteCurrentPlan() async -> Result<WPComSitePlan, Error> {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
+                continuation.resume(returning: result)
+            })
+        }
+    }
+}
+
+private extension DomainSettingsViewModel {
+    @MainActor
     func handleDomainsResult(_ result: Result<[SiteDomain], Error>) {
         switch result {
         case .success(let domains):
@@ -59,6 +78,7 @@ private extension DomainSettingsViewModel {
         }
     }
 
+    @MainActor
     func handleSiteCurrentPlanResult(_ result: Result<WPComSitePlan, Error>) {
         switch result {
         case .success(let sitePlan):

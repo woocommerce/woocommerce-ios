@@ -5584,6 +5584,7 @@
 		262EB5AC298C70BC009DCC36 /* SupportForm */ = {
 			isa = PBXGroup;
 			children = (
+				268D7C9B2984752A00D38709 /* SupportForm.swift */,
 				262EB5AD298C70EF009DCC36 /* SupportFormViewModel.swift */,
 				262EB5AF298C7C3A009DCC36 /* SupportFormsDataSources.swift */,
 			);
@@ -8350,7 +8351,6 @@
 				E12FB785266E0CAE0039E9C2 /* ApllicationLogDetailView.swift */,
 				E1ED16E3266E10A10037B8DB /* ApplicationLogViewModel.swift */,
 				262EB5AC298C70BC009DCC36 /* SupportForm */,
-				268D7C9B2984752A00D38709 /* SupportForm.swift */,
 				DEC51AFE276AEE79009F3DF4 /* SystemStatusReport */,
 			);
 			path = Help;

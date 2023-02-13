@@ -168,6 +168,10 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableSiteAddressLoginOnlyInPrologue: Bool
 
+    /// If enabled, the email login screen should not hide the site credential login CTA.
+    ///
+    let enableSiteCredentialLoginForJetpackSites: Bool
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -203,6 +207,7 @@ public struct WordPressAuthenticatorConfiguration {
                  enableManualSiteCredentialLogin: Bool = false,
                  useEnterEmailAddressAsStepValueForGetStartedVC: Bool = false,
                  enableSiteAddressLoginOnlyInPrologue: Bool = false,
+                 enableSiteCredentialLoginForJetpackSites: Bool = true,
                  googleLoginWithoutSDK: Bool = false
     ) {
 
@@ -240,5 +245,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableManualSiteCredentialLogin = enableManualSiteCredentialLogin
         self.useEnterEmailAddressAsStepValueForGetStartedVC = useEnterEmailAddressAsStepValueForGetStartedVC
         self.enableSiteAddressLoginOnlyInPrologue = enableSiteAddressLoginOnlyInPrologue
+        self.enableSiteCredentialLoginForJetpackSites = enableSiteCredentialLoginForJetpackSites
     }
 }

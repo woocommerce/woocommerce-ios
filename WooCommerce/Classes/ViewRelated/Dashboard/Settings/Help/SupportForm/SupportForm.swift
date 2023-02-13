@@ -26,7 +26,7 @@ struct SupportForm: View {
                     .bold()
                 TextField("", text: .constant(""))
                     .titleStyle()
-                    .border(Color(UIColor.gray(.shade5)))
+                    .border(Color(.separator))
                     .cornerRadius(Layout.cornerRadius)
             }
 
@@ -34,7 +34,7 @@ struct SupportForm: View {
                 Text(Localization.whatToDo)
                     .bold()
                 TextEditor(text: .constant(""))
-                    .border(Color(UIColor.gray(.shade5)))
+                    .border(Color(.separator))
                     .cornerRadius(Layout.cornerRadius)
             }
 
@@ -67,7 +67,7 @@ private extension SupportForm {
         static let sectionSpacing: CGFloat = 16
         static let optionsSpacing: CGFloat = 8
         static let subSectionsSpacing: CGFloat = 2
-        static let cornerRadius: CGFloat = 3
+        static let cornerRadius: CGFloat = 2
     }
 }
 

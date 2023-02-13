@@ -169,7 +169,7 @@ struct DomainSettingsView_Previews: PreviewProvider {
                 DomainSettingsView(viewModel:
                         .init(siteID: 134,
                               stores: DomainSettingsViewStores(
-                                // There is one free domain and no other paid domains.
+                                // No domains are returned to simulate loading state.
                                 domainsResult: nil,
                                 sitePlanResult: .success(.init(hasDomainCredit: true)))),
                                    addDomain: { _, _ in })

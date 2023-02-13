@@ -531,6 +531,10 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
             decoratedTags.append(sourceTagOrigin)
         }
 
+        if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
+            decoratedTags.append(Constants.authenticatedWithApplicationPasswordTag)
+        }
+
         return decoratedTags
     }
 }
@@ -1243,6 +1247,7 @@ private extension ZendeskManager {
         static let blogSeperator = "\n----------\n"
         static let jetpackTag = "jetpack"
         static let wpComTag = "wpcom"
+        static let authenticatedWithApplicationPasswordTag = "application_password_authenticated"
         static let logFieldCharacterLimit = 64000
         static let networkWiFi = "WiFi"
         static let networkWWAN = "Mobile"

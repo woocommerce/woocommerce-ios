@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 /// View model for `StoreCreationPlanView`.
 struct StoreCreationPlanViewModel {

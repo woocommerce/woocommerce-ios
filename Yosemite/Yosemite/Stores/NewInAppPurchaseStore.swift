@@ -4,18 +4,60 @@ import Storage
 import StoreKit
 import Networking
 
-public class InAppPurchaseStore: Store {
+public protocol WPComPlanProduct {
+    // The localized product name, to be used as title in UI
+    var displayName: String { get }
+    // The localized product description
+    var description: String { get }
+    // The unique product identifier. To be used in further actions e.g purchasing a product
+    var id: String { get }
+    // The localized price, including currency
+    var displayPrice: String { get }
+}
+
+public enum InAppPurchaseResult {
+    case success
+    case userCancelled
+    case pending
+}
+
+extension StoreKit.Product: WPComPlanProduct {}
+
+extension SKProduct: WPComPlanProduct {
+    public var displayName: String {
+        localizedTitle
+    }
+
+    public var id: String {
+        productIdentifier
+    }
+
+    public override var description: String {
+        localizedDescription
+    }
+
+    public var displayPrice: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = priceLocale
+        return formatter.string(from: price)!
+    }
+}
+
+public class NewInAppPurchaseStore: Store {
     // ISO 3166-1 Alpha-3 country code representation.
     private let supportedCountriesCodes = ["USA"]
     private var listenTask: Task<Void, Error>?
     private let remote: InAppPurchasesRemote
     private var useBackend = true
     private var pauseTransactionListener = CurrentValueSubject<Bool, Never>(false)
+    private let originalStoreKitFacade = InAppPurchasesProductsProvider()
+    private var purchaseProductCompletion: ((Result<InAppPurchaseResult, Error>) -> Void)?
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         remote = InAppPurchasesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        listenForTransactions()
+        SKPaymentQueue.default().add(self)
     }
 
     deinit {
@@ -28,7 +70,7 @@ public class InAppPurchaseStore: Store {
 
     public override func onAction(_ action: Action) {
         guard let action = action as? InAppPurchaseAction else {
-            assertionFailure("InAppPurchaseStore received an unsupported action")
+            assertionFailure("NewInAppPurchaseStore received an unsupported action")
             return
         }
         switch action {
@@ -60,14 +102,14 @@ public class InAppPurchaseStore: Store {
     }
 }
 
-private extension InAppPurchaseStore {
+private extension NewInAppPurchaseStore {
     func loadProducts(completion: @escaping (Result<[WPComPlanProduct], Error>) -> Void) {
         Task {
             do {
                 try await assertInAppPurchasesAreSupported()
                 let identifiers = try await getProductIdentifiers()
                 logInfo("Requesting StoreKit products: \(identifiers)")
-                let products = try await StoreKit.Product.products(for: identifiers)
+                let products = try await originalStoreKitFacade.requestProducts(with: identifiers)
                 logInfo("Obtained product list from StoreKit: \(products.map({ $0.id }))")
                 completion(.success(products))
             } catch {
@@ -81,48 +123,14 @@ private extension InAppPurchaseStore {
         Task {
             do {
                 try await assertInAppPurchasesAreSupported()
-
-                guard let product = try await StoreKit.Product.products(for: [productID]).first else {
-                    return completion(.failure(Errors.transactionProductUnknown))
-                }
-
-                logInfo("Purchasing product \(product.id) for site \(siteID)")
-                var purchaseOptions: Set<StoreKit.Product.PurchaseOption> = []
-                if let appAccountToken = AppAccountToken.tokenWithSiteId(siteID) {
-                    logInfo("Generated appAccountToken \(appAccountToken) for site \(siteID)")
-                    purchaseOptions.insert(.appAccountToken(appAccountToken))
-                }
-
-
-                logInfo("Purchasing product \(product.id) for site \(siteID) with options \(purchaseOptions)")
-                logInfo("Pausing transaction listener")
-                pauseTransactionListener.send(true)
-                defer {
-                    logInfo("Resuming transaction listener")
-                    pauseTransactionListener.send(false)
-                }
-                let purchaseResult = try await product.purchase(options: purchaseOptions)
-                switch purchaseResult {
-                case .success(let result):
-                    guard case .verified(let transaction) = result else {
-                        // Ignore unverified transactions.
-                        logError("Transaction unverified: \(result)")
-                        throw Errors.unverifiedTransaction
-                    }
-                    logInfo("Purchased product \(product.id) for site \(siteID): \(transaction)")
-
-                    try await submitTransaction(transaction)
-                    await transaction.finish()
-                    completion(.success(.success))
-                case .userCancelled:
-                    logInfo("User cancelled the purchase flow")
-                    completion(.success(.userCancelled))
-                case .pending:
-                    logError("Purchase returned in a pending state, it might succeed in the future")
-                    completion(.success(.pending))
-                @unknown default:
-                    logError("Unknown result for purchase: \(purchaseResult)")
-                }
+                purchaseProductCompletion = completion
+                let payment = SKMutablePayment()
+                payment.applicationUsername = AppAccountToken.tokenWithSiteId(siteID)?.uuidString
+                payment.productIdentifier = productID
+                SKPaymentQueue.default().add(payment)
+            } catch WordPressApiError.productPurchased {
+                // Ignore errors for existing purchase
+                logInfo("Existing order found for transaction on site \(siteID), ignoring")
             } catch {
                 logError("Error purchasing product \(productID) for site \(siteID): \(error)")
                 completion(.failure(error))
@@ -130,48 +138,80 @@ private extension InAppPurchaseStore {
         }
     }
 
-    func handleCompletedTransaction(_ result: VerificationResult<StoreKit.Transaction>) async throws {
-        guard case .verified(let transaction) = result else {
-            // Ignore unverified transactions.
-            // TODO: handle errors
-            logError("Transaction unverified")
-            return
+    func submitTransaction(_ transaction: SKPaymentTransaction) async throws {
+        let productID = transaction.payment.productIdentifier
+        debugPrint("applicationUsername \(transaction.payment.productIdentifier)")
+
+        guard let applicationUsername = transaction.payment.applicationUsername,
+              let uuid = UUID(uuidString: applicationUsername),
+              let siteID = AppAccountToken.siteIDFromToken(uuid) else {
+           throw Errors.appAccountTokenMissingSiteIdentifier
         }
 
-        if let revocationDate = transaction.revocationDate {
-            // Refunds are handled in the backend
-            logInfo("Ignoring update about revoked (\(revocationDate)) transaction \(transaction.id)")
-        } else if let expirationDate = transaction.expirationDate,
-            expirationDate < Date() {
-            // Do nothing, this subscription is expired.
-            logInfo("Ignoring update about expired (\(expirationDate)) transaction \(transaction.id)")
-        } else if transaction.isUpgraded {
-            // Do nothing, there is an active transaction
-            // for a higher level of service.
-            logInfo("Ignoring update about upgraded transaction \(transaction.id)")
-        } else {
-            // Provide access to the product
-            logInfo("Verified transaction \(transaction.id) (Original ID: \(transaction.originalID)) for product \(transaction.productID)")
-            try await submitTransaction(transaction)
+        do {
+            let receiptData = try await getAppReceipt()
+            debugPrint("receipt data \(receiptData.base64EncodedString())")
+
+
+            let products = try await originalStoreKitFacade.requestProducts(with: [productID])
+
+            guard let product = products.first else {
+                throw Errors.transactionProductUnknown
+            }
+            let priceInCents = product.price.intValue * 100
+            guard let countryCode = await Storefront.current?.countryCode else {
+                throw Errors.storefrontUnknown
+            }
+
+            logInfo("Sending transaction to API for site \(siteID)")
+
+            let orderID = try await remote.createOrder(
+                for: siteID,
+                price: priceInCents,
+                productIdentifier: productID,
+                appStoreCountryCode: countryCode,
+                receiptData: receiptData
+            )
+
+            transaction.finish()
+
+            logInfo("Successfully registered purchase with Order ID \(orderID)")
+        } catch WordPressApiError.productPurchased {
+            // Ignore errors for existing purchase
+            logInfo("Existing order found for transaction on site, ignoring")
+        } catch {
+            logError("Error purchasing product \(productID) for site \(siteID): \(error)")
+            purchaseProductCompletion?(.failure(error))
         }
-        logInfo("Marking transaction \(transaction.id) as finished")
-        await transaction.finish()
+    }
+
+    func handleCompletedTransaction(_ transaction: SKPaymentTransaction) {
+        Task {
+            do {
+                try await submitTransaction(transaction)
+                transaction.finish()
+                purchaseProductCompletion?(.success(.success))
+            } catch {
+                logError("Error when handling a complete transaction \(error)")
+                purchaseProductCompletion?(.failure(error))
+            }
+        }
     }
 
     func retryWPComSyncForPurchasedProduct(with id: String) async throws {
         try await assertInAppPurchasesAreSupported()
 
-        guard let verificationResult = await Transaction.currentEntitlement(for: id) else {
-            // The user doesn't have a valid entitlement for this product
-            throw Errors.transactionProductUnknown
-        }
-
-        guard await Transaction.unfinished.contains(verificationResult) else {
-            // The transaction is finished. Return successfully
-            return
-        }
-
-        try await handleCompletedTransaction(verificationResult)
+//        guard let verificationResult = await Transaction.currentEntitlement(for: id) else {
+//            // The user doesn't have a valid entitlement for this product
+//            throw Errors.transactionProductUnknown
+//        }
+//
+//        guard await Transaction.unfinished.contains(verificationResult) else {
+//            // The transaction is finished. Return successfully
+//            return
+//        }
+//
+//        try await handleCompletedTransaction(verificationResult)
     }
 
     func assertInAppPurchasesAreSupported() async throws {
@@ -264,25 +304,6 @@ private extension InAppPurchaseStore {
         return supportedCountriesCodes.contains(countryCode)
     }
 
-    func listenForTransactions() {
-        assert(listenTask == nil, "InAppPurchaseStore.listenForTransactions() called while already listening for transactions")
-
-        listenTask = Task.detached { [weak self] in
-            guard let self else {
-                return
-            }
-            for await result in Transaction.updates {
-                do {
-                    // Wait until the purchase finishes
-                    _ = await self.pauseTransactionListener.values.contains(false)
-                    try await self.handleCompletedTransaction(result)
-                } catch {
-                    self.logError("Error handling transaction update: \(error)")
-                }
-            }
-        }
-    }
-
     func logInfo(_ message: String,
                  file: StaticString = #file,
                  function: StaticString = #function,
@@ -298,7 +319,53 @@ private extension InAppPurchaseStore {
     }
 }
 
-public extension InAppPurchaseStore {
+extension NewInAppPurchaseStore: SKPaymentTransactionObserver {
+
+  public func paymentQueue(_ queue: SKPaymentQueue,
+                           updatedTransactions transactions: [SKPaymentTransaction]) {
+    for transaction in transactions {
+        debugPrint("transaction state \(transaction.transactionState)")
+      switch transaction.transactionState {
+      case .purchased:
+          handleCompletedTransaction(transaction)
+        break
+      case .failed:
+          if let error = transaction.error as? NSError {
+              if error.domain == SKErrorDomain {
+                  switch error.code {
+                  case SKError.paymentCancelled.rawValue:
+                      purchaseProductCompletion?(.success(.userCancelled))
+                  default:
+                      purchaseProductCompletion?(.failure(error))
+                  }
+              }
+          }
+        break
+      case .restored:
+        break
+      case .deferred:
+        break
+      case .purchasing:
+        break
+      @unknown default:
+          fatalError()
+      }
+    }
+  }
+
+  private func fail(transaction: SKPaymentTransaction) {
+    print("fail...")
+    if let transactionError = transaction.error as NSError?,
+      let localizedDescription = transaction.error?.localizedDescription,
+        transactionError.code != SKError.paymentCancelled.rawValue {
+        print("Transaction Error: \(localizedDescription)")
+      }
+
+    SKPaymentQueue.default().finishTransaction(transaction)
+  }
+}
+
+public extension NewInAppPurchaseStore {
     enum Errors: Error, LocalizedError {
         /// The purchase was successful but the transaction was unverified
         ///

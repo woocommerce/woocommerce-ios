@@ -2,6 +2,8 @@ import Foundation
 import protocol Yosemite.StoresManager
 import enum Yosemite.PaymentAction
 import struct Yosemite.WPComPlan
+import protocol Yosemite.WPComPlanProduct
+import enum Yosemite.InAppPurchaseResult
 
 /// An `InAppPurchasesForWPComPlansProtocol` implementation for purchasing a WPCOM plan in a webview.
 struct WebPurchasesForWPComPlans {

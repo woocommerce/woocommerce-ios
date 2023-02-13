@@ -8,7 +8,7 @@ import WooFoundation
 //         Every store is subscribed to the global action dispatcher (although it can be initialized with a custom dispatcher), and should
 //         respond to relevant Actions by implementing onAction(_:), and change its internal state according to those actions.
 //
-open class Store: ActionsProcessor {
+open class Store: NSObject, ActionsProcessor {
 
     /// The dispatcher used to subscribe to Actions.
     ///
@@ -34,6 +34,8 @@ open class Store: ActionsProcessor {
         self.dispatcher = dispatcher
         self.storageManager = storageManager
         self.network = network
+
+        super.init()
 
         registerSupportedActions(in: dispatcher)
     }

@@ -931,6 +931,7 @@ private extension StripeCardReaderService {
 //
 private extension StripeCardReaderService {
     var shouldUseSimulatedCardReader: Bool {
+        return true
         #if DEBUG
         return ProcessInfo.processInfo.arguments.contains("-simulate-stripe-card-reader")
         #else

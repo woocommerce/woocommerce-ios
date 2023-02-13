@@ -1,5 +1,6 @@
 import Foundation
 import StoreKit
+@testable import Yosemite
 
 #if DEBUG
 

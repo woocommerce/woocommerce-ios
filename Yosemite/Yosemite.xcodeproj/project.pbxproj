@@ -325,6 +325,8 @@
 		B5EED1A820F4F3CF00652449 /* Account+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */; };
 		B5F2AE9520EBAD6000FEDC59 /* ResultsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */; };
 		B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */; };
+		B9432CD3298C1B57003F2562 /* InAppPurchasesProductsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9432CD2298C1B57003F2562 /* InAppPurchasesProductsProvider.swift */; };
+		B9432CD5298D3160003F2562 /* NewInAppPurchaseStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9432CD4298D3160003F2562 /* NewInAppPurchaseStore.swift */; };
 		B9AECD3C2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3B2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift */; };
 		B9AECD3E2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3D2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift */; };
 		B9AECD402850FE4600E78584 /* Order+CardPresentPayment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3F2850FE4600E78584 /* Order+CardPresentPayment.swift */; };
@@ -764,6 +766,8 @@
 		B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsControllerTests.swift; sourceTree = "<group>"; };
 		B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchedResultsControllerDelegateWrapper.swift; sourceTree = "<group>"; };
+		B9432CD2298C1B57003F2562 /* InAppPurchasesProductsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesProductsProvider.swift; sourceTree = "<group>"; };
+		B9432CD4298D3160003F2562 /* NewInAppPurchaseStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInAppPurchaseStore.swift; sourceTree = "<group>"; };
 		B9AECD3B2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityStore.swift; sourceTree = "<group>"; };
 		B9AECD3D2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityAction.swift; sourceTree = "<group>"; };
 		B9AECD3F2850FE4600E78584 /* Order+CardPresentPayment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Order+CardPresentPayment.swift"; sourceTree = "<group>"; };
@@ -1444,6 +1448,8 @@
 				02393066291A02AC00B2632F /* DomainStore.swift */,
 				021940E5291E8AD80090354E /* SiteStore.swift */,
 				02EF1665292DB65000D90AD6 /* PaymentStore.swift */,
+				B9432CD2298C1B57003F2562 /* InAppPurchasesProductsProvider.swift */,
+				B9432CD4298D3160003F2562 /* NewInAppPurchaseStore.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -1951,6 +1957,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9432CD3298C1B57003F2562 /* InAppPurchasesProductsProvider.swift in Sources */,
 				7492FADD217FAF5C00ED2C69 /* SettingStore.swift in Sources */,
 				E138D4FA269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift in Sources */,
 				02E3B625290267F2007E0F13 /* AccountCreationAction.swift in Sources */,
@@ -2093,6 +2100,7 @@
 				74A7688C20D45EBA00F9D437 /* OrderStore.swift in Sources */,
 				DE3404FE28BC5F4200CF0D97 /* JetpackConnectionStore.swift in Sources */,
 				2618707C2540B6A4006522A1 /* ShippingLineTax+ReadOnlyConvertible.swift in Sources */,
+				B9432CD5298D3160003F2562 /* NewInAppPurchaseStore.swift in Sources */,
 				021940E6291E8AD80090354E /* SiteStore.swift in Sources */,
 				749375002249605E007D85D1 /* ProductAction.swift in Sources */,
 				D831E2E4230E3524000037D0 /* ProductReviewAction.swift in Sources */,

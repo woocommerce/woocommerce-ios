@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 /// Hosting controller that wraps the `StoreCreationPlanView`.
 final class StoreCreationPlanHostingController: UIHostingController<StoreCreationPlanView> {

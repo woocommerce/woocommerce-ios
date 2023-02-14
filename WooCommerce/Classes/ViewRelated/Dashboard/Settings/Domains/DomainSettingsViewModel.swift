@@ -68,10 +68,10 @@ private extension DomainSettingsViewModel {
     func handleDomainsResult(_ result: Result<[SiteDomain], Error>) {
         switch result {
         case .success(let domains):
-            let stagingDomain = domains.first(where: { $0.isWPCOMStagingDomain || $0.type == .wpcom })
-            freeStagingDomain = stagingDomain
+            let stagingOrWPCOMDomain = domains.first(where: { $0.isWPCOMStagingDomain || $0.type == .wpcom })
+            freeStagingDomain = stagingOrWPCOMDomain
                 .map { FreeStagingDomain(isPrimary: $0.isPrimary, name: $0.name) }
-            self.domains = domains.filter { $0 != stagingDomain && $0.type != .wpcom }
+            self.domains = domains.filter { $0 != stagingOrWPCOMDomain && $0.type != .wpcom }
                 .map { Domain(isPrimary: $0.isPrimary, name: $0.name, autoRenewalDate: $0.renewalDate) }
         case .failure(let error):
             DDLogError("⛔️ Error retrieving domains for siteID \(siteID): \(error)")

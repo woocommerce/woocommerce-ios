@@ -9,6 +9,25 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
         super.init(rootView: SupportForm(viewModel: viewModel))
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        createZendeskIdentity()
+    }
+
+    /// Creates the Zendesk Identity if needed.
+    /// If it fails, it pops back the view and informs the user.
+    ///
+    func createZendeskIdentity() {
+        // TODO: We should consider refactoring this to present the email alert using SwiftUI.
+        ZendeskProvider.shared.createIdentity(presentIn: self) { [weak self] identityCreated in
+            if !identityCreated {
+                DDLogError("⛔️ Zendesk Identity could not be created.")
+                self?.navigationController?.popViewController(animated: true)
+                // TODO: show error notice
+            }
+        }
+    }
+
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -64,7 +83,6 @@ struct SupportForm: View {
                 Text(Localization.submitRequest)
             }
             .buttonStyle(PrimaryButtonStyle())
-
         }
         .padding()
         .navigationTitle(Localization.title)

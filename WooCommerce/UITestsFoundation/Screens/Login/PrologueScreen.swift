@@ -3,6 +3,10 @@ import XCTest
 
 public final class PrologueScreen: ScreenObject {
 
+    private let titleLabelGetter: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["prologue-title-label"]
+    }
+
     private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["Prologue Continue Button"]
     }
@@ -17,8 +21,9 @@ public final class PrologueScreen: ScreenObject {
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
-                continueButtonGetter,
-                selectSiteButtonGetter
+                /// due to the changes of CTAs on the prologue screen,
+                /// it is safer to check for the title label only.
+                titleLabelGetter
             ],
             app: app
         )

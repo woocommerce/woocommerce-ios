@@ -5,10 +5,11 @@
 - [Internal] Prologue screen now has only the entry point to site address login flow, and application password authentication is used for sites without Jetpack. [https://github.com/woocommerce/woocommerce-ios/pull/8846]
 - [Internal] A new tag has been added for Zendesk for users authenticated with application password. [https://github.com/woocommerce/woocommerce-ios/pull/8850]
 
+
 12.3
 -----
 - [Internal] We have updated the Zendesk SDK to version 6.0 [https://github.com/woocommerce/woocommerce-ios/pull/8828]
-
+- [Internal] Tap to Pay on iPhone made publicly available via an Experimental Feature toggle [https://github.com/woocommerce/woocommerce-ios/pull/8814]
 
 12.2
 -----

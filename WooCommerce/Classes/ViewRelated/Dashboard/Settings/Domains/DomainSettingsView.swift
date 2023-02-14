@@ -102,12 +102,12 @@ private extension DomainSettingsView {
         )
         static let learnMoreFormat = NSLocalizedString(
             "%1$@ about domains and how to take domain-related actions.",
-            comment: "Learn more text on the domain settings screen to search for a domain. " +
+            comment: "Learn more format at the bottom of the domain settings screen. " +
             "%1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains."
         )
         static let learnMore = NSLocalizedString(
             "Learn more",
-            comment: "Learn more text on the domain settings screen to search for a domain."
+            comment: "Tappable text at the bottom of the domain settings screen that opens a webview."
         )
     }
 

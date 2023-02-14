@@ -35,31 +35,21 @@ public final class SupportFormViewModel: ObservableObject {
 
     /// Supported support areas.
     ///
-    let areas: [Area] = [
-        .init(title: Localization.mobileApp),
-        .init(title: Localization.ipp),
-        .init(title: Localization.wcPayments),
-        .init(title: Localization.wcPlugin),
-        .init(title: Localization.otherPlugin),
-    ]
+    let areas: [Area]
 
-    /// Zendesk metadata provider.
-    ///
-    private let dataSource: SupportFormMetaDataSource
-
-    init(dataSource: SupportFormMetaDataSource) {
-        self.dataSource = dataSource
+    init(areas: [Area] = wooSupportAreas()) {
+        self.areas = areas
         self.area = areas[0] // Preselect the first area.
     }
 
     /// Submits the support request using the Zendesk Provider.
     ///
     func submitSupportRequest(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        ZendeskProvider.shared.createSupportRequest(formID: dataSource.formID,
-                                                    customFields: dataSource.customFields,
-                                                    tags: dataSource.tags,
-                                                    subject: "Temporary Subject",
-                                                    description: "Temporary Description",
+        ZendeskProvider.shared.createSupportRequest(formID: area.datasource.formID,
+                                                    customFields: area.datasource.customFields,
+                                                    tags: area.datasource.tags,
+                                                    subject: subject,
+                                                    description: description,
                                                     onCompletion: onCompletion)
     }
 }
@@ -71,18 +61,41 @@ extension SupportFormViewModel {
         ///
         let title: String
 
-        /// Area tags. To be filled later.
+        /// Area data source.
         ///
-        let tags: [String] = []
+        let datasource: SupportFormMetaDataSource
 
-        /// Area form id. To be filled later.
+        /// Light implementation. This is just for UI purposes and needed due to the usage of `SupportFormMetaDataSource` as a constraint.
         ///
-        let formID: Int64 = 0
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(title)
+            hasher.combine(datasource.formID)
+        }
+
+        /// implementation. This is just for UI purposes and needed due to the usage of `SupportFormMetaDataSource` as a constraint.
+        ///
+        static func == (lhs: SupportFormViewModel.Area, rhs: SupportFormViewModel.Area) -> Bool {
+            lhs.title == rhs.title &&
+            lhs.datasource.formID == rhs.datasource.formID
+        }
     }
 }
 
 // MARK: Constants
 private extension SupportFormViewModel {
+
+    /// Default Woo Support Areas
+    ///
+    static func wooSupportAreas() -> [Area] {
+        [
+            .init(title: Localization.mobileApp, datasource: MobileAppSupportDataSource()),
+            .init(title: Localization.ipp, datasource: IPPSupportDataSource()),
+            .init(title: Localization.wcPayments, datasource: WCPaySupportDataSource()),
+            .init(title: Localization.wcPlugin, datasource: WCPluginsSupportDataSource()),
+            .init(title: Localization.otherPlugin, datasource: OtherPluginsSupportDataSource())
+        ]
+    }
+
     enum Localization {
         static let mobileApp = NSLocalizedString("Mobile App", comment: "Title of the mobile app support area option")
         static let ipp = NSLocalizedString("Card Reader / In-Person Payments", comment: "Title of the card reader support area option")

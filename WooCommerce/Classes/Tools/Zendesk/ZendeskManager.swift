@@ -597,11 +597,11 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 ///
 extension ZendeskManager {
     func formID() -> Int64 {
-        createRequest(supportSourceTag: nil).ticketFormID?.int64Value ?? .zero
+        TicketFieldIDs.form
     }
 
     func wcPayFormID() -> Int64 {
-        createWCPayRequest(supportSourceTag: nil).ticketFormID?.int64Value ?? .zero
+        TicketFieldIDs.paymentsForm
     }
 
     func generalTags() -> [String] {

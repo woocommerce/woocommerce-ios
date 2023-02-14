@@ -340,7 +340,7 @@ private extension HelpAndSupportViewController {
         }
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
-            let viewController = SupportFormHostingController(viewModel: .init(dataSource: MobileAppSupportDataSource()))
+            let viewController = SupportFormHostingController(viewModel: .init())
             show(viewController, sender: self)
         } else {
             ZendeskProvider.shared.showNewRequestIfPossible(from: navController)

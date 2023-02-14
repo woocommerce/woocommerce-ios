@@ -29,13 +29,12 @@ struct SupportForm: View {
                 Text(Localization.iNeedHelp)
                     .bold()
                 Picker(Localization.iNeedHelp, selection: $viewModel.area) {
-                    Text("Mobile App").tag(0)
-                    Text("Card Reader/In-Person Payments").tag(1)
-                    Text("WooCommerce Payments").tag(2)
-                    Text("WooCommerce Plugin").tag(3)
-                    Text("Other extension/plugin").tag(4)
+                    ForEach(viewModel.areas, id: \.self) { area in
+                        Text(area.title).tag(area)
+                    }
                 }
                 .pickerStyle(.menu)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 

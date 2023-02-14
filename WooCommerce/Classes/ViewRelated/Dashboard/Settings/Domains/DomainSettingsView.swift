@@ -61,10 +61,21 @@ struct DomainSettingsView: View {
                     Divider()
                         .frame(height: Layout.dividerHeight)
                         .foregroundColor(Color(.separator))
-                    Button(Localization.searchDomainButton) {
-                        addDomain(viewModel.hasDomainCredit, viewModel.freeStagingDomain?.name)
+
+                    VStack(spacing: Layout.bottomContentSpacing) {
+                        Button(Localization.searchDomainButton) {
+                            addDomain(viewModel.hasDomainCredit, viewModel.freeStagingDomain?.name)
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+
+                        HStack(alignment: .top, spacing: Layout.learnMoreImageAndTextSpacing) {
+                            Image(uiImage: .infoOutlineFootnoteImage)
+                                .foregroundColor(.init(uiColor: .textSubtle))
+                            LearnMoreAttributedText(format: Localization.learnMoreFormat,
+                                                    tappableLearnMoreText: Localization.learnMore,
+                                                    url: URLs.learnMore)
+                        }
                     }
-                    .buttonStyle(PrimaryButtonStyle())
                     .padding(Layout.bottomContentPadding)
                 }
                 .background(Color(.systemBackground))
@@ -89,6 +100,19 @@ private extension DomainSettingsView {
             "Search for a Domain",
             comment: "Title of the button on the domain settings screen to search for a domain."
         )
+        static let learnMoreFormat = NSLocalizedString(
+            "%1$@ about domains and how to take domain-related actions.",
+            comment: "Learn more text on the domain settings screen to search for a domain. " +
+            "%1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains."
+        )
+        static let learnMore = NSLocalizedString(
+            "Learn more",
+            comment: "Learn more text on the domain settings screen to search for a domain."
+        )
+    }
+
+    enum URLs {
+        static let learnMore: URL = URL(string: "https://wordpress.com/go/tutorials/what-is-a-domain-name")!
     }
 }
 
@@ -99,6 +123,8 @@ private extension DomainSettingsView {
         static let contentPadding: EdgeInsets = .init(top: 39, leading: 0, bottom: 16, trailing: 0)
         static let defaultHorizontalPadding: EdgeInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
         static let contentSpacing: CGFloat = 36
+        static let bottomContentSpacing: CGFloat = 16
+        static let learnMoreImageAndTextSpacing: CGFloat = 12
     }
 }
 

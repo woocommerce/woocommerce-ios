@@ -19,7 +19,19 @@ public protocol SupportFormMetaDataSource {
 
 /// View Model for the support form.
 ///
-public final class SupportFormViewModel {
+public final class SupportFormViewModel: ObservableObject {
+
+    /// Variable that holds the area of support for better routing.
+    ///
+    @Published var area = ""
+
+    /// Variable that holds the subject of the ticket.
+    ///
+    @Published var subject = ""
+
+    /// Variable that holds the description of the ticket.
+    ///
+    @Published var description = ""
 
     /// Zendesk metadata provider.
     ///

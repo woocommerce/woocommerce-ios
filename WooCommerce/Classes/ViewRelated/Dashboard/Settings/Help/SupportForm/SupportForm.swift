@@ -1,13 +1,26 @@
 import Foundation
 import SwiftUI
 
+/// Hosting Controller for the Support Form.
+///
+final class SupportFormHostingController: UIHostingController<SupportForm> {
+
+    init(viewModel: SupportFormViewModel) {
+        super.init(rootView: SupportForm(viewModel: viewModel))
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+/// Support Form Main View.
+///
 struct SupportForm: View {
 
-    @State private var favoriteColor = 0
-
-    @State private var subject = ""
-
-    @State private var description = ""
+    /// Main ViewModel to drive the view.
+    ///
+    @StateObject var viewModel: SupportFormViewModel
 
     var body: some View {
         VStack(spacing: Layout.sectionSpacing) {
@@ -15,7 +28,7 @@ struct SupportForm: View {
             HStack(spacing: -Layout.optionsSpacing) {
                 Text(Localization.iNeedHelp)
                     .bold()
-                Picker(Localization.iNeedHelp, selection: $favoriteColor) {
+                Picker(Localization.iNeedHelp, selection: $viewModel.area) {
                     Text("Mobile App").tag(0)
                     Text("Card Reader/In-Person Payments").tag(1)
                     Text("WooCommerce Payments").tag(2)
@@ -29,7 +42,7 @@ struct SupportForm: View {
             VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                 Text(Localization.subject)
                     .bold()
-                TextField("", text: $subject)
+                TextField("", text: $viewModel.subject)
                     .bodyStyle()
                     .padding(Layout.subjectPadding)
                     .border(Color(.separator))
@@ -39,7 +52,7 @@ struct SupportForm: View {
             VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                 Text(Localization.whatToDo)
                     .bold()
-                TextEditor(text: $description)
+                TextEditor(text: $viewModel.description)
                     .bodyStyle()
                     .border(Color(.separator))
                     .cornerRadius(Layout.cornerRadius)
@@ -81,9 +94,16 @@ private extension SupportForm {
 
 // MARK: Previews
 struct SupportFormProvider: PreviewProvider {
+
+    struct MockDataSource: SupportFormMetaDataSource {
+        let formID: Int64 = 0
+        let tags: [String] = []
+        let customFields: [Int64: String] = [:]
+    }
+
     static var previews: some View {
         NavigationView {
-            SupportForm()
+            SupportForm(viewModel: .init(dataSource: MockDataSource()))
         }
     }
 }

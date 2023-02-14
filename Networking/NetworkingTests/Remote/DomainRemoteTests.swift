@@ -104,10 +104,10 @@ final class DomainRemoteTests: XCTestCase {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM d, yyyy"
         let renewalDate = try XCTUnwrap(dateFormatter.date(from: "December 10, 2023"))
-        XCTAssertEqual(domains, [
-            .init(name: "crabparty.wpcomstaging.com", isPrimary: true),
-            .init(name: "crabparty.com", isPrimary: false, renewalDate: renewalDate),
-            .init(name: "crabparty.wordpress.com", isPrimary: false)
+        assertEqual(domains, [
+            .init(name: "crabparty.wpcomstaging.com", isPrimary: true, isWPCOMStagingDomain: true, type: .wpcom),
+            .init(name: "crabparty.com", isPrimary: false, isWPCOMStagingDomain: false, type: .mapping, renewalDate: renewalDate),
+            .init(name: "crabparty.wordpress.com", isPrimary: false, isWPCOMStagingDomain: false, type: .wpcom)
         ])
     }
 

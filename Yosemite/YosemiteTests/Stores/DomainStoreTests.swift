@@ -142,8 +142,8 @@ final class DomainStoreTests: XCTestCase {
     func test_loadDomains_returns_domains_on_success() throws {
         // Given
         remote.whenLoadingDomains(thenReturn: .success([
-            .init(name: "candy.land", isPrimary: true, renewalDate: .distantFuture),
-            .init(name: "pods.pro", isPrimary: true)
+            .init(name: "candy.land", isPrimary: true, isWPCOMStagingDomain: true, type: .wpcom, renewalDate: .distantFuture),
+            .init(name: "pods.pro", isPrimary: true, isWPCOMStagingDomain: false, type: .mapping)
         ]))
 
         // When
@@ -157,8 +157,8 @@ final class DomainStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         let suggestions = try XCTUnwrap(result.get())
         XCTAssertEqual(suggestions, [
-            .init(name: "candy.land", isPrimary: true, renewalDate: .distantFuture),
-            .init(name: "pods.pro", isPrimary: true)
+            .init(name: "candy.land", isPrimary: true, isWPCOMStagingDomain: true, type: .wpcom, renewalDate: .distantFuture),
+            .init(name: "pods.pro", isPrimary: true, isWPCOMStagingDomain: false, type: .mapping)
         ])
     }
 

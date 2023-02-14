@@ -15,6 +15,7 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
 }
 
 /// Support Form Main View.
+/// TODO: Add Landscape & Big Fonts support
 ///
 struct SupportForm: View {
 
@@ -69,7 +70,6 @@ struct SupportForm: View {
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .wooNavigationBarStyle()
-        .scrollVerticallyIfNeeded()
     }
 }
 

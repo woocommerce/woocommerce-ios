@@ -78,9 +78,10 @@ private enum Localization {
 }
 
 extension LearnMoreViewModel {
-    static func inPersonPayments() -> LearnMoreViewModel {
+    static func inPersonPayments(source: WooAnalyticsEvent.InPersonPayments.LearnMoreLinkSource) -> LearnMoreViewModel {
         LearnMoreViewModel(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL(),
                            linkText: Localization.learnMoreLink,
-                           formatText: Localization.inPersonPaymentslearnMoreText)
+                           formatText: Localization.inPersonPaymentslearnMoreText,
+                           tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: source))
     }
 }

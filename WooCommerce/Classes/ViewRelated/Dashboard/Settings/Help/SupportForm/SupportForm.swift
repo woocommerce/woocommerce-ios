@@ -77,7 +77,7 @@ struct SupportForm: View {
 private extension SupportForm {
     enum Localization {
         static let title = NSLocalizedString("Contact Support", comment: "Title of the view for contacting support.")
-        static let iNeedHelp = NSLocalizedString("I need help with", comment: "Text on the support form to refer to what area the user has problem with.")
+        static let iNeedHelp = NSLocalizedString("I need help with:", comment: "Text on the support form to refer to what area the user has problem with.")
         static let subject = NSLocalizedString("Subject", comment: "Subject title on the support form")
         static let whatToDo = NSLocalizedString("What are you trying to do?", comment: "Text on the support form to ask the user what are they trying to do.")
         static let submitRequest = NSLocalizedString("Submit Support Request", comment: "Button title to submit a support request.")

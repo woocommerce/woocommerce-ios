@@ -5,7 +5,6 @@ extension WooAnalyticsEvent {
         private enum Key {
             static let scenario = "scenario"
             static let cause = "cause"
-            static let experimentVariant = "experiment_variant"
         }
 
         enum Scenario: String {
@@ -18,13 +17,6 @@ extension WooAnalyticsEvent {
             case featureDisabled = "feature_disabled"
             case customLoginOrAdminUrl = "custom_login_or_admin_url"
             case other = "other"
-        }
-
-        /// Tracks the REST API A/B test variation
-        ///
-        static func restAPILoginExperiment(variation: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .trackRestAPILoginExperimentVariation,
-                              properties: [Key.experimentVariant: variation])
         }
 
         /// Tracks when generating application password succeeds

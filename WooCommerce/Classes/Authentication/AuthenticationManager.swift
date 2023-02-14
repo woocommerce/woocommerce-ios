@@ -55,10 +55,6 @@ class AuthenticationManager: Authentication {
     /// Keeps a reference to the use case
     private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
 
-    private var enableSiteAddressLoginOnly: Bool {
-        abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment
-    }
-
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
@@ -75,7 +71,6 @@ class AuthenticationManager: Authentication {
         let isWPComMagicLinkPreferredToPassword = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let isStoreCreationMVPEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
-        let enableSiteAddressLoginOnly = abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -93,7 +88,7 @@ class AuthenticationManager: Authentication {
                                                                 enableUnifiedAuth: true,
                                                                 continueWithSiteAddressFirst: false,
                                                                 enableSiteCredentialsLoginForSelfHostedSites: true,
-                                                                isWPComLoginRequiredForSiteCredentialsLogin: !enableSiteAddressLoginOnly,
+                                                                isWPComLoginRequiredForSiteCredentialsLogin: false,
                                                                 isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
                                                                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
                                                                     isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen,
@@ -104,10 +99,11 @@ class AuthenticationManager: Authentication {
                                                                 wpcomPasswordInstructions:
                                                                 AuthenticationConstants.wpcomPasswordInstructions,
                                                                 skipXMLRPCCheckForSiteDiscovery: true,
-                                                                skipXMLRPCCheckForSiteAddressLogin: enableSiteAddressLoginOnly,
-                                                                enableManualSiteCredentialLogin: enableSiteAddressLoginOnly,
+                                                                skipXMLRPCCheckForSiteAddressLogin: true,
+                                                                enableManualSiteCredentialLogin: true,
                                                                 useEnterEmailAddressAsStepValueForGetStartedVC: true,
-                                                                enableSiteAddressLoginOnlyInPrologue: enableSiteAddressLoginOnly)
+                                                                enableSiteAddressLoginOnlyInPrologue: true,
+                                                                enableSiteCredentialLoginForJetpackSites: false)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -356,13 +352,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         /// save the site to memory to check for jetpack requirement in epilogue
         currentSelfHostedSite = site
 
-        let enableWPComOnlyForWPComSites = abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment
-
-        switch (enableWPComOnlyForWPComSites, site.isWPCom) {
-        case (true, true), (false, _):
+        if site.isWPCom || site.isJetpackConnected {
             let authenticationResult: WordPressAuthenticatorResult = .presentEmailController
             onCompletion(authenticationResult)
-        case (true, false):
+        } else {
             let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: true)
             onCompletion(authenticationResult)
         }
@@ -421,10 +414,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return DDLogError("⛔️ No site URL found to present Login Epilogue.")
         }
 
-        /// If the user logged in with site credentials and application password feature flag is enabled,
+        /// If the user logged in with site credentials,
         /// check if they can use the app and navigates to the home screen.
-        if let siteCredentials = credentials.wporg,
-           abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment {
+        if let siteCredentials = credentials.wporg {
             return didAuthenticateUser(to: siteURL,
                                        with: siteCredentials,
                                        in: navigationController)
@@ -535,8 +527,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Synchronizes the specified WordPress Account.
     ///
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
-        if let wporg = credentials.wporg,
-           abTestVariationProvider.variation(for: .applicationPasswordAuthentication) == .treatment {
+        if let wporg = credentials.wporg {
             ServiceLocator.stores.authenticate(credentials: .wporg(username: wporg.username,
                                                                    password: wporg.password,
                                                                    siteAddress: wporg.siteURL))

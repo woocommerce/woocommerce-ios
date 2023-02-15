@@ -41,6 +41,10 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     let areas: [Area]
 
+    /// Assign this closure to get notified when a support request creation finishes.
+    ///
+    var onCompletion: ((Result<Void, Error>) -> Void)?
+
     /// Defines when the submit button should be enabled or not.
     ///
     var submitButtonDisabled: Bool {
@@ -58,16 +62,16 @@ public final class SupportFormViewModel: ObservableObject {
         showLoadingIndicator = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
 
-//        ZendeskProvider.shared.createSupportRequest(formID: area.datasource.formID,
-//                                                    customFields: area.datasource.customFields,
-//                                                    tags: area.datasource.tags,
-//                                                    subject: subject,
-//                                                    description: description) { [weak self] result in
+            //        ZendeskProvider.shared.createSupportRequest(formID: area.datasource.formID,
+            //                                                    customFields: area.datasource.customFields,
+            //                                                    tags: area.datasource.tags,
+            //                                                    subject: subject,
+            //                                                    description: description) { [weak self] result in
             guard let self else { return }
             self.showLoadingIndicator = false
-
-            //print(result)
+            self.onCompletion?(.success(()))
         }
+            //print(result)
     }
 }
 

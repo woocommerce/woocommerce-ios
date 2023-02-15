@@ -12,6 +12,7 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
     override func viewDidLoad() {
         super.viewDidLoad()
         createZendeskIdentity()
+        handleSupportRequestCompletion()
     }
 
     /// Creates the Zendesk Identity if needed.
@@ -24,6 +25,21 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
                 DDLogError("⛔️ Zendesk Identity could not be created.")
                 self?.navigationController?.popViewController(animated: true)
                 // TODO: show error notice
+            }
+        }
+    }
+
+    /// Registers a completion block on the view model to properly show alerts and notices.
+    ///
+    func handleSupportRequestCompletion() {
+        rootView.viewModel.onCompletion = { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success:
+                break // TODO: show alert and pop back
+            case .failure:
+                break // TODO: log error, show error notice
             }
         }
     }

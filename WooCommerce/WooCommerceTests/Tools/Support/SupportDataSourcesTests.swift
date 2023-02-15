@@ -3,23 +3,85 @@ import XCTest
 
 final class SupportDataSourcesTests: XCTestCase {
 
-    func test_general_formID_has_correct_value() {
-        let dataSource = GeneralSupportDataSource()
+    func test_mobile_app_formID_has_correct_value() {
+        let dataSource = MobileAppSupportDataSource()
         XCTAssertEqual(dataSource.formID, 360000010286)
     }
 
-    func test_general_tags_have_correct_values() {
+    func test_mobile_app_tags_have_correct_values() {
         // Given
-        let dataSource = GeneralSupportDataSource()
+        let dataSource = MobileAppSupportDataSource()
         let tagsSet = Set(dataSource.tags)
-        let expectedSet = Set(["iOS", "woo-mobile-sdk", "jetpack"])
+        let expectedSet = Set(["iOS", "woo-mobile-sdk", "jetpack", "mobile_app"])
 
         // When & Then
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
     }
 
-    func test_general_custom_fields_have_correct_ids() {
-        let dataSource = GeneralSupportDataSource()
+    func test_mobile_app_fields_have_correct_ids() {
+        let dataSource = MobileAppSupportDataSource()
+        let customFieldsKeys = dataSource.customFields.keys.sorted()
+        XCTAssertEqual(customFieldsKeys, [
+            360008583691, // App Language
+            360000103103, // Current Site
+            360009311651, // Source Platform
+            360000086966, // Network Information
+            360000086866, // App Version
+            22871957, // Legacy Logs
+            25176023, // Sub Category
+            10901699622036, // Logs
+            360000089123 // Device Free Space
+        ].sorted())
+    }
+
+    func test_ipp_formID_has_correct_value() {
+        let dataSource = IPPSupportDataSource()
+        XCTAssertEqual(dataSource.formID, 360000010286)
+    }
+
+    func test_ipp_tags_have_correct_values() {
+        // Given
+        let dataSource = IPPSupportDataSource()
+        let tagsSet = Set(dataSource.tags)
+        let expectedSet = Set(["iOS", "woo-mobile-sdk", "jetpack", "woocommerce_mobile_apps", "product_area_apps_in_person_payments"])
+
+        // When & Then
+        XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
+    }
+
+    func test_ipp_fields_have_correct_ids() {
+        let dataSource = IPPSupportDataSource()
+        let customFieldsKeys = dataSource.customFields.keys.sorted()
+        XCTAssertEqual(customFieldsKeys, [
+            360008583691, // App Language
+            360000103103, // Current Site
+            360009311651, // Source Platform
+            360000086966, // Network Information
+            360000086866, // App Version
+            22871957, // Legacy Logs
+            25176023, // Sub Category
+            10901699622036, // Logs
+            360000089123 // Device Free Space
+        ].sorted())
+    }
+
+    func test_wc_plugins_formID_has_correct_value() {
+        let dataSource = WCPluginsSupportDataSource()
+        XCTAssertEqual(dataSource.formID, 189946)
+    }
+
+    func test_wc_plugins_tags_have_correct_values() {
+        // Given
+        let dataSource = WCPluginsSupportDataSource()
+        let tagsSet = Set(dataSource.tags)
+        let expectedSet = Set(["iOS", "woo-mobile-sdk", "jetpack", "woocommerce_core"])
+
+        // When & Then
+        XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
+    }
+
+    func test_wc_plugins_fields_have_correct_ids() {
+        let dataSource = WCPluginsSupportDataSource()
         let customFieldsKeys = dataSource.customFields.keys.sorted()
         XCTAssertEqual(customFieldsKeys, [
             360008583691, // App Language
@@ -59,6 +121,36 @@ final class SupportDataSourcesTests: XCTestCase {
             360000086866, // App Version
             22871957, // Legacy Logs
             25176003, // Category
+            25176023, // Sub Category
+            10901699622036, // Logs
+            360000089123 // Device Free Space
+        ].sorted())
+    }
+
+    func test_other_plugins_formID_has_correctValue() {
+        let dataSource = OtherPluginsSupportDataSource()
+        XCTAssertEqual(dataSource.formID, 189946)
+    }
+
+    func test_other_plugins_tags_have_correct_values() {
+        let dataSource = OtherPluginsSupportDataSource()
+        let tagsSet = Set(dataSource.tags)
+        let expectedSet = Set(["iOS", "woo-mobile-sdk", "jetpack", "product_area_woo_extensions"])
+
+        // When & Then
+        XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
+    }
+
+    func test_other_plugins_custom_fields_have_correct_values() {
+        let dataSource = OtherPluginsSupportDataSource()
+        let customFieldsKeys = dataSource.customFields.keys.sorted()
+        XCTAssertEqual(customFieldsKeys, [
+            360008583691, // App Language
+            360000103103, // Current Site
+            360009311651, // Source Platform
+            360000086966, // Network Information
+            360000086866, // App Version
+            22871957, // Legacy Logs
             25176023, // Sub Category
             10901699622036, // Logs
             360000089123 // Device Free Space

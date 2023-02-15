@@ -36,6 +36,7 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
     /// Registers a completion block on the view model to properly show alerts and notices.
     ///
     func handleSupportRequestCompletion() {
+        // TODO: Solve warning
         rootView.viewModel.onCompletion = { [weak self] result in
             guard let self else { return }
             switch result {
@@ -56,10 +57,10 @@ private extension SupportFormHostingController {
     /// Shows an alert informing the support creation success and after confirmation pops the view back.
     ///
     func informSuccessAndPopBack() {
-        let alertController = UIAlertController(title: "Request Sent!",
-                                                message: "Your support request has landed safely in our inbox, we will reply shortly via email.",
+        let alertController = UIAlertController(title: Localization.requestSent,
+                                                message: Localization.requestSentMessage,
                                                 preferredStyle: .alert)
-        alertController.addDefaultActionWithTitle("Got it!") { _ in
+        alertController.addDefaultActionWithTitle(Localization.gotIt) { _ in
             self.navigationController?.popViewController(animated: true)
         }
         present(alertController, animated: true)
@@ -68,8 +69,10 @@ private extension SupportFormHostingController {
     /// Logs and informs the user that a support request could not be created
     ///
     func logAndInformErrorCreatingRequest(_ error: Error) {
-        let notice = Notice(title: "Sorry, we could not create your support request, please try again later.", feedbackType: .error)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        let notice = Notice(title: Localization.requestSentError, feedbackType: .error)
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        noticePresenter.enqueue(notice: notice)
 
         DDLogError("⛔️ Could not create Support Request. Error: \(error.localizedDescription)")
     }
@@ -77,11 +80,25 @@ private extension SupportFormHostingController {
     /// Informs user about identity error and pop back
     ///
     func logIdentityErrorAndPopBack() {
-        let notice = Notice(title: "Sorry, we cannot create support request right now, please try again later.", feedbackType: .error)
+        let notice = Notice(title: Localization.badIdentityError, feedbackType: .error)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
 
         navigationController?.popViewController(animated: true)
         DDLogError("⛔️ Zendesk Identity could not be created.")
+    }
+}
+
+private extension SupportFormHostingController {
+    enum Localization {
+        static let requestSent = NSLocalizedString("Request Sent!", comment: "Title for the alert after the support request is created.")
+        static let requestSentMessage = NSLocalizedString("RYour support request has landed safely in our inbox, we will reply shortly via email.",
+                                                          comment: "Message for the alert after the support request is created.")
+        static let gotIt = NSLocalizedString("Got It!", comment: "Confirmation button for the alert after the support request is created.")
+
+        static let badIdentityError = NSLocalizedString("Sorry, we cannot create support requests right now, please try again later.",
+                                                        comment: "Error message when the app can't create a zendesk identity.")
+        static let requestSentError = NSLocalizedString("Sorry, we could not create your support request, please try again later.",
+                                                        comment: "Error message when the app can't create a support request.")
     }
 }
 

@@ -48,6 +48,10 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     var showEmailField: Bool { get }
 
+    /// Defines if the phone country code field should be shown
+    ///
+    var showPhoneCountryCodeField: Bool { get }
+
     /// Defines navbar title
     ///
     var viewTitle: String { get }
@@ -117,6 +121,8 @@ struct AddressFormFields {
     var lastName: String = ""
     var email: String = ""
     var phone: String = ""
+    // Not available in `Address` conversion, currently only available in domain contact info form.
+    var phoneCountryCode: String = ""
 
     // MARK: Address Fields
     var company: String = ""
@@ -254,6 +260,7 @@ open class AddressFormViewModel: ObservableObject {
 
     init(siteID: Int64,
          address: Address,
+         phoneCountryCode: String = "",
          secondaryAddress: Address? = nil,
          isDoneButtonAlwaysEnabled: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -262,7 +269,9 @@ open class AddressFormViewModel: ObservableObject {
         self.siteID = siteID
 
         self.originalAddress = address
-        self.fields = .init(with: originalAddress)
+        var fields: AddressFormFields = .init(with: originalAddress)
+        fields.phoneCountryCode = phoneCountryCode
+        self.fields = fields
 
         self.secondaryOriginalAddress = secondaryAddress ?? .empty
         self.secondaryFields = .init(with: secondaryOriginalAddress)

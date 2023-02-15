@@ -99,6 +99,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                   stateViewModelClosure: viewModel.createStateViewModel,
                                   sectionTitle: viewModel.sectionTitle,
                                   showEmailField: viewModel.showEmailField,
+                                  showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
                                   showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
                          .accessibilityElement(children: .contain)
                          .accessibilityIdentifier("order-address-form")
@@ -128,6 +129,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                       stateViewModelClosure: viewModel.createSecondaryStateViewModel,
                                       sectionTitle: viewModel.secondarySectionTitle,
                                       showEmailField: false,
+                                      showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
                                       showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector)
                         .accessibilityElement(children: .contain)
                         .accessibilityIdentifier("secondary-order-address-form")
@@ -205,6 +207,7 @@ struct SingleAddressForm: View {
 
     let sectionTitle: String
     let showEmailField: Bool
+    let showPhoneCountryCodeField: Bool
     let showStateFieldAsSelector: Bool
 
     /// Set it to `true` to present the country selector.
@@ -268,6 +271,19 @@ struct SingleAddressForm: View {
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
 
+            }
+
+            if showPhoneCountryCodeField {
+                TitleAndTextFieldRow(title: Localization.phoneCountryCodeField,
+                                     titleWidth: $titleWidth,
+                                     placeholder: Localization.phoneCountryCodeHint,
+                                     text: $fields.phoneCountryCode,
+                                     symbol: nil,
+                                     fieldAlignment: .leading,
+                                     keyboardType: .phonePad)
+                .autocapitalization(.none)
+                Divider()
+                    .padding(.leading, Constants.dividerPadding)
             }
 
             TitleAndTextFieldRow(title: Localization.phoneField,
@@ -416,6 +432,8 @@ private enum Localization {
     static let lastNameHint = NSLocalizedString("Enter Last Name", comment: "Last name field placeholder in Edit Address Form")
     static let emailField = NSLocalizedString("Email", comment: "Text field email in Edit Address Form")
     static let emailHint = NSLocalizedString("Enter Email", comment: "Email field placeholder in Edit Address Form")
+    static let phoneCountryCodeField = NSLocalizedString("Phone country code", comment: "Text field phone country code in Edit Address Form")
+    static let phoneCountryCodeHint = NSLocalizedString("Enter Country Code", comment: "Phone country code field placeholder in Edit Address Form")
     static let phoneField = NSLocalizedString("Phone", comment: "Text field phone in Edit Address Form")
     static let phoneHint = NSLocalizedString("Enter Phone", comment: "Phone field placeholder in Edit Address Form")
 

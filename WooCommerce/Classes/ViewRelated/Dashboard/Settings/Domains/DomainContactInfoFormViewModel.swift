@@ -82,13 +82,16 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
     /// Email is a required field for domain contact info.
     let showEmailField: Bool = true
 
+    /// Phone country code is a required field for domain contact info.
+    let showPhoneCountryCodeField: Bool = true
+
     let viewTitle: String = Localization.title
 
     let sectionTitle: String = Localization.addressSection
 
-    var secondarySectionTitle: String = ""
+    let secondarySectionTitle: String = ""
 
-    var showAlternativeUsageToggle: Bool = false
+    let showAlternativeUsageToggle: Bool = false
 
     let alternativeUsageToggleTitle: String? = nil
 

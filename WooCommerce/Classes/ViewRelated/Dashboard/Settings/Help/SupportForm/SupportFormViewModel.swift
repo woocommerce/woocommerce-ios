@@ -69,7 +69,8 @@ public final class SupportFormViewModel: ObservableObject {
             //                                                    description: description) { [weak self] result in
             guard let self else { return }
             self.showLoadingIndicator = false
-            self.onCompletion?(.success(()))
+            //self.onCompletion?(.success(()))
+            self.onCompletion?(.failure(NSError(domain: "Server error 500", code: 500)))
         }
             //print(result)
     }

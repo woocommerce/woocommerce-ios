@@ -28,9 +28,7 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
         // TODO: We should consider refactoring this to present the email alert using SwiftUI.
         ZendeskProvider.shared.createIdentity(presentIn: self) { [weak self] identityCreated in
             if !identityCreated {
-                DDLogError("⛔️ Zendesk Identity could not be created.")
-                self?.navigationController?.popViewController(animated: true)
-                // TODO: show error notice
+                self?.logIdentityErrorAndPopBack()
             }
         }
     }
@@ -43,8 +41,8 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
             switch result {
             case .success:
                 self.informSuccessAndPopBack()
-            case .failure:
-                break // TODO: log error, show error notice
+            case .failure(let error):
+                self.logAndInformErrorCreatingRequest(error)
             }
         }
     }
@@ -65,6 +63,25 @@ private extension SupportFormHostingController {
             self.navigationController?.popViewController(animated: true)
         }
         present(alertController, animated: true)
+    }
+
+    /// Logs and informs the user that a support request could not be created
+    ///
+    func logAndInformErrorCreatingRequest(_ error: Error) {
+        let notice = Notice(title: "Sorry, we could not create your support request, please try again later.", feedbackType: .error)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+
+        DDLogError("⛔️ Could not create Support Request. Error: \(error.localizedDescription)")
+    }
+
+    /// Informs user about identity error and pop back
+    ///
+    func logIdentityErrorAndPopBack() {
+        let notice = Notice(title: "Sorry, we cannot create support request right now, please try again later.", feedbackType: .error)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+
+        navigationController?.popViewController(animated: true)
+        DDLogError("⛔️ Zendesk Identity could not be created.")
     }
 }
 

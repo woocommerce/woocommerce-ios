@@ -280,7 +280,7 @@ struct SingleAddressForm: View {
                                      text: $fields.phoneCountryCode,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .phonePad)
+                                     keyboardType: .asciiCapableNumberPad)
                 .autocapitalization(.none)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)

@@ -41,6 +41,10 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     let areas: [Area]
 
+    /// Custom tag to identify where in the app the request is coming from.
+    ///
+    let sourceTag: String?
+
     /// Assign this closure to get notified when a support request creation finishes.
     ///
     var onCompletion: ((Result<Void, Error>) -> Void)?
@@ -51,9 +55,10 @@ public final class SupportFormViewModel: ObservableObject {
         subject.isEmpty || description.isEmpty
     }
 
-    init(areas: [Area] = wooSupportAreas()) {
+    init(areas: [Area] = wooSupportAreas(), sourceTag: String? = nil) {
         self.areas = areas
         self.area = areas[0] // Preselect the first area.
+        self.sourceTag = sourceTag
     }
 
     /// Submits the support request using the Zendesk Provider.
@@ -62,13 +67,22 @@ public final class SupportFormViewModel: ObservableObject {
         showLoadingIndicator = true
         ZendeskProvider.shared.createSupportRequest(formID: area.datasource.formID,
                                                     customFields: area.datasource.customFields,
-                                                    tags: area.datasource.tags,
+                                                    tags: assembleTags(),
                                                     subject: subject,
                                                     description: description) { [weak self] result in
             guard let self else { return }
             self.showLoadingIndicator = false
             self.onCompletion?(result)
         }
+    }
+
+    /// Joins the selected area tags with the source tag(if available).
+    ///
+    func assembleTags() -> [String] {
+        guard let sourceTag, sourceTag.isNotEmpty else {
+            return area.datasource.tags
+        }
+        return area.datasource.tags + [sourceTag]
     }
 }
 

@@ -78,11 +78,12 @@ struct SupportForm: View {
             }
 
             Button {
-                // No Op
+                viewModel.submitSupportRequest { _ in }
             } label: {
                 Text(Localization.submitRequest)
             }
             .buttonStyle(PrimaryButtonStyle())
+            .disabled(viewModel.submitButtonDisabled)
         }
         .padding()
         .navigationTitle(Localization.title)

@@ -37,6 +37,12 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     let areas: [Area]
 
+    /// Defines when the submit button should be enabled or not.
+    ///
+    var submitButtonDisabled: Bool {
+        subject.isEmpty || description.isEmpty
+    }
+
     init(areas: [Area] = wooSupportAreas()) {
         self.areas = areas
         self.area = areas[0] // Preselect the first area.

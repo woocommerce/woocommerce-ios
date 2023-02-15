@@ -41,6 +41,7 @@
 		020886572499E643001D784E /* ProductExternalLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020886562499E642001D784E /* ProductExternalLinkViewController.swift */; };
 		020A55F127F6C605007843F0 /* CardReaderConnectionAnalyticsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020A55F027F6C605007843F0 /* CardReaderConnectionAnalyticsTracker.swift */; };
 		020ACF88299A809000B3638B /* LearnMoreAttributedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020ACF87299A809000B3638B /* LearnMoreAttributedText.swift */; };
+		020ACF8A299B746700B3638B /* DomainContactInfoFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020ACF89299B746700B3638B /* DomainContactInfoFormViewModelTests.swift */; };
 		020AF66329235860007760E5 /* StoreCreationPlanViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020AF66229235860007760E5 /* StoreCreationPlanViewModel.swift */; };
 		020AF6662923C7ED007760E5 /* StoreNameForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020AF6652923C7ED007760E5 /* StoreNameForm.swift */; };
 		020B2F8F23BD9F1F00BD79AD /* IntegerInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020B2F8E23BD9F1F00BD79AD /* IntegerInputFormatter.swift */; };
@@ -2139,6 +2140,7 @@
 		020886562499E642001D784E /* ProductExternalLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductExternalLinkViewController.swift; sourceTree = "<group>"; };
 		020A55F027F6C605007843F0 /* CardReaderConnectionAnalyticsTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionAnalyticsTracker.swift; sourceTree = "<group>"; };
 		020ACF87299A809000B3638B /* LearnMoreAttributedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreAttributedText.swift; sourceTree = "<group>"; };
+		020ACF89299B746700B3638B /* DomainContactInfoFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainContactInfoFormViewModelTests.swift; sourceTree = "<group>"; };
 		020AF66229235860007760E5 /* StoreCreationPlanViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationPlanViewModel.swift; sourceTree = "<group>"; };
 		020AF6652923C7ED007760E5 /* StoreNameForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNameForm.swift; sourceTree = "<group>"; };
 		020B2F8E23BD9F1F00BD79AD /* IntegerInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegerInputFormatter.swift; sourceTree = "<group>"; };
@@ -5246,6 +5248,7 @@
 				02DAE7FE291B8C8A009342B7 /* FreeDomainSelectorViewModelTests.swift */,
 				022C7D7629793ABE0036568D /* PaidDomainSelectorDataProviderTests.swift */,
 				0235354D2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift */,
+				020ACF89299B746700B3638B /* DomainContactInfoFormViewModelTests.swift */,
 			);
 			path = Domains;
 			sourceTree = "<group>";
@@ -11551,6 +11554,7 @@
 				CCD2E68925DD52C100BD975D /* ProductVariationsViewModelTests.swift in Sources */,
 				0203C11C293058CB00EE61BF /* WebPurchasesForWPComPlansTests.swift in Sources */,
 				2683835A296F9C1A00CCF60A /* GenerateAllVariationsUseCaseTests.swift in Sources */,
+				020ACF8A299B746700B3638B /* DomainContactInfoFormViewModelTests.swift in Sources */,
 				26FE09E424DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift in Sources */,
 				0215320D2423309B003F2BBD /* UIStackView+SubviewsTests.swift in Sources */,
 				027B8BBD23FE0DE10040944E /* ProductImageActionHandlerTests.swift in Sources */,

@@ -23,7 +23,7 @@ struct PaymentMethodsView: View {
 
     @State private var showingPurchaseCardReaderView = false
 
-    private let learnMoreViewModel = LearnMoreViewModel.inPersonPayments()
+    private let learnMoreViewModel = LearnMoreViewModel.inPersonPayments(source: .paymentMethods)
 
     ///   Environment safe areas
     ///
@@ -90,7 +90,11 @@ struct PaymentMethodsView: View {
                         .background(Color(.listForeground(modal: false)))
                     }
 
-                    NavigationLink(destination: WebView(isPresented: .constant(true), url: learnMoreViewModel.url)) {
+                    NavigationLink(destination: WebView(isPresented: .constant(true), url: learnMoreViewModel.url)
+                                                .onAppear {
+                                                    learnMoreViewModel.learnMoreTapped()
+                                                }
+                    ) {
                         AttributedText(learnMoreViewModel.learnMoreAttributedString)
                     }.padding(.horizontal)
                 }

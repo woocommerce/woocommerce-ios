@@ -95,7 +95,7 @@ struct DomainSettingsView: View {
 
 private extension DomainSettingsView {
     enum Localization {
-        static let title = NSLocalizedString("Domain", comment: "Navigation bar title of the domain settings screen.")
+        static let title = NSLocalizedString("Domains", comment: "Navigation bar title of the domain settings screen.")
         static let searchDomainButton = NSLocalizedString(
             "Search for a Domain",
             comment: "Title of the button on the domain settings screen to search for a domain."

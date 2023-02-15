@@ -735,7 +735,7 @@ private extension SettingsViewController {
         )
 
         static let domain = NSLocalizedString(
-            "Domain",
+            "Domains",
             comment: "Navigates to domain settings screen."
         )
 

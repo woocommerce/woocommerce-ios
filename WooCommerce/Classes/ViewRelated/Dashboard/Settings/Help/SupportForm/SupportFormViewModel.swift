@@ -60,19 +60,15 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     func submitSupportRequest() {
         showLoadingIndicator = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-
-            //        ZendeskProvider.shared.createSupportRequest(formID: area.datasource.formID,
-            //                                                    customFields: area.datasource.customFields,
-            //                                                    tags: area.datasource.tags,
-            //                                                    subject: subject,
-            //                                                    description: description) { [weak self] result in
+        ZendeskProvider.shared.createSupportRequest(formID: area.datasource.formID,
+                                                    customFields: area.datasource.customFields,
+                                                    tags: area.datasource.tags,
+                                                    subject: subject,
+                                                    description: description) { [weak self] result in
             guard let self else { return }
             self.showLoadingIndicator = false
-            //self.onCompletion?(.success(()))
-            self.onCompletion?(.failure(NSError(domain: "Server error 500", code: 500)))
+            self.onCompletion?(result)
         }
-            //print(result)
     }
 }
 

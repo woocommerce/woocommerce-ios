@@ -43,7 +43,9 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
 
             let (phoneCountryCode, phoneNumber): (String?, String?) = {
                 // The phone number in the contact info API is in the format of `+\(countryCode).\(phoneNumber)`.
-                let phoneParts = contactInfoToEdit.phone?.replacingOccurrences(of: Constants.phoneNumberPrefix, with: "").split(separator: ".")
+                let phoneParts = contactInfoToEdit.phone?
+                    .replacingOccurrences(of: Constants.phoneNumberPrefix, with: "")
+                    .split(separator: Constants.phoneNumberSeparator)
                 guard let phoneParts, phoneParts.count == 2 else {
                     return (nil, nil)
                 }
@@ -161,7 +163,7 @@ private extension DomainContactInfoFormViewModel {
     }
 
     enum Constants {
-        static let phoneNumberPrefix = "+"
-        static let phoneNumberSeparator = "."
+        static let phoneNumberPrefix: String = "+"
+        static let phoneNumberSeparator: Character = "."
     }
 }

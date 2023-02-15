@@ -122,9 +122,9 @@ final private class DomainContactInfoFormStores: DefaultStoresManager {
 
 struct DomainContactInfoForm_Previews: PreviewProvider {
     private static let viewModelWithoutContactInfo = DomainContactInfoFormViewModel(siteID: 134,
-                                                                            contactInfoToEdit: nil,
-                                                                            domain: "",
-                                                                            stores: DomainContactInfoFormStores())
+                                                                                    contactInfoToEdit: nil,
+                                                                                    domain: "",
+                                                                                    stores: DomainContactInfoFormStores())
     private static let contactInfo = DomainContactInfo(firstName: "Woo",
                                                        lastName: "Testing",
                                                        organization: "WooCommerce org",

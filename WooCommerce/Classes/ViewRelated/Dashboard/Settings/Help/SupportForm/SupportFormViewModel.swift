@@ -33,6 +33,10 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     @Published var description = ""
 
+    /// Determines if the loading indicator should be visible or not.
+    ///
+    @Published var showLoadingIndicator = false
+
     /// Supported support areas.
     ///
     let areas: [Area]
@@ -50,13 +54,20 @@ public final class SupportFormViewModel: ObservableObject {
 
     /// Submits the support request using the Zendesk Provider.
     ///
-    func submitSupportRequest(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        ZendeskProvider.shared.createSupportRequest(formID: area.datasource.formID,
-                                                    customFields: area.datasource.customFields,
-                                                    tags: area.datasource.tags,
-                                                    subject: subject,
-                                                    description: description,
-                                                    onCompletion: onCompletion)
+    func submitSupportRequest() {
+        showLoadingIndicator = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+
+//        ZendeskProvider.shared.createSupportRequest(formID: area.datasource.formID,
+//                                                    customFields: area.datasource.customFields,
+//                                                    tags: area.datasource.tags,
+//                                                    subject: subject,
+//                                                    description: description) { [weak self] result in
+            guard let self else { return }
+            self.showLoadingIndicator = false
+
+            //print(result)
+        }
     }
 }
 

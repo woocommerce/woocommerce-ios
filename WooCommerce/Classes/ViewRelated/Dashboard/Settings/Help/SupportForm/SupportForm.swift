@@ -78,11 +78,11 @@ struct SupportForm: View {
             }
 
             Button {
-                viewModel.submitSupportRequest { _ in }
+                viewModel.submitSupportRequest()
             } label: {
                 Text(Localization.submitRequest)
             }
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.showLoadingIndicator))
             .disabled(viewModel.submitButtonDisabled)
         }
         .padding()

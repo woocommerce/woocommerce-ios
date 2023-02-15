@@ -84,7 +84,7 @@ private extension SupportFormHostingController {
 private extension SupportFormHostingController {
     enum Localization {
         static let requestSent = NSLocalizedString("Request Sent!", comment: "Title for the alert after the support request is created.")
-        static let requestSentMessage = NSLocalizedString("Your support request has landed safely in our inbox, we will reply shortly via email.",
+        static let requestSentMessage = NSLocalizedString("Your support request has landed safely in our inbox. We will reply via email as quickly as we can.",
                                                           comment: "Message for the alert after the support request is created.")
         static let gotIt = NSLocalizedString("Got It!", comment: "Confirmation button for the alert after the support request is created.")
 

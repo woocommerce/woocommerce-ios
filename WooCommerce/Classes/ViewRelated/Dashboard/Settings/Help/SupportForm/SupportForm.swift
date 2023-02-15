@@ -7,18 +7,12 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
 
     init(viewModel: SupportFormViewModel) {
         super.init(rootView: SupportForm(viewModel: viewModel))
+        handleSupportRequestCompletion(viewModel: viewModel)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         createZendeskIdentity()
-    }
-
-    /// `handleSupportRequestCompletion` accesses a view object, hence we need to wait for the view to be properly rendered.
-    ///
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        handleSupportRequestCompletion()
     }
 
     /// Creates the Zendesk Identity if needed.
@@ -35,9 +29,8 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
 
     /// Registers a completion block on the view model to properly show alerts and notices.
     ///
-    func handleSupportRequestCompletion() {
-        // TODO: Solve warning
-        rootView.viewModel.onCompletion = { [weak self] result in
+    func handleSupportRequestCompletion(viewModel: SupportFormViewModel) {
+        viewModel.onCompletion = { [weak self] result in
             guard let self else { return }
             switch result {
             case .success:

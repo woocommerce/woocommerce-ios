@@ -108,7 +108,8 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
         }
 
         guard let account = ServiceLocator.stores.sessionManager.defaultAccount else {
-            return nil
+            let anonymousID = ServiceLocator.stores.sessionManager.anonymousUserID
+            return TracksUser(userID: anonymousID, email: nil, username: nil)
         }
 
         return TracksUser(userID: "\(account.userID)", email: account.email, username: account.username)

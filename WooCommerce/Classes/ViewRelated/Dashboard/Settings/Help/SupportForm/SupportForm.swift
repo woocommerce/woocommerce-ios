@@ -12,6 +12,12 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
     override func viewDidLoad() {
         super.viewDidLoad()
         createZendeskIdentity()
+    }
+
+    /// `handleSupportRequestCompletion` accesses a view object, hence we need to wait for the view to be properly rendered.
+    ///
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         handleSupportRequestCompletion()
     }
 
@@ -34,10 +40,9 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
     func handleSupportRequestCompletion() {
         rootView.viewModel.onCompletion = { [weak self] result in
             guard let self else { return }
-
             switch result {
             case .success:
-                break // TODO: show alert and pop back
+                self.informSuccessAndPopBack()
             case .failure:
                 break // TODO: log error, show error notice
             }
@@ -46,6 +51,20 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension SupportFormHostingController {
+    /// Shows an alert informing the support creation success and after confirmation pops the view back.
+    ///
+    func informSuccessAndPopBack() {
+        let alertController = UIAlertController(title: "Request Sent!",
+                                                message: "Your support request has landed safely in our inbox, we will reply shortly via email.",
+                                                preferredStyle: .alert)
+        alertController.addDefaultActionWithTitle("Got it!") { _ in
+            self.navigationController?.popViewController(animated: true)
+        }
+        present(alertController, animated: true)
     }
 }
 

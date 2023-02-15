@@ -44,6 +44,7 @@ struct DomainContactInfoForm: View {
                                   stateViewModelClosure: viewModel.createStateViewModel,
                                   sectionTitle: viewModel.sectionTitle,
                                   showEmailField: viewModel.showEmailField,
+                                  showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
                                   showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
                 .accessibilityElement(children: .contain)
 
@@ -99,15 +100,58 @@ private extension DomainContactInfoForm {
     }
 }
 
-struct DomainContactInfoForm_Previews: PreviewProvider {
-    static let sampleViewModel = DomainContactInfoFormViewModel(siteID: 134,
-                                                                contactInfoToEdit: nil,
-                                                                domain: "",
-                                                                stores: ServiceLocator.stores)
+#if DEBUG
 
-    static var previews: some View {
-        NavigationView {
-            DomainContactInfoForm(viewModel: sampleViewModel) { _ in }
+import Yosemite
+
+/// StoresManager that specifically handles `DomainAction` for `DomainSelectorView` previews.
+final private class DomainContactInfoFormStores: DefaultStoresManager {
+    init() {
+        super.init(sessionManager: ServiceLocator.stores.sessionManager)
+    }
+
+    override func dispatch(_ action: Action) {
+        if let action = action as? DataAction {
+            if case let .synchronizeCountries(_, completion) = action {
+                completion(.success([.init(code: "US", name: "United States", states: [.init(code: "CA", name: "California")])]))
+            }
         }
     }
 }
+
+
+struct DomainContactInfoForm_Previews: PreviewProvider {
+    private static let viewModelWithoutContactInfo = DomainContactInfoFormViewModel(siteID: 134,
+                                                                                    contactInfoToEdit: nil,
+                                                                                    domain: "",
+                                                                                    stores: DomainContactInfoFormStores())
+    private static let contactInfo = DomainContactInfo(firstName: "Woo",
+                                                       lastName: "Testing",
+                                                       organization: "WooCommerce org",
+                                                       address1: "335 2nd St",
+                                                       address2: "Apt 222",
+                                                       postcode: "94111",
+                                                       city: "San Francisco",
+                                                       state: "CA",
+                                                       countryCode: "US",
+                                                       phone: "+886.911123456",
+                                                       email: "woo@store.com")
+    private static let viewModelWithContactInfo = DomainContactInfoFormViewModel(siteID: 134,
+                                                                                 contactInfoToEdit: contactInfo,
+                                                                                 domain: "",
+                                                                                 stores: DomainContactInfoFormStores())
+
+    static var previews: some View {
+        NavigationView {
+            DomainContactInfoForm(viewModel: viewModelWithoutContactInfo) { _ in }
+        }
+        .previewDisplayName("Empty contact info")
+
+        NavigationView {
+            DomainContactInfoForm(viewModel: viewModelWithContactInfo) { _ in }
+        }
+        .previewDisplayName("Pre-filled contact info")
+    }
+}
+
+#endif

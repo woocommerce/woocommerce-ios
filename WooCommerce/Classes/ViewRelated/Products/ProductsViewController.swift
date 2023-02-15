@@ -300,6 +300,10 @@ private extension ProductsViewController {
     }
 
     @objc func finishBulkEditing() {
+        guard tableView.isEditing else {
+            return
+        }
+
         viewModel.deselectAll()
         tableView.setEditing(false, animated: true)
 

@@ -6,6 +6,7 @@ import protocol Storage.StorageManagerType
 final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormViewModelProtocol {
     let siteID: Int64
     private let domain: String
+    private let source: DomainSettingsCoordinator.Source
 
     private var contactInfo: DomainContactInfo {
         let phone: String = {
@@ -30,11 +31,13 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
     init(siteID: Int64,
          contactInfoToEdit: DomainContactInfo?,
          domain: String,
+         source: DomainSettingsCoordinator.Source,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.domain = domain
+        self.source = source
 
         let (addressToEdit, phoneCountryCode): (Address, String?) = {
             guard let contactInfoToEdit else {
@@ -84,12 +87,15 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
 
         do {
             try await validate()
+            analytics.track(event: .DomainSettings.domainContactInfoValidationSuccess(source: source))
             return contactInfo
         } catch DomainContactInfoError.invalid(let messages) {
+            analytics.track(event: .DomainSettings.domainContactInfoValidationFailed(source: source, error: DomainContactInfoError.invalid(messages: messages)))
             let message = messages?.joined(separator: "\n") ?? Localization.defaultValidationErrorMessage
             notice = .init(title: Localization.validationErrorTitle, message: message, feedbackType: .error)
             throw DomainContactInfoError.invalid(messages: messages)
         } catch {
+            analytics.track(event: .DomainSettings.domainContactInfoValidationFailed(source: source, error: error))
             notice = .init(title: error.localizedDescription, feedbackType: .error)
             throw error
         }

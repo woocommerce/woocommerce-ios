@@ -15,15 +15,18 @@ final class DomainSettingsCoordinator: Coordinator {
     private let site: Site
     private let stores: StoresManager
     private let source: Source
+    private let analytics: Analytics
 
     init(source: Source,
          site: Site,
          navigationController: UINavigationController,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.source = source
         self.site = site
         self.navigationController = navigationController
         self.stores = stores
+        self.analytics = analytics
     }
 
     @MainActor
@@ -31,7 +34,10 @@ final class DomainSettingsCoordinator: Coordinator {
         let settingsNavigationController = WooNavigationController()
         let domainSettings = DomainSettingsHostingController(viewModel: .init(siteID: site.siteID,
                                                                               stores: stores)) { [weak self] hasDomainCredit, freeStagingDomain in
-            self?.showDomainSelector(from: settingsNavigationController, hasDomainCredit: hasDomainCredit, freeStagingDomain: freeStagingDomain)
+            guard let self else { return }
+            self.showDomainSelector(from: settingsNavigationController, hasDomainCredit: hasDomainCredit, freeStagingDomain: freeStagingDomain)
+            self.analytics.track(event: .DomainSettings.domainSettingsAddDomainTapped(source: self.source,
+                                                                                      hasDomainCredit: hasDomainCredit))
         }
         settingsNavigationController.pushViewController(domainSettings, animated: false)
         navigationController.present(settingsNavigationController, animated: true)
@@ -53,6 +59,8 @@ private extension DomainSettingsCoordinator {
             let domainToPurchase = DomainToPurchase(name: domain.name,
                                                     productID: domain.productID,
                                                     supportsPrivacy: domain.supportsPrivacy)
+            self.analytics.track(event: .DomainSettings.domainSettingsCustomDomainSelected(source: self.source,
+                                                                                           useDomainCredit: hasDomainCredit))
             if hasDomainCredit {
                 let contactInfo = try? await self.loadDomainContactInfo()
                 self.showContactInfoForm(from: navigationController, contactInfo: contactInfo, domain: domainToPurchase)
@@ -79,6 +87,8 @@ private extension DomainSettingsCoordinator {
         let checkoutViewModel = WebCheckoutViewModel(siteSlug: siteURLHost) { [weak self] in
             guard let self else { return }
             self.showSuccessView(from: navigationController, domainName: domain.name)
+            self.analytics.track(event: .DomainSettings.domainSettingsCustomDomainPurchaseSuccess(source: self.source,
+                                                                                                  useDomainCredit: false))
         }
         let checkoutController = AuthenticatedWebViewController(viewModel: checkoutViewModel)
         navigationController.pushViewController(checkoutController, animated: true)
@@ -93,14 +103,20 @@ private extension DomainSettingsCoordinator {
         let contactInfoForm = DomainContactInfoFormHostingController(viewModel: .init(siteID: site.siteID,
                                                                                       contactInfoToEdit: contactInfo,
                                                                                       domain: domain.name,
+                                                                                      source: source,
                                                                                       stores: stores)) { [weak self] contactInfo in
             guard let self else { return }
             do {
                 try await self.redeemDomainCredit(domain: domain, contactInfo: contactInfo)
                 self.showSuccessView(from: navigationController, domainName: domain.name)
+                self.analytics.track(event: .DomainSettings.domainSettingsCustomDomainPurchaseSuccess(source: self.source,
+                                                                                                      useDomainCredit: true))
             } catch {
                 // TODO: 8558 - error handling
                 print("⛔️ Error redeeming domain credit with the selected domain \(domain): \(error)")
+                self.analytics.track(event: .DomainSettings.domainSettingsCustomDomainPurchaseFailed(source: self.source,
+                                                                                                     useDomainCredit: true,
+                                                                                                     error: error))
             }
         }
         navigationController.pushViewController(contactInfoForm, animated: true)

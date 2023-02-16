@@ -354,7 +354,7 @@ private extension SettingsViewController {
             return
         }
 
-        // TODO: 8558 - analytics
+        ServiceLocator.analytics.track(.settingsDomainsTapped)
 
         let coordinator = DomainSettingsCoordinator(source: .settings, site: site, navigationController: navigationController)
         domainSettingsCoordinator = coordinator

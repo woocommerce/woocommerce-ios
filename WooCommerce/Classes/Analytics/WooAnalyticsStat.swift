@@ -220,6 +220,7 @@ public enum WooAnalyticsStat: String {
     case settingsTapped = "main_menu_settings_tapped"
     case settingsSelectedStoreTapped = "settings_selected_site_tapped"
     case settingsContactSupportTapped = "main_menu_contact_support_tapped"
+    case settingsDomainsTapped = "settings_domains_tapped"
 
     case settingsBetaFeaturesButtonTapped = "settings_beta_features_button_tapped"
     case settingsBetaFeaturesProductsToggled = "settings_beta_features_products_toggled"
@@ -238,6 +239,15 @@ public enum WooAnalyticsStat: String {
     case settingsLogoutTapped = "settings_logout_button_tapped"
     case settingsLogoutConfirmation = "settings_logout_confirmation_dialog_result"
     case settingsWereHiringTapped = "settings_we_are_hiring_button_tapped"
+
+    // MARK: Domain Settings
+    //
+    case domainSettingsAddDomainTapped = "domain_dashboard_add_domain_tapped"
+    case domainSettingsCustomDomainSelected = "domain_dashboard_custom_domain_selected"
+    case domainContactInfoValidationSuccess = "domain_contact_info_validation_success"
+    case domainContactInfoValidationFailed = "domain_contact_info_validation_failed"
+    case domainSettingsCustomDomainPurchaseSuccess = "custom_domain_purchase_success"
+    case domainSettingsCustomDomainPurchaseFailed = "custom_domain_purchase_failed"
 
     // MARK: Card Reader Connection Events
     //

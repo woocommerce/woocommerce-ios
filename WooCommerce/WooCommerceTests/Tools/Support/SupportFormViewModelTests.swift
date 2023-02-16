@@ -50,6 +50,19 @@ final class SupportFormViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.submitButtonDisabled)
     }
+
+    func test_source_tag_is_properly_sent_when_creating_a_request() {
+        // Given
+        let sourceTag = "custom-tag"
+        let zendesk = MockZendeskManager()
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(), sourceTag: sourceTag, zendeskProvider: zendesk)
+
+        // When
+        viewModel.submitSupportRequest()
+
+        // Then
+        XCTAssertTrue(zendesk.latestInvokedTags.contains(sourceTag))
+    }
 }
 
 private extension SupportFormViewModelTests {

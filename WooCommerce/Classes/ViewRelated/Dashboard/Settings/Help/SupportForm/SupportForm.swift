@@ -125,10 +125,17 @@ struct SupportForm: View {
                                     Circle()
                                         .stroke(Color(.separator), lineWidth: 2)
                                         .frame(width: 20, height: 20)
-                                        //.background(Circle().fill(Color(.accent)).padding(2))
+                                        .background(
+                                            Circle()
+                                                .fill( viewModel.isAreaSelected(area) ? Color(.accent) : .clear)
+                                                .padding(2)
+                                        )
 
                                     Text(area.title)
                                         .headlineStyle()
+                                }
+                                .onTapGesture {
+                                    viewModel.selectArea(area)
                                 }
 
                                 Divider()

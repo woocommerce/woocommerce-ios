@@ -80,6 +80,14 @@ public final class SupportFormViewModel: ObservableObject {
         analyticsProvider.track(.supportNewRequestViewed)
     }
 
+    func selectArea(_ area: Area) {
+        self.area = area
+    }
+
+    func isAreaSelected(_ area: Area) -> Bool {
+        self.area == area
+    }
+
     /// Submits the support request using the Zendesk Provider.
     ///
     func submitSupportRequest() {

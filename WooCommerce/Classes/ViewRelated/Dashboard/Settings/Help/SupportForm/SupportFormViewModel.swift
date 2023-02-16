@@ -43,7 +43,11 @@ public final class SupportFormViewModel: ObservableObject {
 
     /// Custom tag to identify where in the app the request is coming from.
     ///
-    let sourceTag: String?
+    private let sourceTag: String?
+
+    /// Handles the communication with Zendesk.
+    ///
+    private let zendeskProvider: ZendeskManagerProtocol
 
     /// Assign this closure to get notified when a support request creation finishes.
     ///
@@ -55,21 +59,22 @@ public final class SupportFormViewModel: ObservableObject {
         subject.isEmpty || description.isEmpty
     }
 
-    init(areas: [Area] = wooSupportAreas(), sourceTag: String? = nil) {
+    init(areas: [Area] = wooSupportAreas(), sourceTag: String? = nil, zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared) {
         self.areas = areas
         self.area = areas[0] // Preselect the first area.
         self.sourceTag = sourceTag
+        self.zendeskProvider = zendeskProvider
     }
 
     /// Submits the support request using the Zendesk Provider.
     ///
     func submitSupportRequest() {
         showLoadingIndicator = true
-        ZendeskProvider.shared.createSupportRequest(formID: area.datasource.formID,
-                                                    customFields: area.datasource.customFields,
-                                                    tags: assembleTags(),
-                                                    subject: subject,
-                                                    description: description) { [weak self] result in
+        zendeskProvider.createSupportRequest(formID: area.datasource.formID,
+                                             customFields: area.datasource.customFields,
+                                             tags: assembleTags(),
+                                             subject: subject,
+                                             description: description) { [weak self] result in
             guard let self else { return }
             self.showLoadingIndicator = false
             self.onCompletion?(result)

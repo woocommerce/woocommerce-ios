@@ -5,6 +5,15 @@ import SwiftUI
 ///
 final class SupportFormHostingController: UIHostingController<SupportForm> {
 
+    /// Custom notice presenter,
+    ///
+    private lazy var noticePresenter: NoticePresenter = {
+        let presenter = DefaultNoticePresenter()
+        presenter.presentingViewController = navigationController ?? self
+        return presenter
+    }()
+
+
     init(viewModel: SupportFormViewModel) {
         super.init(rootView: SupportForm(viewModel: viewModel))
         handleSupportRequestCompletion(viewModel: viewModel)
@@ -63,8 +72,6 @@ private extension SupportFormHostingController {
     ///
     func logAndInformErrorCreatingRequest(_ error: Error) {
         let notice = Notice(title: Localization.requestSentError, feedbackType: .error)
-        let noticePresenter = DefaultNoticePresenter()
-        noticePresenter.presentingViewController = self
         noticePresenter.enqueue(notice: notice)
 
         DDLogError("⛔️ Could not create Support Request. Error: \(error.localizedDescription)")
@@ -74,7 +81,7 @@ private extension SupportFormHostingController {
     ///
     func logIdentityErrorAndPopBack() {
         let notice = Notice(title: Localization.badIdentityError, feedbackType: .error)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
 
         navigationController?.popViewController(animated: true)
         DDLogError("⛔️ Zendesk Identity could not be created.")

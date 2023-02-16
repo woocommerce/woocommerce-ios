@@ -49,6 +49,10 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     private let zendeskProvider: ZendeskManagerProtocol
 
+    /// Handles the communication with Tracks..
+    ///
+    private let analyticsProvider: Analytics
+
     /// Assign this closure to get notified when a support request creation finishes.
     ///
     var onCompletion: ((Result<Void, Error>) -> Void)?
@@ -59,11 +63,21 @@ public final class SupportFormViewModel: ObservableObject {
         subject.isEmpty || description.isEmpty
     }
 
-    init(areas: [Area] = wooSupportAreas(), sourceTag: String? = nil, zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared) {
+    init(areas: [Area] = wooSupportAreas(),
+         sourceTag: String? = nil,
+         zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
+         analyticsProvider: Analytics = ServiceLocator.analytics) {
         self.areas = areas
         self.area = areas[0] // Preselect the first area.
         self.sourceTag = sourceTag
         self.zendeskProvider = zendeskProvider
+        self.analyticsProvider = analyticsProvider
+    }
+
+    /// Tracks when the support form is viewed.
+    ///
+    func trackSupportFormViewed() {
+        analyticsProvider.track(.supportNewRequestViewed)
     }
 
     /// Submits the support request using the Zendesk Provider.
@@ -78,6 +92,14 @@ public final class SupportFormViewModel: ObservableObject {
             guard let self else { return }
             self.showLoadingIndicator = false
             self.onCompletion?(result)
+
+            // Analytics
+            switch result {
+            case .success:
+                self.analyticsProvider.track(.supportNewRequestCreated)
+            case .failure:
+                self.analyticsProvider.track(.supportNewRequestFailed)
+            }
         }
     }
 

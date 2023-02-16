@@ -485,10 +485,14 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         let requestProvider = ZDKRequestProvider()
         let request = createAPIRequest(formID: formID, customFields: customFields, tags: tags, subject: subject, description: description)
         requestProvider.createRequest(request) { _, error in
-            if let error {
-                return onCompletion(.failure(error))
+            // `requestProvider.createRequest` invokes it's completion block on a background thread when the request creation fails.
+            // Lets make sure we always dispatch the completion block on the main queue.
+            DispatchQueue.main.async {
+                if let error {
+                    return onCompletion(.failure(error))
+                }
+                onCompletion(.success(()))
             }
-            onCompletion(.success(()))
         }
     }
 

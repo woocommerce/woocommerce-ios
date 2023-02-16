@@ -106,110 +106,105 @@ struct SupportForm: View {
     @StateObject var viewModel: SupportFormViewModel
 
     var body: some View {
-        ZStack() {
-            // Background
-            Color(.listBackground)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        VStack(spacing: .zero) {
 
-            VStack(spacing: .zero) {
+            // Scrollable Form
+            ScrollView {
+                VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
 
-                // Scrollable Form
-                ScrollView {
-                    VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
+                    Text(Localization.iNeedHelp.uppercased())
+                        .footnoteStyle()
+                        .padding([.horizontal, .top])
 
-                        Text(Localization.iNeedHelp.uppercased())
-                            .footnoteStyle()
-                            .padding([.horizontal, .top])
+                    // Area List
+                    VStack(alignment: .leading, spacing: .zero) {
+                        ForEach(viewModel.areas.indexed(), id: \.0.self) { index, area in
+                            HStack(alignment: .center, spacing: Layout.radioButtonSpacing) {
+                                // Radio-Button emulation
+                                Circle()
+                                    .stroke(Color(.separator), lineWidth: Layout.radioButtonBorderWidth)
+                                    .frame(width: Layout.radioButtonSize, height: Layout.radioButtonSize)
+                                    .background(
+                                        // Use a clear color for non-selected radio buttons.
+                                        Circle()
+                                            .fill( viewModel.isAreaSelected(area) ? Color(.accent) : .clear)
+                                            .padding(Layout.radioButtonBorderWidth)
+                                    )
 
-                        // Area List
-                        VStack(alignment: .leading, spacing: .zero) {
-                            ForEach(viewModel.areas.indexed(), id: \.0.self) { index, area in
-                                HStack(alignment: .center, spacing: Layout.radioButtonSpacing) {
-                                    // Radio-Button emulation
-                                    Circle()
-                                        .stroke(Color(.separator), lineWidth: Layout.radioButtonBorderWidth)
-                                        .frame(width: Layout.radioButtonSize, height: Layout.radioButtonSize)
-                                        .background(
-                                            // Use a clear color for non-selected radio buttons.
-                                            Circle()
-                                                .fill( viewModel.isAreaSelected(area) ? Color(.accent) : .clear)
-                                                .padding(Layout.radioButtonBorderWidth)
-                                        )
-
-                                    Text(area.title)
-                                        .headlineStyle()
-                                }
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading) // Needed to make tap area the whole width
-                                .background(Color(.listForeground(modal: false)))
-                                .onTapGesture {
-                                    viewModel.selectArea(area)
-                                }
-
-                                Divider()
-                                    .renderedIf(index < viewModel.areas.count - 1) // Don't render the last divider
+                                Text(area.title)
+                                    .headlineStyle()
                             }
-                        }
-                        .cornerRadius(Layout.cornerRadius)
-                        .padding(.bottom)
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading) // Needed to make tap area the whole width
+                            .background(Color(.listForeground(modal: false)))
+                            .onTapGesture {
+                                viewModel.selectArea(area)
+                            }
 
-                        // Info Section
-                        VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                            Text(Localization.letsGetItSorted)
-                                .headlineStyle()
-
-                            Text(Localization.tellUsInfo)
-                                .subheadlineStyle()
-                        }
-
-                        // Subject Text Field
-                        VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                            Text(Localization.subject)
-                                .foregroundColor(Color(.text))
-                                .subheadlineStyle()
-
-                            TextField("", text: $viewModel.subject)
-                                .bodyStyle()
-                                .padding(insets: Layout.subjectInsets)
-                                .background(Color(.listForeground(modal: false)))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
-                                )
-                        }
-
-                        // Description Text Editor
-                        VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                            Text(Localization.message)
-                                .foregroundColor(Color(.text))
-                                .subheadlineStyle()
-
-                            TextEditor(text: $viewModel.description)
-                                .bodyStyle()
-                                .frame(minHeight: Layout.minimuEditorSize)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
-                                )
+                            Divider()
+                                .renderedIf(index < viewModel.areas.count - 1) // Don't render the last divider
                         }
                     }
-                    .padding()
-                }
+                    .cornerRadius(Layout.cornerRadius)
+                    .padding(.bottom)
 
-                // Submit Request Footer
-                VStack() {
-                    Divider()
+                    // Info Section
+                    VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
+                        Text(Localization.letsGetItSorted)
+                            .headlineStyle()
 
-                    Button {
-                        viewModel.submitSupportRequest()
-                    } label: {
-                        Text(Localization.submitRequest)
+                        Text(Localization.tellUsInfo)
+                            .subheadlineStyle()
                     }
-                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.showLoadingIndicator))
-                    .disabled(viewModel.submitButtonDisabled)
-                    .padding()
+
+                    // Subject Text Field
+                    VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
+                        Text(Localization.subject)
+                            .foregroundColor(Color(.text))
+                            .subheadlineStyle()
+
+                        TextField("", text: $viewModel.subject)
+                            .bodyStyle()
+                            .padding(insets: Layout.subjectInsets)
+                            .background(Color(.listForeground(modal: false)))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                            )
+                    }
+
+                    // Description Text Editor
+                    VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
+                        Text(Localization.message)
+                            .foregroundColor(Color(.text))
+                            .subheadlineStyle()
+
+                        TextEditor(text: $viewModel.description)
+                            .bodyStyle()
+                            .frame(minHeight: Layout.minimuEditorSize)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                            )
+                    }
                 }
-                .background(Color(.listForeground(modal: false)))
+                .padding()
             }
+
+            // Submit Request Footer
+            VStack() {
+                Divider()
+
+                Button {
+                    viewModel.submitSupportRequest()
+                } label: {
+                    Text(Localization.submitRequest)
+                }
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.showLoadingIndicator))
+                .disabled(viewModel.submitButtonDisabled)
+                .padding()
+            }
+            .background(Color(.listForeground(modal: false)))
         }
+        .background(Color(.listBackground))
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .wooNavigationBarStyle()

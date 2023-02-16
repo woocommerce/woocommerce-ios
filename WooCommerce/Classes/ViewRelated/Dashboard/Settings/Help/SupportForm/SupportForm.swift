@@ -105,49 +105,80 @@ struct SupportForm: View {
     @StateObject var viewModel: SupportFormViewModel
 
     var body: some View {
-        VStack(spacing: Layout.sectionSpacing) {
+        ZStack() {
+            // Background
+            Color(.listBackground)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            HStack(spacing: -Layout.optionsSpacing) {
-                Text(Localization.iNeedHelp)
-                    .bold()
-                Picker(Localization.iNeedHelp, selection: $viewModel.area) {
-                    ForEach(viewModel.areas, id: \.self) { area in
-                        Text(area.title).tag(area)
+            VStack(spacing: .zero) {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
+
+                        Text(Localization.iNeedHelp.uppercased())
+                            .footnoteStyle()
+                            .padding()
+
+                        Picker(Localization.iNeedHelp, selection: $viewModel.area) {
+                            ForEach(viewModel.areas, id: \.self) { area in
+                                Text(area.title).tag(area)
+                            }
+                        }
+                        .pickerStyle(.inline)
+                        .background(Color(.listForeground(modal: false)))
+
+                        VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
+                            Text(Localization.letsGetItSorted)
+                                .headlineStyle()
+
+                            Text(Localization.tellUsInfo)
+                                .subheadlineStyle()
+                        }
+
+                        VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
+                            Text(Localization.subject)
+                                .foregroundColor(Color(.text))
+                                .subheadlineStyle()
+
+                            TextField("", text: $viewModel.subject)
+                                .bodyStyle()
+                                .padding(insets: Layout.subjectInsets)
+                                .background(Color(.listForeground(modal: false)))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                                )
+                        }
+
+                        VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
+                            Text(Localization.message)
+                                .foregroundColor(Color(.text))
+                                .subheadlineStyle()
+
+                            TextEditor(text: $viewModel.description)
+                                .bodyStyle()
+                                .frame(minHeight: Layout.minimuEditorSize)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                                )
+                        }
                     }
+                    .padding()
                 }
-                .pickerStyle(.menu)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
 
-            VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                Text(Localization.subject)
-                    .bold()
-                TextField("", text: $viewModel.subject)
-                    .bodyStyle()
-                    .padding(Layout.subjectPadding)
-                    .border(Color(.separator))
-                    .cornerRadius(Layout.cornerRadius)
-            }
+                VStack() {
+                    Divider()
 
-            VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                Text(Localization.whatToDo)
-                    .bold()
-                TextEditor(text: $viewModel.description)
-                    .bodyStyle()
-                    .border(Color(.separator))
-                    .cornerRadius(Layout.cornerRadius)
+                    Button {
+                        viewModel.submitSupportRequest()
+                    } label: {
+                        Text(Localization.submitRequest)
+                    }
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.showLoadingIndicator))
+                    .disabled(viewModel.submitButtonDisabled)
+                    .padding()
+                }
+                .background(Color(.listForeground(modal: false)))
             }
-
-            Button {
-                viewModel.submitSupportRequest()
-            } label: {
-                Text(Localization.submitRequest)
-            }
-            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.showLoadingIndicator))
-            .disabled(viewModel.submitButtonDisabled)
         }
-        .padding()
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .wooNavigationBarStyle()
@@ -161,18 +192,22 @@ struct SupportForm: View {
 private extension SupportForm {
     enum Localization {
         static let title = NSLocalizedString("Contact Support", comment: "Title of the view for contacting support.")
-        static let iNeedHelp = NSLocalizedString("I need help with:", comment: "Text on the support form to refer to what area the user has problem with.")
+        static let iNeedHelp = NSLocalizedString("I need help with", comment: "Text on the support form to refer to what area the user has problem with.")
+        static let letsGetItSorted = NSLocalizedString("Let’s get this sorted", comment: "Title to let the user know what do we want on the support screen.")
+        static let tellUsInfo = NSLocalizedString("Tell us much as you can about the problem, and we will be in touch soon.",
+                                                  comment: "Message info on the support screen.")
         static let subject = NSLocalizedString("Subject", comment: "Subject title on the support form")
-        static let whatToDo = NSLocalizedString("What are you trying to do?", comment: "Text on the support form to ask the user what are they trying to do.")
+        static let message = NSLocalizedString("Message", comment: "Message on the support form")
         static let submitRequest = NSLocalizedString("Submit Support Request", comment: "Button title to submit a support request.")
     }
 
     enum Layout {
         static let sectionSpacing: CGFloat = 16
         static let optionsSpacing: CGFloat = 8
-        static let subSectionsSpacing: CGFloat = 2
-        static let cornerRadius: CGFloat = 2
-        static let subjectPadding: CGFloat = 5
+        static let subSectionsSpacing: CGFloat = 8
+        static let cornerRadius: CGFloat = 8
+        static let subjectInsets = EdgeInsets(top: 8, leading: 5, bottom: 8, trailing: 5)
+        static let minimuEditorSize: CGFloat = 300
     }
 }
 

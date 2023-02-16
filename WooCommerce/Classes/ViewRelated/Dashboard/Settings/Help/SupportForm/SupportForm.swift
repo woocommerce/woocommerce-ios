@@ -111,21 +111,25 @@ struct SupportForm: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             VStack(spacing: .zero) {
+
+                // Scrollable Form
                 ScrollView {
                     VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
-
 
                         Text(Localization.iNeedHelp.uppercased())
                             .footnoteStyle()
                             .padding([.horizontal, .top])
 
+                        // Area List
                         VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
                             ForEach(viewModel.areas.indexed(), id: \.0.self) { index, area in
                                 HStack(alignment: .center, spacing: Layout.radioButtonSpacing) {
+                                    // Radio-Button emulation
                                     Circle()
                                         .stroke(Color(.separator), lineWidth: 2)
                                         .frame(width: 20, height: 20)
                                         .background(
+                                            // Use a clear color for non-selected radio buttons.
                                             Circle()
                                                 .fill( viewModel.isAreaSelected(area) ? Color(.accent) : .clear)
                                                 .padding(2)
@@ -134,12 +138,12 @@ struct SupportForm: View {
                                     Text(area.title)
                                         .headlineStyle()
                                 }
-                                .onTapGesture {
+                                .onTapGesture { // TODO: improve tap area
                                     viewModel.selectArea(area)
                                 }
 
                                 Divider()
-                                    .renderedIf(index < viewModel.areas.count - 1)
+                                    .renderedIf(index < viewModel.areas.count - 1) // Don't render the last divider
                             }
                         }
                         .padding()
@@ -147,6 +151,7 @@ struct SupportForm: View {
                         .cornerRadius(Layout.cornerRadius)
                         .padding(.bottom)
 
+                        // Info Section
                         VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                             Text(Localization.letsGetItSorted)
                                 .headlineStyle()
@@ -155,6 +160,7 @@ struct SupportForm: View {
                                 .subheadlineStyle()
                         }
 
+                        // Subject Text Field
                         VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                             Text(Localization.subject)
                                 .foregroundColor(Color(.text))
@@ -169,6 +175,7 @@ struct SupportForm: View {
                                 )
                         }
 
+                        // Description Text Editor
                         VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                             Text(Localization.message)
                                 .foregroundColor(Color(.text))
@@ -185,6 +192,7 @@ struct SupportForm: View {
                     .padding()
                 }
 
+                // Submit Request Footer
                 VStack() {
                     Divider()
 

@@ -23,7 +23,7 @@ public final class SupportFormViewModel: ObservableObject {
 
     /// Variable that holds the area of support for better routing.
     ///
-    @Published var area: Area
+    @Published var area: Area?
 
     /// Variable that holds the subject of the ticket.
     ///
@@ -60,7 +60,7 @@ public final class SupportFormViewModel: ObservableObject {
     /// Defines when the submit button should be enabled or not.
     ///
     var submitButtonDisabled: Bool {
-        subject.isEmpty || description.isEmpty
+        area == nil || subject.isEmpty || description.isEmpty
     }
 
     init(areas: [Area] = wooSupportAreas(),
@@ -68,7 +68,6 @@ public final class SupportFormViewModel: ObservableObject {
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analyticsProvider: Analytics = ServiceLocator.analytics) {
         self.areas = areas
-        self.area = areas[0] // Preselect the first area.
         self.sourceTag = sourceTag
         self.zendeskProvider = zendeskProvider
         self.analyticsProvider = analyticsProvider
@@ -80,10 +79,14 @@ public final class SupportFormViewModel: ObservableObject {
         analyticsProvider.track(.supportNewRequestViewed)
     }
 
+    /// Selects an area.
+    ///
     func selectArea(_ area: Area) {
         self.area = area
     }
 
+    /// Determines if the given area is selected.
+    ///
     func isAreaSelected(_ area: Area) -> Bool {
         self.area == area
     }
@@ -91,6 +94,8 @@ public final class SupportFormViewModel: ObservableObject {
     /// Submits the support request using the Zendesk Provider.
     ///
     func submitSupportRequest() {
+        guard let area else { return }
+
         showLoadingIndicator = true
         zendeskProvider.createSupportRequest(formID: area.datasource.formID,
                                              customFields: area.datasource.customFields,
@@ -114,6 +119,7 @@ public final class SupportFormViewModel: ObservableObject {
     /// Joins the selected area tags with the source tag(if available).
     ///
     func assembleTags() -> [String] {
+        guard let area else { return [] }
         guard let sourceTag, sourceTag.isNotEmpty else {
             return area.datasource.tags
         }

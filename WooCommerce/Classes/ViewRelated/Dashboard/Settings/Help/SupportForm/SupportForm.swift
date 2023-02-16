@@ -121,7 +121,7 @@ struct SupportForm: View {
                             .padding([.horizontal, .top])
 
                         // Area List
-                        VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
+                        VStack(alignment: .leading, spacing: .zero) {
                             ForEach(viewModel.areas.indexed(), id: \.0.self) { index, area in
                                 HStack(alignment: .center, spacing: Layout.radioButtonSpacing) {
                                     // Radio-Button emulation
@@ -138,7 +138,10 @@ struct SupportForm: View {
                                     Text(area.title)
                                         .headlineStyle()
                                 }
-                                .onTapGesture { // TODO: improve tap area
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading) // Needed to make tap area the whole width
+                                .background(Color(.listForeground(modal: false)))
+                                .onTapGesture {
                                     viewModel.selectArea(area)
                                 }
 
@@ -146,8 +149,6 @@ struct SupportForm: View {
                                     .renderedIf(index < viewModel.areas.count - 1) // Don't render the last divider
                             }
                         }
-                        .padding()
-                        .background(Color(.listForeground(modal: false)))
                         .cornerRadius(Layout.cornerRadius)
                         .padding(.bottom)
 

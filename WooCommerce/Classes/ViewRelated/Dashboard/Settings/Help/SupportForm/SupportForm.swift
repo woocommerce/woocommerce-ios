@@ -8,6 +8,7 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
     init(viewModel: SupportFormViewModel) {
         super.init(rootView: SupportForm(viewModel: viewModel))
         handleSupportRequestCompletion(viewModel: viewModel)
+        hidesBottomBarWhenPushed = true
     }
 
     override func viewDidLoad() {

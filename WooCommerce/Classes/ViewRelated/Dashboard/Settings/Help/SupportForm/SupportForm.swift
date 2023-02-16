@@ -114,17 +114,31 @@ struct SupportForm: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
 
+
                         Text(Localization.iNeedHelp.uppercased())
                             .footnoteStyle()
-                            .padding()
+                            .padding([.horizontal, .top])
 
-                        Picker(Localization.iNeedHelp, selection: $viewModel.area) {
-                            ForEach(viewModel.areas, id: \.self) { area in
-                                Text(area.title).tag(area)
+                        VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
+                            ForEach(viewModel.areas.indexed(), id: \.0.self) { index, area in
+                                HStack(alignment: .center, spacing: Layout.radioButtonSpacing) {
+                                    Circle()
+                                        .stroke(Color(.separator), lineWidth: 2)
+                                        .frame(width: 20, height: 20)
+                                        //.background(Circle().fill(Color(.accent)).padding(2))
+
+                                    Text(area.title)
+                                        .headlineStyle()
+                                }
+
+                                Divider()
+                                    .renderedIf(index < viewModel.areas.count - 1)
                             }
                         }
-                        .pickerStyle(.inline)
+                        .padding()
                         .background(Color(.listForeground(modal: false)))
+                        .cornerRadius(Layout.cornerRadius)
+                        .padding(.bottom)
 
                         VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                             Text(Localization.letsGetItSorted)
@@ -203,7 +217,7 @@ private extension SupportForm {
 
     enum Layout {
         static let sectionSpacing: CGFloat = 16
-        static let optionsSpacing: CGFloat = 8
+        static let radioButtonSpacing: CGFloat = 12
         static let subSectionsSpacing: CGFloat = 8
         static let cornerRadius: CGFloat = 8
         static let subjectInsets = EdgeInsets(top: 8, leading: 5, bottom: 8, trailing: 5)
@@ -223,8 +237,10 @@ struct SupportFormProvider: PreviewProvider {
     static var previews: some View {
         NavigationView {
             SupportForm(viewModel: .init(areas: [
-                .init(title: "Mobile Aps", datasource: MockDataSource()),
+                .init(title: "Mobile Apps", datasource: MockDataSource()),
+                .init(title: "Card Reader / In Person Payments", datasource: MockDataSource()),
                 .init(title: "WooCommerce Payments", datasource: MockDataSource()),
+                .init(title: "WooCommerce Plugins", datasource: MockDataSource()),
                 .init(title: "Other Plugins", datasource: MockDataSource()),
             ]))
         }

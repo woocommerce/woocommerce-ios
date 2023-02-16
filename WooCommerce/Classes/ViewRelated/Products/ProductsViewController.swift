@@ -300,7 +300,7 @@ private extension ProductsViewController {
     }
 
     @objc func finishBulkEditing() {
-        guard tableView.isEditing else {
+        guard let tableView, tableView.isEditing else {
             return
         }
 

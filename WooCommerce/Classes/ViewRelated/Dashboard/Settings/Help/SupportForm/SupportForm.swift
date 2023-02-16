@@ -126,13 +126,13 @@ struct SupportForm: View {
                                 HStack(alignment: .center, spacing: Layout.radioButtonSpacing) {
                                     // Radio-Button emulation
                                     Circle()
-                                        .stroke(Color(.separator), lineWidth: 2)
-                                        .frame(width: 20, height: 20)
+                                        .stroke(Color(.separator), lineWidth: Layout.radioButtonBorderWidth)
+                                        .frame(width: Layout.radioButtonSize, height: Layout.radioButtonSize)
                                         .background(
                                             // Use a clear color for non-selected radio buttons.
                                             Circle()
                                                 .fill( viewModel.isAreaSelected(area) ? Color(.accent) : .clear)
-                                                .padding(2)
+                                                .padding(Layout.radioButtonBorderWidth)
                                         )
 
                                     Text(area.title)
@@ -234,6 +234,8 @@ private extension SupportForm {
     enum Layout {
         static let sectionSpacing: CGFloat = 16
         static let radioButtonSpacing: CGFloat = 12
+        static let radioButtonBorderWidth: CGFloat = 2
+        static let radioButtonSize: CGFloat = 20
         static let subSectionsSpacing: CGFloat = 8
         static let cornerRadius: CGFloat = 8
         static let subjectInsets = EdgeInsets(top: 8, leading: 5, bottom: 8, trailing: 5)

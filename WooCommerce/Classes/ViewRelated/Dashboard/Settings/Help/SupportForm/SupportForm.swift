@@ -142,6 +142,7 @@ struct SupportForm: View {
                             }
 
                             Divider()
+                                .padding(.leading)
                                 .renderedIf(index < viewModel.areas.count - 1) // Don't render the last divider
                         }
                     }

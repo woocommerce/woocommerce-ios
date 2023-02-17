@@ -80,18 +80,6 @@ private extension SupportFormHostingController {
         dismissView()
         DDLogError("⛔️ Zendesk Identity could not be created.")
     }
-
-    /// Dismisses the view depending on it's presenting `ViewController` hierarchy.
-    ///
-    func dismissView() {
-        // Only pop the view if we are inside a navigation stack and the support form is not the root view controller
-        if let navigationController, navigationController.viewControllers.count > 1 {
-            navigationController.popViewController(animated: true)
-        } else {
-            // For any other case, attempt a modal dismiss.
-            dismiss(animated: true)
-        }
-    }
 }
 
 private extension SupportFormHostingController {

@@ -658,6 +658,7 @@
 		2667BFED25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFEC25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift */; };
 		2676F4CC2908284800C7A15B /* ProductCreationTypeCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2676F4CB2908284800C7A15B /* ProductCreationTypeCommand.swift */; };
 		26771A14256FFA8700EE030E /* IssueRefundCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26771A13256FFA8700EE030E /* IssueRefundCoordinatingController.swift */; };
+		2677B559299F322300862180 /* SupportForm+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2677B558299F322300862180 /* SupportForm+Presentation.swift */; };
 		2678897C270E6E8B00BD249E /* SimplePaymentsAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2678897B270E6E8B00BD249E /* SimplePaymentsAmount.swift */; };
 		267D6882296485850072ED0C /* ProductVariationGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267D6881296485850072ED0C /* ProductVariationGeneratorTests.swift */; };
 		26838354296F460B00CCF60A /* GenerateVariationsOptionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26838353296F460B00CCF60A /* GenerateVariationsOptionPresenter.swift */; };
@@ -2753,6 +2754,7 @@
 		2667BFEC25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingCalculationUseCaseTests.swift; sourceTree = "<group>"; };
 		2676F4CB2908284800C7A15B /* ProductCreationTypeCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCreationTypeCommand.swift; sourceTree = "<group>"; };
 		26771A13256FFA8700EE030E /* IssueRefundCoordinatingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueRefundCoordinatingController.swift; sourceTree = "<group>"; };
+		2677B558299F322300862180 /* SupportForm+Presentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SupportForm+Presentation.swift"; sourceTree = "<group>"; };
 		2678897B270E6E8B00BD249E /* SimplePaymentsAmount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsAmount.swift; sourceTree = "<group>"; };
 		267CFE1824435A5500AF3A13 /* ProductCategoryViewModelBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryViewModelBuilderTests.swift; sourceTree = "<group>"; };
 		267D6881296485850072ED0C /* ProductVariationGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationGeneratorTests.swift; sourceTree = "<group>"; };
@@ -5595,6 +5597,7 @@
 			isa = PBXGroup;
 			children = (
 				268D7C9B2984752A00D38709 /* SupportForm.swift */,
+				2677B558299F322300862180 /* SupportForm+Presentation.swift */,
 				262EB5AD298C70EF009DCC36 /* SupportFormViewModel.swift */,
 				262EB5AF298C7C3A009DCC36 /* SupportFormsDataSources.swift */,
 			);
@@ -10852,6 +10855,7 @@
 				0235BFD9246E959500778909 /* ProductFormActionsFactory.swift in Sources */,
 				024EFA6923FCC10B00F36918 /* Product+Media.swift in Sources */,
 				0202B68D23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift in Sources */,
+				2677B559299F322300862180 /* SupportForm+Presentation.swift in Sources */,
 				D8B4D5F426C30E7C00F34E94 /* InPersonPaymentsStripeRejectedView.swift in Sources */,
 				DE0A2EAD281BA1FA007A8015 /* ProductCategorySelector.swift in Sources */,
 				57612989245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift in Sources */,

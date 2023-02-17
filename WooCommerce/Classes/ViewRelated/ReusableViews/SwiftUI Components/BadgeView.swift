@@ -38,12 +38,14 @@ struct BadgeView: View {
     }
 }
 
-private extension BadgeView {
+private extension BadgeView.BadgeType {
     enum Localization {
         static let newTitle = NSLocalizedString("New", comment: "Title of the badge shown when advertising a new feature")
         static let tipTitle = NSLocalizedString("Tip", comment: "Title of the badge shown when promoting an existing feature")
     }
+}
 
+private extension BadgeView {
     enum Layout {
         static let horizontalPadding: CGFloat = 6
         static let verticalPadding: CGFloat = 4
@@ -53,8 +55,10 @@ private extension BadgeView {
 
 struct BadgeView_Previews: PreviewProvider {
     static var previews: some View {
-        BadgeView(type: .new)
-        BadgeView(type: .tip)
-        BadgeView(text: "Custom text")
+        VStack {
+            BadgeView(type: .new)
+            BadgeView(type: .tip)
+            BadgeView(text: "Custom text")
+        }
     }
 }

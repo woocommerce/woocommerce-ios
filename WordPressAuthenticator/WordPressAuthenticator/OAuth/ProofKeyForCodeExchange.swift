@@ -11,9 +11,9 @@
 // The code verifier should have enough entropy to make it impractical to guess the value.
 //
 // Note: The common abbreviation of "Proof Key for Code Exchange" is PKCE and is pronounced "pixy".
-struct ProofKeyForCodeExchange {
+struct ProofKeyForCodeExchange: Equatable {
 
-    enum Method {
+    enum Method: Equatable {
         case s256
         case plain
 

@@ -5,8 +5,8 @@ class CodeVerifierTests: XCTestCase {
 
     func testCodeVerifierIsRandomString() {
         XCTAssertNotEqual(
-            ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue,
-            ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue
+            ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier(),
+            ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier()
         )
     }
 

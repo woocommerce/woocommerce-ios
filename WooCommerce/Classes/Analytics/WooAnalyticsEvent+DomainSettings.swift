@@ -45,10 +45,10 @@ extension WooAnalyticsEvent.DomainSettings {
     /// Steps of the domain settings flow. The raw value is used for the event property.
     enum Step: String {
         case dashboard = "dashboard"
-        case domainSelector = "domain_picker"
-        case webCheckout = "domain_web_checkout"
-        case contactInfo = "domain_contact_info"
-        case purchaseSuccess = "domain_purchase_success"
+        case domainSelector = "picker"
+        case webCheckout = "web_checkout"
+        case contactInfo = "contact_info"
+        case purchaseSuccess = "purchase_success"
     }
 }
 

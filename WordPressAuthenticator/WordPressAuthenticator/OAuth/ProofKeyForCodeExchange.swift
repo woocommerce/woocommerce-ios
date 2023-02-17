@@ -64,7 +64,6 @@ extension ProofKeyForCodeExchange {
         let rawValue: String
 
         private let allowedCharacters = Character.urlSafeCharacters
-        private lazy var allowedCharactersCount = UInt32(allowedCharacters.count)
 
         /// `length` must be between 43 and 128, inclusive.
         init(length: Int = 128) {

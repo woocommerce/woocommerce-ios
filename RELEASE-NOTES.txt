@@ -5,6 +5,7 @@
 - [Internal] Prologue screen now has only the entry point to site address login flow, and application password authentication is used for sites without Jetpack. [https://github.com/woocommerce/woocommerce-ios/pull/8846]
 - [Internal] A new tag has been added for Zendesk for users authenticated with application password. [https://github.com/woocommerce/woocommerce-ios/pull/8850]
 - [Internal] Failures in the logged-out state are now tracked with anonymous ID. [https://github.com/woocommerce/woocommerce-ios/pull/8861]
+- [*] Fix: Fixed a crash when switching away from the Products tab. [https://github.com/woocommerce/woocommerce-ios/pull/8874]
 
 12.3
 -----

@@ -103,7 +103,11 @@ struct SupportFormProvider: PreviewProvider {
 
     static var previews: some View {
         NavigationView {
-            SupportForm(viewModel: .init(dataSource: MockDataSource()))
+            SupportForm(viewModel: .init(areas: [
+                .init(title: "Mobile Aps", datasource: MockDataSource()),
+                .init(title: "WooCommerce Payments", datasource: MockDataSource()),
+                .init(title: "Other Plugins", datasource: MockDataSource()),
+            ]))
         }
     }
 }

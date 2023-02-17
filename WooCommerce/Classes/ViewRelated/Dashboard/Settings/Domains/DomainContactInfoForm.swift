@@ -124,6 +124,7 @@ struct DomainContactInfoForm_Previews: PreviewProvider {
     private static let viewModelWithoutContactInfo = DomainContactInfoFormViewModel(siteID: 134,
                                                                                     contactInfoToEdit: nil,
                                                                                     domain: "",
+                                                                                    source: .settings,
                                                                                     stores: DomainContactInfoFormStores())
     private static let contactInfo = DomainContactInfo(firstName: "Woo",
                                                        lastName: "Testing",
@@ -139,6 +140,7 @@ struct DomainContactInfoForm_Previews: PreviewProvider {
     private static let viewModelWithContactInfo = DomainContactInfoFormViewModel(siteID: 134,
                                                                                  contactInfoToEdit: contactInfo,
                                                                                  domain: "",
+                                                                                 source: .settings,
                                                                                  stores: DomainContactInfoFormStores())
 
     static var previews: some View {

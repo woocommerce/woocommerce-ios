@@ -60,7 +60,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // so we should not enable this for alpha builds.
             return buildConfig == .localDeveloper || buildConfig == .appStore
         case .domainSettings:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .supportRequests:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .simplifyProductEditing:

@@ -35,6 +35,7 @@
 		020624F027951113000D024C /* StoreStatsDataOrRedactedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020624EF27951113000D024C /* StoreStatsDataOrRedactedView.swift */; };
 		02063C8929260AA000130906 /* StoreCreationSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02063C8829260A9F00130906 /* StoreCreationSuccessView.swift */; };
 		0206483A23FA4160008441BB /* OrdersRootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0206483923FA4160008441BB /* OrdersRootViewController.swift */; };
+		0206E296299CD2C900C061C1 /* WooAnalyticsEvent+DomainSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0206E295299CD2C900C061C1 /* WooAnalyticsEvent+DomainSettings.swift */; };
 		020732042988AB7B000A53C2 /* DomainContactInfoForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020732032988AB7B000A53C2 /* DomainContactInfoForm.swift */; };
 		020732062988AC4D000A53C2 /* DomainContactInfoFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020732052988AC4D000A53C2 /* DomainContactInfoFormViewModel.swift */; };
 		02077F72253816FF005A78EF /* ProductFormActionsFactory+ReadonlyProductTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02077F71253816FF005A78EF /* ProductFormActionsFactory+ReadonlyProductTests.swift */; };
@@ -2137,6 +2138,7 @@
 		020624EF27951113000D024C /* StoreStatsDataOrRedactedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsDataOrRedactedView.swift; sourceTree = "<group>"; };
 		02063C8829260A9F00130906 /* StoreCreationSuccessView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreCreationSuccessView.swift; sourceTree = "<group>"; };
 		0206483923FA4160008441BB /* OrdersRootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRootViewController.swift; sourceTree = "<group>"; };
+		0206E295299CD2C900C061C1 /* WooAnalyticsEvent+DomainSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+DomainSettings.swift"; sourceTree = "<group>"; };
 		020732032988AB7B000A53C2 /* DomainContactInfoForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainContactInfoForm.swift; sourceTree = "<group>"; };
 		020732052988AC4D000A53C2 /* DomainContactInfoFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainContactInfoFormViewModel.swift; sourceTree = "<group>"; };
 		02077F71253816FF005A78EF /* ProductFormActionsFactory+ReadonlyProductTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormActionsFactory+ReadonlyProductTests.swift"; sourceTree = "<group>"; };
@@ -6887,6 +6889,7 @@
 				53284FB62FF7F94F18F0D3FF /* WaitingTimeTracker.swift */,
 				0263E3BA290BB21800E5F88F /* WooAnalyticsEvent+StoreCreation.swift */,
 				EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */,
+				0206E295299CD2C900C061C1 /* WooAnalyticsEvent+DomainSettings.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -10507,6 +10510,7 @@
 				02F6800925807CD300C3BAD2 /* GridStackView.swift in Sources */,
 				DE279BB126EA184A002BA963 /* ShippingLabelPackageListViewModel.swift in Sources */,
 				02B1AFEC24BC5AE5005DB1E3 /* LinkedProductListSelectorDataSource.swift in Sources */,
+				0206E296299CD2C900C061C1 /* WooAnalyticsEvent+DomainSettings.swift in Sources */,
 				26F94E1C267A3E4500DB6CCF /* ProductAddOnsListViewController.swift in Sources */,
 				451A04EC2386D2B300E368C9 /* ProductImagesCollectionViewDataSource.swift in Sources */,
 				02DD81F9242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.swift in Sources */,

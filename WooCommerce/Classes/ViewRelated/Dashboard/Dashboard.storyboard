@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -193,7 +193,45 @@
                 <hostingController storyboardIdentifier="CardReaderSettingsSearchingViewController" id="6OW-B9-dhi" customClass="CardReaderSettingsSearchingViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gkw-di-0a6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4937" y="2237"/>
+            <point key="canvasLocation" x="4940" y="2237"/>
+        </scene>
+        <!--Built In Card Reader Settings Searching View Controller-->
+        <scene sceneID="9rZ-pk-8W6">
+            <objects>
+                <hostingController storyboardIdentifier="BuiltInCardReaderSettingsSearchingViewController" id="TeA-3Z-IqB" customClass="BuiltInCardReaderSettingsSearchingViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ySG-So-dRm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4940" y="2955"/>
+        </scene>
+        <!--Built In Card Reader Settings Connected View Controller-->
+        <scene sceneID="3LS-Z1-63C">
+            <objects>
+                <viewController storyboardIdentifier="BuiltInCardReaderSettingsConnectedViewController" id="N9O-dR-BcL" customClass="BuiltInCardReaderSettingsConnectedViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Agu-vi-x2s">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="3KI-PH-Kjc">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="9oX-jr-5ce"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="3KI-PH-Kjc" firstAttribute="leading" secondItem="9oX-jr-5ce" secondAttribute="leading" id="1tg-wR-jjd"/>
+                            <constraint firstItem="9oX-jr-5ce" firstAttribute="bottom" secondItem="3KI-PH-Kjc" secondAttribute="bottom" id="GC7-3r-J7N"/>
+                            <constraint firstItem="3KI-PH-Kjc" firstAttribute="top" secondItem="9oX-jr-5ce" secondAttribute="top" id="exG-QY-Z0O"/>
+                            <constraint firstItem="9oX-jr-5ce" firstAttribute="trailing" secondItem="3KI-PH-Kjc" secondAttribute="trailing" id="sKT-M9-W0t"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="3KI-PH-Kjc" id="hYy-ms-XEr"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MO6-Ld-nct" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5657" y="2955"/>
         </scene>
     </scenes>
     <resources>

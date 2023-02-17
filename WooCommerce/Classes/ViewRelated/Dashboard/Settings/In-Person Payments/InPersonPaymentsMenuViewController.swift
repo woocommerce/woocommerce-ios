@@ -196,10 +196,11 @@ private extension InPersonPaymentsMenuViewController {
 
     var cardReadersSection: Section? {
         let rows: [Row] = [
-                .orderCardReader,
-                .manageCardReader,
-                .cardReaderManuals
-            ]
+            .tapToPayOnIPhone,
+            .orderCardReader,
+            .manageCardReader,
+            .cardReaderManuals
+        ]
         return Section(header: Localization.cardReaderSectionTitle, rows: rows)
     }
 
@@ -257,6 +258,8 @@ private extension InPersonPaymentsMenuViewController {
             configureCollectPayment(cell: cell)
         case let cell as LeftImageTitleSubtitleToggleTableViewCell where row == .toggleEnableCashOnDelivery:
             configureToggleEnableCashOnDelivery(cell: cell)
+        case let cell as LeftImageTitleSubtitleTableViewCell where row == .tapToPayOnIPhone:
+            configureTapToPayOnIPhoneGateways(cell: cell)
         default:
             fatalError()
         }
@@ -274,6 +277,15 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = enableManageCardReaderCell ? .disclosureIndicator : .none
         cell.selectionStyle = enableManageCardReaderCell ? .default : .none
         cell.configure(image: .creditCardIcon, text: Localization.manageCardReader.localizedCapitalized)
+
+        updateEnabledState(in: cell, shouldBeEnabled: enableManageCardReaderCell)
+    }
+
+    func configureTapToPayOnIPhoneGateways(cell: LeftImageTitleSubtitleTableViewCell) {
+        cell.imageView?.tintColor = .text
+        cell.accessoryType = enableManageCardReaderCell ? .disclosureIndicator : .none
+        cell.selectionStyle = enableManageCardReaderCell ? .default : .none
+        cell.configure(image: UIImage(systemName: "wave.3.right.circle")!, text: "Tap to Pay on iPhone", subtitle: "Connect and test")
 
         updateEnabledState(in: cell, shouldBeEnabled: enableManageCardReaderCell)
     }
@@ -405,6 +417,16 @@ extension InPersonPaymentsMenuViewController {
         SimplePaymentsAmountFlowOpener.openSimplePaymentsAmountFlow(from: navigationController, siteID: siteID)
     }
 
+    func tapToPayOnIPhoneWasPressed() {
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
+            fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
+        }
+
+        let viewModelsAndViews = BuiltInCardReaderSettingsViewModelsOrderedList(configuration: viewModel.cardPresentPaymentsConfiguration)
+        viewController.configure(viewModelsAndViews: viewModelsAndViews)
+        show(viewController, sender: self)
+    }
+
     @objc func learnMoreAboutInPersonPaymentsButtonWasTapped() {
         inPersonPaymentsLearnMoreViewModel.learnMoreTapped()
         WebviewHelper.launch(inPersonPaymentsLearnMoreViewModel.url, with: self)
@@ -461,6 +483,8 @@ extension InPersonPaymentsMenuViewController: UITableViewDelegate {
             managePaymentGatewaysWasPressed()
         case .collectPayment:
             collectPaymentWasPressed()
+        case .tapToPayOnIPhone:
+            tapToPayOnIPhoneWasPressed()
         case .toggleEnableCashOnDelivery:
             break
         }
@@ -562,6 +586,7 @@ private struct Section: Equatable {
 private enum Row: CaseIterable {
     case orderCardReader
     case manageCardReader
+    case tapToPayOnIPhone
     case cardReaderManuals
     case managePaymentGateways
     case collectPayment
@@ -569,7 +594,7 @@ private enum Row: CaseIterable {
 
     var type: UITableViewCell.Type {
         switch self {
-        case .managePaymentGateways:
+        case .managePaymentGateways, .tapToPayOnIPhone:
             return LeftImageTitleSubtitleTableViewCell.self
         case .toggleEnableCashOnDelivery:
             return LeftImageTitleSubtitleToggleTableViewCell.self

@@ -44,11 +44,11 @@ class DataBase64URLDecoding: XCTestCase {
 
     func testBase64URLEncoding() {
         XCTAssertEqual(
-            "hello world".data(using: .utf8)!.base64URLEncodedString(),
+            Data("hello world".utf8).base64URLEncodedString(),
             "aGVsbG8gd29ybGQ"
         )
         XCTAssertEqual(
-            "Hello, /+ World!".data(using: .utf8)!.base64URLEncodedString(),
+            Data("Hello, /+ World!".utf8).base64URLEncodedString(),
             "SGVsbG8sIC8rIFdvcmxkIQ"
         )
     }
@@ -59,7 +59,7 @@ class DataBase64URLDecoding: XCTestCase {
     func testBase64URLEncodingNonUTF8() {
         // The Chinese character for "world" cannot be represented in the UTF-8 encoding.
         XCTAssertNotNil(
-            "Hello, 世界".data(using: .utf8)!.base64URLEncodedString(),
+            Data("Hello, 世界".utf8).base64URLEncodedString(),
             "SGVsbG8sIOS4lueVjA"
         )
 
@@ -71,12 +71,12 @@ class DataBase64URLDecoding: XCTestCase {
 
         // \u{FF}, Unicode scalar 0xFF, is not a valid UTF-8
         XCTAssertEqual(
-            "Hello, \u{FF}".data(using: .utf8)!.base64URLEncodedString(),
+            Data("Hello, \u{FF}".utf8).base64URLEncodedString(),
             "SGVsbG8sIMO_"
         )
         // \0, null character, is not a valid UTF-8
         XCTAssertEqual(
-            "Hello, \0 World!".data(using: .utf8)!.base64URLEncodedString(),
+            Data("Hello, \0 World!".utf8).base64URLEncodedString(),
             "SGVsbG8sIAAgV29ybGQh"
         )
     }

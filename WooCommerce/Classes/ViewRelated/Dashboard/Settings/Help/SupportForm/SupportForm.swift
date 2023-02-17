@@ -17,7 +17,7 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
     }
 
     /// Creates the Zendesk Identity if needed.
-    /// If it fails, it pops back the view and informs the user.
+    /// If it fails, it dismisses the view and informs the user.
     ///
     func createZendeskIdentity() {
         // TODO: We should consider refactoring this to present the email alert using SwiftUI.
@@ -48,14 +48,14 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
 }
 
 private extension SupportFormHostingController {
-    /// Shows an alert informing the support creation success and after confirmation pops the view back.
+    /// Shows an alert informing the support creation success and after confirmation dismisses the view.
     ///
     func informSuccessAndPopBack() {
         let alertController = UIAlertController(title: Localization.requestSent,
                                                 message: Localization.requestSentMessage,
                                                 preferredStyle: .alert)
         alertController.addDefaultActionWithTitle(Localization.gotIt) { _ in
-            self.navigationController?.popViewController(animated: true)
+            self.dismissView()
         }
         present(alertController, animated: true)
     }
@@ -77,8 +77,20 @@ private extension SupportFormHostingController {
         let notice = Notice(title: Localization.badIdentityError, feedbackType: .error)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
 
-        navigationController?.popViewController(animated: true)
+        dismissView()
         DDLogError("⛔️ Zendesk Identity could not be created.")
+    }
+
+    /// Dismisses the view depending on it's presenting `ViewController` hierarchy.
+    ///
+    func dismissView() {
+        // Only pop the view if we are inside a navigation stack and the support form is not the root view controller
+        if let navigationController, navigationController.viewControllers.count > 1 {
+            navigationController.popViewController(animated: true)
+        } else {
+            // For any other case, attempt a modal dismiss.
+            dismiss(animated: true)
+        }
     }
 }
 

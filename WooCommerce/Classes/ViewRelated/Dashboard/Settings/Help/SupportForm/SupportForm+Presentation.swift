@@ -28,6 +28,7 @@ extension SupportFormHostingController {
     /// Shows the `SupportForm` modally inside a NavigationController.
     ///
     private func showViewModally(from controller: UIViewController) {
+        addCloseNavigationBarButton()
         let navController = WooNavigationController(rootViewController: self)
         // Keeping the modal fullscreen on iPad like previous implementation.
         if UIDevice.current.userInterfaceIdiom == .pad {

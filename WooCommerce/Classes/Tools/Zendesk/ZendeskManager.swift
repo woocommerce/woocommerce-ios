@@ -700,6 +700,12 @@ extension ZendeskManager: SupportManagerAdapter {
     /// This handles Zendesk push notifications.
     ///
     func displaySupportRequest(using userInfo: [AnyHashable: Any]) {
+
+        // Prevent navigating to an individual ticker from a push notification as we won't support viewing individual tickets on the new Support Form.
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+            return
+        }
+
         guard zendeskEnabled == true,
             let requestId = userInfo[PushKey.requestID] as? String else {
                 DDLogInfo("Zendesk push notification payload is invalid.")
@@ -737,6 +743,12 @@ extension ZendeskManager: SupportManagerAdapter {
     /// Delegate method for a received push notification
     ///
     func pushNotificationReceived() {
+        // Do not update the notification count when the new SupportForm is enabled
+        // because we can't clear it back as we won't allow navigating to individual tickets.
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+            return
+        }
+
         unreadNotificationsCount += 1
         saveUnreadCount()
         postNotificationReceived()

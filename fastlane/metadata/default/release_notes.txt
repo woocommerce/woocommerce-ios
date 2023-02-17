@@ -1,1 +1,1 @@
-We’ve made a few enhancements to manage your business. It’s now easier to set up your store when logging in. Adding attributes from the app just became a whole lot easier! Keep your feedback coming!
+For this release, we focused on taking care of minor bugs that our team found. Don’t be fooled – we are working on some pretty cool stuff for you all! Keep your feedback rolling in; it helps us figure out what to work on next.

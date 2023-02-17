@@ -508,7 +508,12 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
     ///
     func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
-        ZendeskProvider.shared.showNewRequestIfPossible(from: sourceViewController, with: sourceTag.name)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+            let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag.name))
+            supportForm.show(from: sourceViewController)
+        } else {
+            ZendeskProvider.shared.showNewRequestIfPossible(from: sourceViewController, with: sourceTag.name)
+        }
     }
 
     /// Indicates if the Login Epilogue should be presented.

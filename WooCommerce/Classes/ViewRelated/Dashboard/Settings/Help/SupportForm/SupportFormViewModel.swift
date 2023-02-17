@@ -33,9 +33,23 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     @Published var description = ""
 
+    /// Determines if the loading indicator should be visible or not.
+    ///
+    @Published var showLoadingIndicator = false
+
     /// Supported support areas.
     ///
     let areas: [Area]
+
+    /// Assign this closure to get notified when a support request creation finishes.
+    ///
+    var onCompletion: ((Result<Void, Error>) -> Void)?
+
+    /// Defines when the submit button should be enabled or not.
+    ///
+    var submitButtonDisabled: Bool {
+        subject.isEmpty || description.isEmpty
+    }
 
     init(areas: [Area] = wooSupportAreas()) {
         self.areas = areas
@@ -44,13 +58,17 @@ public final class SupportFormViewModel: ObservableObject {
 
     /// Submits the support request using the Zendesk Provider.
     ///
-    func submitSupportRequest(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func submitSupportRequest() {
+        showLoadingIndicator = true
         ZendeskProvider.shared.createSupportRequest(formID: area.datasource.formID,
                                                     customFields: area.datasource.customFields,
                                                     tags: area.datasource.tags,
                                                     subject: subject,
-                                                    description: description,
-                                                    onCompletion: onCompletion)
+                                                    description: description) { [weak self] result in
+            guard let self else { return }
+            self.showLoadingIndicator = false
+            self.onCompletion?(result)
+        }
     }
 }
 

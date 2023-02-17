@@ -10,7 +10,12 @@ final class InPersonPaymentsViewController: UIHostingController<InPersonPayments
         super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
         rootView.showSupport = { [weak self] in
             guard let self = self else { return }
-            ZendeskProvider.shared.showNewWCPayRequestIfPossible(from: self)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+                let supportForm = SupportFormHostingController(viewModel: .init())
+                supportForm.show(from: self)
+            } else {
+                ZendeskProvider.shared.showNewWCPayRequestIfPossible(from: self)
+            }
         }
         rootView.showURL = { [weak self] url in
             guard let self = self else { return }

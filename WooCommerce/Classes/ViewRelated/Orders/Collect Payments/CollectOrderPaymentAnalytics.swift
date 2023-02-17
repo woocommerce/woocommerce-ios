@@ -9,8 +9,8 @@ final class CollectOrderPaymentAnalytics {
     private var connectedReader: CardReader?
     private var paymentGatewayAccount: PaymentGatewayAccount?
 
-    var connectedReaderModel: String {
-        connectedReader?.readerType.model ?? ""
+    var connectedReaderModel: String? {
+        connectedReader?.readerType.model
     }
 
     init(analytics: Analytics = ServiceLocator.analytics,

@@ -974,6 +974,12 @@ extension WooAnalyticsEvent {
             gatewayID ?? unknownGatewayID
         }
 
+        static let noReaderConnected = "none_connected"
+
+        static func readerModel(for connectedReaderModel: String?) -> String {
+            connectedReaderModel ?? noReaderConnected
+        }
+
         /// Tracked when we ask the user to choose between Built In and Bluetooth readers
         /// at the start of the connection flow
         ///
@@ -1065,9 +1071,9 @@ extension WooAnalyticsEvent {
         static func cardReaderConnectionSuccess(forGatewayID: String?,
                                                 batteryLevel: Float?,
                                                 countryCode: String,
-                                                cardReaderModel: String) -> WooAnalyticsEvent {
+                                                cardReaderModel: String?) -> WooAnalyticsEvent {
             var properties = [
-                Keys.cardReaderModel: cardReaderModel,
+                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                 Keys.countryCode: countryCode,
                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
             ]
@@ -1087,10 +1093,10 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func cardReaderConnectionFailed(forGatewayID: String?, error: Error, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
+        static func cardReaderConnectionFailed(forGatewayID: String?, error: Error, countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderConnectionFailed,
                               properties: [
-                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.errorDescription: error.localizedDescription
@@ -1106,10 +1112,10 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func cardReaderDisconnectTapped(forGatewayID: String?, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
+        static func cardReaderDisconnectTapped(forGatewayID: String?, countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderDisconnectTapped,
                               properties: [
-                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
@@ -1127,10 +1133,10 @@ extension WooAnalyticsEvent {
         static func cardReaderSoftwareUpdateTapped(forGatewayID: String?,
                                                    updateType: SoftwareUpdateTypeProperty,
                                                    countryCode: String,
-                                                   cardReaderModel: String) -> WooAnalyticsEvent {
+                                                   cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateTapped,
                               properties: [
-                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
@@ -1149,10 +1155,10 @@ extension WooAnalyticsEvent {
         static func cardReaderSoftwareUpdateStarted(forGatewayID: String?,
                                                     updateType: SoftwareUpdateTypeProperty,
                                                     countryCode: String,
-                                                    cardReaderModel: String) -> WooAnalyticsEvent {
+                                                    cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateStarted,
                               properties: [
-                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
@@ -1177,7 +1183,7 @@ extension WooAnalyticsEvent {
         ) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateFailed,
                               properties: [
-                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue,
@@ -1197,10 +1203,10 @@ extension WooAnalyticsEvent {
         static func cardReaderSoftwareUpdateSuccess(forGatewayID: String?,
                                                     updateType: SoftwareUpdateTypeProperty,
                                                     countryCode: String,
-                                                    cardReaderModel: String) -> WooAnalyticsEvent {
+                                                    cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateSuccess,
                               properties: [
-                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
@@ -1219,10 +1225,10 @@ extension WooAnalyticsEvent {
         static func cardReaderSoftwareUpdateCancelTapped(forGatewayID: String?,
                                                          updateType: SoftwareUpdateTypeProperty,
                                                          countryCode: String,
-                                                         cardReaderModel: String) -> WooAnalyticsEvent {
+                                                         cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateCancelTapped,
                               properties: [
-                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
@@ -1241,10 +1247,10 @@ extension WooAnalyticsEvent {
         static func cardReaderSoftwareUpdateCanceled(forGatewayID: String?,
                                                      updateType: SoftwareUpdateTypeProperty,
                                                      countryCode: String,
-                                                     cardReaderModel: String) -> WooAnalyticsEvent {
+                                                     cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateCanceled,
                               properties: [
-                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
@@ -1306,11 +1312,11 @@ extension WooAnalyticsEvent {
         ///
         static func collectPaymentCanceled(forGatewayID: String?,
                                            countryCode: String,
-                                           cardReaderModel: String,
+                                           cardReaderModel: String?,
                                            cancellationSource: CancellationSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentCanceled,
                               properties: [
-                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.cancellationSource: cancellationSource.rawValue
@@ -1343,15 +1349,15 @@ extension WooAnalyticsEvent {
         static func collectPaymentSuccess(forGatewayID: String?,
                                           countryCode: String,
                                           paymentMethod: PaymentMethod,
-                                          cardReaderModel: String,
+                                          cardReaderModel: String?,
                                           millisecondsSinceOrderAddNew: Int64?,
                                           millisecondsSinceCardPaymentStarted: Int64?) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [
-                Keys.cardReaderModel: cardReaderModel,
+                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                 Keys.countryCode: countryCode,
                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                 Keys.paymentMethodType: paymentMethod.analyticsValue
-              ]
+            ]
 
             if let lapseSinceLastOrderAddNew = millisecondsSinceOrderAddNew {
                 properties[Orders.GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
@@ -1375,10 +1381,10 @@ extension WooAnalyticsEvent {
         ///
         static func collectInteracPaymentSuccess(gatewayID: String?,
                                                  countryCode: String,
-                                                 cardReaderModel: String) -> WooAnalyticsEvent {
+                                                 cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectInteracPaymentSuccess,
                               properties: [
-                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID)
                               ])
@@ -1393,10 +1399,10 @@ extension WooAnalyticsEvent {
         ///
         static func interacRefundSuccess(gatewayID: String?,
                                          countryCode: String,
-                                         cardReaderModel: String) -> WooAnalyticsEvent {
+                                         cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .interacRefundSuccess,
                               properties: [
-                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID)
                               ])
@@ -1413,10 +1419,10 @@ extension WooAnalyticsEvent {
         static func interacRefundFailed(error: Error,
                                         gatewayID: String?,
                                         countryCode: String,
-                                        cardReaderModel: String) -> WooAnalyticsEvent {
+                                        cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .interacRefundFailed,
                               properties: [
-                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID)
                               ],
@@ -1432,10 +1438,10 @@ extension WooAnalyticsEvent {
         ///
         static func interacRefundCanceled(gatewayID: String?,
                                           countryCode: String,
-                                          cardReaderModel: String) -> WooAnalyticsEvent {
+                                          cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .interacRefundCanceled,
                               properties: [
-                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID)
                               ])

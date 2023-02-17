@@ -65,10 +65,11 @@ extension ProofKeyForCodeExchange {
 
         private let allowedCharacters = Character.urlSafeCharacters
         static let minimumLength = 43
+        static let maximumLength = 128
 
         /// `length` must be between 43 and 128, inclusive.
-        init(length: Int = 128) {
-            let constrainedLength = min(max(length, CodeVerifier.minimumLength), 128)
+        init(length: Int = CodeVerifier.maximumLength) {
+            let constrainedLength = min(max(length, CodeVerifier.minimumLength), CodeVerifier.maximumLength)
             rawValue = String.randomString(using: allowedCharacters, withLength: constrainedLength)
         }
 
@@ -78,7 +79,7 @@ extension ProofKeyForCodeExchange {
         // non-convenience initializers outside the module.
 
         init?(value: String) {
-            guard value.count >= CodeVerifier.minimumLength, value.count <= 128 else { return nil }
+            guard value.count >= CodeVerifier.minimumLength, value.count <= CodeVerifier.maximumLength else { return nil }
 
             guard Set(value).isSubset(of: allowedCharacters) else { return nil }
 

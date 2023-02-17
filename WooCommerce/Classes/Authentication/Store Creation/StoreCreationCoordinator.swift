@@ -302,7 +302,13 @@ private extension StoreCreationCoordinator {
     }
 
     func showSupport(from navigationController: UINavigationController) {
-        ZendeskProvider.shared.showNewRequestIfPossible(from: navigationController, with: "origin:store-creation")
+        let sourceTag = "origin:store-creation"
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+            let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag))
+            supportForm.show(from: navigationController)
+        } else {
+            ZendeskProvider.shared.showNewRequestIfPossible(from: navigationController, with: sourceTag)
+        }
     }
 }
 

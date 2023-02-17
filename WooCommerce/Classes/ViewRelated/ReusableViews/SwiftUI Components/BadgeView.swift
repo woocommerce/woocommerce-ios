@@ -15,10 +15,18 @@ struct BadgeView: View {
         }
     }
 
-    let type: BadgeType
+    private let text: String
+
+    init(type: BadgeType) {
+        text = type.title.uppercased()
+    }
+
+    init(text: String) {
+        self.text = text
+    }
 
     var body: some View {
-        Text(type.title.uppercased())
+        Text(text)
             .foregroundColor(Color(.textBrand))
             .padding(.leading, Layout.horizontalPadding)
             .padding(.trailing, Layout.horizontalPadding)
@@ -30,7 +38,7 @@ struct BadgeView: View {
     }
 }
 
-extension BadgeView {
+private extension BadgeView {
     enum Localization {
         static let newTitle = NSLocalizedString("New", comment: "Title of the badge shown when advertising a new feature")
         static let tipTitle = NSLocalizedString("Tip", comment: "Title of the badge shown when promoting an existing feature")
@@ -40,5 +48,13 @@ extension BadgeView {
         static let horizontalPadding: CGFloat = 6
         static let verticalPadding: CGFloat = 4
         static let cornerRadius: CGFloat = 8
+    }
+}
+
+struct BadgeView_Previews: PreviewProvider {
+    static var previews: some View {
+        BadgeView(type: .new)
+        BadgeView(type: .tip)
+        BadgeView(text: "Custom text")
     }
 }

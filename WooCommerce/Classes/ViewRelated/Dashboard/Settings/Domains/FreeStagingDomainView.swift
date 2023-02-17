@@ -12,16 +12,7 @@ struct FreeStagingDomainView: View {
                     .bold()
             }
             if domain.isPrimary {
-                // TODO: 8558 - refactor to reuse `BadgeView`
-                Text(Localization.primaryDomainNotice)
-                    .foregroundColor(Color(.textBrand))
-                    .padding(.leading, Layout.horizontalPadding)
-                    .padding(.trailing, Layout.horizontalPadding)
-                    .padding(.top, Layout.verticalPadding)
-                    .padding(.bottom, Layout.verticalPadding)
-                    .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                        .fill(Color(.withColorStudio(.wooCommercePurple, shade: .shade0))))
-                    .font(.system(size: 12, weight: .bold))
+                BadgeView(text: Localization.primaryDomainNotice)
             }
         }
     }

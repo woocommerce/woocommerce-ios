@@ -62,7 +62,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .domainSettings:
             return true
         case .supportRequests:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .simplifyProductEditing:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

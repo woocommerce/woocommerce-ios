@@ -26,7 +26,7 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
     }
 
     /// Creates the Zendesk Identity if needed.
-    /// If it fails, it pops back the view and informs the user.
+    /// If it fails, it dismisses the view and informs the user.
     ///
     func createZendeskIdentity() {
         // TODO: We should consider refactoring this to present the email alert using SwiftUI.
@@ -57,14 +57,14 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
 }
 
 private extension SupportFormHostingController {
-    /// Shows an alert informing the support creation success and after confirmation pops the view back.
+    /// Shows an alert informing the support creation success and after confirmation dismisses the view.
     ///
     func informSuccessAndPopBack() {
         let alertController = UIAlertController(title: Localization.requestSent,
                                                 message: Localization.requestSentMessage,
                                                 preferredStyle: .alert)
         alertController.addDefaultActionWithTitle(Localization.gotIt) { _ in
-            self.navigationController?.popViewController(animated: true)
+            self.dismissView()
         }
         present(alertController, animated: true)
     }
@@ -84,7 +84,7 @@ private extension SupportFormHostingController {
         let notice = Notice(title: Localization.badIdentityError, feedbackType: .error)
         noticePresenter.enqueue(notice: notice)
 
-        navigationController?.popViewController(animated: true)
+        dismissView()
         DDLogError("⛔️ Zendesk Identity could not be created.")
     }
 }

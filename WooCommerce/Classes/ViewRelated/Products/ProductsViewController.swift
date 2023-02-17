@@ -716,7 +716,12 @@ private extension ProductsViewController {
             },
             onContactSupportButtonPressed: { [weak self] in
                 guard let self = self else { return }
-                ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+                    let supportForm = SupportFormHostingController(viewModel: .init())
+                    supportForm.show(from: self)
+                } else {
+                    ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
+                }
             })
         topBannerContainerView.updateSubview(errorBanner)
         topBannerView = errorBanner

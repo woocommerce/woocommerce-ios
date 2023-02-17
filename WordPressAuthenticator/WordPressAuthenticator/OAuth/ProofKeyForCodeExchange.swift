@@ -28,7 +28,7 @@ struct ProofKeyForCodeExchange {
     let codeVerifier: CodeVerifier
     let method: Method
 
-    init(codeVerifier: CodeVerifier = CodeVerifier(), method: Method = .s256) {
+    init(codeVerifier: CodeVerifier = .makeRandomCodeVerifier(), method: Method = .s256) {
         self.codeVerifier = codeVerifier
         self.method = method
     }
@@ -63,25 +63,31 @@ extension ProofKeyForCodeExchange {
 
         let rawValue: String
 
-        private let allowedCharacters = Character.urlSafeCharacters
+        static let allowedCharacters = Character.urlSafeCharacters
         static let minimumLength = 43
         static let maximumLength = 128
 
         /// `length` must be between 43 and 128, inclusive.
-        init(length: Int = CodeVerifier.maximumLength) {
-            let constrainedLength = min(max(length, CodeVerifier.minimumLength), CodeVerifier.maximumLength)
-            rawValue = String.randomString(using: allowedCharacters, withLength: constrainedLength)
-        }
+        ///
+        /// - Note: This method name is more verbose than the recommended "make<Type>" for this factory to communicate the randomness component.
+        static func makeRandomCodeVerifier(length: Int = maximumLength) -> Self {
+            let constrainedLength = min(max(length, minimumLength), maximumLength)
 
-        // This is a helper for the tests.
-        //
-        // Unfortunately, it needs to be part of the production code because Swift doesn't allow adding
-        // non-convenience initializers outside the module.
+            // It's appropriate to force unwrap here because a `nil` value could only result from
+            // a developer error—either wrong coding of the constrained length or of the allowed
+            // characters.
+            return .init(
+                value: String.randomString(
+                    using: allowedCharacters,
+                    withLength: constrainedLength
+                )
+            )!
+        }
 
         init?(value: String) {
             guard value.count >= CodeVerifier.minimumLength, value.count <= CodeVerifier.maximumLength else { return nil }
 
-            guard Set(value).isSubset(of: allowedCharacters) else { return nil }
+            guard Set(value).isSubset(of: CodeVerifier.allowedCharacters) else { return nil }
 
             self.rawValue = value
         }

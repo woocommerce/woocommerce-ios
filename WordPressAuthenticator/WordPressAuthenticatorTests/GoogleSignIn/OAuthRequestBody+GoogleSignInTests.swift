@@ -4,7 +4,7 @@ import XCTest
 class OAuthRequestBodyGoogleSignInTests: XCTestCase {
 
     func testGoogleSignInTokenRequestBody() throws {
-        let codeVerifier = ProofKeyForCodeExchange.CodeVerifier()
+        let codeVerifier = ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier()
         let pkce = ProofKeyForCodeExchange(codeVerifier: codeVerifier, method: .plain)
         let body = OAuthTokenRequestBody.googleSignInRequestBody(
             clientId: GoogleClientId(string: "com.app.123-abc")!,

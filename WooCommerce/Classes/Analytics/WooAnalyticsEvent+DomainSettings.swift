@@ -5,27 +5,16 @@ extension WooAnalyticsEvent {
         /// Event property keys.
         private enum Key {
             static let source = "source"
-            static let hasDomainCredit = "has_domain_credit"
+            static let step = "step"
             static let useDomainCredit = "use_domain_credit"
         }
 
-        /// Tracked when the user taps to search for domains from the domain dashboard screen.
-        static func domainSettingsAddDomainTapped(source: DomainSettingsCoordinator.Source, hasDomainCredit: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .domainSettingsAddDomainTapped,
-                              properties: [Key.source: source.analyticsValue,
-                                           Key.hasDomainCredit: hasDomainCredit])
-        }
-
-        /// Tracked when the user selects a domain from the domain selector to purchase or redeem.
-        static func domainSettingsCustomDomainSelected(source: DomainSettingsCoordinator.Source, useDomainCredit: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .domainSettingsCustomDomainSelected,
-                              properties: [Key.source: source.analyticsValue,
-                                           Key.useDomainCredit: useDomainCredit])
-        }
-
-        /// Tracked when the domain contact info validation succeeds when redeeming a domain with domain credit.
-        static func domainContactInfoValidationSuccess(source: DomainSettingsCoordinator.Source) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .domainContactInfoValidationSuccess, properties: [Key.source: source.analyticsValue])
+        /// Tracked step for each step in the custom domains.
+        static func domainSettingsStep(source: DomainSettingsCoordinator.Source, step: Step) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .domainSettingsStep, properties: [
+                Key.source: source.analyticsValue,
+                Key.step: step.rawValue
+            ])
         }
 
         /// Tracked when the domain contact info validation fails when redeeming a domain with domain credit.
@@ -49,6 +38,17 @@ extension WooAnalyticsEvent {
                               properties: [Key.source: source.analyticsValue, Key.useDomainCredit: useDomainCredit],
                               error: error)
         }
+    }
+}
+
+extension WooAnalyticsEvent.DomainSettings {
+    /// Steps of the domain settings flow. The raw value is used for the event property.
+    enum Step: String {
+        case dashboard = "dashboard"
+        case domainSelector = "domain_picker"
+        case webCheckout = "domain_web_checkout"
+        case contactInfo = "domain_contact_info"
+        case purchaseSuccess = "domain_purchase_success"
     }
 }
 

@@ -36,11 +36,11 @@ final class DomainSettingsCoordinator: Coordinator {
                                                                               stores: stores)) { [weak self] hasDomainCredit, freeStagingDomain in
             guard let self else { return }
             self.showDomainSelector(from: settingsNavigationController, hasDomainCredit: hasDomainCredit, freeStagingDomain: freeStagingDomain)
-            self.analytics.track(event: .DomainSettings.domainSettingsAddDomainTapped(source: self.source,
-                                                                                      hasDomainCredit: hasDomainCredit))
         }
         settingsNavigationController.pushViewController(domainSettings, animated: false)
         navigationController.present(settingsNavigationController, animated: true)
+        analytics.track(event: .DomainSettings.domainSettingsStep(source: source,
+                                                                  step: .dashboard))
     }
 }
 
@@ -59,8 +59,6 @@ private extension DomainSettingsCoordinator {
             let domainToPurchase = DomainToPurchase(name: domain.name,
                                                     productID: domain.productID,
                                                     supportsPrivacy: domain.supportsPrivacy)
-            self.analytics.track(event: .DomainSettings.domainSettingsCustomDomainSelected(source: self.source,
-                                                                                           useDomainCredit: hasDomainCredit))
             if hasDomainCredit {
                 let contactInfo = try? await self.loadDomainContactInfo()
                 self.showContactInfoForm(from: navigationController, contactInfo: contactInfo, domain: domainToPurchase)
@@ -70,18 +68,20 @@ private extension DomainSettingsCoordinator {
                     self.showWebCheckout(from: navigationController, domain: domainToPurchase)
                 } catch {
                     // TODO: 8558 - error handling
-                    print("⛔️ Error creating cart with the selected domain \(domain): \(error)")
+                    DDLogError("⛔️ Error creating cart with the selected domain \(domain): \(error)")
                 }
             }
         }, onSupport: nil)
         navigationController.show(domainSelector, sender: nil)
+        analytics.track(event: .DomainSettings.domainSettingsStep(source: source,
+                                                                  step: .domainSelector))
     }
 
     @MainActor
     func showWebCheckout(from navigationController: UINavigationController, domain: DomainToPurchase) {
         guard let siteURLHost = URLComponents(string: site.url)?.host else {
             // TODO: 8558 - error handling
-            print("⛔️ Error showing web checkout for the selected domain \(domain) because of invalid site slug from site URL \(site.url)")
+            DDLogError("⛔️ Error showing web checkout for the selected domain \(domain) because of invalid site slug from site URL \(site.url)")
             return
         }
         let checkoutViewModel = WebCheckoutViewModel(siteSlug: siteURLHost) { [weak self] in
@@ -92,6 +92,8 @@ private extension DomainSettingsCoordinator {
         }
         let checkoutController = AuthenticatedWebViewController(viewModel: checkoutViewModel)
         navigationController.pushViewController(checkoutController, animated: true)
+        analytics.track(event: .DomainSettings.domainSettingsStep(source: source,
+                                                                  step: .webCheckout))
     }
 }
 
@@ -120,6 +122,8 @@ private extension DomainSettingsCoordinator {
             }
         }
         navigationController.pushViewController(contactInfoForm, animated: true)
+        analytics.track(event: .DomainSettings.domainSettingsStep(source: source,
+                                                                  step: .contactInfo))
     }
 
     @MainActor
@@ -129,6 +133,8 @@ private extension DomainSettingsCoordinator {
             navigationController.popToRootViewController(animated: false)
         }
         navigationController.pushViewController(successController, animated: true)
+        analytics.track(event: .DomainSettings.domainSettingsStep(source: source,
+                                                                  step: .purchaseSuccess))
     }
 }
 

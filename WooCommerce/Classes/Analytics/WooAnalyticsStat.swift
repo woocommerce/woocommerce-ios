@@ -242,9 +242,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Domain Settings
     //
-    case domainSettingsAddDomainTapped = "domain_dashboard_add_domain_tapped"
-    case domainSettingsCustomDomainSelected = "domain_dashboard_custom_domain_selected"
-    case domainContactInfoValidationSuccess = "domain_contact_info_validation_success"
+    case domainSettingsStep = "custom_domains_step"
     case domainContactInfoValidationFailed = "domain_contact_info_validation_failed"
     case domainSettingsCustomDomainPurchaseSuccess = "custom_domain_purchase_success"
     case domainSettingsCustomDomainPurchaseFailed = "custom_domain_purchase_failed"

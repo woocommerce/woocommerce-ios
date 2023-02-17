@@ -87,7 +87,6 @@ final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormVie
 
         do {
             try await validate()
-            analytics.track(event: .DomainSettings.domainContactInfoValidationSuccess(source: source))
             return contactInfo
         } catch DomainContactInfoError.invalid(let messages) {
             analytics.track(event: .DomainSettings.domainContactInfoValidationFailed(source: source, error: DomainContactInfoError.invalid(messages: messages)))

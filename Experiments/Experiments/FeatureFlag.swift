@@ -145,4 +145,8 @@ public enum FeatureFlag: Int {
     /// Whether to enable the new support request form.
     ///
     case supportRequests
+
+    /// Whether to enable the simplified product editing experience.
+    ///
+    case simplifyProductEditing
 }

@@ -42,13 +42,7 @@ struct ProofKeyForCodeExchange {
             //
             // We don't need the ASCII conversion, because we build `CodeVerifier` from URL safe
             // characters.
-            //
-            // In the same way, it is safe to force unwrap the `Data` conversion because the
-            // `CodeVerifier` input is guaranteed to have only UTF-8 representable characters.
-            //
-            // Also worth noting that `.data(using: .utf8)` cannot technically return `nil` anyway.
-            // See https://forums.swift.org/t/can-encoding-string-to-data-with-utf8-fail/22437/4.
-            let rawData = codeVerifier.rawValue.data(using: .utf8)!
+            let rawData = Data(codeVerifier.rawValue.utf8)
             let hashedData: Data = rawData.sha256Hashed()
             return hashedData.base64URLEncodedString()
         case .plain:

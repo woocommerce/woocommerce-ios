@@ -1,25 +1,27 @@
 import Foundation
 import UIKit
+import SwiftUI
 import Yosemite
 
 /// This view controller is used when a reader is currently connected. It assists
 /// the merchant in updating and/or disconnecting from the reader, as needed.
 ///
-final class BuiltInCardReaderSettingsConnectedViewController: UIViewController, CardReaderSettingsViewModelPresenter {
-
-    /// Main TableView
-    ///
-    @IBOutlet weak private var tableView: UITableView!
+final class BuiltInCardReaderSettingsConnectedViewController: UIHostingController<BuiltInCardReaderSettingsConnectedView>, CardReaderSettingsViewModelPresenter {
 
     /// ViewModel
     ///
     private var viewModel: BuiltInCardReaderSettingsConnectedViewModel?
 
-    /// Table Sections to be rendered
-    ///
-    private var sections = [Section]()
-
     private let settingsAlerts = CardReaderSettingsAlerts()
+
+
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder, rootView: BuiltInCardReaderSettingsConnectedView())
+//        rootView.connectClickAction = {
+//            self.searchAndConnect()
+//        }
+    }
 
     /// Accept our viewmodel
     ///
@@ -38,10 +40,7 @@ final class BuiltInCardReaderSettingsConnectedViewController: UIViewController, 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        registerTableViewCells()
         configureNavigation()
-        configureSections()
-        configureTable()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -54,9 +53,7 @@ final class BuiltInCardReaderSettingsConnectedViewController: UIViewController, 
 //
 private extension BuiltInCardReaderSettingsConnectedViewController {
     func onViewModelDidUpdate() {
-        configureSections()
-        configureTable()
-        configureUpdateView()
+        
     }
 
     /// Returns `false` if no reader update is available or if  `viewModel` is `nil`.
@@ -71,264 +68,154 @@ private extension BuiltInCardReaderSettingsConnectedViewController {
     func configureNavigation() {
         title = Localization.title
     }
+}
 
-    /// Setup the sections in this table view
-    ///
-    func configureSections() {
-        sections = [
-            Section(title: nil,
-                    rows: [
-                        .updatePrompt
-                    ]
-            ),
-            Section(title: Localization.sectionHeaderTitle,
-                    rows: [
-                        .connectedReader,
-                        .updateButton,
-                        .disconnectButton
-                    ]
-            )
-        ]
+struct BuiltInCardReaderSettingsConnectedView: View {
+    var connectClickAction: (() -> Void)? = {
+
     }
 
-    func configureTable() {
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.reloadData()
-    }
+    var showURL: ((URL) -> Void)? = nil
+    var learnMoreUrl: URL? = nil
 
-    func configureUpdateView() {
-        guard let viewModel = viewModel else {
-            return
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+    @Environment(\.sizeCategory) private var sizeCategory
+
+    var isCompact: Bool {
+        get {
+            verticalSizeClass == .compact
         }
+    }
 
-        if let error = viewModel.readerUpdateError {
-            if case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: let batteryLevel) = error,
-               underlyingError == .readerSoftwareUpdateFailedBatteryLow {
-                settingsAlerts.updatingFailedLowBattery(from: self, batteryLevel: batteryLevel, close: { [settingsAlerts] in
-                    settingsAlerts.dismiss()
-                })
-            } else {
-                settingsAlerts.updatingFailed(
-                    from: self,
-                    tryAgain: {
-                        viewModel.startCardReaderUpdate()
-                    },
-                    close: {
-                        viewModel.dismissReaderUpdateError()
+    var isSizeCategoryLargeThanExtraLarge: Bool {
+        sizeCategory >= .accessibilityMedium
+    }
+
+    var body: some View {
+        VStack {
+            Spacer()
+
+            Text(Localization.connectYourCardReaderTitle)
+                .font(.headline)
+                .padding(.bottom, isCompact ? 16 : 32)
+            Image(uiImage: .builtInReaderProcessing)
+                .resizable()
+                .scaledToFit()
+                .frame(height: isCompact ? 80 : 206)
+                .padding(.bottom, isCompact ? 16 : 32)
+
+            Hint(title: Localization.hintOneTitle, text: Localization.hintOne)
+            Hint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
+            Hint(title: Localization.hintThreeTitle, text: Localization.hintThree)
+
+            Spacer()
+
+            Button(Localization.connectButton, action: connectClickAction!)
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.bottom, 8)
+
+            InPersonPaymentsLearnMore()
+                .customOpenURL(action: { url in
+                    switch url {
+                    case LearnMoreViewModel.learnMoreURL:
+                        if let url = learnMoreUrl {
+                            showURL?(url)
+                        }
+                    default:
+                        showURL?(url)
                     }
-                )
+                })
+
+        }
+            .frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity
+            )
+            .padding()
+            .if(isCompact || isSizeCategoryLargeThanExtraLarge) {content in
+                ScrollView(.vertical) {
+                    content
+                }
             }
-        } else if let readerUpdateProgress = viewModel.readerUpdateProgress {
-            // If we are updating a reader, show the progress alert
-            settingsAlerts.updateProgress(from: self,
-                                          requiredUpdate: false,
-                                          progress: readerUpdateProgress,
-                                          cancel: viewModel.cancelCardReaderUpdate)
-        } else {
-            // If we are not updating a reader, dismiss any progress alert
-            settingsAlerts.dismiss()
-        }
-    }
-
-    /// Register table cells.
-    ///
-    func registerTableViewCells() {
-        for row in Row.allCases {
-            tableView.registerNib(for: row.type)
-        }
-    }
-
-    /// Cells currently configured in the order they appear on screen
-    ///
-    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
-        switch cell {
-        case let cell as LeftImageTableViewCell where row == .updatePrompt:
-            configureUpdatePrompt(cell: cell)
-        case let cell as ConnectedReaderTableViewCell where row == .connectedReader:
-            configureConnectedReader(cell: cell)
-        case let cell as ButtonTableViewCell where row == .updateButton:
-            configureUpdateButton(cell: cell)
-        case let cell as ButtonTableViewCell where row == .disconnectButton:
-            configureDisconnectButton(cell: cell)
-        default:
-            fatalError()
-        }
-    }
-
-    private func configureUpdatePrompt(cell: LeftImageTableViewCell) {
-        if isReaderUpdateAvailable() {
-            cell.configure(image: .infoOutlineImage, text: Localization.updatePromptText)
-            cell.backgroundColor = .warningBackground
-            cell.imageView?.tintColor = .warning
-        } else {
-            cell.configure(image: .infoOutlineImage, text: Localization.updateNotNeeded)
-            cell.backgroundColor = .none
-            cell.imageView?.tintColor = .info
-        }
-        cell.selectionStyle = .none
-        cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.textColor = .text
-    }
-
-    private func configureConnectedReader(cell: ConnectedReaderTableViewCell) {
-        let cellViewModel = ConnectedReaderTableViewCell.ViewModel(
-            name: viewModel?.connectedReaderID,
-            batteryLevel: viewModel?.connectedReaderBatteryLevel,
-            softwareVersion: viewModel?.connectedReaderSoftwareVersion
-        )
-        cell.configure(viewModel: cellViewModel)
-        cell.selectionStyle = .none
-    }
-
-    private func configureUpdateButton(cell: ButtonTableViewCell) {
-        let style: ButtonTableViewCell.Style = isReaderUpdateAvailable() ? .primary : .secondary
-        cell.configure(style: style, title: Localization.updateButtonTitle, bottomSpacing: 0) { [weak self] in
-            self?.viewModel?.startCardReaderUpdate()
-        }
-
-        let readerDisconnectInProgress = viewModel?.readerDisconnectInProgress ?? false
-        let readerUpdateInProgress = viewModel?.readerUpdateInProgress ?? false
-        cell.enableButton(isReaderUpdateAvailable() && !readerDisconnectInProgress && !readerUpdateInProgress)
-        cell.showActivityIndicator(readerUpdateInProgress)
-
-        cell.selectionStyle = .none
-        cell.backgroundColor = .clear
-    }
-
-    private func configureDisconnectButton(cell: ButtonTableViewCell) {
-        let style: ButtonTableViewCell.Style = isReaderUpdateAvailable() ? .secondary : .primary
-        cell.configure(style: style, title: Localization.disconnectButtonTitle) { [weak self] in
-            self?.viewModel?.disconnectReader()
-        }
-
-        let readerDisconnectInProgress = viewModel?.readerDisconnectInProgress ?? false
-        let readerUpdateInProgress = viewModel?.readerUpdateInProgress ?? false
-        cell.enableButton(!readerDisconnectInProgress && !readerUpdateInProgress)
-        cell.showActivityIndicator(readerDisconnectInProgress)
-
-        cell.selectionStyle = .none
-        cell.backgroundColor = .clear
     }
 }
 
-// MARK: - Convenience Methods
-//
-private extension BuiltInCardReaderSettingsConnectedViewController {
+private struct Hint: View {
+    let title: String
+    let text: String
 
-    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
-        return sections[indexPath.section].rows[indexPath.row]
-    }
-}
-
-// MARK: - UITableViewDataSource Conformance
-//
-extension BuiltInCardReaderSettingsConnectedViewController: UITableViewDataSource {
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return sections.count
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].rows.count
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return section == 0 ? CGFloat.leastNonzeroMagnitude : UITableView.automaticDimension
-    }
-
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return CGFloat.leastNonzeroMagnitude
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = rowAtIndexPath(indexPath)
-        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        configure(cell, for: row, at: indexPath)
-
-        return cell
-    }
-
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sections[section].title
-    }
-}
-
-
-// MARK: - UITableViewDelegate Conformance
-//
-extension BuiltInCardReaderSettingsConnectedViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-}
-
-
-// MARK: - Private Types
-//
-private struct Section {
-    let title: String?
-    let rows: [Row]
-}
-
-private enum Row: CaseIterable {
-    case updatePrompt
-    case connectedReader
-    case updateButton
-    case disconnectButton
-
-    var type: UITableViewCell.Type {
-        switch self {
-        case .updatePrompt:
-            return LeftImageTableViewCell.self
-        case .connectedReader:
-            return ConnectedReaderTableViewCell.self
-        case .updateButton:
-            return ButtonTableViewCell.self
-        case .disconnectButton:
-            return ButtonTableViewCell.self
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(.callout)
+                .padding(.all, 12)
+                .background(Color(UIColor.systemGray6))
+                .clipShape(Circle())
+            Text(text)
+                .font(.callout)
+                .padding(.leading, 16)
+            Spacer()
         }
-    }
-
-    var reuseIdentifier: String {
-        return type.reuseIdentifier
+            .padding(.horizontal, 8)
     }
 }
 
 // MARK: - Localization
 //
-private extension BuiltInCardReaderSettingsConnectedViewController {
-    enum Localization {
-        static let title = NSLocalizedString(
-            "Manage Card Reader",
-            comment: "Settings > Manage Card Reader > Title for the reader connected screen in settings."
-        )
+private enum Localization {
+    static let title = NSLocalizedString(
+        "Tap to Pay on iPhone",
+        comment: "Settings > Manage Card Reader > Title for the no-reader-connected screen in settings."
+    )
 
-        static let updatePromptText = NSLocalizedString(
-            "Please update your reader software to keep accepting payments",
-            comment: "Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software"
-        )
+    static let connectYourCardReaderTitle = NSLocalizedString(
+        "Collect card payments with your phone",
+        comment: "Settings > Manage Card Reader > Prompt user to try a Tap to Pay on iPhone payment"
+    )
 
-        static let updateNotNeeded = NSLocalizedString(
-            "Congratulations! Your reader is running the latest software",
-            comment: "Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software"
-        )
+    static let hintOneTitle = NSLocalizedString(
+        "1",
+        comment: "Settings > Tap to Pay on iPhone > Try it > Help hint number 1"
+    )
 
-        static let sectionHeaderTitle = NSLocalizedString(
-            "Connected Reader",
-            comment: "Settings > Manage Card Reader > Connected Reader Table Section Heading"
-        )
+    static let hintOne = NSLocalizedString(
+        "Your phone is ready for Tap to Pay on iPhone!",
+        comment: "Settings > Tap to Pay on iPhone > Try it > Hint that the phone is set up"
+    )
 
-        static let updateButtonTitle = NSLocalizedString(
-            "Update Reader Software",
-            comment: "Settings > Manage Card Reader > Connected Reader > A button to update the reader software"
-        )
+    static let hintTwoTitle = NSLocalizedString(
+        "2",
+        comment: "Settings > Tap to Pay on iPhone > Try it > Help hint number 2"
+    )
 
-        static let disconnectButtonTitle = NSLocalizedString(
-            "Disconnect Reader",
-            comment: "Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader"
-        )
+    static let hintTwo = NSLocalizedString(
+        "View an order, Collect Payment, and choose Tap to Pay on iPhone",
+        comment: "Settings > Tap to Pay on iPhone > Try it > Hint to collect payment"
+    )
 
+    static let hintThreeTitle = NSLocalizedString(
+        "3",
+        comment: "Settings > Tap to Pay on iPhone > Try it > Help hint number 3"
+    )
+
+    static let hintThree = NSLocalizedString(
+        "Your customer can tap their card on your phone to pay",
+        comment: "Settings > Tap to Pay on iPhone > Try it > Hint to tap card"
+    )
+
+    static let connectButton = NSLocalizedString(
+        "Try a payment",
+        comment: "Settings > Tap to Pay on iPhone > Try it > A button to begin a search for a reader"
+    )
+
+    static let learnMore = NSLocalizedString(
+        "Tap to learn more about accepting payments using Tap to Pay on iPhone",
+        comment: "A label prompting users to learn more about Tap to Pay on iPhone"
+    )
+}
+
+struct BuiltInCardReaderSettingsConnectedView_Previews: PreviewProvider {
+    static var previews: some View {
+        CardReaderSettingsSearchingView(connectClickAction: {})
     }
 }

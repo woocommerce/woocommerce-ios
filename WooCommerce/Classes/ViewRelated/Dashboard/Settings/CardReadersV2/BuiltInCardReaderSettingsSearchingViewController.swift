@@ -47,52 +47,13 @@ final class BuiltInCardReaderSettingsSearchingViewController: UIHostingControlle
             return
         }
 
-        self.viewModel?.didUpdate = onViewModelDidUpdate
-
         rootView.learnMoreUrl = self.viewModel?.learnMoreURL
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        maybeBeginSearchAutomatically()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         viewModel?.didUpdate = nil
         didBeginSearchAutomatically = false
         super.viewWillDisappear(animated)
-    }
-}
-
-// MARK: - View Updates
-//
-private extension BuiltInCardReaderSettingsSearchingViewController {
-    func onViewModelDidUpdate() {
-        maybeBeginSearchAutomatically()
-    }
-
-    func maybeBeginSearchAutomatically() {
-        /// If we've already begun search automattically since this view appeared, don't do it again
-        ///
-        guard !didBeginSearchAutomatically else {
-            return
-        }
-
-        /// Make sure there is no reader connected
-        ///
-        let noReaderConnected = viewModel?.noConnectedReader == .isTrue
-        guard noReaderConnected else {
-            return
-        }
-
-        /// Make sure we have a known reader
-        ///
-        guard let hasKnownReader = viewModel?.hasKnownReader(), hasKnownReader else {
-            return
-        }
-
-        searchAndConnect()
-        didBeginSearchAutomatically = true
     }
 }
 
@@ -134,7 +95,7 @@ struct BuiltInCardReaderSettingsSearchingView: View {
             Text(Localization.connectYourCardReaderTitle)
                 .font(.headline)
                 .padding(.bottom, isCompact ? 16 : 32)
-            Image(uiImage: .cardReaderConnect)
+            Image(uiImage: .preparingBuiltInReader)
                 .resizable()
                 .scaledToFit()
                 .frame(height: isCompact ? 80 : 206)
@@ -198,54 +159,49 @@ private struct Hint: View {
 // MARK: - Localization
 //
 private enum Localization {
-    static let title = NSLocalizedString(
-        "Manage Card Reader",
-        comment: "Settings > Manage Card Reader > Title for the no-reader-connected screen in settings."
-    )
-
     static let connectYourCardReaderTitle = NSLocalizedString(
-        "Connect your card reader",
-        comment: "Settings > Manage Card Reader > Prompt user to connect their first reader"
+        "Set up Tap to Pay on iPhone",
+        comment: "Settings > Tap to Pay on iPhone > Prompt user to set up Tap to Pay on iPhone"
     )
 
     static let hintOneTitle = NSLocalizedString(
         "1",
-        comment: "Settings > Manage Card Reader > Connect > Help hint number 1"
+        comment: "Settings > Tap to Pay on iPhone > Set up > Help hint number 1"
     )
 
     static let hintOne = NSLocalizedString(
-        "Make sure card reader is charged",
-        comment: "Settings > Manage Card Reader > Connect > Hint to charge card reader"
+        "Make sure your phone is signed in to iCloud and has a passcode",
+        comment: "Settings > Tap to Pay on iPhone > Set up > Hint on phone requirements"
     )
 
     static let hintTwoTitle = NSLocalizedString(
         "2",
-        comment: "Settings > Manage Card Reader > Connect > Help hint number 2"
+        comment: "Settings > Tap to Pay on iPhone > Set up > Help hint number 2"
     )
 
     static let hintTwo = NSLocalizedString(
-        "Turn card reader on and place it next to mobile device",
-        comment: "Settings > Manage Card Reader > Connect > Hint to power on reader"
+        "Accept the Terms of Service when you first set up Tap to Pay on iPhone",
+        comment: "Settings > Tap to Pay on iPhone > Set up > Hint about Terms of Service"
     )
 
     static let hintThreeTitle = NSLocalizedString(
         "3",
-        comment: "Settings > Manage Card Reader > Connect > Help hint number 3"
+        comment: "Settings > Tap to Pay on iPhone > Set up > Help hint number 3"
     )
 
     static let hintThree = NSLocalizedString(
-        "Turn mobile device Bluetooth on",
-        comment: "Settings > Manage Card Reader > Connect > Hint to enable Bluetooth"
+        "Try a payment using your card (and refund it when you're done)",
+        comment: "Settings > Tap to Pay on iPhone > Set up > Hint to try a payment"
     )
 
     static let connectButton = NSLocalizedString(
-        "Connect Card Reader",
-        comment: "Settings > Manage Card Reader > Connect > A button to begin a search for a reader"
+        "Set up Tap to Pay on iPhone",
+        comment: "Settings > Tap to Pay on iPhone > Set up > A button to begin setup"
     )
 
     static let learnMore = NSLocalizedString(
-        "Tap to learn more about accepting payments with your mobile device and ordering card readers",
-        comment: "A label prompting users to learn more about card readers"
+        "Tap to learn more about accepting payments using Tap to Pay on iPhone",
+        comment: "A label prompting users to learn more about Tap to Pay on iPhone"
     )
 }
 

@@ -20,7 +20,6 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureBackground()
-        configureNavigation()
         configureInitialState()
     }
 
@@ -67,20 +66,4 @@ private extension CardReaderSettingsPresentingViewController {
         /// Needed to avoid incorrect background appearing near bottom of view, especially on dark mode
         view.backgroundColor = .systemBackground
     }
-
-    private func configureNavigation() {
-        title = Localization.screenTitle
-    }
-}
-
-// MARK: - SwiftUI compatibility
-//
-
-// MARK: - Localization
-//
-private enum Localization {
-    static let screenTitle = NSLocalizedString(
-        "Manage Card Reader",
-        comment: "Card reader settings screen title"
-    )
 }

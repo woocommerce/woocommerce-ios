@@ -285,7 +285,7 @@ private extension InPersonPaymentsMenuViewController {
         cell.imageView?.tintColor = .text
         cell.accessoryType = enableManageCardReaderCell ? .disclosureIndicator : .none
         cell.selectionStyle = enableManageCardReaderCell ? .default : .none
-        cell.configure(image: UIImage(systemName: "wave.3.right.circle")!, text: "Tap to Pay on iPhone", subtitle: "Connect and test")
+        cell.configure(image: UIImage(systemName: "wave.3.right.circle")!, text: "Tap to Pay on iPhone", subtitle: "Set up your phone and try a payment")
 
         updateEnabledState(in: cell, shouldBeEnabled: enableManageCardReaderCell)
     }
@@ -379,6 +379,7 @@ extension InPersonPaymentsMenuViewController {
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
             fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
         }
+        viewController.title = Localization.manageCardReaderScreenTitle
 
         let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList(configuration: viewModel.cardPresentPaymentsConfiguration)
         viewController.configure(viewModelsAndViews: viewModelsAndViews)
@@ -421,6 +422,7 @@ extension InPersonPaymentsMenuViewController {
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
             fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
         }
+        viewController.title = Localization.tapToPayOnIPhoneScreenTitle
 
         let viewModelsAndViews = BuiltInCardReaderSettingsViewModelsOrderedList(configuration: viewModel.cardPresentPaymentsConfiguration)
         viewController.configure(viewModelsAndViews: viewModelsAndViews)
@@ -574,6 +576,16 @@ private extension InPersonPaymentsMenuViewController {
                      A label prompting users to learn more about In-Person Payments.
                      This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
                      """
+        )
+
+        static let manageCardReaderScreenTitle = NSLocalizedString(
+            "Manage Card Reader",
+            comment: "Settings > Manage Card Reader > Title for the no-reader-connected screen in settings."
+        )
+
+        static let tapToPayOnIPhoneScreenTitle = NSLocalizedString(
+            "Tap to Pay on iPhone",
+            comment: "Settings > Tap to Pay on iPhone > Title for the Tap to Pay screen in settings."
         )
     }
 }

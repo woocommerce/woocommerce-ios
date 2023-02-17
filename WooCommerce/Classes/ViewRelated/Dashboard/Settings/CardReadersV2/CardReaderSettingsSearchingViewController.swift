@@ -195,11 +195,6 @@ private struct Hint: View {
 // MARK: - Localization
 //
 private enum Localization {
-    static let title = NSLocalizedString(
-        "Manage Card Reader",
-        comment: "Settings > Manage Card Reader > Title for the no-reader-connected screen in settings."
-    )
-
     static let connectYourCardReaderTitle = NSLocalizedString(
         "Connect your card reader",
         comment: "Settings > Manage Card Reader > Prompt user to connect their first reader"

@@ -206,6 +206,7 @@ final class SettingsViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isDomainSettingsEnabled: true)
         sessionManager.defaultSite = .fake().copy(isWordPressComStore: false)
+        sessionManager.defaultRoles = [.administrator]
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
                                           featureFlagService: featureFlagService,
@@ -218,10 +219,28 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.domain) })
     }
 
-    func test_domain_is_shown_when_domainSettings_feature_is_enabled_and_site_is_wpcom() {
+    func test_domain_is_shown_when_domainSettings_feature_is_disabled_and_site_is_wpcom_for_shop_manager_role() {
         // Given
         let featureFlagService = MockFeatureFlagService(isDomainSettingsEnabled: true)
         sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
+        sessionManager.defaultRoles = [.shopManager]
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          featureFlagService: featureFlagService,
+                                          appleIDCredentialChecker: appleIDCredentialChecker)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.domain) })
+    }
+
+    func test_domain_is_shown_when_domainSettings_feature_is_enabled_and_site_is_wpcom_for_admin_role() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDomainSettingsEnabled: true)
+        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
+        sessionManager.defaultRoles = [.administrator]
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
                                           featureFlagService: featureFlagService,

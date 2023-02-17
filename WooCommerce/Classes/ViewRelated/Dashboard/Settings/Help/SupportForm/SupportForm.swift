@@ -17,6 +17,7 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
     init(viewModel: SupportFormViewModel) {
         super.init(rootView: SupportForm(viewModel: viewModel))
         handleSupportRequestCompletion(viewModel: viewModel)
+        hidesBottomBarWhenPushed = true
     }
 
     override func viewDidLoad() {
@@ -112,49 +113,106 @@ struct SupportForm: View {
     @StateObject var viewModel: SupportFormViewModel
 
     var body: some View {
-        VStack(spacing: Layout.sectionSpacing) {
+        VStack(spacing: .zero) {
 
-            HStack(spacing: -Layout.optionsSpacing) {
-                Text(Localization.iNeedHelp)
-                    .bold()
-                Picker(Localization.iNeedHelp, selection: $viewModel.area) {
-                    ForEach(viewModel.areas, id: \.self) { area in
-                        Text(area.title).tag(area)
+            // Scrollable Form
+            ScrollView {
+                VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
+
+                    Text(Localization.iNeedHelp.uppercased())
+                        .footnoteStyle()
+                        .padding([.horizontal, .top])
+
+                    // Area List
+                    VStack(alignment: .leading, spacing: .zero) {
+                        ForEach(viewModel.areas.indexed(), id: \.0.self) { index, area in
+                            HStack(alignment: .center, spacing: Layout.radioButtonSpacing) {
+                                // Radio-Button emulation
+                                Circle()
+                                    .stroke(Color(.separator), lineWidth: Layout.radioButtonBorderWidth)
+                                    .frame(width: Layout.radioButtonSize, height: Layout.radioButtonSize)
+                                    .background(
+                                        // Use a clear color for non-selected radio buttons.
+                                        Circle()
+                                            .fill( viewModel.isAreaSelected(area) ? Color(.accent) : .clear)
+                                            .padding(Layout.radioButtonBorderWidth)
+                                    )
+
+                                Text(area.title)
+                                    .headlineStyle()
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading) // Needed to make tap area the whole width
+                            .background(Color(.listForeground(modal: false)))
+                            .onTapGesture {
+                                viewModel.selectArea(area)
+                            }
+
+                            Divider()
+                                .padding(.leading)
+                                .renderedIf(index < viewModel.areas.count - 1) // Don't render the last divider
+                        }
+                    }
+                    .cornerRadius(Layout.cornerRadius)
+                    .padding(.bottom)
+
+                    // Info Section
+                    VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
+                        Text(Localization.letsGetItSorted)
+                            .headlineStyle()
+
+                        Text(Localization.tellUsInfo)
+                            .subheadlineStyle()
+                    }
+
+                    // Subject Text Field
+                    VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
+                        Text(Localization.subject)
+                            .foregroundColor(Color(.text))
+                            .subheadlineStyle()
+
+                        TextField("", text: $viewModel.subject)
+                            .bodyStyle()
+                            .padding(insets: Layout.subjectInsets)
+                            .background(Color(.listForeground(modal: false)))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                            )
+                    }
+
+                    // Description Text Editor
+                    VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
+                        Text(Localization.message)
+                            .foregroundColor(Color(.text))
+                            .subheadlineStyle()
+
+                        TextEditor(text: $viewModel.description)
+                            .bodyStyle()
+                            .frame(minHeight: Layout.minimuEditorSize)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                            )
                     }
                 }
-                .pickerStyle(.menu)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                Text(Localization.subject)
-                    .bold()
-                TextField("", text: $viewModel.subject)
-                    .bodyStyle()
-                    .padding(Layout.subjectPadding)
-                    .border(Color(.separator))
-                    .cornerRadius(Layout.cornerRadius)
+                .padding()
             }
 
-            VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                Text(Localization.whatToDo)
-                    .bold()
-                TextEditor(text: $viewModel.description)
-                    .bodyStyle()
-                    .border(Color(.separator))
-                    .cornerRadius(Layout.cornerRadius)
-            }
+            // Submit Request Footer
+            VStack() {
+                Divider()
 
-            Button {
-                viewModel.submitSupportRequest()
-            } label: {
-                Text(Localization.submitRequest)
+                Button {
+                    viewModel.submitSupportRequest()
+                } label: {
+                    Text(Localization.submitRequest)
+                }
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.showLoadingIndicator))
+                .disabled(viewModel.submitButtonDisabled)
+                .padding()
             }
-            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.showLoadingIndicator))
-            .disabled(viewModel.submitButtonDisabled)
+            .background(Color(.listForeground(modal: false)))
         }
-        .padding()
+        .background(Color(.listBackground))
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .wooNavigationBarStyle()
@@ -168,18 +226,24 @@ struct SupportForm: View {
 private extension SupportForm {
     enum Localization {
         static let title = NSLocalizedString("Contact Support", comment: "Title of the view for contacting support.")
-        static let iNeedHelp = NSLocalizedString("I need help with:", comment: "Text on the support form to refer to what area the user has problem with.")
+        static let iNeedHelp = NSLocalizedString("I need help with", comment: "Text on the support form to refer to what area the user has problem with.")
+        static let letsGetItSorted = NSLocalizedString("Let’s get this sorted", comment: "Title to let the user know what do we want on the support screen.")
+        static let tellUsInfo = NSLocalizedString("Tell us much as you can about the problem, and we will be in touch soon.",
+                                                  comment: "Message info on the support screen.")
         static let subject = NSLocalizedString("Subject", comment: "Subject title on the support form")
-        static let whatToDo = NSLocalizedString("What are you trying to do?", comment: "Text on the support form to ask the user what are they trying to do.")
+        static let message = NSLocalizedString("Message", comment: "Message on the support form")
         static let submitRequest = NSLocalizedString("Submit Support Request", comment: "Button title to submit a support request.")
     }
 
     enum Layout {
         static let sectionSpacing: CGFloat = 16
-        static let optionsSpacing: CGFloat = 8
-        static let subSectionsSpacing: CGFloat = 2
-        static let cornerRadius: CGFloat = 2
-        static let subjectPadding: CGFloat = 5
+        static let radioButtonSpacing: CGFloat = 12
+        static let radioButtonBorderWidth: CGFloat = 2
+        static let radioButtonSize: CGFloat = 20
+        static let subSectionsSpacing: CGFloat = 8
+        static let cornerRadius: CGFloat = 8
+        static let subjectInsets = EdgeInsets(top: 8, leading: 5, bottom: 8, trailing: 5)
+        static let minimuEditorSize: CGFloat = 300
     }
 }
 
@@ -195,8 +259,10 @@ struct SupportFormProvider: PreviewProvider {
     static var previews: some View {
         NavigationView {
             SupportForm(viewModel: .init(areas: [
-                .init(title: "Mobile Aps", datasource: MockDataSource()),
+                .init(title: "Mobile Apps", datasource: MockDataSource()),
+                .init(title: "Card Reader / In Person Payments", datasource: MockDataSource()),
                 .init(title: "WooCommerce Payments", datasource: MockDataSource()),
+                .init(title: "WooCommerce Plugins", datasource: MockDataSource()),
                 .init(title: "Other Plugins", datasource: MockDataSource()),
             ]))
         }

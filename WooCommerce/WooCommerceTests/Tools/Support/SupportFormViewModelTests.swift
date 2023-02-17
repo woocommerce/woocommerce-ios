@@ -3,11 +3,12 @@ import XCTest
 
 final class SupportFormViewModelTests: XCTestCase {
 
-    func test_submit_button_is_disabled_when_subject_and_description_are_empty() {
+    func test_submit_button_is_disabled_when_area_and_subject_and_description_are_empty() {
         // Given
         let viewModel = SupportFormViewModel(areas: Self.sampleAreas())
 
         // When
+        viewModel.area = nil
         viewModel.subject = ""
         viewModel.description = ""
 
@@ -15,11 +16,12 @@ final class SupportFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.submitButtonDisabled)
     }
 
-    func test_submit_button_is_disabled_when_subject_is_not_empty_and_description_is_empty() {
+    func test_submit_button_is_disabled_when_area_is_empty_and_subject_is_not_empty_and_description_is_empty() {
         // Given
         let viewModel = SupportFormViewModel(areas: Self.sampleAreas())
 
         // When
+        viewModel.area = nil
         viewModel.subject = "Subject"
         viewModel.description = ""
 
@@ -27,11 +29,12 @@ final class SupportFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.submitButtonDisabled)
     }
 
-    func test_submit_button_is_disabled_when_subject_is_empty_and_description_is_not_empty() {
+    func test_submit_button_is_disabled_when_area_is_empty_and_subject_is_empty_and_description_is_not_empty() {
         // Given
         let viewModel = SupportFormViewModel(areas: Self.sampleAreas())
 
         // When
+        viewModel.area = nil
         viewModel.subject = ""
         viewModel.description = "Description"
 
@@ -39,11 +42,12 @@ final class SupportFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.submitButtonDisabled)
     }
 
-    func test_submit_button_is_enabled_when_subject_is_and_description_are_not_empty() {
+    func test_submit_button_is_enabled_when_area_and_subject_and_description_are_not_empty() {
         // Given
         let viewModel = SupportFormViewModel(areas: Self.sampleAreas())
 
         // When
+        viewModel.area = viewModel.areas.first
         viewModel.subject = "Subject"
         viewModel.description = "Description"
 
@@ -56,6 +60,7 @@ final class SupportFormViewModelTests: XCTestCase {
         let sourceTag = "custom-tag"
         let zendesk = MockZendeskManager()
         let viewModel = SupportFormViewModel(areas: Self.sampleAreas(), sourceTag: sourceTag, zendeskProvider: zendesk)
+        viewModel.area = viewModel.areas.first
 
         // When
         viewModel.submitSupportRequest()

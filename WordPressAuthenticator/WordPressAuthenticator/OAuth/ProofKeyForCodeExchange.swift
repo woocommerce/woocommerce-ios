@@ -70,20 +70,18 @@ extension ProofKeyForCodeExchange {
             let constrainedLength = min(max(length, 43), 128)
             rawValue = String.randomString(using: allowedCharacters, withLength: constrainedLength)
         }
-    }
-}
 
-// This is a helper for the tests.
-//
-// Unfortunately, it needs to be part of the production code because Swift doesn't allow adding
-// non-convenience initializers outside the module.
-extension ProofKeyForCodeExchange.CodeVerifier {
+        // This is a helper for the tests.
+        //
+        // Unfortunately, it needs to be part of the production code because Swift doesn't allow adding
+        // non-convenience initializers outside the module.
 
-    init?(value: String) {
-        guard value.count >= 43, value.count <= 128 else { return nil }
+        init?(value: String) {
+            guard value.count >= 43, value.count <= 128 else { return nil }
 
-        guard Set(value).isSubset(of: allowedCharacters) else { return nil }
+            guard Set(value).isSubset(of: allowedCharacters) else { return nil }
 
-        self.rawValue = value
+            self.rawValue = value
+        }
     }
 }

@@ -1228,9 +1228,9 @@ private extension ZendeskManager {
     ///
     @objc func zendeskNotification(_ notification: Notification) {
         switch notification.name.rawValue {
-        case ZDKAPI_RequestSubmissionSuccess:
+        case ZDKAPI_RequestSubmissionSuccess where !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests):
             ServiceLocator.analytics.track(.supportNewRequestCreated)
-        case ZDKAPI_RequestSubmissionError:
+        case ZDKAPI_RequestSubmissionError where !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests):
             ServiceLocator.analytics.track(.supportNewRequestFailed)
         case ZDKAPI_UploadAttachmentSuccess:
             ServiceLocator.analytics.track(.supportNewRequestFileAttached)

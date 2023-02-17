@@ -158,6 +158,9 @@ struct SupportForm: View {
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .wooNavigationBarStyle()
+        .onAppear {
+            viewModel.trackSupportFormViewed()
+        }
     }
 }
 

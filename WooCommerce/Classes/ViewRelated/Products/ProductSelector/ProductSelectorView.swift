@@ -145,7 +145,7 @@ struct ProductSelectorView: View {
         .wooNavigationBarStyle()
     }
 
-    /// Creates the `ProductRowView` for a product, depending on whether the product is variable.
+    /// Creates the `ProductRowView` for a product, depending on whether the product is variable or not.
     ///
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
         if let variationListViewModel = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
@@ -180,7 +180,7 @@ struct ProductSelectorView: View {
 extension ProductSelectorView {
     struct Configuration {
         var showsFilters: Bool = false
-        var multipleSelectionsEnabled: Bool = false
+        var multipleSelectionsEnabled: Bool = true
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
         var doneButtonTitleSingularFormat: String = ""

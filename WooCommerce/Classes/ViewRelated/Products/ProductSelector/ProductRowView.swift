@@ -99,6 +99,7 @@ struct ProductRowView: View {
 }
 
 /// Subtype: SelectedState
+/// Used to set and render the ProductRow selection state
 ///
 extension ProductRowView {
     enum SelectedState {

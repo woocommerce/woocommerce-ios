@@ -48,7 +48,7 @@ struct ProductVariationSelector: View {
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                        loadAction: viewModel.syncNextPage) {
                         ForEach(viewModel.productVariationRows) { rowViewModel in
-                            ProductRow(multipleSelectionsEnabled: multipleSelectionsEnabled,
+                            ProductRowView(multipleSelectionsEnabled: multipleSelectionsEnabled,
                                        viewModel: rowViewModel)
                                 .accessibilityHint(Localization.productRowAccessibilityHint)
                                 .padding(Constants.defaultPadding)
@@ -70,7 +70,7 @@ struct ProductVariationSelector: View {
                     .frame(maxHeight: .infinity)
             case .firstPageSync:
                 List(viewModel.ghostRows) { rowViewModel in
-                    ProductRow(viewModel: rowViewModel)
+                    ProductRowView(viewModel: rowViewModel)
                         .redacted(reason: .placeholder)
                         .accessibilityRemoveTraits(.isButton)
                         .accessibilityLabel(Localization.loadingRowsAccessibilityLabel)

@@ -258,7 +258,7 @@ private struct ProductsSection: View {
                 }
 
                 ForEach(viewModel.productRows) { productRow in
-                    ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)
+                    ProductRowView(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)
                         .onTapGesture {
                             viewModel.selectOrderItem(productRow.id)
                         }

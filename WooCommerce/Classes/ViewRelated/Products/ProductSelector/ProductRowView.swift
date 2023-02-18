@@ -3,7 +3,7 @@ import Kingfisher
 
 /// Represent a single product or variation row in the Product section of a New Order or in the ProductSelector
 ///
-struct ProductRow: View {
+struct ProductRowView: View {
     /// Whether more than one row can be selected.
     ///
     private let multipleSelectionsEnabled: Bool
@@ -100,7 +100,7 @@ struct ProductRow: View {
 
 /// Subtype: SelectedState
 ///
-extension ProductRow {
+extension ProductRowView {
     enum SelectedState {
         case notSelected
         case partiallySelected
@@ -120,7 +120,7 @@ extension ProductRow {
 }
 
 /// Represents a custom stepper.
-/// Used to change the quantity of the product in a `ProductRow`.
+/// Used to change the quantity of the product in a `ProductRowView`.
 ///
 private struct ProductStepper: View {
 
@@ -216,16 +216,16 @@ struct ProductRow_Previews: PreviewProvider {
                                                           canChangeQuantity: false,
                                                           imageURL: nil)
 
-        ProductRow(viewModel: viewModel)
-            .previewDisplayName("ProductRow with stepper")
+        ProductRowView(viewModel: viewModel)
+            .previewDisplayName("ProductRowView with stepper")
             .previewLayout(.sizeThatFits)
 
-        ProductRow(viewModel: viewModelWithoutStepper)
-            .previewDisplayName("ProductRow without stepper")
+        ProductRowView(viewModel: viewModelWithoutStepper)
+            .previewDisplayName("ProductRowView without stepper")
             .previewLayout(.sizeThatFits)
 
-        ProductRow(multipleSelectionsEnabled: true, viewModel: viewModelWithoutStepper)
-            .previewDisplayName("ProductRow without stepper and with multiple selection")
+        ProductRowView(multipleSelectionsEnabled: true, viewModel: viewModelWithoutStepper)
+            .previewDisplayName("ProductRowView without stepper and with multiple selection")
             .previewLayout(.sizeThatFits)
     }
 }

@@ -308,7 +308,7 @@ final class EditableOrderViewModel: ObservableObject {
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
     }
 
-    /// Creates a view model for the `ProductRow` corresponding to an order item.
+    /// Creates a view model for the `ProductRowView` corresponding to an order item.
     ///
     func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
         guard item.quantity > 0, // Don't render any item with `.zero` quantity.

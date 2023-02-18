@@ -104,7 +104,7 @@ struct ProductSelector: View {
                         .frame(maxHeight: .infinity)
                 case .firstPageSync:
                     List(viewModel.ghostRows) { rowViewModel in
-                        ProductRow(viewModel: rowViewModel)
+                        ProductRowView(viewModel: rowViewModel)
                             .redacted(reason: .placeholder)
                             .accessibilityRemoveTraits(.isButton)
                             .accessibilityLabel(Localization.loadingRowsAccessibilityLabel)
@@ -145,12 +145,12 @@ struct ProductSelector: View {
         .wooNavigationBarStyle()
     }
 
-    /// Creates the `ProductRow` for a product, depending on whether the product is variable.
+    /// Creates the `ProductRowView` for a product, depending on whether the product is variable.
     ///
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
         if let variationListViewModel = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
             HStack {
-                ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                ProductRowView(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
                            viewModel: rowViewModel) {
                     viewModel.toggleSelectionForVariations(of: rowViewModel.productOrVariationID)
                 }
@@ -164,7 +164,7 @@ struct ProductSelector: View {
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {
-            ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+            ProductRowView(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
                        viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
                 .onTapGesture {

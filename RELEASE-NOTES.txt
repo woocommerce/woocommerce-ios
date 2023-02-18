@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.5
+-----
+
+
 12.4
 -----
 - [**] Menu > Settings: adds a `Domains` row for WPCOM sites to see their site domains, add a new domain, or redeems a domain credit if available. [https://github.com/woocommerce/woocommerce-ios/pull/8870]

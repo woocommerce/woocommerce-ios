@@ -1,7 +1,1 @@
-- [**] Menu > Settings: adds a `Domains` row for WPCOM sites to see their site domains, add a new domain, or redeems a domain credit if available. [https://github.com/woocommerce/woocommerce-ios/pull/8870]
-- [Internal] Prologue screen now has only the entry point to site address login flow, and application password authentication is used for sites without Jetpack. [https://github.com/woocommerce/woocommerce-ios/pull/8846]
-- [Internal] A new tag has been added for Zendesk for users authenticated with application password. [https://github.com/woocommerce/woocommerce-ios/pull/8850]
-- [Internal] Failures in the logged-out state are now tracked with anonymous ID. [https://github.com/woocommerce/woocommerce-ios/pull/8861]
-- [*] Fix: Fixed a crash when switching away from the Products tab. [https://github.com/woocommerce/woocommerce-ios/pull/8874]
-- [**] Support Requests: We have added a new way of Contacting Support with an improved UX. [https://github.com/woocommerce/woocommerce-ios/pull/8886]
-
+USA, say hello to Tap to Pay on iPhone! We are thrilled to announce that Tap to Pay is now available to USA merchants currently using WooCommerce Payments. Get a sneak peek of it by turning it on in the More tab > Settings > Experimental Features. That's not all! It's now possible to use the app without Jetpack! You’ve asked for it, and now it’s here!

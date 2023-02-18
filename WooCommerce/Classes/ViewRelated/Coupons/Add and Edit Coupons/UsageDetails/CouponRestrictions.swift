@@ -154,7 +154,7 @@ struct CouponRestrictions: View {
             .background(Color(.listForeground(modal: false)))
             .ignoresSafeArea(.container, edges: [.horizontal])
             .sheet(isPresented: $showingExcludeProducts) {
-                ProductSelector(configuration: ProductSelector.Configuration.excludedProductsForCoupons,
+                ProductSelectorView(configuration: ProductSelectorView.Configuration.excludedProductsForCoupons,
                                 isPresented: $showingExcludeProducts,
                                 viewModel: viewModel.productSelectorViewModel)
                     .onDisappear {
@@ -257,7 +257,7 @@ struct CouponRestrictions_Previews: PreviewProvider {
 }
 #endif
 
-private extension ProductSelector.Configuration {
+private extension ProductSelectorView.Configuration {
     static let excludedProductsForCoupons: Self =
         .init(showsFilters: true,
               multipleSelectionsEnabled: true,

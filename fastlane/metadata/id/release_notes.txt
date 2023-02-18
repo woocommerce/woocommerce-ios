@@ -1,1 +1,1 @@
-Kami telah membuat sedikit penyempurnaan pada pengelolaan bisnis Anda. Kini lebih mudah untuk mengatur toko Anda saat login. Menambahkan atribut dari aplikasi menjadi jauh lebih mudah! Terus kirimkan feedback Anda!
+Pada rilis kali ini, kami fokus untuk mengatasi bug minor yang tim kami temukan. Eits, tunggu dulu – kami juga sedang menggarap hal menarik untuk Anda semua! Terus berikan feedback agar kami tahu apa yang harus ditingkatkan selanjutnya.

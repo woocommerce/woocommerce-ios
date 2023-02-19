@@ -149,7 +149,8 @@ final class ProductSelectorViewModel: ObservableObject {
         configureProductSearch()
     }
 
-    /// Initializer for multiple selections
+    /// Initializer for multiple selections,
+    /// Used when no completion handlers for onProductSelected or onVariationSelected are needed, like Coupons
     ///
     init(siteID: Int64,
          selectedItemIDs: [Int64],
@@ -172,16 +173,49 @@ final class ProductSelectorViewModel: ObservableObject {
         configureProductSearch()
     }
 
+    /// Initializer for multiple selections
+    ///
+    init(siteID: Int64,
+         selectedItemIDs: [Int64],
+         purchasableItemsOnly: Bool = false,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         stores: StoresManager = ServiceLocator.stores,
+         onProductSelected: ((Product) -> Void)? = nil,
+         onVariationSelected: ((ProductVariation, Product) -> Void)? = nil,
+         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
+        self.siteID = siteID
+        self.storageManager = storageManager
+        self.stores = stores
+        self.onProductSelected = onProductSelected
+        self.onVariationSelected = onVariationSelected
+        self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
+        self.initialSelectedItems = selectedItemIDs
+        self.purchasableItemsOnly = purchasableItemsOnly
+
+        configureSyncingCoordinator()
+        configureProductsResultsController()
+        configureFirstPageLoad()
+        configureProductSearch()
+    }
+
     /// Select a product to add to the order
     ///
     func selectProduct(_ productID: Int64) {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
+
+        // Always toggle selection.
+        toggleSelection(productID: productID)
+
+        // Disallows adding a product to the Order more than once
+        // This can be increased with the ± buttons within Order Details view
+        if selectedProductIDs.contains(selectedProduct.productID) {
+            return
+        }
+
         if let onProductSelected = onProductSelected {
             onProductSelected(selectedProduct)
-        } else {
-            toggleSelection(productID: productID)
         }
     }
 

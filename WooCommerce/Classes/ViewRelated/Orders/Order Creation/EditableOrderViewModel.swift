@@ -117,6 +117,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var multipleLinesMessage: String? = nil
 
+    ///
+    ///
+    @Published var productOrVariationIDs: [Int64] = []
+
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
@@ -167,14 +171,24 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the product list
     ///
+    // TODO: Is no longer `addProductVM`, as we'll need to care about unselecting/removing as well
     lazy var addProductViewModel = {
-        ProductSelectorViewModel(siteID: siteID, purchasableItemsOnly: true, storageManager: storageManager, stores: stores) { [weak self] product in
-            guard let self = self else { return }
-            self.addProductToOrder(product)
-        } onVariationSelected: { [weak self] variation, parentProduct in
-            guard let self = self else { return }
-            self.addProductVariationToOrder(variation, parent: parentProduct)
-        }
+        ProductSelectorViewModel(
+            siteID: siteID,
+            selectedItemIDs: productOrVariationIDs,
+            purchasableItemsOnly: true,
+            storageManager: storageManager,
+            stores: stores,
+            onProductSelected: {[weak self] product in
+                // TODO: Logic to addProductToOrder & removeItemFromOrder when unselected
+                self?.addProductToOrder(product)
+            },
+            onVariationSelected: {[weak self] variation, parentProduct in
+                self?.addProductVariationToOrder(variation, parent: parentProduct)
+            },
+            onMultipleSelectionCompleted: {[weak self] ids in
+                self?.productOrVariationIDs = ids
+            })
     }()
 
     /// View models for each product row in the order.

@@ -64,7 +64,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var newVariationsPriceSubscription: AnyCancellable?
     private var productImageStatusesSubscription: AnyCancellable?
 
-    private let showAddOptionsButton: Bool
+    private let showGroupedTableViewAppearance: Bool
 
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
@@ -72,7 +72,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         showAddOptionsButton: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
+         showGroupedTableViewAppearance: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
@@ -87,7 +87,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
-        self.showAddOptionsButton = showAddOptionsButton
+        self.showGroupedTableViewAppearance = showGroupedTableViewAppearance
         super.init(nibName: "ProductFormViewController", bundle: nil)
         updateDataSourceActions()
     }
@@ -523,7 +523,7 @@ private extension ProductFormViewController {
         tableView.dataSource = tableViewDataSource
         tableView.delegate = self
 
-        if showAddOptionsButton {
+        if showGroupedTableViewAppearance {
             tableView.backgroundColor = .listBackground
         } else {
             tableView.backgroundColor = .listForeground(modal: false)

@@ -764,6 +764,7 @@ private extension ProductFormViewController {
 
     func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void = { _ in }) {
         let previousStatus = product.status
+        let isNewProduct = !product.existsRemotely
 
         viewModel.saveProductRemotely(status: status) { [weak self] result in
             switch result {
@@ -781,7 +782,7 @@ private extension ProductFormViewController {
 
                 // Presents the confirmation alert
                 let alertType: ProductSavedAlertType
-                if status == .published, previousStatus != .published {
+                if status == .published && (isNewProduct || previousStatus != .published) {
                     alertType = .published
                 } else if status == .draft || (status == nil && previousStatus == .draft) {
                     alertType = .draftSaved

@@ -159,12 +159,16 @@ private extension HelpAndSupportViewController {
 
     private func calculateRows() -> [Row] {
         var rows: [Row] = [.helpCenter, .contactSupport]
-        if isPaymentsAvailable {
-            rows.append(.contactWCPaySupport)
+
+        // Only show `contactWCPaySupport` and `myTickets` when the `supportRequests` flag is not enabled.
+        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+            if isPaymentsAvailable {
+                rows.append(.contactWCPaySupport)
+            }
+            rows.append(.myTickets)
         }
 
-        rows.append(contentsOf: [.myTickets,
-                                 .contactEmail,
+        rows.append(contentsOf: [.contactEmail,
                                  .applicationLog,
                                  .systemStatusReport])
         return rows

@@ -4,6 +4,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
     public func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
         let buildConfig = BuildConfiguration.current
 
+        /// Whether this is a UI test run.
+        ///
+        /// This can be used to enable/disable a feature flag specifically for UI testing.
+        ///
+        let isUITesting = CommandLine.arguments.contains("-ui_testing")
+
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
@@ -60,11 +66,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // so we should not enable this for alpha builds.
             return buildConfig == .localDeveloper || buildConfig == .appStore
         case .domainSettings:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .supportRequests:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .simplifyProductEditing:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
         default:
             return true
         }

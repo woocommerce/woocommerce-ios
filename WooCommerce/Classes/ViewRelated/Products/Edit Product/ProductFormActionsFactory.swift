@@ -57,6 +57,8 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
               configuration: linkedProductsPromoCampaign.configuration)
     }
     private let isConvertToVariableOptionEnabled: Bool
+    private let isProductTypeActionEnabled: Bool
+    private let isCategoriesActionAlwaysEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -64,6 +66,8 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
          isConvertToVariableOptionEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isProductTypeActionEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isCategoriesActionAlwaysEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
@@ -72,6 +76,8 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
         self.isConvertToVariableOptionEnabled = isConvertToVariableOptionEnabled
+        self.isProductTypeActionEnabled = isProductTypeActionEnabled
+        self.isCategoriesActionAlwaysEnabled = isCategoriesActionAlwaysEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -251,8 +257,7 @@ private extension ProductFormActionsFactory {
             // The reviews action is always visible in the settings section.
             return true
         case .productType:
-            // The product type action is always visible in the settings section.
-            return true
+            return isProductTypeActionEnabled
         case .inventorySettings(let editable):
             guard editable else {
                 // The inventory row is always visible when readonly.
@@ -266,7 +271,7 @@ private extension ProductFormActionsFactory {
         case .addOns:
             return addOnsFeatureEnabled && product.hasAddOns
         case .categories:
-            return product.product.categories.isNotEmpty
+            return isCategoriesActionAlwaysEnabled || product.product.categories.isNotEmpty
         case .tags:
             return product.product.tags.isNotEmpty
         case .linkedProducts:

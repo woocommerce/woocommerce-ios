@@ -1,11 +1,17 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.5
+-----
+
+
 12.4
 -----
+- [**] Menu > Settings: adds a `Domains` row for WPCOM sites to see their site domains, add a new domain, or redeems a domain credit if available. [https://github.com/woocommerce/woocommerce-ios/pull/8870]
 - [Internal] Prologue screen now has only the entry point to site address login flow, and application password authentication is used for sites without Jetpack. [https://github.com/woocommerce/woocommerce-ios/pull/8846]
 - [Internal] A new tag has been added for Zendesk for users authenticated with application password. [https://github.com/woocommerce/woocommerce-ios/pull/8850]
 - [Internal] Failures in the logged-out state are now tracked with anonymous ID. [https://github.com/woocommerce/woocommerce-ios/pull/8861]
 - [*] Fix: Fixed a crash when switching away from the Products tab. [https://github.com/woocommerce/woocommerce-ios/pull/8874]
+- [**] Support Requests: We have added a new way of Contacting Support with an improved UX. [https://github.com/woocommerce/woocommerce-ios/pull/8886]
 
 12.3
 -----

@@ -21,6 +21,7 @@ final class DomainContactInfoFormViewModelTests: XCTestCase {
         let viewModel = DomainContactInfoFormViewModel(siteID: 134,
                                                        contactInfoToEdit: Fixtures.contactInfo,
                                                        domain: "woo.com",
+                                                       source: .settings,
                                                        storageManager: ServiceLocator.storageManager,
                                                        stores: ServiceLocator.stores,
                                                        analytics: ServiceLocator.analytics)
@@ -45,6 +46,7 @@ final class DomainContactInfoFormViewModelTests: XCTestCase {
         let viewModel = DomainContactInfoFormViewModel(siteID: 134,
                                                        contactInfoToEdit: Fixtures.contactInfo,
                                                        domain: "woo.com",
+                                                       source: .settings,
                                                        storageManager: ServiceLocator.storageManager,
                                                        stores: stores,
                                                        analytics: ServiceLocator.analytics)

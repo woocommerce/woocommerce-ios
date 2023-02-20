@@ -49,17 +49,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private let formattedAmount: String
 
-    /// Payment Gateway Account to use.
-    ///
-    private var paymentGatewayAccount: PaymentGatewayAccount? = nil
-
-    /// Stores manager.
-    ///
     private let stores: StoresManager
 
-    /// Analytics manager.
-    ///
-    private let analytics: Analytics
+    private let analyticsTracker: CollectOrderPaymentAnalytics
 
     /// View Controller used to present alerts.
     ///
@@ -77,26 +69,17 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private var readerSubscription: AnyCancellable?
 
-    /// Stores the connected card reader for analytics.
-    private var connectedReader: CardReader?
-
-    /// IPP Configuration.
-    ///
     private let configuration: CardPresentPaymentsConfiguration
 
     /// Celebration UX when the payment is captured successfully.
     private let paymentCaptureCelebration: PaymentCaptureCelebrationProtocol
 
-    /// IPP payments collector.
-    ///
     private lazy var paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores, celebration: paymentCaptureCelebration)
 
     /// Coordinates emailing a receipt after payment success.
     private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
 
     private var preflightController: CardPresentPaymentPreflightController?
-
-    private let orderDurationRecorder: OrderDurationRecorderProtocol
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -119,8 +102,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.configuration = configuration
         self.stores = stores
         self.paymentCaptureCelebration = paymentCaptureCelebration
-        self.orderDurationRecorder = orderDurationRecorder
-        self.analytics = analytics
+        self.analyticsTracker = CollectOrderPaymentAnalytics(analytics: analytics,
+                                                             configuration: configuration,
+                                                             orderDurationRecorder: orderDurationRecorder)
     }
 
     /// Starts the collect payment flow.
@@ -152,12 +136,13 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                                                                     onboardingPresenter: onboardingPresenter)
         preflightController?.readerConnection.sink { [weak self] connectionResult in
             guard let self = self else { return }
+            self.analyticsTracker.preflightResultRecieved(connectionResult)
             switch connectionResult {
             case .completed(let reader, let paymentGatewayAccount):
-                self.connectedReader = reader
-                self.paymentGatewayAccount = paymentGatewayAccount
                 let paymentAlertProvider = reader.paymentAlertProvider()
-                self.attemptPayment(alertProvider: paymentAlertProvider, onCompletion: { [weak self] result in
+                self.attemptPayment(alertProvider: paymentAlertProvider,
+                                    paymentGatewayAccount: paymentGatewayAccount,
+                                    onCompletion: { [weak self] result in
                     guard let self = self else { return }
                     // Inform about the collect payment state
                     switch result {
@@ -173,8 +158,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                                                  onCompleted: onCompleted)
                     }
                 })
-            case .canceled(let cancellationSource, let paymentGatewayAccount):
-                self.paymentGatewayAccount = paymentGatewayAccount
+            case .canceled(let cancellationSource, _):
                 self.handlePaymentCancellation(from: cancellationSource)
                 onCancel()
             case .none:
@@ -229,7 +213,7 @@ private extension CollectOrderPaymentUseCase {
 
     func handleTotalAmountInvalidError(_ error: Error,
                                        onCompleted: @escaping () -> ()) {
-        trackPaymentFailure(with: error)
+        analyticsTracker.trackPaymentFailure(with: error)
         DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum or not valid")
         alertsPresenter.present(viewModel: CardPresentModalNonRetryableError(amount: formattedAmount,
                                                                              error: totalAmountInvalidError(),
@@ -239,14 +223,10 @@ private extension CollectOrderPaymentUseCase {
     /// Attempts to collect payment for an order.
     ///
     func attemptPayment(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
+                        paymentGatewayAccount: PaymentGatewayAccount,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         guard let orderTotal = orderTotal else {
             onCompletion(.failure(NotValidAmountError.other))
-            return
-        }
-
-        guard let paymentGatewayAccount = paymentGatewayAccount else {
-            onCompletion(.failure(CollectOrderPaymentUseCaseError.paymentGatewayNotFound))
             return
         }
 
@@ -288,12 +268,13 @@ private extension CollectOrderPaymentUseCase {
                 // Reader messages. EG: Remove Card
                 self.alertsPresenter.present(viewModel: paymentAlerts.displayReaderMessage(message: message))
             }, onProcessingCompletion: { [weak self] intent in
-                self?.trackProcessingCompletion(intent: intent)
+                self?.analyticsTracker.trackProcessingCompletion(intent: intent)
                 self?.markOrderAsPaidIfNeeded(intent: intent)
             }, onCompletion: { [weak self] result in
                 switch result {
                 case .success(let capturedPaymentData):
-                    self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
+                    self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
+                    onCompletion(.success(capturedPaymentData))
                 case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(let cancellationSource))):
                     switch cancellationSource {
                     case .reader:
@@ -302,7 +283,10 @@ private extension CollectOrderPaymentUseCase {
                         self?.handlePaymentCancellation(from: .other)
                     }
                 case .failure(let error):
-                    self?.handlePaymentFailureAndRetryPayment(error, alertProvider: paymentAlerts, onCompletion: onCompletion)
+                    self?.handlePaymentFailureAndRetryPayment(error,
+                                                              alertProvider: paymentAlerts,
+                                                              paymentGatewayAccount: paymentGatewayAccount,
+                                                              onCompletion: onCompletion)
                 }
             }
         )
@@ -310,29 +294,17 @@ private extension CollectOrderPaymentUseCase {
 
     /// Tracks the successful payments
     ///
-    func handleSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData,
-                                 onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        // Record success
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments
-                            .collectPaymentSuccess(forGatewayID: paymentGatewayAccount?.gatewayID,
-                                                   countryCode: configuration.countryCode,
-                                                   paymentMethod: capturedPaymentData.paymentMethod,
-                                                   cardReaderModel: connectedReader?.readerType.model ?? "",
-                                                   millisecondsSinceOrderAddNew: try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
-                                                   millisecondsSinceCardPaymentStarted: try? orderDurationRecorder.millisecondsSinceCardPaymentStarted()))
-        orderDurationRecorder.reset()
-
-        // Success Callback
-        onCompletion(.success(capturedPaymentData))
+    func handleSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
+        analyticsTracker.trackSuccessfulPayment(capturedPaymentData: capturedPaymentData)
     }
 
     func handlePaymentCancellation(from cancellationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
-        trackPaymentCancelation(cancelationSource: cancellationSource)
+        analyticsTracker.trackPaymentCancelation(cancelationSource: cancellationSource)
         alertsPresenter.dismiss()
     }
 
     func handlePaymentCancellationFromReader(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding) {
-        trackPaymentCancelation(cancelationSource: .reader)
+        analyticsTracker.trackPaymentCancelation(cancelationSource: .reader)
         guard let dismissedOnReaderAlert = paymentAlerts.cancelledOnReader() else {
             return alertsPresenter.dismiss()
         }
@@ -343,28 +315,22 @@ private extension CollectOrderPaymentUseCase {
     ///
     func handlePaymentFailureAndRetryPayment(_ error: Error,
                                              alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
+                                             paymentGatewayAccount: PaymentGatewayAccount,
                                              onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
 
-        trackPaymentFailure(with: error)
+        analyticsTracker.trackPaymentFailure(with: error)
 
         if canRetryPayment(with: error) {
             presentRetryableError(error: error,
                                   paymentAlerts: paymentAlerts,
+                                  paymentGatewayAccount: paymentGatewayAccount,
                                   onCompletion: onCompletion)
         } else {
             presentNonRetryableError(error: error,
                                      paymentAlerts: paymentAlerts,
                                      onCompletion: onCompletion)
         }
-    }
-
-    private func trackPaymentFailure(with error: Error) {
-        // Record error
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount?.gatewayID,
-                                                                                       error: error,
-                                                                                       countryCode: configuration.countryCode,
-                                                                                       cardReaderModel: connectedReader?.readerType.model))
     }
 
     private func canRetryPayment(with error: Error) -> Bool {
@@ -394,6 +360,7 @@ private extension CollectOrderPaymentUseCase {
 
     private func presentRetryableError(error: Error,
                                        paymentAlerts: CardReaderTransactionAlertsProviding,
+                                       paymentGatewayAccount: PaymentGatewayAccount,
                                        onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         alertsPresenter.present(
             viewModel: paymentAlerts.error(error: error,
@@ -407,6 +374,7 @@ private extension CollectOrderPaymentUseCase {
                                                    case .success:
                                                        // Retry payment
                                                        self.attemptPayment(alertProvider: paymentAlerts,
+                                                                           paymentGatewayAccount: paymentGatewayAccount,
                                                                            onCompletion: onCompletion)
 
                                                    case .failure(let cancelError):
@@ -438,16 +406,9 @@ private extension CollectOrderPaymentUseCase {
     func cancelPayment(from cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource,
                        onCompleted: @escaping () -> ()) {
         paymentOrchestrator.cancelPayment { [weak self] _ in
-            self?.trackPaymentCancelation(cancelationSource: cancelationSource)
+            self?.analyticsTracker.trackPaymentCancelation(cancelationSource: cancelationSource)
             onCompleted()
         }
-    }
-
-    func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: paymentGatewayAccount?.gatewayID,
-                                                                                         countryCode: configuration.countryCode,
-                                                                                         cardReaderModel: connectedReader?.readerType.model ?? "",
-                                                                                         cancellationSource: cancelationSource))
     }
 
     /// Allow merchants to print or email the payment receipt.
@@ -462,22 +423,18 @@ private extension CollectOrderPaymentUseCase {
             // Delegate print action
             Task { @MainActor in
                 await ReceiptActionCoordinator.printReceipt(for: order,
-                                                      params: receiptParameters,
-                                                      countryCode: configuration.countryCode,
-                                                      cardReaderModel: self.connectedReader?.readerType.model,
-                                                      stores: self.stores,
-                                                      analytics: self.analytics)
+                                                            params: receiptParameters,
+                                                            countryCode: configuration.countryCode,
+                                                            cardReaderModel: self.analyticsTracker.connectedReaderModel,
+                                                            stores: self.stores)
 
                 // Inform about flow completion.
                 onCompleted()
             }
-        }, emailReceipt: { [order, analytics, paymentOrchestrator, configuration, weak self] in
+        }, emailReceipt: { [order, analyticsTracker, paymentOrchestrator, weak self] in
             guard let self = self else { return }
 
-            // Record button tapped
-            analytics.track(event: .InPersonPayments
-                .receiptEmailTapped(countryCode: configuration.countryCode,
-                                    cardReaderModel: self.connectedReader?.readerType.model ?? ""))
+            analyticsTracker.trackEmailTapped()
 
             // Request & present email
             paymentOrchestrator.emailReceipt(for: order, params: receiptParameters) { [weak self] emailContent in
@@ -492,9 +449,8 @@ private extension CollectOrderPaymentUseCase {
     /// Presents the native email client with the provided content.
     ///
     func presentEmailForm(content: String, onCompleted: @escaping () -> ()) {
-        let coordinator = CardPresentPaymentReceiptEmailCoordinator(analytics: analytics,
-                                                                    countryCode: configuration.countryCode,
-                                                                    cardReaderModel: connectedReader?.readerType.model)
+        let coordinator = CardPresentPaymentReceiptEmailCoordinator(countryCode: configuration.countryCode,
+                                                                    cardReaderModel: analyticsTracker.connectedReaderModel)
         receiptEmailCoordinator = coordinator
         coordinator.presentEmailForm(data: .init(content: content,
                                                  order: order,
@@ -517,24 +473,6 @@ private extension CollectOrderPaymentUseCase {
         case .interacPresent:
             let action = OrderAction.markOrderAsPaidLocally(siteID: order.siteID, orderID: order.orderID, datePaid: Date()) { _ in }
             stores.dispatch(action)
-        default:
-            return
-        }
-    }
-}
-
-// MARK: Analytics
-private extension CollectOrderPaymentUseCase {
-    func trackProcessingCompletion(intent: PaymentIntent) {
-        guard let paymentMethod = intent.paymentMethod() else {
-            return
-        }
-        switch paymentMethod {
-        case .interacPresent:
-            analytics.track(event: .InPersonPayments
-                .collectInteracPaymentSuccess(gatewayID: paymentGatewayAccount?.gatewayID,
-                                              countryCode: configuration.countryCode,
-                                              cardReaderModel: connectedReader?.readerType.model ?? ""))
         default:
             return
         }

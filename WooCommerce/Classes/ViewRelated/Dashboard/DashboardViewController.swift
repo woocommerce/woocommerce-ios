@@ -622,25 +622,9 @@ private extension DashboardViewController {
     }
 }
 
-// MARK: - Public API
-//
-extension DashboardViewController {
-    func presentSettings() {
-        settingsTapped()
-    }
-}
-
-
 // MARK: - Action Handlers
 //
 private extension DashboardViewController {
-
-    @objc func settingsTapped() {
-        let settingsViewController = SettingsViewController()
-        ServiceLocator.analytics.track(.settingsTapped)
-        show(settingsViewController, sender: self)
-    }
-
     func pullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
         await viewModel.syncAnnouncements(for: siteID)

@@ -419,14 +419,17 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func tapToPayOnIPhoneWasPressed() {
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self),
+            let navigationController = navigationController else {
             fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
         }
         viewController.title = Localization.tapToPayOnIPhoneScreenTitle
 
         let viewModelsAndViews = BuiltInCardReaderSettingsViewModelsOrderedList(configuration: viewModel.cardPresentPaymentsConfiguration)
         viewController.configure(viewModelsAndViews: viewModelsAndViews)
-        show(viewController, sender: self)
+        let tapToPayNC = WooNavigationController(rootViewController: viewController)
+        navigationController.present(tapToPayNC, animated: true)
+//        show(viewController, sender: self)
     }
 
     @objc func learnMoreAboutInPersonPaymentsButtonWasTapped() {

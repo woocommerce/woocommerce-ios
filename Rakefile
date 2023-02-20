@@ -218,7 +218,7 @@ end
 
 def podfile_locked?
   podfile_checksum = Digest::SHA1.file('Podfile')
-  lockfile_checksum = YAML.safe_load(File.read('Podfile.lock'))['PODFILE CHECKSUM']
+  lockfile_checksum = YAML.load_file('Podfile.lock')['PODFILE CHECKSUM']
 
   podfile_checksum == lockfile_checksum
 end

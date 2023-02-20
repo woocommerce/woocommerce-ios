@@ -9,7 +9,7 @@ final class ReviewsTests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
         app.launch()
-        try LoginFlow.logInWithWPcom()
+        try LoginFlow.login()
 
         // Extra step needed to get products mock data to appear on Reviews screen
         // GH Issue: https://github.com/woocommerce/woocommerce-ios/issues/1907

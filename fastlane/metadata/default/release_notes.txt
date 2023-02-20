@@ -1,1 +1,1 @@
-It's now possible to bulk update product status and prices! Simply go to the Products tab and click on the multi select icon on the top to try it out.
+We’ve made a few enhancements to manage your business. It’s now easier to set up your store when logging in. Adding attributes from the app just became a whole lot easier! Keep your feedback coming!

@@ -16,6 +16,10 @@ final class MockZendeskManager: ZendeskManagerProtocol {
     ///
     private(set) var newRequestIfPossibleInvocations = [NewRequestIfPossibleInvocation]()
 
+    /// Tracks which tags were invoked via the create request method.
+    ///
+    private(set) var latestInvokedTags: [String] = []
+
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String?) {
         let invocation = NewRequestIfPossibleInvocation(controller: controller, sourceTag: sourceTag)
         newRequestIfPossibleInvocations.append(invocation)
@@ -74,6 +78,45 @@ final class MockZendeskManager: ZendeskManagerProtocol {
 
     func fetchSystemStatusReport() {
         // no-op
+    }
+}
+
+extension MockZendeskManager {
+    func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
+        // no-op
+    }
+
+    func createSupportRequest(formID: Int64,
+                              customFields: [Int64: String],
+                              tags: [String],
+                              subject: String,
+                              description: String,
+                              onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        latestInvokedTags = tags
+    }
+
+    func formID() -> Int64 {
+        .zero
+    }
+
+    func wcPayFormID() -> Int64 {
+        .zero
+    }
+
+    func generalTags() -> [String] {
+        []
+    }
+
+    func wcPayTags() -> [String] {
+        []
+    }
+
+    func generalCustomFields() -> [Int64: String] {
+        [:]
+    }
+
+    func wcPayCustomFields() -> [Int64: String] {
+        [:]
     }
 }
 

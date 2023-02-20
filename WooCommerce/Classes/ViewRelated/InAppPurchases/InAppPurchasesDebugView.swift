@@ -16,72 +16,72 @@ struct InAppPurchasesDebugView: View {
     @State var presentAlert = false
 
     var body: some View {
-        if ProcessInfo.processInfo.environment["wpcom-api-base-url"] == nil {
-            Text("⚠️ Your WPCOM Sandbox URL is not setup")
-                .headlineStyle()
-            Text("To test In-App Purchases please make sure that the WPCOM requests are pointing " +
-                 "to your sandbox environment and you have the billing system sandbox-mode enabled there.")
-            .padding()
-        } else {
-            List {
-                Section {
-                    Button("Reload products") {
-                        Task {
-                            await loadProducts()
-                        }
+        List {
+            Section {
+                Button("Reload products") {
+                    Task {
+                        await loadProducts()
                     }
                 }
-                Section("Products") {
-                    if products.isEmpty {
-                        Text("No products")
-                    } else if isPurchasing {
-                        ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                    } else if let stringSiteID = ProcessInfo.processInfo.environment[Constants.siteIdEnvironmentVariableName],
-                              let siteID = Int64(stringSiteID) {
-                        ForEach(products, id: \.id) { product in
-                            Button(entitledProductIDs.contains(product.id) ? "Entitled: \(product.description)" : product.description) {
-                                Task {
-                                    isPurchasing = true
-                                    do {
-                                        let result = try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
-                                        print("[IAP Debug] Purchase result: \(result)")
-                                    } catch {
-                                        purchaseError = PurchaseError(error: error)
-                                    }
-                                    await loadUserEntitlements()
-                                    isPurchasing = false
+            }
+            Section("Products") {
+                if products.isEmpty {
+                    Text("No products")
+                } else if isPurchasing {
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                } else if let stringSiteID = ProcessInfo.processInfo.environment[Constants.siteIdEnvironmentVariableName],
+                          let siteID = Int64(stringSiteID) {
+                    ForEach(products, id: \.id) { product in
+                        Button(entitledProductIDs.contains(product.id) ? "Entitled: \(product.description)" : product.description) {
+                            Task {
+                                isPurchasing = true
+                                do {
+                                    let result = try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                    print("[IAP Debug] Purchase result: \(result)")
+                                } catch {
+                                    purchaseError = PurchaseError(error: error)
                                 }
+                                await loadUserEntitlements()
+                                isPurchasing = false
                             }
-                            .alert(isPresented: $presentAlert, error: purchaseError, actions: {})
                         }
-                    } else {
-                        Text("No valid site id could be retrieved to purchase product. " +
-                             "Please set your Int64 test site id to the Xcode environment variable with name \(Constants.siteIdEnvironmentVariableName).")
-                        .foregroundColor(.red)
+                        .alert(isPresented: $presentAlert, error: purchaseError, actions: {})
                     }
-                }
-
-                Section {
-                    Button("Retry WPCom Synchronization for entitled products") {
-                        retryWPComSynchronizationForPurchasedProducts()
-                    }.disabled(!inAppPurchasesAreSupported || entitledProductIDs.isEmpty)
-                }
-
-                if !inAppPurchasesAreSupported {
-                    Section {
-                        Text("In-App Purchases are not supported for this user")
-                            .foregroundColor(.red)
-                    }
+                } else {
+                    Text("No valid site id could be retrieved to purchase product. " +
+                         "Please set your Int64 test site id to the Xcode environment variable with name \(Constants.siteIdEnvironmentVariableName).")
+                    .foregroundColor(.red)
                 }
             }
-            .navigationTitle("IAP Debug")
-            .task {
-                await loadProducts()
+
+            Section {
+                Button("Retry WPCom Synchronization for entitled products") {
+                    retryWPComSynchronizationForPurchasedProducts()
+                }.disabled(!inAppPurchasesAreSupported || entitledProductIDs.isEmpty)
             }
-            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                Task {
-                    await loadUserEntitlements()
-                }
+
+            Section {
+                Text("In-App Purchases are not supported for this user")
+                    .foregroundColor(.red)
+            }
+            .renderedIf(!inAppPurchasesAreSupported)
+
+            Section {
+                Text("⚠️ Your WPCOM Sandbox URL is not setup")
+                    .headlineStyle()
+                Text("To test In-App Purchases in sandbox please make sure that the WPCOM requests are pointing " +
+                     "to your sandbox environment and you have the billing system sandbox-mode enabled there.")
+                .padding()
+            }
+            .renderedIf(ProcessInfo.processInfo.environment["wpcom-api-base-url"] == nil)
+        }
+        .navigationTitle("IAP Debug")
+        .task {
+            await loadProducts()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            Task {
+                await loadUserEntitlements()
             }
         }
     }

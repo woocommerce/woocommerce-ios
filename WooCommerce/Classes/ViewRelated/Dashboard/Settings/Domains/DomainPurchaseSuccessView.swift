@@ -32,10 +32,24 @@ struct DomainPurchaseSuccessView: View {
 
     var body: some View {
         ScrollView {
-            Text(Localization.title)
-                .titleStyle()
-            // TODO: 8558 - update UI
-            Text(viewModel.domainName)
+            VStack(alignment: .center, spacing: Layout.contentSpacing) {
+                Image(uiImage: .domainPurchaseSuccessImage)
+                Text(Localization.title)
+                    .secondaryTitleStyle()
+                    .multilineTextAlignment(.center)
+                Text(viewModel.domainName)
+                    .frame(maxWidth: .infinity)
+                    .padding(Layout.domainNamePadding)
+                    .headlineStyle()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(Layout.domainNameCornerRadius)
+                Text(Localization.subtitle)
+                    .multilineTextAlignment(.center)
+                Text(Localization.instructions)
+                    .subheadlineStyle()
+                    .multilineTextAlignment(.center)
+            }
+            .padding(Layout.contentPadding)
         }
         .safeAreaInset(edge: .bottom) {
             VStack {
@@ -63,6 +77,10 @@ private extension DomainPurchaseSuccessView {
             "Your site address is being set up. It may take up 30 minutes for your domain to start working.",
             comment: "Subtitle of the domain purchase success screen."
         )
+        static let instructions = NSLocalizedString(
+            "You can find the domain settings in menu > settings",
+            comment: "Instructions of the domain purchase success screen."
+        )
         static let continueButtonTitle = NSLocalizedString(
             "Done",
             comment: "Title of the button to finish the domain purchase success screen."
@@ -70,6 +88,10 @@ private extension DomainPurchaseSuccessView {
     }
 
     enum Layout {
+        static let contentSpacing: CGFloat = 24
+        static let contentPadding: EdgeInsets = .init(top: 88, leading: 16, bottom: 88, trailing: 16)
+        static let domainNameCornerRadius: CGFloat = 8
+        static let domainNamePadding: EdgeInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8)
         static let defaultPadding: EdgeInsets = .init(top: 10, leading: 16, bottom: 10, trailing: 16)
     }
 }

@@ -38,9 +38,9 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
 
     // MARK: - Protocol conformance
 
-    var showEmailField: Bool {
-        true
-    }
+    let showEmailField: Bool = true
+
+    let showPhoneCountryCodeField: Bool = false
 
     var viewTitle: String {
         Localization.customerDetailsTitle

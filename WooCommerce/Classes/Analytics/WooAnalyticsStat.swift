@@ -799,6 +799,7 @@ public enum WooAnalyticsStat: String {
     case paymentsMenuCardReadersManualsTapped = "payments_hub_card_readers_manuals_tapped"
     case paymentsMenuManageCardReadersTapped = "payments_hub_manage_card_readers_tapped"
     case paymentsMenuPaymentProviderTapped = "settings_card_present_select_payment_gateway_tapped"
+    case inPersonPaymentsLearnMoreTapped = "in_person_payments_learn_more_tapped"
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"
@@ -821,7 +822,6 @@ public enum WooAnalyticsStat: String {
     // MARK: Application password Events
     case applicationPasswordsNewPasswordCreated = "application_passwords_new_password_created"
     case applicationPasswordsGenerationFailed = "application_passwords_generation_failed"
-    case trackRestAPILoginExperimentVariation = "rest_api_login_experiment"
 }
 
 public extension WooAnalyticsStat {

@@ -102,7 +102,12 @@ private extension CloseAccountCoordinator {
                                                 preferredStyle: .alert)
         alertController.addActionWithTitle(Localization.ErrorAlert.contactSupportButtonTitle, style: .default) { [weak self] _ in
             guard let self = self else { return }
-            ZendeskProvider.shared.showNewRequestIfPossible(from: self.sourceViewController, with: nil)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+                let supportForm = SupportFormHostingController(viewModel: .init())
+                supportForm.show(from: self.sourceViewController)
+            } else {
+                ZendeskProvider.shared.showNewRequestIfPossible(from: self.sourceViewController, with: nil)
+            }
         }
         alertController.addActionWithTitle(Localization.ErrorAlert.dismissButtonTitle, style: .cancel) { _ in }
         sourceViewController.present(alertController, animated: true)

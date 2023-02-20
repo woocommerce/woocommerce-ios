@@ -1,9 +1,11 @@
 import Foundation
 import Yosemite
 import Combine
-#if !targetEnvironment(simulator)
-import ProximityReader
-#endif
+
+enum CardReaderPreflightResult {
+    case completed(CardReader, PaymentGatewayAccount)
+    case canceled(WooAnalyticsEvent.InPersonPayments.CancellationSource, PaymentGatewayAccount)
+}
 
 enum CardReaderConnectionResult {
     case connected(CardReader)
@@ -14,10 +16,6 @@ final class CardPresentPaymentPreflightController {
     /// Store's ID.
     ///
     private let siteID: Int64
-
-    /// Payment Gateway Account to use.
-    ///
-    private let paymentGatewayAccount: PaymentGatewayAccount
 
     /// IPP Configuration.
     ///
@@ -35,9 +33,18 @@ final class CardPresentPaymentPreflightController {
     ///
     private let analytics: Analytics
 
-    /// Stores the connected card reader
-    private var connectedReader: CardReader?
+    /// Root View Controller
+    /// Used for showing onboarding alerts
+    private let rootViewController: UIViewController
 
+    /// Onboarding presenter.
+    /// Shows messages to help a merchant get correctly set up for card payments, prior to taking a payment.
+    ///
+    private let onboardingPresenter: CardPresentPaymentsOnboardingPresenting
+
+    /// Stores the connected card reader
+    ///
+    private var connectedReader: CardReader?
 
     /// Controller to connect a card reader.
     ///
@@ -48,18 +55,20 @@ final class CardPresentPaymentPreflightController {
     private var builtInConnectionController: BuiltInCardReaderConnectionController
 
 
-    private(set) var readerConnection = CurrentValueSubject<CardReaderConnectionResult?, Never>(nil)
+    private(set) var readerConnection = CurrentValueSubject<CardReaderPreflightResult?, Never>(nil)
 
     init(siteID: Int64,
-         paymentGatewayAccount: PaymentGatewayAccount,
          configuration: CardPresentPaymentsConfiguration,
+         rootViewController: UIViewController,
          alertsPresenter: CardPresentPaymentAlertsPresenting,
+         onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
-        self.paymentGatewayAccount = paymentGatewayAccount
         self.configuration = configuration
+        self.rootViewController = rootViewController
         self.alertsPresenter = alertsPresenter
+        self.onboardingPresenter = onboardingPresenter
         self.stores = stores
         self.analytics = analytics
         self.connectedReader = nil
@@ -84,22 +93,30 @@ final class CardPresentPaymentPreflightController {
 
     @MainActor
     func start() async {
-        configureBackend()
         observeConnectedReaders()
         // If we're already connected to a reader, return it
-        if let connectedReader = connectedReader {
-            handleConnectionResult(.success(.connected(connectedReader)))
+        if let connectedReader = connectedReader,
+           let paymentGatewayAccount = await selectedPaymentGateway() {
+            handleConnectionResult(.success(.connected(connectedReader)), paymentGatewayAccount: paymentGatewayAccount)
             return
         }
 
-        // TODO: Run onboarding if needed
+        await onboardingPresenter.showOnboardingIfRequired(from: rootViewController)
+
+        // Once onboarding is complete, a Payment Gateway will have been chosen
+        guard let paymentGatewayAccount = await selectedPaymentGateway() else {
+            DDLogError("⛔️ Cannot proceed with reader connection, no Payment Gateway found")
+            return handlePreflightFailure(error: CardPresentPaymentPreflightError.paymentGatewayAccountNotFound)
+        }
 
         // Ask for a Reader type if supported by device/in country
         guard await localMobileReaderSupported(),
               configuration.supportedReaders.contains(.appleBuiltIn)
         else {
             // Attempt to find a bluetooth reader and connect
-            connectionController.searchAndConnect(onCompletion: handleConnectionResult)
+            connectionController.searchAndConnect(onCompletion: { [weak self] result in
+                self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
+            })
             return
         }
 
@@ -109,24 +126,37 @@ final class CardPresentPaymentPreflightController {
             tapOnIPhoneAction: { [weak self] in
                 guard let self = self else { return }
                 self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeBuiltInTapped(
-                    forGatewayID: self.paymentGatewayAccount.gatewayID,
+                    forGatewayID: paymentGatewayAccount.gatewayID,
                     countryCode: self.configuration.countryCode))
-                self.builtInConnectionController.searchAndConnect(
-                    onCompletion: self.handleConnectionResult)
+                self.builtInConnectionController.searchAndConnect(onCompletion: { [weak self] result in
+                    self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
+                })
             },
             bluetoothAction: { [weak self] in
                 guard let self = self else { return }
                 self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeBluetoothTapped(
-                    forGatewayID: self.paymentGatewayAccount.gatewayID,
+                    forGatewayID: paymentGatewayAccount.gatewayID,
                     countryCode: self.configuration.countryCode))
-                self.connectionController.searchAndConnect(
-                    onCompletion: self.handleConnectionResult)
+                self.connectionController.searchAndConnect(onCompletion: { [weak self] result in
+                    self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
+                })
             },
             cancelAction: { [weak self] in
                 guard let self = self else { return }
                 self.alertsPresenter.dismiss()
-                self.handleConnectionResult(.success(.canceled(.selectReaderType)))
+                self.handleConnectionResult(.success(.canceled(.selectReaderType)),
+                                            paymentGatewayAccount: paymentGatewayAccount)
             }))
+    }
+
+    @MainActor
+    private func selectedPaymentGateway() async -> PaymentGatewayAccount? {
+        await withCheckedContinuation { continuation in
+            let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGatewayAccount in
+                continuation.resume(returning: paymentGatewayAccount)
+            }
+            stores.dispatch(action)
+        }
     }
 
     @MainActor
@@ -141,7 +171,8 @@ final class CardPresentPaymentPreflightController {
         }
     }
 
-    private func handleConnectionResult(_ result: Result<CardReaderConnectionResult, Error>) {
+    private func handleConnectionResult(_ result: Result<CardReaderConnectionResult, Error>,
+                                        paymentGatewayAccount: PaymentGatewayAccount) {
         let connectionResult = result.map { connection in
             if case .connected(let reader) = connection {
                 self.connectedReader = reader
@@ -151,17 +182,20 @@ final class CardPresentPaymentPreflightController {
 
         switch connectionResult {
         case .success(let unwrapped):
-            self.readerConnection.send(unwrapped)
-        default:
-            alertsPresenter.dismiss()
+            switch unwrapped {
+            case .canceled(let source):
+                readerConnection.send(.canceled(source, paymentGatewayAccount))
+            case .connected(let reader):
+                readerConnection.send(.completed(reader, paymentGatewayAccount))
+            }
+        case .failure(let error):
+            DDLogError("⛔️ Card Present Payment Preflight failed: \(error.localizedDescription)")
+            handlePreflightFailure(error: error)
         }
     }
 
-    /// Configure the CardPresentPaymentStore to use the appropriate backend
-    ///
-    private func configureBackend() {
-        let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
-        stores.dispatch(setAccount)
+    private func handlePreflightFailure(error: Error) {
+        alertsPresenter.dismiss()
     }
 
     private func observeConnectedReaders() {
@@ -170,4 +204,8 @@ final class CardPresentPaymentPreflightController {
         }
         stores.dispatch(action)
     }
+}
+
+enum CardPresentPaymentPreflightError: Error, Equatable {
+    case paymentGatewayAccountNotFound
 }

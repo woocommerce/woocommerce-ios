@@ -128,7 +128,12 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
                                               },
                                               onContactSupportButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
-                                                ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+                let supportForm = SupportFormHostingController(viewModel: .init())
+                supportForm.show(from: self)
+            } else {
+                ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
+            }
                                               })
     }()
 
@@ -210,7 +215,12 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
             case .withSupportRequest:
                 return { [weak self] in
                     if let self = self {
-                        self.zendeskManager.showNewRequestIfPossible(from: self, with: nil)
+                        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+                            let supportForm = SupportFormHostingController(viewModel: .init())
+                            supportForm.show(from: self)
+                        } else {
+                            self.zendeskManager.showNewRequestIfPossible(from: self, with: nil)
+                        }
                     }
                 }
             default:

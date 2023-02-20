@@ -11,7 +11,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false, isEmptyReviewsOptionHidden: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -38,7 +38,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false, isEmptyReviewsOptionHidden: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -65,7 +65,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -91,7 +91,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -116,7 +116,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false, isEmptyReviewsOptionHidden: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -143,7 +143,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false, isEmptyReviewsOptionHidden: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -170,7 +170,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false, isEmptyReviewsOptionHidden: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -479,6 +479,19 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         // Then
         XCTAssertFalse(factory.settingsSectionActions().contains(.reviews))
         XCTAssertTrue(factory.bottomSheetActions().contains(.editReviews))
+    }
+
+    func test_bottom_sheet_actions_shows_variation_option_when_feature_is_enabled() {
+        // Given
+        let product = Fixtures.physicalSimpleProductWithoutImages
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: true)
+
+        // Then
+        XCTAssertFalse(factory.settingsSectionActions().contains(.convertToVariable))
+        XCTAssertTrue(factory.bottomSheetActions().contains(.convertToVariable))
     }
 
     func test_settings_actions_does_not_contain_product_type_when_it_is_disabled() {

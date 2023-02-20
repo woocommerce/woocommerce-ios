@@ -16,6 +16,7 @@ enum ProductFormEditAction: Equatable {
     case tags(editable: Bool)
     case shortDescription(editable: Bool)
     case linkedProducts(editable: Bool)
+    case convertToVariable
     // Affiliate products only
     case sku(editable: Bool)
     case externalURL(editable: Bool)
@@ -55,6 +56,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         .init(analytics: ServiceLocator.analytics,
               configuration: linkedProductsPromoCampaign.configuration)
     }
+    private let isConvertToVariableOptionEnabled: Bool
     private let isEmptyReviewsOptionHidden: Bool
     private let isProductTypeActionEnabled: Bool
     private let isCategoriesActionAlwaysEnabled: Bool
@@ -64,6 +66,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          formType: ProductFormType,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
+         isConvertToVariableOptionEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isEmptyReviewsOptionHidden: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isProductTypeActionEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isCategoriesActionAlwaysEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
@@ -74,6 +77,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
+        self.isConvertToVariableOptionEnabled = isConvertToVariableOptionEnabled
         self.isEmptyReviewsOptionHidden = isEmptyReviewsOptionHidden
         self.isProductTypeActionEnabled = isProductTypeActionEnabled
         self.isCategoriesActionAlwaysEnabled = isCategoriesActionAlwaysEnabled
@@ -149,7 +153,8 @@ private extension ProductFormActionsFactory {
             shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            isConvertToVariableOptionEnabled ? .convertToVariable : nil
         ]
         return actions.compactMap { $0 }
     }

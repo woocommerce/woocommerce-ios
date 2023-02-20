@@ -2,7 +2,45 @@ import Combine
 import Foundation
 import Yosemite
 
-final class BuiltInCardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedViewModel {
+final class BuiltInCardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedViewModel, ObservableObject {
+    @Published var loading: Bool = false
+    var summaryViewModel: SimplePaymentsSummaryViewModel? = nil {
+        didSet {
+            summaryActive = summaryViewModel != nil
+        }
+    }
+    @Published var summaryActive: Bool = false
+
+    private let amount = "0.50"
+    private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject()
+    private let analytics: Analytics = ServiceLocator.analytics
+
+    func startTestPayment() {
+        loading = true
+        let action = OrderAction.createSimplePaymentsOrder(siteID: ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0,
+                                                           status: .pending,
+                                                           amount: amount,
+                                                           taxable: true) { [weak self] result in
+            guard let self = self else { return }
+            self.loading = false
+
+            switch result {
+            case .success(let order):
+                self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                                       providedAmount: self.amount,
+                                                                       presentNoticeSubject: self.presentNoticeSubject)
+
+            case .failure(let error):
+                self.presentNoticeSubject.send(.error("There was an error creating the test payment"))
+                self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: .simplePayment, source: .amount))
+                DDLogError("⛔️ Error creating simple payments order: \(error)")
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+
+
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?

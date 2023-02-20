@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import SwiftUI
 import Yosemite
+import Combine
 
 /// This view controller is used when a reader is currently connected. It assists
 /// the merchant in updating and/or disconnecting from the reader, as needed.
@@ -10,17 +11,23 @@ final class BuiltInCardReaderSettingsConnectedViewController: UIHostingControlle
 
     /// ViewModel
     ///
-    private var viewModel: BuiltInCardReaderSettingsConnectedViewModel?
+    private var viewModel: BuiltInCardReaderSettingsConnectedViewModel? {
+        didSet {
+            if let viewModel = viewModel {
+                rootView.viewModel = viewModel
+                rootView.connectClickAction = viewModel.startTestPayment
+            }
+        }
+    }
 
     private let settingsAlerts = CardReaderSettingsAlerts()
 
 
 
     required init?(coder: NSCoder) {
-        super.init(coder: coder, rootView: BuiltInCardReaderSettingsConnectedView())
-//        rootView.connectClickAction = {
-//            self.searchAndConnect()
-//        }
+        super.init(coder: coder, rootView: BuiltInCardReaderSettingsConnectedView(viewModel: BuiltInCardReaderSettingsConnectedViewModel(didChangeShouldShow: { _ in }, configuration: .init(country: "US"), analyticsTracker: CardReaderConnectionAnalyticsTracker(configuration: .init(country: "US")))))
+        rootView.connectClickAction = viewModel?.startTestPayment
+        rootView.rootViewController = self
     }
 
     /// Accept our viewmodel
@@ -41,6 +48,7 @@ final class BuiltInCardReaderSettingsConnectedViewController: UIHostingControlle
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
+        rootView.rootViewController = navigationController
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -53,7 +61,7 @@ final class BuiltInCardReaderSettingsConnectedViewController: UIHostingControlle
 //
 private extension BuiltInCardReaderSettingsConnectedViewController {
     func onViewModelDidUpdate() {
-        
+        // no-op
     }
 
     /// Returns `false` if no reader update is available or if  `viewModel` is `nil`.
@@ -71,9 +79,11 @@ private extension BuiltInCardReaderSettingsConnectedViewController {
 }
 
 struct BuiltInCardReaderSettingsConnectedView: View {
-    var connectClickAction: (() -> Void)? = {
+    @ObservedObject var viewModel: BuiltInCardReaderSettingsConnectedViewModel
 
-    }
+    var rootViewController: UIViewController?
+
+    var connectClickAction: (() -> Void)? = nil
 
     var showURL: ((URL) -> Void)? = nil
     var learnMoreUrl: URL? = nil
@@ -98,10 +108,11 @@ struct BuiltInCardReaderSettingsConnectedView: View {
             Text(Localization.connectYourCardReaderTitle)
                 .font(.headline)
                 .padding(.bottom, isCompact ? 16 : 32)
-            Image(uiImage: .builtInReaderProcessing)
-                .resizable()
+            Image(systemName: "checkmark.circle")
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(Color(.systemGreen))
                 .scaledToFit()
-                .frame(height: isCompact ? 80 : 206)
+                .font(.system(size: isCompact ? 40 : 120))
                 .padding(.bottom, isCompact ? 16 : 32)
 
             Hint(title: Localization.hintOneTitle, text: Localization.hintOne)
@@ -125,18 +136,38 @@ struct BuiltInCardReaderSettingsConnectedView: View {
                         showURL?(url)
                     }
                 })
-
-        }
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity
-            )
-            .padding()
-            .if(isCompact || isSizeCategoryLargeThanExtraLarge) {content in
-                ScrollView(.vertical) {
-                    content
-                }
+            LazyNavigationLink(destination: summaryView(), isActive: Binding<Bool>(
+                get: { viewModel.summaryActive },
+                set: {
+                        // $0 is the new Bool value of the toggle
+                        // Your code for updating the model, or whatever
+                        print("value: \($0)")
+                    })) {
+                EmptyView()
             }
+        }
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity
+        )
+        .padding()
+        .if(isCompact || isSizeCategoryLargeThanExtraLarge) { content in
+            ScrollView(.vertical) {
+                content
+            }
+        }
+        .wooNavigationBarStyle()
+    }
+
+    /// Returns a `SimplePaymentsSummary` instance when the view model is available.
+    ///
+    private func summaryView() -> some View {
+        Group {
+            if let summaryViewModel = viewModel.summaryViewModel {
+                SimplePaymentsSummary(dismiss: { rootViewController?.dismiss(animated: true) }, rootViewController: rootViewController, viewModel: summaryViewModel)
+            }
+            EmptyView()
+        }
     }
 }
 

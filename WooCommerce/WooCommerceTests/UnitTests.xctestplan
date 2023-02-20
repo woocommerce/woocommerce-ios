@@ -78,6 +78,13 @@
         "identifier" : "B9C9C63D283E703C001B879F",
         "name" : "WooFoundationTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Experiments\/Experiments.xcodeproj",
+        "identifier" : "0270C08927069A8900FC799F",
+        "name" : "ExperimentsTests"
+      }
     }
   ],
   "version" : 1

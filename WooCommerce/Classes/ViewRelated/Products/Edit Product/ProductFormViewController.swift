@@ -72,7 +72,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         showAddOptionsButton: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductsEditing)) {
+         showAddOptionsButton: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency

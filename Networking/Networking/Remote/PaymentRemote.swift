@@ -36,7 +36,8 @@ public protocol PaymentRemoteProtocol {
 
     /// Checks out the given cart using domain credit as the payment method.
     /// - Parameter cart: Cart generated from one of the `createCart` functions.
-    func checkoutCartWithDomainCredit(cart: CartResponse) async throws
+    /// - Parameter contactInfo: Contact info for the domain that needs to be validated beforehand.
+    func checkoutCartWithDomainCredit(cart: CartResponse, contactInfo: DomainContactInfo) async throws
 }
 
 /// WPCOM Payment Endpoints
@@ -104,11 +105,13 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
         return response
     }
 
-    public func checkoutCartWithDomainCredit(cart: CartResponse) async throws {
+    public func checkoutCartWithDomainCredit(cart: CartResponse, contactInfo: DomainContactInfo) async throws {
         let path = "\(Path.cartCheckout)"
         let cartDictionary = try cart.toDictionary()
+        let contactInformationDictionary = try contactInfo.toDictionary()
         let parameters: [String: Any] = [
             "cart": cartDictionary,
+            "domain_details": contactInformationDictionary,
             "payment": ["payment_method": PaymentMethod.credit.rawValue]
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters, encoding: JSONEncoding.default)

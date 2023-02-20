@@ -14,7 +14,12 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
         },
         contactSupportAction: {
             presenting.dismiss(animated: true) {
-                ZendeskProvider.shared.showNewRequestIfPossible(from: presenting)
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+                    let supportForm = SupportFormHostingController(viewModel: .init())
+                    supportForm.show(from: presenting)
+                } else {
+                    ZendeskProvider.shared.showNewRequestIfPossible(from: presenting)
+                }
             }
         },
         dismissAction: {

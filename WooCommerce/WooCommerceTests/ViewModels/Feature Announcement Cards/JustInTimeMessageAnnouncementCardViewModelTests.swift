@@ -66,7 +66,7 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
 
         // Then
         let webViewViewModel = try XCTUnwrap(webviewPublishes.last)
-        XCTAssertTrue(webViewViewModel.wpComAuthenticated)
+        XCTAssertTrue(webViewViewModel.authenticated)
     }
 
     func test_ctaTapped_presents_an_authenticated_webview_for_wordpress() throws {
@@ -78,7 +78,7 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
 
         // Then
         let webViewViewModel = try XCTUnwrap(webviewPublishes.last)
-        XCTAssertTrue(webViewViewModel.wpComAuthenticated)
+        XCTAssertTrue(webViewViewModel.authenticated)
     }
 
     func test_ctaTapped_presents_an_unauthenticated_webview_for_other_url() throws {
@@ -90,7 +90,7 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
 
         // Then
         let webViewViewModel = try XCTUnwrap(webviewPublishes.last)
-        XCTAssertFalse(webViewViewModel.wpComAuthenticated)
+        XCTAssertFalse(webViewViewModel.authenticated)
     }
 
     func test_ctaTapped_tracks_jitm_cta_tapped_event() {

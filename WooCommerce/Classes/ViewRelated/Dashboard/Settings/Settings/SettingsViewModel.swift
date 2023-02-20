@@ -204,6 +204,21 @@ private extension SettingsViewModel {
     }
 
     func configureSections() {
+        let configureSection: Section? = {
+            var rows: [Row] = []
+
+            if featureFlagService.isFeatureFlagEnabled(.domainSettings) && stores.sessionManager.defaultSite?.isWordPressComStore == true {
+                rows.append(.domain)
+            }
+
+            guard rows.isNotEmpty else {
+                return nil
+            }
+            return Section(title: Localization.configureTitle,
+                           rows: rows,
+                           footerHeight: UITableView.automaticDimension)
+        }()
+
         // Plugins
         let pluginsSection: Section? = {
             // Show the plugins section only if the user has an `admin` role for the default store site.
@@ -220,10 +235,6 @@ private extension SettingsViewModel {
         // Store settings
         let storeSettingsSection: Section? = {
             var rows: [Row] = []
-
-            if featureFlagService.isFeatureFlagEnabled(.domainSettings) && stores.sessionManager.defaultSite?.isWordPressComStore == true {
-                rows.append(.domain)
-            }
 
             if stores.sessionManager.defaultSite?.isJetpackCPConnected == true {
                 rows.append(.installJetpack)
@@ -285,6 +296,10 @@ private extension SettingsViewModel {
 
         // Close account
         let closeAccountSection: Section? = {
+            // Do not show the Close Account CTA when authenticated with application password
+            guard stores.isAuthenticatedWithoutWPCom == false else {
+                return nil
+            }
             guard appleIDCredentialChecker.hasAppleUserID()
                     || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
                     || featureFlagService.isFeatureFlagEnabled(.storeCreationM2) else {
@@ -301,6 +316,7 @@ private extension SettingsViewModel {
                                     footerHeight: CGFloat.leastNonzeroMagnitude)
 
         sections = [
+            configureSection,
             pluginsSection,
             storeSettingsSection,
             helpAndFeedbackSection,
@@ -370,6 +386,11 @@ private extension SettingsViewModel {
 //
 private extension SettingsViewModel {
     enum Localization {
+        static let configureTitle = NSLocalizedString(
+            "Configure",
+            comment: "My Store > Settings > Configure section title"
+        ).uppercased()
+
         static let pluginsTitle = NSLocalizedString(
             "Plugins",
             comment: "My Store > Settings > Plugins section title"

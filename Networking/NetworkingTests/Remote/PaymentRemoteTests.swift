@@ -203,7 +203,7 @@ final class PaymentRemoteTests: XCTestCase {
 
         // When
         do {
-            try await remote.checkoutCartWithDomainCredit(cart: [:])
+            try await remote.checkoutCartWithDomainCredit(cart: [:], contactInfo: .fake())
         } catch {
             // Then
             XCTFail("Unexpected error: \(error)")
@@ -216,7 +216,7 @@ final class PaymentRemoteTests: XCTestCase {
 
         // When
         await assertThrowsError {
-            try await remote.checkoutCartWithDomainCredit(cart: [:])
+            try await remote.checkoutCartWithDomainCredit(cart: [:], contactInfo: .fake())
         } errorAssert: { error in
             // Then
             (error as? NetworkError) == .notFound

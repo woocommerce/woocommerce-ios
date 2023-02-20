@@ -1689,6 +1689,24 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .receiptPrintSuccess,
                                      properties: properties.compactMapValues { $0 })
         }
+
+        enum LearnMoreLinkSource {
+            case paymentsMenu
+            case paymentMethods
+
+            var trackingValue: String {
+                switch self {
+                case .paymentsMenu:
+                    return "payments_menu"
+                case .paymentMethods:
+                    return "payment_methods"
+                }
+            }
+        }
+
+        static func learnMoreTapped(source: LearnMoreLinkSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .inPersonPaymentsLearnMoreTapped, properties: ["source": source.trackingValue])
+        }
     }
 }
 

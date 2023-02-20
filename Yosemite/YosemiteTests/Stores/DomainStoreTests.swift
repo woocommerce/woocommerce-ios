@@ -142,8 +142,8 @@ final class DomainStoreTests: XCTestCase {
     func test_loadDomains_returns_domains_on_success() throws {
         // Given
         remote.whenLoadingDomains(thenReturn: .success([
-            .init(name: "candy.land", isPrimary: true, renewalDate: .distantFuture),
-            .init(name: "pods.pro", isPrimary: true)
+            .init(name: "candy.land", isPrimary: true, isWPCOMStagingDomain: true, type: .wpcom, renewalDate: .distantFuture),
+            .init(name: "pods.pro", isPrimary: true, isWPCOMStagingDomain: false, type: .mapping)
         ]))
 
         // When
@@ -157,8 +157,8 @@ final class DomainStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         let suggestions = try XCTUnwrap(result.get())
         XCTAssertEqual(suggestions, [
-            .init(name: "candy.land", isPrimary: true, renewalDate: .distantFuture),
-            .init(name: "pods.pro", isPrimary: true)
+            .init(name: "candy.land", isPrimary: true, isWPCOMStagingDomain: true, type: .wpcom, renewalDate: .distantFuture),
+            .init(name: "pods.pro", isPrimary: true, isWPCOMStagingDomain: false, type: .mapping)
         ])
     }
 
@@ -230,7 +230,8 @@ final class DomainStoreTests: XCTestCase {
         let result = waitFor { promise in
             self.store.onAction(DomainAction.redeemDomainCredit(siteID: 606, domain: .init(name: "",
                                                                                            productID: 1,
-                                                                                           supportsPrivacy: true)) { result in
+                                                                                           supportsPrivacy: true),
+                                                                contactInfo: .fake()) { result in
                 promise(result)
             })
         }
@@ -247,7 +248,8 @@ final class DomainStoreTests: XCTestCase {
         let result = waitFor { promise in
             self.store.onAction(DomainAction.redeemDomainCredit(siteID: 606, domain: .init(name: "",
                                                                                            productID: 1,
-                                                                                           supportsPrivacy: true)) { result in
+                                                                                           supportsPrivacy: true),
+                                                                contactInfo: .fake()) { result in
                 promise(result)
             })
         }
@@ -267,7 +269,8 @@ final class DomainStoreTests: XCTestCase {
         let result = waitFor { promise in
             self.store.onAction(DomainAction.redeemDomainCredit(siteID: 606, domain: .init(name: "",
                                                                                            productID: 1,
-                                                                                           supportsPrivacy: true)) { result in
+                                                                                           supportsPrivacy: true),
+                                                                contactInfo: .fake()) { result in
                 promise(result)
             })
         }
@@ -276,5 +279,86 @@ final class DomainStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, .notFound)
+    }
+
+    // MARK: - `loadDomainContactInfo`
+
+    func test_loadDomainContactInfo_returns_contact_info_on_success() throws {
+        // Given
+        let contactInfo = DomainContactInfo(firstName: "woo",
+                                            lastName: "Merch",
+                                            organization: "Woo",
+                                            address1: "No 300",
+                                            address2: nil,
+                                            postcode: "18888",
+                                            city: "SF",
+                                            state: "CA",
+                                            countryCode: "US",
+                                            phone: "181800",
+                                            email: "woo@merch.com")
+        remote.whenLoadingDomainContactInfo(thenReturn: .success(contactInfo))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(DomainAction.loadDomainContactInfo { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let returnedContactInfo = try XCTUnwrap(result.get())
+        XCTAssertEqual(returnedContactInfo, contactInfo)
+    }
+
+    func test_loadDomainContactInfo_returns_error_on_failure() throws {
+        // Given
+        remote.whenLoadingDomainContactInfo(thenReturn: .failure(NetworkError.timeout))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(DomainAction.loadDomainContactInfo { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, .timeout)
+    }
+
+    // MARK: - `validateDomainContactInfo`
+
+    func test_validateDomainContactInfo_returns_on_success() throws {
+        // Given
+        remote.whenValidatingDomainContactInfo(thenReturn: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(DomainAction.validate(domainContactInfo: .fake(), domain: "") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_validateDomainContactInfo_returns_error_on_failure() throws {
+        // Given
+        remote.whenValidatingDomainContactInfo(thenReturn: .failure(NetworkError.timeout))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(DomainAction.validate(domainContactInfo: .fake(), domain: "") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, .timeout)
     }
 }

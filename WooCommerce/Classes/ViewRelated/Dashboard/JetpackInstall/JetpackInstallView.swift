@@ -6,7 +6,12 @@ final class JetpackInstallHostingController: UIHostingController<JetpackInstallV
     init(siteID: Int64, siteURL: String, siteAdminURL: String) {
         super.init(rootView: JetpackInstallView(siteID: siteID, siteURL: siteURL, siteAdminURL: siteAdminURL))
         rootView.supportAction = { [unowned self] in
-            ZendeskProvider.shared.showNewRequestIfPossible(from: self)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+                let supportForm = SupportFormHostingController(viewModel: .init())
+                supportForm.show(from: self)
+            } else {
+                ZendeskProvider.shared.showNewRequestIfPossible(from: self)
+            }
         }
 
         // Set presenting view controller to show the notice presenter here

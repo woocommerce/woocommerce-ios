@@ -1382,6 +1382,8 @@ private extension ProductFormViewController {
             navigationController?.popViewController(animated: true)
         }
 
+        ServiceLocator.analytics.track(.productLinkedProductsDoneTapped, withProperties: ["has_changed_data": hasUnsavedChanges])
+
         guard hasUnsavedChanges else {
             return
         }

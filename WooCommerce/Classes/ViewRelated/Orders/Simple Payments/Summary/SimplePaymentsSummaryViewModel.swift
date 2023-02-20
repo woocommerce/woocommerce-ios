@@ -258,6 +258,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                                     presentNoticeSubject: presentNoticeSubject,
                                     stores: stores))
     }
+
+    func orderLoaderViewController() -> OrderLoaderViewController {
+        OrderLoaderViewController(orderID: orderID, siteID: siteID)
+    }
 }
 
 // MARK: Helpers

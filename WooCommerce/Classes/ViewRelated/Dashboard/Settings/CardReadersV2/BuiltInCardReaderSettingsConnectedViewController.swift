@@ -164,7 +164,10 @@ struct BuiltInCardReaderSettingsConnectedView: View {
     private func summaryView() -> some View {
         Group {
             if let summaryViewModel = viewModel.summaryViewModel {
-                SimplePaymentsSummary(dismiss: { rootViewController?.dismiss(animated: true) }, rootViewController: rootViewController, viewModel: summaryViewModel)
+                SimplePaymentsSummary(dismiss: {
+                    let vc = summaryViewModel.orderLoaderViewController()
+                    rootViewController?.show(vc, sender: nil)
+                }, rootViewController: rootViewController, viewModel: summaryViewModel)
             }
             EmptyView()
         }

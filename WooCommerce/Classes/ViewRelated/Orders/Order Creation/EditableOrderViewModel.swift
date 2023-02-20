@@ -180,14 +180,13 @@ final class EditableOrderViewModel: ObservableObject {
             storageManager: storageManager,
             stores: stores,
             onProductSelected: {[weak self] product in
-                // TODO: Logic to addProductToOrder & removeItemFromOrder when unselected
-                self?.addProductToOrder(product)
+                // no-op
             },
             onVariationSelected: {[weak self] variation, parentProduct in
-                self?.addProductVariationToOrder(variation, parent: parentProduct)
+                // no-op
             },
-            onMultipleSelectionCompleted: {[weak self] ids in
-                self?.productOrVariationIDs = ids
+            onMultipleSelectionCompleted: {[weak self] productsOrVariations in
+                self?.addMultipleProductsOrVariationsToOrder(productsOrVariations)
             })
     }()
 
@@ -667,6 +666,21 @@ private extension EditableOrderViewModel {
                 return StatusBadgeViewModel(orderStatus: siteOrderStatus)
             }
             .assign(to: &$statusBadgeViewModel)
+    }
+
+    func addMultipleProductsOrVariationsToOrder(_ products: [productOrVariation] ) {
+        // TODO: remove the items from the list so are not selected on the 2nd round
+        products.forEach({ (product, variation) in
+            // Send products to the OrderSync
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            orderSynchronizer.setProduct.send(input)
+
+            // Send variations to the OrderSync, if any
+            if let variation = variation {
+                let variationInput = OrderSyncProductInput(product: .variation(variation), quantity: 1)
+                orderSynchronizer.setProduct.send(variationInput)
+            }
+        })
     }
 
     /// Adds a selected product (from the product list) to the order.

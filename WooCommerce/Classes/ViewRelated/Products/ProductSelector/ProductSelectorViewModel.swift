@@ -4,6 +4,8 @@ import Combine
 import Foundation
 import WooFoundation
 
+typealias productOrVariation = (product: Product, variation: ProductVariation?)
+
 /// View model for `ProductSelector`.
 ///
 final class ProductSelectorViewModel: ObservableObject {
@@ -56,13 +58,21 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private let onProductSelected: ((Product) -> Void)?
 
+    /// Keep track of selected products
+    ///
+    private var selectedProducts: [Product] = []
+
     /// Closure to be invoked when a product variation is selected
     ///
     private let onVariationSelected: ((ProductVariation, Product) -> Void)?
 
-    /// Closure to be invoked when multiple selection is completed
+    /// Keep track of selected product variations
     ///
-    private let onMultipleSelectionCompleted: (([Int64]) -> Void)?
+    private var selectedProductVariations: [ProductVariation] = []
+
+    /// Closure to be invoked when multiple selection for product, or product variations, is completed
+    ///
+    private let onMultipleSelectionCompleted: (([productOrVariation]) -> Void)?
 
     // MARK: Sync & Storage properties
 
@@ -157,7 +167,7 @@ final class ProductSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
+         onMultipleSelectionCompleted: (([productOrVariation]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -175,6 +185,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Initializer for multiple selections
     ///
+    // TODO: If we keep onProductSelected and onVariationSelected nil, we may be able to use previous init and remove this one.
     init(siteID: Int64,
          selectedItemIDs: [Int64],
          purchasableItemsOnly: Bool = false,
@@ -182,12 +193,12 @@ final class ProductSelectorViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          onProductSelected: ((Product) -> Void)? = nil,
          onVariationSelected: ((ProductVariation, Product) -> Void)? = nil,
-         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
+         onMultipleSelectionCompleted: (([productOrVariation]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
-        self.onProductSelected = onProductSelected
-        self.onVariationSelected = onVariationSelected
+        self.onProductSelected = nil
+        self.onVariationSelected = nil
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
@@ -208,15 +219,18 @@ final class ProductSelectorViewModel: ObservableObject {
         // Always toggle selection.
         toggleSelection(productID: productID)
 
-        // Disallows adding a product to the Order more than once
-        // This can be increased with the ± buttons within Order Details view
-        if selectedProductIDs.contains(selectedProduct.productID) {
+        // Not a variation. Add/remove products
+        if !selectedProducts.contains(selectedProduct) {
+            selectedProducts.append(selectedProduct)
+        } else {
+            selectedProducts.removeAll(where: { $0.productID == productID })
+        }
+
+        // Variations
+        guard let selectedVariableProduct = products.first(where: { $0.productID == productID }), selectedVariableProduct.variations.isNotEmpty else {
             return
         }
 
-        if let onProductSelected = onProductSelected {
-            onProductSelected(selectedProduct)
-        }
     }
 
     /// Get the view model for a list of product variations to add to the order
@@ -278,8 +292,26 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Triggers completion closure when the multiple selection completes.
     ///
     func completeMultipleSelection() {
-        let allIDs = selectedProductIDs + selectedProductVariationIDs
-        onMultipleSelectionCompleted?(allIDs)
+        // TODO: Commented out temporarily. Test and restore
+        //let allIDs = selectedProductIDs + selectedProductVariationIDs
+
+        var productOrVariationLocal = [(Product, ProductVariation?)]()
+
+        selectedProducts.forEach({ product in
+            productOrVariationLocal.append(( product, nil ))
+        })
+
+        selectedProductVariations.forEach({ variation in
+            let parentID = variation.productID
+
+            if let parent = products.first(where: { $0.variations.contains(variation.productVariationID) }) {
+                productOrVariationLocal.append(( parent, variation ))
+            } else {
+                DDLogError("No parent product found for variation ID \(variation.productVariationID)")
+            }
+        })
+
+        onMultipleSelectionCompleted?(productOrVariationLocal)
     }
 
     /// Unselect all items.

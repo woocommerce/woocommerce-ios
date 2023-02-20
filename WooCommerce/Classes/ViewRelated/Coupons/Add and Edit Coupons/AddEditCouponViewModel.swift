@@ -105,8 +105,9 @@ final class AddEditCouponViewModel: ObservableObject {
     /// View model for the product selector
     ///
     var productSelectorViewModel: ProductSelectorViewModel {
-        ProductSelectorViewModel(siteID: siteID, selectedItemIDs: productOrVariationIDs, onMultipleSelectionCompleted: { [weak self] ids in
-            self?.productOrVariationIDs = ids
+        ProductSelectorViewModel(siteID: siteID, selectedItemIDs: productOrVariationIDs, onMultipleSelectionCompleted: { _ in
+            // TODO: resolve
+            //self?.productOrVariationIDs = foo
         })
     }
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-25 22:47:09+0000 */
+/* Translation-Revision-Date: 2023-02-08 15:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -32,6 +32,9 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@（对客户可见）";
+
+/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
+"%1$@ \/ %2$@" = "%1$@\/%2$@";
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "%1$@ 复制";
@@ -289,7 +292,8 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "添加选项";
 
-/* Details section title in the Edit Address Form */
+/* Address section title in the domain contact info form.
+   Details section title in the Edit Address Form */
 "ADDRESS" = "地址";
 
 /* Reads as 'AID'. Part of the mandatory data in receipts */
@@ -474,7 +478,7 @@ which should be translated separately and considered part of this sentence. */
 "Add credit card" = "添加信用卡";
 
 /* Footer of text field section in Add Attribute Options screen */
-"Add each option and press enter" = "添加每个选项并按回车";
+"Add each option and press return" = "添加每个选项并按返回";
 
 /* Title for the option to create product manually */
 "Add manually" = "手动添加";
@@ -759,9 +763,6 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "应用程序名称";
 
-/* Message to display when the constructed admin or login URL for the logged-in site is not accessible */
-"Application password cannot be generated due to a custom login or admin URL on your site." = "由于您的站点上有自定义登录或管理员 URL，无法生成应用程序密码。";
-
 /* Apply navigation button in custom range date picker
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
@@ -806,6 +807,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "是否确定要注销帐户 %@？";
+
+/* Alert message to confirm a user meant to log out. */
+"Are you sure you want to log out of your account?" = "是否确定要注销您的帐户？";
 
 /* Alert message to confirm a user meant to mark all reviews as read. */
 "Are you sure you want to mark all reviews as read?" = "您是否确定要将所有评论标为已读？";
@@ -1153,6 +1157,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the site credential login screen
@@ -1371,7 +1376,7 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the store creation profiler question about the store category. */
 "Choose a category that defines your business the best." = "选择最适合您的业务的分类。";
 
-/* Title of the domain selector. */
+/* Title of the domain selector in the store creation flow. */
 "Choose a domain" = "选择域";
 
 /* Title of the password field on the account creation form. */
@@ -1405,6 +1410,12 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Civic, Fraternal, Or Social Associations" = "市政、兄弟会或社团";
 
+/* Title of button to redeem domain credit in the domain credit banner in domain settings. */
+"Claim Domain" = "认领域名";
+
+/* Title of the domain credit banner in domain settings. */
+"Claim your free domain" = "声明您的免费域";
+
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
 "Clear Filters" = "清除过滤器";
@@ -1421,6 +1432,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Text for the close button in the Add Product screen
    Text for the close button in the Edit Address Form
@@ -1521,6 +1533,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "恭喜您，已全部阅读！";
+
+/* Title of the domain purchase success screen. */
+"Congratulations on your purchase" = "恭喜您购买成功";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "恭喜！ 您的读卡器使用的是最新版本软件";
@@ -2181,12 +2196,14 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
    Text for the done button in the Fee Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for the Done button on a WebView modal sheet */
+   Title for the Done button on a WebView modal sheet
+   Title of the button to finish the domain purchase success screen. */
 "Done" = "完成";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -2844,6 +2861,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry group option in the store creation category question. */
 "Food And Drink" = "食品和饮料";
 
+/* Title in the error notice when a validation error occurs after submitting domain contact info. */
+"Form Validation Error" = "表单验证错误";
+
 /* Industry option in the store creation category question. */
 "Fortune Tellers" = "算命先生";
 
@@ -2852,6 +2872,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "France" = "法国";
+
+/* Label shown for domains that are free for the first year with available domain credit. */
+"Free for the first year" = "第一年免费";
 
 /* Industry option in the store creation category question. */
 "Freight Forwarders" = "货运代理人";
@@ -4796,7 +4819,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please connect your store to Jetpack to access it on this app." = "请将您的商店连接到 Jetpack，以便在此应用程序上访问商店。";
 
 /* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
-"Please contact support – there was an issue connecting to the built-in reader" = "请联系支持团队 – 连接内置读卡器时遇到问题";
+"Please contact support – there was an issue starting Tap to Pay on iPhone" = "请联系支持人员 – 在 iPhone 上启动“点按付款”时出现问题";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "请联系站点所有者，以商店经理或管理员的身份邀请站点使用该应用程序。";
@@ -4886,7 +4909,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please select a package" = "请选择包裹";
 
 /* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device, so you can use the built-in card reader" = "请在该设备上登录 iCloud，以便您可以使用内置读卡器";
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "请在此设备上登录 iCloud，以便在 iPhone 上使用“点按付款”";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "请尝试其他域名。";
@@ -4907,7 +4930,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again or reach out to us and we'll be happy to assist you!" = "请重试或与我们联系，我们很乐意为您提供帮助！";
 
 /* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "请重试，并接受 Apple 的服务条款，以便您可以使用内置读卡器";
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "请重试，并接受 Apple 的服务条款，以便您可以在 iPhone 上使用“点按付款”";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "请重试，或者如果您之前在付款过程中离开了结账屏幕，请退出该屏幕并在您的商店上重新检查。";
@@ -5010,7 +5033,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Preparing document" = "正在准备文档";
 
 /* Title label for modal dialog that appears when connecting to a built in card reader */
-"Preparing iPhone card reader..." = "正在准备 iPhone 读卡器...";
+"Preparing iPhone card reader" = "正在准备 iPhone 读卡器...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "出示卡片以付款";
@@ -5110,8 +5133,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for processing order status. */
 "Processing" = "正在处理";
 
-/* VoiceOver accessibility label. Indicates that a payment is being processed */
+/* Alert title when processing a payment without a user name.
+   VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "正在处理付款";
+
+/* Alert title when processing a payment with a user name. */
+"Processing payment from %1$@" = "正在处理来自 %1$@ 的付款";
 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "正在处理付款...";
@@ -5386,6 +5413,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button in the view for adding or editing a coupon code. */
 "Regenerate Coupon Code" = "重新生成优惠券代码";
+
+/* Title of the domain contact info form. */
+"Register domain" = "注册域";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "已注册的域";
@@ -5739,6 +5769,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Search Coupons button */
 "Search coupons" = "搜索优惠券";
 
+/* Title of the domain selector in domain settings. */
+"Search domains" = "搜索域";
+
 /* Title of the button on the domain settings screen to search for a domain. */
 "Search for a Domain" = "搜索域名";
 
@@ -5886,6 +5919,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "设置";
+
+/* Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails */
+"Setup failed" = "设置失败";
 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "找到多个读卡器";
@@ -6144,6 +6180,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "某些电子邮件地址无效。";
+
+/* Message in the error notice when an unknown validation error occurs after submitting domain contact info. */
+"Some unexpected error with the validation. Please check the fields and try again." = "验证时出现意外错误。 请检查字段并重试。";
 
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "某人";
@@ -6486,6 +6525,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "点击以在 iPhone 上付款";
 
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "通话期间无法在 iPhone 上使用“点按付款”。 请在结束通话后重试。";
+
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "轻点以插入水平标尺";
 
@@ -6693,19 +6735,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The URL is missing a valid host." = "URL 缺少有效主机。";
 
 /* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
-"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "内置读卡器不支持该金额 – 请尝试使用硬件读卡器或换一种付款方式。";
+"The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "iPhone 上的“点按付款”不支持该金额 – 请尝试使用硬件读卡器或换一种付款方式。";
 
 /* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
-"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "应用程序无法启用读卡器，因为已禁用 NFC 芯片。 请联系支持团队以了解详情。";
+"The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "此应用无法启用 iPhone 上的“点按付款”，因为已禁用 NFC 芯片。 请联系支持团队以了解详情。";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "无法删除属性。";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "无法保存属性。";
-
-/* Error message shown when the built-in reader cannot be used because there is a call in progress */
-"The built-in reader cannot be used during a phone call. Please try again after you finish your call." = "通话期间不能使用内置读卡器。请结束通话后再重试。";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "银行卡不支持当前币种。 请尝试其他付款方式";
@@ -6768,10 +6807,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The coupon code couldn't be empty" = "优惠券代码不能为空";
 
 /* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
-"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "内置读卡器不支持该币种 – 请尝试使用硬件读卡器或换一种付款方式。";
+"The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "iPhone 上的“点按付款”不支持该币种 – 请尝试使用硬件读卡器或换一种付款方式。";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "订单完成后，客户将收到一封电子邮件";
+
+/* Subtitle of the domain selector in domain settings. %1$@ is the free domain of the site from WordPress.com. */
+"The domain purchased will redirect users to **%1$@**" = "购买的域名会将用户重定向至 **%1$@**";
+
+/* Subtitle of the domain selector in domain settings when a free staging domain is unavailable. */
+"The domain purchased will redirect users to the current staging domain" = "购买的域名会将用户重定向至当前暂存域名";
+
+/* Footnote about the domain credit banner in domain settings. */
+"The domain purchased will redirect users to your primary address." = "购买的域名会将用户重定向至您的主要地址。";
 
 /* Label within the modal dialog that appears when connecting to a built in card reader */
 "The first time you connect, you may be prompted to accept Apple's Terms of Service." = "第一次连接时，系统可能会提醒您接受 Apple 的服务条款。";
@@ -6829,6 +6877,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when a request times out. */
 "The request timed out - please try again" = "请求超时，请重试";
+
+/* Message to display when the generating application password fails with unauthorized error */
+"The request to generate application password is not authorized." = "生成应用密码的请求未获得授权。";
 
 /* Bulk price update error message, when the sale price is added but the regular price is not
    Product price error notice message, when the sale price is added but the regular price is not */
@@ -6957,7 +7008,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was an error while trying to collect the payment." = "收款时出错。";
 
 /* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
-"There was an issue preparing the built in reader for payment – please try again." = "在准备用于付款的内置读卡器时遇到问题 – 请重试。";
+"There was an issue preparing to use Tap to Pay on iPhone – please try again." = "准备在 iPhone 上使用“点按付款”时出现问题 – 请重试。";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "无任何风险，在 30 天内取消可获得全额退款。";
@@ -7014,7 +7065,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "这是客户将会访问的文件的 URL。 所输入的 URL 应已编码。";
 
-/* Subtitle of the domain selector. */
+/* Subtitle of the domain selector in the store creation flow. */
 "This is where people will find you on the Internet. You can add another domain later." = "人们可以通过此域名在互联网上找到您。 您可以稍后添加其他域名。";
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
@@ -7251,7 +7302,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Installing Again" = "再次尝试安装";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
-   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
 "Try again" = "请重试";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
@@ -8123,6 +8175,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "您可以在 Web 仪表盘中编辑产品加载项。";
 
+/* Instructions of the domain purchase success screen. */
+"You can find the domain settings in menu > settings" = "您可以在“菜单”>“设置”中查找域名设置";
+
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "You can manage quickly and easily." = "您可轻松快速地管理。";
 
@@ -8151,6 +8206,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "您没有在此商店中管理插件的权限。";
 
+/* Subtitle of the domain credit banner in domain settings. */
+"You have a free one-year domain registration included with your plan." = "您的套餐中包括为期一年的免费域名注册。";
+
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "您有一个新订单！🎉";
 
@@ -8159,6 +8217,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "您需要添加密码，以便通过密码保护产品";
+
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"You need to set a lock screen passcode to use Tap to Pay on iPhone" = "您需要设置锁屏密码，才能在 iPhone 上使用“点按付款”";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "您似乎安装了来自 DudaMobile 的移动插件，该插件会阻止应用程序连接到您的博客";
@@ -8174,9 +8235,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "您的读卡器软件需要更新才能收款。 取消将阻断您的读卡器连接。";
-
-/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
-"Your device needs a lock screen passcode set to use the built-in card reader" = "您的设备需要设置锁屏密码才能使用内置读卡器";
 
 /* Title of the email field on the account creation form. */
 "Your email address" = "您的电子邮箱地址";
@@ -8214,6 +8272,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "在您使用 Safari 访问自己的站点时，站点地址显示在屏幕顶部的地址栏中。";
 
+/* Subtitle of the domain purchase success screen. */
+"Your site address is being set up. It may take up 30 minutes for your domain to start working." = "正在设置您的站点地址。 最多可能需花费 30 分钟时间，您的域名才能开始运行。";
+
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "您的站点域名";
 
@@ -8249,17 +8310,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label within the modal dialog that appears when checking the built in card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "请稍等，我们将检查您的设备是否已准备就绪，可以使用“Tap to Pay on iPhone”功能。";
-
-/* A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "详细了解";
-
-/* A label prompting users to learn more about In-Person Payments.
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "%1$@现场付款";
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "正在检查设备";

@@ -339,7 +339,12 @@ private extension HelpAndSupportViewController {
             return
         }
 
-        ZendeskProvider.shared.showNewRequestIfPossible(from: navController)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+            let viewController = SupportFormHostingController(viewModel: .init())
+            viewController.show(from: self)
+        } else {
+            ZendeskProvider.shared.showNewRequestIfPossible(from: navController)
+        }
     }
 
     /// Contact WCPay Support action

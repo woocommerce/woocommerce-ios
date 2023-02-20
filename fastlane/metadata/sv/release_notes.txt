@@ -1,1 +1,1 @@
-Det är nu möjligt att massuppdatera produktstatus och priser. Det är bara att gå till fliken Produkter och klicka på flervalsikonen längst upp för att testa.
+Vi har gjort några förbättringar som gör det enklare att hantera din verksamhet. Det är nu enklare att konfigurera din butik när du loggar in. Det har blivit mycket enklare att lägga till attribut via appen. Fortsätt att lämna feedback.

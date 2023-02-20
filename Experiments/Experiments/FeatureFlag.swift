@@ -142,7 +142,11 @@ public enum FeatureFlag: Int {
     ///
     case domainSettings
 
-    /// Whether to enable Simplified Products Editing flow.
+    /// Whether to enable the new support request form.
     ///
-    case simplifyProductsEditing
+    case supportRequests
+
+    /// Whether to enable the simplified product editing experience.
+    ///
+    case simplifyProductEditing
 }

@@ -16,7 +16,7 @@ common_params:
         repo: "automattic/woocommerce-ios/"
   # Common environment values to use with the `env` key.
   - &common_env
-    IMAGE_ID: xcode-14
+    IMAGE_ID: xcode-14.2
 
 steps:
 

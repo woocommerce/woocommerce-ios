@@ -1,1 +1,1 @@
-Ürün durumunu ve fiyatları toplu olarak güncellemek artık mümkün! Denemek için Ürünler sekmesine gidip üstteki çoklu seçim simgesine tıklamanız yeterli.
+İşletmenizi yönetmek için birkaç geliştirme yaptık. Oturum açarken mağazanızı kurmak artık daha kolay. Uygulamadan özellik eklemek çok daha kolay hale geldi! Görüşlerinizi bildirmeye devam edin!

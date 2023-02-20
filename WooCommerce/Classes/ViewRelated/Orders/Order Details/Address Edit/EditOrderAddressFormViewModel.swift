@@ -60,6 +60,8 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
         }
     }
 
+    let showPhoneCountryCodeField: Bool = false
+
     var viewTitle: String {
         switch type {
         case .shipping:

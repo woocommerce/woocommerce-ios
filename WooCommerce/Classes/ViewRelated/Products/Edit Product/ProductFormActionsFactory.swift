@@ -55,6 +55,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         .init(analytics: ServiceLocator.analytics,
               configuration: linkedProductsPromoCampaign.configuration)
     }
+    private let isProductTypeActionEnabled: Bool
     private let isCategoriesActionAlwaysEnabled: Bool
 
     // TODO: Remove default parameter
@@ -62,6 +63,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          formType: ProductFormType,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
+         isProductTypeActionEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isCategoriesActionAlwaysEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
@@ -70,6 +72,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
+        self.isProductTypeActionEnabled = isProductTypeActionEnabled
         self.isCategoriesActionAlwaysEnabled = isCategoriesActionAlwaysEnabled
     }
 
@@ -249,8 +252,7 @@ private extension ProductFormActionsFactory {
             // The reviews action is always visible in the settings section.
             return true
         case .productType:
-            // The product type action is always visible in the settings section.
-            return true
+            return isProductTypeActionEnabled
         case .inventorySettings(let editable):
             guard editable else {
                 // The inventory row is always visible when readonly.

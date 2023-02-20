@@ -468,6 +468,18 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertTrue(containsAttributeAction)
     }
 
+    func test_settings_actions_does_not_contain_product_type_when_it_is_disabled() {
+        // Given
+        let product = Fixtures.physicalSimpleProductWithoutImages
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isProductTypeActionEnabled: false)
+
+        // Then
+        XCTAssertFalse(factory.settingsSectionActions().contains(.productType(editable: true)))
+    }
+
     func test_settings_actions_contain_even_empty_categories_when_it_is_enabled() {
         // Given
         let product = Product.fake()
@@ -480,7 +492,6 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertFalse(product.categories.isNotEmpty)
         XCTAssertTrue(factory.settingsSectionActions().contains(.categories(editable: true)))
     }
-
 }
 
 private extension ProductFormActionsFactoryTests {

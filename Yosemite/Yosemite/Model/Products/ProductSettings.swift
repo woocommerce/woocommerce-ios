@@ -4,6 +4,7 @@ import Foundation
 /// Represents a Product Settings Entity of editable data
 ///
 public final class ProductSettings {
+    public var productType: ProductType
     public var status: ProductStatus
     public var featured: Bool
     public var password: String?
@@ -15,7 +16,8 @@ public final class ProductSettings {
     public var menuOrder: Int
     public var downloadable: Bool
 
-    public init(status: ProductStatus,
+    public init(productType: ProductType,
+                status: ProductStatus,
                 featured: Bool,
                 password: String?,
                 catalogVisibility: ProductCatalogVisibility,
@@ -25,6 +27,7 @@ public final class ProductSettings {
                 purchaseNote: String?,
                 menuOrder: Int,
                 downloadable: Bool) {
+        self.productType = productType
         self.status = status
         self.featured = featured
         self.password = password
@@ -38,7 +41,8 @@ public final class ProductSettings {
     }
 
     public convenience init(from product: Product, password: String?) {
-        self.init(status: product.productStatus,
+        self.init(productType: product.productType,
+                  status: product.productStatus,
                   featured: product.featured,
                   password: password,
                   catalogVisibility: product.productCatalogVisibility,
@@ -55,7 +59,8 @@ public final class ProductSettings {
 //
 extension ProductSettings: Equatable {
     public static func == (lhs: ProductSettings, rhs: ProductSettings) -> Bool {
-        return lhs.status.rawValue == rhs.status.rawValue &&
+        return lhs.productType.rawValue == rhs.productType.rawValue &&
+            lhs.status.rawValue == rhs.status.rawValue &&
             lhs.featured == rhs.featured &&
             lhs.password == rhs.password &&
             lhs.catalogVisibility.rawValue == rhs.catalogVisibility.rawValue &&

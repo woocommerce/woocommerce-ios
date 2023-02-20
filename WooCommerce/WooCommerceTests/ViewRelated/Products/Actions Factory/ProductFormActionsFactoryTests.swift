@@ -467,7 +467,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let containsAttributeAction = factory.settingsSectionActions().contains(ProductFormEditAction.attributes(editable: true))
         XCTAssertTrue(containsAttributeAction)
     }
-    
+
     func test_settings_actions_hides_empty_reviews_when_feature_is_enabled() {
         // Given
         let product = Fixtures.physicalSimpleProductWithoutImages

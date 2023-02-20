@@ -57,6 +57,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
               configuration: linkedProductsPromoCampaign.configuration)
     }
     private let isConvertToVariableOptionEnabled: Bool
+    private let isEmptyReviewsOptionHidden: Bool
     private let isProductTypeActionEnabled: Bool
     private let isCategoriesActionAlwaysEnabled: Bool
 
@@ -66,6 +67,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
          isConvertToVariableOptionEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isEmptyReviewsOptionHidden: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isProductTypeActionEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isCategoriesActionAlwaysEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          variationsPrice: VariationsPrice = .unknown) {
@@ -76,6 +78,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
         self.isConvertToVariableOptionEnabled = isConvertToVariableOptionEnabled
+        self.isEmptyReviewsOptionHidden = isEmptyReviewsOptionHidden
         self.isProductTypeActionEnabled = isProductTypeActionEnabled
         self.isCategoriesActionAlwaysEnabled = isCategoriesActionAlwaysEnabled
     }
@@ -254,8 +257,11 @@ private extension ProductFormActionsFactory {
             // The price settings action is always visible in the settings section.
             return true
         case .reviews:
-            // The reviews action is always visible in the settings section.
-            return true
+            if isEmptyReviewsOptionHidden {
+                return product.ratingCount > 0
+            } else {
+                return true
+            }
         case .productType:
             return isProductTypeActionEnabled
         case .inventorySettings(let editable):

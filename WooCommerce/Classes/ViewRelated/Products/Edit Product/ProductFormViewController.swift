@@ -739,6 +739,9 @@ private extension ProductFormViewController {
                                                                         case .editLinkedProducts:
                                                                             ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
                                                                             self?.editLinkedProducts()
+                                                                        case .editReviews:
+                                                                            ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
+                                                                            self?.showReviews()
                                                                         case .convertToVariable:
                                                                             self?.convertToVariableType()
                                                                         }

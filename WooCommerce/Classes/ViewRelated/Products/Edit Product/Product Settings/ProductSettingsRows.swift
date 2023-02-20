@@ -50,7 +50,25 @@ enum ProductSettingsRows {
                 cell.apply(style: .regular)
             }
 
-            cell.updateUI(title: Localization.productType, value: settings.productType.description)
+            let details: String
+            switch settings.productType {
+            case .simple:
+                switch (settings.downloadable, settings.virtual) {
+                case (true, _):
+                    details = Localization.downloadableProductType
+                case (false, true):
+                    details = Localization.virtualProductType
+                case (false, false):
+                    details = Localization.physicalProductType
+                }
+            case .custom(let customProductType):
+                // Custom product type description is the slug, thus we replace the dash with space and capitalize the string.
+                details = customProductType.description.replacingOccurrences(of: "-", with: " ").capitalized
+            default:
+                details = settings.productType.description
+            }
+
+            cell.updateUI(title: Localization.productType, value: details)
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
@@ -434,9 +452,17 @@ enum ProductSettingsRows {
 
 extension ProductSettingsRows {
     enum Localization {
+        // Product Type
         static let productType = NSLocalizedString("Product Type", comment: "Product Type label in Product Settings")
+        static let downloadableProductType = NSLocalizedString("Downloadable",
+                                                               comment: "Display label for simple downloadable product type.")
+        static let virtualProductType = NSLocalizedString("Virtual",
+                                                          comment: "Display label for simple virtual product type.")
+        static let physicalProductType = NSLocalizedString("Physical",
+                                                           comment: "Display label for simple physical product type.")
         static let productTypeSheetTitle = NSLocalizedString("Change product type",
                                                              comment: "Message title of bottom sheet for selecting a product type")
+
         static let status = NSLocalizedString("Status", comment: "Status label in Product Settings")
         static let visibility = NSLocalizedString("Visibility", comment: "Visibility label in Product Settings")
         static let catalogVisibility = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")

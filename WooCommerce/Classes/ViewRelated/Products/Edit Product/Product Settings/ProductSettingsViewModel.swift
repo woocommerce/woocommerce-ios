@@ -32,7 +32,7 @@ final class ProductSettingsViewModel {
     init(product: Product,
          password: String?,
          formType: ProductFormType,
-         isProductTypeSettingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductsEditing)) {
+         isProductTypeSettingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.product = product
         self.password = password
         self.isProductTypeSettingEnabled = isProductTypeSettingEnabled

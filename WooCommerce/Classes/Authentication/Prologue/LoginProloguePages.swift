@@ -164,6 +164,7 @@ private extension LoginProloguePageTypeViewController {
 
         // Label contents
         titleLabel.text = pageType.title
+        titleLabel.accessibilityIdentifier = "prologue-title-label"
     }
 
     func configureSubtitle() {

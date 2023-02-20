@@ -85,7 +85,7 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
         let webViewModel = WebViewSheetViewModel(
             url: url,
             navigationTitle: title,
-            wpComAuthenticated: needsAuthenticatedWebView(url: url))
+            authenticated: needsAuthenticatedWebView(url: url))
         showWebViewSheet = webViewModel
     }
 

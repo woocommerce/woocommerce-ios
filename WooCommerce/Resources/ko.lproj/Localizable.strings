@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-01-25 09:54:03+0000 */
+/* Translation-Revision-Date: 2023-02-09 11:54:19+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -32,6 +32,9 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@(고객에게)";
+
+/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
+"%1$@ \/ %2$@" = "%1$@\/%2$@";
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "%1$@ 복사본";
@@ -289,7 +292,8 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "옵션 추가";
 
-/* Details section title in the Edit Address Form */
+/* Address section title in the domain contact info form.
+   Details section title in the Edit Address Form */
 "ADDRESS" = "주소";
 
 /* Reads as 'AID'. Part of the mandatory data in receipts */
@@ -474,7 +478,7 @@ which should be translated separately and considered part of this sentence. */
 "Add credit card" = "신용카드 추가";
 
 /* Footer of text field section in Add Attribute Options screen */
-"Add each option and press enter" = "각 옵션 추가 및 Enter 키 누르기";
+"Add each option and press return" = "각 옵션 추가 및 Return 키 누르기";
 
 /* Title for the option to create product manually */
 "Add manually" = "수동으로 추가";
@@ -759,9 +763,6 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "애플리케이션 이름";
 
-/* Message to display when the constructed admin or login URL for the logged-in site is not accessible */
-"Application password cannot be generated due to a custom login or admin URL on your site." = "사이트의 사용자 정의 로그인 또는 관리 URL로 인해 애플리케이션 비밀번호를 생성할 수 없습니다.";
-
 /* Apply navigation button in custom range date picker
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
@@ -806,6 +807,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "%@ 계정에서 로그아웃하시겠어요?";
+
+/* Alert message to confirm a user meant to log out. */
+"Are you sure you want to log out of your account?" = "계정에서 로그아웃하시겠어요?";
 
 /* Alert message to confirm a user meant to mark all reviews as read. */
 "Are you sure you want to mark all reviews as read?" = "모든 리뷰를 읽음으로 표시하시겠어요?";
@@ -1153,6 +1157,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the site credential login screen
@@ -1371,7 +1376,7 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the store creation profiler question about the store category. */
 "Choose a category that defines your business the best." = "비즈니스를 가장 잘 정의하는 카테고리를 선택합니다.";
 
-/* Title of the domain selector. */
+/* Title of the domain selector in the store creation flow. */
 "Choose a domain" = "도메인 선택하기";
 
 /* Title of the password field on the account creation form. */
@@ -1405,6 +1410,12 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Civic, Fraternal, Or Social Associations" = "시민단체, 친목단체 또는 사회단체";
 
+/* Title of button to redeem domain credit in the domain credit banner in domain settings. */
+"Claim Domain" = "도메인 신청";
+
+/* Title of the domain credit banner in domain settings. */
+"Claim your free domain" = "무료 도메인 신청";
+
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
 "Clear Filters" = "필터 지우기";
@@ -1421,6 +1432,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Text for the close button in the Add Product screen
    Text for the close button in the Edit Address Form
@@ -1521,6 +1533,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "수고하셨습니다. 다 읽으셨습니다!";
+
+/* Title of the domain purchase success screen. */
+"Congratulations on your purchase" = "구매 축하";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "축하합니다! 리더에서 최신 소프트웨어 실행 중";
@@ -2181,12 +2196,14 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
    Text for the done button in the Fee Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for the Done button on a WebView modal sheet */
+   Title for the Done button on a WebView modal sheet
+   Title of the button to finish the domain purchase success screen. */
 "Done" = "완료";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -2844,6 +2861,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry group option in the store creation category question. */
 "Food And Drink" = "음식 및 음료";
 
+/* Title in the error notice when a validation error occurs after submitting domain contact info. */
+"Form Validation Error" = "양식 유효성 검사 오류";
+
 /* Industry option in the store creation category question. */
 "Fortune Tellers" = "점술가";
 
@@ -2852,6 +2872,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "France" = "프랑스";
+
+/* Label shown for domains that are free for the first year with available domain credit. */
+"Free for the first year" = "첫해 무료";
 
 /* Industry option in the store creation category question. */
 "Freight Forwarders" = "운송주선인";
@@ -4796,7 +4819,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please connect your store to Jetpack to access it on this app." = "이 앱에서 스토어에 접근하려면 해당 스토어를 젯팩에 연결하세요.";
 
 /* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
-"Please contact support – there was an issue connecting to the built-in reader" = "지원팀에 문의하세요. 기본 제공 리더 연결 중 문제가 발생했습니다.";
+"Please contact support – there was an issue starting Tap to Pay on iPhone" = "지원팀에 문의하세요. iPhone에서 눌러서 결제를 시작하는 중 오류가 발생했습니다.";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "상점 관리자 또는 앱을 사용하는 관리자로 사이트에 초대받으려면 사이트 소유자에게 문의하세요.";
@@ -4886,7 +4909,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please select a package" = "패키지를 선택하세요.";
 
 /* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device, so you can use the built-in card reader" = "기본 제공 리더를 사용할 수 있도록 이 기기에서 iCloud에 로그인하세요.";
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "iPhone에서 눌러서 결제를 사용하려면 이 기기에서 iCloud에 로그인하세요.";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "다른 도메인을 시도하세요.";
@@ -4907,7 +4930,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again or reach out to us and we'll be happy to assist you!" = "다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
 
 /* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use the built-in card reader" = "다시 시도하고, 기본 제공 카드 리더를 사용할 수 있도록 Apple의 서비스 약관에 동의하세요.";
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "다시 시도하고, iPhone에서 눌러서 결제를 사용할 수 있도록 Apple의 서비스 약관에 동의하세요.";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "다시 시도하거나, 이전에 결제가 진행 중인 동안 계산 화면에서 나간 경우 화면을 종료하고 스토어를 다시 확인하세요.";
@@ -5010,7 +5033,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Preparing document" = "문서 준비 중";
 
 /* Title label for modal dialog that appears when connecting to a built in card reader */
-"Preparing iPhone card reader..." = "iPhone 카드 리더 준비 중...";
+"Preparing iPhone card reader" = "iPhone 카드 리더 준비 중...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "결제할 카드 제시";
@@ -5110,8 +5133,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for processing order status. */
 "Processing" = "처리 중";
 
-/* VoiceOver accessibility label. Indicates that a payment is being processed */
+/* Alert title when processing a payment without a user name.
+   VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "결제 처리 중";
+
+/* Alert title when processing a payment with a user name. */
+"Processing payment from %1$@" = "%1$@의 결제 처리 중";
 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "결제 처리 중...";
@@ -5386,6 +5413,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button in the view for adding or editing a coupon code. */
 "Regenerate Coupon Code" = "쿠폰 코드 재생성";
+
+/* Title of the domain contact info form. */
+"Register domain" = "도메인 등록";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "등록된 도메인";
@@ -5739,6 +5769,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Search Coupons button */
 "Search coupons" = "쿠폰 검색";
 
+/* Title of the domain selector in domain settings. */
+"Search domains" = "도메인 검색";
+
 /* Title of the button on the domain settings screen to search for a domain. */
 "Search for a Domain" = "도메인 검색";
 
@@ -5886,6 +5919,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "설정";
+
+/* Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails */
+"Setup failed" = "설정 실패";
 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "리더를 몇 개 찾음";
@@ -6144,6 +6180,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "일부 이메일 주소가 유효하지 않습니다.";
+
+/* Message in the error notice when an unknown validation error occurs after submitting domain contact info. */
+"Some unexpected error with the validation. Please check the fields and try again." = "유효성 검사 중 약간 예기치 않은 오류가 발생했습니다. 필드를 확인하고 다시 시도하세요.";
 
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "다른 사람";
@@ -6486,6 +6525,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "iPhone에서 눌러서 결제";
 
+/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+"Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "전화 통화 중에는 iPhone에서 눌러서 결제를 사용할 수 없습니다. 통화를 마치고 다시 시도하세요.";
+
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "가로 눈금자를 삽입하려면 누르세요.";
 
@@ -6693,19 +6735,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The URL is missing a valid host." = "URL에 올바른 호스트가 없습니다.";
 
 /* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
-"The amount is not supported by the built in reader – please try a hardware reader or another payment method." = "금액이 기본 제공 리더에서 지원되지 않습니다. 하드웨어 리더 또는 다른 결제 수단을 시도하세요.";
+"The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "금액이 기본 제공 리더에서 지원되지 않습니다. 하드웨어 리더 또는 다른 결제 수단을 시도하세요.";
 
 /* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
-"The app could not enable the card reader, because the NFC chip is disabled. Please contact support for more details." = "NFC 칩이 비활성화되어서 카드 리더를 앱에서 활성화할 수 없습니다. 자세한 내용은 지원팀에 문의하세요.";
+"The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "NFC 칩이 비활성화되어서 iPhone에서 눌러서 결제를 앱에서 활성화할 수 없습니다. 자세한 내용은 지원팀에 문의하세요.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "속성을 제거할 수 없습니다.";
 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "속성을 저장할 수 없습니다.";
-
-/* Error message shown when the built-in reader cannot be used because there is a call in progress */
-"The built-in reader cannot be used during a phone call. Please try again after you finish your call." = "통화 중에는 기본 제공 리더를 사용할 수 없습니다. 통화를 마치고 다시 시도하세요.";
 
 /* Message when the card presented does not support the order currency. */
 "The card does not support this currency. Try another means of payment" = "카드에서 이 통화가 지원되지 않습니다. 다른 결제 수단 시도";
@@ -6768,10 +6807,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The coupon code couldn't be empty" = "쿠폰 코드는 비워둘 수 없음";
 
 /* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
-"The currency is not supported by the built in reader – please try a hardware reader or another payment method." = "통화가 기본 제공 리더에서 지원되지 않습니다. 하드웨어 리더 또는 다른 결제 수단을 시도하세요.";
+"The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "통화가 iPhone에서 눌러서 결제에서 지원되지 않습니다. 하드웨어 리더 또는 다른 결제 수단을 사용해 보세요.";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "주문이 완료되면 고객에게 이메일이 수신됩니다.";
+
+/* Subtitle of the domain selector in domain settings. %1$@ is the free domain of the site from WordPress.com. */
+"The domain purchased will redirect users to **%1$@**" = "구매한 도메인에서는 사용자가 **%1$@**(으)로 리디렉팅됩니다.";
+
+/* Subtitle of the domain selector in domain settings when a free staging domain is unavailable. */
+"The domain purchased will redirect users to the current staging domain" = "구매한 도메인에서는 사용자가 현재 준비 중인 도메인으로 리디렉팅됩니다.";
+
+/* Footnote about the domain credit banner in domain settings. */
+"The domain purchased will redirect users to your primary address." = "구매한 도메인에서는 사용자가 기본 주소로 리디렉팅됩니다.";
 
 /* Label within the modal dialog that appears when connecting to a built in card reader */
 "The first time you connect, you may be prompted to accept Apple's Terms of Service." = "처음 연결하면 Apple의 서비스 약관에 동의하라는 메시지가 표시될 수 있습니다.";
@@ -6829,6 +6877,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when a request times out. */
 "The request timed out - please try again" = "요청 시간 초과 - 다시 시도하세요.";
+
+/* Message to display when the generating application password fails with unauthorized error */
+"The request to generate application password is not authorized." = "애플리케이션 비밀번호 생성 요청이 인증되지 않았습니다.";
 
 /* Bulk price update error message, when the sale price is added but the regular price is not
    Product price error notice message, when the sale price is added but the regular price is not */
@@ -6957,7 +7008,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was an error while trying to collect the payment." = "결제를 받는 동안 오류가 발생했습니다.";
 
 /* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
-"There was an issue preparing the built in reader for payment – please try again." = "기본 제공 리더를 결제용으로 준비하는 중 문제가 발생했습니다. 다시 시도하세요.";
+"There was an issue preparing to use Tap to Pay on iPhone – please try again." = "iPhone에서 눌러서 결제를 사용하려고 준비하는 중 오류가 발생했습니다. 다시 시도하세요.";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "30일 이내에 취소하면 전액 환불받을 수 있으며 손해가 발생하지 않습니다.";
@@ -7014,7 +7065,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "고객이 액세스할 파일의 URL입니다. 입력한 URL은 이미 인코딩되어 있어야 합니다.";
 
-/* Subtitle of the domain selector. */
+/* Subtitle of the domain selector in the store creation flow. */
 "This is where people will find you on the Internet. You can add another domain later." = "사람들이 인터넷에서 회원님을 찾을 수 있는 곳입니다. 나중에 다른 도메인을 추가할 수 있습니다.";
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
@@ -7251,7 +7302,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Installing Again" = "다시 설치 시도";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
-   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
 "Try again" = "다시 시도";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
@@ -8123,6 +8175,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "웹 대시보드에서 상품 애드온을 편집하실 수 있습니다.";
 
+/* Instructions of the domain purchase success screen. */
+"You can find the domain settings in menu > settings" = "메뉴 > 설정에서 도메인 설정을 찾을 수 있습니다.";
+
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "You can manage quickly and easily." = "빠르고 쉽게 관리할 수 있습니다.";
 
@@ -8151,6 +8206,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "이 스토어의 플러그인을 관리할 권한이 없습니다.";
 
+/* Subtitle of the domain credit banner in domain settings. */
+"You have a free one-year domain registration included with your plan." = "이용 중인 요금제에 1년 무료 도메인 등록이 포함되어 있습니다.";
+
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "새 주문이 있습니다! 🎉";
 
@@ -8159,6 +8217,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "제품을 비밀번호로 보호하려면 비밀번호를 추가해야 합니다.";
+
+/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+"You need to set a lock screen passcode to use Tap to Pay on iPhone" = "iPhone에서 눌러서 결제를 사용하려면 잠금 화면 패스코드를 설정하셔야 합니다.";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "DudaMobile에서 설치한 모바일 플러그인으로 인해 앱이 블로그에 연결할 수 없습니다.";
@@ -8174,9 +8235,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "결제 대금을 수령하려면 카드 리더 소프트웨어를 업데이트해야 합니다. 취소하면 리더 연결이 차단됩니다.";
-
-/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
-"Your device needs a lock screen passcode set to use the built-in card reader" = "기본 제공 카드 리더를 사용하도록 설정된 잠금 화면 패스코드가 기기에 필요합니다.";
 
 /* Title of the email field on the account creation form. */
 "Your email address" = "사용 중인 이메일 주소";
@@ -8214,6 +8272,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Safari에서 사이트를 방문하면 화면 위쪽의 표시줄에 사이트 주소가 표시됩니다.";
 
+/* Subtitle of the domain purchase success screen. */
+"Your site address is being set up. It may take up 30 minutes for your domain to start working." = "사이트가 설정되고 있습니다. 도메인이 작동하기 시작하려면 최대 30분 정도 걸릴 수 있습니다.";
+
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "사이트 도메인";
 
@@ -8249,17 +8310,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label within the modal dialog that appears when checking the built in card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.instruction" = "iPhone의 눌러서 결제가 기기에서 준비되었는지 확인하는 동안 기다려 주세요.";
-
-/* A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.link" = "더 알아보기";
-
-/* A label prompting users to learn more about In-Person Payments.
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"cardPresent.builtIn.modalCheckingDeviceSupport.learnMore.text" = "직접 결제에 대한 %1$@";
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "기기 확인 중";

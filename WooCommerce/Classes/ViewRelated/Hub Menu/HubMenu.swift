@@ -88,12 +88,20 @@ struct HubMenu: View {
                 .padding(Constants.padding)
                 .background(Color(.listBackground))
             }
-            .safariSheet(isPresented: $showingWooCommerceAdmin,
-                         url: viewModel.woocommerceAdminURL,
-                         onDismiss: enableMenuItemTaps)
-            .safariSheet(isPresented: $showingViewStore,
-                         url: viewModel.storeURL,
-                         onDismiss: enableMenuItemTaps)
+            .sheet(isPresented: $showingWooCommerceAdmin, onDismiss: enableMenuItemTaps) {
+                WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.woocommerceAdminURL,
+                                                              navigationTitle: HubMenuViewModel.Localization.woocommerceAdmin,
+                                                              authenticated: true)) {
+                    showingWooCommerceAdmin = false
+                }
+            }
+            .sheet(isPresented: $showingViewStore, onDismiss: enableMenuItemTaps) {
+                WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.storeURL,
+                                                              navigationTitle: HubMenuViewModel.Localization.viewStore,
+                                                              authenticated: false)) {
+                    showingViewStore = false
+                }
+            }
             NavigationLink(destination:
                             InPersonPaymentsMenu()
                             .navigationTitle(InPersonPaymentsView.Localization.title),

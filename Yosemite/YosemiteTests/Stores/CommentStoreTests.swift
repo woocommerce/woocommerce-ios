@@ -258,11 +258,14 @@ class CommentStoreTests: XCTestCase {
         // Given
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)/replies/new", filename: "comment-moderate-approved")
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments", filename: "comment-moderate-approved")
 
         // When
         let result: Result<Yosemite.CommentStatus, Error> = waitFor { promise in
-            let action = CommentAction.replyToComment(siteID: self.sampleSiteID, commentID: self.sampleCommentID, content: "Test comment") { result in
+            let action = CommentAction.replyToComment(siteID: self.sampleSiteID,
+                                                      commentID: self.sampleCommentID,
+                                                      productID: 123,
+                                                      content: "Test comment") { result in
                 promise(result)
             }
             store.onAction(action)
@@ -277,11 +280,14 @@ class CommentStoreTests: XCTestCase {
         // Given
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)/replies/new", filename: "generic_error")
+        network.simulateError(requestUrlSuffix: "sites/\(sampleSiteID)/comments", error: NetworkError.timeout)
 
         // When
         let result: Result<Yosemite.CommentStatus, Error> = waitFor { promise in
-            let action = CommentAction.replyToComment(siteID: self.sampleSiteID, commentID: self.sampleCommentID, content: "Test comment") { result in
+            let action = CommentAction.replyToComment(siteID: self.sampleSiteID,
+                                                      commentID: self.sampleCommentID,
+                                                      productID: 123,
+                                                      content: "Test comment") { result in
                 promise(result)
             }
             store.onAction(action)

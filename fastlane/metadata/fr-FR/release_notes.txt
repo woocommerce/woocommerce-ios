@@ -1,1 +1,1 @@
-Il est maintenant possible de mettre à jour de façon groupée l’état et le prix des produits ! Il suffit d’accéder à l’onglet « Produits » et de cliquer sur l’icône de sélection multiple pour essayer.
+Nous avons apporté quelques modifications à la gestion de votre entreprise. Il est désormais plus simple de configurer votre boutique lorsque vous vous connectez. L’ajout d’attributs depuis l’application est désormais bien plus facile ! Continuez de nous faire part de vos commentaires !

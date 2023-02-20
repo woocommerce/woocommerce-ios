@@ -10,7 +10,7 @@ final class OrdersTests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
         app.launch()
-        try LoginFlow.logInWithWPcom()
+        try LoginFlow.login()
     }
 
     func test_load_orders_screen() throws {

@@ -62,7 +62,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          formType: ProductFormType,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
-         isProductTypeActionEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductsEditing),
+         isProductTypeActionEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType

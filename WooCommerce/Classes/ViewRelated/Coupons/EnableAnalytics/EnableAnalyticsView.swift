@@ -49,7 +49,12 @@ struct EnableAnalyticsView: View {
 
         self.contactSupportAction = {
             if let viewController = presentingController?.presentedViewController {
-                ZendeskProvider.shared.showNewRequestIfPossible(from: viewController)
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+                    let supportForm = SupportFormHostingController(viewModel: .init())
+                    supportForm.show(from: viewController)
+                } else {
+                    ZendeskProvider.shared.showNewRequestIfPossible(from: viewController)
+                }
             }
         }
 

@@ -1,1 +1,1 @@
-Fizemos algumas melhorias no gerenciamento do seu negócio. Agora ficou mais fácil configurar a sua loja desde o login. A inclusão de atributos pelo aplicativo acabou de ficar ainda mais fácil! Continue enviando seu feedback!
+Para esta versão, focamos em resolver pequenos bugs que a nossa equipe encontrou. Mas não se engane! Estamos trabalhando em algumas novidades bem legais. Continue dando feedback, ele nos ajuda a saber no que trabalhar em seguida.

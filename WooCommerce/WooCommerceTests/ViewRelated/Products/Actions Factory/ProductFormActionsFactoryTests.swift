@@ -196,7 +196,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false, isCategoriesActionAlwaysEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -219,7 +219,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false, isCategoriesActionAlwaysEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -241,7 +241,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false, isCategoriesActionAlwaysEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -267,7 +267,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false, isCategoriesActionAlwaysEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -294,7 +294,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false, isCategoriesActionAlwaysEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -316,7 +316,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false, isCategoriesActionAlwaysEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -474,11 +474,24 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: true)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: true, isCategoriesActionAlwaysEnabled: false)
 
         // Then
         XCTAssertFalse(factory.settingsSectionActions().contains(.reviews))
         XCTAssertTrue(factory.bottomSheetActions().contains(.editReviews))
+    }
+
+    func test_settings_actions_contain_even_empty_categories_when_it_is_enabled() {
+        // Given
+        let product = Product.fake()
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false, isCategoriesActionAlwaysEnabled: true)
+
+        // Then
+        XCTAssertFalse(product.categories.isNotEmpty)
+        XCTAssertTrue(factory.settingsSectionActions().contains(.categories(editable: true)))
     }
 }
 

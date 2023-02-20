@@ -1,1 +1,1 @@
-İşletmenizi yönetmek için birkaç geliştirme yaptık. Oturum açarken mağazanızı kurmak artık daha kolay. Uygulamadan özellik eklemek çok daha kolay hale geldi! Görüşlerinizi bildirmeye devam edin!
+Bu sürümde ekibimizin bulduğu küçük hataları gidermeye odaklandık. Merak etmeyin, hepiniz için çok güzel şeyler üzerinde çalışıyoruz! Geri bildirimleriniz devam etsin; üzerinde çalışacağımız bir sonraki özelliği bulmamıza yardımcı oluyor.

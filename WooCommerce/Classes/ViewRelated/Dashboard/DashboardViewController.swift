@@ -93,6 +93,12 @@ final class DashboardViewController: UIViewController {
 
     private var announcementView: UIView?
 
+    /// Onboarding card.
+    private var onboardingHostingController: ConstraintsUpdatingHostingController<StoreOnboardingView>?
+    private var onboardingView: UIView?
+    private let onboardingViewModel: StoreOnboardingViewModel = .init(isExpanded: false)
+    private var onboardingCoordinator: StoreOnboardingCoordinator?
+
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
     private var contentBottomToJetpackBenefitsBannerConstraint: NSLayoutConstraint?
@@ -139,6 +145,7 @@ final class DashboardViewController: UIViewController {
         observeAnnouncements()
         observeShowWebViewSheet()
         observeAddProductTrigger()
+        observeOnboardingVisibility()
 
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
@@ -509,6 +516,45 @@ private extension DashboardViewController {
         shouldShowStoreNameAsSubtitle = true
         storeNameLabel.isHidden = false
         storeNameLabel.text = siteName
+    }
+}
+
+private extension DashboardViewController {
+    func observeOnboardingVisibility() {
+        viewModel.$showOnboarding.sink { [weak self] showsOnboarding in
+            guard let self else { return }
+            if showsOnboarding {
+                self.showOnboardingCard()
+            } else {
+                self.removeOnboardingCard()
+            }
+        }.store(in: &subscriptions)
+    }
+
+    func removeOnboardingCard() {
+        guard let onboardingView else {
+            return
+        }
+        onboardingView.removeFromSuperview()
+        onboardingHostingController?.removeFromParent()
+        onboardingHostingController = nil
+        self.onboardingView = nil
+    }
+
+    func showOnboardingCard() {
+        let hostingController = ConstraintsUpdatingHostingController(rootView: StoreOnboardingView(viewModel: .init(isExpanded: false)))
+        guard let uiView = hostingController.view else {
+            return
+        }
+        onboardingHostingController = hostingController
+        onboardingView = uiView
+
+        addChild(hostingController)
+        let indexAfterHeader = (headerStackView.arrangedSubviews.firstIndex(of: innerStackView) ?? -1) + 1
+        headerStackView.insertArrangedSubview(uiView, at: indexAfterHeader)
+
+        hostingController.didMove(toParent: self)
+        hostingController.view.layoutIfNeeded()
     }
 }
 

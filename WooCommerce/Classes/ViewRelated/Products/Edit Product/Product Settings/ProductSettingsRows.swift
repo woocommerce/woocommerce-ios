@@ -41,13 +41,13 @@ enum ProductSettingsRows {
             }
 
             if supportedTypes.contains(settings.productType) {
-                cell.accessoryType = .none
-                cell.selectionStyle = .none
-                cell.apply(style: .nonSelectable)
-            } else {
                 cell.accessoryType = .disclosureIndicator
                 cell.selectionStyle = .default
                 cell.apply(style: .regular)
+            } else {
+                cell.accessoryType = .none
+                cell.selectionStyle = .none
+                cell.apply(style: .nonSelectable)
             }
 
             let details: String

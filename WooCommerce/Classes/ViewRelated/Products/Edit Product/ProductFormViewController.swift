@@ -763,6 +763,8 @@ private extension ProductFormViewController {
     }
 
     func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void = { _ in }) {
+        let previousStatus = product.status
+
         viewModel.saveProductRemotely(status: status) { [weak self] result in
             switch result {
             case .failure(let error):
@@ -774,9 +776,19 @@ private extension ProductFormViewController {
                     onCompletion(.failure(error))
                 }
             case .success:
-                // Dismisses the in-progress UI, then presents the confirmation alert.
+                // Dismisses the in-progress UI
                 self?.navigationController?.dismiss(animated: true, completion: nil)
-                self?.presentProductConfirmationSaveAlert()
+
+                // Presents the confirmation alert
+                let alertType: ProductSavedAlertType
+                if status == .published, previousStatus != .published {
+                    alertType = .published
+                } else if status == .draft || (status == nil && previousStatus == .draft) {
+                    alertType = .draftSaved
+                } else {
+                    alertType = .saved
+                }
+                self?.presentProductConfirmationSaveAlert(type: alertType)
 
                 // Show linked products promo banner after product save
                 (self?.viewModel as? ProductFormViewModel)?.isLinkedProductsPromoEnabled = true
@@ -833,8 +845,7 @@ private extension ProductFormViewController {
             case .success:
                 // Dismisses the in-progress UI, then presents the confirmation alert.
                 self?.navigationController?.dismiss(animated: true) {
-                    let alertTitle =  Localization.presentProductCopiedAlert
-                    self?.presentProductConfirmationSaveAlert(title: alertTitle)
+                    self?.presentProductConfirmationSaveAlert(type: .copied)
                 }
             }
         })
@@ -1609,7 +1620,6 @@ private enum Localization {
         "Cannot duplicate product",
         comment: "The title of the alert when there is an error duplicating the product"
     )
-    static let presentProductCopiedAlert = NSLocalizedString("Product copied", comment: "Title of the alert when a user has copied a product")
 }
 
 private enum ActionSheetStrings {

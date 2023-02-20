@@ -12,7 +12,7 @@ final class LoginTests: XCTestCase {
     }
 
     func test_site_address_login_logout() throws {
-        // do not test this case for simplified login since site address login is not available
+        // do not test this case if site address login is not available
         guard try PrologueScreen().isSiteAddressLoginAvailable() else {
             return
         }
@@ -31,7 +31,10 @@ final class LoginTests: XCTestCase {
     }
 
     func test_WordPress_login_logout() throws {
-
+        // do not test this case if wpcom login is not available
+        guard try PrologueScreen().isWPComLoginAvailable() else {
+            return
+        }
         try PrologueScreen().selectContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)
@@ -49,6 +52,10 @@ final class LoginTests: XCTestCase {
     }
 
     func test_WordPress_unsuccessfull_login() throws {
+        // do not test this case if wpcom login is not available
+        guard try PrologueScreen().isWPComLoginAvailable() else {
+            return
+        }
         _ = try PrologueScreen().selectContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .tryProceed(password: "invalidPswd")

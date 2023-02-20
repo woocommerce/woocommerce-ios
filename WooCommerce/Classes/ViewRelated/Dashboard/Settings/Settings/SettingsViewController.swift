@@ -297,7 +297,12 @@ private extension SettingsViewController {
 
     func logoutWasPressed() {
         ServiceLocator.analytics.track(.settingsLogoutTapped)
-        let messageFormatted = String(format: Localization.LogoutAlert.alertMessage, viewModel.accountName)
+        let messageFormatted: String = {
+            guard viewModel.accountName.isNotEmpty else {
+                return Localization.LogoutAlert.alertMessageWithoutDisplayName
+            }
+            return String(format: Localization.LogoutAlert.alertMessage, viewModel.accountName)
+        }()
         let alertController = UIAlertController(title: "", message: messageFormatted, preferredStyle: .alert)
 
         alertController.addActionWithTitle(Localization.LogoutAlert.cancelButtonTitle, style: .cancel) { _ in
@@ -730,7 +735,7 @@ private extension SettingsViewController {
         )
 
         static let domain = NSLocalizedString(
-            "Domain",
+            "Domains",
             comment: "Navigates to domain settings screen."
         )
 
@@ -809,6 +814,10 @@ private extension SettingsViewController {
         enum LogoutAlert {
             static let alertMessage = NSLocalizedString(
                 "Are you sure you want to log out of the account %@?",
+                comment: "Alert message to confirm a user meant to log out."
+            )
+            static let alertMessageWithoutDisplayName = NSLocalizedString(
+                "Are you sure you want to log out of your account?",
                 comment: "Alert message to confirm a user meant to log out."
             )
             static let cancelButtonTitle = NSLocalizedString(

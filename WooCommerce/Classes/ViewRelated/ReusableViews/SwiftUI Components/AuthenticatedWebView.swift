@@ -1,10 +1,44 @@
 import SwiftUI
 import WebKit
-import Alamofire
-import class Networking.UserAgent
+
+/// A default view model for authenticated web view
+///
+final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
+    let title: String
+    let initialURL: URL?
+    let urlToTriggerExit: String?
+    let exitTrigger: (() -> Void)?
+
+    init(title: String = "",
+         initialURL: URL,
+         urlToTriggerExit: String? = nil,
+         exitTrigger: (() -> Void)? = nil) {
+        self.title = title
+        self.initialURL = initialURL
+        self.urlToTriggerExit = urlToTriggerExit
+        self.exitTrigger = exitTrigger
+    }
+
+    func handleDismissal() {
+        // no-op
+    }
+
+    func handleRedirect(for url: URL?) {
+        if let urlToTriggerExit,
+            let url,
+            url.absoluteString.contains(urlToTriggerExit) {
+            exitTrigger?()
+        }
+    }
+
+    func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
+        .allow
+    }
+}
+
 
 // Bridge UIKit `WKWebView` component to SwiftUI for URLs that need authentication on WPCom
-struct AuthenticatedWebView: UIViewRepresentable {
+struct AuthenticatedWebView: UIViewControllerRepresentable {
     @Environment(\.presentationMode) var presentation
     @Binding var isPresented: Bool {
         didSet {
@@ -24,87 +58,17 @@ struct AuthenticatedWebView: UIViewRepresentable {
     ///
     var exitTrigger: (() -> Void)?
 
-    private let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
-
-    func makeCoordinator() -> AuthenticatedWebViewCoordinator {
-        AuthenticatedWebViewCoordinator(self)
+    func makeUIViewController(context: Context) -> AuthenticatedWebViewController {
+        let viewModel = DefaultAuthenticatedWebViewModel(initialURL: url,
+                                                         urlToTriggerExit: urlToTriggerExit,
+                                                         exitTrigger: exitTrigger)
+        return AuthenticatedWebViewController(viewModel: viewModel, wporgCredentials: nil)
     }
 
-    func makeUIView(context: Context) -> WKWebView {
-        let webview = WKWebView()
-        webview.customUserAgent = UserAgent.defaultUserAgent
-        webview.navigationDelegate = context.coordinator
-
-        configureForSandboxEnvironment(webview)
-
-        do {
-            try webview.load(authenticatedPostData())
-        } catch {
-            DDLogError("# error: Cannot be able to load the authenticated web view on WPCom")
-        }
-        return webview
-    }
-
-    func updateUIView(_ uiView: WKWebView, context: Context) {
-
-    }
-
-    private func authenticatedPostData() throws -> URLRequest {
-        guard case let .wpcom(username, token, _) = credentials else {
-            return URLRequest(url: url)
-        }
-
-        var request = URLRequest(url: WooConstants.URLs.loginWPCom.asURL())
-        request.httpMethod = "POST"
-        request.httpShouldHandleCookies = true
-
-        let parameters = ["log": username,
-                          "redirect_to": url.absoluteString,
-                          "authorization": "Bearer " + token]
-
-        return try URLEncoding.default.encode(request, with: parameters)
-    }
-
-    /// For all test cases, to test against the staging server
-    /// please apply the following patch after replacing [secret] with a sandbox secret from the secret store.
-    ///
-    private func configureForSandboxEnvironment(_ webview: WKWebView) {
-        #if DEBUG
-        if let cookie = HTTPCookie(properties: [
-            .domain: ".wordpress.com",
-            .path: "/",
-            .name: "store_sandbox",
-            .value: "[secret]",
-            .secure: "TRUE"
-        ]) {
-            webview.configuration.websiteDataStore.httpCookieStore.setCookie(cookie) {
-            }
-        }
-        #endif
-    }
-
-    class AuthenticatedWebViewCoordinator: NSObject, WKNavigationDelegate {
-        private var parent: AuthenticatedWebView
-
-        init(_ uiWebView: AuthenticatedWebView) {
-            parent = uiWebView
-        }
-
-        func webView(_ webView: WKWebView, decidePolicyFor
-                        navigationAction: WKNavigationAction,
-                     decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-            if let url = webView.url?.absoluteString, let urlTrigger = parent.urlToTriggerExit, url.contains(urlTrigger) {
-                parent.exitTrigger?()
-                decisionHandler(.cancel)
-                webView.navigationDelegate = nil
-                return
-            }
-            decisionHandler(.allow)
-        }
+    func updateUIViewController(_ uiViewController: AuthenticatedWebViewController, context: Context) {
+        // no-op
     }
 }
-
-
 
 #if DEBUG
 struct AuthenticatedWebView_Previews: PreviewProvider {

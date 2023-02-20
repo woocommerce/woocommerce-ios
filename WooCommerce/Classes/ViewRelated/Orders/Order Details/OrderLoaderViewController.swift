@@ -114,7 +114,11 @@ private extension OrderLoaderViewController {
     ///
     func configureResultsController() {
         // Order status FRC
-        try? statusResultsController.performFetch()
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Order Status for Site \(siteID) and Order \(orderID): \(error)")
+        }
     }
 
     /// Setup: Navigation

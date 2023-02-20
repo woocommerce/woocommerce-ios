@@ -20,7 +20,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
                             countryCode: viewModel.cardPresentPaymentsConfiguration.countryCode))
     }()
 
-    private lazy var inPersonPaymentsLearnMoreViewModel = LearnMoreViewModel.inPersonPayments()
+    private lazy var inPersonPaymentsLearnMoreViewModel = LearnMoreViewModel.inPersonPayments(source: .paymentsMenu)
 
     private let viewModel: InPersonPaymentsMenuViewModel = InPersonPaymentsMenuViewModel()
 
@@ -406,6 +406,7 @@ extension InPersonPaymentsMenuViewController {
     }
 
     @objc func learnMoreAboutInPersonPaymentsButtonWasTapped() {
+        inPersonPaymentsLearnMoreViewModel.learnMoreTapped()
         WebviewHelper.launch(inPersonPaymentsLearnMoreViewModel.url, with: self)
     }
 

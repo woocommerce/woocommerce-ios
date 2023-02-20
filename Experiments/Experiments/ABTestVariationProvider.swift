@@ -11,6 +11,6 @@ public struct DefaultABTestVariationProvider: ABTestVariationProvider {
     public init() { }
 
     public func variation(for abTest: ABTest) -> Variation {
-        abTest.variation
+        abTest.variation ?? .control
     }
 }

@@ -1,3 +1,4 @@
+import Codegen
 import Foundation
 
 /// Protocol for `DomainRemote` mainly used for mocking.
@@ -20,6 +21,16 @@ public protocol DomainRemoteProtocol {
     /// - Parameter siteID: ID of the site to load the domains for.
     /// - Returns: A list of domains.
     func loadDomains(siteID: Int64) async throws -> [SiteDomain]
+
+    /// Loads the contact info for domain registration.
+    /// - Returns: pre-existing contact info from WPCOM if available.
+    func loadDomainContactInfo() async throws -> DomainContactInfo
+
+    /// Validates the contact info for domain registration.
+    /// - Parameters:
+    ///   - domainContactInfo: Contact info to validate.
+    ///   - domain: Domain name for domain registration. The validation rules vary between domains.
+    func validate(domainContactInfo: DomainContactInfo, domain: String) async throws
 }
 
 /// Domain: Remote Endpoints
@@ -61,6 +72,26 @@ public class DomainRemote: Remote, DomainRemoteProtocol {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
         let response: SiteDomainEnvelope = try await enqueue(request)
         return response.domains
+    }
+
+    public func loadDomainContactInfo() async throws -> DomainContactInfo {
+        let path = Path.domainContactInfo
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
+        return try await enqueue(request)
+    }
+
+    public func validate(domainContactInfo: DomainContactInfo, domain: String) async throws {
+        let path = "\(Path.domainContactInfo)/validate"
+        let domainContactInfoDictionary = try domainContactInfo.toDictionary()
+        let parameters: [String: Any] = [
+            ParameterKey.domainContactInfo: domainContactInfoDictionary,
+            ParameterKey.domainNames: domain
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        let response: DomainContactInfoValidationResponse = try await enqueue(request)
+        guard response.success else {
+            throw DomainContactInfoError.invalid(messages: response.errorMessages)
+        }
     }
 }
 
@@ -131,12 +162,20 @@ public struct SiteDomain: Decodable, Equatable {
     /// Whether the domain is the site's primary domain.
     public let isPrimary: Bool
 
+    /// Whether the domain is a free staging domain from certain WPCOM plans.
+    public let isWPCOMStagingDomain: Bool
+
+    /// The type of domain, e.g. "wpcom" for WPCOM domains and "mapping" for other domains mapped to the WPCOM domains.
+    public let type: DomainType
+
     /// The next renewal date, if available.
     public let renewalDate: Date?
 
-    public init(name: String, isPrimary: Bool, renewalDate: Date? = nil) {
+    public init(name: String, isPrimary: Bool, isWPCOMStagingDomain: Bool, type: DomainType, renewalDate: Date? = nil) {
         self.name = name
         self.isPrimary = isPrimary
+        self.isWPCOMStagingDomain = isWPCOMStagingDomain
+        self.type = type
         self.renewalDate = renewalDate
     }
 
@@ -145,6 +184,8 @@ public struct SiteDomain: Decodable, Equatable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let name = try container.decode(String.self, forKey: .name)
         let isPrimary = try container.decode(Bool.self, forKey: .isPrimary)
+        let isWPCOMStagingDomain = try container.decode(Bool.self, forKey: .isWPCOMStagingDomain)
+        let type = try container.decode(DomainType.self, forKey: .type)
 
         let renewalDate: Date? = {
             guard let dateString = try? container.decodeIfPresent(String.self, forKey: .renewalDate) else {
@@ -155,19 +196,123 @@ public struct SiteDomain: Decodable, Equatable {
             return dateFormatter.date(from: dateString)
         }()
 
-        self.init(name: name, isPrimary: isPrimary, renewalDate: renewalDate)
+        self.init(name: name, isPrimary: isPrimary, isWPCOMStagingDomain: isWPCOMStagingDomain, type: type, renewalDate: renewalDate)
     }
 
     private enum CodingKeys: String, CodingKey {
         case name = "domain"
         case isPrimary = "primary_domain"
+        case isWPCOMStagingDomain = "is_wpcom_staging_domain"
+        case type
         case renewalDate = "auto_renewal_date"
     }
+}
+
+public extension SiteDomain {
+    /// The type of domain. Most often we filter domains by WPCOM and non-WPCOM domains.
+    enum DomainType: Decodable, Equatable {
+        case wpcom
+        case mapping
+        case other(type: String)
+    }
+}
+
+extension SiteDomain.DomainType: RawRepresentable {
+    public init(rawValue: String) {
+        switch rawValue {
+        case Keys.wpcom:
+            self = .wpcom
+        case Keys.mapping:
+            self = .mapping
+        default:
+            self = .other(type: rawValue)
+        }
+    }
+
+    public var rawValue: String {
+        switch self {
+        case .wpcom: return Keys.wpcom
+        case .mapping: return Keys.mapping
+        case .other(let type):  return type
+        }
+    }
+
+    private enum Keys {
+        static let wpcom = "wpcom"
+        static let mapping = "mapping"
+    }
+}
+
+/// Contact info required for redeeming a domain with domain credit.
+public struct DomainContactInfo: Codable, GeneratedFakeable, Equatable {
+    public let firstName: String
+    public let lastName: String
+    public let organization: String?
+    public let address1: String
+    public let address2: String?
+    public let postcode: String
+    public let city: String
+    public let state: String?
+    public let countryCode: String
+    public let phone: String?
+    public let email: String?
+
+    public init(firstName: String,
+                lastName: String,
+                organization: String?,
+                address1: String,
+                address2: String?,
+                postcode: String,
+                city: String,
+                state: String?,
+                countryCode: String,
+                phone: String?,
+                email: String?) {
+        self.firstName = firstName
+        self.lastName = lastName
+        self.organization = organization
+        self.address1 = address1
+        self.address2 = address2
+        self.postcode = postcode
+        self.city = city
+        self.state = state
+        self.countryCode = countryCode
+        self.phone = phone
+        self.email = email
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case firstName = "first_name"
+        case lastName = "last_name"
+        case organization
+        case address1 = "address_1"
+        case address2 = "address_2"
+        case postcode = "postal_code"
+        case city
+        case state
+        case countryCode = "country_code"
+        case phone
+        case email
+    }
+}
+
+public enum DomainContactInfoError: Error, Equatable {
+    case invalid(messages: [String]?)
 }
 
 /// Maps to a list of domains to match the API response.
 private struct SiteDomainEnvelope: Decodable {
     let domains: [SiteDomain]
+}
+
+private struct DomainContactInfoValidationResponse: Decodable {
+    let success: Bool
+    let errorMessages: [String]?
+
+    private enum CodingKeys: String, CodingKey {
+        case success
+        case errorMessages = "messages_simple"
+    }
 }
 
 // MARK: - Constants
@@ -186,11 +331,16 @@ private extension DomainRemote {
         static let wordPressDotComSubdomainsOnly = "only_wordpressdotcom"
         /// The type of WPCOM products.
         static let domainProductType = "type"
+        /// Domain contact info parameter for validating contact info.
+        static let domainContactInfo = "contact_information"
+        /// Domain names parameter for validating contact info.
+        static let domainNames = "domain_names"
     }
 
     enum Path {
         static let domainSuggestions = "domains/suggestions"
         static let domainProducts = "products"
         static let domains = "domains"
+        static let domainContactInfo = "me/domain-contact-information"
     }
 }

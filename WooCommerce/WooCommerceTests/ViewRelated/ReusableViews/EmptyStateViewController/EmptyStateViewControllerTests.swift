@@ -158,34 +158,6 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertEqual(mirror.actionButton.titleLabel?.text, "Contact You!")
     }
 
-    func test_given_a_supportRequest_config_when_tapping_on_button_then_the_contact_us_page_is_presented() throws {
-        // Given
-        let zendeskManager = MockZendeskManager()
-        let viewController = EmptyStateViewController(style: .basic, zendeskManager: zendeskManager)
-        XCTAssertNotNil(viewController.view)
-
-        let mirror = try self.mirror(of: viewController)
-
-        viewController.configure(.withSupportRequest(
-            message: NSAttributedString(string: ""),
-            image: .infoImage,
-            details: "",
-            buttonTitle: "Dolores"
-        ))
-
-        assertEmpty(zendeskManager.newRequestIfPossibleInvocations)
-
-        // When
-        mirror.actionButton.sendActions(for: .touchUpInside)
-
-        // Then
-        XCTAssertEqual(zendeskManager.newRequestIfPossibleInvocations.count, 1)
-
-        let invocation = try XCTUnwrap(zendeskManager.newRequestIfPossibleInvocations.first)
-        XCTAssertEqual(invocation.controller, viewController)
-        XCTAssertNil(invocation.sourceTag)
-    }
-
     // MARK: - Pull to refresh
 
     func test_given_a_simple_config_with_pull_to_refresh_handler_when_pulled_to_refresh_fires_callback() throws {

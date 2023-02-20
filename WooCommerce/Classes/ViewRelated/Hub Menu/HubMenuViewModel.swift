@@ -250,7 +250,7 @@ extension HubMenuViewModel {
         let trackingOption: String = "debug-iap"
     }
 
-    private enum Localization {
+    enum Localization {
         static let payments = NSLocalizedString("Payments",
                                                 comment: "Title of the hub menu payments button")
         static let myStore = NSLocalizedString("My Store",

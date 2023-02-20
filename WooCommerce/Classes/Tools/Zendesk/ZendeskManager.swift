@@ -35,6 +35,20 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
     func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String?)
     func showNewWCPayRequestIfPossible(from controller: UIViewController)
 
+    /// Creates a Zendesk Identity to be able to submit support request tickets.
+    /// Uses the provided `ViewController` to present an alert for requesting email address when required.
+    ///
+    func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void)
+
+    /// Creates a support request using the API-Providers SDK.
+    ///
+    func createSupportRequest(formID: Int64,
+                              customFields: [Int64: String],
+                              tags: [String],
+                              subject: String,
+                              description: String,
+                              onCompletion: @escaping (Result<Void, Error>) -> Void)
+
     var zendeskEnabled: Bool { get }
     func userSupportEmail() -> String?
     func showHelpCenter(from controller: UIViewController)
@@ -45,6 +59,18 @@ protocol ZendeskManagerProtocol: SupportManagerAdapter {
     func fetchSystemStatusReport()
     func initialize()
     func reset()
+
+    /// To Refactor: These methods would end-up living outside this class. Exposing them here temporarily.
+    /// https://github.com/woocommerce/woocommerce-ios/issues/8795
+    ///
+    func formID() -> Int64
+    func wcPayFormID() -> Int64
+
+    func generalTags() -> [String]
+    func wcPayTags() -> [String]
+
+    func generalCustomFields() -> [Int64: String]
+    func wcPayCustomFields() -> [Int64: String]
 }
 
 struct NoZendeskManager: ZendeskManagerProtocol {
@@ -65,6 +91,19 @@ struct NoZendeskManager: ZendeskManagerProtocol {
     }
 
     func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String?) {
+        // no-op
+    }
+
+    func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
+        // no-op
+    }
+
+    func createSupportRequest(formID: Int64,
+                              customFields: [Int64: String],
+                              tags: [String],
+                              subject: String,
+                              description: String,
+                              onCompletion: @escaping (Result<Void, Error>) -> Void) {
         // no-op
     }
 
@@ -104,6 +143,35 @@ struct NoZendeskManager: ZendeskManagerProtocol {
 
     func reset() {
         // no-op
+    }
+}
+
+/// To Refactor: These methods would end-up living outside this class. Exposing them here temporarily.
+/// https://github.com/woocommerce/woocommerce-ios/issues/8795
+///
+extension NoZendeskManager {
+    func formID() -> Int64 {
+        .zero
+    }
+
+    func wcPayFormID() -> Int64 {
+        .zero
+    }
+
+    func generalTags() -> [String] {
+        []
+    }
+
+    func wcPayTags() -> [String] {
+        []
+    }
+
+    func generalCustomFields() -> [Int64: String] {
+        [:]
+    }
+
+    func wcPayCustomFields() -> [Int64: String] {
+        [:]
     }
 }
 
@@ -361,6 +429,73 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         }
     }
 
+    /// Creates a Zendesk Identity to be able to submit support request tickets.
+    /// Uses the provided `ViewController` to present an alert for requesting email address when required.
+    ///
+    func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
+
+        // If we already have an identity, do nothing.
+        guard haveUserIdentity == false else {
+            DDLogDebug("Using existing Zendesk identity: \(userEmail ?? ""), \(userName ?? "")")
+            registerDeviceTokenIfNeeded()
+            completion(true)
+            return
+        }
+
+        /*
+         1. Attempt to get user information from User Defaults.
+         2. If we don't have the user's information yet, attempt to get it from the account/site.
+         3. Prompt the user for email & name, pre-populating with user information obtained in step 1.
+         4. Create Zendesk identity with user information.
+         */
+
+        if getUserProfile() {
+            createZendeskIdentity { success in
+                guard success else {
+                    DDLogInfo("Creating Zendesk identity failed.")
+                    completion(false)
+                    return
+                }
+                DDLogDebug("Using User Defaults for Zendesk identity.")
+                self.haveUserIdentity = true
+                self.registerDeviceTokenIfNeeded()
+                completion(true)
+                return
+            }
+        }
+
+        getUserInformationAndShowPrompt(withName: true, from: viewController) { (success, _) in
+            if success {
+                self.registerDeviceTokenIfNeeded()
+            }
+
+            completion(success)
+        }
+    }
+
+    /// Creates a support request using the API-Providers SDK.
+    ///
+    func createSupportRequest(formID: Int64,
+                              customFields: [Int64: String],
+                              tags: [String],
+                              subject: String,
+                              description: String,
+                              onCompletion: @escaping (Result<Void, Error>) -> Void) {
+
+        let requestProvider = ZDKRequestProvider()
+        let request = createAPIRequest(formID: formID, customFields: customFields, tags: tags, subject: subject, description: description)
+        requestProvider.createRequest(request) { _, error in
+            // `requestProvider.createRequest` invokes it's completion block on a background thread when the request creation fails.
+            // Lets make sure we always dispatch the completion block on the main queue.
+            DispatchQueue.main.async {
+                if let error {
+                    return onCompletion(.failure(error))
+                }
+                onCompletion(.success(()))
+            }
+        }
+    }
+
     /// Displays the Zendesk Request List view from the given controller, allowing user to access their tickets.
     ///
     func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String?) {
@@ -453,7 +588,52 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
             decoratedTags.append(sourceTagOrigin)
         }
 
+        if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
+            decoratedTags.append(Constants.authenticatedWithApplicationPasswordTag)
+        }
+
         return decoratedTags
+    }
+}
+
+/// To Refactor: These methods would end-up living outside this class. Exposing them here temporarily.
+/// https://github.com/woocommerce/woocommerce-ios/issues/8795
+///
+extension ZendeskManager {
+    func formID() -> Int64 {
+        TicketFieldIDs.form
+    }
+
+    func wcPayFormID() -> Int64 {
+        TicketFieldIDs.paymentsForm
+    }
+
+    func generalTags() -> [String] {
+        getTags(supportSourceTag: nil)
+    }
+
+    func wcPayTags() -> [String] {
+        getWCPayTags(supportSourceTag: nil)
+    }
+
+    func generalCustomFields() -> [Int64: String] {
+        // Extracts the custom fields from the `createRequest` method
+        createRequest(supportSourceTag: nil).customFields.reduce([:]) { dict, field in
+            guard let value = field.value as? String else { return dict } // Guards that all values are string
+            var mutableDict = dict
+            mutableDict[field.fieldId] = value
+            return mutableDict
+        }
+    }
+
+    func wcPayCustomFields() -> [Int64: String] {
+        // Extracts the custom fields from the `createWCPayRequest` method.
+        createWCPayRequest(supportSourceTag: nil).customFields.reduce([:]) { dict, field in
+            guard let value = field.value as? String else { return dict } // Guards that all values are string
+            var mutableDict = dict
+            mutableDict[field.fieldId] = value
+            return mutableDict
+        }
     }
 }
 
@@ -567,47 +747,6 @@ extension ZendeskManager: SupportManagerAdapter {
 // MARK: - Private Extension
 //
 private extension ZendeskManager {
-
-    func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
-
-        // If we already have an identity, do nothing.
-        guard haveUserIdentity == false else {
-            DDLogDebug("Using existing Zendesk identity: \(userEmail ?? ""), \(userName ?? "")")
-            registerDeviceTokenIfNeeded()
-            completion(true)
-            return
-        }
-
-        /*
-         1. Attempt to get user information from User Defaults.
-         2. If we don't have the user's information yet, attempt to get it from the account/site.
-         3. Prompt the user for email & name, pre-populating with user information obtained in step 1.
-         4. Create Zendesk identity with user information.
-         */
-
-        if getUserProfile() {
-            createZendeskIdentity { success in
-                guard success else {
-                    DDLogInfo("Creating Zendesk identity failed.")
-                    completion(false)
-                    return
-                }
-                DDLogDebug("Using User Defaults for Zendesk identity.")
-                self.haveUserIdentity = true
-                self.registerDeviceTokenIfNeeded()
-                completion(true)
-                return
-            }
-        }
-
-        getUserInformationAndShowPrompt(withName: true, from: viewController) { (success, _) in
-            if success {
-                self.registerDeviceTokenIfNeeded()
-            }
-
-            completion(success)
-        }
-    }
 
     func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
         presentInController = viewController
@@ -747,6 +886,18 @@ private extension ZendeskManager {
         // No extra config needed to attach an image. Hooray!
 
         return requestConfig
+    }
+
+    /// Creates a Zendesk Request to be consumed by a Request Provider.
+    ///
+    func createAPIRequest(formID: Int64, customFields: [Int64: String], tags: [String], subject: String, description: String) -> ZDKCreateRequest {
+        let request = ZDKCreateRequest()
+        request.ticketFormId = formID as NSNumber
+        request.customFields = customFields.map { CustomField(fieldId: $0, value: $1) }
+        request.tags = tags
+        request.subject = subject
+        request.requestDescription = description
+        return request
     }
 
     // MARK: - View
@@ -1112,6 +1263,7 @@ private extension ZendeskManager {
         static let blogSeperator = "\n----------\n"
         static let jetpackTag = "jetpack"
         static let wpComTag = "wpcom"
+        static let authenticatedWithApplicationPasswordTag = "application_password_authenticated"
         static let logFieldCharacterLimit = 64000
         static let networkWiFi = "WiFi"
         static let networkWWAN = "Mobile"

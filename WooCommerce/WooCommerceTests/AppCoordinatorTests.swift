@@ -321,31 +321,6 @@ final class AppCoordinatorTests: XCTestCase {
         _ = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginOnboardingShown.rawValue}))
     }
 
-    func test_trackRestAPILoginExperimentVariation_is_tracked_after_presenting_onboarding() throws {
-        // Given
-        stores.deauthenticate()
-        let analytics = MockAnalyticsProvider()
-
-        let mockABTestVariationProvider = MockABTestVariationProvider()
-        mockABTestVariationProvider.mockVariationValue = .control
-
-        let appCoordinator = makeCoordinator(window: window,
-                                             stores: stores,
-                                             authenticationManager: authenticationManager,
-                                             analytics: WooAnalytics(analyticsProvider: analytics),
-                                             abTestVariationProvider: mockABTestVariationProvider)
-
-        // When
-        appCoordinator.start()
-
-        // Then
-        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == "rest_api_login_experiment" }))
-        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-
-        let variant = try XCTUnwrap(eventProperties["experiment_variant"] as? String)
-        XCTAssertEqual(variant, "control")
-    }
-
     // MARK: - Login reminder analytics
 
     func test_loginLocalNotificationTapped_is_tracked_after_notification_contact_support_action() throws {
@@ -460,8 +435,7 @@ private extension AppCoordinatorTests {
                          analytics: Analytics = ServiceLocator.analytics,
                          loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-                         featureFlagService: FeatureFlagService = MockFeatureFlagService(),
-                         abTestVariationProvider: ABTestVariationProvider = DefaultABTestVariationProvider()) -> AppCoordinator {
+                         featureFlagService: FeatureFlagService = MockFeatureFlagService()) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
                               storageManager: storageManager ?? self.storageManager,
@@ -470,7 +444,6 @@ private extension AppCoordinatorTests {
                               analytics: analytics,
                               loggedOutAppSettings: loggedOutAppSettings,
                               pushNotesManager: pushNotesManager,
-                              featureFlagService: featureFlagService,
-                              abTestVariationProvider: abTestVariationProvider)
+                              featureFlagService: featureFlagService)
     }
 }

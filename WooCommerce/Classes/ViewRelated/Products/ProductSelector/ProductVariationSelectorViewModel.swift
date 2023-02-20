@@ -296,7 +296,7 @@ private extension ProductVariationSelectorViewModel {
         $productVariations.combineLatest($selectedProductVariationIDs) { [weak self] variations, selectedIDs -> [ProductRowViewModel] in
             guard let self = self else { return [] }
             return variations.map { variation in
-                let selectedState: ProductRowView.SelectedState = selectedIDs.contains(variation.productVariationID) ? .selected : .notSelected
+                let selectedState: ProductRow.SelectedState = selectedIDs.contains(variation.productVariationID) ? .selected : .notSelected
                 return ProductRowViewModel(productVariation: variation,
                                            name: ProductVariationFormatter().generateName(for: variation, from: self.productAttributes),
                                            canChangeQuantity: false,

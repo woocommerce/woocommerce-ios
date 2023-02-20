@@ -542,7 +542,7 @@ private extension ProductSelectorViewModel {
     ///
     func generateProductRows(products: [Product], selectedProductIDs: [Int64], selectedProductVariationIDs: [Int64]) -> [ProductRowViewModel] {
         return products.map { product in
-            var selectedState: ProductRowView.SelectedState
+            var selectedState: ProductRow.SelectedState
             if product.variations.isEmpty {
                 selectedState = selectedProductIDs.contains(product.productID) ? .selected : .notSelected
             } else {

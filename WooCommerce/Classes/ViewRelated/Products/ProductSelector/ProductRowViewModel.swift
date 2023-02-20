@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 import WooFoundation
 
-/// View model for `ProductRowView`.
+/// View model for `ProductRow`.
 ///
 final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
@@ -140,7 +140,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Whether this row is currently selected
     ///
-    let selectedState: ProductRowView.SelectedState
+    let selectedState: ProductRow.SelectedState
 
     init(id: Int64? = nil,
          productOrVariationID: Int64,
@@ -155,7 +155,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          imageURL: URL?,
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,
-         selectedState: ProductRowView.SelectedState = .notSelected,
+         selectedState: ProductRow.SelectedState = .notSelected,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
          removeProductIntent: @escaping (() -> Void) = {}) {
@@ -184,7 +184,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      product: Product,
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
-                     selectedState: ProductRowView.SelectedState = .notSelected,
+                     selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {}) {
@@ -222,7 +222,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
                      displayMode: VariationDisplayMode,
-                     selectedState: ProductRowView.SelectedState = .notSelected,
+                     selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {}) {

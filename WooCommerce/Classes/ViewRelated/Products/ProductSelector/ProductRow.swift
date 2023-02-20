@@ -3,7 +3,7 @@ import Kingfisher
 
 /// Represent a single product or variation row in the Product section of a New Order or in the ProductSelectorView
 ///
-struct ProductRowView: View {
+struct ProductRow: View {
     /// Whether more than one row can be selected.
     ///
     private let multipleSelectionsEnabled: Bool
@@ -101,7 +101,7 @@ struct ProductRowView: View {
 /// Subtype: SelectedState
 /// Used to set and render the ProductRow selection state
 ///
-extension ProductRowView {
+extension ProductRow {
     enum SelectedState {
         case notSelected
         case partiallySelected
@@ -121,7 +121,7 @@ extension ProductRowView {
 }
 
 /// Represents a custom stepper.
-/// Used to change the quantity of the product in a `ProductRowView`.
+/// Used to change the quantity of the product in a `ProductRow`.
 ///
 private struct ProductStepper: View {
 
@@ -217,16 +217,16 @@ struct ProductRow_Previews: PreviewProvider {
                                                           canChangeQuantity: false,
                                                           imageURL: nil)
 
-        ProductRowView(viewModel: viewModel)
-            .previewDisplayName("ProductRowView with stepper")
+        ProductRow(viewModel: viewModel)
+            .previewDisplayName("ProductRow with stepper")
             .previewLayout(.sizeThatFits)
 
-        ProductRowView(viewModel: viewModelWithoutStepper)
-            .previewDisplayName("ProductRowView without stepper")
+        ProductRow(viewModel: viewModelWithoutStepper)
+            .previewDisplayName("ProductRow without stepper")
             .previewLayout(.sizeThatFits)
 
-        ProductRowView(multipleSelectionsEnabled: true, viewModel: viewModelWithoutStepper)
-            .previewDisplayName("ProductRowView without stepper and with multiple selection")
+        ProductRow(multipleSelectionsEnabled: true, viewModel: viewModelWithoutStepper)
+            .previewDisplayName("ProductRow without stepper and with multiple selection")
             .previewLayout(.sizeThatFits)
     }
 }

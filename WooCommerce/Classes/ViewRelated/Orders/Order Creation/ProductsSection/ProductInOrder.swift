@@ -17,7 +17,7 @@ struct ProductInOrder: View {
                 VStack(spacing: Layout.noSpacing) {
                     Section {
                         Divider()
-                        ProductRowView(viewModel: viewModel.productRowViewModel)
+                        ProductRow(viewModel: viewModel.productRowViewModel)
                             .padding()
                         Divider()
                     }

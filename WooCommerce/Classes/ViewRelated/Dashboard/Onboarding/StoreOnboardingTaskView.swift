@@ -7,15 +7,18 @@ struct StoreOnboardingTaskView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     var body: some View {
-        HStack(alignment: .center) {
+        HStack(alignment: .center, spacing: Layout.horizontalSpacing) {
             // Check icon or task icon.
             if viewModel.isComplete {
                 Image(uiImage: .checkCircleImage.withRenderingMode(.alwaysTemplate))
+                    .resizable()
                     .foregroundColor(.init(uiColor: .accent))
                     .frame(width: scale * Layout.imageDimension,
                            height: scale * Layout.imageDimension)
             } else {
-                Image(uiImage: viewModel.icon)
+                Image(uiImage: viewModel.icon.withRenderingMode(.alwaysTemplate))
+                    .resizable()
+                    .foregroundColor(.init(uiColor: .text))
                     .frame(width: scale * Layout.imageDimension,
                            height: scale * Layout.imageDimension)
             }
@@ -36,6 +39,7 @@ struct StoreOnboardingTaskView: View {
 private extension StoreOnboardingTaskView {
     enum Layout {
         static let taskInsets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+        static let horizontalSpacing: CGFloat = 16
         static let verticalSpacing: CGFloat = 4
         static let spacerHeight: CGFloat = 12
         static let imageDimension: CGFloat = 24

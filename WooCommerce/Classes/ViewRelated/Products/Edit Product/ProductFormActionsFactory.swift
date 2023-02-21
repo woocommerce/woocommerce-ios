@@ -16,6 +16,7 @@ enum ProductFormEditAction: Equatable {
     case tags(editable: Bool)
     case shortDescription(editable: Bool)
     case linkedProducts(editable: Bool)
+    case addOptions
     case convertToVariable
     // Affiliate products only
     case sku(editable: Bool)
@@ -56,6 +57,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         .init(analytics: ServiceLocator.analytics,
               configuration: linkedProductsPromoCampaign.configuration)
     }
+    private let isAddOptionsButtonEnabled: Bool
     private let isConvertToVariableOptionEnabled: Bool
     private let isEmptyReviewsOptionHidden: Bool
     private let isProductTypeActionEnabled: Bool
@@ -66,6 +68,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          formType: ProductFormType,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
+         isAddOptionsButtonEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isConvertToVariableOptionEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isEmptyReviewsOptionHidden: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isProductTypeActionEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
@@ -77,6 +80,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
+        self.isAddOptionsButtonEnabled = isAddOptionsButtonEnabled
         self.isConvertToVariableOptionEnabled = isConvertToVariableOptionEnabled
         self.isEmptyReviewsOptionHidden = isEmptyReviewsOptionHidden
         self.isProductTypeActionEnabled = isProductTypeActionEnabled
@@ -106,6 +110,11 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     /// Returns an array of actions that are visible in the product form settings section.
     func settingsSectionActions() -> [ProductFormEditAction] {
         return visibleSettingsSectionActions()
+    }
+
+    /// Returns an array of actions that are visible in the product form options CTA section.
+    func optionsCTASectionActions() -> [ProductFormEditAction] {
+        isAddOptionsButtonEnabled ? [.addOptions] : []
     }
 
     /// Returns an array of actions that are visible in the product form bottom sheet.

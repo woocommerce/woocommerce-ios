@@ -64,12 +64,15 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var newVariationsPriceSubscription: AnyCancellable?
     private var productImageStatusesSubscription: AnyCancellable?
 
+    private let showGroupedTableViewAppearance: Bool
+
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         showGroupedTableViewAppearance: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
@@ -84,6 +87,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
+        self.showGroupedTableViewAppearance = showGroupedTableViewAppearance
         super.init(nibName: "ProductFormViewController", bundle: nil)
         updateDataSourceActions()
     }
@@ -440,13 +444,21 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .status:
                 break
             }
+        case .optionsCTA(let rows):
+            let row = rows[indexPath.row]
+            switch row {
+            case .addOptions:
+                moreDetailsButtonTapped(button: nil)
+            }
         }
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let section = tableViewModel.sections[section]
         switch section {
-        case .settings:
+        case .optionsCTA(let rows) where rows.isEmpty:
+            return 0
+        case .settings, .optionsCTA:
             return Constants.settingsHeaderHeight
         default:
             return 0
@@ -456,9 +468,32 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = tableViewModel.sections[section]
         switch section {
-        case .settings:
+        case .optionsCTA(let rows) where rows.isEmpty:
+            return nil
+        case .settings, .optionsCTA:
             let clearView = UIView(frame: .zero)
             clearView.backgroundColor = .listBackground
+
+            // Helper view that will hide top separator of 1st cell. Otherwise - 2 separators will blend together
+            let separatorBg = UIView(frame: .zero)
+            separatorBg.backgroundColor = .listForeground(modal: false)
+            separatorBg.translatesAutoresizingMaskIntoConstraints = false
+            clearView.addSubview(separatorBg)
+
+            NSLayoutConstraint.activate([
+                separatorBg.topAnchor.constraint(equalTo: clearView.bottomAnchor),
+                separatorBg.trailingAnchor.constraint(equalTo: clearView.trailingAnchor),
+                separatorBg.leadingAnchor.constraint(equalTo: clearView.leadingAnchor),
+                separatorBg.heightAnchor.constraint(equalToConstant: 1.0 / UIScreen.main.scale)
+            ])
+
+            // We need custom implementation for full-width separator on top of the section in plain tableview
+            let separator = UIView(frame: .zero)
+            separator.backgroundColor = .systemColor(.separator)
+            separator.translatesAutoresizingMaskIntoConstraints = false
+            separatorBg.addSubview(separator)
+            separatorBg.pinSubviewToAllEdges(separator)
+
             return clearView
         default:
             return nil
@@ -488,8 +523,12 @@ private extension ProductFormViewController {
         tableView.dataSource = tableViewDataSource
         tableView.delegate = self
 
-        tableView.backgroundColor = .listForeground(modal: false)
-        tableView.removeLastCellSeparator()
+        if showGroupedTableViewAppearance {
+            tableView.backgroundColor = .listBackground
+        } else {
+            tableView.backgroundColor = .listForeground(modal: false)
+            tableView.removeLastCellSeparator()
+        }
 
         // Since the table view is in a container under a stack view, the safe area adjustment should be handled in the container view.
         tableView.contentInsetAdjustmentBehavior = .never
@@ -509,6 +548,12 @@ private extension ProductFormViewController {
                     }
                 }
             case .settings(let rows):
+                rows.forEach { row in
+                    row.cellTypes.forEach { cellType in
+                        tableView.registerNib(for: cellType)
+                    }
+                }
+            case .optionsCTA(let rows):
                 rows.forEach { row in
                     row.cellTypes.forEach { cellType in
                         tableView.registerNib(for: cellType)
@@ -710,7 +755,7 @@ private extension ProductFormViewController {
 // MARK: More details actions
 //
 private extension ProductFormViewController {
-    func moreDetailsButtonTapped(button: UIButton) {
+    func moreDetailsButtonTapped(button: UIButton?) {
         let title = NSLocalizedString("Add more details",
                                       comment: "Title of the bottom sheet from the product form to add more product details.")
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)

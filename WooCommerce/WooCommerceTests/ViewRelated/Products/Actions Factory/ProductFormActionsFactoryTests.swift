@@ -518,6 +518,18 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertFalse(product.categories.isNotEmpty)
         XCTAssertTrue(factory.settingsSectionActions().contains(.categories(editable: true)))
     }
+
+    func test_options_CTA_actions_contain_add_options_when_it_is_enabled() {
+        // Given
+        let product = Product.fake()
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, isAddOptionsButtonEnabled: true)
+
+        // Then
+        XCTAssertTrue(factory.optionsCTASectionActions().contains(.addOptions))
+    }
 }
 
 private extension ProductFormActionsFactoryTests {

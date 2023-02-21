@@ -5,11 +5,13 @@ import XCTest
 class Character_URLSafeTests: XCTestCase {
 
     func testURLSafeCharacters() throws {
+        // Ensure `Character.urlSafeCharacters` maps 1:1 to `CharacterSet.urlQueryAllowed` by
+        // checking that `urlQueryAllowed` contains every character in `urlSafeCharacters`.
         try Character.urlSafeCharacters.forEach { character in
             let unicodeCharacter = try XCTUnwrap(character.unicodeScalars.first)
-            XCTAssertFalse(
-                CharacterSet.urlQueryAllowed.inverted.contains(unicodeCharacter),
-                "Expected \(character) to be part of the URL safe set, but it was found in its inverted set"
+            XCTAssertTrue(
+                CharacterSet.urlQueryAllowed.contains(unicodeCharacter),
+                "Expected \(character) to be part of the URL safe set"
             )
         }
     }

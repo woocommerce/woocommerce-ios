@@ -17,6 +17,7 @@ enum ProductFormEditAction: Equatable {
     case shortDescription(editable: Bool)
     case linkedProducts(editable: Bool)
     case addOptions
+    case convertToVariable
     // Affiliate products only
     case sku(editable: Bool)
     case externalURL(editable: Bool)
@@ -57,6 +58,10 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
               configuration: linkedProductsPromoCampaign.configuration)
     }
     private let isAddOptionsButtonEnabled: Bool
+    private let isConvertToVariableOptionEnabled: Bool
+    private let isEmptyReviewsOptionHidden: Bool
+    private let isProductTypeActionEnabled: Bool
+    private let isCategoriesActionAlwaysEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -64,6 +69,10 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
          isAddOptionsButtonEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isConvertToVariableOptionEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isEmptyReviewsOptionHidden: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isProductTypeActionEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isCategoriesActionAlwaysEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
@@ -72,6 +81,10 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
         self.isAddOptionsButtonEnabled = isAddOptionsButtonEnabled
+        self.isConvertToVariableOptionEnabled = isConvertToVariableOptionEnabled
+        self.isEmptyReviewsOptionHidden = isEmptyReviewsOptionHidden
+        self.isProductTypeActionEnabled = isProductTypeActionEnabled
+        self.isCategoriesActionAlwaysEnabled = isCategoriesActionAlwaysEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -149,7 +162,8 @@ private extension ProductFormActionsFactory {
             shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            isConvertToVariableOptionEnabled ? .convertToVariable : nil
         ]
         return actions.compactMap { $0 }
     }
@@ -252,11 +266,13 @@ private extension ProductFormActionsFactory {
             // The price settings action is always visible in the settings section.
             return true
         case .reviews:
-            // The reviews action is always visible in the settings section.
-            return true
+            if isEmptyReviewsOptionHidden {
+                return product.ratingCount > 0
+            } else {
+                return true
+            }
         case .productType:
-            // The product type action is always visible in the settings section.
-            return true
+            return isProductTypeActionEnabled
         case .inventorySettings(let editable):
             guard editable else {
                 // The inventory row is always visible when readonly.
@@ -270,7 +286,7 @@ private extension ProductFormActionsFactory {
         case .addOns:
             return addOnsFeatureEnabled && product.hasAddOns
         case .categories:
-            return product.product.categories.isNotEmpty
+            return isCategoriesActionAlwaysEnabled || product.product.categories.isNotEmpty
         case .tags:
             return product.product.tags.isNotEmpty
         case .linkedProducts:

@@ -388,18 +388,6 @@ extension MainTabBarController {
         }
     }
 
-    /// Switches to the My Store Tab, and presents the Settings .
-    ///
-    static func presentSettings() {
-        switchToMyStoreTab(animated: false)
-
-        guard let dashBoard: DashboardViewController = childViewController() else {
-            return
-        }
-
-        dashBoard.presentSettings()
-    }
-
     static func navigateToOrderDetails(with orderID: Int64, siteID: Int64) {
         showStore(with: siteID, onCompletion: { storeIsShown in
             switchToOrdersTab {

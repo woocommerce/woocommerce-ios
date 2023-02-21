@@ -7,7 +7,7 @@ struct ReceiptActionCoordinator {
                              countryCode: String,
                              cardReaderModel: String?,
                              stores: StoresManager,
-                             analytics: Analytics) async {
+                             analytics: Analytics = ServiceLocator.analytics) async {
         analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: countryCode, cardReaderModel: cardReaderModel))
 
          await withCheckedContinuation { continuation in

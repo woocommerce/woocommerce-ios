@@ -784,6 +784,11 @@ private extension ProductFormViewController {
                                                                         case .editLinkedProducts:
                                                                             ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
                                                                             self?.editLinkedProducts()
+                                                                        case .editReviews:
+                                                                            ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
+                                                                            self?.showReviews()
+                                                                        case .convertToVariable:
+                                                                            self?.convertToVariableType()
                                                                         }
                                                                     }
         }
@@ -1231,6 +1236,23 @@ private extension ProductFormViewController {
         }
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
         productTypesListPresenter.show(from: self, sourceView: cell, arrowDirections: .any)
+    }
+
+    func convertToVariableType() {
+        let originalProductType = product.productType
+        let selectedProductType = BottomSheetProductType.variable
+
+        ServiceLocator.analytics.track(.productTypeChanged, withProperties: [
+            "from": originalProductType.rawValue,
+            "to": selectedProductType.productType.rawValue
+        ])
+
+        presentProductTypeChangeAlert(for: originalProductType, completion: { [weak self] change in
+            guard change == true else {
+                return
+            }
+            self?.viewModel.updateProductType(productType: selectedProductType)
+        })
     }
 }
 

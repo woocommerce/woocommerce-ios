@@ -15,15 +15,18 @@ final class DomainSettingsCoordinator: Coordinator {
     private let site: Site
     private let stores: StoresManager
     private let source: Source
+    private let analytics: Analytics
 
     init(source: Source,
          site: Site,
          navigationController: UINavigationController,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.source = source
         self.site = site
         self.navigationController = navigationController
         self.stores = stores
+        self.analytics = analytics
     }
 
     @MainActor
@@ -31,10 +34,13 @@ final class DomainSettingsCoordinator: Coordinator {
         let settingsNavigationController = WooNavigationController()
         let domainSettings = DomainSettingsHostingController(viewModel: .init(siteID: site.siteID,
                                                                               stores: stores)) { [weak self] hasDomainCredit, freeStagingDomain in
-            self?.showDomainSelector(from: settingsNavigationController, hasDomainCredit: hasDomainCredit, freeStagingDomain: freeStagingDomain)
+            guard let self else { return }
+            self.showDomainSelector(from: settingsNavigationController, hasDomainCredit: hasDomainCredit, freeStagingDomain: freeStagingDomain)
         }
         settingsNavigationController.pushViewController(domainSettings, animated: false)
         navigationController.present(settingsNavigationController, animated: true)
+        analytics.track(event: .DomainSettings.domainSettingsStep(source: source,
+                                                                  step: .dashboard))
     }
 }
 
@@ -62,26 +68,32 @@ private extension DomainSettingsCoordinator {
                     self.showWebCheckout(from: navigationController, domain: domainToPurchase)
                 } catch {
                     // TODO: 8558 - error handling
-                    print("⛔️ Error creating cart with the selected domain \(domain): \(error)")
+                    DDLogError("⛔️ Error creating cart with the selected domain \(domain): \(error)")
                 }
             }
         }, onSupport: nil)
         navigationController.show(domainSelector, sender: nil)
+        analytics.track(event: .DomainSettings.domainSettingsStep(source: source,
+                                                                  step: .domainSelector))
     }
 
     @MainActor
     func showWebCheckout(from navigationController: UINavigationController, domain: DomainToPurchase) {
         guard let siteURLHost = URLComponents(string: site.url)?.host else {
             // TODO: 8558 - error handling
-            print("⛔️ Error showing web checkout for the selected domain \(domain) because of invalid site slug from site URL \(site.url)")
+            DDLogError("⛔️ Error showing web checkout for the selected domain \(domain) because of invalid site slug from site URL \(site.url)")
             return
         }
         let checkoutViewModel = WebCheckoutViewModel(siteSlug: siteURLHost) { [weak self] in
             guard let self else { return }
             self.showSuccessView(from: navigationController, domainName: domain.name)
+            self.analytics.track(event: .DomainSettings.domainSettingsCustomDomainPurchaseSuccess(source: self.source,
+                                                                                                  useDomainCredit: false))
         }
         let checkoutController = AuthenticatedWebViewController(viewModel: checkoutViewModel)
         navigationController.pushViewController(checkoutController, animated: true)
+        analytics.track(event: .DomainSettings.domainSettingsStep(source: source,
+                                                                  step: .webCheckout))
     }
 }
 
@@ -93,17 +105,25 @@ private extension DomainSettingsCoordinator {
         let contactInfoForm = DomainContactInfoFormHostingController(viewModel: .init(siteID: site.siteID,
                                                                                       contactInfoToEdit: contactInfo,
                                                                                       domain: domain.name,
+                                                                                      source: source,
                                                                                       stores: stores)) { [weak self] contactInfo in
             guard let self else { return }
             do {
                 try await self.redeemDomainCredit(domain: domain, contactInfo: contactInfo)
                 self.showSuccessView(from: navigationController, domainName: domain.name)
+                self.analytics.track(event: .DomainSettings.domainSettingsCustomDomainPurchaseSuccess(source: self.source,
+                                                                                                      useDomainCredit: true))
             } catch {
                 // TODO: 8558 - error handling
                 print("⛔️ Error redeeming domain credit with the selected domain \(domain): \(error)")
+                self.analytics.track(event: .DomainSettings.domainSettingsCustomDomainPurchaseFailed(source: self.source,
+                                                                                                     useDomainCredit: true,
+                                                                                                     error: error))
             }
         }
         navigationController.pushViewController(contactInfoForm, animated: true)
+        analytics.track(event: .DomainSettings.domainSettingsStep(source: source,
+                                                                  step: .contactInfo))
     }
 
     @MainActor
@@ -113,6 +133,8 @@ private extension DomainSettingsCoordinator {
             navigationController.popToRootViewController(animated: false)
         }
         navigationController.pushViewController(successController, animated: true)
+        analytics.track(event: .DomainSettings.domainSettingsStep(source: source,
+                                                                  step: .purchaseSuccess))
     }
 }
 

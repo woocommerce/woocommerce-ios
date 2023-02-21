@@ -1,7 +1,7 @@
 import SwiftUI
 import Kingfisher
 
-/// Represent a single product or variation row in the Product section of a New Order or in the ProductSelector
+/// Represent a single product or variation row in the Product section of a New Order or in the ProductSelectorView
 ///
 struct ProductRow: View {
     /// Whether more than one row can be selected.

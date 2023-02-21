@@ -4,7 +4,7 @@ import Combine
 import Foundation
 import WooFoundation
 
-/// View model for `ProductSelector`.
+/// View model for `ProductSelectorView`.
 ///
 final class ProductSelectorViewModel: ObservableObject {
     private let siteID: Int64

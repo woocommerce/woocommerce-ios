@@ -149,4 +149,8 @@ public enum FeatureFlag: Int {
     /// Whether to enable the simplified product editing experience.
     ///
     case simplifyProductEditing
+
+    /// Whether to enable Jetpack setup for users authenticated with application passwords.
+    ///
+    case jetpackSetupWithApplicationPassword
 }

@@ -71,6 +71,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .simplifyProductEditing:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
+        case .jetpackSetupWithApplicationPassword:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import UIKit
 
+/// Coordinates navigation for store onboarding.
 final class StoreOnboardingCoordinator: Coordinator {
     let navigationController: UINavigationController
 
@@ -17,6 +18,8 @@ final class StoreOnboardingCoordinator: Coordinator {
         navigationController.show(onboardingController, sender: self)
     }
 
+    /// Navigates to complete an onboarding task.
+    /// - Parameter task: the task to complete.
     func start(task: StoreOnboardingTask) {
         print("TODO: navigate to \(task)")
         start()

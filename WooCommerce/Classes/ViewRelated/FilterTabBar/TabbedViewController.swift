@@ -90,6 +90,7 @@ class TabbedViewController: UIViewController {
     @objc func changedItem(sender: FilterTabBar) {
         let item = items[sender.selectedIndex]
         child = item.viewController
+        selection = sender.selectedIndex
     }
 }
 

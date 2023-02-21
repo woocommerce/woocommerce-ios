@@ -42,7 +42,19 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     /// Because loading the last selected time range tab is async, the selected tab index is initially `nil` and set after the last selected value is loaded.
     /// We need to make sure any call to the public `reloadData` is after the selected time range is set to avoid making unnecessary API requests
     /// for the non-selected tab.
-    @Published private var selectedTimeRangeIndex: Int?
+    @Published private var selectedTimeRangeIndex: Int? {
+        didSet {
+            guard let selectedTimeRangeIndex, oldValue != selectedTimeRangeIndex else {
+                return
+            }
+            selection = selectedTimeRangeIndex
+        }
+    }
+    override var selection: Int {
+        didSet {
+            selectedTimeRangeIndex = selection
+        }
+    }
     private var selectedTimeRangeIndexSubscription: AnyCancellable?
     private var reloadDataAfterSelectedTimeRangeSubscriptions: Set<AnyCancellable> = []
 

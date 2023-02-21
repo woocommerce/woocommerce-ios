@@ -329,7 +329,7 @@ private extension ProductFormTableViewDataSource {
 
     func configureAddOptions(cell: UITableViewCell) {
         guard let cell = cell as? BasicTableViewCell else {
-            fatalError("Unexpected cell type \(cell) for view model: \(viewModel)")
+            fatalError("Unexpected cell type \(cell) for Add Options row")
         }
 
         cell.accessoryType = .none

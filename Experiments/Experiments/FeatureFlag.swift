@@ -149,4 +149,8 @@ public enum FeatureFlag: Int {
     /// Whether to enable the simplified product editing experience.
     ///
     case simplifyProductEditing
+
+    /// Whether to enable the onboarding checklist in the dashboard for WPCOM stores.
+    ///
+    case dashboardOnboarding
 }

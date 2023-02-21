@@ -17,6 +17,8 @@ final class DashboardViewModel {
 
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 
+    @Published private(set) var showOnboarding: Bool = false
+
     /// Trigger to start the Add Product flow
     ///
     let addProductTrigger = PassthroughSubject<Void, Never>()
@@ -33,6 +35,8 @@ final class DashboardViewModel {
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
+        // TODO: 8893 - determine if the onboarding view should be shown based on more criteria
+        self.showOnboarding = featureFlags.isFeatureFlagEnabled(.dashboardOnboarding)
     }
 
     /// Syncs store stats for dashboard UI.

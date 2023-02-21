@@ -343,6 +343,11 @@ private extension DashboardViewController {
                     guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                         return
                     }
+
+                    if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
+                        #warning("TODO: handle Jetpack setup for users authenticated with application passwords")
+                        return
+                    }
                     let installController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
                     installController.setDismissAction { [weak self] in
                         self?.dismiss(animated: true, completion: nil)
@@ -687,7 +692,10 @@ private extension DashboardViewController {
                                                                                    calendar: .current) { [weak self] isVisibleFromAppSettings in
                     guard let self = self else { return }
 
-                    let shouldShowJetpackBenefitsBanner = site?.isJetpackCPConnected == true && isVisibleFromAppSettings
+                    let isJetpackCPSite = site?.isJetpackCPConnected == true
+                    let jetpackSetupForApplicationPassword = site?.siteID == WooConstants.placeholderStoreID &&
+                        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)
+                    let shouldShowJetpackBenefitsBanner = (isJetpackCPSite || jetpackSetupForApplicationPassword) && isVisibleFromAppSettings
 
                     self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
                 }

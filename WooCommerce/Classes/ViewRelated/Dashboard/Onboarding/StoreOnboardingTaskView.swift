@@ -20,19 +20,12 @@ struct StoreOnboardingTaskView: View {
         } label: {
             HStack(alignment: .center, spacing: Layout.horizontalSpacing) {
                 // Check icon or task icon.
-                if viewModel.isComplete {
-                    Image(uiImage: .checkCircleImage.withRenderingMode(.alwaysTemplate))
-                        .resizable()
-                        .foregroundColor(.init(uiColor: .accent))
-                        .frame(width: scale * Layout.imageDimension,
-                               height: scale * Layout.imageDimension)
-                } else {
-                    Image(uiImage: viewModel.icon.withRenderingMode(.alwaysTemplate))
-                        .resizable()
-                        .foregroundColor(.init(uiColor: .text))
-                        .frame(width: scale * Layout.imageDimension,
-                               height: scale * Layout.imageDimension)
-                }
+                Image(uiImage: viewModel.isComplete ? .checkCircleImage : viewModel.icon)
+                    .renderingMode(.template)
+                    .resizable()
+                    .foregroundColor(.init(uiColor: viewModel.isComplete ? .accent : .text))
+                    .frame(width: scale * Layout.imageDimension,
+                           height: scale * Layout.imageDimension)
 
                 VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                     Spacer().frame(height: Layout.spacerHeight)
@@ -51,7 +44,7 @@ struct StoreOnboardingTaskView: View {
             }
             .padding(.horizontal, insets: Layout.taskInsets)
         }
-        .buttonStyle(PlainButtonStyle())
+        .buttonStyle(.plain)
     }
 }
 

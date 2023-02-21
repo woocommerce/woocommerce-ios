@@ -21,7 +21,7 @@ final class StoreOnboardingCoordinator: Coordinator {
     /// Navigates to complete an onboarding task.
     /// - Parameter task: the task to complete.
     func start(task: StoreOnboardingTask) {
-        print("TODO: navigate to \(task)")
+        #warning("TODO: handle navigation for each onboarding task")
         start()
     }
 }

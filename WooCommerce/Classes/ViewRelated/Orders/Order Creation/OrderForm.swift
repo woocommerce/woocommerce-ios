@@ -352,7 +352,8 @@ struct OrderForm_Previews: PreviewProvider {
 
 private extension ProductSelector.Configuration {
     static let addProductToOrder: Self =
-        .init(searchHeaderBackgroundColor: .listBackground,
+        .init(multipleSelectionsEnabled: true,
+              searchHeaderBackgroundColor: .listBackground,
               prefersLargeTitle: false,
               title: Localization.title,
               cancelButtonTitle: Localization.close,

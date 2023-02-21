@@ -72,7 +72,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .simplifyProductEditing:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
         case .dashboardOnboarding:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
         default:
             return true
         }

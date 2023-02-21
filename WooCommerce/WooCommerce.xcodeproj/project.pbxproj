@@ -394,6 +394,10 @@
 		02BAB02324D0250300F8B06E /* ProductVariation+ProductFormTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BAB02224D0250300F8B06E /* ProductVariation+ProductFormTests.swift */; };
 		02BAB02724D13A6400F8B06E /* ProductVariationFormActionsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BAB02624D13A6400F8B06E /* ProductVariationFormActionsFactory.swift */; };
 		02BAB02924D13AA500F8B06E /* ProductVariationFormActionsFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BAB02824D13AA500F8B06E /* ProductVariationFormActionsFactoryTests.swift */; };
+		02BBD6E529A2678100243BE2 /* StoreOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BBD6E429A2678100243BE2 /* StoreOnboardingView.swift */; };
+		02BBD6E729A268F300243BE2 /* StoreOnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BBD6E629A268F300243BE2 /* StoreOnboardingViewModel.swift */; };
+		02BBD6E929A3024400243BE2 /* StoreOnboardingTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BBD6E829A3024400243BE2 /* StoreOnboardingTaskView.swift */; };
+		02BBD6EB29A316FB00243BE2 /* StoreOnboardingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BBD6EA29A316FB00243BE2 /* StoreOnboardingCoordinator.swift */; };
 		02BC5AA024D27D8E00C43326 /* ProductVariationFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BC5A9F24D27D8E00C43326 /* ProductVariationFormViewModel.swift */; };
 		02BC5AA424D27F8900C43326 /* ProductVariationFormViewModel+ObservablesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BC5AA124D27F8800C43326 /* ProductVariationFormViewModel+ObservablesTests.swift */; };
 		02BC5AA524D27F8900C43326 /* ProductVariationFormViewModel+UpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BC5AA224D27F8800C43326 /* ProductVariationFormViewModel+UpdatesTests.swift */; };
@@ -2499,6 +2503,10 @@
 		02BAB02224D0250300F8B06E /* ProductVariation+ProductFormTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductVariation+ProductFormTests.swift"; sourceTree = "<group>"; };
 		02BAB02624D13A6400F8B06E /* ProductVariationFormActionsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationFormActionsFactory.swift; sourceTree = "<group>"; };
 		02BAB02824D13AA500F8B06E /* ProductVariationFormActionsFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationFormActionsFactoryTests.swift; sourceTree = "<group>"; };
+		02BBD6E429A2678100243BE2 /* StoreOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingView.swift; sourceTree = "<group>"; };
+		02BBD6E629A268F300243BE2 /* StoreOnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingViewModel.swift; sourceTree = "<group>"; };
+		02BBD6E829A3024400243BE2 /* StoreOnboardingTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTaskView.swift; sourceTree = "<group>"; };
+		02BBD6EA29A316FB00243BE2 /* StoreOnboardingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingCoordinator.swift; sourceTree = "<group>"; };
 		02BC5A9F24D27D8E00C43326 /* ProductVariationFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationFormViewModel.swift; sourceTree = "<group>"; };
 		02BC5AA124D27F8800C43326 /* ProductVariationFormViewModel+ObservablesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductVariationFormViewModel+ObservablesTests.swift"; sourceTree = "<group>"; };
 		02BC5AA224D27F8800C43326 /* ProductVariationFormViewModel+UpdatesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductVariationFormViewModel+UpdatesTests.swift"; sourceTree = "<group>"; };
@@ -5169,6 +5177,17 @@
 				02B1AA6629A4709400D54FCB /* FilterTabBar.swift */,
 			);
 			path = FilterTabBar;
+			sourceTree = "<group>";
+		};
+		02BBD6E329A2674C00243BE2 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				02BBD6E429A2678100243BE2 /* StoreOnboardingView.swift */,
+				02BBD6E629A268F300243BE2 /* StoreOnboardingViewModel.swift */,
+				02BBD6E829A3024400243BE2 /* StoreOnboardingTaskView.swift */,
+				02BBD6EA29A316FB00243BE2 /* StoreOnboardingCoordinator.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		02C0CD2823B5BAFB00F880B1 /* ImageService */ = {
@@ -8558,6 +8577,7 @@
 				2647F7B329280A5000D59FDF /* Analytics Hub */,
 				DE23CFF827462CD2003BE54E /* JetpackInstall */,
 				02F843D8273646190017FE12 /* JetpackConnectionPackageSites */,
+				02BBD6E329A2674C00243BE2 /* Onboarding */,
 				028BAC4322F3AE3B008BB4AF /* Stats v4 */,
 				029D444B22F1417400DEFA8A /* Stats v3 */,
 				029D444722F13F5C00DEFA8A /* Factories */,
@@ -10299,6 +10319,7 @@
 				CC53FB3C2757EC7200C4CA4F /* ProductSelectorViewModel.swift in Sources */,
 				CCA1D5FE293F537400B40560 /* DeltaPercentage.swift in Sources */,
 				4569D3C325DC008700CDC3E2 /* SiteAddress.swift in Sources */,
+				02BBD6E729A268F300243BE2 /* StoreOnboardingViewModel.swift in Sources */,
 				B9B0391828A6838400DC1C83 /* PermanentNoticeView.swift in Sources */,
 				DEC6C51827466B59006832D3 /* StoreStatsEmptyView.swift in Sources */,
 				31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */,
@@ -10533,6 +10554,7 @@
 				2664210126F3E1BB001FC5B4 /* ModalHostingPresentationController.swift in Sources */,
 				D8B4D5F026C2C7EC00F34E94 /* InPersonPaymentsStripeAccountPendingView.swift in Sources */,
 				B92639FF293E2D4C00A257E0 /* JustInTimeMessagesProvider.swift in Sources */,
+				02BBD6E529A2678100243BE2 /* StoreOnboardingView.swift in Sources */,
 				02784A03238B8BC800BDD6A8 /* UIView+Border.swift in Sources */,
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
 				45EF7984244F26BB00B22BA2 /* Array+IndexPath.swift in Sources */,
@@ -10721,6 +10743,7 @@
 				B586906621A5F4B1001F1EFC /* UINavigationController+Woo.swift in Sources */,
 				45FBDF3A238D3F8B00127F77 /* ExtendedAddProductImageCollectionViewCell.swift in Sources */,
 				02A410F52583A84C005E2925 /* SpacerTableViewCell.swift in Sources */,
+				02BBD6EB29A316FB00243BE2 /* StoreOnboardingCoordinator.swift in Sources */,
 				D881FE062579DC78008DE6F2 /* NotWPAccountViewModel.swift in Sources */,
 				311D21ED264AF0E700102316 /* CardReaderSettingsAlerts.swift in Sources */,
 				02C0CD2A23B5BB1C00F880B1 /* ImageService.swift in Sources */,
@@ -11209,6 +11232,7 @@
 				03EF24FA28BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */,
 				09EA565527C8ACEE00407D40 /* BulkUpdateViewController.swift in Sources */,
 				2602A64627BDBEBA00B347F1 /* ProductInputTransformer.swift in Sources */,
+				02BBD6E929A3024400243BE2 /* StoreOnboardingTaskView.swift in Sources */,
 				028203CF297662A200217369 /* DomainSelectorDataProvider.swift in Sources */,
 				DE74F2A327E41D650002FE59 /* EnableAnalyticsViewModel.swift in Sources */,
 				AE77EA5027A47C99006A21BD /* View+AddingDividers.swift in Sources */,

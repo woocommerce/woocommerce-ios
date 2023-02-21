@@ -3,7 +3,6 @@
 echo "--- :arrow_down: Installing Release Dependencies"
 brew install imagemagick
 brew install ghostscript
-brew install sentry-cli
 
 echo "--- :rubygems: Setting up Gems"
 install_gems

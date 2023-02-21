@@ -24,7 +24,7 @@ class TabbedViewController: UIViewController {
     private let items: [TabbedItem]
     private let onDismiss: (() -> Void)?
 
-    private lazy var tabBar: FilterTabBar = {
+    private(set) lazy var tabBar: FilterTabBar = {
         let bar = FilterTabBar()
         configureFilterTabBar(bar)
         bar.tabSizingStyle = .equalWidths
@@ -52,11 +52,12 @@ class TabbedViewController: UIViewController {
         }
     }
 
-    init(items: [TabbedItem], onDismiss: (() -> Void)? = nil) {
+    init(items: [TabbedItem], tabSizingStyle: FilterTabBar.TabSizingStyle, onDismiss: (() -> Void)? = nil) {
         self.items = items
         self.onDismiss = onDismiss
         super.init(nibName: nil, bundle: nil)
         tabBar.items = items
+        tabBar.tabSizingStyle = tabSizingStyle
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(donePressed))
 

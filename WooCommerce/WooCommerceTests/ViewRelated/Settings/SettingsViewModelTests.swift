@@ -219,7 +219,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.domain) })
     }
 
-    func test_domain_is_shown_when_domainSettings_feature_is_disabled_and_site_is_wpcom_for_shop_manager_role() {
+    func test_domain_is_not_shown_when_domainSettings_feature_is_enabled_and_site_is_wpcom_for_shop_manager_role() {
         // Given
         let featureFlagService = MockFeatureFlagService(isDomainSettingsEnabled: true)
         sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)

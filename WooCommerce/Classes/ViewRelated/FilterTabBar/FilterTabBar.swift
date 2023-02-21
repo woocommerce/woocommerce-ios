@@ -1,5 +1,7 @@
 import UIKit
 
+// NOTE: this file is adapted from WPiOS.
+
 /// Filter Tab Bar is a tabbed control (much like a segmented control), but
 /// has an appearance similar to Android tabs.
 ///
@@ -20,13 +22,12 @@ extension FilterTabBarItem {
 }
 
 extension FilterTabBarItem where Self: RawRepresentable {
-
     var accessibilityIdentifier: String {
         return "\(self)"
     }
 }
 
-class FilterTabBar: UIControl {
+final class FilterTabBar: UIControl {
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -210,6 +211,7 @@ class FilterTabBar: UIControl {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         commonInit()
+        prepareForVoiceOver()
     }
 
     private func commonInit() {
@@ -271,7 +273,6 @@ class FilterTabBar: UIControl {
     }
 
     private func makeTab(_ item: FilterTabBarItem) -> UIButton {
-
         let tab = TabBarButton(type: .custom)
         tab.setTitle(item.title, for: .normal)
         tab.setTitleColor(titleColorForSelected, for: .selected)
@@ -301,7 +302,6 @@ class FilterTabBar: UIControl {
     }
 
     private func addColor(_ color: UIColor, toAttributedString attributedString: NSAttributedString?) -> NSAttributedString? {
-
         guard let attributedString = attributedString else {
             return nil
         }
@@ -466,7 +466,7 @@ class FilterTabBar: UIControl {
 
     private enum AppearanceMetrics {
         static let height: CGFloat = 46.0
-        static let bottomDividerHeight: CGFloat = .hairlineBorderWidth
+        static let bottomDividerHeight: CGFloat = 0.5
         static let selectionIndicatorHeight: CGFloat = 2.0
         static let horizontalPadding: CGFloat = 0.0
         static let buttonInsets = UIEdgeInsets(top: 14.0, left: 12.0, bottom: 14.0, right: 12.0)
@@ -498,7 +498,7 @@ private class TabBarButton: UIButton {
     }
 
     private func setFont() {
-        titleLabel?.font = WPStyleGuide.fontForTextStyle(.subheadline, symbolicTraits: .traitBold, maximumPointSize: TabFont.maxSize)
+        titleLabel?.applySubheadlineStyle()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -510,7 +510,7 @@ private class TabBarButton: UIButton {
     }
 }
 
-extension FilterTabBar: Accessible {
+private extension FilterTabBar {
     func prepareForVoiceOver() {
         isAccessibilityElement = false
         accessibilityTraits = [super.accessibilityTraits, .tabBar]

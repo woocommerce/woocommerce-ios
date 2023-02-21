@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Shows a tappable onboarding task to set up the store. If the task is complete, a checkmark is shown.
 struct StoreOnboardingTaskView: View {
     private let viewModel: StoreOnboardingViewModel.TaskViewModel
     private let onTap: (StoreOnboardingTask) -> Void
@@ -10,7 +11,7 @@ struct StoreOnboardingTaskView: View {
         self.onTap = onTap
     }
 
-    /// Scale of the view based on accessibility changes
+    /// Scale of the view based on accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1.0
 
     var body: some View {
@@ -35,9 +36,12 @@ struct StoreOnboardingTaskView: View {
 
                 VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                     Spacer().frame(height: Layout.spacerHeight)
+                    // TODO: 8907 - show a chevron icon at the trailing edge
+                    // Task title.
                     Text(viewModel.task.title)
                         .fontWeight(.bold)
                         .multilineTextAlignment(.leading)
+                    // Task subtitle.
                     Text(viewModel.task.subtitle)
                         .multilineTextAlignment(.leading)
                     Spacer().frame(height: Layout.spacerHeight)
@@ -63,11 +67,6 @@ private extension StoreOnboardingTaskView {
 private extension StoreOnboardingTask {
     var title: String {
         switch self {
-        case .storeDetails:
-            return NSLocalizedString(
-                "Tell us more about your store",
-                comment: "Title of the store onboarding task to add more store details."
-            )
         case .addFirstProduct:
             return NSLocalizedString(
                 "Add your first product",
@@ -93,11 +92,6 @@ private extension StoreOnboardingTask {
 
     var subtitle: String {
         switch self {
-        case .storeDetails:
-            return NSLocalizedString(
-                "We’ll use the info to get a head start on your shipping, tax, and payments settings.",
-                comment: "Subtitle of the store onboarding task to add more store details."
-            )
         case .addFirstProduct:
             return NSLocalizedString(
                 "Start selling by adding products or services to your store.",

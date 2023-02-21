@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Shows a list of onboarding tasks for store setup with completion state.
 struct StoreOnboardingView: View {
     private let viewModel: StoreOnboardingViewModel
     private let taskTapped: (StoreOnboardingTask) -> Void

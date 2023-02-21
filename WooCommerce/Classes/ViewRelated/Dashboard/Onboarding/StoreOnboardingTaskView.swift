@@ -1,38 +1,52 @@
 import SwiftUI
 
 struct StoreOnboardingTaskView: View {
-    let viewModel: StoreOnboardingViewModel.TaskViewModel
+    private let viewModel: StoreOnboardingViewModel.TaskViewModel
+    private let onTap: (StoreOnboardingTask) -> Void
+
+    init(viewModel: StoreOnboardingViewModel.TaskViewModel,
+         onTap: @escaping (StoreOnboardingTask) -> Void) {
+        self.viewModel = viewModel
+        self.onTap = onTap
+    }
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
     var body: some View {
-        HStack(alignment: .center, spacing: Layout.horizontalSpacing) {
-            // Check icon or task icon.
-            if viewModel.isComplete {
-                Image(uiImage: .checkCircleImage.withRenderingMode(.alwaysTemplate))
-                    .resizable()
-                    .foregroundColor(.init(uiColor: .accent))
-                    .frame(width: scale * Layout.imageDimension,
-                           height: scale * Layout.imageDimension)
-            } else {
-                Image(uiImage: viewModel.icon.withRenderingMode(.alwaysTemplate))
-                    .resizable()
-                    .foregroundColor(.init(uiColor: .text))
-                    .frame(width: scale * Layout.imageDimension,
-                           height: scale * Layout.imageDimension)
-            }
+        Button {
+            onTap(viewModel.task)
+        } label: {
+            HStack(alignment: .center, spacing: Layout.horizontalSpacing) {
+                // Check icon or task icon.
+                if viewModel.isComplete {
+                    Image(uiImage: .checkCircleImage.withRenderingMode(.alwaysTemplate))
+                        .resizable()
+                        .foregroundColor(.init(uiColor: .accent))
+                        .frame(width: scale * Layout.imageDimension,
+                               height: scale * Layout.imageDimension)
+                } else {
+                    Image(uiImage: viewModel.icon.withRenderingMode(.alwaysTemplate))
+                        .resizable()
+                        .foregroundColor(.init(uiColor: .text))
+                        .frame(width: scale * Layout.imageDimension,
+                               height: scale * Layout.imageDimension)
+                }
 
-            VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-                Spacer().frame(height: Layout.spacerHeight)
-                Text(viewModel.task.title)
-                    .fontWeight(.bold)
-                Text(viewModel.task.subtitle)
-                Spacer().frame(height: Layout.spacerHeight)
-                Divider().dividerStyle()
+                VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+                    Spacer().frame(height: Layout.spacerHeight)
+                    Text(viewModel.task.title)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.leading)
+                    Text(viewModel.task.subtitle)
+                        .multilineTextAlignment(.leading)
+                    Spacer().frame(height: Layout.spacerHeight)
+                    Divider().dividerStyle()
+                }
             }
+            .padding(.horizontal, insets: Layout.taskInsets)
         }
-        .padding(.horizontal, insets: Layout.taskInsets)
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
@@ -112,8 +126,8 @@ struct StoreOnboardingTaskView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
             Group {
-                StoreOnboardingTaskView(viewModel: .init(task: .customizeDomains, isComplete: false, icon: .domainsImage))
-                StoreOnboardingTaskView(viewModel: .init(task: .customizeDomains, isComplete: true, icon: .domainsImage))
+                StoreOnboardingTaskView(viewModel: .init(task: .customizeDomains, isComplete: false, icon: .domainsImage), onTap: { _ in })
+                StoreOnboardingTaskView(viewModel: .init(task: .customizeDomains, isComplete: true, icon: .domainsImage), onTap: { _ in })
             }
             .previewDisplayName("Customize your domains")
         }

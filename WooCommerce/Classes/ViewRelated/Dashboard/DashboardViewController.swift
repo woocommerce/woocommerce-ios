@@ -96,7 +96,6 @@ final class DashboardViewController: UIViewController {
     /// Onboarding card.
     private var onboardingHostingController: ConstraintsUpdatingHostingController<StoreOnboardingView>?
     private var onboardingView: UIView?
-    private let onboardingViewModel: StoreOnboardingViewModel = .init(isExpanded: false)
     private var onboardingCoordinator: StoreOnboardingCoordinator?
 
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
@@ -542,7 +541,13 @@ private extension DashboardViewController {
     }
 
     func showOnboardingCard() {
-        let hostingController = ConstraintsUpdatingHostingController(rootView: StoreOnboardingView(viewModel: .init(isExpanded: false)))
+        let hostingController = ConstraintsUpdatingHostingController(rootView: StoreOnboardingView(viewModel: .init(isExpanded: false),
+                                                                                                   taskTapped: { [weak self] task in
+            guard let self, let navigationController = self.navigationController else { return }
+            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController)
+            self.onboardingCoordinator = coordinator
+            coordinator.start(task: task)
+        }))
         guard let uiView = hostingController.view else {
             return
         }

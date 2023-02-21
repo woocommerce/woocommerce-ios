@@ -468,7 +468,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertTrue(containsAttributeAction)
     }
 
-    func test_settings_actions_contain_even_empty_categories_when_it_is_enabled() {
+    func test_options_CTA_actions_contain_add_options_when_it_is_enabled() {
         // Given
         let product = Product.fake()
         let model = EditableProductModel(product: product)

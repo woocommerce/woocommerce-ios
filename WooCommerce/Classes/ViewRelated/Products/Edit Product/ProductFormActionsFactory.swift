@@ -115,7 +115,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
 
     /// Returns an array of actions that are visible in the product form options CTA section.
     func optionsCTASectionActions() -> [ProductFormEditAction] {
-        guard isAddOptionsButtonEnabled, product.product.productType == .simple else {
+        guard isAddOptionsButtonEnabled, product.product.productType == .simple, editable else {
             return []
         }
         return [.addOptions]

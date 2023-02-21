@@ -1,6 +1,5 @@
 import Combine
 import UIKit
-import XLPagerTabStrip
 import Yosemite
 import class WidgetKit.WidgetCenter
 

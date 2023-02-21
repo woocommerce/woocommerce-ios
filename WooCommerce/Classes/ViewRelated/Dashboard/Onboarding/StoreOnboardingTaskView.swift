@@ -39,10 +39,11 @@ struct StoreOnboardingTaskView: View {
                     // TODO: 8907 - show a chevron icon at the trailing edge
                     // Task title.
                     Text(viewModel.task.title)
-                        .fontWeight(.bold)
+                        .headlineStyle()
                         .multilineTextAlignment(.leading)
                     // Task subtitle.
                     Text(viewModel.task.subtitle)
+                        .subheadlineStyle()
                         .multilineTextAlignment(.leading)
                     Spacer().frame(height: Layout.spacerHeight)
                     Divider().dividerStyle()

@@ -1926,7 +1926,7 @@
 		DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */; };
 		DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */; };
 		DEE183ED292BD900008818AB /* JetpackSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */; };
-		DEE183F1292E0ED0008818AB /* LoginJetpackSetupInterruptedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183F0292E0ED0008818AB /* LoginJetpackSetupInterruptedView.swift */; };
+		DEE183F1292E0ED0008818AB /* JetpackSetupInterruptedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183F0292E0ED0008818AB /* JetpackSetupInterruptedView.swift */; };
 		DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */; };
 		DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437726D8DAD900888A75 /* InProgressView.swift */; };
 		DEEDA239298A11FB0088256B /* SiteCredentialLoginUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */; };
@@ -4048,7 +4048,7 @@
 		DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModel.swift; sourceTree = "<group>"; };
 		DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageAttributes.swift; sourceTree = "<group>"; };
 		DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupViewModelTests.swift; sourceTree = "<group>"; };
-		DEE183F0292E0ED0008818AB /* LoginJetpackSetupInterruptedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginJetpackSetupInterruptedView.swift; sourceTree = "<group>"; };
+		DEE183F0292E0ED0008818AB /* JetpackSetupInterruptedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupInterruptedView.swift; sourceTree = "<group>"; };
 		DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintCustomsFormsView.swift; sourceTree = "<group>"; };
 		DEE6437726D8DAD900888A75 /* InProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InProgressView.swift; sourceTree = "<group>"; };
 		DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginUseCase.swift; sourceTree = "<group>"; };
@@ -9132,7 +9132,7 @@
 			children = (
 				DE2FE594292737330018040A /* JetpackSetupView.swift */,
 				DE2FE596292737630018040A /* JetpackSetupViewModel.swift */,
-				DEE183F0292E0ED0008818AB /* LoginJetpackSetupInterruptedView.swift */,
+				DEE183F0292E0ED0008818AB /* JetpackSetupInterruptedView.swift */,
 			);
 			path = "Native Jetpack Setup";
 			sourceTree = "<group>";
@@ -11039,7 +11039,7 @@
 				B5BE75DB213F1D1E00909A14 /* OverlayMessageView.swift in Sources */,
 				31B0551E264B3C7A00134D87 /* CardPresentModalFoundReader.swift in Sources */,
 				4520A15E2722BA3E001FA573 /* OrderDateRangeFilter+Utils.swift in Sources */,
-				DEE183F1292E0ED0008818AB /* LoginJetpackSetupInterruptedView.swift in Sources */,
+				DEE183F1292E0ED0008818AB /* JetpackSetupInterruptedView.swift in Sources */,
 				028A465329597A91001CF6CE /* StoreCreationSellingPlatformsQuestionViewModel.swift in Sources */,
 				027CB045295D7B8B00F98F7C /* StoreCreationCountryQuestionViewModel.swift in Sources */,
 				2676F4CC2908284800C7A15B /* ProductCreationTypeCommand.swift in Sources */,

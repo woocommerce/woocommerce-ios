@@ -240,7 +240,7 @@ private extension SettingsViewModel {
 
             if stores.sessionManager.defaultSite?.isJetpackCPConnected == true ||
                 (stores.isAuthenticatedWithoutWPCom &&
-                 featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)){
+                 featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
                 rows.append(.installJetpack)
             }
 

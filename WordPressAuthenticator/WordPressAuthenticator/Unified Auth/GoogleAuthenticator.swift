@@ -132,7 +132,7 @@ class GoogleAuthenticator: NSObject {
         self.loginFields.meta.socialService = SocialServiceName.google
         self.authType = authType
 
-        guard authConfig.googleLoginWithoutSDK == false else {
+        guard authConfig.googleLoginWithoutSDK else {
             // Use method that depends on SDK
             requestAuthorization(from: viewController)
             return

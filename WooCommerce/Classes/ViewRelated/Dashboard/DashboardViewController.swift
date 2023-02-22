@@ -354,7 +354,8 @@ private extension DashboardViewController {
                         #warning("TODO: handle Jetpack setup for users authenticated with application passwords")
                         return
                     }
-                    let installController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
+                    let installController = JCPJetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
+
                     installController.setDismissAction { [weak self] in
                         self?.dismiss(animated: true, completion: nil)
                     }

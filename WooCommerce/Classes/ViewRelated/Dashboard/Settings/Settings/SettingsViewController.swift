@@ -368,7 +368,7 @@ private extension SettingsViewController {
 
         ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .settings))
 
-        if stores.isAuthenticatedWithoutWPCom {
+        if site.isNonJetpackSite {
             #warning("TODO: handle jetpack setup with application password")
             return
         }

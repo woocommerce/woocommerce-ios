@@ -728,7 +728,7 @@ private extension DashboardViewController {
                     guard let self = self else { return }
 
                     let isJetpackCPSite = site?.isJetpackCPConnected == true
-                    let jetpackSetupForApplicationPassword = site?.siteID == WooConstants.placeholderStoreID &&
+                    let jetpackSetupForApplicationPassword = site?.isNonJetpackSite == true &&
                         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)
                     let shouldShowJetpackBenefitsBanner = (isJetpackCPSite || jetpackSetupForApplicationPassword) && isVisibleFromAppSettings
 

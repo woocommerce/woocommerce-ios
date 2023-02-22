@@ -58,7 +58,11 @@ public class NewGoogleAuthenticator: NSObject {
             )
 
             session.presentationContextProvider = contextProvider
-            // FIXME: should this be configurable and/or defaulting to what?
+            // At this point in time, we don't see the need to make the session ephemeral.
+            //
+            // Additionally, from a user's perspective, it would be frustrating to have to
+            // authenticate with Google again unless necessary—it certainly would be when testing
+            // the app.
             session.prefersEphemeralWebBrowserSession = false
 
             // FIXME: Need this to avoid TSAN error in demo app. Can we move the call elsewhere?

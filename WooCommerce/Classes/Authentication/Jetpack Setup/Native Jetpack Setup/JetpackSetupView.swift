@@ -3,7 +3,7 @@ import SwiftUI
 /// Hosting controller for `JetpackSetupView`.
 ///
 final class JetpackSetupHostingController: UIHostingController<JetpackSetupView> {
-    private let viewModel: LoginJetpackSetupViewModel
+    private let viewModel: JetpackSetupViewModel
     private let analytics: Analytics
     private let authentication: Authentication
 
@@ -13,7 +13,7 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
          analytics: Analytics = ServiceLocator.analytics,
          onStoreNavigation: @escaping (String?) -> Void) {
         self.analytics = analytics
-        self.viewModel = LoginJetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
+        self.viewModel = JetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
         self.authentication = authentication
         super.init(rootView: JetpackSetupView(viewModel: viewModel))
 
@@ -113,12 +113,12 @@ struct JetpackSetupView: View {
     /// Triggered when the user selects Get support.
     var supportHandler: () -> Void = {}
 
-    @ObservedObject private var viewModel: LoginJetpackSetupViewModel
+    @ObservedObject private var viewModel: JetpackSetupViewModel
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(viewModel: LoginJetpackSetupViewModel) {
+    init(viewModel: JetpackSetupViewModel) {
         self.viewModel = viewModel
         viewModel.startSetup()
     }
@@ -315,7 +315,7 @@ private extension JetpackSetupView {
 
 struct JetpackSetupView_Previews: PreviewProvider {
     static var previews: some View {
-        JetpackSetupView(viewModel: LoginJetpackSetupViewModel(siteURL: "https://test.com", connectionOnly: true))
-        JetpackSetupView(viewModel: LoginJetpackSetupViewModel(siteURL: "https://test.com", connectionOnly: false))
+        JetpackSetupView(viewModel: JetpackSetupViewModel(siteURL: "https://test.com", connectionOnly: true))
+        JetpackSetupView(viewModel: JetpackSetupViewModel(siteURL: "https://test.com", connectionOnly: false))
     }
 }

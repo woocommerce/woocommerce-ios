@@ -1846,7 +1846,7 @@
 		DE2FE58D292617C30018040A /* SiteCredentialLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE58C292617C30018040A /* SiteCredentialLoginViewModel.swift */; };
 		DE2FE59029261DED0018040A /* SiteCredentialLoginViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE58F29261DED0018040A /* SiteCredentialLoginViewModelTests.swift */; };
 		DE2FE595292737330018040A /* JetpackSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE594292737330018040A /* JetpackSetupView.swift */; };
-		DE2FE597292737630018040A /* LoginJetpackSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE596292737630018040A /* LoginJetpackSetupViewModel.swift */; };
+		DE2FE597292737630018040A /* JetpackSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE596292737630018040A /* JetpackSetupViewModel.swift */; };
 		DE3404E828B4B96800CF0D97 /* NonAtomicSiteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */; };
 		DE3404EA28B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */; };
 		DE34771327F174C8009CA300 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34771227F174C8009CA300 /* StatusView.swift */; };
@@ -1925,7 +1925,7 @@
 		DECE1400279A595200816ECD /* Coupon+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECE13FF279A595200816ECD /* Coupon+Woo.swift */; };
 		DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */; };
 		DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */; };
-		DEE183ED292BD900008818AB /* LoginJetpackSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183EC292BD900008818AB /* LoginJetpackSetupViewModelTests.swift */; };
+		DEE183ED292BD900008818AB /* JetpackSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */; };
 		DEE183F1292E0ED0008818AB /* LoginJetpackSetupInterruptedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183F0292E0ED0008818AB /* LoginJetpackSetupInterruptedView.swift */; };
 		DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */; };
 		DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437726D8DAD900888A75 /* InProgressView.swift */; };
@@ -3968,7 +3968,7 @@
 		DE2FE58C292617C30018040A /* SiteCredentialLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginViewModel.swift; sourceTree = "<group>"; };
 		DE2FE58F29261DED0018040A /* SiteCredentialLoginViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginViewModelTests.swift; sourceTree = "<group>"; };
 		DE2FE594292737330018040A /* JetpackSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupView.swift; sourceTree = "<group>"; };
-		DE2FE596292737630018040A /* LoginJetpackSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginJetpackSetupViewModel.swift; sourceTree = "<group>"; };
+		DE2FE596292737630018040A /* JetpackSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupViewModel.swift; sourceTree = "<group>"; };
 		DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModel.swift; sourceTree = "<group>"; };
 		DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModelTests.swift; sourceTree = "<group>"; };
 		DE34771227F174C8009CA300 /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
@@ -4047,7 +4047,7 @@
 		DECE13FF279A595200816ECD /* Coupon+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+Woo.swift"; sourceTree = "<group>"; };
 		DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModel.swift; sourceTree = "<group>"; };
 		DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageAttributes.swift; sourceTree = "<group>"; };
-		DEE183EC292BD900008818AB /* LoginJetpackSetupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginJetpackSetupViewModelTests.swift; sourceTree = "<group>"; };
+		DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupViewModelTests.swift; sourceTree = "<group>"; };
 		DEE183F0292E0ED0008818AB /* LoginJetpackSetupInterruptedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginJetpackSetupInterruptedView.swift; sourceTree = "<group>"; };
 		DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintCustomsFormsView.swift; sourceTree = "<group>"; };
 		DEE6437726D8DAD900888A75 /* InProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InProgressView.swift; sourceTree = "<group>"; };
@@ -9119,7 +9119,7 @@
 			isa = PBXGroup;
 			children = (
 				DE2FE58F29261DED0018040A /* SiteCredentialLoginViewModelTests.swift */,
-				DEE183EC292BD900008818AB /* LoginJetpackSetupViewModelTests.swift */,
+				DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */,
 				EEC2D27E292CF60E0072132E /* LoginJetpackSetupHostingControllerTests.swift */,
 				EEC2D280292D10520072132E /* SiteCredentialLoginHostingViewControllerTests.swift */,
 				EEAA45FC293073FE0047D125 /* JetpackInstallStepTests.swift */,
@@ -9131,7 +9131,7 @@
 			isa = PBXGroup;
 			children = (
 				DE2FE594292737330018040A /* JetpackSetupView.swift */,
-				DE2FE596292737630018040A /* LoginJetpackSetupViewModel.swift */,
+				DE2FE596292737630018040A /* JetpackSetupViewModel.swift */,
 				DEE183F0292E0ED0008818AB /* LoginJetpackSetupInterruptedView.swift */,
 			);
 			path = "Native Jetpack Setup";
@@ -11191,7 +11191,7 @@
 				744F00D221B582A9007EFA93 /* StarRatingView.swift in Sources */,
 				45F627B9253603AE00894B86 /* ProductDownloadSettingsViewModel.swift in Sources */,
 				031B10E3274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift in Sources */,
-				DE2FE597292737630018040A /* LoginJetpackSetupViewModel.swift in Sources */,
+				DE2FE597292737630018040A /* JetpackSetupViewModel.swift in Sources */,
 				4572641727F1EB0D004E1F95 /* AddEditCoupon.swift in Sources */,
 				318109E825E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift in Sources */,
 				DE26B52C277DA11800A2EA0A /* CouponListView.swift in Sources */,
@@ -11709,7 +11709,7 @@
 				D8AB131E225DC25F002BB5D1 /* MockOrders.swift in Sources */,
 				DE74F2A727E47F620002FE59 /* EnableAnalyticsViewModelTests.swift in Sources */,
 				D8025496265530E0001B2CC1 /* CardPresentModalFoundReaderTests.swift in Sources */,
-				DEE183ED292BD900008818AB /* LoginJetpackSetupViewModelTests.swift in Sources */,
+				DEE183ED292BD900008818AB /* JetpackSetupViewModelTests.swift in Sources */,
 				028E19BC2805BD22001C36E0 /* RefundSubmissionUseCaseTests.swift in Sources */,
 				02645D8C27BA342D0065DC68 /* InboxNoteRowViewModelTests.swift in Sources */,
 				D85136D5231E40B500DD0539 /* ProductReviewTableViewCellTests.swift in Sources */,

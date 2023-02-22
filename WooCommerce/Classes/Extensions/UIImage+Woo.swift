@@ -256,6 +256,12 @@ extension UIImage {
         return UIImage(named: "domain-purchase-success")!
     }
 
+    /// Domains image.
+    ///
+    static var domainsImage: UIImage {
+        UIImage.gridicon(.domains)
+    }
+
     /// Domain search placeholder image.
     ///
     static var domainSearchPlaceholderImage: UIImage {

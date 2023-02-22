@@ -354,12 +354,23 @@ extension ProductFormViewModel {
     }
 
     func updateProductSettings(_ settings: ProductSettings) {
+        /// The property `manageStock` is set to `false` if the new `productType` is `affiliate`
+        /// because it seems there is a small bug in APIs that doesn't allow us to change type from a product with
+        /// manage stock enabled to external product type. More info: PR-2665
+        ///
+        var manageStock = product.product.manageStock
+        if settings.productType == .affiliate {
+            manageStock = false
+        }
+
         product = EditableProductModel(product: product.product.copy(slug: settings.slug,
+                                                                     productTypeKey: settings.productType.rawValue,
                                                                      statusKey: settings.status.rawValue,
                                                                      featured: settings.featured,
                                                                      catalogVisibilityKey: settings.catalogVisibility.rawValue,
                                                                      virtual: settings.virtual,
                                                                      downloadable: settings.downloadable,
+                                                                     manageStock: manageStock,
                                                                      reviewsAllowed: settings.reviewsAllowed,
                                                                      purchaseNote: settings.purchaseNote,
                                                                      menuOrder: settings.menuOrder))

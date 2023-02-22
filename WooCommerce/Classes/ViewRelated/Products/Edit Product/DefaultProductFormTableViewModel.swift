@@ -40,7 +40,8 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
 private extension DefaultProductFormTableViewModel {
     mutating func configureSections(product: ProductFormDataModel, actionsFactory: ProductFormActionsFactoryProtocol) {
         sections = [.primaryFields(rows: primaryFieldRows(product: product, actions: actionsFactory.primarySectionActions())),
-                    .settings(rows: settingsRows(productModel: product, actions: actionsFactory.settingsSectionActions()))]
+                    .settings(rows: settingsRows(productModel: product, actions: actionsFactory.settingsSectionActions())),
+                    .optionsCTA(rows: optionsCTARows(product: product, actions: actionsFactory.optionsCTASectionActions()))]
             .filter { $0.isNotEmpty }
     }
 
@@ -137,6 +138,17 @@ private extension DefaultProductFormTableViewModel {
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
+            }
+        }
+    }
+
+    func optionsCTARows(product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.OptionsCTARow] {
+        return actions.map { action in
+            switch action {
+            case .addOptions:
+                return .addOptions
+            default:
+                fatalError("Unexpected action in the options CTA section: \(action)")
             }
         }
     }

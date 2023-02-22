@@ -12,16 +12,17 @@ final class ProductSettingsRowsTests: XCTestCase {
         super.setUp()
 
         // Given
-        originalSettings = ProductSettings(status: .draft,
-                                       featured: false,
-                                       password: nil,
-                                       catalogVisibility: .catalog,
-                                       virtual: false,
-                                       reviewsAllowed: false,
-                                       slug: "",
-                                       purchaseNote: nil,
-                                       menuOrder: 0,
-                                       downloadable: false)
+        originalSettings = ProductSettings(productType: .simple,
+                                           status: .draft,
+                                           featured: false,
+                                           password: nil,
+                                           catalogVisibility: .catalog,
+                                           virtual: false,
+                                           reviewsAllowed: false,
+                                           slug: "",
+                                           purchaseNote: nil,
+                                           menuOrder: 0,
+                                           downloadable: false)
     }
 
     override func tearDown() {

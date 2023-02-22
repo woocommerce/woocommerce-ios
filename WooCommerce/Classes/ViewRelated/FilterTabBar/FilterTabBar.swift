@@ -343,7 +343,6 @@ final class FilterTabBar: UIControl {
         }
 
         setSelectedIndex(index)
-        sendActions(for: .valueChanged)
     }
 
     /// The index of the currently selected tab.
@@ -367,7 +366,14 @@ final class FilterTabBar: UIControl {
             return
         }
 
+        let isSelectedIndexChanged = selectedIndex != index
         selectedIndex = index
+
+        // Sends `valueChanged` event when the selected index is triggered to allow programatic selection.
+        // This event has to be sent after the tab bar's `selectedIndex` because it is the index used in `TabbedViewController`.
+        if isSelectedIndexChanged {
+            sendActions(for: .valueChanged)
+        }
 
         guard let tab = selectedTab else {
             return

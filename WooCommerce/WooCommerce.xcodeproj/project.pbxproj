@@ -8561,7 +8561,7 @@
 			isa = PBXGroup;
 			children = (
 				2647F7B329280A5000D59FDF /* Analytics Hub */,
-				DE23CFF827462CD2003BE54E /* JetpackInstall */,
+				DE23CFF827462CD2003BE54E /* JCPJetpackInstall */,
 				02F843D8273646190017FE12 /* JetpackConnectionPackageSites */,
 				02BBD6E329A2674C00243BE2 /* Onboarding */,
 				028BAC4322F3AE3B008BB4AF /* Stats v4 */,
@@ -9064,7 +9064,7 @@
 			path = "Review Order";
 			sourceTree = "<group>";
 		};
-		DE23CFF827462CD2003BE54E /* JetpackInstall */ = {
+		DE23CFF827462CD2003BE54E /* JCPJetpackInstall */ = {
 			isa = PBXGroup;
 			children = (
 				DE23CFF927462D8F003BE54E /* JCPJetpackInstallIntroView.swift */,
@@ -9073,7 +9073,7 @@
 				DEC51A9C274F8528009F3DF4 /* JCPJetpackInstallStepsViewModel.swift */,
 				DEC6C51D27479280006832D3 /* JetpackInstallSteps.swift */,
 			);
-			path = JetpackInstall;
+			path = JCPJetpackInstall;
 			sourceTree = "<group>";
 		};
 		DE279BA226E9C3BF002BA963 /* Multi-package */ = {

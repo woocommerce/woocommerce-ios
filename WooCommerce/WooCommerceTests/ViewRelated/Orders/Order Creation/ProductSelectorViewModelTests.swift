@@ -430,7 +430,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  storageManager: storageManager)
 
         // When
-        viewModel.toggleSelectionForVariations(of: product.productID)
+        viewModel.toggleSelectionForAllVariations(of: product.productID)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
@@ -447,7 +447,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.updateSelectedVariations(productID: product.productID, selectedVariationIDs: [2])
-        viewModel.toggleSelectionForVariations(of: product.productID)
+        viewModel.toggleSelectionForAllVariations(of: product.productID)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
@@ -464,7 +464,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.updateSelectedVariations(productID: product.productID, selectedVariationIDs: [1, 2])
-        viewModel.toggleSelectionForVariations(of: product.productID)
+        viewModel.toggleSelectionForAllVariations(of: product.productID)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })

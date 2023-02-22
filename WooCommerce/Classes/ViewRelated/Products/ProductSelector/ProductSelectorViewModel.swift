@@ -242,7 +242,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Select all variations for a given product
     ///
-    func toggleSelectionForVariations(of productID: Int64) {
+    func toggleSelectionForAllVariations(of productID: Int64) {
         guard let variableProduct = products.first(where: { $0.productID == productID }),
               variableProduct.variations.isNotEmpty else {
             return

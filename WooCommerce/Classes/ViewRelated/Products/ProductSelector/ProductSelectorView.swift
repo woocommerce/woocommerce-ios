@@ -152,7 +152,7 @@ struct ProductSelectorView: View {
             HStack {
                 ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
                            viewModel: rowViewModel) {
-                    viewModel.toggleSelectionForVariations(of: rowViewModel.productOrVariationID)
+                    viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {

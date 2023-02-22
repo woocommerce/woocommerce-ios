@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// Hosting controller wrapper for `JetpackInstallIntroView`
+/// Hosting controller wrapper for `JCPJetpackInstallIntroView`
 ///
-final class JetpackInstallHostingController: UIHostingController<JetpackInstallView> {
+final class JCPJetpackInstallHostingController: UIHostingController<JetpackInstallView> {
     init(siteID: Int64, siteURL: String, siteAdminURL: String) {
         super.init(rootView: JetpackInstallView(siteID: siteID, siteURL: siteURL, siteAdminURL: siteAdminURL))
         rootView.supportAction = { [unowned self] in

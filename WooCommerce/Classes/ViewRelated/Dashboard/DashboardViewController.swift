@@ -349,7 +349,7 @@ private extension DashboardViewController {
                     guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                         return
                     }
-                    let installController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
+                    let installController = JCPJetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
                     installController.setDismissAction { [weak self] in
                         self?.dismiss(animated: true, completion: nil)
                     }

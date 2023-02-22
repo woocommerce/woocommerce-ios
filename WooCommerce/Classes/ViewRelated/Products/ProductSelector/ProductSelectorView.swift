@@ -151,9 +151,7 @@ struct ProductSelectorView: View {
         if let variationListViewModel = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
             HStack {
                 ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
-                           viewModel: rowViewModel) {
-                    viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
-                }
+                           viewModel: rowViewModel)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
                     isShowingVariationList.toggle()

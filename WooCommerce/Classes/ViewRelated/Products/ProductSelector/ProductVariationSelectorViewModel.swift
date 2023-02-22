@@ -159,10 +159,19 @@ final class ProductVariationSelectorViewModel: ObservableObject {
             return
         }
 
-        if let onVariationSelected = onVariationSelected {
-            onVariationSelected(selectedVariation, parentProduct)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
+            // Product variation multi-selection (new)
+            if let onVariationSelected = onVariationSelected {
+                toggleSelection(productVariationID: variationID)
+                onVariationSelected(selectedVariation, parentProduct)
+            }
         } else {
-            toggleSelection(productVariationID: variationID)
+            // Product variation single-selection (legacy)
+            if let onVariationSelected = onVariationSelected {
+                onVariationSelected(selectedVariation, parentProduct)
+            } else {
+                toggleSelection(productVariationID: variationID)
+            }
         }
     }
 

@@ -12,7 +12,7 @@ final class LoginJetpackSetupHostingControllerTests: XCTestCase {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewController = LoginJetpackSetupHostingController(siteURL: testURL, connectionOnly: true, analytics: analytics, onStoreNavigation: { _ in })
+        let viewController = JetpackSetupHostingController(siteURL: testURL, connectionOnly: true, analytics: analytics, onStoreNavigation: { _ in })
 
         // When
         _ = try XCTUnwrap(viewController.view)
@@ -25,7 +25,7 @@ final class LoginJetpackSetupHostingControllerTests: XCTestCase {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewController = LoginJetpackSetupHostingController(siteURL: testURL, connectionOnly: true, analytics: analytics, onStoreNavigation: { _ in })
+        let viewController = JetpackSetupHostingController(siteURL: testURL, connectionOnly: true, analytics: analytics, onStoreNavigation: { _ in })
 
         // When
         _ = try XCTUnwrap(viewController.view)

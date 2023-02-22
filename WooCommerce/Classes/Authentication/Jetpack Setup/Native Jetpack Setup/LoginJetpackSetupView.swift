@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// Hosting controller for `LoginJetpackSetupView`.
+/// Hosting controller for `JetpackSetupView`.
 ///
-final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpackSetupView> {
+final class JetpackSetupHostingController: UIHostingController<LoginJetpackSetupView> {
     private let viewModel: LoginJetpackSetupViewModel
     private let analytics: Analytics
     private let authentication: Authentication
@@ -94,7 +94,7 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
     }
 }
 
-private extension LoginJetpackSetupHostingController {
+private extension JetpackSetupHostingController {
     enum Localization {
         static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
     }

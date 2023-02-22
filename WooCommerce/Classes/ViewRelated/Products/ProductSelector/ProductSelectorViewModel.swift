@@ -172,16 +172,35 @@ final class ProductSelectorViewModel: ObservableObject {
         configureProductSearch()
     }
 
+    private func debug_helper(product: Product) {
+        print("🍍ProductID: \(product.productID) selected. \(product.name)")
+        print("🍍initialSelectedItems \(initialSelectedItems)")
+        print("🍍selectedProductIDs \(selectedProductIDs)")
+        print("🍍selectedProductVariationIDs \(selectedProductVariationIDs)")
+    }
+
     /// Select a product to add to the order
     ///
     func selectProduct(_ productID: Int64) {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
-        if let onProductSelected = onProductSelected {
-            onProductSelected(selectedProduct)
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
+            // Product multi-selection (new)
+            if let onProductSelected = onProductSelected {
+                toggleSelection(productID: productID)
+                onProductSelected(selectedProduct)
+                // TODO: Remove
+                debug_helper(product: selectedProduct)
+            }
         } else {
-            toggleSelection(productID: productID)
+            // Product single-selection (legacy)
+            if let onProductSelected = onProductSelected {
+                onProductSelected(selectedProduct)
+            } else {
+                toggleSelection(productID: productID)
+            }
         }
     }
 

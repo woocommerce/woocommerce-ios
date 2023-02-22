@@ -1910,8 +1910,8 @@
 		DEC2962526C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962426C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift */; };
 		DEC2962726C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962626C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift */; };
 		DEC2962926C20ECB005A056B /* CollapsibleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962826C20ECB005A056B /* CollapsibleView.swift */; };
-		DEC51A9D274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A9C274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift */; };
-		DEC51AA0274F9922009F3DF4 /* JetpackInstallStepsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A9F274F9922009F3DF4 /* JetpackInstallStepsViewModelTests.swift */; };
+		DEC51A9D274F8528009F3DF4 /* JCPJetpackInstallStepsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A9C274F8528009F3DF4 /* JCPJetpackInstallStepsViewModel.swift */; };
+		DEC51AA0274F9922009F3DF4 /* JCPJetpackInstallStepsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A9F274F9922009F3DF4 /* JCPJetpackInstallStepsViewModelTests.swift */; };
 		DEC51AFD276AEAE3009F3DF4 /* SystemStatusReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AFC276AEAE3009F3DF4 /* SystemStatusReportView.swift */; };
 		DEC51B00276AEE91009F3DF4 /* SystemStatusReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AFF276AEE91009F3DF4 /* SystemStatusReportViewModel.swift */; };
 		DEC51B04276B30F6009F3DF4 /* SystemStatusReportViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51B03276B30F6009F3DF4 /* SystemStatusReportViewModelTests.swift */; };
@@ -4032,8 +4032,8 @@
 		DEC2962426C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormInputViewModel.swift; sourceTree = "<group>"; };
 		DEC2962626C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelCustomsForm+Localization.swift"; sourceTree = "<group>"; };
 		DEC2962826C20ECB005A056B /* CollapsibleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleView.swift; sourceTree = "<group>"; };
-		DEC51A9C274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallStepsViewModel.swift; sourceTree = "<group>"; };
-		DEC51A9F274F9922009F3DF4 /* JetpackInstallStepsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallStepsViewModelTests.swift; sourceTree = "<group>"; };
+		DEC51A9C274F8528009F3DF4 /* JCPJetpackInstallStepsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCPJetpackInstallStepsViewModel.swift; sourceTree = "<group>"; };
+		DEC51A9F274F9922009F3DF4 /* JCPJetpackInstallStepsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCPJetpackInstallStepsViewModelTests.swift; sourceTree = "<group>"; };
 		DEC51AFC276AEAE3009F3DF4 /* SystemStatusReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusReportView.swift; sourceTree = "<group>"; };
 		DEC51AFF276AEE91009F3DF4 /* SystemStatusReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusReportViewModel.swift; sourceTree = "<group>"; };
 		DEC51B03276B30F6009F3DF4 /* SystemStatusReportViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusReportViewModelTests.swift; sourceTree = "<group>"; };
@@ -9070,7 +9070,7 @@
 				DE23CFF927462D8F003BE54E /* JCPJetpackInstallIntroView.swift */,
 				DEC6C5192747758D006832D3 /* JCPJetpackInstallView.swift */,
 				DEC6C51B27477890006832D3 /* JCPJetpackInstallStepsView.swift */,
-				DEC51A9C274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift */,
+				DEC51A9C274F8528009F3DF4 /* JCPJetpackInstallStepsViewModel.swift */,
 				DEC6C51D27479280006832D3 /* JetpackInstallSteps.swift */,
 			);
 			path = JetpackInstall;
@@ -9222,7 +9222,7 @@
 		DEC51A9E274F990D009F3DF4 /* JetpackInstall */ = {
 			isa = PBXGroup;
 			children = (
-				DEC51A9F274F9922009F3DF4 /* JetpackInstallStepsViewModelTests.swift */,
+				DEC51A9F274F9922009F3DF4 /* JCPJetpackInstallStepsViewModelTests.swift */,
 			);
 			path = JetpackInstall;
 			sourceTree = "<group>";
@@ -10513,7 +10513,7 @@
 				AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */,
 				26C6E8EC26E8FF4800C7BB0F /* LazyNavigationLink.swift in Sources */,
 				45E9A6E724DAE23300A600E8 /* ProductReviewsViewModel.swift in Sources */,
-				DEC51A9D274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift in Sources */,
+				DEC51A9D274F8528009F3DF4 /* JCPJetpackInstallStepsViewModel.swift in Sources */,
 				455DC3A327393C7E00D4644C /* OrderDatesFilterViewController.swift in Sources */,
 				45B6F4EF27592A4000C18782 /* ReviewsView.swift in Sources */,
 				268FD44727580A81008FDF9B /* LegacyCollectOrderPaymentUseCase.swift in Sources */,
@@ -11524,7 +11524,7 @@
 				B6440FB9292E74230012D506 /* AnalyticsHubTimeRangeSelectionTests.swift in Sources */,
 				B57C5C9E21B80E8300FF82B2 /* SessionManager+Internal.swift in Sources */,
 				2667BFDB252E659A008099D4 /* MockOrderItem.swift in Sources */,
-				DEC51AA0274F9922009F3DF4 /* JetpackInstallStepsViewModelTests.swift in Sources */,
+				DEC51AA0274F9922009F3DF4 /* JCPJetpackInstallStepsViewModelTests.swift in Sources */,
 				E1068058285C787100668B46 /* BetaFeaturesTests.swift in Sources */,
 				26C6E8E426E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift in Sources */,
 				0269A5E72913FD22003B20EB /* StoreCreationCoordinatorTests.swift in Sources */,

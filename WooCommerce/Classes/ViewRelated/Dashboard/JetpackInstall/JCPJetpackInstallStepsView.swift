@@ -16,7 +16,7 @@ struct JCPJetpackInstallStepsView: View {
     @State private var showingWPAdminWebview: Bool = false
 
     // View model to handle the installation
-    @ObservedObject private var viewModel: JetpackInstallStepsViewModel
+    @ObservedObject private var viewModel: JCPJetpackInstallStepsViewModel
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -38,7 +38,7 @@ struct JCPJetpackInstallStepsView: View {
         return attributedString
     }
 
-    init(viewModel: JetpackInstallStepsViewModel,
+    init(viewModel: JCPJetpackInstallStepsViewModel,
          noticePresenter: DefaultNoticePresenter,
          supportAction: @escaping () -> Void,
          dismissAction: @escaping () -> Void) {
@@ -200,7 +200,7 @@ private extension JCPJetpackInstallStepsView {
 
 struct JCPJetpackInstallStepsView_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = JetpackInstallStepsViewModel(siteID: 123, siteURL: "automattic.com", siteAdminURL: "")
+        let viewModel = JCPJetpackInstallStepsViewModel(siteID: 123, siteURL: "automattic.com", siteAdminURL: "")
         JCPJetpackInstallStepsView(viewModel: viewModel, noticePresenter: .init(), supportAction: {}, dismissAction: {})
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 414, height: 780))

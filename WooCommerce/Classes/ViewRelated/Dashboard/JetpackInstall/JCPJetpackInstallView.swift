@@ -47,14 +47,14 @@ struct JCPJetpackInstallView: View {
     private let siteAdminURL: String
 
     // View model for `JetpackInstallStepsView`
-    private let installStepsViewModel: JetpackInstallStepsViewModel
+    private let installStepsViewModel: JCPJetpackInstallStepsViewModel
 
     @State private var hasStarted = false
 
     init(siteID: Int64, siteURL: String, siteAdminURL: String) {
         self.siteURL = siteURL
         self.siteAdminURL = siteAdminURL
-        self.installStepsViewModel = JetpackInstallStepsViewModel(siteID: siteID, siteURL: siteURL, siteAdminURL: siteAdminURL)
+        self.installStepsViewModel = JCPJetpackInstallStepsViewModel(siteID: siteID, siteURL: siteURL, siteAdminURL: siteAdminURL)
     }
 
     var body: some View {

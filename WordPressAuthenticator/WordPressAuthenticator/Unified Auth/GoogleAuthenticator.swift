@@ -138,7 +138,7 @@ class GoogleAuthenticator: NSObject {
             return
         }
 
-        Task.init {
+        Task {
             do {
                 let token = try await requestAuthorization(
                     for: authType,

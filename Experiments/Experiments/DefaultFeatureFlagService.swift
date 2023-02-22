@@ -33,6 +33,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .loginMagicLinkEmphasisM2:
             return true
+        case .productMultiSelectionM1:
+            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         case .promptToEnableCodInIppOnboarding:
             return true
         case .searchProductsBySKU:
@@ -71,6 +73,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .simplifyProductEditing:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
+        case .jetpackSetupWithApplicationPassword:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .dashboardOnboarding:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
         default:

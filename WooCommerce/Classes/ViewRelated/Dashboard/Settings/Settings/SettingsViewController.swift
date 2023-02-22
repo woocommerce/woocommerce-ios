@@ -368,7 +368,12 @@ private extension SettingsViewController {
 
         ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .settings))
 
+        if site.isNonJetpackSite {
+            #warning("TODO: handle jetpack setup with application password")
+            return
+        }
         let installJetpackController = JCPJetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
+
         installJetpackController.setDismissAction { [weak self] in
             self?.dismiss(animated: true, completion: nil)
             self?.viewModel.onJetpackInstallDismiss()

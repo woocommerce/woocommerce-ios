@@ -101,6 +101,12 @@ extension UIImage {
         return UIImage.gridicon(.addImage).imageWithTintColor(tintColor)!
     }
 
+    /// Blank Product
+    ///
+    static var blankProductImage: UIImage {
+        return UIImage(named: "icon-blank-product")!.withRenderingMode(.alwaysTemplate)
+    }
+
     /// Checkmark image, no style applied
     ///
     static var checkmarkImage: UIImage {

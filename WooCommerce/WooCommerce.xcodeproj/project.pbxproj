@@ -1918,7 +1918,7 @@
 		DEC51B06276B3F3C009F3DF4 /* Int64+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51B05276B3F3C009F3DF4 /* Int64+Helpers.swift */; };
 		DEC6C51827466B59006832D3 /* StoreStatsEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC6C51727466B59006832D3 /* StoreStatsEmptyView.swift */; };
 		DEC6C51A2747758D006832D3 /* JCPJetpackInstallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC6C5192747758D006832D3 /* JCPJetpackInstallView.swift */; };
-		DEC6C51C27477890006832D3 /* JetpackInstallStepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC6C51B27477890006832D3 /* JetpackInstallStepsView.swift */; };
+		DEC6C51C27477890006832D3 /* JCPJetpackInstallStepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC6C51B27477890006832D3 /* JCPJetpackInstallStepsView.swift */; };
 		DEC6C51E27479280006832D3 /* JetpackInstallSteps.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC6C51D27479280006832D3 /* JetpackInstallSteps.swift */; };
 		DECE13FB27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECE13F927993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift */; };
 		DECE13FC27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DECE13FA27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib */; };
@@ -4040,7 +4040,7 @@
 		DEC51B05276B3F3C009F3DF4 /* Int64+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int64+Helpers.swift"; sourceTree = "<group>"; };
 		DEC6C51727466B59006832D3 /* StoreStatsEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsEmptyView.swift; sourceTree = "<group>"; };
 		DEC6C5192747758D006832D3 /* JCPJetpackInstallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCPJetpackInstallView.swift; sourceTree = "<group>"; };
-		DEC6C51B27477890006832D3 /* JetpackInstallStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallStepsView.swift; sourceTree = "<group>"; };
+		DEC6C51B27477890006832D3 /* JCPJetpackInstallStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCPJetpackInstallStepsView.swift; sourceTree = "<group>"; };
 		DEC6C51D27479280006832D3 /* JetpackInstallSteps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallSteps.swift; sourceTree = "<group>"; };
 		DECE13F927993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndSubtitleAndStatusTableViewCell.swift; sourceTree = "<group>"; };
 		DECE13FA27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndSubtitleAndStatusTableViewCell.xib; sourceTree = "<group>"; };
@@ -9069,7 +9069,7 @@
 			children = (
 				DE23CFF927462D8F003BE54E /* JCPJetpackInstallIntroView.swift */,
 				DEC6C5192747758D006832D3 /* JCPJetpackInstallView.swift */,
-				DEC6C51B27477890006832D3 /* JetpackInstallStepsView.swift */,
+				DEC6C51B27477890006832D3 /* JCPJetpackInstallStepsView.swift */,
 				DEC51A9C274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift */,
 				DEC6C51D27479280006832D3 /* JetpackInstallSteps.swift */,
 			);
@@ -11003,7 +11003,7 @@
 				7493BB8E2149852A003071A9 /* TopPerformersHeaderView.swift in Sources */,
 				D88CA756237CE515005D2F44 /* UITabBar+Appearance.swift in Sources */,
 				45A8DA402664E40B00308FBE /* EmptyState.swift in Sources */,
-				DEC6C51C27477890006832D3 /* JetpackInstallStepsView.swift in Sources */,
+				DEC6C51C27477890006832D3 /* JCPJetpackInstallStepsView.swift in Sources */,
 				E15FC74526BC213500CF83E6 /* InPersonPaymentsLearnMore.swift in Sources */,
 				D83C12A022250BF0004CA04C /* OrderTrackingTableViewCell.swift in Sources */,
 				E1ABAEF728479E0300F40BB2 /* InPersonPaymentsSelectPluginView.swift in Sources */,

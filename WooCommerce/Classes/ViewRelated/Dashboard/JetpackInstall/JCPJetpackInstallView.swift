@@ -59,7 +59,7 @@ struct JCPJetpackInstallView: View {
 
     var body: some View {
         if hasStarted {
-            JetpackInstallStepsView(viewModel: installStepsViewModel,
+            JCPJetpackInstallStepsView(viewModel: installStepsViewModel,
                                     noticePresenter: noticePresenter,
                                     supportAction: supportAction,
                                     dismissAction: dismissAction)
@@ -72,7 +72,7 @@ struct JCPJetpackInstallView: View {
     }
 }
 
-struct JetpackInstallView_Previews: PreviewProvider {
+struct JCPJetpackInstallView_Previews: PreviewProvider {
     static var previews: some View {
         JCPJetpackInstallView(siteID: 123, siteURL: "automattic.com", siteAdminURL: "")
             .preferredColorScheme(.light)

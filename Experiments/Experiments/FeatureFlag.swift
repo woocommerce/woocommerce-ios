@@ -60,7 +60,7 @@ public enum FeatureFlag: Int {
 
     /// Product multi-selection milestone 1: Enables selecting multiple products in the Order creation flow
     ///
-    case productMultiselectionM1
+    case productMultiSelectionM1
 
     /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
     ///

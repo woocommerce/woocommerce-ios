@@ -178,7 +178,7 @@ final class EditableOrderViewModel: ObservableObject {
         },
                                  onVariationSelected: { [weak self] variation, parentProduct in
             guard let self = self else { return }
-            self.addProductVariationToOrder(variation, parent: parentProduct)
+            self.handleProductVariation(variation, parent: parentProduct)
         })
     }()
 
@@ -194,6 +194,11 @@ final class EditableOrderViewModel: ObservableObject {
     /// Keeps track of selected/unselected Products, if any
     ///
     @Published var selectedProducts: [Product?] = []
+
+    /// Keeps track of selected/unselected Product Variations, if any
+    ///
+    @Published var selectedProductVariations: [ProductVariation?] = []
+
 
     // MARK: Customer data properties
 
@@ -684,7 +689,7 @@ private extension EditableOrderViewModel {
         print("🍉 selectedProducts: \( selectedProducts.map({ $0?.productID }))")
 
         // All products
-        #warning("Q: Why are we adding here the same product multiple times? ")
+        // TODO: Investigate if we need to add products here now that we use multi-selection
         if !allProducts.contains(product) {
             allProducts.append(product)
         }
@@ -713,6 +718,40 @@ private extension EditableOrderViewModel {
             print("🍉 product removed!")
         }
         print("🍉 selectedProducts: \( selectedProducts.map({ $0?.productID }))")
+    }
+
+    func handleProductVariation(_ variation: ProductVariation, parent product: Product) {
+        if !allProducts.contains(product) {
+            allProducts.append(product)
+        }
+
+        if !allProductVariations.contains(variation) {
+            allProductVariations.append(variation)
+        }
+
+        if !selectedProductVariations.contains(variation) {
+            // Case 1: Add Product variation to the Order
+            selectedProductVariations.append(variation)
+
+            let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
+            orderSynchronizer.setProduct.send(input)
+
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+            print("🍉 variation added!")
+        } else {
+            // Case 2: Remove Product variation from the Order
+            selectedProductVariations.removeAll(where: { $0?.productVariationID == variation.productVariationID })
+
+            guard let orderItem = orderSynchronizer.order.items.first(where: { $0.variationID == variation.productVariationID }) else {
+                print("🍉 Unable to find orderItem")
+                return
+            }
+            removeItemFromOrder(orderItem)
+
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
+            print("🍉 variation removed!")
+        }
+        print("🍉 selectedProductVariations: \( selectedProductVariations.map({ $0?.productID }))")
     }
 
     /// Adds a selected product variation (from the product list) to the order.

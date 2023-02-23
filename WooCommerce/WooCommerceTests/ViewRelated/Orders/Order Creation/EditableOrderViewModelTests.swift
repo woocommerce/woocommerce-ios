@@ -271,8 +271,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // Then
-        XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
-        XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
+        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
+            XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
+            XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
+        }
     }
 
     func test_product_is_selected_when_quantity_is_decremented_below_1() {

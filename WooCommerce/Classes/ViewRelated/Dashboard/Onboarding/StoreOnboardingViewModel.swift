@@ -27,7 +27,7 @@ final class StoreOnboardingViewModel: ObservableObject {
         // TODO: 8892 - check the complete state from the API
         taskViewModels = [
             .init(task: .addFirstProduct, isComplete: false, icon: .productImage),
-            .init(task: .launchStore, isComplete: false, icon: .storeImage),
+            .init(task: .launchStore, isComplete: false, icon: .launchStoreImage),
             .init(task: .customizeDomains, isComplete: false, icon: .domainsImage),
             .init(task: .payments, isComplete: false, icon: .currencyImage)
         ]

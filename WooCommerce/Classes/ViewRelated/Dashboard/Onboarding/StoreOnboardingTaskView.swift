@@ -3,11 +3,14 @@ import SwiftUI
 /// Shows a tappable onboarding task to set up the store. If the task is complete, a checkmark is shown.
 struct StoreOnboardingTaskView: View {
     private let viewModel: StoreOnboardingViewModel.TaskViewModel
+    private let showDivider: Bool
     private let onTap: (StoreOnboardingTask) -> Void
 
     init(viewModel: StoreOnboardingViewModel.TaskViewModel,
+         showDivider: Bool,
          onTap: @escaping (StoreOnboardingTask) -> Void) {
         self.viewModel = viewModel
+        self.showDivider = showDivider
         self.onTap = onTap
     }
 
@@ -28,21 +31,31 @@ struct StoreOnboardingTaskView: View {
                            height: scale * Layout.imageDimension)
 
                 VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+                    HStack {
+                        // Task labels
+                        VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+                            Spacer().frame(height: Layout.spacerHeight)
+                            // Task title.
+                            Text(viewModel.task.title)
+                                .headlineStyle()
+                                .multilineTextAlignment(.leading)
+
+                            // Task subtitle.
+                            Text(viewModel.task.subtitle)
+                                .subheadlineStyle()
+                                .multilineTextAlignment(.leading)
+                        }
+                        Spacer()
+                        // Chevron icon
+                        Image(uiImage: .chevronImage)
+                            .flipsForRightToLeftLayoutDirection(true)
+                            .foregroundColor(Color(.textTertiary))
+                    }
+
                     Spacer().frame(height: Layout.spacerHeight)
-                    // TODO: 8907 - show a chevron icon at the trailing edge
-                    // Task title.
-                    Text(viewModel.task.title)
-                        .headlineStyle()
-                        .multilineTextAlignment(.leading)
-                    // Task subtitle.
-                    Text(viewModel.task.subtitle)
-                        .subheadlineStyle()
-                        .multilineTextAlignment(.leading)
-                    Spacer().frame(height: Layout.spacerHeight)
-                    Divider().dividerStyle()
+                    Divider().dividerStyle().renderedIf(showDivider)
                 }
             }
-            .padding(.horizontal, insets: Layout.taskInsets)
         }
         .buttonStyle(.plain)
     }
@@ -50,7 +63,6 @@ struct StoreOnboardingTaskView: View {
 
 private extension StoreOnboardingTaskView {
     enum Layout {
-        static let taskInsets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let horizontalSpacing: CGFloat = 16
         static let verticalSpacing: CGFloat = 4
         static let spacerHeight: CGFloat = 12
@@ -114,8 +126,15 @@ struct StoreOnboardingTaskView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
             Group {
-                StoreOnboardingTaskView(viewModel: .init(task: .customizeDomains, isComplete: false, icon: .domainsImage), onTap: { _ in })
-                StoreOnboardingTaskView(viewModel: .init(task: .customizeDomains, isComplete: true, icon: .domainsImage), onTap: { _ in })
+
+                StoreOnboardingTaskView(viewModel: .init(task: .addFirstProduct, isComplete: false, icon: .productImage), showDivider: true, onTap: { _ in })
+
+                StoreOnboardingTaskView(viewModel: .init(task: .launchStore, isComplete: false, icon: .launchStoreImage), showDivider: true, onTap: { _ in })
+
+                StoreOnboardingTaskView(viewModel: .init(task: .customizeDomains, isComplete: false, icon: .domainsImage), showDivider: true, onTap: { _ in })
+
+                StoreOnboardingTaskView(viewModel: .init(task: .payments, isComplete: false, icon: .currencyImage), showDivider: true, onTap: { _ in })
+
             }
             .previewDisplayName("Customize your domains")
         }

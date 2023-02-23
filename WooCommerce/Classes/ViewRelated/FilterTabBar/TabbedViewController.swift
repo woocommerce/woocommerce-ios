@@ -96,7 +96,7 @@ class TabbedViewController: UIViewController {
 
 private extension TabbedViewController {
     func configureFilterTabBar(_ filterTabBar: FilterTabBar) {
-        filterTabBar.backgroundColor = .listForeground(modal: false)
+        filterTabBar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         filterTabBar.tintColor = .primary
         filterTabBar.selectedTitleColor = .primary
         filterTabBar.deselectedTabColor = .textSubtle

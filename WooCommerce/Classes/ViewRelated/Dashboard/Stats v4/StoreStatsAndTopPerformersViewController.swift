@@ -424,7 +424,8 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     func configureTabBar() {
-        tabBar.equalWidthSpacing = TabStrip.buttonLeftRightMargin
+        tabBar.equalWidthFill = .equalSpacing
+        tabBar.equalWidthSpacing = TabBar.tabSpacing
     }
 }
 
@@ -476,9 +477,10 @@ private extension StoreStatsAndTopPerformersViewController {
 // MARK: - Constants!
 //
 private extension StoreStatsAndTopPerformersViewController {
-    enum TabStrip {
-        static let buttonLeftRightMargin: CGFloat   = 16.0
-        static let selectedBarHeight: CGFloat       = 3.0
+    enum TabBar {
+        /// With `equalSpacing` distribution, there is a default spacing ~16px even if `stackView.spacing = 0`.
+        /// Setting a negative spacing offsets the default spacing to match the design more.
+        static let tabSpacing: CGFloat = -8.0
     }
 
     enum Constants {

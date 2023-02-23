@@ -91,7 +91,7 @@ class AuthenticatedState: StoresManagerState {
                                network: network,
                                fileStorage: PListFileStorage()),
             JetpackConnectionStore(dispatcher: dispatcher),
-            WordPressSiteStore(network: network, dispatcher: dispatcher)
+            WordPressSiteStore(network: network, dispatcher: dispatcher),
         ]
 
 
@@ -99,6 +99,11 @@ class AuthenticatedState: StoresManagerState {
             services.append(AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: authToken))
         } else {
             DDLogInfo("No WordPress.com auth token found. AccountStore is not initialized.")
+        }
+    
+        if case let .wporg(_, _, siteURL) = credentials {
+            /// Needs Jetpack connection store to handle Jetpack setup for non-Jetpack sites.
+            services.append(JetpackConnectionStore(dispatcher: dispatcher, network: network, siteURL: siteURL))
         }
 
         self.services = services

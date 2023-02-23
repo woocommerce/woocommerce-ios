@@ -167,6 +167,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the product list
     ///
+    // TODO: Rename to handleProductsViewModel
     lazy var addProductViewModel = {
         ProductSelectorViewModel(siteID: siteID,
                                  purchasableItemsOnly: true,
@@ -684,6 +685,9 @@ private extension EditableOrderViewModel {
     }
 
     func handleProduct(_ product: Product) {
+        // TODO: Add method description
+        // TODO: Remove internal debug prints
+        // TODO: Split method into "add product to order", and "remove product from order"
         print("🍉 handleProducts called!")
         print("🍉 allProducts: \( allProducts.map({ $0.productID }) )")
         print("🍉 selectedProducts: \( selectedProducts.map({ $0?.productID }))")
@@ -721,6 +725,9 @@ private extension EditableOrderViewModel {
     }
 
     func handleProductVariation(_ variation: ProductVariation, parent product: Product) {
+        // TODO: Add method description
+        // TODO: Remove internal debug prints
+        // TODO: Split method into "add variation to order", and "remove variation from order"
         if !allProducts.contains(product) {
             allProducts.append(product)
         }

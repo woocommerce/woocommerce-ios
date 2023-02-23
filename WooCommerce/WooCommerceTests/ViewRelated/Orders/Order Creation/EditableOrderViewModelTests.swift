@@ -271,6 +271,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // Then
+        // TODO: Add tests for feature-flagged implementation
         if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
             XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
             XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)

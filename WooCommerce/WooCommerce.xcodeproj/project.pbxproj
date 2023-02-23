@@ -1938,6 +1938,7 @@
 		DEF36DE92898D3CF00178AC2 /* AuthenticatedWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF36DE62898D3CF00178AC2 /* AuthenticatedWebViewController.swift */; };
 		DEF36DEA2898D3CF00178AC2 /* AuthenticatedWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF36DE72898D3CF00178AC2 /* AuthenticatedWebViewModel.swift */; };
 		DEF36DEC2898D64600178AC2 /* JetpackSetupWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF36DEB2898D64600178AC2 /* JetpackSetupWebViewModelTests.swift */; };
+		DEF8CF0A29A71EE600800A60 /* JetpackSetupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF8CF0929A71EE600800A60 /* JetpackSetupCoordinator.swift */; };
 		DEFA3D932897D8930076FAE1 /* NoWooErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFA3D922897D8930076FAE1 /* NoWooErrorViewModel.swift */; };
 		DEFB3011289904E300A620B3 /* WooSetupWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFB3010289904E300A620B3 /* WooSetupWebViewModel.swift */; };
 		DEFD6E61264990FB00E51E0D /* SitePluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */; };
@@ -4060,6 +4061,7 @@
 		DEF36DE62898D3CF00178AC2 /* AuthenticatedWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedWebViewController.swift; sourceTree = "<group>"; };
 		DEF36DE72898D3CF00178AC2 /* AuthenticatedWebViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedWebViewModel.swift; sourceTree = "<group>"; };
 		DEF36DEB2898D64600178AC2 /* JetpackSetupWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupWebViewModelTests.swift; sourceTree = "<group>"; };
+		DEF8CF0929A71EE600800A60 /* JetpackSetupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupCoordinator.swift; sourceTree = "<group>"; };
 		DEFA3D922897D8930076FAE1 /* NoWooErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoWooErrorViewModel.swift; sourceTree = "<group>"; };
 		DEFB3010289904E300A620B3 /* WooSetupWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooSetupWebViewModel.swift; sourceTree = "<group>"; };
 		DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginListViewModelTests.swift; sourceTree = "<group>"; };
@@ -7435,6 +7437,7 @@
 		B56DB3EF2049C06D00D4AA8E /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				DEF8CF0829A71ED400800A60 /* JetpackSetup */,
 				02E3B62629026C83007E0F13 /* Authentication */,
 				E1325EF928FD543B00EC9B2A /* InAppPurchases */,
 				03FBDA9B263AD47200ACE257 /* Coupons */,
@@ -9254,6 +9257,14 @@
 			path = "Print Customs Form";
 			sourceTree = "<group>";
 		};
+		DEF8CF0829A71ED400800A60 /* JetpackSetup */ = {
+			isa = PBXGroup;
+			children = (
+				DEF8CF0929A71EE600800A60 /* JetpackSetupCoordinator.swift */,
+			);
+			path = JetpackSetup;
+			sourceTree = "<group>";
+		};
 		DEFD6E5F264990DD00E51E0D /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
@@ -10281,6 +10292,7 @@
 				26E7EE6C292D894100793045 /* AnalyticsReportCardViewModel.swift in Sources */,
 				DE7B479027A153C20018742E /* CouponSearchUICommand.swift in Sources */,
 				DE50294D28BEF8F100551736 /* JetpackConnectionWebViewModel.swift in Sources */,
+				DEF8CF0A29A71EE600800A60 /* JetpackSetupCoordinator.swift in Sources */,
 				02645D8827BA2E820065DC68 /* NSAttributedString+Attributes.swift in Sources */,
 				024DF3092372CA00006658FE /* EditorViewProperties.swift in Sources */,
 				45F8C43B2680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.swift in Sources */,

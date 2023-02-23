@@ -52,6 +52,10 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
 
+    /// Discerns if the `ProductSelectorViewModel` is being used within Order Creation, or not
+    ///
+    let isOrderCreationViewModel: Bool
+
     /// Closure to be invoked when a product is selected
     ///
     private let onProductSelected: ((Product) -> Void)?
@@ -132,11 +136,13 @@ final class ProductSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
+         isOrderCreationViewModel: Bool = false,
          onProductSelected: ((Product) -> Void)? = nil,
          onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
+        self.isOrderCreationViewModel = isOrderCreationViewModel
         self.onProductSelected = onProductSelected
         self.onVariationSelected = onVariationSelected
         self.onMultipleSelectionCompleted = nil
@@ -156,10 +162,12 @@ final class ProductSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
+         isOrderCreationViewModel: Bool = false,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
+        self.isOrderCreationViewModel = isOrderCreationViewModel
         self.onProductSelected = nil
         self.onVariationSelected = nil
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
@@ -186,7 +194,7 @@ final class ProductSelectorViewModel: ObservableObject {
             return
         }
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
+        if isOrderCreationViewModel {
             // Product multi-selection (new)
             if let onProductSelected = onProductSelected {
                 toggleSelection(productID: productID)

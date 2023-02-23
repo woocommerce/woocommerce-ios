@@ -90,7 +90,6 @@ class AuthenticatedState: StoresManagerState {
                                storageManager: storageManager,
                                network: network,
                                fileStorage: PListFileStorage()),
-            JetpackConnectionStore(dispatcher: dispatcher),
             WordPressSiteStore(network: network, dispatcher: dispatcher),
         ]
 

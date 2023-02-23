@@ -45,7 +45,12 @@ final class ProductFactoryTests: XCTestCase {
 
     func test_creating_new_product_removes_expected_fields() {
         // Given
-        let product = Product.fake().copy(siteID: 123, productID: 1234, name: "Test Product", statusKey: ProductStatus.autoDraft.rawValue, price: "20.00")
+        let product = Product.fake().copy(siteID: 123,
+                                          productID: 1234,
+                                          name: "Test Product",
+                                          statusKey: ProductStatus.autoDraft.rawValue,
+                                          price: "20.00",
+                                          groupedProducts: [11, 12, 13])
 
         // When
         let newProduct = ProductFactory().newProduct(from: product)
@@ -60,5 +65,6 @@ final class ProductFactoryTests: XCTestCase {
         XCTAssertEqual(newProduct.productID, 0)
         XCTAssertEqual(newProduct.name, "")
         XCTAssertEqual(newProduct.statusKey, ProductStatus.published.rawValue)
+        XCTAssertEqual(newProduct.groupedProducts, [])
     }
 }

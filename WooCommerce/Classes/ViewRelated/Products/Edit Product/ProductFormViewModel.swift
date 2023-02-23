@@ -473,10 +473,10 @@ extension ProductFormViewModel {
                     }
                     self.resetProduct(data.product)
                     self.resetPassword(data.password)
-                    onCompletion(.success(data.product))
                     self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
                     self.saveProductImagesWhenNoneIsPendingUploadAnymore()
                     self.onProductCreated(data.product.product)
+                    onCompletion(.success(data.product))
                 }
             }
         case .edit:

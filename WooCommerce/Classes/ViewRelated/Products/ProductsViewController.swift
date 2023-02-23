@@ -284,8 +284,8 @@ private extension ProductsViewController {
         }
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing) {
-            coordinatingController.onProductCreated = { [weak self] product in
-                navigationController.dismiss(animated: true) {
+            coordinatingController.onProductCreated = { product in
+                navigationController.dismiss(animated: true) { [weak self] in
                     self?.didSelectProduct(product: product)
                 }
             }

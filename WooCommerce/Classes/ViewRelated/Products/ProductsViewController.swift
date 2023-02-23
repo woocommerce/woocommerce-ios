@@ -282,6 +282,15 @@ private extension ProductsViewController {
         } else {
             fatalError("No source view for adding a product")
         }
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing) {
+            coordinatingController.onProductCreated = { [weak self] product in
+                navigationController.dismiss(animated: true) {
+                    self?.didSelectProduct(product: product)
+                }
+            }
+        }
+
         coordinatingController.start()
     }
 }

@@ -195,7 +195,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     /// Assign this closure to be notified when a new product is saved remotely
     ///
-    var onProductCreated: () -> Void = {}
+    var onProductCreated: (Product) -> Void = { _ in }
 
     init(product: EditableProductModel,
          formType: ProductFormType,
@@ -476,7 +476,7 @@ extension ProductFormViewModel {
                     onCompletion(.success(data.product))
                     self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
                     self.saveProductImagesWhenNoneIsPendingUploadAnymore()
-                    self.onProductCreated()
+                    self.onProductCreated(data.product.product)
                 }
             }
         case .edit:

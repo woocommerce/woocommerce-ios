@@ -95,15 +95,16 @@ struct JetpackBenefitsView: View {
 }
 
 private extension JetpackBenefitsView {
+    @MainActor
     func fetchJetpackUser() async -> Result<JetpackUser, Error> {
-        await withCheckedContinuation{ continuation in
+        await withCheckedContinuation { continuation in
             let action = JetpackConnectionAction.fetchJetpackUser { result in
                 continuation.resume(returning: result)
             }
             ServiceLocator.stores.dispatch(action)
         }
     }
-    
+
     enum Layout {
         static let topPadding = CGFloat(75)
         static let spacingBetweenTitleAndSubtitle = CGFloat(10)

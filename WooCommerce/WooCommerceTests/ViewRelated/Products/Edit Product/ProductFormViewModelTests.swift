@@ -346,10 +346,10 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(actionButtons, [.save])
     }
 
-    func test_action_buttons_for_existing_product_with_simplified_editing_enabled() throws {
+    func test_action_buttons_for_existing_draft_product_and_no_pending_changes_with_simplified_editing_enabled() {
         // Given
         sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
-        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit, stores: stores, simplifiedProductEditingEnabled: true)
 
         // When

@@ -4,6 +4,9 @@ echo "--- :arrow_down: Installing Release Dependencies"
 brew install imagemagick
 brew install ghostscript
 
+echo "--- :swift: Restoring SPM Cache"
+install_swiftpm_dependencies
+
 echo "--- :rubygems: Setting up Gems"
 install_gems
 

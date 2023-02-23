@@ -8,6 +8,9 @@ echo "--- 📦 Downloading Build Artifacts"
 buildkite-agent artifact download build-products.tar .
 tar -xf build-products.tar
 
+echo "--- :swift: Restoring SPM Cache"
+install_swiftpm_dependencies
+
 echo "--- :rubygems: Setting up Gems"
 install_gems
 

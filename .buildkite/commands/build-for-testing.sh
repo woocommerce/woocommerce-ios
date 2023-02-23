@@ -1,5 +1,8 @@
 #!/bin/bash -eu
 
+echo "--- :swift: Restoring SPM Cache"
+install_swiftpm_dependencies
+
 echo "--- :rubygems: Setting up Gems"
 restore_cache "$(hash_file .ruby-version)-$(hash_file Gemfile.lock)"
 install_gems

@@ -686,12 +686,7 @@ private extension EditableOrderViewModel {
 
     func handleProduct(_ product: Product) {
         // TODO: Add method description
-        // TODO: Remove internal debug prints
         // TODO: Split method into "add product to order", and "remove product from order"
-        print("🍉 handleProducts called!")
-        print("🍉 allProducts: \( allProducts.map({ $0.productID }) )")
-        print("🍉 selectedProducts: \( selectedProducts.map({ $0?.productID }))")
-
         // All products
         // TODO: Investigate if we need to add products here now that we use multi-selection
         if !allProducts.contains(product) {
@@ -707,26 +702,22 @@ private extension EditableOrderViewModel {
             orderSynchronizer.setProduct.send(input)
 
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
-            print("🍉 product added!")
         } else {
             // Case 2: Remove Product from the Order
             selectedProducts.removeAll(where: { $0?.productID == product.productID })
 
             guard let orderItem = orderSynchronizer.order.items.first(where: { $0.productID == product.productID }) else {
-                print("🍉 Unable to find orderItem")
+                DDLogError("Unable to find product ID: \(product.productID) in Order")
                 return
             }
             removeItemFromOrder(orderItem)
 
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
-            print("🍉 product removed!")
         }
-        print("🍉 selectedProducts: \( selectedProducts.map({ $0?.productID }))")
     }
 
     func handleProductVariation(_ variation: ProductVariation, parent product: Product) {
         // TODO: Add method description
-        // TODO: Remove internal debug prints
         // TODO: Split method into "add variation to order", and "remove variation from order"
         if !allProducts.contains(product) {
             allProducts.append(product)
@@ -744,21 +735,18 @@ private extension EditableOrderViewModel {
             orderSynchronizer.setProduct.send(input)
 
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
-            print("🍉 variation added!")
         } else {
             // Case 2: Remove Product variation from the Order
             selectedProductVariations.removeAll(where: { $0?.productVariationID == variation.productVariationID })
 
             guard let orderItem = orderSynchronizer.order.items.first(where: { $0.variationID == variation.productVariationID }) else {
-                print("🍉 Unable to find orderItem")
+                DDLogError("Unable to find product variation ID: \(variation.productID) (parent ID: \(product.productID)) in Order")
                 return
             }
             removeItemFromOrder(orderItem)
 
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
-            print("🍉 variation removed!")
         }
-        print("🍉 selectedProductVariations: \( selectedProductVariations.map({ $0?.productID }))")
     }
 
     /// Adds a selected product variation (from the product list) to the order.

@@ -102,10 +102,12 @@ class AuthenticatedState: StoresManagerState {
 
         if case let .wporg(_, _, siteURL) = credentials {
             /// Needs Jetpack connection store to handle Jetpack setup for non-Jetpack sites.
+            /// `AlamofireNetwork` is used here to handle requests with application password auth.
             services.append(JetpackConnectionStore(dispatcher: dispatcher, network: network, siteURL: siteURL))
         } else {
             /// When authenticated with WPCom, the store is used to handle Jetpack setup when a selected site doesn't have Jetpack.
-            /// The network for the store will be injected through the `authenticate` action before any other action is triggered.
+            /// The store will require cookie-nonce auth, which is handled by a `WordPressOrgNetwork`
+            /// injected later through the `authenticate` action before any other action is triggered.
             services.append(JetpackConnectionStore(dispatcher: dispatcher))
         }
 

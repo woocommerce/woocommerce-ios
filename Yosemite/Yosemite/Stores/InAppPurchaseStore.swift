@@ -198,8 +198,6 @@ private extension InAppPurchaseStore {
             throw Errors.storefrontUnknown
         }
 
-        let receiptData = try await getAppReceipt()
-
         logInfo("Sending transaction to API for site \(siteID)")
         do {
             let orderID = try await remote.createOrder(
@@ -231,19 +229,6 @@ private extension InAppPurchaseStore {
         case .unverified(_, let verificationError):
             throw verificationError
         }
-    }
-
-    func getAppReceipt(refreshIfMissing: Bool = true) async throws -> Data {
-        guard let appStoreReceiptURL = Bundle.main.appStoreReceiptURL,
-              let receiptData = try? Data(contentsOf: appStoreReceiptURL, options: .alwaysMapped) else {
-            if refreshIfMissing {
-                logInfo("No app receipt found, refreshing")
-                try await InAppPurchaseReceiptRefreshRequest.request()
-                return try await getAppReceipt(refreshIfMissing: false)
-            }
-            throw Errors.missingAppReceipt
-        }
-        return receiptData
     }
 
     func getProductIdentifiers() async throws -> [String] {
@@ -318,10 +303,6 @@ public extension InAppPurchaseStore {
         ///
         case storefrontUnknown
 
-        /// App receipt was missing, even after a refresh
-        ///
-        case missingAppReceipt
-
         /// In-app purchases are not supported for this user
         ///
         case inAppPurchasesNotSupported
@@ -348,10 +329,6 @@ public extension InAppPurchaseStore {
                 return NSLocalizedString(
                     "Couldn't determine App Stoure country",
                     comment: "Error message used when we can't determine the user's App Store country")
-            case .missingAppReceipt:
-                return NSLocalizedString(
-                    "Couldn't retrieve app receipt",
-                    comment: "Error message used when we can't read the app receipt")
             case .inAppPurchasesNotSupported:
                 return NSLocalizedString(
                     "In-app purchases are not supported for this user yet",

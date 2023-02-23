@@ -7,10 +7,11 @@ final class ProductFactoryTests: XCTestCase {
     private let siteID: Int64 = 134
 
     func test_created_simple_physical_product_has_expected_fields() throws {
-        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: siteID))
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: siteID, status: .draft))
         XCTAssertEqual(product.productType, .simple)
         XCTAssertEqual(product.virtual, false)
         XCTAssertEqual(product.siteID, siteID)
+        XCTAssertEqual(product.statusKey, ProductStatus.draft.rawValue)
     }
 
     func test_created_simple_virtual_product_has_expected_fields() throws {

@@ -39,4 +39,20 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue(navigationController.presentedViewController is JetpackBenefitsHostingController)
     }
 
+    func test_installation_flow_for_jcp_sites_is_presented_for_jcp_sites() throws {
+        // Given
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        let coordinator = JetpackSetupCoordinator(site: testSite, navigationController: navigationController)
+
+        // When
+        coordinator.showBenefitModal()
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+        let benefitModal = try XCTUnwrap(navigationController.presentedViewController as? JetpackBenefitsHostingController)
+        benefitModal.rootView.installAction(nil)
+        waitUntil {
+            self.navigationController.presentedViewController is JCPJetpackInstallHostingController
+        }
+    }
 }

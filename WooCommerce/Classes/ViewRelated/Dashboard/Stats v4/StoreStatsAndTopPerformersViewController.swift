@@ -42,14 +42,8 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     /// Because loading the last selected time range tab is async, the selected tab index is initially `nil` and set after the last selected value is loaded.
     /// We need to make sure any call to the public `reloadData` is after the selected time range is set to avoid making unnecessary API requests
     /// for the non-selected tab.
-    @Published private var selectedTimeRangeIndex: Int? {
-        didSet {
-            guard let selectedTimeRangeIndex, oldValue != selectedTimeRangeIndex else {
-                return
-            }
-            selection = selectedTimeRangeIndex
-        }
-    }
+    @Published private var selectedTimeRangeIndex: Int?
+    /// The index of the selected tab in the tab bar. `selectedTimeRangeIndex` is an observable version of this.
     override var selection: Int {
         didSet {
             selectedTimeRangeIndex = selection
@@ -96,22 +90,20 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        Task { @MainActor in
-            let selectedTimeRange = await loadLastTimeRange() ?? .today
-            guard let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange),
-                  selectedTabIndex != selection else {
-                selectedTimeRangeIndex = selection
-                return
-            }
-            selectedTimeRangeIndex = selectedTabIndex
-        }
-
         configureView()
         configureTabBar()
         configurePeriodViewControllers()
-        observeSelectedTimeRangeIndex()
         observeRemotelyCreatedOrdersToResetLastSyncTimestamp()
         observeLocallyCreatedOrdersToResetLastSyncTimestamp()
+
+        Task { @MainActor in
+            let selectedTimeRange = await loadLastTimeRange() ?? .today
+            guard let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange) else {
+                return
+            }
+            selection = selectedTabIndex
+            observeSelectedTimeRangeIndex()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

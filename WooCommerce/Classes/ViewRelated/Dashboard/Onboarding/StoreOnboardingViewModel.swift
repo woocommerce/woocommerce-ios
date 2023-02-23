@@ -19,7 +19,13 @@ final class StoreOnboardingViewModel: ObservableObject {
 
     @Published private(set) var taskViewModels: [TaskViewModel]
 
-    private let isExpanded: Bool
+    var numberOfTasksCompleted: Int {
+        taskViewModels
+            .filter({ $0.isComplete })
+            .count
+    }
+
+    let isExpanded: Bool
 
     /// - Parameter isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
     init(isExpanded: Bool) {

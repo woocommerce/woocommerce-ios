@@ -421,6 +421,12 @@ extension UIImage {
         UIImage(named: "icon-store")!
     }
 
+    /// Launch store Image
+    ///
+    static var launchStoreImage: UIImage {
+        UIImage(named: "icon-launch-store")!
+    }
+
     /// Store summary image used in the store creation flow.
     ///
     static var storeSummaryImage: UIImage {

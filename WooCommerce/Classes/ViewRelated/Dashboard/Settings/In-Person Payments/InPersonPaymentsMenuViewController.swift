@@ -277,7 +277,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureOrderCardReader(cell: LeftImageTableViewCell) {
-        style(cell)
+        prepareForReuse(cell)
         cell.configure(image: .shoppingCartIcon, text: Localization.orderCardReader.localizedCapitalized)
     }
 
@@ -291,29 +291,24 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureManagePaymentGateways(cell: LeftImageTitleSubtitleTableViewCell) {
-        cell.imageView?.tintColor = .text
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
+        prepareForReuse(cell)
         cell.configure(image: .rectangleOnRectangleAngled,
                        text: Localization.managePaymentGateways.localizedCapitalized,
                        subtitle: pluginState?.preferred.pluginName ?? "")
-
-        updateEnabledState(in: cell)
     }
 
     func configureCardReaderManuals(cell: LeftImageTableViewCell) {
-        style(cell)
+        prepareForReuse(cell)
         cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals.localizedCapitalized)
     }
 
     func configureCollectPayment(cell: LeftImageTableViewCell) {
-        style(cell)
+        prepareForReuse(cell)
         cell.configure(image: .moneyIcon, text: Localization.collectPayment.localizedCapitalized)
-
-        updateEnabledState(in: cell)
     }
 
     func configureToggleEnableCashOnDelivery(cell: LeftImageTitleSubtitleToggleTableViewCell) {
+        prepareForReuse(cell)
         cell.leftImageView?.tintColor = .text
         cell.accessoryType = .none
         cell.selectionStyle = .none
@@ -329,15 +324,16 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureTapToPayOnIPhone(cell: LeftImageTableViewCell) {
-        style(cell)
+        prepareForReuse(cell)
         cell.configure(image: UIImage(systemName: "wave.3.right.circle") ?? .creditCardIcon,
                        text: Localization.tapToPayOnIPhone)
     }
 
-    private func style(_ cell: LeftImageTableViewCell) {
+    private func prepareForReuse(_ cell: UITableViewCell) {
         cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
+        updateEnabledState(in: cell)
     }
 
     func updateEnabledState(in cell: UITableViewCell, shouldBeEnabled: Bool = true) {

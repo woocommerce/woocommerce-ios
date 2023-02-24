@@ -4,7 +4,7 @@ import XCTest
 class ProofKeyForCodeExchangeTests: XCTestCase {
 
     func testCodeChallengeInPlainModeIsTheSameAsCodeVerifier() throws {
-        let codeVerifier = try ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier()
+        let codeVerifier = ProofKeyForCodeExchange.CodeVerifier.fixture()
 
         XCTAssertEqual(
             ProofKeyForCodeExchange(codeVerifier: codeVerifier, method: .plain).codeChallenge,

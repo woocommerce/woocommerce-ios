@@ -52,9 +52,10 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
 
-    /// Discerns if the `ProductSelectorViewModel` is being used within Order Creation, or not
+    /// Determines if products should be toggled on selection
+    /// `false` by default, mainly used to allow multi-seleciton on the Order Creation flow
     ///
-    let isOrderCreationViewModel: Bool
+    let shouldToggleItemOnSelection: Bool
 
     /// Closure to be invoked when a product is selected
     ///
@@ -136,13 +137,13 @@ final class ProductSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         isOrderCreationViewModel: Bool = false,
+         shouldToggleItemOnSelection: Bool = false,
          onProductSelected: ((Product) -> Void)? = nil,
          onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
-        self.isOrderCreationViewModel = isOrderCreationViewModel
+        self.shouldToggleItemOnSelection = shouldToggleItemOnSelection
         self.onProductSelected = onProductSelected
         self.onVariationSelected = onVariationSelected
         self.onMultipleSelectionCompleted = nil
@@ -162,12 +163,12 @@ final class ProductSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         isOrderCreationViewModel: Bool = false,
+         shouldToggleItemOnSelection: Bool = false,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
-        self.isOrderCreationViewModel = isOrderCreationViewModel
+        self.shouldToggleItemOnSelection = shouldToggleItemOnSelection
         self.onProductSelected = nil
         self.onVariationSelected = nil
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
@@ -194,7 +195,7 @@ final class ProductSelectorViewModel: ObservableObject {
             return
         }
 
-        if isOrderCreationViewModel {
+        if shouldToggleItemOnSelection {
             // Product multi-selection (new)
             if let onProductSelected = onProductSelected {
                 toggleSelection(productID: productID)
@@ -223,7 +224,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
-                                                 isOrderCreationViewModel: isOrderCreationViewModel,
+                                                 shouldToggleItemOnSelection: shouldToggleItemOnSelection,
                                                  onVariationSelected: onVariationSelected)
     }
 

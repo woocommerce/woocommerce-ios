@@ -16,9 +16,10 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Determines if product variations should be toggled on selection
+    /// `false` by default, mainly used to allow multi-seleciton on the Order Creation flow
     ///
-    ///
-    let isOrderCreationViewModel: Bool
+    let shouldToggleItemOnSelection: Bool
 
     /// Store for publishers subscriptions
     ///
@@ -116,7 +117,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         isOrderCreationViewModel: Bool = false,
+         shouldToggleItemOnSelection: Bool = false,
          onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.siteID = siteID
         self.productID = productID
@@ -124,7 +125,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.productAttributes = productAttributes
         self.storageManager = storageManager
         self.stores = stores
-        self.isOrderCreationViewModel = isOrderCreationViewModel
+        self.shouldToggleItemOnSelection = shouldToggleItemOnSelection
         self.onVariationSelected = onVariationSelected
         self.selectedProductVariationIDs = selectedProductVariationIDs
         self.purchasableItemsOnly = purchasableItemsOnly
@@ -140,7 +141,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                      purchasableItemsOnly: Bool = false,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
-                     isOrderCreationViewModel: Bool = false,
+                     shouldToggleItemOnSelection: Bool = false,
                      onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.init(siteID: siteID,
                   productID: product.productID,
@@ -150,7 +151,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   purchasableItemsOnly: purchasableItemsOnly,
                   storageManager: storageManager,
                   stores: stores,
-                  isOrderCreationViewModel: isOrderCreationViewModel,
+                  shouldToggleItemOnSelection: shouldToggleItemOnSelection,
                   onVariationSelected: onVariationSelected)
     }
 
@@ -167,7 +168,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
             return
         }
 
-        if isOrderCreationViewModel {
+        if shouldToggleItemOnSelection {
             // Product variation multi-selection (new)
             if let onVariationSelected = onVariationSelected {
                 toggleSelection(productVariationID: variationID)

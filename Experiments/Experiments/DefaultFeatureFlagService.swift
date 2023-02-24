@@ -48,7 +48,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .storeCreationM2WithInAppPurchasesEnabled:
             return false
         case .storeCreationM3Profiler:
-            return true
+            return false
         case .justInTimeMessagesOnDashboard:
             return true
         case .systemStatusReportInSupportRequest:

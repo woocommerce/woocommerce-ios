@@ -683,10 +683,20 @@ private extension EditableOrderViewModel {
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
     }
 
+    ///
+    ///
+    func removeProductFromOrder(_ product: Product) {
+        guard let orderItem = orderSynchronizer.order.items.first(where: { $0.productID == product.productID }) else {
+            DDLogError("Unable to find product ID: \(product.productID) in Order")
+            return
+        }
+        removeItemFromOrder(orderItem)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
+    }
+
     /// Handles a product by adding it to the Order if selected, or removing it from the Order if unselected
     ///
     func handleProduct(_ product: Product) {
-        // TODO: Split method into "add product to order", and "remove product from order"
         // All products
         // TODO: Investigate if we need to add products here now that we use multi-selection
         // TODO: Logic for "clear all selections"
@@ -694,26 +704,14 @@ private extension EditableOrderViewModel {
             allProducts.append(product)
         }
 
-        // Selected products
         if !selectedProducts.contains(product) {
-            // Case 1: Add Product to the Order
+            // Add Product to the Order
             selectedProducts.append(product)
-
-            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
-            orderSynchronizer.setProduct.send(input)
-
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+            addProductToOrder(product)
         } else {
-            // Case 2: Remove Product from the Order
+            // Remove Product from the Order
             selectedProducts.removeAll(where: { $0?.productID == product.productID })
-
-            guard let orderItem = orderSynchronizer.order.items.first(where: { $0.productID == product.productID }) else {
-                DDLogError("Unable to find product ID: \(product.productID) in Order")
-                return
-            }
-            removeItemFromOrder(orderItem)
-
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
+            removeProductFromOrder(product)
         }
     }
 

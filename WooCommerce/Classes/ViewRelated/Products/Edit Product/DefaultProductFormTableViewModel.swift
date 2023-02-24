@@ -261,14 +261,15 @@ private extension DefaultProductFormTableViewModel {
         let title = Localization.productTypeTitle
 
         let details: String
+        let hideDownloadableProductType = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
         switch product.productType {
         case .simple:
-            switch (product.downloadable, product.virtual) {
-            case (true, _):
+            switch (product.downloadable, product.virtual, hideDownloadableProductType) {
+            case (true, _, false):
                 details = Localization.downloadableProductType
-            case (false, true):
+            case (_, true, _):
                 details = Localization.virtualProductType
-            case (false, false):
+            case (_, false, _):
                 details = Localization.physicalProductType
             }
         case .custom(let customProductType):

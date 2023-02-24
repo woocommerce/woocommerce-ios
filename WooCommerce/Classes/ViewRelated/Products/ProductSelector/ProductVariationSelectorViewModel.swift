@@ -168,19 +168,15 @@ final class ProductVariationSelectorViewModel: ObservableObject {
             return
         }
 
-        if shouldToggleItemOnSelection {
-            // Product variation multi-selection (new)
-            if let onVariationSelected = onVariationSelected {
-                toggleSelection(productVariationID: variationID)
-                onVariationSelected(selectedVariation, parentProduct)
-            }
+        if shouldToggleItemOnSelection, let onVariationSelected {
+            // The selector supports multiple selection. Toggles the item, and triggers the selection
+            toggleSelection(productVariationID: variationID)
+            onVariationSelected(selectedVariation, parentProduct)
+        } else if let onVariationSelected {
+            // The selector supports single selection only
+            onVariationSelected(selectedVariation, parentProduct)
         } else {
-            // Product variation single-selection (legacy)
-            if let onVariationSelected = onVariationSelected {
-                onVariationSelected(selectedVariation, parentProduct)
-            } else {
-                toggleSelection(productVariationID: variationID)
-            }
+            toggleSelection(productVariationID: variationID)
         }
     }
 

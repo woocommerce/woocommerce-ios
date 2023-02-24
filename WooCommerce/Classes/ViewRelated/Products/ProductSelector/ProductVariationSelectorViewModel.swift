@@ -16,6 +16,10 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    ///
+    ///
+    let isOrderCreationViewModel: Bool
+
     /// Store for publishers subscriptions
     ///
     private var subscriptions = Set<AnyCancellable>()
@@ -112,6 +116,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
+         isOrderCreationViewModel: Bool = false,
          onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.siteID = siteID
         self.productID = productID
@@ -119,6 +124,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.productAttributes = productAttributes
         self.storageManager = storageManager
         self.stores = stores
+        self.isOrderCreationViewModel = isOrderCreationViewModel
         self.onVariationSelected = onVariationSelected
         self.selectedProductVariationIDs = selectedProductVariationIDs
         self.purchasableItemsOnly = purchasableItemsOnly
@@ -134,6 +140,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                      purchasableItemsOnly: Bool = false,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
+                     isOrderCreationViewModel: Bool = false,
                      onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.init(siteID: siteID,
                   productID: product.productID,
@@ -143,6 +150,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   purchasableItemsOnly: purchasableItemsOnly,
                   storageManager: storageManager,
                   stores: stores,
+                  isOrderCreationViewModel: isOrderCreationViewModel,
                   onVariationSelected: onVariationSelected)
     }
 
@@ -159,7 +167,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
             return
         }
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
+        if isOrderCreationViewModel {
             // Product variation multi-selection (new)
             if let onVariationSelected = onVariationSelected {
                 toggleSelection(productVariationID: variationID)

@@ -223,6 +223,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
+                                                 isOrderCreationViewModel: isOrderCreationViewModel,
                                                  onVariationSelected: onVariationSelected)
     }
 

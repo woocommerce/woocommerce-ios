@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.6
+-----
+- [*] Payments: fixed a bug where enabled rows in the Payments Menu were sometimes incorrectly shown as disabled [https://github.com/woocommerce/woocommerce-ios/pull/8983]
+
 12.5
 -----
 - [Internal] Dashboard: the stats implementation had a major update to replace a third-party library in order to support the upcoming store onboarding card. Minimal design changes are expected, and horizontal scrolling between different time range tabs is not available anymore. [https://github.com/woocommerce/woocommerce-ios/pull/8942]

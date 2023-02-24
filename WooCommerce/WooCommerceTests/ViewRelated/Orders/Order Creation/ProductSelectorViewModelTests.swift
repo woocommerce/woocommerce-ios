@@ -332,12 +332,13 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertNil(variationsViewModel)
     }
 
-    func test_selecting_a_product_sets_its_row_to_selected_state() {
+    func test_selecting_a_product_sets_its_row_to_selected_state_given_shouldToggleItemOnSelection_is_false() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 storageManager: storageManager)
+                                                 storageManager: storageManager,
+                                                 shouldToggleItemOnSelection: false)
 
         // When
         viewModel.selectProduct(product.productID)
@@ -345,9 +346,25 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
         XCTAssertNotNil(productRow)
-        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
-            XCTAssertEqual(productRow?.selectedState, .selected)
-        }
+        XCTAssertEqual(productRow?.selectedState, .selected)
+    }
+
+    func test_selecting_a_product_sets_its_row_to_selected_state_given_shouldToggleItemOnSelection_is_true() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager,
+                                                 shouldToggleItemOnSelection: true,
+                                                 onProductSelected: { _ in })
+
+        // When
+        viewModel.selectProduct(product.productID)
+
+        // Then
+        let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
+        XCTAssertNotNil(productRow)
+        XCTAssertEqual(productRow?.selectedState, .selected)
     }
 
     func test_selecting_a_product_when_onProductSelected_is_invoked_then_sets_its_row_to_selected_state() {
@@ -356,17 +373,17 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
+                                                 shouldToggleItemOnSelection: true,
                                                  onProductSelected: { _ in })
 
         // When
         viewModel.selectProduct(product.productID)
 
         // Then
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
-            let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
-            XCTAssertNotNil(productRow)
-            XCTAssertEqual(productRow?.selectedState, .selected)
-        }
+        let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
+        XCTAssertNotNil(productRow)
+        XCTAssertEqual(productRow?.selectedState, .selected)
+
     }
 
     func test_selecting_a_product_sets_its_row_to_notSelected_state_if_it_was_previously_selected() {
@@ -392,6 +409,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
+                                                 shouldToggleItemOnSelection: false,
                                                  onProductSelected: { _ in })
 
         // When
@@ -399,11 +417,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
         viewModel.selectProduct(product.productID)
 
         // Then
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
-            let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
-            XCTAssertNotNil(productRow)
-            XCTAssertEqual(productRow?.selectedState, .notSelected)
-        }
+        let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
+        XCTAssertNotNil(productRow)
+        XCTAssertEqual(productRow?.selectedState, .notSelected)
     }
 
     func test_selecting_a_product_variation_set_its_product_row_to_partiallySelected() {
@@ -501,6 +517,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  selectedItemIDs: [],
                                                  storageManager: storageManager,
+                                                 shouldToggleItemOnSelection: false,
                                                  onMultipleSelectionCompleted: {
             selectedItems = $0
         })
@@ -511,9 +528,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         viewModel.completeMultipleSelection()
 
         // Then
-        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
-            XCTAssertEqual(selectedItems, [simpleProduct.productID, 12])
-        }
+        XCTAssertEqual(selectedItems, [simpleProduct.productID, 12])
     }
 
     func test_filter_button_title_shows_correct_number_of_active_filters() async throws {
@@ -567,22 +582,19 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 storageManager: storageManager)
+                                                 storageManager: storageManager,
+                                                 shouldToggleItemOnSelection: false)
 
         // When
         viewModel.selectProduct(product.productID)
         // Confidence check
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
-        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
-            XCTAssertEqual(productRow?.selectedState, .selected)
-        }
+        XCTAssertEqual(productRow?.selectedState, .selected)
         viewModel.clearSelection()
 
         // Then
         let updatedRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
-        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
-            XCTAssertEqual(updatedRow?.selectedState, .notSelected)
-        }
+        XCTAssertEqual(updatedRow?.selectedState, .notSelected)
     }
 
     func test_clearSelection_unselects_all_initially_selected_items() {

@@ -1992,6 +1992,7 @@
 		EE0EE7A628B7415200F6061E /* CustomHelpCenterContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EE7A528B7415200F6061E /* CustomHelpCenterContent.swift */; };
 		EE0EE7A828B74EF300F6061E /* CustomHelpCenterContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */; };
 		EE2EDFE12987A189004E702B /* MockABTestVariationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */; };
+		EE3272A429A88F750015F8D0 /* StoreOnboardingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3272A329A88F750015F8D0 /* StoreOnboardingViewModelTests.swift */; };
 		EE57C11D297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */; };
 		EE57C11F297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */; };
 		EE57C121297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C120297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift */; };
@@ -4115,6 +4116,7 @@
 		EE0EE7A528B7415200F6061E /* CustomHelpCenterContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHelpCenterContent.swift; sourceTree = "<group>"; };
 		EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHelpCenterContentTests.swift; sourceTree = "<group>"; };
 		EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockABTestVariationProvider.swift; sourceTree = "<group>"; };
+		EE3272A329A88F750015F8D0 /* StoreOnboardingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingViewModelTests.swift; sourceTree = "<group>"; };
 		EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEventRequestNotificationHandler.swift; sourceTree = "<group>"; };
 		EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ApplicationPassword.swift"; sourceTree = "<group>"; };
 		EE57C120297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEventRequestNotificationHandlerTests.swift; sourceTree = "<group>"; };
@@ -5334,6 +5336,7 @@
 		02E4FD7F2306AA770049610C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				EE3272A229A88F670015F8D0 /* Onboarding */,
 				B6440FB7292E73E50012D506 /* Analytics Hub */,
 				DEC51A9E274F990D009F3DF4 /* JetpackInstall */,
 				E10DFC76267331450083AFF2 /* Settings */,
@@ -9354,6 +9357,14 @@
 			path = "In-Person Payments";
 			sourceTree = "<group>";
 		};
+		EE3272A229A88F670015F8D0 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				EE3272A329A88F750015F8D0 /* StoreOnboardingViewModelTests.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		EE6BAAB428EF093D0099288E /* me */ = {
 			isa = PBXGroup;
 			children = (
@@ -11864,6 +11875,7 @@
 				020B2F9123BDD71500BD79AD /* IntegerInputFormatterTests.swift in Sources */,
 				D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */,
 				579CDF01274D811D00E8903D /* StoreStatsUsageTracksEventEmitterTests.swift in Sources */,
+				EE3272A429A88F750015F8D0 /* StoreOnboardingViewModelTests.swift in Sources */,
 				262A2C2B2537A3330086C1BE /* MockRefunds.swift in Sources */,
 				027F240C258371150021DB06 /* RefundShippingLabelViewModelTests.swift in Sources */,
 				020D0BFF2914F6BA00BB3DCE /* LoggedOutStoreCreationCoordinatorTests.swift in Sources */,

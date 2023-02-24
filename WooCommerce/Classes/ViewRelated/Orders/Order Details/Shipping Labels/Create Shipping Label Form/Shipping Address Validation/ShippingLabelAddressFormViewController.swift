@@ -42,7 +42,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
             actionSheet.view.tintColor = .text
 
             actionSheet.addCancelActionWithTitle(Localization.contactActionCancel)
-            if let email = email, email.isNotEmpty {
+            if let email = email, email.isNotEmpty && MFMailComposeViewController.canSendMail() {
                 actionSheet.addDefaultActionWithTitle(Localization.contactActionEmail) { _ in
                     self.sendEmail(to: email)
                 }
@@ -53,8 +53,10 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                         self.displayErrorNotice(title: Localization.phoneNumberErrorNotice)
                     }
                 }
-                actionSheet.addDefaultActionWithTitle(Localization.contactActionMessage) { _ in
-                    ServiceLocator.messageComposerPresenter.presentIfPossible(from: self, recipient: phoneNumber)
+                if MFMessageComposeViewController.canSendText() {
+                    actionSheet.addDefaultActionWithTitle(Localization.contactActionMessage) { _ in
+                        ServiceLocator.messageComposerPresenter.presentIfPossible(from: self, recipient: phoneNumber)
+                    }
                 }
             }
 

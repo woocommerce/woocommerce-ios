@@ -1,6 +1,8 @@
 import UIKit
 
-// NOTE: this file is adapted from WPiOS.
+// NOTE: this file is adapted from WPiOS at the following path:
+// https://github.com/wordpress-mobile/WordPress-iOS/blob/c67f3b6205c1bc40085b390ec5e46faf5e281df9/
+// WordPress/Classes/ViewRelated/Reader/Manage/TabbedViewController.swift
 
 /// Contains multiple Child View Controllers with a Filter Tab Bar to switch between them.
 class TabbedViewController: UIViewController {

@@ -1,6 +1,7 @@
 import UIKit
 
-// NOTE: this file is adapted from WPiOS.
+// NOTE: this file is adapted from WPiOS at the following path:
+// https://github.com/wordpress-mobile/WordPress-iOS/blob/c67f3b6205c1bc40085b390ec5e46faf5e281df9/WordPress/Classes/ViewRelated/System/FilterTabBar.swift
 
 /// Filter Tab Bar is a tabbed control (much like a segmented control), but
 /// has an appearance similar to Android tabs.

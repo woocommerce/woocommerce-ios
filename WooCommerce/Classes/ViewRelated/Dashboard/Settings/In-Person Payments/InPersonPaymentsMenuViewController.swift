@@ -184,7 +184,7 @@ private extension InPersonPaymentsMenuViewController {
         var composingSections: [Section?] = [actionsSection]
 
         if viewModel.isEligibleForCardPresentPayments {
-            composingSections.append(contentsOf: [cardReadersSection, paymentOptionsSection])
+            composingSections.append(contentsOf: [tapToPayOnIPhoneSection, cardReadersSection, paymentOptionsSection])
         }
 
         sections = composingSections.compactMap { $0 }
@@ -192,6 +192,14 @@ private extension InPersonPaymentsMenuViewController {
 
     var actionsSection: Section? {
         return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment, .toggleEnableCashOnDelivery])
+    }
+
+    var tapToPayOnIPhoneSection: Section? {
+        guard featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneSetupFlow),
+              BetaFeaturesConfiguration().appSettings.betaFeatureEnabled(.tapToPayOnIPhone) else {
+            return nil
+        }
+        return Section(header: nil, rows: [.tapToPayOnIPhone])
     }
 
     var cardReadersSection: Section? {
@@ -257,15 +265,15 @@ private extension InPersonPaymentsMenuViewController {
             configureCollectPayment(cell: cell)
         case let cell as LeftImageTitleSubtitleToggleTableViewCell where row == .toggleEnableCashOnDelivery:
             configureToggleEnableCashOnDelivery(cell: cell)
+        case let cell as LeftImageTableViewCell where row == .tapToPayOnIPhone:
+            configureTapToPayOnIPhone(cell: cell)
         default:
             fatalError()
         }
     }
 
     func configureOrderCardReader(cell: LeftImageTableViewCell) {
-        cell.imageView?.tintColor = .text
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
+        style(cell)
         cell.configure(image: .shoppingCartIcon, text: Localization.orderCardReader.localizedCapitalized)
     }
 
@@ -290,16 +298,12 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureCardReaderManuals(cell: LeftImageTableViewCell) {
-        cell.imageView?.tintColor = .text
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
+        style(cell)
         cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals.localizedCapitalized)
     }
 
     func configureCollectPayment(cell: LeftImageTableViewCell) {
-        cell.imageView?.tintColor = .text
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
+        style(cell)
         cell.configure(image: .moneyIcon, text: Localization.collectPayment.localizedCapitalized)
 
         updateEnabledState(in: cell)
@@ -318,6 +322,18 @@ private extension InPersonPaymentsMenuViewController {
             guard let self = self else { return }
             self.cashOnDeliveryToggleRowViewModel.learnMoreTapped(from: self)
         })
+    }
+
+    func configureTapToPayOnIPhone(cell: LeftImageTableViewCell) {
+        style(cell)
+        cell.configure(image: UIImage(systemName: "wave.3.right.circle") ?? .creditCardIcon,
+                       text: Localization.tapToPayOnIPhone)
+    }
+
+    private func style(_ cell: LeftImageTableViewCell) {
+        cell.imageView?.tintColor = .text
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
     }
 
     func updateEnabledState(in cell: UITableViewCell, shouldBeEnabled: Bool = true) {
@@ -382,6 +398,10 @@ extension InPersonPaymentsMenuViewController {
     func managePaymentGatewaysWasPressed() {
         ServiceLocator.analytics.track(.paymentsMenuPaymentProviderTapped)
         navigateToInPersonPaymentsSelectPluginView()
+    }
+
+    func tapToPayOnIPhoneWasPressed() {
+        // to implement
     }
 
     func navigateToInPersonPaymentsSelectPluginView() {
@@ -463,6 +483,8 @@ extension InPersonPaymentsMenuViewController: UITableViewDelegate {
             collectPaymentWasPressed()
         case .toggleEnableCashOnDelivery:
             break
+        case .tapToPayOnIPhone:
+            tapToPayOnIPhoneWasPressed()
         }
     }
 
@@ -533,6 +555,11 @@ private extension InPersonPaymentsMenuViewController {
             comment: "Navigates to Collect a payment via the Simple Payment screen"
         )
 
+        static let tapToPayOnIPhone = NSLocalizedString(
+            "Tap to Pay on iPhone",
+            comment: "Navigates to the Tap to Pay on iPhone setup screen. The full name is expected by Apple. " +
+            "The destination screen also allows for a test payment, after setup.")
+
         static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
             "In-Person Payments setup is incomplete.",
             comment: "Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled."
@@ -555,7 +582,7 @@ private extension InPersonPaymentsMenuViewController {
 }
 
 private struct Section: Equatable {
-    let header: String
+    let header: String?
     let rows: [Row]
 }
 
@@ -566,6 +593,7 @@ private enum Row: CaseIterable {
     case managePaymentGateways
     case collectPayment
     case toggleEnableCashOnDelivery
+    case tapToPayOnIPhone
 
     var type: UITableViewCell.Type {
         switch self {

@@ -13,6 +13,8 @@ final class JetpackSetupCoordinator {
     private let stores: StoresManager
     private let analytics: Analytics
 
+    private var benefitsController: JetpackBenefitsHostingController?
+
     init(site: Site,
          navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
@@ -38,6 +40,7 @@ final class JetpackSetupCoordinator {
             self?.navigationController.dismiss(animated: true, completion: nil)
         })
         navigationController.present(benefitsController, animated: true, completion: nil)
+        self.benefitsController = benefitsController
     }
 }
 
@@ -91,9 +94,12 @@ private extension JetpackSetupCoordinator {
     }
 
     func displayAdminRoleRequiredError() {
-        let viewController = AdminRoleRequiredHostingController { [weak self] in
+        let viewController = AdminRoleRequiredHostingController(siteID: site.siteID, onClose: { [weak self] in
             self?.navigationController.dismiss(animated: true)
-        }
-        navigationController.presentedViewController?.present(UINavigationController(rootViewController: viewController), animated: true)
+        }, onSuccess: { [weak self] in
+            self?.benefitsController?.dismiss(animated: true)
+            #warning("TODO: start WPCom auth")
+        })
+        benefitsController?.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 }

@@ -3,17 +3,17 @@ import XCTest
 
 class StringRandomTests: XCTestCase {
 
-    func testSecureRandomStringLengthIsAsRequested() {
+    func testSecureRandomStringLengthIsAsRequested() throws {
         XCTAssertEqual(
-            String.secureRandomString(using: Set("abc"), withLength: 10).count,
+            try XCTUnwrap(String.secureRandomString(using: Set("abc"), withLength: 10)).count,
             10
         )
     }
 
-    func testSecureRandomStringUsesGivenCharactersOnly() {
+    func testSecureRandomStringUsesGivenCharactersOnly() throws {
         // Using length 300 with 3 characters be relatively sure sure we'll get all of the
         // characters at least once.
-        let randomString = String.secureRandomString(using: Set("abc"), withLength: 30)
+        let randomString = try XCTUnwrap(String.secureRandomString(using: Set("abc"), withLength: 30))
 
         XCTAssertEqual(
             CharacterSet(charactersIn: randomString),

@@ -67,15 +67,15 @@ extension ProofKeyForCodeExchange {
         static func makeRandomCodeVerifier(length: Int = maximumLength) -> Self {
             let constrainedLength = min(max(length, minimumLength), maximumLength)
 
+            // `secureRandomString` can fail because of issues such as not enough entropy.
+            // In the unlikely occurrence that happens, fallback to `randomString`.
+            let value = String.secureRandomString(using: allowedCharacters, withLength: constrainedLength)
+                ?? String.randomString(using: allowedCharacters, withLength: constrainedLength)
+
             // It's appropriate to force unwrap here because a `nil` value could only result from
             // a developer error—either wrong coding of the constrained length or of the allowed
             // characters.
-            return .init(
-                value: String.secureRandomString(
-                    using: allowedCharacters,
-                    withLength: constrainedLength
-                )
-            )!
+            return .init(value: value)!
         }
 
         init?(value: String) {

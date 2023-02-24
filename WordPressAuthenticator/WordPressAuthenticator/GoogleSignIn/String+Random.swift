@@ -4,7 +4,7 @@ extension String {
     /// `length`.
     ///
     /// - Complexity: O(n) where n is the given `length`.
-    static func secureRandomString(using characters: Set<Character>, withLength length: Int) -> String {
+    static func secureRandomString(using characters: Set<Character>, withLength length: Int) -> String? {
         let allowedCharactersCount = UInt32(characters.count)
 
         var randomBytes = [UInt8](repeating: 0, count: length)
@@ -12,9 +12,8 @@ extension String {
         // offsets to create the random string.
         let status = SecRandomCopyBytes(kSecRandomDefault, length, &randomBytes)
 
-        // FIXME: Handle errors by returning nil
         guard status == errSecSuccess else {
-            fatalError()
+            return .none
         }
 
         return randomBytes.reduce("") { accumulator, randomByte in

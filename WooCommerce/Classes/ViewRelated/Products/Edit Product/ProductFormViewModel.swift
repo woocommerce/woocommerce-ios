@@ -1,5 +1,4 @@
 import Combine
-import protocol Experiments.FeatureFlagService
 import Yosemite
 
 import protocol Storage.StorageManagerType
@@ -179,7 +178,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let analytics: Analytics
 
-    private let featureFlagService: FeatureFlagService
+    private let simplifiedProductEditingEnabled: Bool
 
     /// Assign this closure to be notified when a new product is saved remotely
     ///
@@ -192,7 +191,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         simplifiedProductEditingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -202,7 +201,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.storageManager = storageManager
         self.productImagesUploader = productImagesUploader
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
+        self.simplifiedProductEditingEnabled = simplifiedProductEditingEnabled
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
@@ -386,9 +385,16 @@ extension ProductFormViewModel {
     }
 
     func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64) {
-        product = EditableProductModel(product: product.product.copy(downloads: downloadableFiles,
-                                                                     downloadLimit: downloadLimit,
-                                                                     downloadExpiry: downloadExpiry))
+        if simplifiedProductEditingEnabled {
+            product = EditableProductModel(product: product.product.copy(downloadable: downloadableFiles.isNotEmpty,
+                                                                         downloads: downloadableFiles,
+                                                                         downloadLimit: downloadLimit,
+                                                                         downloadExpiry: downloadExpiry))
+        } else {
+            product = EditableProductModel(product: product.product.copy(downloads: downloadableFiles,
+                                                                         downloadLimit: downloadLimit,
+                                                                         downloadExpiry: downloadExpiry))
+        }
     }
 
     func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64]) {

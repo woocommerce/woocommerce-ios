@@ -7,54 +7,69 @@ struct StoreSetupProgressView: View {
 
     let numberOfTasksCompleted: Int
 
+    @State private var availableWidth: CGFloat = 0
+
     var body: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: isExpanded ? .center : .leading, spacing: Layout.verticalSpacing) {
-                // Title label
-                Text(Localization.title)
-                    .fontWeight(.semibold)
-                    .if(isExpanded) { $0.titleStyle() }
-                    .if(!isExpanded) { $0.headlineStyle() }
-                    .multilineTextAlignment(isExpanded ? .center : .leading)
+        ZStack {
+            // Clear color dummy `View` to measure available width
+            // to use percentage based width for `ProgressView`
+            Color.clear
+                .readSize(onChange: { size in
+                    availableWidth = size.width
+                })
 
-                // Progress view
-                ProgressView(value: Double(numberOfTasksCompleted), total: Double(totalNumberOfTasks))
-                    .tint(.init(uiColor: .accent))
-                    .frame(width: isExpanded ? Layout.ProgressView.widthExpanded : Layout.ProgressView.widthCollapsed, height: Layout.ProgressView.height)
+            HStack(alignment: .top) {
+                VStack(alignment: isExpanded ? .center : .leading, spacing: Layout.verticalSpacing) {
+                    // Title label
+                    Text(Localization.title)
+                        .fontWeight(.semibold)
+                        .if(isExpanded) { $0.titleStyle() }
+                        .if(!isExpanded) { $0.headlineStyle() }
+                        .multilineTextAlignment(isExpanded ? .center : .leading)
 
-                // Subtitle label
-                Text(String(format: isExpanded ? Localization.TasksCompleted.expanded : Localization.TasksCompleted.collapsed,
-                            numberOfTasksCompleted,
-                            totalNumberOfTasks))
+                    // Progress view
+                    ProgressView(value: Double(numberOfTasksCompleted), total: Double(totalNumberOfTasks))
+                        .tint(.init(uiColor: .accent))
+                        .frame(width: availableWidth * progressViewWidthPercentage, height: Layout.ProgressView.height)
+
+                    // Subtitle label
+                    Text(String(format: isExpanded ? Localization.TasksCompleted.expanded : Localization.TasksCompleted.collapsed,
+                                numberOfTasksCompleted,
+                                totalNumberOfTasks))
                     .footnoteStyle()
                     .multilineTextAlignment(isExpanded ? .center : .leading)
-            }
+                }
 
-            Spacer()
+                Spacer()
+                    .renderedIf(!isExpanded)
+
+                // More button
+                Button {
+                    // TODO: Show the popup with feedback button
+                } label: {
+                    Image(uiImage: .ellipsisImage)
+                        .flipsForRightToLeftLayoutDirection(true)
+                        .foregroundColor(Color(.textTertiary))
+                }
                 .renderedIf(!isExpanded)
-
-            // More button
-            Button {
-                // TODO: Show the popup with feedback button
-            } label: {
-                Image(uiImage: .ellipsisImage)
-                    .flipsForRightToLeftLayoutDirection(true)
-                    .foregroundColor(Color(.textTertiary))
             }
-            .renderedIf(!isExpanded)
         }
     }
 }
 
 private extension StoreSetupProgressView {
+    var progressViewWidthPercentage: CGFloat {
+           isExpanded ? Layout.ProgressView.widthPercentageWhenExpanded : Layout.ProgressView.widthPercentageWhenCollapsed
+       }
+
     enum Layout {
         static let horizontalSpacing: CGFloat = 16
         static let verticalSpacing: CGFloat = 8
 
         enum ProgressView {
             static let height: CGFloat = 6
-            static let widthCollapsed: CGFloat = 152.5
-            static let widthExpanded: CGFloat = 205.8
+            static let widthPercentageWhenCollapsed: CGFloat = 0.5
+            static let widthPercentageWhenExpanded: CGFloat = 0.6
         }
     }
 

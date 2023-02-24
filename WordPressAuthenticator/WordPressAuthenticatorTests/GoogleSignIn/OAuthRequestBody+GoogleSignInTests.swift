@@ -15,7 +15,7 @@ class OAuthRequestBodyGoogleSignInTests: XCTestCase {
 
         XCTAssertEqual(body.clientId, "com.app.123-abc")
         XCTAssertEqual(body.clientSecret, "")
-        XCTAssertEqual(body.codeVerifier, codeVerifier.rawValue)
+        XCTAssertEqual(body.rawCodeVerifier, codeVerifier.rawValue)
         XCTAssertEqual(body.grantType, "authorization_code")
         XCTAssertEqual(body.redirectURI, "123-abc.app.com:/oauth2callback")
     }

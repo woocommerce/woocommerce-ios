@@ -6,16 +6,34 @@ struct OAuthTokenRequestBody: Encodable {
     let clientSecret: String
     let audience: String
     let code: String
-    let codeVerifier: String
+    let rawCodeVerifier: String
     let grantType: String
     let redirectURI: String
+
+    init(
+        clientId: String,
+        clientSecret: String,
+        audience: String,
+        code: String,
+        codeVerifier: ProofKeyForCodeExchange.CodeVerifier,
+        grantType: String,
+        redirectURI: String
+    ) {
+        self.clientId = clientId
+        self.clientSecret = clientSecret
+        self.audience = audience
+        self.code = code
+        self.rawCodeVerifier = codeVerifier.rawValue
+        self.grantType = grantType
+        self.redirectURI = redirectURI
+    }
 
     enum CodingKeys: String, CodingKey {
         case clientId = "client_id"
         case clientSecret = "client_secret"
         case audience
         case code
-        case codeVerifier = "code_verifier"
+        case rawCodeVerifier = "code_verifier"
         case grantType = "grant_type"
         case redirectURI = "redirect_uri"
     }
@@ -25,7 +43,7 @@ struct OAuthTokenRequestBody: Encodable {
             (CodingKeys.clientId.rawValue, clientId),
             (CodingKeys.clientSecret.rawValue, clientSecret),
             (CodingKeys.code.rawValue, code),
-            (CodingKeys.codeVerifier.rawValue, codeVerifier),
+            (CodingKeys.rawCodeVerifier.rawValue, rawCodeVerifier),
             (CodingKeys.grantType.rawValue, grantType),
             (CodingKeys.redirectURI.rawValue, redirectURI),
             // This is not in the spec at

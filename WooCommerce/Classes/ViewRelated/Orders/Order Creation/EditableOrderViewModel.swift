@@ -683,11 +683,13 @@ private extension EditableOrderViewModel {
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
     }
 
+    /// Handles a product by adding it to the Order if selected, or removing it from the Order if unselected
+    ///
     func handleProduct(_ product: Product) {
-        // TODO: Add method description
         // TODO: Split method into "add product to order", and "remove product from order"
         // All products
         // TODO: Investigate if we need to add products here now that we use multi-selection
+        // TODO: Logic for "clear all selections"
         if !allProducts.contains(product) {
             allProducts.append(product)
         }

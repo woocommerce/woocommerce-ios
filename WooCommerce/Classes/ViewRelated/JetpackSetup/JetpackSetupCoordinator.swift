@@ -30,7 +30,7 @@ final class JetpackSetupCoordinator {
             guard let self else { return }
             self.analytics.track(event: .jetpackInstallButtonTapped(source: .benefitsModal))
             if self.site.isNonJetpackSite {
-                self.handleJetpackStatus(result)
+                self.checkJetpackStatus(result)
             } else {
                 self.presentJCPJetpackInstallFlow()
             }
@@ -60,7 +60,7 @@ private extension JetpackSetupCoordinator {
     }
 
     /// Checks the Jetpack connection status for non-Jetpack sites to infer the setup steps to be handled.
-    func handleJetpackStatus(_ result: Result<JetpackUser, Error>) {
+    func checkJetpackStatus(_ result: Result<JetpackUser, Error>) {
         switch result {
         case .success(let user):
             let connectedEmail = user.wpcomUser?.email

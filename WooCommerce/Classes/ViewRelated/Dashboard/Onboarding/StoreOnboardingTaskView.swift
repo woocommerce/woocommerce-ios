@@ -126,7 +126,6 @@ struct StoreOnboardingTaskView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
             Group {
-
                 StoreOnboardingTaskView(viewModel: .init(task: .addFirstProduct, isComplete: false, icon: .productImage), showDivider: true, onTap: { _ in })
 
                 StoreOnboardingTaskView(viewModel: .init(task: .launchStore, isComplete: false, icon: .launchStoreImage), showDivider: true, onTap: { _ in })
@@ -135,6 +134,7 @@ struct StoreOnboardingTaskView_Previews: PreviewProvider {
 
                 StoreOnboardingTaskView(viewModel: .init(task: .payments, isComplete: false, icon: .currencyImage), showDivider: true, onTap: { _ in })
 
+                StoreOnboardingTaskView(viewModel: .init(task: .payments, isComplete: true, icon: .currencyImage), showDivider: true, onTap: { _ in })
             }
             .previewDisplayName("Customize your domains")
         }

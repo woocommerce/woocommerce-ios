@@ -28,10 +28,11 @@ final class StoreOnboardingViewModel: ObservableObject {
     let isExpanded: Bool
 
     /// - Parameter isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
-    init(isExpanded: Bool) {
+    init(isExpanded: Bool,
+         taskViewModels: [TaskViewModel]? = nil) {
         self.isExpanded = isExpanded
         // TODO: 8892 - check the complete state from the API
-        taskViewModels = [
+        self.taskViewModels = taskViewModels ?? [
             .init(task: .addFirstProduct, isComplete: false, icon: .productImage),
             .init(task: .launchStore, isComplete: false, icon: .launchStoreImage),
             .init(task: .customizeDomains, isComplete: false, icon: .domainsImage),

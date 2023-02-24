@@ -167,8 +167,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the product list
     ///
-    // TODO: Rename to handleProductsViewModel
-    lazy var addProductViewModel = {
+    lazy var handleProductsViewModel = {
         ProductSelectorViewModel(siteID: siteID,
                                  purchasableItemsOnly: true,
                                  storageManager: storageManager,

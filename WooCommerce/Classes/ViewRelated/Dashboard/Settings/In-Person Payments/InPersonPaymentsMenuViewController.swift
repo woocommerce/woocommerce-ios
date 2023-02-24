@@ -183,8 +183,12 @@ private extension InPersonPaymentsMenuViewController {
     func configureSections() {
         var composingSections: [Section?] = [actionsSection]
 
+        if viewModel.isEligibleForTapToPayOnIPhone {
+            composingSections.append(tapToPayOnIPhoneSection)
+        }
+
         if viewModel.isEligibleForCardPresentPayments {
-            composingSections.append(contentsOf: [tapToPayOnIPhoneSection, cardReadersSection, paymentOptionsSection])
+            composingSections.append(contentsOf: [cardReadersSection, paymentOptionsSection])
         }
 
         sections = composingSections.compactMap { $0 }
@@ -196,7 +200,7 @@ private extension InPersonPaymentsMenuViewController {
 
     var tapToPayOnIPhoneSection: Section? {
         guard featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneSetupFlow),
-              BetaFeaturesConfiguration().appSettings.betaFeatureEnabled(.tapToPayOnIPhone) else {
+              ServiceLocator.generalAppSettings.betaFeatureEnabled(.tapToPayOnIPhone) else {
             return nil
         }
         return Section(header: nil, rows: [.tapToPayOnIPhone])

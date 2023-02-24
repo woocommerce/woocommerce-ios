@@ -75,13 +75,15 @@ private extension StoreSetupProgressView {
             static let collapsed = NSLocalizedString(
                 "%1$d/%2$d completed",
                 comment: "Shows how many tasks are completed in the store setup process." +
-                "%1$d represents the tasks completed. %2$d represents the total number of tasks."
+                "%1$d represents the tasks completed. %2$d represents the total number of tasks." +
+                "This text is displayed when the store setup task list is presented in collapsed mode in the dashboard screen."
             )
 
             static let expanded = NSLocalizedString(
                 "%1$d of %2$d tasks completed",
                 comment: "Shows how many tasks are completed in the store setup process." +
-                "%1$d represents the tasks completed. %2$d represents the total number of tasks."
+                "%1$d represents the tasks completed. %2$d represents the total number of tasks." +
+                "This text is displayed when the store setup task list is presented in full-screen/expanded mode."
             )
         }
     }

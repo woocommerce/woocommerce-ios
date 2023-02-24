@@ -28,7 +28,7 @@ final class JetpackBenefitsViewModel {
 }
 
 extension JetpackBenefitsViewModel {
-    enum FetchJetpackUserError: Error {
+    enum FetchJetpackUserError: Error, Equatable {
         case notSupportedForJCPSites
     }
 }

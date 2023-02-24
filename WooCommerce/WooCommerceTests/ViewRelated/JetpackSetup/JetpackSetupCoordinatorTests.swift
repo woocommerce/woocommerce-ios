@@ -50,7 +50,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             self.navigationController.presentedViewController != nil
         }
         let benefitModal = try XCTUnwrap(navigationController.presentedViewController as? JetpackBenefitsHostingController)
-        benefitModal.rootView.installAction(nil)
+        benefitModal.rootView.installAction(.failure(JetpackBenefitsViewModel.FetchJetpackUserError.notSupportedForJCPSites))
         waitUntil {
             self.navigationController.presentedViewController is JCPJetpackInstallHostingController
         }

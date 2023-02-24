@@ -23,4 +23,18 @@ extension String {
             return accumulator + String(randomCharacter)
         }
     }
+
+    /// Returns a random string generated with characters from the given `Set<Character>` and with length `length`.
+    ///
+    /// - Complexity: O(n) where n is the given `length`.
+    static func randomString(using characters: Set<Character>, withLength length: Int) -> String {
+        let allowedCharactersCount = characters.count
+        let startIndex = characters.startIndex
+
+        return (0..<length).reduce("") { accumulator, _ in
+            let randomOffset = Int.random(in: 0..<allowedCharactersCount)
+            let randomCharacter = characters[characters.index(startIndex, offsetBy: randomOffset)]
+            return accumulator + String(randomCharacter)
+        }
+    }
 }

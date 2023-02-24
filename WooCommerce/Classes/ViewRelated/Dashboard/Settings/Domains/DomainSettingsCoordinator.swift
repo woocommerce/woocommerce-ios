@@ -8,6 +8,8 @@ final class DomainSettingsCoordinator: Coordinator {
     enum Source {
         /// Initiated from the settings.
         case settings
+        /// Initiated from store onboarding in dashboard.
+        case dashboardOnboarding
     }
 
     let navigationController: UINavigationController

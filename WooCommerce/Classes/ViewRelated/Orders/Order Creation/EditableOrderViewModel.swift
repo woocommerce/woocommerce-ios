@@ -683,11 +683,31 @@ private extension EditableOrderViewModel {
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
     }
 
+    /// Adds a selected product variation (from the product variation list) to the order.
     ///
+    func addProductVariationToOrder(_ variation: ProductVariation) {
+        let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
+        orderSynchronizer.setProduct.send(input)
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+    }
+
+    /// Removes a selected product (from the product list) to the order.
     ///
     func removeProductFromOrder(_ product: Product) {
         guard let orderItem = orderSynchronizer.order.items.first(where: { $0.productID == product.productID }) else {
             DDLogError("Unable to find product ID: \(product.productID) in Order")
+            return
+        }
+        removeItemFromOrder(orderItem)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
+    }
+
+    /// Removes a selected product variation (from the product variation list) to the order.
+    ///
+    func removeProductVariationFromOrder(_ variation: ProductVariation) {
+        guard let orderItem = orderSynchronizer.order.items.first(where: { $0.variationID == variation.productVariationID }) else {
+            DDLogError("Unable to find product variation ID: \(variation.productVariationID) (parent ID: \(variation.productID)) in Order")
             return
         }
         removeItemFromOrder(orderItem)
@@ -715,8 +735,9 @@ private extension EditableOrderViewModel {
         }
     }
 
+    /// Handles a product variation by adding it to the Order if selected, or removing it from the Order if unselected
+    ///
     func handleProductVariation(_ variation: ProductVariation, parent product: Product) {
-        // TODO: Add method description
         // TODO: Split method into "add variation to order", and "remove variation from order"
         if !allProducts.contains(product) {
             allProducts.append(product)
@@ -727,24 +748,13 @@ private extension EditableOrderViewModel {
         }
 
         if !selectedProductVariations.contains(variation) {
-            // Case 1: Add Product variation to the Order
+            // Add Product variation to the Order
             selectedProductVariations.append(variation)
-
-            let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
-            orderSynchronizer.setProduct.send(input)
-
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+            addProductVariationToOrder(variation)
         } else {
-            // Case 2: Remove Product variation from the Order
+            // Remove Product variation from the Order
             selectedProductVariations.removeAll(where: { $0?.productVariationID == variation.productVariationID })
-
-            guard let orderItem = orderSynchronizer.order.items.first(where: { $0.variationID == variation.productVariationID }) else {
-                DDLogError("Unable to find product variation ID: \(variation.productID) (parent ID: \(product.productID)) in Order")
-                return
-            }
-            removeItemFromOrder(orderItem)
-
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
+            removeProductVariationFromOrder(variation)
         }
     }
 

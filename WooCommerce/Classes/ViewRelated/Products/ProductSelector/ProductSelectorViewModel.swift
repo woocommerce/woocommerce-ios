@@ -187,20 +187,16 @@ final class ProductSelectorViewModel: ObservableObject {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
-
-        if shouldToggleItemOnSelection {
-            // Product multi-selection (new)
-            if let onProductSelected = onProductSelected {
-                toggleSelection(productID: productID)
-                onProductSelected(selectedProduct)
-            }
+        
+        if shouldToggleItemOnSelection, let onProductSelected {
+            // The selector supports multiple selection. Toggles the item, and triggers the selection
+            toggleSelection(productID: productID)
+            onProductSelected(selectedProduct)
+        } else if let onProductSelected {
+            // The selector supports single selection only
+            onProductSelected(selectedProduct)
         } else {
-            // Product single-selection (legacy)
-            if let onProductSelected = onProductSelected {
-                onProductSelected(selectedProduct)
-            } else {
-                toggleSelection(productID: productID)
-            }
+            toggleSelection(productID: productID)
         }
     }
 

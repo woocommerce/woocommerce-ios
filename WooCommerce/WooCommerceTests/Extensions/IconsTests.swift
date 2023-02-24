@@ -744,4 +744,8 @@ final class IconsTests: XCTestCase {
     func test_app_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.appIconDefault)
     }
+
+    func test_blankProductImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.blankProductImage)
+    }
 }

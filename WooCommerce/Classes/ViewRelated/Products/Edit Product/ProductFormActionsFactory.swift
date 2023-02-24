@@ -16,8 +16,9 @@ enum ProductFormEditAction: Equatable {
     case tags(editable: Bool)
     case shortDescription(editable: Bool)
     case linkedProducts(editable: Bool)
-    case addOptions
     case convertToVariable
+    // Simple products only
+    case addOptions
     // Affiliate products only
     case sku(editable: Bool)
     case externalURL(editable: Bool)
@@ -114,7 +115,10 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
 
     /// Returns an array of actions that are visible in the product form options CTA section.
     func optionsCTASectionActions() -> [ProductFormEditAction] {
-        isAddOptionsButtonEnabled ? [.addOptions] : []
+        guard isAddOptionsButtonEnabled, product.product.productType == .simple, editable else {
+            return []
+        }
+        return [.addOptions]
     }
 
     /// Returns an array of actions that are visible in the product form bottom sheet.

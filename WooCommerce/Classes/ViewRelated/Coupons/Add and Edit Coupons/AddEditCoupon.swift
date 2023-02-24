@@ -297,7 +297,7 @@ struct AddEditCoupon: View {
                 }
             }
             .sheet(isPresented: $showingSelectProducts) {
-                ProductSelector(configuration: ProductSelector.Configuration.productsForCoupons,
+                ProductSelectorView(configuration: ProductSelectorView.Configuration.productsForCoupons,
                                 isPresented: $showingSelectProducts,
                                 viewModel: viewModel.productSelectorViewModel)
                     .onDisappear {
@@ -416,7 +416,7 @@ struct AddEditCoupon_Previews: PreviewProvider {
 }
 #endif
 
-private extension ProductSelector.Configuration {
+private extension ProductSelectorView.Configuration {
     static let productsForCoupons: Self =
         .init(showsFilters: true,
               multipleSelectionsEnabled: true,

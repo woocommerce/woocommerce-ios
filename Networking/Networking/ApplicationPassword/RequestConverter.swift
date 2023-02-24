@@ -6,6 +6,9 @@ struct RequestConverter {
     let credentials: Credentials?
 
     func convert(_ request: URLRequestConvertible) -> URLRequestConvertible {
+        if request is RESTRequest {
+            return request
+        }
         guard let convertibleRequest = request as? RESTRequestConvertible,
               case let .wporg(_, _, siteAddress) = credentials,
               let restRequest = convertibleRequest.asRESTRequest(with: siteAddress) else {

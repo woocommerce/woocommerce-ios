@@ -2,9 +2,9 @@ import Foundation
 import Yosemite
 import enum Alamofire.AFError
 
-/// View model for `LoginJetpackSetupView`.
+/// View model for `JetpackSetupView`.
 ///
-final class LoginJetpackSetupViewModel: ObservableObject {
+final class JetpackSetupViewModel: ObservableObject {
     let siteURL: String
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
     let connectionOnly: Bool
@@ -154,7 +154,7 @@ final class LoginJetpackSetupViewModel: ObservableObject {
 
 // MARK: Private helpers
 //
-private extension LoginJetpackSetupViewModel {
+private extension JetpackSetupViewModel {
     func retrieveJetpackPluginDetails() {
         let action = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
             guard let self else { return }
@@ -304,7 +304,7 @@ private extension LoginJetpackSetupViewModel {
 
 // MARK: Subtypes
 //
-extension LoginJetpackSetupViewModel {
+extension JetpackSetupViewModel {
     /// Details for setup error to display on `LoginJetpackSetupView`
     ///
     struct SetupErrorDetail: Equatable {
@@ -322,9 +322,9 @@ extension LoginJetpackSetupViewModel {
         var title: String {
             switch self {
             case .inProgress:
-                return LoginJetpackSetupViewModel.Localization.validating
+                return JetpackSetupViewModel.Localization.validating
             case .authorized:
-                return LoginJetpackSetupViewModel.Localization.connectionApproved
+                return JetpackSetupViewModel.Localization.connectionApproved
             }
         }
 

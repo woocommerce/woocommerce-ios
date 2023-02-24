@@ -154,6 +154,10 @@ public enum FeatureFlag: Int {
     ///
     case simplifyProductEditing
 
+    /// Whether to enable Jetpack setup for users authenticated with application passwords.
+    ///
+    case jetpackSetupWithApplicationPassword
+
     /// Whether to enable the onboarding checklist in the dashboard for WPCOM stores.
     ///
     case dashboardOnboarding

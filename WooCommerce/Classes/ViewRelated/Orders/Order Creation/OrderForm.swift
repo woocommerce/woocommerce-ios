@@ -278,7 +278,7 @@ private struct ProductsSection: View {
                 .sheet(isPresented: $showAddProduct, onDismiss: {
                     scroll.scrollTo(addProductButton)
                 }, content: {
-                    ProductSelector(configuration: ProductSelector.Configuration.addProductToOrder,
+                    ProductSelectorView(configuration: ProductSelectorView.Configuration.addProductToOrder,
                                     isPresented: $showAddProduct,
                                     viewModel: viewModel.addProductViewModel)
                         .onDisappear {
@@ -350,9 +350,10 @@ struct OrderForm_Previews: PreviewProvider {
     }
 }
 
-private extension ProductSelector.Configuration {
+private extension ProductSelectorView.Configuration {
     static let addProductToOrder: Self =
-        .init(searchHeaderBackgroundColor: .listBackground,
+        .init(multipleSelectionsEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
+              searchHeaderBackgroundColor: .listBackground,
               prefersLargeTitle: false,
               title: Localization.title,
               cancelButtonTitle: Localization.close,

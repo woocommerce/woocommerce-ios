@@ -1,6 +1,8 @@
 import SwiftUI
 
-struct JetpackInstallStepsView: View {
+/// View to show steps of the Jetpack Install flow for JCP sites.
+///
+struct JCPJetpackInstallStepsView: View {
     /// The presenter to display notice when an error occurs.
     private let noticePresenter: DefaultNoticePresenter
 
@@ -14,7 +16,7 @@ struct JetpackInstallStepsView: View {
     @State private var showingWPAdminWebview: Bool = false
 
     // View model to handle the installation
-    @ObservedObject private var viewModel: JetpackInstallStepsViewModel
+    @ObservedObject private var viewModel: JCPJetpackInstallStepsViewModel
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -36,7 +38,7 @@ struct JetpackInstallStepsView: View {
         return attributedString
     }
 
-    init(viewModel: JetpackInstallStepsViewModel,
+    init(viewModel: JCPJetpackInstallStepsViewModel,
          noticePresenter: DefaultNoticePresenter,
          supportAction: @escaping () -> Void,
          dismissAction: @escaping () -> Void) {
@@ -168,7 +170,7 @@ struct JetpackInstallStepsView: View {
     }
 }
 
-private extension JetpackInstallStepsView {
+private extension JCPJetpackInstallStepsView {
     enum Constants {
         static let cancelButtonTopMargin: CGFloat = 8
         static let contentTopMargin: CGFloat = 32
@@ -196,14 +198,14 @@ private extension JetpackInstallStepsView {
     }
 }
 
-struct JetpackInstallStepsView_Previews: PreviewProvider {
+struct JCPJetpackInstallStepsView_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = JetpackInstallStepsViewModel(siteID: 123, siteURL: "automattic.com", siteAdminURL: "")
-        JetpackInstallStepsView(viewModel: viewModel, noticePresenter: .init(), supportAction: {}, dismissAction: {})
+        let viewModel = JCPJetpackInstallStepsViewModel(siteID: 123, siteURL: "automattic.com", siteAdminURL: "")
+        JCPJetpackInstallStepsView(viewModel: viewModel, noticePresenter: .init(), supportAction: {}, dismissAction: {})
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 414, height: 780))
 
-        JetpackInstallStepsView(viewModel: viewModel, noticePresenter: .init(), supportAction: {}, dismissAction: {})
+        JCPJetpackInstallStepsView(viewModel: viewModel, noticePresenter: .init(), supportAction: {}, dismissAction: {})
             .preferredColorScheme(.dark)
             .previewLayout(.fixed(width: 414, height: 780))
     }

@@ -519,9 +519,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertTrue(factory.settingsSectionActions().contains(.categories(editable: true)))
     }
 
-    func test_options_CTA_actions_contain_add_options_when_it_is_enabled() {
+    func test_options_CTA_actions_for_simple_product_contain_add_options_when_it_is_enabled() {
         // Given
-        let product = Product.fake()
+        let product = Fixtures.physicalSimpleProductWithoutImages
         let model = EditableProductModel(product: product)
 
         // When
@@ -529,6 +529,26 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         // Then
         XCTAssertTrue(factory.optionsCTASectionActions().contains(.addOptions))
+    }
+
+    func test_options_CTA_actions_for_non_simple_products_do_not_contain_add_options_when_it_is_enabled() {
+        // Given
+        let products = [
+            Fixtures.affiliateProduct,
+            Fixtures.groupedProduct,
+            Fixtures.variableProductWithoutVariations,
+            Fixtures.nonCoreProductWithPrice
+        ]
+
+        products.forEach { product in
+            let model = EditableProductModel(product: product)
+
+            // When
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, isAddOptionsButtonEnabled: true)
+
+            // Then
+            XCTAssertFalse(factory.optionsCTASectionActions().contains(.addOptions))
+        }
     }
 }
 

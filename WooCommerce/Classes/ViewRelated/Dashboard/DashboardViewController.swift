@@ -105,6 +105,7 @@ final class DashboardViewController: UIViewController {
     private var isJetpackBenefitsBannerShown: Bool {
         bottomJetpackBenefitsBannerController.view?.superview != nil
     }
+    private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
     /// A spacer view to add a margin below the top banner (between the banner and dashboard UI)
     ///
@@ -337,28 +338,15 @@ private extension DashboardViewController {
 
     func configureBottomJetpackBenefitsBanner() {
         bottomJetpackBenefitsBannerController.setActions { [weak self] in
-            guard let self = self else { return }
-
-            ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .tapped))
-
-            let benefitsController = JetpackBenefitsHostingController()
-            benefitsController.setActions { [weak self] in
-                self?.dismiss(animated: true, completion: { [weak self] in
-                    ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .benefitsModal))
-
-                    guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                        return
-                    }
-                    let installController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
-                    installController.setDismissAction { [weak self] in
-                        self?.dismiss(animated: true, completion: nil)
-                    }
-                    self?.present(installController, animated: true, completion: nil)
-                })
-            } dismissAction: { [weak self] in
-                self?.dismiss(animated: true, completion: nil)
+            guard let self, let navigationController = self.navigationController else { return }
+            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+                return
             }
-            self.present(benefitsController, animated: true, completion: nil)
+            let coordinator = JetpackSetupCoordinator(site: site,
+                                                      navigationController: navigationController)
+            self.jetpackSetupCoordinator = coordinator
+            coordinator.showBenefitModal()
+            ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .tapped))
         } dismissAction: { [weak self] in
             ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .dismissed))
 
@@ -722,7 +710,10 @@ private extension DashboardViewController {
                                                                                    calendar: .current) { [weak self] isVisibleFromAppSettings in
                     guard let self = self else { return }
 
-                    let shouldShowJetpackBenefitsBanner = site?.isJetpackCPConnected == true && isVisibleFromAppSettings
+                    let isJetpackCPSite = site?.isJetpackCPConnected == true
+                    let jetpackSetupForApplicationPassword = site?.isNonJetpackSite == true &&
+                        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)
+                    let shouldShowJetpackBenefitsBanner = (isJetpackCPSite || jetpackSetupForApplicationPassword) && isVisibleFromAppSettings
 
                     self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
                 }

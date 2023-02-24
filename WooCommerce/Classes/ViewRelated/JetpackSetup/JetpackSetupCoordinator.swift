@@ -29,7 +29,7 @@ final class JetpackSetupCoordinator {
         benefitsController.setActions (installAction: { [weak self] result in
             guard let self else { return }
             self.analytics.track(event: .jetpackInstallButtonTapped(source: .benefitsModal))
-            if let result, self.site.isNonJetpackSite {
+            if self.site.isNonJetpackSite {
                 self.handleJetpackStatus(result)
             } else {
                 self.presentJCPJetpackInstallFlow()

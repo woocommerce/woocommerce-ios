@@ -240,7 +240,7 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.storeImage)
     }
 
-    func testLaunchStoreImageIsNotNil() {
+    func test_launchStoreImage_is_not_nil() {
         XCTAssertNotNil(UIImage.launchStoreImage)
     }
 

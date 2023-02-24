@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-02-22 14:54:04+0000 */
+/* Translation-Revision-Date: 2023-02-24 12:03:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -51,7 +51,7 @@ which should be translated separately and considered part of this sentence. */
 "%1$@ about adding Pay in Person to your checkout" = "%1$@ over fysieke betalingen toevoegen aan je online kassa";
 
 /* Learn more format at the bottom of the domain settings screen. %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains. */
-"%1$@ about domains and how to take domain-related actions." = "% $1@ over domeinen en hoe je domeingerelateerde acties kunt ondernemen.";
+"%1$@ about domains and how to take domain-related actions." = "%1$@ over domeinen en hoe je domeingerelateerde acties kunt ondernemen.";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ eindigt op %2$@";

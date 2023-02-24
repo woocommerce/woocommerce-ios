@@ -1,1 +1,2 @@
-USA, say hello to Tap to Pay on iPhone! We are thrilled to announce that Tap to Pay is now available to USA merchants currently using WooCommerce Payments. Get a sneak peek of it by turning it on in the More tab > Settings > Experimental Features. That's not all! It's now possible to use the app without Jetpack! You’ve asked for it, and now it’s here!
+- [Internal] Dashboard: the stats implementation had a major update to replace a third-party library in order to support the upcoming store onboarding card. Minimal design changes are expected, and horizontal scrolling between different time range tabs is not available anymore. [https://github.com/woocommerce/woocommerce-ios/pull/8942]
+

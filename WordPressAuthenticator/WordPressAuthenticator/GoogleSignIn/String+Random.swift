@@ -1,6 +1,10 @@
 extension String {
 
-    static func randomString(using characters: Set<Character>, withLength length: Int) -> String {
+    /// Returns a cryptographically secure string generated with characters from the given `Set<Character>` and with length
+    /// `length`.
+    ///
+    /// - Complexity: O(n) where n is the given `length`.
+    static func secureRandomString(using characters: Set<Character>, withLength length: Int) -> String {
         let allowedCharactersCount = UInt32(characters.count)
 
         var randomBytes = [UInt8](repeating: 0, count: length)

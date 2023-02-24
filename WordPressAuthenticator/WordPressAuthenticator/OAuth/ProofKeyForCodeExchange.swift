@@ -71,7 +71,7 @@ extension ProofKeyForCodeExchange {
             // a developer error—either wrong coding of the constrained length or of the allowed
             // characters.
             return .init(
-                value: String.randomString(
+                value: String.secureRandomString(
                     using: allowedCharacters,
                     withLength: constrainedLength
                 )

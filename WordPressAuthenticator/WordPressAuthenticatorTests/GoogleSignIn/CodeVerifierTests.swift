@@ -10,23 +10,10 @@ class CodeVerifierTests: XCTestCase {
         )
     }
 
-    func testCodeVerifierIsRandomStringOfLength128ByDefault() {
-        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue.count, 128)
-    }
-
-    func testCodeVerifierMinLengthIs43() {
-        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier(length: Int.min).rawValue.count, 43)
-        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier(length: 0).rawValue.count, 43)
-        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier(length: 42).rawValue.count, 43)
-        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier(length: 43).rawValue.count, 43)
-        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier(length: 44).rawValue.count, 44)
-    }
-
-    func testCodeVerifierMaxLengthIs128() {
-        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier(length: 127).rawValue.count, 127)
-        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier(length: 128).rawValue.count, 128)
-        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier(length: 129).rawValue.count, 128)
-        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier(length: Int.max).rawValue.count, 128)
+    func testGeneratedCodeVerifierHasLength43() {
+        // 43 is the recommended lenght. See https://www.rfc-editor.org/rfc/rfc7636#section-4.1
+        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue.count, 43)
+        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue.count, 43)
     }
 
     func testCodeVerifierIsRandomStringWithURLSafeCharacters() {
@@ -42,5 +29,34 @@ class CodeVerifierTests: XCTestCase {
             ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue
                 .rangeOfCharacter(from: CharacterSet.urlQueryAllowed.inverted)
         )
+    }
+
+    // MARK: –
+
+    func testCodeVerifierInitFailsWithValueShorterThan43() {
+        // 43 is the minimmum lenght from the spec
+        XCTAssertNil(ProofKeyForCodeExchange.CodeVerifier(value: ""))
+        XCTAssertNil(ProofKeyForCodeExchange.CodeVerifier(value: "a".repeated(42)))
+        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier(value: "a".repeated(43))?.rawValue.count, 43)
+        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier(value: "a".repeated(44))?.rawValue.count, 44)
+    }
+
+    func testCodeVerifierInitFailsWithValueLongerThan128() {
+        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier(value: "a".repeated(127))?.rawValue.count, 127)
+        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier(value: "a".repeated(128))?.rawValue.count, 128)
+        XCTAssertNil(ProofKeyForCodeExchange.CodeVerifier(value: "a".repeated(129)))
+    }
+
+    func testCodeVerifierInitFailsWithInvalidCharacters() {
+        XCTAssertNil(ProofKeyForCodeExchange.CodeVerifier(value: "a".repeated(43) + "?"))
+        XCTAssertNil(ProofKeyForCodeExchange.CodeVerifier(value: "a".repeated(43) + "^"))
+        XCTAssertNil(ProofKeyForCodeExchange.CodeVerifier(value: "a".repeated(43) + "🤔"))
+    }
+}
+
+private extension String {
+
+    func repeated(_ times: Int) -> String {
+        (0..<times).map { _ in self }.joined()
     }
 }

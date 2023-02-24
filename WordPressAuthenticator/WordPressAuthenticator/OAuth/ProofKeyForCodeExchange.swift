@@ -61,16 +61,15 @@ extension ProofKeyForCodeExchange {
         static let minimumLength = 43
         static let maximumLength = 128
 
-        /// `length` must be between 43 and 128, inclusive.
+        /// Generates a random code verifier according to the PKCE RFC.
         ///
         /// - Note: This method name is more verbose than the recommended "make<Type>" for this factory to communicate the randomness component.
-        static func makeRandomCodeVerifier(length: Int = maximumLength) -> Self {
-            let constrainedLength = min(max(length, minimumLength), maximumLength)
-
-            // `secureRandomString` can fail because of issues such as not enough entropy.
-            // In the unlikely occurrence that happens, fallback to `randomString`.
-            let value = String.secureRandomString(using: allowedCharacters, withLength: constrainedLength)
-                ?? String.randomString(using: allowedCharacters, withLength: constrainedLength)
+        static func makeRandomCodeVerifier() -> Self {
+            // See `randomSecureCodeVerifier()` implementation for RFC details.
+            //
+            // In the unlikely case the generation fails, fallback to a standard random (i.e. not
+            // cryptographically secure) string.
+            let value: String = .randomSecureCodeVerifier() ?? .randomString(using: allowedCharacters, withLength: minimumLength)
 
             // It's appropriate to force unwrap here because a `nil` value could only result from
             // a developer error—either wrong coding of the constrained length or of the allowed
@@ -85,5 +84,33 @@ extension ProofKeyForCodeExchange {
 
             self.rawValue = value
         }
+    }
+}
+
+private extension String {
+
+    /// Generates a random code verifier according to the PKCE RFC.
+    ///
+    /// The RFC states:
+    ///
+    /// > It is RECOMMENDED that the output of a suitable random number generator be used to create a 32-octet sequence.
+    /// > The octet sequence is then base64url-encoded to produce a 43-octet URL safe string to use as the code verifier.
+    static func randomSecureCodeVerifier() -> String? {
+        let byteCount = 32
+        var bytes = [UInt8](repeating: 0, count: byteCount)
+        let result = SecRandomCopyBytes(kSecRandomDefault, byteCount, &bytes)
+
+        guard result == errSecSuccess else {
+            return .none
+        }
+
+        let data = Data(bytes)
+
+        // Base64url-encoding a 32-octect sequence should always result in a 43-lenght string,
+        // string, but let's cap it just in case.
+        //
+        // Also notice that by base64url-encoding, we ensure the characters are in the allowed
+        // set.
+        return String(data.base64URLEncodedString().prefix(43))
     }
 }

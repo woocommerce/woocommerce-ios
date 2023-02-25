@@ -355,6 +355,8 @@ private extension ProductSelectorView.Configuration {
         .init(multipleSelectionsEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
               searchHeaderBackgroundColor: .listBackground,
               prefersLargeTitle: false,
+              doneButtonTitleSingularFormat: Localization.doneButtonSingular,
+              doneButtonTitlePluralFormat: Localization.doneButtonPlural, 
               title: Localization.title,
               cancelButtonTitle: Localization.close,
               productRowAccessibilityHint: Localization.productRowAccessibilityHint,
@@ -363,6 +365,11 @@ private extension ProductSelectorView.Configuration {
     enum Localization {
         static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")
+        static let doneButtonSingular = NSLocalizedString("1 Product selected",
+                                                          comment: "Title of the action button at the bottom of the Select Products screen when one product is selected")
+        static let doneButtonPlural = NSLocalizedString("%1$d Products selected",
+                                                        comment: "Title of the action button at the bottom of the Select Products screen " +
+                                                        "when more than 1 item is selected, reads like: 5 Products selected")
         static let productRowAccessibilityHint = NSLocalizedString("Adds product to order.",
                                                                    comment: "Accessibility hint for selecting a product in the Add Product screen")
         static let variableProductRowAccessibilityHint = NSLocalizedString(

@@ -258,9 +258,15 @@ private extension AddProductCoordinator {
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
                                                        presentationStyle: .navigationStack)
-        // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
-        viewController.hidesBottomBarWhenPushed = true
-        navigationController.pushViewController(viewController, animated: true)
+        if isSimplifiedBottomSheetEnabled {
+            viewController.addCloseNavigationBarButton(title: NSLocalizedString("Cancel", comment: "Button to dismiss the new product form"))
+            let productFormNavController = WooNavigationController(rootViewController: viewController)
+            navigationController.present(productFormNavController, animated: true)
+        } else {
+            // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
+            viewController.hidesBottomBarWhenPushed = true
+            navigationController.pushViewController(viewController, animated: true)
+        }
     }
 
     /// Converts a `BottomSheetProductType` type to a `ProductsRemote.TemplateType` template type.

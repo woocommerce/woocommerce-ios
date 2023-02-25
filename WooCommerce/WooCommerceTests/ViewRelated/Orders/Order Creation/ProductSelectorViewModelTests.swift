@@ -332,13 +332,13 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertNil(variationsViewModel)
     }
 
-    func test_selecting_a_product_sets_its_row_to_selected_state_given_shouldToggleItemOnSelection_is_false() {
+    func test_selecting_a_product_sets_its_row_to_selected_state_given_supportsMultipleSelections_is_false() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 shouldToggleItemOnSelection: false)
+                                                 supportsMultipleSelections: false)
 
         // When
         viewModel.selectProduct(product.productID)
@@ -349,13 +349,13 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(productRow?.selectedState, .selected)
     }
 
-    func test_selecting_a_product_sets_its_row_to_selected_state_given_shouldToggleItemOnSelection_is_true() {
+    func test_selecting_a_product_sets_its_row_to_selected_state_given_supportsMultipleSelections_is_true() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 shouldToggleItemOnSelection: true,
+                                                 supportsMultipleSelections: true,
                                                  onProductSelected: { _ in })
 
         // When
@@ -373,7 +373,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 shouldToggleItemOnSelection: true,
+                                                 supportsMultipleSelections: true,
                                                  onProductSelected: { _ in })
 
         // When
@@ -409,7 +409,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 shouldToggleItemOnSelection: false,
+                                                 supportsMultipleSelections: false,
                                                  onProductSelected: { _ in })
 
         // When
@@ -517,7 +517,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  selectedItemIDs: [],
                                                  storageManager: storageManager,
-                                                 shouldToggleItemOnSelection: false,
+                                                 supportsMultipleSelections: false,
                                                  onMultipleSelectionCompleted: {
             selectedItems = $0
         })
@@ -583,7 +583,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 shouldToggleItemOnSelection: false)
+                                                 supportsMultipleSelections: false)
 
         // When
         viewModel.selectProduct(product.productID)

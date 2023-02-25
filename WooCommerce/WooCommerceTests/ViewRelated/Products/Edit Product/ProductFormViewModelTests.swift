@@ -3,7 +3,6 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import TestKit
-import protocol Experiments.FeatureFlagService
 
 final class ProductFormViewModelTests: XCTestCase {
 
@@ -334,6 +333,32 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(actionButtons, [.save, .more])
     }
 
+    func test_action_buttons_for_new_product_with_simplified_editing_enabled() throws {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores, simplifiedProductEditingEnabled: true)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.save])
+    }
+
+    func test_action_buttons_for_existing_draft_product_and_no_pending_changes_with_simplified_editing_enabled() {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores, simplifiedProductEditingEnabled: true)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+    }
+
     func test_action_buttons_for_existing_published_product_and_pending_changes() {
         // Given
         sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
@@ -610,7 +635,7 @@ private extension ProductFormViewModelTests {
                          formType: ProductFormType,
                          stores: StoresManager = ServiceLocator.stores,
                          analytics: Analytics = ServiceLocator.analytics,
-                         featureFlagService: FeatureFlagService = MockFeatureFlagService()) -> ProductFormViewModel {
+                         simplifiedProductEditingEnabled: Bool = false) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         return ProductFormViewModel(product: model,
@@ -618,6 +643,6 @@ private extension ProductFormViewModelTests {
                                     productImageActionHandler: productImageActionHandler,
                                     stores: stores,
                                     analytics: analytics,
-                                    featureFlagService: featureFlagService)
+                                    simplifiedProductEditingEnabled: simplifiedProductEditingEnabled)
     }
 }

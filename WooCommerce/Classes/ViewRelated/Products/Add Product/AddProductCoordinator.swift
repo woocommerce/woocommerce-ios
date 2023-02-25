@@ -209,7 +209,9 @@ private extension AddProductCoordinator {
 
             switch result {
             case .success(let product):
-                let newProduct = ProductFactory().newProduct(from: product) // Transforms the auto-draft product into a new product ready to be used.
+                // Transforms the auto-draft product into a new product ready to be used.
+                let newProduct = ProductFactory().newProduct(from: product,
+                                                             status: self.isSimplifiedBottomSheetEnabled ? .draft : .published)
                 self.presentProduct(newProduct) // We need to strongly capture `self` because no one is retaining `AddProductCoordinator`.
 
             case .failure(let error):
@@ -231,7 +233,8 @@ private extension AddProductCoordinator {
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
         guard let product = ProductFactory().createNewProduct(type: bottomSheetProductType.productType,
                                                               isVirtual: bottomSheetProductType.isVirtual,
-                                                              siteID: siteID) else {
+                                                              siteID: siteID,
+                                                              status: isSimplifiedBottomSheetEnabled ? .draft : .published) else {
             assertionFailure("Unable to create product of type: \(bottomSheetProductType)")
             return
         }

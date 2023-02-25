@@ -1,39 +1,21 @@
 /// Models the request to send for an OAuth token
 ///
 /// - Note: See documentation at https://developers.google.com/identity/protocols/oauth2/native-app#exchange-authorization-code
-struct OAuthTokenRequestBody: Encodable {
+struct OAuthTokenRequestBody {
     let clientId: String
     let clientSecret: String
     let audience: String
     let code: String
-    let rawCodeVerifier: String
+    let codeVerifier: ProofKeyForCodeExchange.CodeVerifier
     let grantType: String
     let redirectURI: String
-
-    init(
-        clientId: String,
-        clientSecret: String,
-        audience: String,
-        code: String,
-        codeVerifier: ProofKeyForCodeExchange.CodeVerifier,
-        grantType: String,
-        redirectURI: String
-    ) {
-        self.clientId = clientId
-        self.clientSecret = clientSecret
-        self.audience = audience
-        self.code = code
-        self.rawCodeVerifier = codeVerifier.rawValue
-        self.grantType = grantType
-        self.redirectURI = redirectURI
-    }
 
     enum CodingKeys: String, CodingKey {
         case clientId = "client_id"
         case clientSecret = "client_secret"
         case audience
         case code
-        case rawCodeVerifier = "code_verifier"
+        case codeVerifier = "code_verifier"
         case grantType = "grant_type"
         case redirectURI = "redirect_uri"
     }
@@ -43,7 +25,7 @@ struct OAuthTokenRequestBody: Encodable {
             (CodingKeys.clientId.rawValue, clientId),
             (CodingKeys.clientSecret.rawValue, clientSecret),
             (CodingKeys.code.rawValue, code),
-            (CodingKeys.rawCodeVerifier.rawValue, rawCodeVerifier),
+            (CodingKeys.codeVerifier.rawValue, codeVerifier.rawValue),
             (CodingKeys.grantType.rawValue, grantType),
             (CodingKeys.redirectURI.rawValue, redirectURI),
             // This is not in the spec at

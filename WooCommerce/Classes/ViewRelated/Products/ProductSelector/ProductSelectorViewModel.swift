@@ -53,7 +53,7 @@ final class ProductSelectorViewModel: ObservableObject {
     @Published private(set) var productRows: [ProductRowViewModel] = []
 
     /// Determines if products should be toggled on selection
-    /// `false` by default, mainly used to allow multi-seleciton on the Order Creation flow
+    /// `false` by default, mainly used to allow multi-selection on the Order Creation flow
     ///
     let shouldToggleItemOnSelection: Bool
 

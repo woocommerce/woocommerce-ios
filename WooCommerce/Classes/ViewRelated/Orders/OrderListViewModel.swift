@@ -66,32 +66,36 @@ final class OrderListViewModel {
         cardPresentPaymentsConfiguration.isSupportedCountry
     }
 
-    /// Results controller that fetches any WooCommerce Payments In-Person Payments transactions
-    ///
-    private lazy var WCPayOrdersResultsController: ResultsController<StorageOrder> = {
-        let wcpay = Constants.wcpayPaymentMethodID
-        let predicate = NSPredicate(
-            format: "siteID == %lld AND paymentMethodID == %@",
-            argumentArray: [siteID, wcpay]
+    private lazy var wcPayIPPOrdersPredicate: NSPredicate = {
+        /// In order to filter WCPay transactions processed through IPP we check if these contain `receipt_url`
+        /// in their `customFields` metadata, unlike those processed through a website, which don't.
+        /// This heuristic can't be relied on for other plugins, so the `paymentMethodID` limit is required.
+        NSPredicate(
+            format: "siteID == %lld AND paymentMethodID == %@ AND ANY customFields.key == %@",
+            argumentArray: [siteID, Constants.wcpayPaymentMethodID, Constants.receiptURLKey]
         )
-        return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
-    /// Results controller that fetches WooCommerce Payments In-Person Payments within the last 30 days
+    /// Results controller that fetches any WooCommerce Payments In-Person Payments transactions
     ///
-    private lazy var recentWCPayIPPResultsController: ResultsController<StorageOrder> = {
+    private lazy var wcPayIPPOrdersResultsController: ResultsController<StorageOrder> = {
+        return ResultsController<StorageOrder>(storageManager: storageManager, matching: wcPayIPPOrdersPredicate, sortedBy: [])
+    }()
+
+    private lazy var last30DaysPredicate: NSPredicate = {
         let today = Date()
-        let wcpay = Constants.wcpayPaymentMethodID
         let thirtyDaysBeforeToday = Calendar.current.date(
             byAdding: .day,
             value: -30,
             to: today
         ) ?? Date()
+        return NSPredicate(format: "datePaid >= %@", argumentArray: [thirtyDaysBeforeToday])
+    }()
 
-        let predicate = NSPredicate(
-            format: "siteID == %lld AND paymentMethodID == %@ AND datePaid >= %@",
-            argumentArray: [siteID, wcpay, thirtyDaysBeforeToday]
-        )
+    /// Results controller that fetches WooCommerce Payments In-Person Payments within the last 30 days
+    ///
+    private lazy var recentWCPayIPPResultsController: ResultsController<StorageOrder> = {
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [wcPayIPPOrdersPredicate, last30DaysPredicate])
 
         return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
@@ -274,7 +278,7 @@ final class OrderListViewModel {
 
     private func fetchIPPTransactions() {
         do {
-            try WCPayOrdersResultsController.performFetch()
+            try wcPayIPPOrdersResultsController.performFetch()
             try recentWCPayIPPResultsController.performFetch()
         } catch {
             DDLogError("Error fetching IPP transactions: \(error)")
@@ -310,29 +314,21 @@ final class OrderListViewModel {
         if isIPPSupportedCountry {
             fetchIPPTransactions()
 
-            let hasWCPayResults = WCPayOrdersResultsController.fetchedObjects.isEmpty ? false : true
-            let WCPayResultsCount = WCPayOrdersResultsController.fetchedObjects.count
-
-            /// In order to filter WCPay transactions processed through IPP within the last 30 days,
-            /// we check if these contain `receipt_url` in their metadata, unlike those processed through a website,
-            /// which doesn't
-            ///
-            let recentIPPWCPayTransactionsFound = recentWCPayIPPResultsController.fetchedObjects.filter({
-                $0.customFields.contains(where: {$0.key == Constants.receiptURLKey }) &&
-                $0.paymentMethodTitle == Constants.paymentMethodTitle})
-            let recentWCPayResultsCount = recentIPPWCPayTransactionsFound.count
+            let hasWCPayResults = wcPayIPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
+            let wcPayResultsCount = wcPayIPPOrdersResultsController.fetchedObjects.count
+            let recentWCPayResultsCount = recentWCPayIPPResultsController.fetchedObjects.count
 
             if !hasWCPayResults {
                 guard isCODEnabled else {
                     return onCompletion(.none)
                 }
-                // Case 1: No WCPay transactions
+                // Case 1: No WCPay IPP transactions
                 return onCompletion(.inPersonPaymentsCashOnDelivery)
-                // Case 2: One or more WCPay transactions, but less than 10 within latest 30 days
             } else if recentWCPayResultsCount < Constants.numberOfTransactions {
+                // Case 2: One or more WCPay IPP transactions, but fewer than 10 within the last 30 days
                 return onCompletion(.inPersonPaymentsFirstTransaction)
-            } else if WCPayResultsCount >= Constants.numberOfTransactions {
-                // Case 3: More than 10 WCPay transactions
+            } else if wcPayResultsCount >= Constants.numberOfTransactions {
+                // Case 3: More than 10 WCPay IPP transactions
                 return onCompletion(.inPersonPaymentsPowerUsers)
             }
         }

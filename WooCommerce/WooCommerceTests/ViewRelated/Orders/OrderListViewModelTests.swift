@@ -703,7 +703,7 @@ final class OrderListViewModelTests: XCTestCase {
         })
     }
 
-    func test_feedbackBannerSurveySource_when_there_more_than_ten_wcpay_orders_then_assigns_inPersonPaymentsPowerUsers_survey() {
+    func test_feedbackBannerSurveySource_when_there_are_more_than_ten_wcpay_orders_then_assigns_inPersonPaymentsPowerUsers_survey() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID,
                                            cardPresentPaymentsConfiguration: .init(country: "CA"),

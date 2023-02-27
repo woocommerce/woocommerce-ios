@@ -203,7 +203,7 @@ final class ProductSelectorViewModel: ObservableObject {
         } else if let onProductSelected {
             // The selector supports single selection only
             onProductSelected(selectedProduct)
-        } else {
+        } else if supportsMultipleSelections {
             toggleSelection(productID: productID)
         }
     }

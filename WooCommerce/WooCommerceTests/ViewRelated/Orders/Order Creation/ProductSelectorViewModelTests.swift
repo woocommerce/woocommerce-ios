@@ -367,23 +367,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(productRow?.selectedState, .selected)
     }
 
-    func test_selecting_a_product_if_supportsMultipleSelections_is_false_and_selectProduct_is_invoked_sets_its_row_to_selected_state() {
-        // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
-        insert(product)
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 storageManager: storageManager,
-                                                 supportsMultipleSelections: false)
-
-        // When
-        viewModel.selectProduct(product.productID)
-
-        // Then
-        let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
-        XCTAssertNotNil(productRow)
-        XCTAssertEqual(productRow?.selectedState, .selected)
-    }
-
     func test_selecting_a_product_sets_its_row_to_notSelected_state_if_it_was_previously_selected() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
@@ -533,7 +516,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  selectedItemIDs: [],
                                                  storageManager: storageManager,
-                                                 supportsMultipleSelections: false,
+                                                 supportsMultipleSelections: true,
                                                  onMultipleSelectionCompleted: {
             selectedItems = $0
         })
@@ -599,7 +582,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 supportsMultipleSelections: false)
+                                                 supportsMultipleSelections: true)
 
         // When
         viewModel.selectProduct(product.productID)

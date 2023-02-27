@@ -41,6 +41,8 @@ final class SettingsViewController: UIViewController {
 
     private let stores: StoresManager
 
+    private var jetpackSetupCoordinator: JetpackSetupCoordinator?
+
     init(viewModel: ViewModel = SettingsViewModel(), stores: StoresManager = ServiceLocator.stores) {
         self.viewModel = viewModel
         self.stores = stores
@@ -368,9 +370,11 @@ private extension SettingsViewController {
 
         ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .settings))
 
-        if site.isNonJetpackSite {
-            #warning("TODO: handle jetpack setup with application password")
-            return
+        if site.isNonJetpackSite, let navigationController {
+            let coordinator = JetpackSetupCoordinator(site: site,
+                                                      navigationController: navigationController)
+            self.jetpackSetupCoordinator = coordinator
+            return coordinator.showBenefitModal()
         }
         let installJetpackController = JCPJetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
 

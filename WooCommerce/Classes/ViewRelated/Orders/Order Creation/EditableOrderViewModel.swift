@@ -173,7 +173,7 @@ final class EditableOrderViewModel: ObservableObject {
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
-            supportsMultipleSelections: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
+            supportsMultipleSelection: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
             toggleAllVariationsOnSelection: false,
             onProductSelected: { [weak self] product in
                 guard let self = self else { return }

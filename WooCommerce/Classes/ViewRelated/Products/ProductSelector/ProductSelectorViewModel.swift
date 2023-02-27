@@ -54,7 +54,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Determines if multiple item selection is supported.
     ///
-    let supportsMultipleSelections: Bool
+    let supportsMultipleSelection: Bool
 
     /// Determines if it is possible to toggle all variation items upon selection
     ///
@@ -140,14 +140,14 @@ final class ProductSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         supportsMultipleSelections: Bool = false,
+         supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
          onProductSelected: ((Product) -> Void)? = nil,
          onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
-        self.supportsMultipleSelections = supportsMultipleSelections
+        self.supportsMultipleSelection = supportsMultipleSelection
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.onProductSelected = onProductSelected
         self.onVariationSelected = onVariationSelected
@@ -168,13 +168,13 @@ final class ProductSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         supportsMultipleSelections: Bool = false,
+         supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
-        self.supportsMultipleSelections = supportsMultipleSelections
+        self.supportsMultipleSelection = supportsMultipleSelection
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.onProductSelected = nil
         self.onVariationSelected = nil
@@ -195,14 +195,14 @@ final class ProductSelectorViewModel: ObservableObject {
             return
         }
 
-        if supportsMultipleSelections, let onProductSelected {
+        if supportsMultipleSelection, let onProductSelected {
             // The selector supports multiple selection. Toggles the item, and triggers the selection
             toggleSelection(productID: productID)
             onProductSelected(selectedProduct)
         } else if let onProductSelected {
             // The selector supports single selection only
             onProductSelected(selectedProduct)
-        } else if supportsMultipleSelections {
+        } else if supportsMultipleSelection {
             toggleSelection(productID: productID)
         }
     }
@@ -218,7 +218,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
-                                                 supportsMultipleSelections: supportsMultipleSelections,
+                                                 supportsMultipleSelection: supportsMultipleSelection,
                                                  onVariationSelected: onVariationSelected)
     }
 

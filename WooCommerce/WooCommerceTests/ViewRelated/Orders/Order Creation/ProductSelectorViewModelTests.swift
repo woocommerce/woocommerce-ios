@@ -303,14 +303,14 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(selectedProduct, product.productID)
     }
 
-    func test_selectProduct_given_supportsMultipleSelections_is_enabled_invokes_onProductSelected_closure_for_existing_product() {
+    func test_selectProduct_given_supportsMultipleSelection_is_enabled_invokes_onProductSelected_closure_for_existing_product() {
         // Given
         var selectedProduct: Int64?
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 supportsMultipleSelections: true,
+                                                 supportsMultipleSelection: true,
                                                  onProductSelected: { selectedProduct = $0.productID })
 
         // When
@@ -349,13 +349,13 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertNil(variationsViewModel)
     }
 
-    func test_selecting_a_product_if_supportsMultipleSelections_is_true_and_selectProduct_is_invoked_sets_its_row_to_selected_state() {
+    func test_selecting_a_product_if_supportsMultipleSelection_is_true_and_selectProduct_is_invoked_sets_its_row_to_selected_state() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 supportsMultipleSelections: true,
+                                                 supportsMultipleSelection: true,
                                                  onProductSelected: { _ in })
 
         // When
@@ -390,7 +390,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 supportsMultipleSelections: false,
+                                                 supportsMultipleSelection: false,
                                                  onProductSelected: { _ in })
 
         // When
@@ -409,7 +409,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 supportsMultipleSelections: true)
+                                                 supportsMultipleSelection: true)
 
         // When
         viewModel.selectProduct(product.productID)
@@ -516,7 +516,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  selectedItemIDs: [],
                                                  storageManager: storageManager,
-                                                 supportsMultipleSelections: true,
+                                                 supportsMultipleSelection: true,
                                                  onMultipleSelectionCompleted: {
             selectedItems = $0
         })
@@ -582,7 +582,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 supportsMultipleSelections: true)
+                                                 supportsMultipleSelection: true)
 
         // When
         viewModel.selectProduct(product.productID)

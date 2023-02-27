@@ -78,6 +78,10 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayOnIPhone
 
+    /// Enables Tap to Pay on iPhone M2 setup flow, on eligible devices.
+    ///
+    case tapToPayOnIPhoneSetupFlow
+
     /// Store creation MVP.
     ///
     case storeCreationMVP

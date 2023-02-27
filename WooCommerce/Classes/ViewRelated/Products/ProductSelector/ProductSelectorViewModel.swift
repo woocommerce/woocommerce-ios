@@ -194,17 +194,18 @@ final class ProductSelectorViewModel: ObservableObject {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
-
-        if supportsMultipleSelection, let onProductSelected {
-            // The selector supports multiple selection. Toggles the item, and triggers the selection
+        guard let onProductSelected else {
             toggleSelection(productID: productID)
-            onProductSelected(selectedProduct)
-        } else if let onProductSelected {
+            return
+        }
+        guard supportsMultipleSelection else {
             // The selector supports single selection only
             onProductSelected(selectedProduct)
-        } else if supportsMultipleSelection {
-            toggleSelection(productID: productID)
+            return
         }
+        // The selector supports multiple selection. Toggles the item, and triggers the selection
+        toggleSelection(productID: productID)
+        onProductSelected(selectedProduct)
     }
 
     /// Get the view model for a list of product variations to add to the order

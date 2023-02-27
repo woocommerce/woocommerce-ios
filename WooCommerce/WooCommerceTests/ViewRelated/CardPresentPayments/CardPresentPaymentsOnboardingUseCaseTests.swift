@@ -949,8 +949,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed(plugin: .wcPayOnly))
     }
 
-    func test_refreshIfNecessary_when_there_is_a_cached_value_then_returns_cached_value() {
-        onboardingStateCache.update(.pluginNotInstalled)
+    func test_refreshIfNecessary_when_there_is_a_completed_cached_value_then_returns_cached_value() {
+        onboardingStateCache.update(.completed(plugin: .stripeOnly))
 
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
                                                            stores: stores,

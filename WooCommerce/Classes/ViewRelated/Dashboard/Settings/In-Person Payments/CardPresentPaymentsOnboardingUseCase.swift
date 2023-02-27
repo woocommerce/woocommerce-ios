@@ -63,7 +63,6 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         self.featureFlagService = featureFlagService
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
 
-
         if let cachedValue = cardPresentPaymentOnboardingStateCache.value {
             state = cachedValue
         } else {
@@ -89,7 +88,8 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func refreshIfNecessary() {
-        if let cachedValue = cardPresentPaymentOnboardingStateCache.value {
+        if let cachedValue = cardPresentPaymentOnboardingStateCache.value,
+           cachedValue.isCompleted {
             if cachedValue != state {
                 state = cachedValue
             }

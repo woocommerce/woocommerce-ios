@@ -234,7 +234,7 @@ final class ServiceLocator {
         _generalAppSettings
     }
 
-    static var cardPresentPaymentsOnboardingIPPUsersRefresher:  CardPresentPaymentsOnboardingIPPUsersRefresher {
+    static var cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher {
         _cardPresentPaymentsOnboardingIPPUsersRefresher
     }
 }

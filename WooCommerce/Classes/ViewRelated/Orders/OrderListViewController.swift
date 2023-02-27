@@ -157,13 +157,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         configureViewModel()
         configureSyncingCoordinator()
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            let survey = viewModel.feedbackBannerSurveySource()
-            // Only assign the survey once we're sure the data is fetched from storage
-            inPersonPaymentsSurveyVariation = survey
-            viewModel.trackInPersonPaymentsFeedbackBannerShown(for: survey)
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -258,10 +251,14 @@ private extension OrderListViewController {
                     self.setErrorTopBanner()
                 case .orderCreation:
                     self.setOrderCreationTopBanner()
-                case .IPPFeedback:
-                    guard let survey = self.inPersonPaymentsSurveyVariation else {
+                case .inPersonPaymentsFeedback(let survey):
+                    guard let survey = survey,
+                          self.inPersonPaymentsSurveyVariation != survey else {
                         return
                     }
+                    self.inPersonPaymentsSurveyVariation = survey
+                    self.viewModel.trackInPersonPaymentsFeedbackBannerShown(for: survey)
+
                     self.setIPPFeedbackTopBanner(survey: survey)
                 }
             }

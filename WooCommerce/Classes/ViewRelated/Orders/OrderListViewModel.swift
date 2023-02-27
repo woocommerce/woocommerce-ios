@@ -131,6 +131,8 @@ final class OrderListViewModel {
     ///
     @Published var hideIPPFeedbackBanner: Bool = true
 
+    @Published var ippSurveySource: SurveyViewController.Source? = nil
+
     init(siteID: Int64,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          stores: StoresManager = ServiceLocator.stores,
@@ -147,10 +149,6 @@ final class OrderListViewModel {
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) && !hideIPPFeedbackBanner {
-            topBanner = .IPPFeedback
-        }
     }
 
     deinit {
@@ -479,16 +477,17 @@ extension OrderListViewModel {
     ///
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
+        let ippSurvey = $ippSurveySource.removeDuplicates()
 
-        Publishers.CombineLatest3(errorState, $hideIPPFeedbackBanner, $hideOrdersBanners)
-            .map { hasError, hasDismissedIPPFeedbackBanner, hasDismissedOrdersBanners -> TopBanner in
+        Publishers.CombineLatest4(errorState, $hideIPPFeedbackBanner, ippSurvey, $hideOrdersBanners)
+            .map { hasError, hasDismissedIPPFeedbackBanner, inPersonPaymentsSurvey, hasDismissedOrdersBanners -> TopBanner in
 
                 guard !hasError else {
                     return .error
                 }
 
                 guard hasDismissedIPPFeedbackBanner else {
-                    return .IPPFeedback
+                    return .inPersonPaymentsFeedback(inPersonPaymentsSurvey)
                 }
 
                 return hasDismissedOrdersBanners ? .none : .orderCreation
@@ -531,11 +530,24 @@ extension OrderListViewModel {
 extension OrderListViewModel {
     /// Possible top banners this view model can show.
     ///
-    enum TopBanner {
+    enum TopBanner: Equatable {
         case error
         case orderCreation
-        case IPPFeedback
+        case inPersonPaymentsFeedback(SurveyViewController.Source?)
         case none
+
+        static func ==(lhs: TopBanner, rhs: TopBanner) -> Bool {
+            switch (lhs, rhs) {
+            case (.error, .error),
+                (.orderCreation, .orderCreation),
+                (.none, .none):
+                return true
+            case (.inPersonPaymentsFeedback(let lhsSource), .inPersonPaymentsFeedback(let rhsSource)):
+                return lhsSource == rhsSource
+            default:
+                return false
+            }
+        }
     }
 }
 

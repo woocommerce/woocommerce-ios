@@ -284,7 +284,7 @@ final class OrderListViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.topBanner == .IPPFeedback
+            viewModel.topBanner == .inPersonPaymentsFeedback(.none)
         }
     }
 
@@ -333,7 +333,7 @@ final class OrderListViewModelTests: XCTestCase {
         if isIPPFeatureFlagEnabled {
             viewModel.hideIPPFeedbackBanner = false
             waitUntil {
-                viewModel.topBanner == .IPPFeedback
+                viewModel.topBanner == .inPersonPaymentsFeedback(.none)
             }
         } else {
             waitUntil {

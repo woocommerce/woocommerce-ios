@@ -19,4 +19,17 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
         assertEqual(testUsername, username)
     }
 
+    func test_roleName_is_correct() {
+        // Given
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultRoles = [.shopManager]
+        let stores = DefaultStoresManager(sessionManager: sessionManager)
+        let viewModel = AdminRoleRequiredViewModel(siteID: 123, stores: stores)
+
+        // When
+        let roleName = viewModel.roleName
+
+        // Then
+        assertEqual(NSLocalizedString("Shop Manager", comment: "User's Shop Manager role."), roleName)
+    }
 }

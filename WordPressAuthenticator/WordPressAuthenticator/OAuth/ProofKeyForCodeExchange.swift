@@ -106,7 +106,7 @@ private extension String {
 
         let data = Data(bytes)
 
-        // Base64url-encoding a 32-octect sequence should always result in a 43-lenght string,
+        // Base64url-encoding a 32-octect sequence should always result in a 43-length string,
         // string, but let's cap it just in case.
         //
         // Also notice that by base64url-encoding, we ensure the characters are in the allowed

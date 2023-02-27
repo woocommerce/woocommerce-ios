@@ -1,17 +1,19 @@
-import Foundation
+import Combine
 import UIKit
+import WordPressShared
 
 /// View model for `WPComEmailLoginView`
 final class WPComEmailLoginViewModel: ObservableObject {
     @Published var emailAddress: String = ""
+    /// Local validation on the email field.
+    @Published private(set) var isEmailValid: Bool = false
 
     let termsAttributedString: NSAttributedString
 
-    /// The closure to be triggered when the Install Jetpack button is tapped.
-    private let onSubmit: (String) -> Void
+    private var emailFieldSubscription: AnyCancellable?
 
-    init(siteURL: String, onSubmit: @escaping (String) -> Void) {
-        self.onSubmit = onSubmit
+    init(siteURL: String,
+         debounceDuration: Double = Constants.fieldDebounceDuration) {
         self.termsAttributedString = {
             let content = String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
             let paragraph = NSMutableParagraphStyle()
@@ -30,15 +32,28 @@ final class WPComEmailLoginViewModel: ObservableObject {
                                             linkURL: Constants.jetpackShareDetailsURL + siteURL)
             return mutableAttributedText
         }()
+        observeEmailField(debounceDuration: debounceDuration)
+    }
+}
+
+private extension WPComEmailLoginViewModel {
+    func observeEmailField(debounceDuration: Double) {
+        emailFieldSubscription = $emailAddress
+            .removeDuplicates()
+            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
+            .sink { [weak self] email in
+                self?.validateEmail(email)
+            }
     }
 
-    func handleSubmission() {
-        // TODO
+    func validateEmail(_ email: String) {
+        isEmailValid = EmailFormatValidator.validate(string: email)
     }
 }
 
 private extension WPComEmailLoginViewModel {
     enum Constants {
+        static let fieldDebounceDuration = 0.3
         static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
         static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
     }

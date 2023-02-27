@@ -9,8 +9,7 @@ final class WPComEmailLoginHostingController: UIHostingController<WPComEmailLogi
     }()
 
     init(siteURL: String, onSubmit: @escaping (String) -> Void) {
-        super.init(rootView: WPComEmailLoginView(viewModel: .init(siteURL: siteURL,
-                                                                  onSubmit: onSubmit)))
+        super.init(rootView: WPComEmailLoginView(viewModel: .init(siteURL: siteURL), onSubmit: onSubmit))
     }
 
     @available(*, unavailable)
@@ -43,8 +42,12 @@ struct WPComEmailLoginView: View {
     @ObservedObject private var viewModel: WPComEmailLoginViewModel
     @FocusState private var isEmailFieldFocused: Bool
 
-    init(viewModel: WPComEmailLoginViewModel) {
+    /// The closure to be triggered when the Install Jetpack button is tapped.
+    private let onSubmit: (String) -> Void
+
+    init(viewModel: WPComEmailLoginViewModel, onSubmit: @escaping (String) -> Void) {
         self.viewModel = viewModel
+        self.onSubmit = onSubmit
     }
 
     var body: some View {
@@ -80,10 +83,10 @@ struct WPComEmailLoginView: View {
             VStack {
                 // Primary CTA
                 Button(Localization.installJetpack) {
-                    viewModel.handleSubmission()
+                    onSubmit(viewModel.emailAddress)
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .disabled(viewModel.emailAddress.isEmpty)
+                .disabled(!viewModel.isEmailValid)
 
                 // Terms label
                 AttributedText(viewModel.termsAttributedString)
@@ -124,7 +127,7 @@ private extension WPComEmailLoginView {
 
 struct WPComEmailLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComEmailLoginView(viewModel: .init(siteURL: "https://test.com",
-                                             onSubmit: { _ in }))
+        WPComEmailLoginView(viewModel: .init(siteURL: "https://test.com"),
+                            onSubmit: { _ in })
     }
 }

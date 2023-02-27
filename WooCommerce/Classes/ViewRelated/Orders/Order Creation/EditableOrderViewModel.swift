@@ -173,13 +173,15 @@ final class EditableOrderViewModel: ObservableObject {
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
-            supportsMultipleSelections: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1)) { [weak self] product in
+            supportsMultipleSelections: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
+            onProductSelected: { [weak self] product in
                 guard let self = self else { return }
                 self.addProductToOrder(product)
-            } onVariationSelected: { [weak self] variation, parentProduct in
+            },
+            onVariationSelected: { [weak self] variation, parentProduct in
                 guard let self = self else { return }
                 self.addProductVariationToOrder(variation, parent: parentProduct)
-            }
+            })
     }()
 
     /// View models for each product row in the order.

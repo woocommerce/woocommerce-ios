@@ -21,7 +21,7 @@ class StringRandomTests: XCTestCase {
         )
     }
 
-    func testSecureRandomStringsAreDifferent() {
+    func testSecureRandomStringsAreDifferent() throws {
         let characters = Set("abcdefghijklmnopqrstuvwxyz")
         let length = 100
 
@@ -29,8 +29,8 @@ class StringRandomTests: XCTestCase {
         // test failure will most definitely mean an error in the code, rather than a legit case of
         // the same random string being generated twice.
         XCTAssertNotEqual(
-            String.secureRandomString(using: characters, withLength: length),
-            String.secureRandomString(using: characters, withLength: length)
+            try String.secureRandomString(using: characters, withLength: length),
+            try String.secureRandomString(using: characters, withLength: length)
         )
     }
 

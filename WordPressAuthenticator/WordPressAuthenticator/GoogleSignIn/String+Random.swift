@@ -1,10 +1,14 @@
 extension String {
 
+    enum RandomStringGenerationError: Error {
+        case secRandomCopyBytesFailed(status: Int32)
+    }
+
     /// Returns a cryptographically secure string generated with characters from the given `Set<Character>` and with length
     /// `length`.
     ///
     /// - Complexity: O(n) where n is the given `length`.
-    static func secureRandomString(using characters: Set<Character>, withLength length: Int) -> String? {
+    static func secureRandomString(using characters: Set<Character>, withLength length: Int) throws -> String {
         let allowedCharactersCount = UInt32(characters.count)
 
         var randomBytes = [UInt8](repeating: 0, count: length)
@@ -13,7 +17,7 @@ extension String {
         let status = SecRandomCopyBytes(kSecRandomDefault, length, &randomBytes)
 
         guard status == errSecSuccess else {
-            return .none
+            throw RandomStringGenerationError.secRandomCopyBytesFailed(status: status)
         }
 
         return randomBytes.reduce("") { accumulator, randomByte in

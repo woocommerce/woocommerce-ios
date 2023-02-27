@@ -24,6 +24,7 @@ final class OrderListViewModel {
     private let analytics: Analytics
     private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
+    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
     ///
@@ -62,7 +63,7 @@ final class OrderListViewModel {
     }
 
     private var isIPPSupportedCountry: Bool {
-        CardPresentConfigurationLoader().configuration.isSupportedCountry
+        cardPresentPaymentsConfiguration.isSupportedCountry
     }
 
     /// Results controller that fetches any WooCommerce Payments In-Person Payments transactions
@@ -138,6 +139,7 @@ final class OrderListViewModel {
     @Published var hideIPPFeedbackBanner: Bool = true
 
     init(siteID: Int64,
+         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
@@ -145,6 +147,7 @@ final class OrderListViewModel {
          notificationCenter: NotificationCenter = .default,
          filters: FilterOrderListViewModel.Filters?) {
         self.siteID = siteID
+        self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics

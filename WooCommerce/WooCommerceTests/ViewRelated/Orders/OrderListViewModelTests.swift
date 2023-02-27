@@ -540,49 +540,69 @@ final class OrderListViewModelTests: XCTestCase {
 
 // MARK: - In-Person Payments feedback banner survey
 
-    func test_feedbackBannerSurveySource_when_there_are_no_wcpay_orders_then_assigns_inPersonPaymentsCashOnDelivery_survey() {
+    func test_feedbackBannerSurveySource_Cash_on_Delivery_store_in_an_IPP_country_with_non_WCPay_IPP_orders_is_shown_inPersonPaymentsCashOnDelivery_survey() {
         // Given
-        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
-        var expectedSurvey: SurveyViewController.Source?
+        insertCODPaymentGateway()
 
-        // When
-        let _ = insertOrder(
-            id: 123,
-            status: .completed,
-            dateCreated: Date()
-        )
-
-        // Confidence check
-        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
-
-        // Then
-        viewModel.feedbackBannerSurveySource(onCompletion: { survey in
-            expectedSurvey = survey
-            XCTAssertEqual(expectedSurvey, .inPersonPaymentsCashOnDelivery)
-        })
-    }
-
-    func test_feedbackBannerSurveySource_when_there_is_one_wcpay_order_then_assigns_inPersonPaymentsCashOnDelivery_survey() {
-        // Given
-        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
-        var expectedSurvey: SurveyViewController.Source?
-
-        // When
+        // This is not a WCPay order, so receipt_url does not denote an IPP order in this case
         let _ = insertOrder(
             id: 123,
             status: .completed,
             dateCreated: Date(),
-            paymentMethodID: "woocommerce_payments"
+            customFields: [OrderMetaData.init(metadataID: 1, key: "receipt_url", value: "https://example.com/receipts/1902384")]
         )
+
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
 
         // Confidence check
         XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
 
+        // When
+        let survey = waitFor { promise in
+            viewModel.feedbackBannerSurveySource(onCompletion: { survey in
+                promise(survey)
+            })
+        }
+
         // Then
-        viewModel.feedbackBannerSurveySource(onCompletion: { survey in
-            expectedSurvey = survey
-            XCTAssertEqual(expectedSurvey, .inPersonPaymentsCashOnDelivery)
-        })
+        assertEqual(.inPersonPaymentsCashOnDelivery, survey)
+    }
+
+    func test_feedbackBannerSurveySource_Cash_on_Delivery_store_in_an_IPP_country_with_only_WCPay_web_orders_is_shown_inPersonPaymentsCashOnDelivery_survey() {
+        // Given
+        insertCODPaymentGateway()
+
+        // This is not an IPP order, as it has no receipt_url
+        let _ = insertOrder(
+            id: 123,
+            status: .completed,
+            dateCreated: Date(),
+            customFields: [],
+            paymentMethodID: "woocommerce_payments"
+        )
+
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
+
+        // When
+        let survey = waitFor { promise in
+            viewModel.feedbackBannerSurveySource(onCompletion: { survey in
+                promise(survey)
+            })
+        }
+
+        // Then
+        assertEqual(.inPersonPaymentsCashOnDelivery, survey)
     }
 
     func test_feedbackBannerSurveySource_when_there_are_less_than_ten_wcpay_orders_then_assigns_inPersonPaymentsFirstTransaction_survey() {
@@ -596,6 +616,7 @@ final class OrderListViewModelTests: XCTestCase {
                 id: orderID ,
                 status: .completed,
                 dateCreated: Date(),
+                customFields: [],
                 paymentMethodID: "woocommerce_payments"
             )
         }
@@ -795,15 +816,30 @@ private extension OrderListViewModelTests {
     func insertOrder(id orderID: Int64,
                      status: OrderStatusEnum,
                      dateCreated: Date = Date(),
+                     customFields: [Yosemite.OrderMetaData] = [],
                      paymentMethodID: String? = nil) -> Yosemite.Order {
         let readonlyOrder = MockOrders().empty().copy(siteID: siteID,
                                                       orderID: orderID,
                                                       status: status,
                                                       dateCreated: dateCreated,
-                                                      paymentMethodID: paymentMethodID)
+                                                      paymentMethodID: paymentMethodID,
+                                                      customFields: customFields)
         let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
         storageOrder.update(with: readonlyOrder)
 
         return readonlyOrder
+    }
+
+    func insertCODPaymentGateway() {
+        //let codGateway = PaymentGateway.fake().copy(siteID: siteID, gatewayID: "cod", enabled: true)
+        let codGateway = PaymentGateway(siteID: siteID,
+                                        gatewayID: "cod",
+                                        title: "Pay in Person",
+                                        description: "Pay by cash or card when you pick up in store",
+                                        enabled: true,
+                                        features: [],
+                                        instructions: nil)
+        let storageGateway = storage.insertNewObject(ofType: StoragePaymentGateway.self)
+        storageGateway.update(with: codGateway)
     }
 }

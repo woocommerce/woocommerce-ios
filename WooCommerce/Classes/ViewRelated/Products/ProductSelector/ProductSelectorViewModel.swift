@@ -57,6 +57,10 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     let supportsMultipleSelections: Bool
 
+    /// Determines if is possible to toggle all variatoon items upon selection
+    ///
+    let enableTogglingSelectionForAllVariations: Bool
+
     /// Closure to be invoked when a product is selected
     ///
     private let onProductSelected: ((Product) -> Void)?
@@ -138,12 +142,14 @@ final class ProductSelectorViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          supportsMultipleSelections: Bool = false,
+         enableTogglingSelectionForAllVariations: Bool = true,
          onProductSelected: ((Product) -> Void)? = nil,
          onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
         self.supportsMultipleSelections = supportsMultipleSelections
+        self.enableTogglingSelectionForAllVariations = enableTogglingSelectionForAllVariations
         self.onProductSelected = onProductSelected
         self.onVariationSelected = onVariationSelected
         self.onMultipleSelectionCompleted = nil
@@ -164,11 +170,13 @@ final class ProductSelectorViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          supportsMultipleSelections: Bool = false,
+         enableTogglingSelectionForAllVariations: Bool = true,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
         self.supportsMultipleSelections = supportsMultipleSelections
+        self.enableTogglingSelectionForAllVariations = enableTogglingSelectionForAllVariations
         self.onProductSelected = nil
         self.onVariationSelected = nil
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted

@@ -312,7 +312,6 @@ final class OrderListViewModel {
 
             let hasWCPayResults = WCPayOrdersResultsController.fetchedObjects.isEmpty ? false : true
             let WCPayResultsCount = WCPayOrdersResultsController.fetchedObjects.count
-            let hasOneOrMoreWCPayTransactions = (WCPayResultsCount >= 1) ? true : false
 
             /// In order to filter WCPay transactions processed through IPP within the last 30 days,
             /// we check if these contain `receipt_url` in their metadata, unlike those processed through a website,
@@ -329,8 +328,8 @@ final class OrderListViewModel {
                 }
                 // Case 1: No WCPay transactions
                 return onCompletion(.inPersonPaymentsCashOnDelivery)
-            } else if hasOneOrMoreWCPayTransactions && (recentWCPayResultsCount < Constants.numberOfTransactions) {
                 // Case 2: One or more WCPay transactions, but less than 10 within latest 30 days
+            } else if recentWCPayResultsCount < Constants.numberOfTransactions {
                 return onCompletion(.inPersonPaymentsFirstTransaction)
             } else if WCPayResultsCount >= Constants.numberOfTransactions {
                 // Case 3: More than 10 WCPay transactions

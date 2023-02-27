@@ -7,7 +7,6 @@ class CardPresentPaymentOnboardingStateCache {
 
     static let shared: CardPresentPaymentOnboardingStateCache = CardPresentPaymentOnboardingStateCache()
 
-
     func update(_ newState: CardPresentPaymentOnboardingState) {
         value = newState
     }

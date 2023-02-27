@@ -38,7 +38,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
 
-    @Published var state: CardPresentPaymentOnboardingState = .unknown {
+    @Published var state: CardPresentPaymentOnboardingState = .loading {
         didSet {
             CardPresentPaymentOnboardingStateCache.shared.update(state)
         }

@@ -100,8 +100,13 @@ final class CardPresentPaymentPreflightController {
             handleConnectionResult(.success(.connected(connectedReader)), paymentGatewayAccount: paymentGatewayAccount)
             return
         }
+        let methodStart = Date()
 
         await onboardingPresenter.showOnboardingIfRequired(from: rootViewController)
+
+        let methodFinish = Date()
+        let executionTime = methodFinish.timeIntervalSince(methodStart)
+        print("Execution time: \(executionTime)")
 
         // Once onboarding is complete, a Payment Gateway will have been chosen
         guard let paymentGatewayAccount = await selectedPaymentGateway() else {

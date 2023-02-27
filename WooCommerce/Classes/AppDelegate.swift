@@ -90,6 +90,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupComponentsAppearance()
         setupNoticePresenter()
         disableAnimationsIfNeeded()
+        CardPresentPaymentsOnboardingUseCase.shared.forceRefresh()
 
         // Start app navigation.
         appCoordinator?.start()

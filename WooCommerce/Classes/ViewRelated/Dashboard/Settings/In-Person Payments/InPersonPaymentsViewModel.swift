@@ -13,7 +13,7 @@ final class InPersonPaymentsViewModel: ObservableObject {
     ///
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()) {
+         useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase.shared) {
         self.stores = stores
         self.useCase = useCase
         state = useCase.state
@@ -39,7 +39,7 @@ final class InPersonPaymentsViewModel: ObservableObject {
         stores: StoresManager = ServiceLocator.stores) {
             self.stores = stores
             state = fixedState
-            useCase = CardPresentPaymentsOnboardingUseCase()
+            useCase = CardPresentPaymentsOnboardingUseCase.shared
             userIsAdministrator = fixedUserIsAdministrator
             updateLearnMoreURL(state: fixedState)
         }

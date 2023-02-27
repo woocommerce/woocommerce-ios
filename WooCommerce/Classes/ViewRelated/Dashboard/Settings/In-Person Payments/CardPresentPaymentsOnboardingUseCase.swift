@@ -38,14 +38,16 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
 
-    @Published var state: CardPresentPaymentOnboardingState = .loading
+    @Published var state: CardPresentPaymentOnboardingState = .unknown
 
     var statePublisher: Published<CardPresentPaymentOnboardingState>.Publisher {
         $state
     }
     private var cancellables: [AnyCancellable] = []
 
-    init(
+    static let shared = CardPresentPaymentsOnboardingUseCase()
+
+    private init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
@@ -74,6 +76,18 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     func forceRefresh() {
         state = .loading
         refreshOnboardingState()
+    }
+
+    func refreshIfNecessary() {
+        guard state == .unknown else {
+            return
+        }
+
+        refresh()
+    }
+
+    func resetState() {
+        state = .unknown
     }
 
     private func refreshOnboardingState() {

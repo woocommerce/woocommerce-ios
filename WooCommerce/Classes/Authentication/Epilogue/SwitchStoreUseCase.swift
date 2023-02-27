@@ -123,6 +123,8 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         group.notify(queue: .main) {
             onCompletion()
         }
+
+        CardPresentPaymentsOnboardingUseCase.shared.resetState()
     }
 
     /// Part of the switch store selection. This method will update the new default store selected.

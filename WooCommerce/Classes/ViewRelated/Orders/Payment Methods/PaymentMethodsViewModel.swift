@@ -284,10 +284,13 @@ final class PaymentMethodsViewModel: ObservableObject {
             DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
+        debugPrint("showOnboardingIfRequired pre")
 
         cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
             from: rootViewController) { [weak self] in
                 guard let self = self else { return }
+
+                debugPrint("showOnboardingIfRequired post")
 
                 guard let order = self.ordersResultController.fetchedObjects.first else {
                     DDLogError("⛔️ Order not found, can't collect payment.")

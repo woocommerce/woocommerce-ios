@@ -28,7 +28,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
-        onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
+        onboardingUseCase = CardPresentPaymentsOnboardingUseCase.shared
         readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
         onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
     }
@@ -79,6 +79,6 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
     }
 
     func refresh() {
-        onboardingUseCase.forceRefresh()
+        onboardingUseCase.refreshIfNecessary()
     }
 }

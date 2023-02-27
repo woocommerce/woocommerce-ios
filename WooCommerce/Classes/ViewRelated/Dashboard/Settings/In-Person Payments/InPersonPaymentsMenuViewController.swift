@@ -58,7 +58,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     ) {
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
+        self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase.shared
         self.cashOnDeliveryToggleRowViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
 
         super.init(nibName: nil, bundle: nil)
@@ -90,12 +90,13 @@ private extension InPersonPaymentsMenuViewController {
             return
         }
 
-        cardPresentPaymentsOnboardingUseCase.refresh()
+        cardPresentPaymentsOnboardingUseCase.refreshIfNecessary()
 
         cardPresentPaymentsOnboardingUseCase.$state
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink(receiveValue: { [weak self] state in
+                debugPrint("onboarding state", state)
                 self?.refreshAfterNewOnboardingState(state)
         }).store(in: &cancellables)
     }

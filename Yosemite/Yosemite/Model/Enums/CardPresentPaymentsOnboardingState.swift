@@ -1,5 +1,6 @@
 /// Represents the possible states for onboarding to In-Person payments
 public enum CardPresentPaymentOnboardingState: Equatable {
+    case unknown
     /// The app is loading the required data to check for the current state
     ///
     case loading
@@ -78,6 +79,8 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 extension CardPresentPaymentOnboardingState {
     public var reasonForAnalytics: String {
         switch self {
+        case .unknown:
+            return "unknown"
         case .loading:
             return "loading"
         case .completed:

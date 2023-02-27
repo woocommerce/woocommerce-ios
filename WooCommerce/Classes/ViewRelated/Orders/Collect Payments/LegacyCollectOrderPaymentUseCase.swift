@@ -172,6 +172,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, LegacyCollectOrderPaymen
                 self.trackPaymentCancelation()
                 onCancel()
             case .failure(let error):
+                CardPresentPaymentsOnboardingUseCase.shared.resetState()
                 onCollect(.failure(error))
             }
         }

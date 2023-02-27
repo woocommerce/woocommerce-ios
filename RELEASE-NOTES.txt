@@ -2,7 +2,7 @@
 
 12.6
 -----
-
+- [Internal] Mobile Payments: fixed logic on display of IPP feedback banner on Order List [https://github.com/woocommerce/woocommerce-ios/pull/8994]
 
 12.5
 -----

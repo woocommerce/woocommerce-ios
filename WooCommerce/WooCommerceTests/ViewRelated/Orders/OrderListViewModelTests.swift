@@ -34,13 +34,6 @@ final class OrderListViewModelTests: XCTestCase {
     }
 
     override func tearDown() {
-        ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings())
-        storageManager.reset()
-        storageManager = nil
-        stores = nil
-        analyticsProvider = nil
-        analytics = nil
-
         cancellables.forEach {
             $0.cancel()
         }

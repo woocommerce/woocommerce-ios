@@ -2068,6 +2068,39 @@ extension Networking.TopEarnerStatsItem {
     }
 }
 
+extension Networking.User {
+    public func copy(
+        localID: CopiableProp<Int64> = .copy,
+        siteID: CopiableProp<Int64> = .copy,
+        email: CopiableProp<String> = .copy,
+        username: CopiableProp<String> = .copy,
+        firstName: CopiableProp<String> = .copy,
+        lastName: CopiableProp<String> = .copy,
+        nickname: CopiableProp<String> = .copy,
+        roles: CopiableProp<[String]> = .copy
+    ) -> Networking.User {
+        let localID = localID ?? self.localID
+        let siteID = siteID ?? self.siteID
+        let email = email ?? self.email
+        let username = username ?? self.username
+        let firstName = firstName ?? self.firstName
+        let lastName = lastName ?? self.lastName
+        let nickname = nickname ?? self.nickname
+        let roles = roles ?? self.roles
+
+        return Networking.User(
+            localID: localID,
+            siteID: siteID,
+            email: email,
+            username: username,
+            firstName: firstName,
+            lastName: lastName,
+            nickname: nickname,
+            roles: roles
+        )
+    }
+}
+
 extension Networking.WCAnalyticsCustomer {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

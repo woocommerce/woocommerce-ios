@@ -3,8 +3,8 @@ import XCTest
 
 class ProofKeyForCodeExchangeTests: XCTestCase {
 
-    func testCodeChallengeInPlainModeIsTheSameAsCodeVerifier() {
-        let codeVerifier = ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier()
+    func testCodeChallengeInPlainModeIsTheSameAsCodeVerifier() throws {
+        let codeVerifier = try ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier()
 
         XCTAssertEqual(
             ProofKeyForCodeExchange(codeVerifier: codeVerifier, method: .plain).codeCallenge,

@@ -4,7 +4,7 @@ import XCTest
 class URLGoogleSignInTests: XCTestCase {
 
     func testGoogleSignInAuthURL() throws {
-        let pkce = ProofKeyForCodeExchange()
+        let pkce = try ProofKeyForCodeExchange()
         let url = try URL.googleSignInAuthURL(
             clientId: GoogleClientId(string: "123-abc245def.apps.googleusercontent.com")!,
             pkce: pkce

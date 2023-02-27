@@ -28,7 +28,12 @@ struct ProofKeyForCodeExchange: Equatable {
     let codeVerifier: CodeVerifier
     let method: Method
 
-    init(codeVerifier: CodeVerifier = .makeRandomCodeVerifier(), method: Method = .s256) {
+    init() throws {
+        self.codeVerifier = try .makeRandomCodeVerifier()
+        self.method = .s256
+    }
+
+    init(codeVerifier: CodeVerifier, method: Method) {
         self.codeVerifier = codeVerifier
         self.method = method
     }
@@ -64,12 +69,8 @@ extension ProofKeyForCodeExchange {
         /// Generates a random code verifier according to the PKCE RFC.
         ///
         /// - Note: This method name is more verbose than the recommended "make<Type>" for this factory to communicate the randomness component.
-        static func makeRandomCodeVerifier() -> Self {
-            // See `randomSecureCodeVerifier()` implementation for RFC details.
-            //
-            // In the unlikely case the generation fails, fallback to a standard random (i.e. not
-            // cryptographically secure) string.
-            let value: String = .randomSecureCodeVerifier() ?? .randomString(using: allowedCharacters, withLength: minimumLength)
+        static func makeRandomCodeVerifier() throws -> Self {
+            let value = try String.randomSecureCodeVerifier()
 
             // It's appropriate to force unwrap here because a `nil` value could only result from
             // a developer error—either wrong coding of the constrained length or of the allowed
@@ -95,13 +96,13 @@ private extension String {
     ///
     /// > It is RECOMMENDED that the output of a suitable random number generator be used to create a 32-octet sequence.
     /// > The octet sequence is then base64url-encoded to produce a 43-octet URL safe string to use as the code verifier.
-    static func randomSecureCodeVerifier() -> String? {
+    static func randomSecureCodeVerifier() throws -> String {
         let byteCount = 32
         var bytes = [UInt8](repeating: 0, count: byteCount)
         let result = SecRandomCopyBytes(kSecRandomDefault, byteCount, &bytes)
 
         guard result == errSecSuccess else {
-            return .none
+            throw OAuthError.failedToGenerateSecureRandomCodeVerifier(status: result)
         }
 
         let data = Data(bytes)

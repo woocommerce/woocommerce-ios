@@ -3,30 +3,30 @@ import XCTest
 
 class CodeVerifierTests: XCTestCase {
 
-    func testCodeVerifierIsRandomString() {
+    func testCodeVerifierIsRandomString() throws {
         XCTAssertNotEqual(
-            ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier(),
-            ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier()
+            try ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier(),
+            try ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier()
         )
     }
 
-    func testGeneratedCodeVerifierHasLength43() {
+    func testGeneratedCodeVerifierHasLength43() throws {
         // 43 is the recommended lenght. See https://www.rfc-editor.org/rfc/rfc7636#section-4.1
-        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue.count, 43)
-        XCTAssertEqual(ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue.count, 43)
+        XCTAssertEqual(try ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue.count, 43)
+        XCTAssertEqual(try ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue.count, 43)
     }
 
-    func testCodeVerifierIsRandomStringWithURLSafeCharacters() {
+    func testCodeVerifierIsRandomStringWithURLSafeCharacters() throws {
         // Notice we call `inverted` and assert nil to make sure none of the characters that are
         // not URL safe are in the generated string.
         //
         // Given the generation is random, we repeat the test twice to increase reliability.
         XCTAssertNil(
-            ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue
+            try ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue
                 .rangeOfCharacter(from: CharacterSet.urlQueryAllowed.inverted)
         )
         XCTAssertNil(
-            ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue
+            try ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier().rawValue
                 .rangeOfCharacter(from: CharacterSet.urlQueryAllowed.inverted)
         )
     }

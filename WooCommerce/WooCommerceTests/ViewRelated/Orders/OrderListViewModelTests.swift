@@ -678,11 +678,12 @@ final class OrderListViewModelTests: XCTestCase {
 
         // When
         let _ = (0..<9).map { orderID in
-            insertOrder(
-                id: orderID,
+            let metaDataID = Int64(orderID + 100)
+            return insertOrder(
+                id: Int64(orderID),
                 status: .completed,
                 dateCreated: Date(),
-                customFields: [OrderMetaData.init(metadataID: 1, key: "receipt_url", value: "https://example.com/receipts/\(orderID)")],
+                customFields: [OrderMetaData.init(metadataID: metaDataID, key: "receipt_url", value: "https://example.com/receipts/\(orderID)")],
                 paymentMethodID: "woocommerce_payments"
             )
         }
@@ -708,11 +709,12 @@ final class OrderListViewModelTests: XCTestCase {
 
         // When
         let _ = (0..<15).map { orderID in
-            insertOrder(
-                id: orderID,
+            let metaDataID = Int64(orderID + 100)
+            return insertOrder(
+                id: Int64(orderID),
                 status: .completed,
                 dateCreated: Date(),
-                customFields: [OrderMetaData.init(metadataID: 1, key: "receipt_url", value: "https://example.com/receipts/\(orderID)")],
+                customFields: [OrderMetaData.init(metadataID: metaDataID, key: "receipt_url", value: "https://example.com/receipts/\(orderID)")],
                 paymentMethodID: "woocommerce_payments"
             )
         }
@@ -897,6 +899,12 @@ private extension OrderListViewModelTests {
                                                       customFields: customFields)
         let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
         storageOrder.update(with: readonlyOrder)
+
+        for field in customFields {
+            let storageMetaData = storage.insertNewObject(ofType: Storage.OrderMetaData.self)
+            storageMetaData.update(with: field)
+            storageOrder.addToCustomFields(storageMetaData)
+        }
 
         return readonlyOrder
     }

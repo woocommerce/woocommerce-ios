@@ -1945,6 +1945,8 @@
 		DEF8CF1629A8C2EB00800A60 /* AdminRoleRequiredView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF8CF1529A8C2EB00800A60 /* AdminRoleRequiredView.swift */; };
 		DEF8CF1829A8C39600800A60 /* AdminRoleRequiredViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF8CF1729A8C39600800A60 /* AdminRoleRequiredViewModel.swift */; };
 		DEF8CF1A29AC6E5900800A60 /* AdminRoleRequiredViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF8CF1929AC6E5900800A60 /* AdminRoleRequiredViewModelTests.swift */; };
+		DEF8CF1D29AC84BC00800A60 /* WPComEmailLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF8CF1C29AC84BC00800A60 /* WPComEmailLoginView.swift */; };
+		DEF8CF1F29AC870A00800A60 /* WPComEmailLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF8CF1E29AC870A00800A60 /* WPComEmailLoginViewModel.swift */; };
 		DEFA3D932897D8930076FAE1 /* NoWooErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFA3D922897D8930076FAE1 /* NoWooErrorViewModel.swift */; };
 		DEFB3011289904E300A620B3 /* WooSetupWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFB3010289904E300A620B3 /* WooSetupWebViewModel.swift */; };
 		DEFD6E61264990FB00E51E0D /* SitePluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */; };
@@ -4074,6 +4076,8 @@
 		DEF8CF1529A8C2EB00800A60 /* AdminRoleRequiredView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminRoleRequiredView.swift; sourceTree = "<group>"; };
 		DEF8CF1729A8C39600800A60 /* AdminRoleRequiredViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminRoleRequiredViewModel.swift; sourceTree = "<group>"; };
 		DEF8CF1929AC6E5900800A60 /* AdminRoleRequiredViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminRoleRequiredViewModelTests.swift; sourceTree = "<group>"; };
+		DEF8CF1C29AC84BC00800A60 /* WPComEmailLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComEmailLoginView.swift; sourceTree = "<group>"; };
+		DEF8CF1E29AC870A00800A60 /* WPComEmailLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComEmailLoginViewModel.swift; sourceTree = "<group>"; };
 		DEFA3D922897D8930076FAE1 /* NoWooErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoWooErrorViewModel.swift; sourceTree = "<group>"; };
 		DEFB3010289904E300A620B3 /* WooSetupWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooSetupWebViewModel.swift; sourceTree = "<group>"; };
 		DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginListViewModelTests.swift; sourceTree = "<group>"; };
@@ -9275,6 +9279,7 @@
 		DEF8CF0829A71ED400800A60 /* JetpackSetup */ = {
 			isa = PBXGroup;
 			children = (
+				DEF8CF1B29AC83AC00800A60 /* WPComLogin */,
 				DEF8CF1429A8C2D000800A60 /* AdminRole */,
 				DEF8CF0929A71EE600800A60 /* JetpackSetupCoordinator.swift */,
 			);
@@ -9297,6 +9302,15 @@
 				DEF8CF1729A8C39600800A60 /* AdminRoleRequiredViewModel.swift */,
 			);
 			path = AdminRole;
+			sourceTree = "<group>";
+		};
+		DEF8CF1B29AC83AC00800A60 /* WPComLogin */ = {
+			isa = PBXGroup;
+			children = (
+				DEF8CF1C29AC84BC00800A60 /* WPComEmailLoginView.swift */,
+				DEF8CF1E29AC870A00800A60 /* WPComEmailLoginViewModel.swift */,
+			);
+			path = WPComLogin;
 			sourceTree = "<group>";
 		};
 		DEFD6E5F264990DD00E51E0D /* Plugins */ = {
@@ -11031,6 +11045,7 @@
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
 				DE4B3B5826A7041800EEF2D8 /* EdgeInsets+Woo.swift in Sources */,
 				02CE4304276993DA0006EAEF /* CaptureDevicePermissionChecker.swift in Sources */,
+				DEF8CF1F29AC870A00800A60 /* WPComEmailLoginViewModel.swift in Sources */,
 				74A33D8021C3F234009E25DE /* LicensesViewController.swift in Sources */,
 				02EEA9282923338100D05F47 /* StoreCreationPlanView.swift in Sources */,
 				454453CA27566CDE00464AC5 /* HubMenuViewModel.swift in Sources */,
@@ -11323,6 +11338,7 @@
 				CC254F3826C43B52005F3C82 /* ShippingLabelCustomPackageFormViewModel.swift in Sources */,
 				02F49ADC23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift in Sources */,
 				3178C1F726409216000D771A /* BluetoothCardReaderSettingsConnectedViewModel.swift in Sources */,
+				DEF8CF1D29AC84BC00800A60 /* WPComEmailLoginView.swift in Sources */,
 				CC6923AC26010D8D002FB669 /* LoginProloguePageViewController.swift in Sources */,
 				4515C88D25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.swift in Sources */,
 				CE5F462A23AACA0A006B1A5C /* RefundDetailsDataSource.swift in Sources */,

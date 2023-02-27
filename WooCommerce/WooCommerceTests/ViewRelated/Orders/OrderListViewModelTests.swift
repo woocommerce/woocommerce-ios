@@ -549,6 +549,7 @@ final class OrderListViewModelTests: XCTestCase {
             id: 123,
             status: .completed,
             dateCreated: Date(),
+            datePaid: Date(),
             customFields: [OrderMetaData.init(metadataID: 1, key: "receipt_url", value: "https://example.com/receipts/1902384")]
         )
 
@@ -579,6 +580,7 @@ final class OrderListViewModelTests: XCTestCase {
             id: 123,
             status: .completed,
             dateCreated: Date(),
+            datePaid: Date(),
             customFields: [OrderMetaData.init(metadataID: 1, key: "receipt_url", value: "https://example.com/receipts/1902384")]
         )
 
@@ -611,6 +613,7 @@ final class OrderListViewModelTests: XCTestCase {
             id: 123,
             status: .completed,
             dateCreated: Date(),
+            datePaid: Date(),
             customFields: [OrderMetaData.init(metadataID: 1, key: "receipt_url", value: "https://example.com/receipts/1902384")]
         )
 
@@ -643,6 +646,7 @@ final class OrderListViewModelTests: XCTestCase {
             id: 123,
             status: .completed,
             dateCreated: Date(),
+            datePaid: Date(),
             customFields: [],
             paymentMethodID: "woocommerce_payments"
         )
@@ -683,6 +687,7 @@ final class OrderListViewModelTests: XCTestCase {
                 id: Int64(orderID),
                 status: .completed,
                 dateCreated: Date(),
+                datePaid: Date(),
                 customFields: [OrderMetaData.init(metadataID: metaDataID, key: "receipt_url", value: "https://example.com/receipts/\(orderID)")],
                 paymentMethodID: "woocommerce_payments"
             )
@@ -714,6 +719,7 @@ final class OrderListViewModelTests: XCTestCase {
                 id: Int64(orderID),
                 status: .completed,
                 dateCreated: Date(),
+                datePaid: Date(),
                 customFields: [OrderMetaData.init(metadataID: metaDataID, key: "receipt_url", value: "https://example.com/receipts/\(orderID)")],
                 paymentMethodID: "woocommerce_payments"
             )
@@ -889,12 +895,14 @@ private extension OrderListViewModelTests {
     func insertOrder(id orderID: Int64,
                      status: OrderStatusEnum,
                      dateCreated: Date = Date(),
+                     datePaid: Date? = nil,
                      customFields: [Yosemite.OrderMetaData] = [],
                      paymentMethodID: String? = nil) -> Yosemite.Order {
         let readonlyOrder = MockOrders().empty().copy(siteID: siteID,
                                                       orderID: orderID,
                                                       status: status,
                                                       dateCreated: dateCreated,
+                                                      datePaid: datePaid,
                                                       paymentMethodID: paymentMethodID,
                                                       customFields: customFields)
         let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)

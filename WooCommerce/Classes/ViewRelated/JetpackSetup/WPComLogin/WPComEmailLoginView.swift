@@ -8,8 +8,9 @@ final class WPComEmailLoginHostingController: UIHostingController<WPComEmailLogi
         return noticePresenter
     }()
 
-    init(siteURL: String, onSubmit: @escaping (String) -> Void) {
-        super.init(rootView: WPComEmailLoginView(viewModel: .init(siteURL: siteURL), onSubmit: onSubmit))
+    init(siteURL: String, requiresConnectionOnly: Bool, onSubmit: @escaping (String) -> Void) {
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: requiresConnectionOnly)
+        super.init(rootView: WPComEmailLoginView(viewModel: viewModel, onSubmit: onSubmit))
     }
 
     @available(*, unavailable)
@@ -45,7 +46,8 @@ struct WPComEmailLoginView: View {
     /// The closure to be triggered when the Install Jetpack button is tapped.
     private let onSubmit: (String) -> Void
 
-    init(viewModel: WPComEmailLoginViewModel, onSubmit: @escaping (String) -> Void) {
+    init(viewModel: WPComEmailLoginViewModel,
+         onSubmit: @escaping (String) -> Void) {
         self.viewModel = viewModel
         self.onSubmit = onSubmit
     }
@@ -57,9 +59,9 @@ struct WPComEmailLoginView: View {
 
                 // title and description
                 VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
-                    Text(Localization.installJetpack)
+                    Text(viewModel.titleString)
                         .largeTitleStyle()
-                    Text(Localization.loginToInstall)
+                    Text(viewModel.subtitleString)
                         .subheadlineStyle()
                 }
 
@@ -82,7 +84,7 @@ struct WPComEmailLoginView: View {
         .safeAreaInset(edge: .bottom) {
             VStack {
                 // Primary CTA
-                Button(Localization.installJetpack) {
+                Button(viewModel.titleString) {
                     onSubmit(viewModel.emailAddress)
                 }
                 .buttonStyle(PrimaryButtonStyle())
@@ -105,14 +107,6 @@ private extension WPComEmailLoginView {
     }
 
     enum Localization {
-        static let installJetpack = NSLocalizedString(
-            "Install Jetpack",
-            comment: "Title for the WPCom email login screen when Jetpack is not installed yet"
-        )
-        static let loginToInstall = NSLocalizedString(
-            "Log in with your WordPress.com account to install Jetpack",
-            comment: "Subtitle for the WPCom email login screen when Jetpack is not installed yet"
-        )
         static let emailLabel = NSLocalizedString(
             "Email address",
             comment: "Label for the email field on the WPCom email login screen of the Jetpack setup flow."
@@ -127,7 +121,8 @@ private extension WPComEmailLoginView {
 
 struct WPComEmailLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComEmailLoginView(viewModel: .init(siteURL: "https://test.com"),
+        WPComEmailLoginView(viewModel: .init(siteURL: "https://test.com",
+                                             requiresConnectionOnly: true),
                             onSubmit: { _ in })
     }
 }

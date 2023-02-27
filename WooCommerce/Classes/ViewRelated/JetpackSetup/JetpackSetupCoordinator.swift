@@ -69,12 +69,11 @@ private extension JetpackSetupCoordinator {
         case .success(let user):
             let connectedEmail = user.wpcomUser?.email
             requiresConnectionOnly = !user.isConnected
-            if requiresConnectionOnly {
-                #warning("TODO: start WPCom password with connectedEmail")
+            if let connectedEmail {
+                #warning("TODO-8918: check if account is passwordless and show the next screen")
             } else {
                 showWPComEmailLogin()
             }
-            DDLogInfo("✅ connected email: \(connectedEmail), isConnected: \(user.isConnected)")
         case .failure(let error):
             DDLogError("⛔️ Jetpack status fetched error: \(error)")
             switch error {
@@ -117,8 +116,8 @@ private extension JetpackSetupCoordinator {
     }
 
     func showWPComEmailLogin() {
-        let emailLoginController = WPComEmailLoginHostingController(siteURL: site.url) { email in
-            #warning("TODO: start the password screen")
+        let emailLoginController = WPComEmailLoginHostingController(siteURL: site.url, requiresConnectionOnly: requiresConnectionOnly) { email in
+            #warning("TODO-8918: check if account is passwordless and show the next screen")
         }
         let loginNavigationController = UINavigationController(rootViewController: emailLoginController)
         navigationController.dismiss(animated: true) {

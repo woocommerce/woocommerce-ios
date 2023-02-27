@@ -113,6 +113,7 @@ struct AdminRoleRequiredView: View {
                 .buttonStyle(TextButtonStyle())
             }
         }
+        .scrollVerticallyIfNeeded()
     }
 }
 

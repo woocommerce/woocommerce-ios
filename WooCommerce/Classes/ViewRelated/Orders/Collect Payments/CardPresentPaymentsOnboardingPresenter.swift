@@ -28,7 +28,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
-        onboardingUseCase = CardPresentPaymentsOnboardingUseCase.shared
+        onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
         readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
         onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
     }

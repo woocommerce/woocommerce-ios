@@ -150,7 +150,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                         self.rootViewController.presentedViewController?.dismiss(animated: true)
                         return onCancel()
                     case .failure(let error):
-                        CardPresentPaymentsOnboardingUseCase.shared.resetState()
+                        CardPresentPaymentOnboardingStateCache.shared.invalidate()
                         return onFailure(error)
                     case .success(let paymentData):
                         // Handle payment receipt

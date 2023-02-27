@@ -58,7 +58,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     ) {
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase.shared
+        self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         self.cashOnDeliveryToggleRowViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
 
         super.init(nibName: nil, bundle: nil)

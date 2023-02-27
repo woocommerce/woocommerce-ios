@@ -124,7 +124,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
             onCompletion()
         }
 
-        CardPresentPaymentsOnboardingUseCase.shared.resetState()
+        CardPresentPaymentOnboardingStateCache.shared.invalidate()
     }
 
     /// Part of the switch store selection. This method will update the new default store selected.

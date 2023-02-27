@@ -38,16 +38,18 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
 
-    @Published var state: CardPresentPaymentOnboardingState = .unknown
+    @Published var state: CardPresentPaymentOnboardingState = .unknown {
+        didSet {
+            CardPresentPaymentOnboardingStateCache.shared.update(state)
+        }
+    }
 
     var statePublisher: Published<CardPresentPaymentOnboardingState>.Publisher {
         $state
     }
     private var cancellables: [AnyCancellable] = []
 
-    static let shared = CardPresentPaymentsOnboardingUseCase()
-
-    private init(
+    init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
@@ -58,7 +60,12 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores, configuration: configurationLoader.configuration)
         self.featureFlagService = featureFlagService
 
-        updateState()
+
+        if let cachedValue = CardPresentPaymentOnboardingStateCache.shared.value {
+            state = cachedValue
+        } else {
+            updateState()
+        }
     }
 
     func refresh() {
@@ -79,15 +86,13 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func refreshIfNecessary() {
-        guard !(state.isCompleted || state == .loading) else {
-            return
+        if let cachedValue = CardPresentPaymentOnboardingStateCache.shared.value {
+            if cachedValue != state {
+                state = cachedValue
+            }
+        } else {
+            forceRefresh()
         }
-
-        forceRefresh()
-    }
-
-    func resetState() {
-        state = .unknown
     }
 
     private func refreshOnboardingState() {

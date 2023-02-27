@@ -2,8 +2,11 @@ import CoreData
 import Yosemite
 import Storage
 
+/// Refreshes the CPP onboarding state if there are IPP transactions stored
+///
 class CardPresentPaymentsOnboardingIPPUsersRefresher {
     private let storageManager: StorageManagerType
+    private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
 
     private lazy var ordersResultsController: ResultsController<StorageOrder> = {
         return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [])
@@ -11,6 +14,7 @@ class CardPresentPaymentsOnboardingIPPUsersRefresher {
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.storageManager = storageManager
+        self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
 
         try? ordersResultsController.performFetch()
     }
@@ -20,7 +24,7 @@ class CardPresentPaymentsOnboardingIPPUsersRefresher {
             return
         }
 
-        CardPresentPaymentsOnboardingUseCase.shared.forceRefresh()
+        cardPresentPaymentsOnboardingUseCase.forceRefresh()
     }
 }
 

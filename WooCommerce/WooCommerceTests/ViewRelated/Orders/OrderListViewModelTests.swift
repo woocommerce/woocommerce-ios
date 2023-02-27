@@ -572,6 +572,68 @@ final class OrderListViewModelTests: XCTestCase {
         assertEqual(.inPersonPaymentsCashOnDelivery, survey)
     }
 
+    func test_feedbackBannerSurveySource_non_Cash_on_Delivery_store_in_an_IPP_country_without_WCPay_IPP_orders_is_not_shown_a_survey() {
+        // Given
+        // This is not a WCPay order, so receipt_url does not denote an IPP order in this case
+        let _ = insertOrder(
+            id: 123,
+            status: .completed,
+            dateCreated: Date(),
+            customFields: [OrderMetaData.init(metadataID: 1, key: "receipt_url", value: "https://example.com/receipts/1902384")]
+        )
+
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
+
+        // When
+        let survey = waitFor { promise in
+            viewModel.feedbackBannerSurveySource(onCompletion: { survey in
+                promise(survey)
+            })
+        }
+
+        // Then
+        assertEqual(.none, survey)
+    }
+
+    func test_feedbackBannerSurveySource_Cash_on_Delivery_store_in_a_non_IPP_country_is_not_shown_a_survey() {
+        // Given
+        insertCODPaymentGateway()
+
+        // This is not a WCPay order, so receipt_url does not denote an IPP order in this case
+        let _ = insertOrder(
+            id: 123,
+            status: .completed,
+            dateCreated: Date(),
+            customFields: [OrderMetaData.init(metadataID: 1, key: "receipt_url", value: "https://example.com/receipts/1902384")]
+        )
+
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "AQ"), // Antarctica ;)
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
+
+        // When
+        let survey = waitFor { promise in
+            viewModel.feedbackBannerSurveySource(onCompletion: { survey in
+                promise(survey)
+            })
+        }
+
+        // Then
+        assertEqual(.none, survey)
+    }
+
     func test_feedbackBannerSurveySource_Cash_on_Delivery_store_in_an_IPP_country_with_only_WCPay_web_orders_is_shown_inPersonPaymentsCashOnDelivery_survey() {
         // Given
         insertCODPaymentGateway()

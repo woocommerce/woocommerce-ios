@@ -307,7 +307,7 @@ final class OrderListViewModel {
     }
 
     func feedbackBannerSurveySource(onCompletion: (SurveyViewController.Source?) -> Void) {
-        if isCODEnabled && isIPPSupportedCountry {
+        if isIPPSupportedCountry {
             fetchIPPTransactions()
 
             let hasWCPayResults = WCPayOrdersResultsController.fetchedObjects.isEmpty ? false : true
@@ -324,6 +324,9 @@ final class OrderListViewModel {
             let recentWCPayResultsCount = recentIPPWCPayTransactionsFound.count
 
             if !hasWCPayResults {
+                guard isCODEnabled else {
+                    return onCompletion(.none)
+                }
                 // Case 1: No WCPay transactions
                 return onCompletion(.inPersonPaymentsCashOnDelivery)
             } else if hasOneOrMoreWCPayTransactions && (recentWCPayResultsCount < Constants.numberOfTransactions) {

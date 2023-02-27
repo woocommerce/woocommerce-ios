@@ -162,6 +162,7 @@ final class OrderListViewModel {
     ///
     func activate() {
         setupStatusResultsController()
+        setupWCPayIPPResultsControllers()
         startReceivingSnapshots()
 
         notificationCenter.addObserver(self, selector: #selector(handleAppDeactivation),
@@ -260,7 +261,22 @@ final class OrderListViewModel {
         return useCase.actionFor(pageNumber: pageNumber,
                                  pageSize: pageSize,
                                  reason: reason,
-                                 completionHandler: completionHandler)
+                                 completionHandler: { [weak self] timeInterval, error in
+            /// A bit of a side-effect: `onDidChangeContent` is not called for first load
+            self?.ippSurveySource = self?.feedbackBannerSurveySource()
+            completionHandler(timeInterval, error)
+        })
+    }
+
+    private func setupWCPayIPPResultsControllers() {
+        let updateFeedbackSurveySource = { [weak self] in
+            guard let self = self else { return }
+            self.ippSurveySource = self.feedbackBannerSurveySource()
+        }
+        wcPayIPPOrdersResultsController.onDidChangeContent = updateFeedbackSurveySource
+        recentWCPayIPPResultsController.onDidChangeContent = updateFeedbackSurveySource
+
+        ippSurveySource = feedbackBannerSurveySource()
     }
 
     private func fetchIPPTransactions() {
@@ -300,7 +316,6 @@ final class OrderListViewModel {
     func feedbackBannerSurveySource() -> SurveyViewController.Source? {
         if isIPPSupportedCountry {
             fetchIPPTransactions()
-
             let hasWCPayResults = wcPayIPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
             let wcPayResultsCount = wcPayIPPOrdersResultsController.fetchedObjects.count
             let recentWCPayResultsCount = recentWCPayIPPResultsController.fetchedObjects.count

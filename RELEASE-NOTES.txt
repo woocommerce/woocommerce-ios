@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.6
+-----
+
+
 12.5
 -----
 - [Internal] Dashboard: the stats implementation had a major update to replace a third-party library in order to support the upcoming store onboarding card. Minimal design changes are expected, and horizontal scrolling between different time range tabs is not available anymore. [https://github.com/woocommerce/woocommerce-ios/pull/8942]
@@ -11,7 +15,6 @@
 - [Internal] A new tag has been added for Zendesk for users authenticated with application password. [https://github.com/woocommerce/woocommerce-ios/pull/8850]
 - [Internal] Failures in the logged-out state are now tracked with anonymous ID. [https://github.com/woocommerce/woocommerce-ios/pull/8861]
 - [*] Fix: Fixed a crash when switching away from the Products tab. [https://github.com/woocommerce/woocommerce-ios/pull/8874]
-- [**] Support Requests: We have added a new way of Contacting Support with an improved UX. [https://github.com/woocommerce/woocommerce-ios/pull/8886]
 
 12.3
 -----

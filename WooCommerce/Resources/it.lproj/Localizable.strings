@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-02-08 22:54:04+0000 */
+/* Translation-Revision-Date: 2023-02-21 19:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -49,6 +49,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about adding Pay in Person to your checkout" = "%1$@ sull'aggiunta di Paga di persona al pagamento";
+
+/* Learn more format at the bottom of the domain settings screen. %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains. */
+"%1$@ about domains and how to take domain-related actions." = "%1$@ sui domini e su come eseguire le azioni correlate.";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ carta che termina %2$@";
@@ -1261,6 +1264,9 @@ which should be translated separately and considered part of this sentence. */
 /* Card method title on the select payment method screen */
 "Card" = "Carta";
 
+/* Title of the card reader support area option */
+"Card Reader \/ In-Person Payments" = "Lettore carte\/Pagamenti di persona";
+
 /* Navigates to Card Reader Manuals screen */
 "Card Reader Manuals" = "Manuali del lettore di schede";
 
@@ -1510,6 +1516,9 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "Configurazione aggiornata";
 
+/* My Store > Settings > Configure section title */
+"Configure" = "Configura";
+
 /* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
 "Configuring iPhone" = "Configurazione iPhone";
 
@@ -1625,7 +1634,8 @@ which should be translated separately and considered part of this sentence. */
    Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
-   Title of the button to contact support for help accessing a store after Jetpack setup */
+   Title of the button to contact support for help accessing a store after Jetpack setup
+   Title of the view for contacting support. */
 "Contact Support" = "Contatta il supporto";
 
 /* Contact WooComerce Payments Support title */
@@ -2163,7 +2173,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to domain settings screen.
    Navigation bar title of the domain settings screen. */
-"Domain" = "Dominio";
+"Domains" = "Domini";
 
 /* Country option for a site address. */
 "Dominica" = "Dominica";
@@ -2462,6 +2472,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* City field placeholder in Edit Address Form */
 "Enter City" = "Inserisci la città";
+
+/* Phone country code field placeholder in Edit Address Form */
+"Enter Country Code" = "Inserisci codice Paese";
 
 /* Email field placeholder in Edit Address Form
    Placeholder of the row that holds the provided email when creating a simple payment */
@@ -3026,6 +3039,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Accesso a Google non riuscito.";
 
+/* Confirmation button for the alert after the support request is created. */
+"Got It!" = "OK!";
+
 /* Industry option in the store creation category question. */
 "Government Services" = "Servizi governativi";
 
@@ -3217,6 +3233,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option in the store creation selling status question. */
 "I am selling offline" = "Sto vendendo offline";
+
+/* Text on the support form to refer to what area the user has problem with. */
+"I need help with" = "Ho bisogno di aiuto con";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "ARTICOLI DA EVADERE";
@@ -3625,6 +3644,7 @@ which should be translated separately and considered part of this sentence. */
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
+   Tappable text at the bottom of the domain settings screen that opens a webview.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
@@ -3670,6 +3690,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Lettera (8,5 x 11 mm)";
+
+/* Title to let the user know what do we want on the support screen. */
+"Let’s get this sorted" = "Mettiamo ordine";
 
 /* Country option for a site address. */
 "Liberia" = "Liberia";
@@ -3986,7 +4009,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Type Merchandise of content to be declared for the customs form in Shipping Label flow */
 "Merchandise" = "Merchandise";
 
-/* Message phone number button title */
+/* Message on the support form
+   Message phone number button title */
 "Message" = "Messaggio";
 
 /* Country option for a site address. */
@@ -4009,6 +4033,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
 "Mixed" = "Misto";
+
+/* Title of the mobile app support area option */
+"Mobile App" = "App per dispositivi mobili";
 
 /* Country option for a site address. */
 "Moldova" = "Moldavia";
@@ -4559,6 +4586,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Other Entertainment And Recreation" = "Altro intrattenimento e ricreazione";
 
+/* Title of the Other Plugin support area option */
+"Other Extension \/ Plugin" = "Altra estensione\/plugin";
+
 /* Industry option in the store creation category question. */
 "Other Financial Institutions" = "Altre istituti finanziari";
 
@@ -4775,6 +4805,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "Telefono";
+
+/* Text field phone country code in Edit Address Form */
+"Phone country code" = "Codice Paese del numero telefonico";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Numero di telefono: %@";
@@ -5500,6 +5533,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Segnala arresti anomali";
+
+/* Title for the alert after the support request is created. */
+"Request Sent!" = "Richiesta inviata!";
 
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
@@ -6267,6 +6303,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "Spiacenti, ma il nome utente deve contenere almeno una lettera (a-z)!";
 
+/* Error message when the app can't create a zendesk identity. */
+"Sorry, we cannot create support requests right now, please try again later." = "Spiacenti, al momento non è possibile creare richieste di assistenza, riprova più tardi.";
+
+/* Error message when the app can't create a support request. */
+"Sorry, we could not create your support request, please try again later." = "Spiacenti, non è stato possibile creare la tua richiesta di assistenza, riprova più tardi.";
+
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Spiacenti, non puoi usare quell'indirizzo per il tuo sito.";
 
@@ -6381,6 +6423,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Barrato";
+
+/* Subject title on the support form */
+"Subject" = "Oggetto";
+
+/* Button title to submit a support request. */
+"Submit Support Request" = "Invia la richiesta di supporto";
 
 /* Display label for subscription product type. */
 "Subscription" = "Abbonamento";
@@ -6651,6 +6699,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Raccontaci di più su %1$@...";
+
+/* Message info on the support screen. */
+"Tell us much as you can about the problem, and we will be in touch soon." = "Raccontaci il più possibile del problema e ti contatteremo al più presto.";
 
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
@@ -8116,6 +8167,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "App di WooCommerce per dispositivi mobili: gestisci il tuo negozio da qualsiasi luogo";
 
+/* Title of the WooCommerce Payments support area option */
+"WooCommerce Payments" = "WooCommerce Payments";
+
+/* Title of the WooCommerce Plugin support area option */
+"WooCommerce Plugin" = "Plugin WooCommerce";
+
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "Impostazioni WooCommerce";
 
@@ -8283,6 +8340,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Il tuo negozio verrà creato in base alle opzioni che hai scelto!";
+
+/* Message for the alert after the support request is created. */
+"Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "La tua richiesta di assistenza è arrivata sana e salva nella nostra casella di posta. Ti risponderemo al più presto via e-mail.";
 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Dovrai installare l'estensione gratuita WooCommerce Payments sul tuo negozio per accettare Pagamenti di persona.";

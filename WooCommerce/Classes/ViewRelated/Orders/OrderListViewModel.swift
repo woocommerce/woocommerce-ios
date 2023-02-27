@@ -7,17 +7,6 @@ import protocol Storage.StorageManagerType
 ///
 /// This is an incremental WIP. Eventually, we should move all the data loading in here.
 ///
-/// Important: The `OrdersViewController` **owned** by `OrdersTabbedViewController` currently
-/// does not get deallocated when switching sites. This `ViewModel` should consider that and not
-/// keep site-specific information as much as possible. For example, we shouldn't keep `siteID`
-/// in here but grab it from the `SessionManager` when we need it. Hopefully, we will be able to
-/// fix this in the future.
-///
-/// ## Work In Progress
-///
-/// This does not do anything at the moment. We will integrate `FetchResultsSnapshotsProvider`
-/// in here next.
-///
 final class OrderListViewModel {
     private let stores: StoresManager
     private let storageManager: StorageManagerType

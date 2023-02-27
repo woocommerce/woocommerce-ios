@@ -63,8 +63,7 @@ extension ProofKeyForCodeExchange {
         let rawValue: String
 
         static let allowedCharacters = Character.urlSafeCharacters
-        static let minimumLength = 43
-        static let maximumLength = 128
+        static let allowedLengthRange = (43...128)
 
         /// Generates a random code verifier according to the PKCE RFC.
         ///
@@ -79,7 +78,7 @@ extension ProofKeyForCodeExchange {
         }
 
         init?(value: String) {
-            guard value.count >= CodeVerifier.minimumLength, value.count <= CodeVerifier.maximumLength else { return nil }
+            guard CodeVerifier.allowedLengthRange.contains(value.count) else { return nil }
 
             guard Set(value).isSubset(of: CodeVerifier.allowedCharacters) else { return nil }
 

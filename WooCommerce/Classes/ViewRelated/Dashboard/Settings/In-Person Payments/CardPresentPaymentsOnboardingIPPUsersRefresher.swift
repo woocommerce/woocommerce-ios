@@ -24,7 +24,7 @@ class CardPresentPaymentsOnboardingIPPUsersRefresher {
             return
         }
 
-        cardPresentPaymentsOnboardingUseCase.forceRefresh()
+        cardPresentPaymentsOnboardingUseCase.refresh()
     }
 }
 

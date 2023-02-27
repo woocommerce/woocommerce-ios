@@ -395,7 +395,7 @@ private extension AppDelegate {
     }
 
     func refreshCardPresentPaymentsOnboardingIfNeeded() {
-        CardPresentPaymentsOnboardingIPPUsersRefresher().refreshIPPUsersOnboardingState()
+        ServiceLocator.cardPresentPaymentsOnboardingIPPUsersRefresher.refreshIPPUsersOnboardingState()
     }
 
     /// Tracks if the application was opened via a widget tap.

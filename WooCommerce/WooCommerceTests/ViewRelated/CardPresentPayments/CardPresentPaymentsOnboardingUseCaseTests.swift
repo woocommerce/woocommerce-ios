@@ -8,6 +8,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     ///
     private var storageManager: MockStorageManager!
 
+    private var onboardingStateCache: CardPresentPaymentOnboardingStateCache!
+
     /// Mock Stores
     ///
     private var stores: MockStoresManager!
@@ -24,6 +26,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
+        onboardingStateCache = CardPresentPaymentOnboardingStateCache()
         storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.sessionManager.setStoreId(sampleSiteID)
@@ -50,6 +53,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     override func tearDownWithError() throws {
         ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings())
         storageManager.reset()
+        onboardingStateCache = nil
         storageManager = nil
         stores = nil
         preferredInPersonPaymentGatewayBySite.removeAll()
@@ -62,7 +66,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -74,7 +80,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupCountry(country: .es)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -86,7 +94,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupCountry(country: .ca)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -99,7 +109,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupStripePlugin(status: .active, version: .minimumSupportedVersion)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -113,7 +125,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupWCPayPlugin(status: .active, version: .minimumSupportedVersionCanada)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -126,7 +140,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupWCPayPlugin(status: .active, version: .unsupportedVersionCanada)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -139,7 +155,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupWCPayPlugin(status: .active, version: .minimumSupportedVersionCanada)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -152,7 +170,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupStripePlugin(status: .active, version: .minimumSupportedVersion)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -167,7 +187,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupCountry(country: .us)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -181,7 +203,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupWCPayPlugin(status: .inactive, version: WCPayPluginVersion.minimumSupportedVersion)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -194,7 +218,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupStripePlugin(status: .inactive, version: StripePluginVersion.minimumSupportedVersion)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -208,7 +234,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupStripePlugin(status: .inactive, version: StripePluginVersion.minimumSupportedVersion)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -222,7 +250,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -236,7 +266,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         XCTAssertEqual(useCase.state, .selectPlugin(pluginSelectionWasCleared: false))
         useCase.selectPlugin(.wcPay)
         let state = useCase.state
@@ -252,7 +284,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         XCTAssertEqual(useCase.state, .selectPlugin(pluginSelectionWasCleared: false))
         useCase.selectPlugin(.stripe)
         let state = useCase.state
@@ -268,7 +302,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         XCTAssertEqual(useCase.state, .selectPlugin(pluginSelectionWasCleared: false))
         useCase.selectPlugin(.stripe)
         useCase.clearPluginSelection()
@@ -287,7 +323,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPreferredPaymentGateway(.wcPay)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -303,7 +341,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPreferredPaymentGateway(.wcPay)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -320,7 +360,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPreferredPaymentGateway(.stripe)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -336,7 +378,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPreferredPaymentGateway(.stripe)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -348,7 +392,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupWCPayPlugin(status: .active, version: WCPayPluginVersion.unsupportedVersionWithoutPatch)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -361,7 +407,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupStripePlugin(status: .active, version: StripePluginVersion.unsupportedVersion)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -375,7 +423,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete, isLive: true, isInTestMode: true)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -389,7 +439,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete, isLive: true, isInTestMode: true)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -402,7 +454,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupWCPayPlugin(status: .active, version: WCPayPluginVersion.unsupportedVersionWithPatch)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -416,7 +470,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -430,7 +486,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -444,7 +502,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -459,7 +519,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -474,7 +536,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -488,7 +552,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -502,7 +568,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -521,7 +589,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
                                                                isInTestMode: false)
 
         // When
-        _ = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        _ = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores, cardPresentPaymentOnboardingStateCache: onboardingStateCache)
 
         // Then
 
@@ -548,7 +616,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -567,7 +637,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
                                                                isInTestMode: false)
 
         // When
-        _ = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        _ = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores, cardPresentPaymentOnboardingStateCache: onboardingStateCache)
 
         // Then
 
@@ -590,7 +660,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         // i.e. getPaymentGatewayAccount returns nil account
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -605,7 +677,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         // i.e. getPaymentGatewayAccount returns status.noAccount
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -619,7 +693,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         // i.e. getPaymentGatewayAccount returns nil account
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -634,7 +710,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         // i.e. getPaymentGatewayAccount returns status.noAccount
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -648,7 +726,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .restricted, hasPendingRequirements: true)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -662,7 +742,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .restrictedSoon, hasPendingRequirements: true)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
         // Then
         XCTAssertEqual(state, .stripeAccountPendingRequirement(plugin: .wcPay, deadline: nil))
@@ -675,7 +757,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .restricted, hasOverdueRequirements: true)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -689,7 +773,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .restricted, hasPendingRequirements: true, hasOverdueRequirements: true)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -703,7 +789,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .restricted)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -718,7 +806,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .rejectedFraud)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -732,7 +822,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .rejectedTermsOfService)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -746,7 +838,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .rejectedListed)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -760,7 +854,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .rejectedOther)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -776,7 +872,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         skippedCodOnboardingStep = false
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -792,7 +890,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         skippedCodOnboardingStep = true
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -808,7 +908,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         skippedCodOnboardingStep = false
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -822,7 +924,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .unknown)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
@@ -836,11 +940,24 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
         let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .completed(plugin: .wcPayOnly))
+    }
+
+    func test_refreshIfNecessary_when_there_is_a_cached_value_then_returns_cached_value() {
+        onboardingStateCache.update(.pluginNotInstalled)
+
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        useCase.refreshIfNecessary()
+
+        XCTAssertEqual(useCase.state, onboardingStateCache.value)
     }
 }
 

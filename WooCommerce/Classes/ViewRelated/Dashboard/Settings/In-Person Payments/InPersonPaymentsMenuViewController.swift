@@ -96,7 +96,6 @@ private extension InPersonPaymentsMenuViewController {
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink(receiveValue: { [weak self] state in
-                debugPrint("onboarding state", state)
                 self?.refreshAfterNewOnboardingState(state)
         }).store(in: &cancellables)
     }

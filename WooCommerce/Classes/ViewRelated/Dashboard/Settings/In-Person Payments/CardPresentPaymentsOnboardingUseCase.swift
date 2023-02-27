@@ -34,6 +34,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     let configurationLoader: CardPresentConfigurationLoader
     let featureFlagService: FeatureFlagService
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProvider
+    private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
     private var preferredPluginLocal: CardPresentPaymentsPlugin?
     private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
@@ -52,16 +53,18 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
-        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
+        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+        cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = CardPresentPaymentOnboardingStateCache.shared
     ) {
         self.storageManager = storageManager
         self.stores = stores
         self.configurationLoader = .init(stores: stores)
         self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores, configuration: configurationLoader.configuration)
         self.featureFlagService = featureFlagService
+        self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
 
 
-        if let cachedValue = CardPresentPaymentOnboardingStateCache.shared.value {
+        if let cachedValue = cardPresentPaymentOnboardingStateCache.value {
             state = cachedValue
         } else {
             updateState()
@@ -86,12 +89,12 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func refreshIfNecessary() {
-        if let cachedValue = CardPresentPaymentOnboardingStateCache.shared.value {
+        if let cachedValue = cardPresentPaymentOnboardingStateCache.value {
             if cachedValue != state {
                 state = cachedValue
             }
         } else {
-            forceRefresh()
+            refresh()
         }
     }
 

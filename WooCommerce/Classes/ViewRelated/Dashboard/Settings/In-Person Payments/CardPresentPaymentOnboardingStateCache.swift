@@ -3,7 +3,7 @@ import Yosemite
 /// In-Memory cache for the CardPresentPaymentOnboardingState
 /// 
 class CardPresentPaymentOnboardingStateCache {
-    var value: CardPresentPaymentOnboardingState?
+    private(set) var value: CardPresentPaymentOnboardingState?
 
     static let shared: CardPresentPaymentOnboardingStateCache = CardPresentPaymentOnboardingStateCache()
 

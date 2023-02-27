@@ -718,8 +718,6 @@ private extension EditableOrderViewModel {
     ///
     func handleProduct(_ product: Product) {
         // All products
-        // TODO: Investigate if we need to add products here now that we use multi-selection
-        // TODO: Logic for "clear all selections"
         if !allProducts.contains(product) {
             allProducts.append(product)
         }
@@ -738,7 +736,6 @@ private extension EditableOrderViewModel {
     /// Handles a product variation by adding it to the Order if selected, or removing it from the Order if unselected
     ///
     func handleProductVariation(_ variation: ProductVariation, parent product: Product) {
-        // TODO: Split method into "add variation to order", and "remove variation from order"
         if !allProducts.contains(product) {
             allProducts.append(product)
         }

@@ -59,7 +59,7 @@ struct AdminRoleRequiredView: View {
     }
 
     var body: some View {
-        VStack(spacing: 16) {
+        ScrollableVStack(padding: Layout.horizontalPadding, spacing: 16) {
             // Username and role
             VStack(spacing: 3) {
                 Text(viewModel.username)
@@ -103,7 +103,6 @@ struct AdminRoleRequiredView: View {
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isReloadingRoles))
         }
-        .padding(.horizontal, Layout.horizontalPadding)
         .safariSheet(isPresented: $showingLinkContent, url: linkDestinationURL)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -113,7 +112,6 @@ struct AdminRoleRequiredView: View {
                 .buttonStyle(TextButtonStyle())
             }
         }
-        .scrollVerticallyIfNeeded()
     }
 }
 

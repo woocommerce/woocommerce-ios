@@ -25,6 +25,12 @@ final class StoreOnboardingViewModel: ObservableObject {
             .count
     }
 
+    var tasksForDisplay: [TaskViewModel] {
+        let maxNumberOfTasksToDisplayInCollapsedMode = 3
+        let incompleteTasks = taskViewModels.filter({ !$0.isComplete })
+        return isExpanded ? incompleteTasks : Array(incompleteTasks.prefix(maxNumberOfTasksToDisplayInCollapsedMode))
+    }
+
     let isExpanded: Bool
 
     /// - Parameter isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.

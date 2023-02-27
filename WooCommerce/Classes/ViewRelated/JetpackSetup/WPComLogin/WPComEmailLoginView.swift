@@ -8,8 +8,9 @@ final class WPComEmailLoginHostingController: UIHostingController<WPComEmailLogi
         return noticePresenter
     }()
 
-    init(onSubmit: @escaping (String) -> Void) {
-        super.init(rootView: WPComEmailLoginView(viewModel: .init(onSubmit: onSubmit)))
+    init(siteURL: String, onSubmit: @escaping (String) -> Void) {
+        super.init(rootView: WPComEmailLoginView(viewModel: .init(siteURL: siteURL,
+                                                                  onSubmit: onSubmit)))
     }
 
     @available(*, unavailable)
@@ -73,7 +74,7 @@ struct WPComEmailLoginView: View {
 
                 Spacer()
             }
-            .padding(Constants.contentHorizontalPadding)
+            .padding(Constants.contentPadding)
         }
         .safeAreaInset(edge: .bottom) {
             VStack {
@@ -83,7 +84,11 @@ struct WPComEmailLoginView: View {
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .disabled(viewModel.emailAddress.isEmpty)
+
+                // Terms label
+                AttributedText(viewModel.termsAttributedString)
             }
+            .padding(Constants.contentPadding)
             .background(Color(uiColor: .systemBackground))
         }
     }
@@ -93,7 +98,7 @@ private extension WPComEmailLoginView {
     enum Constants {
         static let blockVerticalPadding: CGFloat = 32
         static let contentVerticalSpacing: CGFloat = 8
-        static let contentHorizontalPadding: CGFloat = 16
+        static let contentPadding: CGFloat = 16
     }
 
     enum Localization {
@@ -105,14 +110,21 @@ private extension WPComEmailLoginView {
             "Log in with your WordPress.com account to install Jetpack",
             comment: "Subtitle for the WPCom email login screen when Jetpack is not installed yet"
         )
-        static let emailLabel = NSLocalizedString("Email address", comment: "Label for the email field on the WPCom email login screen of the Jetpack setup flow.")
-        static let enterEmail = NSLocalizedString("Enter email", comment: "Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow.")
+        static let emailLabel = NSLocalizedString(
+            "Email address",
+            comment: "Label for the email field on the WPCom email login screen of the Jetpack setup flow."
+        )
+        static let enterEmail = NSLocalizedString(
+            "Enter email",
+            comment: "Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow."
+        )
     }
 }
 
 
 struct WPComEmailLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComEmailLoginView(viewModel: .init(onSubmit: { _ in }))
+        WPComEmailLoginView(viewModel: .init(siteURL: "https://test.com",
+                                             onSubmit: { _ in }))
     }
 }

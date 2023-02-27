@@ -117,7 +117,7 @@ private extension JetpackSetupCoordinator {
     }
 
     func showWPComEmailLogin() {
-        let emailLoginController = WPComEmailLoginHostingController { email in
+        let emailLoginController = WPComEmailLoginHostingController(siteURL: site.url) { email in
             #warning("TODO: start the password screen")
         }
         let loginNavigationController = UINavigationController(rootViewController: emailLoginController)

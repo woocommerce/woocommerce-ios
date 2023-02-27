@@ -69,6 +69,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
 
+        // Cache onboarding state to speed IPP process
+        refreshCardPresentPaymentsOnboardingIfNeeded()
+
         // Since we are using Injection for refreshing the content of the app in debug mode,
         // we are going to enable Inject.animation that will be used when
         // ever new source code is injected into our application.
@@ -90,7 +93,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupComponentsAppearance()
         setupNoticePresenter()
         disableAnimationsIfNeeded()
-        CardPresentPaymentsOnboardingUseCase.shared.forceRefresh()
 
         // Start app navigation.
         appCoordinator?.start()
@@ -390,6 +392,10 @@ private extension AppDelegate {
             .forEach {
                 $0.layer.speed = 100
             }
+    }
+
+    func refreshCardPresentPaymentsOnboardingIfNeeded() {
+        CardPresentPaymentsOnboardingIPPUsersRefresher().refreshIPPUsersOnboardingState()
     }
 
     /// Tracks if the application was opened via a widget tap.

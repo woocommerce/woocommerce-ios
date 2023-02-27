@@ -6,7 +6,7 @@ class CardPresentPaymentsOnboardingIPPUsersRefresher {
     private let storageManager: StorageManagerType
 
     private lazy var ordersResultsController: ResultsController<StorageOrder> = {
-        return ResultsController<StorageOrder>(storageManager: storageManager,sortedBy: [])
+        return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [])
     }()
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
@@ -15,16 +15,21 @@ class CardPresentPaymentsOnboardingIPPUsersRefresher {
         try? ordersResultsController.performFetch()
     }
 
-    func refreshIPPUsersOnboarding() {
+    func refreshIPPUsersOnboardingState() {
+        guard usedIPPBefore() else {
+            return
+        }
 
+        CardPresentPaymentsOnboardingUseCase.shared.forceRefresh()
     }
 }
 
 private extension CardPresentPaymentsOnboardingIPPUsersRefresher {
-    func isIPPUser() -> Bool {
+    func usedIPPBefore() -> Bool {
         let IPPTransactionsFound = ordersResultsController.fetchedObjects.filter({
-            $0.customFields.contains(where: { $0.key == Constants.receiptURLKey }))
+            $0.customFields.contains(where: { $0.key == Constants.receiptURLKey })})
 
+            return IPPTransactionsFound.count > 0
     }
 }
 

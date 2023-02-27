@@ -79,11 +79,11 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func refreshIfNecessary() {
-        guard state == .unknown else {
+        guard !(state.isCompleted || state == .loading) else {
             return
         }
 
-        refresh()
+        forceRefresh()
     }
 
     func resetState() {

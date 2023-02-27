@@ -52,12 +52,11 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
 
-    /// Determines if multiple item selection is supported, `false` by default.
-    /// Mainly used to allow multi-selection on the Order Creation flow
+    /// Determines if multiple item selection is supported.
     ///
     let supportsMultipleSelections: Bool
 
-    /// Determines if is possible to toggle all variatoon items upon selection
+    /// Determines if it is possible to toggle all variation items upon selection
     ///
     let enableTogglingSelectionForAllVariations: Bool
 

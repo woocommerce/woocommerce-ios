@@ -316,20 +316,21 @@ final class OrderListViewModel {
     func feedbackBannerSurveySource() -> SurveyViewController.Source? {
         if isIPPSupportedCountry {
             fetchIPPTransactions()
-            let hasWCPayResults = wcPayIPPOrdersResultsController.fetchedObjects.isEmpty ? false : true
-            let wcPayResultsCount = wcPayIPPOrdersResultsController.fetchedObjects.count
-            let recentWCPayResultsCount = recentWCPayIPPResultsController.fetchedObjects.count
+            let hasWCPayIPPResults = wcPayIPPOrdersResultsController.fetchedObjects.isNotEmpty
+            let wcPayIPPResultsCount = wcPayIPPOrdersResultsController.fetchedObjects.count
+            let hasRecentWCPayIPPResults = recentWCPayIPPResultsController.fetchedObjects.isNotEmpty
+            let recentWCPayIPPResultsCount = recentWCPayIPPResultsController.fetchedObjects.count
 
-            if !hasWCPayResults {
+            if !hasWCPayIPPResults {
                 guard isCODEnabled else {
                     return .none
                 }
                 // Case 1: No WCPay IPP transactions
                 return .inPersonPaymentsCashOnDelivery
-            } else if recentWCPayResultsCount < Constants.numberOfTransactions {
+            } else if hasRecentWCPayIPPResults && recentWCPayIPPResultsCount < Constants.numberOfTransactions {
                 // Case 2: One or more WCPay IPP transactions, but fewer than 10 within the last 30 days
                 return .inPersonPaymentsFirstTransaction
-            } else if wcPayResultsCount >= Constants.numberOfTransactions {
+            } else if wcPayIPPResultsCount >= Constants.numberOfTransactions {
                 // Case 3: More than 10 WCPay IPP transactions
                 return .inPersonPaymentsPowerUsers
             }

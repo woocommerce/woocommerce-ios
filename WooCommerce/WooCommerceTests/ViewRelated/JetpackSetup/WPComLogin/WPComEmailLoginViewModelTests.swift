@@ -3,23 +3,73 @@ import XCTest
 
 final class WPComEmailLoginViewModelTests: XCTestCase {
 
+    func test_title_string_is_correct_when_requiresConnectionOnly_is_false() {
+        // Given
+        let siteURL = "https://test.com"
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: false)
+
+        // When
+        let text = viewModel.titleString
+
+        // Then
+        assertEqual(WPComEmailLoginViewModel.Localization.installJetpack, text)
+    }
+
+    func test_title_string_is_correct_when_requiresConnectionOnly_is_true() {
+        // Given
+        let siteURL = "https://test.com"
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true)
+
+        // When
+        let text = viewModel.titleString
+
+        // Then
+        assertEqual(WPComEmailLoginViewModel.Localization.connectJetpack, text)
+    }
+
+    func test_subtitle_string_is_correct_when_requiresConnectionOnly_is_false() {
+        // Given
+        let siteURL = "https://test.com"
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: false)
+
+        // When
+        let text = viewModel.subtitleString
+
+        // Then
+        assertEqual(WPComEmailLoginViewModel.Localization.loginToInstall, text)
+    }
+
+    func test_subtitle_string_is_correct_when_requiresConnectionOnly_is_true() {
+        // Given
+        let siteURL = "https://test.com"
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true)
+
+        // When
+        let text = viewModel.subtitleString
+
+        // Then
+        assertEqual(WPComEmailLoginViewModel.Localization.loginToConnect, text)
+    }
+
     func test_terms_string_is_correct() {
         // Given
         let siteURL = "https://test.com"
-        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL)
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true)
 
         // When
         let text = viewModel.termsAttributedString.string
 
         // Then
-        let expectedString = String(format: Expectations.termsContent, Expectations.termsOfService, Expectations.shareDetails)
+        let expectedString = String(format: WPComEmailLoginViewModel.Localization.termsContent,
+                                    WPComEmailLoginViewModel.Localization.termsOfService,
+                                    WPComEmailLoginViewModel.Localization.shareDetails)
         assertEqual(text, expectedString)
     }
 
     func test_isEmailValid_is_false_for_invalid_email() {
         // Given
         let siteURL = "https://test.com"
-        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, debounceDuration: 0)
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true, debounceDuration: 0)
 
         // When
         viewModel.emailAddress = "random@mail."
@@ -33,7 +83,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
     func test_isEmailValid_is_true_for_valid_email() {
         // Given
         let siteURL = "https://test.com"
-        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, debounceDuration: 0)
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true, debounceDuration: 0)
 
         // When
         viewModel.emailAddress = "random@mail.com"
@@ -42,22 +92,5 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         waitUntil {
             viewModel.isEmailValid == true
         }
-    }
-}
-
-private extension WPComEmailLoginViewModelTests {
-    enum Expectations {
-        static let termsContent = NSLocalizedString(
-            "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com.",
-            comment: "Content of the label at the end of the Wrong Account screen. " +
-            "Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com.")
-        static let termsOfService = NSLocalizedString(
-            "Terms of Service",
-            comment: "The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen."
-        )
-        static let shareDetails = NSLocalizedString(
-            "share details",
-            comment: "The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen."
-        )
     }
 }

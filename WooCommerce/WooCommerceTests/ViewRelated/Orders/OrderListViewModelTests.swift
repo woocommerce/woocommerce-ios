@@ -607,16 +607,20 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_feedbackBannerSurveySource_when_there_are_less_than_ten_wcpay_orders_then_assigns_inPersonPaymentsFirstTransaction_survey() {
         // Given
-        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "CA"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
         var expectedSurvey: SurveyViewController.Source?
 
         // When
         let _ = (0..<9).map { orderID in
             insertOrder(
-                id: orderID ,
+                id: orderID,
                 status: .completed,
                 dateCreated: Date(),
-                customFields: [],
+                customFields: [OrderMetaData.init(metadataID: 1, key: "receipt_url", value: "https://example.com/receipts/\(orderID)")],
                 paymentMethodID: "woocommerce_payments"
             )
         }
@@ -633,15 +637,20 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_feedbackBannerSurveySource_when_there_more_than_ten_wcpay_orders_then_assigns_inPersonPaymentsPowerUsers_survey() {
         // Given
-        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "CA"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
         var expectedSurvey: SurveyViewController.Source?
 
         // When
         let _ = (0..<15).map { orderID in
             insertOrder(
-                id: orderID ,
+                id: orderID,
                 status: .completed,
                 dateCreated: Date(),
+                customFields: [OrderMetaData.init(metadataID: 1, key: "receipt_url", value: "https://example.com/receipts/\(orderID)")],
                 paymentMethodID: "woocommerce_payments"
             )
         }

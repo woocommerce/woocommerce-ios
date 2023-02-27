@@ -16,8 +16,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
-    /// Determines if multiple item selection is supported, `false` by default.
-    /// Mainly used to allow multi-selection on the Order Creation flow
+    /// Determines if multiple item selection is supported
     ///
     let supportsMultipleSelections: Bool
 

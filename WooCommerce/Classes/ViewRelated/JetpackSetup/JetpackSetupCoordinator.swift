@@ -104,12 +104,7 @@ private extension JetpackSetupCoordinator {
         }, onSuccess: { [weak self] in
             guard let self else { return }
             self.benefitsController?.dismiss(animated: true) {
-                // only start WPCom email login immediately if Jetpack installation is required.
-                // otherwise force the user to tap the Install Jetpack button again
-                // to fetch the connected email.
-                if !self.requiresConnectionOnly {
-                    self.showWPComEmailLogin()
-                }
+                self.showWPComEmailLogin()
             }
         })
         benefitsController?.present(UINavigationController(rootViewController: viewController), animated: true)

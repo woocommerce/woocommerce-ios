@@ -46,13 +46,12 @@ struct ProductSelectorView: View {
                     .padding(.horizontal, insets: safeAreaInsets)
                     .accessibilityIdentifier("product-selector-search-bar")
                 HStack {
-                    Button(Localization.clearSelection) {
-                        viewModel.clearSelection()
-                    }
-                    .buttonStyle(LinkButtonStyle())
-                    .fixedSize()
-                    .renderedIf(viewModel.totalSelectedItemsCount > 0 && viewModel.syncStatus == .results)
-
+                        Button(Localization.clearSelection) {
+                            viewModel.clearSelection()
+                        }
+                        .buttonStyle(LinkButtonStyle())
+                        .fixedSize()
+                        .renderedIf(viewModel.toggleAllVariationsOnSelection && viewModel.totalSelectedItemsCount > 0 && viewModel.syncStatus == .results)
                     Spacer()
 
                     Button(viewModel.filterButtonTitle) {

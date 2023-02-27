@@ -20,6 +20,10 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     let supportsMultipleSelection: Bool
 
+    ///
+    ///
+    let isClearSelectionEnabled: Bool
+
     /// Store for publishers subscriptions
     ///
     private var subscriptions = Set<AnyCancellable>()
@@ -117,6 +121,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          supportsMultipleSelection: Bool = false,
+         isClearSelectionEnabled: Bool = true,
          onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.siteID = siteID
         self.productID = productID
@@ -125,6 +130,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.storageManager = storageManager
         self.stores = stores
         self.supportsMultipleSelection = supportsMultipleSelection
+        self.isClearSelectionEnabled = isClearSelectionEnabled
         self.onVariationSelected = onVariationSelected
         self.selectedProductVariationIDs = selectedProductVariationIDs
         self.purchasableItemsOnly = purchasableItemsOnly
@@ -141,6 +147,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
                      supportsMultipleSelection: Bool = false,
+                     isClearSelectionEnabled: Bool = true,
                      onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.init(siteID: siteID,
                   productID: product.productID,
@@ -151,6 +158,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   storageManager: storageManager,
                   stores: stores,
                   supportsMultipleSelection: supportsMultipleSelection,
+                  isClearSelectionEnabled: isClearSelectionEnabled,
                   onVariationSelected: onVariationSelected)
     }
 

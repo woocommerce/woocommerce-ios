@@ -14,6 +14,7 @@ final class JetpackSetupCoordinator {
     private let analytics: Analytics
 
     private var benefitsController: JetpackBenefitsHostingController?
+    private var loginNavigationController: UINavigationController?
 
     init(site: Site,
          navigationController: UINavigationController,
@@ -68,7 +69,11 @@ private extension JetpackSetupCoordinator {
         case .success(let user):
             let connectedEmail = user.wpcomUser?.email
             requiresConnectionOnly = !user.isConnected
-            #warning("TODO: start WPCom auth with connectedEmail")
+            if requiresConnectionOnly {
+                #warning("TODO: start WPCom password with connectedEmail")
+            } else {
+                showWPComEmailLogin()
+            }
             DDLogInfo("✅ connected email: \(connectedEmail), isConnected: \(user.isConnected)")
         case .failure(let error):
             DDLogError("⛔️ Jetpack status fetched error: \(error)")
@@ -78,7 +83,7 @@ private extension JetpackSetupCoordinator {
                 requiresConnectionOnly = false
                 let roles = stores.sessionManager.defaultRoles
                 if roles.contains(.administrator) {
-                    #warning("TODO: start WPCom auth")
+                    showWPComEmailLogin()
                 } else {
                     displayAdminRoleRequiredError()
                 }
@@ -86,6 +91,7 @@ private extension JetpackSetupCoordinator {
                 /// 403 means the site Jetpack connection is not established yet
                 /// and the user has no permission to handle this.
                 displayAdminRoleRequiredError()
+                requiresConnectionOnly = true
             default:
                 #warning("TODO: show generic error alert")
                 break
@@ -97,9 +103,27 @@ private extension JetpackSetupCoordinator {
         let viewController = AdminRoleRequiredHostingController(siteID: site.siteID, onClose: { [weak self] in
             self?.navigationController.dismiss(animated: true)
         }, onSuccess: { [weak self] in
-            self?.benefitsController?.dismiss(animated: true)
-            #warning("TODO: start WPCom auth")
+            guard let self else { return }
+            self.benefitsController?.dismiss(animated: true) {
+                // only start WPCom email login immediately if Jetpack installation is required.
+                // otherwise force the user to tap the Install Jetpack button again
+                // to fetch the connected email.
+                if !self.requiresConnectionOnly {
+                    self.showWPComEmailLogin()
+                }
+            }
         })
         benefitsController?.present(UINavigationController(rootViewController: viewController), animated: true)
+    }
+
+    func showWPComEmailLogin() {
+        let emailLoginController = WPComEmailLoginHostingController { email in
+            #warning("TODO: start the password screen")
+        }
+        let loginNavigationController = UINavigationController(rootViewController: emailLoginController)
+        navigationController.dismiss(animated: true) {
+            self.navigationController.present(loginNavigationController, animated: true)
+        }
+        self.loginNavigationController = loginNavigationController
     }
 }

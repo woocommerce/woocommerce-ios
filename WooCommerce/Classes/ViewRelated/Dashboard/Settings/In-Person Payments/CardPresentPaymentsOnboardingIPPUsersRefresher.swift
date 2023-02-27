@@ -6,15 +6,16 @@ import Storage
 ///
 class CardPresentPaymentsOnboardingIPPUsersRefresher {
     private let storageManager: StorageManagerType
-    private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
+    private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
 
     private lazy var ordersResultsController: ResultsController<StorageOrder> = {
         return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [])
     }()
 
-    init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    init(storageManager: StorageManagerType = ServiceLocator.storageManager,
+         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase()) {
         self.storageManager = storageManager
-        self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
+        self.cardPresentPaymentsOnboardingUseCase = cardPresentPaymentsOnboardingUseCase
 
         try? ordersResultsController.performFetch()
     }

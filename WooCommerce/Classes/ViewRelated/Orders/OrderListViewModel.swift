@@ -310,7 +310,7 @@ final class OrderListViewModel {
         )
     }
 
-    func feedbackBannerSurveySource(onCompletion: (SurveyViewController.Source?) -> Void) {
+    func feedbackBannerSurveySource() -> SurveyViewController.Source? {
         if isIPPSupportedCountry {
             fetchIPPTransactions()
 
@@ -320,19 +320,19 @@ final class OrderListViewModel {
 
             if !hasWCPayResults {
                 guard isCODEnabled else {
-                    return onCompletion(.none)
+                    return .none
                 }
                 // Case 1: No WCPay IPP transactions
-                return onCompletion(.inPersonPaymentsCashOnDelivery)
+                return .inPersonPaymentsCashOnDelivery
             } else if recentWCPayResultsCount < Constants.numberOfTransactions {
                 // Case 2: One or more WCPay IPP transactions, but fewer than 10 within the last 30 days
-                return onCompletion(.inPersonPaymentsFirstTransaction)
+                return .inPersonPaymentsFirstTransaction
             } else if wcPayResultsCount >= Constants.numberOfTransactions {
                 // Case 3: More than 10 WCPay IPP transactions
-                return onCompletion(.inPersonPaymentsPowerUsers)
+                return .inPersonPaymentsPowerUsers
             }
         }
-        onCompletion(.none)
+        return .none
     }
 
     private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {

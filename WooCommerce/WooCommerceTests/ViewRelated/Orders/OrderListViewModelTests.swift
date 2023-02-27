@@ -563,11 +563,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
 
         // When
-        let survey = waitFor { promise in
-            viewModel.feedbackBannerSurveySource(onCompletion: { survey in
-                promise(survey)
-            })
-        }
+        let survey = viewModel.feedbackBannerSurveySource()
 
         // Then
         assertEqual(.inPersonPaymentsCashOnDelivery, survey)
@@ -594,11 +590,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
 
         // When
-        let survey = waitFor { promise in
-            viewModel.feedbackBannerSurveySource(onCompletion: { survey in
-                promise(survey)
-            })
-        }
+        let survey = viewModel.feedbackBannerSurveySource()
 
         // Then
         assertEqual(.none, survey)
@@ -627,11 +619,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
 
         // When
-        let survey = waitFor { promise in
-            viewModel.feedbackBannerSurveySource(onCompletion: { survey in
-                promise(survey)
-            })
-        }
+        let survey = viewModel.feedbackBannerSurveySource()
 
         // Then
         assertEqual(.none, survey)
@@ -661,11 +649,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
 
         // When
-        let survey = waitFor { promise in
-            viewModel.feedbackBannerSurveySource(onCompletion: { survey in
-                promise(survey)
-            })
-        }
+        let survey = viewModel.feedbackBannerSurveySource()
 
         // Then
         assertEqual(.inPersonPaymentsCashOnDelivery, survey)
@@ -678,9 +662,7 @@ final class OrderListViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            filters: nil)
-        var expectedSurvey: SurveyViewController.Source?
 
-        // When
         let _ = (0..<9).map { orderID in
             let metaDataID = Int64(orderID + 100)
             return insertOrder(
@@ -696,11 +678,11 @@ final class OrderListViewModelTests: XCTestCase {
         // Confidence check
         XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 9)
 
+        // When
+        let survey = viewModel.feedbackBannerSurveySource()
+
         // Then
-        viewModel.feedbackBannerSurveySource(onCompletion: { survey in
-            expectedSurvey = survey
-            XCTAssertEqual(expectedSurvey, .inPersonPaymentsFirstTransaction)
-        })
+        assertEqual(.inPersonPaymentsFirstTransaction, survey)
     }
 
     func test_feedbackBannerSurveySource_when_there_are_more_than_ten_wcpay_orders_then_assigns_inPersonPaymentsPowerUsers_survey() {
@@ -710,9 +692,7 @@ final class OrderListViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            filters: nil)
-        var expectedSurvey: SurveyViewController.Source?
 
-        // When
         let _ = (0..<15).map { orderID in
             let metaDataID = Int64(orderID + 100)
             return insertOrder(
@@ -728,11 +708,11 @@ final class OrderListViewModelTests: XCTestCase {
         // Confidence check
         XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 15)
 
+        // When
+        let survey = viewModel.feedbackBannerSurveySource()
+
         // Then
-        viewModel.feedbackBannerSurveySource(onCompletion: { survey in
-            expectedSurvey = survey
-            XCTAssertEqual(expectedSurvey, .inPersonPaymentsPowerUsers)
-        })
+        assertEqual(.inPersonPaymentsPowerUsers, survey)
     }
 
     func test_IPPFeedbackBannerWasSubmitted_hides_banner_after_being_called() {

@@ -159,11 +159,10 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureSyncingCoordinator()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            viewModel.feedbackBannerSurveySource(onCompletion: { survey in
-                // Only assign the survey once we're sure the data is fetched from storage
-                inPersonPaymentsSurveyVariation = survey
-                viewModel.trackInPersonPaymentsFeedbackBannerShown(for: survey)
-            })
+            let survey = viewModel.feedbackBannerSurveySource()
+            // Only assign the survey once we're sure the data is fetched from storage
+            inPersonPaymentsSurveyVariation = survey
+            viewModel.trackInPersonPaymentsFeedbackBannerShown(for: survey)
         }
     }
 

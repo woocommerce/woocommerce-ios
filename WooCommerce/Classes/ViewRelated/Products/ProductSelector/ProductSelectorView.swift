@@ -153,7 +153,7 @@ struct ProductSelectorView: View {
                 ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
-                    if viewModel.enableTogglingSelectionForAllVariations {
+                    if viewModel.toggleAllVariationsOnSelection {
                         viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
                     }
                 })

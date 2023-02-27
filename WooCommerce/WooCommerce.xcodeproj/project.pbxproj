@@ -1999,7 +1999,6 @@
 		EE0EE7A828B74EF300F6061E /* CustomHelpCenterContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */; };
 		EE2EDFE12987A189004E702B /* MockABTestVariationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */; };
 		EE3272A429A88F750015F8D0 /* StoreOnboardingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3272A329A88F750015F8D0 /* StoreOnboardingViewModelTests.swift */; };
-		EE3272A729A8EAFB0015F8D0 /* View+ReadSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3272A529A8EA520015F8D0 /* View+ReadSize.swift */; };
 		EE57C11D297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */; };
 		EE57C11F297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */; };
 		EE57C121297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C120297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift */; };
@@ -4130,7 +4129,6 @@
 		EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHelpCenterContentTests.swift; sourceTree = "<group>"; };
 		EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockABTestVariationProvider.swift; sourceTree = "<group>"; };
 		EE3272A329A88F750015F8D0 /* StoreOnboardingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingViewModelTests.swift; sourceTree = "<group>"; };
-		EE3272A529A8EA520015F8D0 /* View+ReadSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ReadSize.swift"; sourceTree = "<group>"; };
 		EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEventRequestNotificationHandler.swift; sourceTree = "<group>"; };
 		EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ApplicationPassword.swift"; sourceTree = "<group>"; };
 		EE57C120297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEventRequestNotificationHandlerTests.swift; sourceTree = "<group>"; };
@@ -5630,7 +5628,6 @@
 				AED089F127C794BC0020AE10 /* View+CurrencySymbol.swift */,
 				CC666F2327F329DC0045AF1E /* View+DiscardChanges.swift */,
 				02562ACF296D1FD100980404 /* View+DividerStyle.swift */,
-				EE3272A529A8EA520015F8D0 /* View+ReadSize.swift */,
 			);
 			path = "View Modifiers";
 			sourceTree = "<group>";
@@ -10631,7 +10628,6 @@
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
 				035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */,
 				02C37B7D2967B72A00F0CF9E /* FreeStagingDomainView.swift in Sources */,
-				EE3272A729A8EAFB0015F8D0 /* View+ReadSize.swift in Sources */,
 				457509E4267B9E91005FA2EA /* AggregatedProductListViewController.swift in Sources */,
 				D8815B0D263861A400EDAD62 /* CardPresentModalSuccess.swift in Sources */,
 				0235595524496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift in Sources */,

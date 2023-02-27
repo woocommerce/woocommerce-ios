@@ -278,7 +278,7 @@ final class OrderListViewModel {
         }
     }
 
-    func trackInPersonPaymentsFeedbackBannerShown(for surveySource: SurveyViewController.Source) {
+    func trackInPersonPaymentsFeedbackBannerShown(for surveySource: SurveyViewController.Source?) {
         var campaign: FeatureAnnouncementCampaign? = nil
 
         switch surveySource {
@@ -303,7 +303,7 @@ final class OrderListViewModel {
         )
     }
 
-    func feedbackBannerSurveySource(onCompletion: (SurveyViewController.Source) -> Void) {
+    func feedbackBannerSurveySource(onCompletion: (SurveyViewController.Source?) -> Void) {
         if isCODEnabled && isIPPSupportedCountry {
             fetchIPPTransactions()
 
@@ -322,15 +322,16 @@ final class OrderListViewModel {
 
             if !hasWCPayResults {
                 // Case 1: No WCPay transactions
-                onCompletion(.inPersonPaymentsCashOnDelivery)
+                return onCompletion(.inPersonPaymentsCashOnDelivery)
             } else if hasOneOrMoreWCPayTransactions && (recentWCPayResultsCount < Constants.numberOfTransactions) {
                 // Case 2: One or more WCPay transactions, but less than 10 within latest 30 days
-                onCompletion(.inPersonPaymentsFirstTransaction)
+                return onCompletion(.inPersonPaymentsFirstTransaction)
             } else if WCPayResultsCount >= Constants.numberOfTransactions {
                 // Case 3: More than 10 WCPay transactions
-                onCompletion(.inPersonPaymentsPowerUsers)
+                return onCompletion(.inPersonPaymentsPowerUsers)
             }
         }
+        onCompletion(.none)
     }
 
     private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {

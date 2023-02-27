@@ -39,24 +39,52 @@ private extension WPComEmailLoginHostingController {
 /// Screen for logging in to a WPCom account during the Jetpack setup flow
 /// This is presented for users authenticated with WPOrg credentials.
 struct WPComEmailLoginView: View {
-    private let viewModel: WPComEmailLoginViewModel
+    @ObservedObject private var viewModel: WPComEmailLoginViewModel
+    @FocusState private var isEmailFieldFocused: Bool
 
     init(viewModel: WPComEmailLoginViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        ScrollableVStack(alignment: .leading, padding: Constants.contentHorizontalPadding, spacing: Constants.blockVerticalPadding) {
-            JetpackInstallHeaderView()
+        ScrollView {
+            VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
+                JetpackInstallHeaderView()
 
-            // title and description
-            VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
-                Text(Localization.installJetpack)
-                    .largeTitleStyle()
-                Text(Localization.loginToInstall)
-                    .subheadlineStyle()
+                // title and description
+                VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
+                    Text(Localization.installJetpack)
+                        .largeTitleStyle()
+                    Text(Localization.loginToInstall)
+                        .subheadlineStyle()
+                }
+
+                // Email field
+                AccountCreationFormFieldView(viewModel: .init(
+                    header: Localization.emailLabel,
+                    placeholder: Localization.enterEmail,
+                    keyboardType: .emailAddress,
+                    text: $viewModel.emailAddress,
+                    isSecure: false,
+                    errorMessage: nil,
+                    isFocused: isEmailFieldFocused
+                ))
+                .focused($isEmailFieldFocused)
+
+                Spacer()
             }
-            Spacer()
+            .padding(Constants.contentHorizontalPadding)
+        }
+        .safeAreaInset(edge: .bottom) {
+            VStack {
+                // Primary CTA
+                Button(Localization.installJetpack) {
+                    viewModel.handleSubmission()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .disabled(viewModel.emailAddress.isEmpty)
+            }
+            .background(Color(uiColor: .systemBackground))
         }
     }
 }
@@ -77,6 +105,8 @@ private extension WPComEmailLoginView {
             "Log in with your WordPress.com account to install Jetpack",
             comment: "Subtitle for the WPCom email login screen when Jetpack is not installed yet"
         )
+        static let emailLabel = NSLocalizedString("Email address", comment: "Label for the email field on the WPCom email login screen of the Jetpack setup flow.")
+        static let enterEmail = NSLocalizedString("Enter email", comment: "Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow.")
     }
 }
 

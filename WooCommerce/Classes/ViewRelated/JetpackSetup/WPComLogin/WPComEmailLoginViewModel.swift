@@ -1,7 +1,7 @@
 import Foundation
 
 /// View model for `WPComEmailLoginView`
-final class WPComEmailLoginViewModel {
+final class WPComEmailLoginViewModel: ObservableObject {
     @Published var emailAddress: String = ""
 
     /// The closure to be triggered when the Install Jetpack button is tapped.
@@ -9,5 +9,9 @@ final class WPComEmailLoginViewModel {
 
     init(onSubmit: @escaping (String) -> Void) {
         self.onSubmit = onSubmit
+    }
+
+    func handleSubmission() {
+        // TODO
     }
 }

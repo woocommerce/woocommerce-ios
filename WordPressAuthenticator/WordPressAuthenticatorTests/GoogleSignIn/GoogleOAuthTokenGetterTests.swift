@@ -13,7 +13,7 @@ class GoogleOAuthTokenGetterTests: XCTestCase {
                 clientId: GoogleClientId(string: "a.b.c")!,
                 audience: "audience",
                 authCode: "abc",
-                pkce: ProofKeyForCodeExchange(codeVerifier: "code", method: .plain)
+                pkce: ProofKeyForCodeExchange()
             )
             XCTFail("Expected error to be thrown")
         } catch {
@@ -38,7 +38,7 @@ class GoogleOAuthTokenGetterTests: XCTestCase {
             clientId: GoogleClientId(string: "a.b.c")!,
             audience: "audience",
             authCode: "abc",
-            pkce: ProofKeyForCodeExchange(codeVerifier: "code", method: .plain)
+            pkce: ProofKeyForCodeExchange()
         )
 
         XCTAssertEqual(response, expectedResponse)

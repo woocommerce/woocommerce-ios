@@ -14,7 +14,7 @@ extension URL {
     static func googleSignInAuthURL(clientId: GoogleClientId, pkce: ProofKeyForCodeExchange) throws -> URL {
         let queryItems = [
             ("client_id", clientId.value),
-            ("code_challenge", pkce.codeCallenge),
+            ("code_challenge", pkce.codeChallenge),
             ("code_challenge_method", pkce.method.urlQueryParameterValue),
             ("redirect_uri", clientId.defaultRedirectURI),
             ("response_type", "code"),

@@ -3,15 +3,22 @@ import XCTest
 
 class ProofKeyForCodeExchangeTests: XCTestCase {
 
-    func testCodeChallengeInPlainModeIsTheSameAsCodeVerifier() {
+    func testCodeChallengeInPlainModeIsTheSameAsCodeVerifier() throws {
+        let codeVerifier = try ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier()
+
         XCTAssertEqual(
-            ProofKeyForCodeExchange(codeVerifier: "abc", method: .plain).codeCallenge,
-            "abc"
+            ProofKeyForCodeExchange(codeVerifier: codeVerifier, method: .plain).codeChallenge,
+            codeVerifier.rawValue
         )
     }
 
     func testCodeChallengeInS256ModeIsEncodedAsPerSpec() {
-        // TODO:
+        let codeVerifier = ProofKeyForCodeExchange.CodeVerifier(value: (0..<9).map { _ in "test-" }.joined())!
+
+        XCTAssertEqual(
+            ProofKeyForCodeExchange(codeVerifier: codeVerifier, method: .s256).codeChallenge,
+            "lWvomVEGuL8FR3DY2DP_9E2q_imlqUHi-s1SPqRhO2c"
+        )
     }
 
     func testMethodURLQueryParameterValuePlain() {

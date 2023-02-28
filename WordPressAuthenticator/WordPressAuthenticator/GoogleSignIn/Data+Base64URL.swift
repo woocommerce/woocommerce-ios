@@ -21,4 +21,14 @@ extension Data {
             self.init(base64Encoded: base64, options: .ignoreUnknownCharacters)
         }
     }
+
+    /// See https://tools.ietf.org/html/rfc4648#section-5
+    ///
+    /// Function name to match the standard library's `base64EncodedString()`.
+    func base64URLEncodedString() -> String {
+        base64EncodedString()
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "=", with: "")
+    }
 }

@@ -16,7 +16,7 @@ extension OAuthTokenRequestBody {
             clientSecret: "",
             audience: audience,
             code: authCode,
-            codeVerifier: pkce.codeVerifier,
+            codeVerifier: pkce.codeVerifier.rawValue,
             // As defined in the OAuth 2.0 specification, this field's value must be set to authorization_code.
             // – https://developers.google.com/identity/protocols/oauth2/native-app#exchange-authorization-code
             grantType: "authorization_code",

@@ -5,7 +5,7 @@
 - [*] Fix: When a product's details can be edited, they display a disclosure indicator (chevron). [https://github.com/woocommerce/woocommerce-ios/pull/8980]
 - [*] Payments: fixed a bug where enabled rows in the Payments Menu were sometimes incorrectly shown as disabled [https://github.com/woocommerce/woocommerce-ios/pull/8983]
 - [Internal] Mobile Payments: fixed logic on display of IPP feedback banner on Order List [https://github.com/woocommerce/woocommerce-ios/pull/8994]
-- [**] Support: Merchants can now contact support with a new and refined experience.
+- [**] Support: Merchants can now contact support with a new and refined experience. [https://github.com/woocommerce/woocommerce-ios/pull/9006/files]
 
 12.5
 -----

@@ -5,7 +5,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
 
     func test_title_string_is_correct_when_requiresConnectionOnly_is_false() {
         // Given
-        let siteURL = "https://test.com"
+        let siteURL = "https://example.com"
         let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: false)
 
         // When
@@ -17,7 +17,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
 
     func test_title_string_is_correct_when_requiresConnectionOnly_is_true() {
         // Given
-        let siteURL = "https://test.com"
+        let siteURL = "https://example.com"
         let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true)
 
         // When
@@ -29,7 +29,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
 
     func test_subtitle_string_is_correct_when_requiresConnectionOnly_is_false() {
         // Given
-        let siteURL = "https://test.com"
+        let siteURL = "https://example.com"
         let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: false)
 
         // When
@@ -41,7 +41,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
 
     func test_subtitle_string_is_correct_when_requiresConnectionOnly_is_true() {
         // Given
-        let siteURL = "https://test.com"
+        let siteURL = "https://example.com"
         let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true)
 
         // When
@@ -53,7 +53,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
 
     func test_terms_string_is_correct() {
         // Given
-        let siteURL = "https://test.com"
+        let siteURL = "https://example.com"
         let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true)
 
         // When
@@ -68,7 +68,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
 
     func test_isEmailValid_is_false_for_invalid_email() {
         // Given
-        let siteURL = "https://test.com"
+        let siteURL = "https://example.com"
         let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true, debounceDuration: 0)
 
         // When
@@ -86,7 +86,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true, debounceDuration: 0)
 
         // When
-        viewModel.emailAddress = "random@mail.com"
+        viewModel.emailAddress = "random@example.com"
 
         // Then
         waitUntil {

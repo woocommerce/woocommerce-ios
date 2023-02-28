@@ -121,7 +121,7 @@ private extension WPComEmailLoginView {
 
 struct WPComEmailLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComEmailLoginView(viewModel: .init(siteURL: "https://test.com",
+        WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
                                              requiresConnectionOnly: true),
                             onSubmit: { _ in })
     }

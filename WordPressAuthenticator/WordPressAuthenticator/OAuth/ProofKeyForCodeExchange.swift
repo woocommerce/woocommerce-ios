@@ -2,14 +2,6 @@
 // - https://developers.google.com/identity/protocols/oauth2/native-app#step1-code-verifier
 // - https://www.rfc-editor.org/rfc/rfc7636
 //
-// FIXME: follow spec!
-//
-// A code_verifier is a high-entropy cryptographic random string using the unreserved
-// characters [A-Z] / [a-z] / [0-9] / "-" / "." / "_" / "~", with a minimum length of 43
-// characters and a maximum length of 128 characters.
-//
-// The code verifier should have enough entropy to make it impractical to guess the value.
-//
 // Note: The common abbreviation of "Proof Key for Code Exchange" is PKCE and is pronounced "pixy".
 struct ProofKeyForCodeExchange: Equatable {
 
@@ -45,6 +37,15 @@ struct ProofKeyForCodeExchange: Equatable {
 
 extension ProofKeyForCodeExchange {
 
+    // A code_verifier is a high-entropy cryptographic random string using the unreserved
+    // characters [A-Z] / [a-z] / [0-9] / "-" / "." / "_" / "~", with a minimum length of 43
+    // characters and a maximum length of 128 characters.
+    //
+    // The code verifier should have enough entropy to make it impractical to guess the value.
+    //
+    // See:
+    // - https://www.rfc-editor.org/rfc/rfc7636#section-4.1
+    // - https://developers.google.com/identity/protocols/oauth2/native-app#step1-code-verifier
     struct CodeVerifier: Equatable {
 
         let rawValue: String

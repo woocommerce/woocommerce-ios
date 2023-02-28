@@ -50,7 +50,6 @@ class InAppPurchasesRemoteTests: XCTestCase {
     func test_purchase_product_returns_created_order() throws {
         // Given
         let remote = InAppPurchasesRemote(network: network)
-        let receiptData = Loader.contentsOf("iap-sample-receipt")!
 
         network.simulateResponse(requestUrlSuffix: "iap/orders", filename: "iap-order-create")
 
@@ -62,7 +61,7 @@ class InAppPurchasesRemoteTests: XCTestCase {
                 price: 2499,
                 productIdentifier: "woocommerce_entry_monthly",
                 appStoreCountryCode: "us",
-                receiptData: receiptData) { aResult in
+                originalTransactionId: 1234) { aResult in
                     result = aResult
                     expectation.fulfill()
                 }

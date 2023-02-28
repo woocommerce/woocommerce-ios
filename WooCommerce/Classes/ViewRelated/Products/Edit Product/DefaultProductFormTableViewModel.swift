@@ -590,7 +590,7 @@ private extension DefaultProductFormTableViewModel {
                                                                    comment: "Placeholder of the Product Short Description row on Product main screen")
 
         // Categories
-        static let categoriesPlaceholder = NSLocalizedString("Uncategorized",
+        static let categoriesPlaceholder = NSLocalizedString("No category selected",
                                                              comment: "Placeholder of the Product Categories row on Product main screen")
         // Tags
         static let tagsPlaceholder = NSLocalizedString("No tags",

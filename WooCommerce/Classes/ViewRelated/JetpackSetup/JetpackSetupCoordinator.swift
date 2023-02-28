@@ -13,6 +13,9 @@ final class JetpackSetupCoordinator {
     private let stores: StoresManager
     private let analytics: Analytics
 
+    private var benefitsController: JetpackBenefitsHostingController?
+    private var loginNavigationController: UINavigationController?
+
     init(site: Site,
          navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
@@ -38,6 +41,7 @@ final class JetpackSetupCoordinator {
             self?.navigationController.dismiss(animated: true, completion: nil)
         })
         navigationController.present(benefitsController, animated: true, completion: nil)
+        self.benefitsController = benefitsController
     }
 }
 
@@ -65,25 +69,55 @@ private extension JetpackSetupCoordinator {
         case .success(let user):
             let connectedEmail = user.wpcomUser?.email
             requiresConnectionOnly = !user.isConnected
-            #warning("TODO: start WPCom auth with connectedEmail")
-            DDLogInfo("✅ connected email: \(connectedEmail), isConnected: \(user.isConnected)")
+            if let connectedEmail {
+                #warning("TODO-8918: check if account is passwordless and show the next screen")
+            } else {
+                showWPComEmailLogin()
+            }
         case .failure(let error):
             DDLogError("⛔️ Jetpack status fetched error: \(error)")
             switch error {
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
                 /// 404 error means Jetpack is not installed or activated yet.
                 requiresConnectionOnly = false
-                #warning("TODO: check user role to see if the user has permission to manage plugins")
+                let roles = stores.sessionManager.defaultRoles
+                if roles.contains(.administrator) {
+                    showWPComEmailLogin()
+                } else {
+                    displayAdminRoleRequiredError()
+                }
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
                 /// 403 means the site Jetpack connection is not established yet
                 /// and the user has no permission to handle this.
-                #warning("TODO: show role error")
+                displayAdminRoleRequiredError()
                 requiresConnectionOnly = true
-                break
             default:
                 #warning("TODO: show generic error alert")
                 break
             }
         }
+    }
+
+    func displayAdminRoleRequiredError() {
+        let viewController = AdminRoleRequiredHostingController(siteID: site.siteID, onClose: { [weak self] in
+            self?.navigationController.dismiss(animated: true)
+        }, onSuccess: { [weak self] in
+            guard let self else { return }
+            self.benefitsController?.dismiss(animated: true) {
+                self.showWPComEmailLogin()
+            }
+        })
+        benefitsController?.present(UINavigationController(rootViewController: viewController), animated: true)
+    }
+
+    func showWPComEmailLogin() {
+        let emailLoginController = WPComEmailLoginHostingController(siteURL: site.url, requiresConnectionOnly: requiresConnectionOnly) { email in
+            #warning("TODO-8918: check if account is passwordless and show the next screen")
+        }
+        let loginNavigationController = UINavigationController(rootViewController: emailLoginController)
+        navigationController.dismiss(animated: true) {
+            self.navigationController.present(loginNavigationController, animated: true)
+        }
+        self.loginNavigationController = loginNavigationController
     }
 }

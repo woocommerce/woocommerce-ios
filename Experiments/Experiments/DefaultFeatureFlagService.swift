@@ -34,7 +34,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .loginMagicLinkEmphasisM2:
             return true
         case .productMultiSelectionM1:
-            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
+            return false
         case .promptToEnableCodInIppOnboarding:
             return true
         case .searchProductsBySKU:
@@ -67,10 +67,14 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // It is not possible to get the TTPoI entitlement for an enterprise certificate,
             // so we should not enable this for alpha builds.
             return buildConfig == .localDeveloper || buildConfig == .appStore
+        case .tapToPayOnIPhoneSetupFlow:
+            // It is not possible to get the TTPoI entitlement for an enterprise certificate,
+            // so we should not enable this for alpha builds.
+            return buildConfig == .localDeveloper
         case .domainSettings:
             return true
         case .supportRequests:
-            return true
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .simplifyProductEditing:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
         case .jetpackSetupWithApplicationPassword:

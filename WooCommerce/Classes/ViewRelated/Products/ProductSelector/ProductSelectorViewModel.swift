@@ -220,7 +220,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
                                                  supportsMultipleSelection: supportsMultipleSelection,
-                                                 isClearSelectionEnabled: !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
+                                                 isClearSelectionEnabled: toggleAllVariationsOnSelection,
                                                  onVariationSelected: onVariationSelected)
     }
 

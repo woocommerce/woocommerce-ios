@@ -20,7 +20,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     let supportsMultipleSelection: Bool
 
-    ///
+    /// Determines if the Clear Selection button is enabled
     ///
     let isClearSelectionEnabled: Bool
 

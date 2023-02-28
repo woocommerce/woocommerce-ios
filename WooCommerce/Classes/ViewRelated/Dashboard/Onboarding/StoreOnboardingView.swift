@@ -56,6 +56,16 @@ struct StoreOnboardingView: View {
     }
 
     var body: some View {
+        if viewModel.isExpanded {
+            ScrollView {
+                content
+            }
+        } else {
+            content
+        }
+    }
+
+    private var content: some View {
         VStack {
             Color(uiColor: .listBackground)
                 .frame(height: Layout.VerticalSpacing.collapsedMode)

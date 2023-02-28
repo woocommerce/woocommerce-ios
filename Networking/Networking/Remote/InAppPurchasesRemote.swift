@@ -21,7 +21,7 @@ public class InAppPurchasesRemote: Remote {
     ///     - price: An integer representation of the price in cents (5.99 -> 599)
     ///     - productIdentifier: The IAP sku for the product
     ///     - appStoreCountryCode: The country of the user's App Store
-    ///     - receiptData: The transaction receipt from Apple
+    ///     - originalTransactionId: The original transaction id of the transaction
     ///     - completion: Closure to be executed upon completion
     ///
     public func createOrder(
@@ -29,14 +29,14 @@ public class InAppPurchasesRemote: Remote {
         price: Int,
         productIdentifier: String,
         appStoreCountryCode: String,
-        receiptData: Data,
+        originalTransactionId: UInt64,
         completion: @escaping (Swift.Result<Int, Error>) -> Void) {
             let parameters: [String: Any] = [
                 Constants.siteIDKey: siteID,
                 Constants.priceKey: price,
                 Constants.productIDKey: productIdentifier,
                 Constants.appStoreCountryCodeKey: appStoreCountryCode,
-                Constants.receiptDataKey: receiptData.base64EncodedString()
+                Constants.originalTransactionId: originalTransactionId
             ]
             let request = DotcomRequest(
                 wordpressApiVersion: .wpcomMark2,
@@ -71,7 +71,7 @@ public extension InAppPurchasesRemote {
     ///     - price: An integer representation of the price in cents (5.99 -> 599)
     ///     - productIdentifier: The IAP sku for the product
     ///     - appStoreCountryCode: The country of the user's App Store
-    ///     - receiptData: The transaction receipt from Apple
+    ///     - originalTransactionId: The original transaction id of the transaction
     ///
     /// - Returns: The ID of the created order.
     ///
@@ -80,7 +80,7 @@ public extension InAppPurchasesRemote {
         price: Int,
         productIdentifier: String,
         appStoreCountryCode: String,
-        receiptData: Data
+        originalTransactionId: UInt64
     ) async throws -> Int {
         try await withCheckedThrowingContinuation { continuation in
             createOrder(
@@ -88,7 +88,7 @@ public extension InAppPurchasesRemote {
                 price: price,
                 productIdentifier: productIdentifier,
                 appStoreCountryCode: appStoreCountryCode,
-                receiptData: receiptData
+                originalTransactionId: originalTransactionId
             ) { result in
                 continuation.resume(with: result)
             }
@@ -117,6 +117,6 @@ private extension InAppPurchasesRemote {
         static let priceKey = "price"
         static let productIDKey = "product_id"
         static let appStoreCountryCodeKey = "appstore_country"
-        static let receiptDataKey = "apple_receipt"
+        static let originalTransactionId = "original_transaction_id"
     }
 }

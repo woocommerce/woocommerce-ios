@@ -412,7 +412,7 @@ private extension DashboardViewController {
     private func startAddProductFlow() {
         guard let announcementView, let navigationController else { return }
         let coordinator = AddProductCoordinator(siteID: siteID, sourceView: announcementView, sourceNavigationController: navigationController)
-        coordinator.onProductCreated = { [weak self] in
+        coordinator.onProductCreated = { [weak self] _ in
             guard let self else { return }
             self.viewModel.announcementViewModel = nil // Remove the products onboarding banner
             Task {

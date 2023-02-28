@@ -52,6 +52,14 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
 
+    /// Determines if multiple item selection is supported.
+    ///
+    let supportsMultipleSelection: Bool
+
+    /// Determines if it is possible to toggle all variation items upon selection
+    ///
+    let toggleAllVariationsOnSelection: Bool
+
     /// Closure to be invoked when a product is selected
     ///
     private let onProductSelected: ((Product) -> Void)?
@@ -132,11 +140,15 @@ final class ProductSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
+         supportsMultipleSelection: Bool = false,
+         toggleAllVariationsOnSelection: Bool = true,
          onProductSelected: ((Product) -> Void)? = nil,
          onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
+        self.supportsMultipleSelection = supportsMultipleSelection
+        self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.onProductSelected = onProductSelected
         self.onVariationSelected = onVariationSelected
         self.onMultipleSelectionCompleted = nil
@@ -156,10 +168,14 @@ final class ProductSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
+         supportsMultipleSelection: Bool = false,
+         toggleAllVariationsOnSelection: Bool = true,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
+        self.supportsMultipleSelection = supportsMultipleSelection
+        self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.onProductSelected = nil
         self.onVariationSelected = nil
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
@@ -172,36 +188,24 @@ final class ProductSelectorViewModel: ObservableObject {
         configureProductSearch()
     }
 
-    private func debug_helper(product: Product) {
-        print("🍍ProductID: \(product.productID) selected. \(product.name)")
-        print("🍍initialSelectedItems \(initialSelectedItems)")
-        print("🍍selectedProductIDs \(selectedProductIDs)")
-        print("🍍selectedProductVariationIDs \(selectedProductVariationIDs)")
-    }
-
     /// Select a product to add to the order
     ///
     func selectProduct(_ productID: Int64) {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
-            // Product multi-selection (new)
-            if let onProductSelected = onProductSelected {
-                toggleSelection(productID: productID)
-                onProductSelected(selectedProduct)
-                // TODO: Remove
-                debug_helper(product: selectedProduct)
-            }
-        } else {
-            // Product single-selection (legacy)
-            if let onProductSelected = onProductSelected {
-                onProductSelected(selectedProduct)
-            } else {
-                toggleSelection(productID: productID)
-            }
+        guard let onProductSelected else {
+            toggleSelection(productID: productID)
+            return
         }
+        guard supportsMultipleSelection else {
+            // The selector supports single selection only
+            onProductSelected(selectedProduct)
+            return
+        }
+        // The selector supports multiple selection. Toggles the item, and triggers the selection
+        toggleSelection(productID: productID)
+        onProductSelected(selectedProduct)
     }
 
     /// Get the view model for a list of product variations to add to the order
@@ -215,6 +219,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
+                                                 supportsMultipleSelection: supportsMultipleSelection,
                                                  onVariationSelected: onVariationSelected)
     }
 

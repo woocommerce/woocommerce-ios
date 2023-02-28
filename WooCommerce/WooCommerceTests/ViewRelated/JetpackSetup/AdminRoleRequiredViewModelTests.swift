@@ -34,7 +34,7 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
         assertEqual(NSLocalizedString("Shop Manager", comment: "User's Shop Manager role."), roleName)
     }
 
-    func test_reloadRoles_returns_true_if_user_has_admin_role() async throws {
+    func test_checkIfUserGotSufficientRole_returns_true_if_user_has_admin_role() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         stores.whenReceivingAction(ofType: UserAction.self) { action in
@@ -47,13 +47,13 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
         let viewModel = AdminRoleRequiredViewModel(siteID: 123, stores: stores)
 
         // When
-        let result = try await viewModel.reloadRoles()
+        let result = try await viewModel.checkIfUserGotSufficientRole()
 
         // Then
         XCTAssertTrue(result)
     }
 
-    func test_reloadRoles_returns_false_if_user_does_not_have_admin_role() async throws {
+    func test_checkIfUserGotSufficientRole_returns_false_if_user_does_not_have_admin_role() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         stores.whenReceivingAction(ofType: UserAction.self) { action in
@@ -66,13 +66,13 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
         let viewModel = AdminRoleRequiredViewModel(siteID: 123, stores: stores)
 
         // When
-        let result = try await viewModel.reloadRoles()
+        let result = try await viewModel.checkIfUserGotSufficientRole()
 
         // Then
         XCTAssertFalse(result)
     }
 
-    func test_reloadRoles_relays_error_if_the_fetch_fails() async {
+    func test_checkIfUserGotSufficientRole_relays_error_if_the_fetch_fails() async {
         // Given
         let expectedError = NSError(domain: "Test", code: 500, userInfo: nil)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
@@ -87,7 +87,7 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
         // When
         var caughtError: NSError?
         do {
-            _ = try await viewModel.reloadRoles()
+            _ = try await viewModel.checkIfUserGotSufficientRole()
         } catch {
             caughtError = error as NSError
         }

@@ -89,7 +89,7 @@ struct AdminRoleRequiredView: View {
                 Task { @MainActor in
                     isReloadingRoles = true
                     do {
-                        let gotSufficientRole = try await viewModel.reloadRoles()
+                        let gotSufficientRole = try await viewModel.checkIfUserGotSufficientRole()
                         if gotSufficientRole {
                             onSuccess()
                         } else {

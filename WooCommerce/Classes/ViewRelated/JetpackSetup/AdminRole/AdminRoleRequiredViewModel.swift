@@ -20,7 +20,7 @@ final class AdminRoleRequiredViewModel {
     }
 
     @MainActor
-    func reloadRoles() async throws -> Bool {
+    func checkIfUserGotSufficientRole() async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
             let action = UserAction.retrieveUser(siteID: siteID) { [weak self] result in
                 switch result {

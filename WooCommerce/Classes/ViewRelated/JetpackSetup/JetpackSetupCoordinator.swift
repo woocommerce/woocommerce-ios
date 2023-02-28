@@ -28,6 +28,8 @@ final class JetpackSetupCoordinator {
         self.stores = stores
         self.analytics = analytics
 
+        /// the authenticator needs to be initialized with configs
+        /// to be used for requesting authentication link and handle login later.
         WordPressAuthenticator.initializeWithCustomConfigs()
         self.accountService = WordPressComAccountService()
     }

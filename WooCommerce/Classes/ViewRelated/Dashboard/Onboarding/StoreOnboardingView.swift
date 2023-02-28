@@ -25,7 +25,7 @@ struct StoreOnboardingView: View {
 
             let verticalSpacing = viewModel.isExpanded ? Layout.VerticalSpacing.expandedMode : Layout.VerticalSpacing.collapsedMode
             VStack(alignment: viewModel.isExpanded ? .center : .leading, spacing: verticalSpacing) {
-                DismissButton(action: dismissAction)
+                dismissButton(action: dismissAction)
                     .renderedIf(viewModel.isExpanded)
 
                 // Progress view
@@ -46,7 +46,7 @@ struct StoreOnboardingView: View {
                 }
 
                 // View all button
-                ViewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
+                viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
                     .renderedIf(!viewModel.isExpanded)
 
                 Spacer()
@@ -58,6 +58,36 @@ struct StoreOnboardingView: View {
             Color(.systemColor(.systemGray6))
                 .frame(height: 16)
                 .renderedIf(!viewModel.isExpanded)
+        }
+    }
+}
+
+// MARK: Helper methods
+//
+private extension StoreOnboardingView {
+    @ViewBuilder
+    func dismissButton(action: (() -> Void)?) -> some View {
+        HStack {
+            Spacer()
+
+            Button {
+                action?()
+            } label: {
+                Image(uiImage: .closeButton)
+                    .foregroundColor(Color(.gray(.shade30)))
+            }
+        }
+    }
+
+    @ViewBuilder
+    func viewAllButton(action: (() -> Void)?, text: String) -> some View {
+        Button {
+            action?()
+        } label: {
+            Text(text)
+                .fontWeight(.semibold)
+                .foregroundColor(.init(uiColor: .accent))
+                .subheadlineStyle()
         }
     }
 }
@@ -78,39 +108,6 @@ private extension StoreOnboardingView {
             comment: "Button when tapped will show a screen with all the store setup tasks." +
             "%1$d represents the total number of tasks."
         )
-    }
-}
-
-private struct DismissButton: View {
-    let action: (() -> Void)?
-
-    var body: some View {
-        HStack {
-            Spacer()
-
-            Button {
-                action?()
-            } label: {
-                Image(uiImage: .closeButton)
-                    .foregroundColor(Color(.gray(.shade30)))
-            }
-        }
-    }
-}
-
-private struct ViewAllButton: View {
-    let action: (() -> Void)?
-    let text: String
-
-    var body: some View {
-        Button {
-            action?()
-        } label: {
-            Text(text)
-                .fontWeight(.semibold)
-                .foregroundColor(.init(uiColor: .accent))
-                .subheadlineStyle()
-        }
     }
 }
 

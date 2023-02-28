@@ -19,7 +19,7 @@ struct StoreOnboardingView: View {
 
     var body: some View {
         VStack {
-            Color(.systemColor(.systemGray6))
+            Color(uiColor: .listBackground)
                 .frame(height: Layout.VerticalSpacing.collapsedMode)
                 .renderedIf(!viewModel.isExpanded)
 
@@ -55,7 +55,7 @@ struct StoreOnboardingView: View {
             .padding(insets: Layout.insets)
             .background(Color(uiColor: .listForeground(modal: false)))
 
-            Color(.systemColor(.systemGray6))
+            Color(uiColor: .listBackground)
                 .frame(height: Layout.VerticalSpacing.collapsedMode)
                 .renderedIf(!viewModel.isExpanded)
         }

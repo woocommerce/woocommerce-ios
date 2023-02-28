@@ -3,11 +3,11 @@ import WordPressKit
 
 // MARK: - WordPressComAccountService
 //
-public class WordPressComAccountService {
+class WordPressComAccountService {
 
     /// Indicates if a WordPress.com account is "PasswordLess": This kind of account must be authenticated via a Magic Link.
     ///
-    public func isPasswordlessAccount(username: String, success: @escaping (Bool) -> Void, failure: @escaping (Error) -> Void) {
+    func isPasswordlessAccount(username: String, success: @escaping (Bool) -> Void, failure: @escaping (Error) -> Void) {
         let remote = AccountServiceRemoteREST(wordPressComRestApi: anonymousAPI)
 
         remote.isPasswordlessAccount(username, success: { isPasswordless in
@@ -44,7 +44,7 @@ public class WordPressComAccountService {
 
     /// Requests a WordPress.com Authentication Link to be sent to the specified email address.
     ///
-    public func requestAuthenticationLink(for email: String, jetpackLogin: Bool, success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    func requestAuthenticationLink(for email: String, jetpackLogin: Bool, success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let remote = AccountServiceRemoteREST(wordPressComRestApi: anonymousAPI)
 
         remote.requestWPComAuthLink(forEmail: email,

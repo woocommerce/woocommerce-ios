@@ -39,20 +39,7 @@ struct ProofKeyForCodeExchange: Equatable {
     }
 
     var codeChallenge: String {
-        switch method {
-        case .s256:
-            // The spec defines code_challenge for the s256 mode as:
-            //
-            // code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
-            //
-            // We don't need the ASCII conversion, because we build `CodeVerifier` from URL safe
-            // characters.
-            let rawData = Data(codeVerifier.rawValue.utf8)
-            let hashedData: Data = rawData.sha256Hashed()
-            return hashedData.base64URLEncodedString()
-        case .plain:
-            return codeVerifier.rawValue
-        }
+        codeVerifier.codeChallenge(using: method)
     }
 }
 
@@ -83,6 +70,23 @@ extension ProofKeyForCodeExchange {
             guard Set(value).isSubset(of: CodeVerifier.allowedCharacters) else { return nil }
 
             self.rawValue = value
+        }
+
+        func codeChallenge(using method: Method) -> String {
+            switch method {
+            case .s256:
+                // The spec defines code_challenge for the s256 mode as:
+                //
+                // code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
+                //
+                // We don't need the ASCII conversion, because we build `CodeVerifier` from URL safe
+                // characters.
+                let rawData = Data(rawValue.utf8)
+                let hashedData: Data = rawData.sha256Hashed()
+                return hashedData.base64URLEncodedString()
+            case .plain:
+                return rawValue
+            }
         }
     }
 

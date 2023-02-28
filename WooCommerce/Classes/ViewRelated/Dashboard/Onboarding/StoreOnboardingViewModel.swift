@@ -11,7 +11,8 @@ enum StoreOnboardingTask {
 
 /// View model for `StoreOnboardingView`.
 final class StoreOnboardingViewModel: ObservableObject {
-    struct TaskViewModel {
+    struct TaskViewModel: Identifiable, Equatable {
+        let id = UUID()
         let task: StoreOnboardingTask
         let isComplete: Bool
         let icon: UIImage

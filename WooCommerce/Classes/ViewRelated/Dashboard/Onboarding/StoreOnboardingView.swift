@@ -35,8 +35,8 @@ struct StoreOnboardingView: View {
 
                 // Task list
                 VStack(alignment: .leading, spacing: Layout.verticalSpacingBetweenTasks) {
-                    ForEach(Array(viewModel.tasksForDisplay.enumerated()), id: \.offset) { index, taskViewModel in
-                        let isLastTask = index == viewModel.tasksForDisplay.count - 1
+                    ForEach(viewModel.tasksForDisplay) { taskViewModel in
+                        let isLastTask = taskViewModel == viewModel.tasksForDisplay.last
 
                         StoreOnboardingTaskView(viewModel: taskViewModel,
                                                 showDivider: !isLastTask) { task in

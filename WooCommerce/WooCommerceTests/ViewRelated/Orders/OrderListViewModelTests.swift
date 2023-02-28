@@ -695,7 +695,7 @@ final class OrderListViewModelTests: XCTestCase {
         assertEqual(.inPersonPaymentsFirstTransaction, survey)
     }
 
-    func test_feedbackBannerSurveySource_when_there_are_less_than_ten_wcpay_orders_all_order_than_30_days_then_no_survey() {
+    func test_feedbackBannerSurveySource_when_there_are_less_than_ten_wcpay_orders_all_older_than_30_days_then_no_survey() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID,
                                            cardPresentPaymentsConfiguration: .init(country: "CA"),
@@ -748,6 +748,37 @@ final class OrderListViewModelTests: XCTestCase {
 
         // Confidence check
         XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 15)
+
+        // When
+        let survey = viewModel.feedbackBannerSurveySource()
+
+        // Then
+        assertEqual(.inPersonPaymentsPowerUsers, survey)
+    }
+
+    func test_feedbackBannerSurveySource_when_there_are_ten_or_more_wcpay_ipp_orders_all_older_than_30_days_then_assigns_inPersonPaymentsPowerUsers_survey() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "CA"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        let thirtyOneDaysAgo = Date().adding(days: -31) ?? Date()
+        let _ = (0..<10).map { orderID in
+            let metaDataID = Int64(orderID + 100)
+            return insertOrder(
+                id: Int64(orderID),
+                status: .completed,
+                dateCreated: thirtyOneDaysAgo,
+                datePaid: thirtyOneDaysAgo,
+                customFields: [OrderMetaData.init(metadataID: metaDataID, key: "receipt_url", value: "https://example.com/receipts/\(orderID)")],
+                paymentMethodID: "woocommerce_payments"
+            )
+        }
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 10)
 
         // When
         let survey = viewModel.feedbackBannerSurveySource()

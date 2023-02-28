@@ -13,6 +13,8 @@ final class JetpackSetupCoordinator {
     private let stores: StoresManager
     private let analytics: Analytics
 
+    private var benefitsController: JetpackBenefitsHostingController?
+
     init(site: Site,
          navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
@@ -38,6 +40,7 @@ final class JetpackSetupCoordinator {
             self?.navigationController.dismiss(animated: true, completion: nil)
         })
         navigationController.present(benefitsController, animated: true, completion: nil)
+        self.benefitsController = benefitsController
     }
 }
 
@@ -73,17 +76,30 @@ private extension JetpackSetupCoordinator {
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
                 /// 404 error means Jetpack is not installed or activated yet.
                 requiresConnectionOnly = false
-                #warning("TODO: check user role to see if the user has permission to manage plugins")
+                let roles = stores.sessionManager.defaultRoles
+                if roles.contains(.administrator) {
+                    #warning("TODO: start WPCom auth")
+                } else {
+                    displayAdminRoleRequiredError()
+                }
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
                 /// 403 means the site Jetpack connection is not established yet
                 /// and the user has no permission to handle this.
-                #warning("TODO: show role error")
-                requiresConnectionOnly = true
-                break
+                displayAdminRoleRequiredError()
             default:
                 #warning("TODO: show generic error alert")
                 break
             }
         }
+    }
+
+    func displayAdminRoleRequiredError() {
+        let viewController = AdminRoleRequiredHostingController(siteID: site.siteID, onClose: { [weak self] in
+            self?.navigationController.dismiss(animated: true)
+        }, onSuccess: { [weak self] in
+            self?.benefitsController?.dismiss(animated: true)
+            #warning("TODO: start WPCom auth")
+        })
+        benefitsController?.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 }

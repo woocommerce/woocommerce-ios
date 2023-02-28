@@ -3,7 +3,7 @@ import Codegen
 
 /// Site-specific User representation
 ///
-public struct User: Decodable, GeneratedFakeable {
+public struct User: Decodable, GeneratedFakeable, GeneratedCopiable {
     /// Local ID of the account on the user's site
     ///
     public let localID: Int64

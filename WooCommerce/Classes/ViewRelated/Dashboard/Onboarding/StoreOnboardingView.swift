@@ -46,13 +46,16 @@ struct StoreOnboardingView: View {
     private let viewModel: StoreOnboardingViewModel
     private let taskTapped: (StoreOnboardingTask) -> Void
     private let viewAllTapped: (() -> Void)?
+    private let shareFeedbackAction: (() -> Void)?
 
     init(viewModel: StoreOnboardingViewModel,
          taskTapped: @escaping (StoreOnboardingTask) -> Void,
-         viewAllTapped: (() -> Void)? = nil) {
+         viewAllTapped: (() -> Void)? = nil,
+         shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.taskTapped = taskTapped
         self.viewAllTapped = viewAllTapped
+        self.shareFeedbackAction = shareFeedbackAction
     }
 
     var body: some View {
@@ -76,7 +79,8 @@ struct StoreOnboardingView: View {
                 // Progress view
                 StoreSetupProgressView(isExpanded: viewModel.isExpanded,
                                        totalNumberOfTasks: viewModel.taskViewModels.count,
-                                       numberOfTasksCompleted: viewModel.numberOfTasksCompleted)
+                                       numberOfTasksCompleted: viewModel.numberOfTasksCompleted,
+                                       shareFeedbackAction: shareFeedbackAction)
 
                 // Task list
                 VStack(alignment: .leading, spacing: Layout.verticalSpacingBetweenTasks) {

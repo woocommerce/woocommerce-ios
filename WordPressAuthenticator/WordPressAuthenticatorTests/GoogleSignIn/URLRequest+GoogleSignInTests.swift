@@ -8,7 +8,7 @@ class URLRequestOAuthTokenRequestTests: XCTestCase {
         clientSecret: "b",
         audience: "audience",
         code: "c",
-        codeVerifier: "d",
+        codeVerifier: ProofKeyForCodeExchange.CodeVerifier.fixture(),
         grantType: "e",
         redirectURI: "f"
     )

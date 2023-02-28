@@ -1,12 +1,12 @@
 /// Models the request to send for an OAuth token
 ///
 /// - Note: See documentation at https://developers.google.com/identity/protocols/oauth2/native-app#exchange-authorization-code
-struct OAuthTokenRequestBody: Encodable {
+struct OAuthTokenRequestBody {
     let clientId: String
     let clientSecret: String
     let audience: String
     let code: String
-    let codeVerifier: String
+    let codeVerifier: ProofKeyForCodeExchange.CodeVerifier
     let grantType: String
     let redirectURI: String
 
@@ -25,7 +25,7 @@ struct OAuthTokenRequestBody: Encodable {
             (CodingKeys.clientId.rawValue, clientId),
             (CodingKeys.clientSecret.rawValue, clientSecret),
             (CodingKeys.code.rawValue, code),
-            (CodingKeys.codeVerifier.rawValue, codeVerifier),
+            (CodingKeys.codeVerifier.rawValue, codeVerifier.rawValue),
             (CodingKeys.grantType.rawValue, grantType),
             (CodingKeys.redirectURI.rawValue, redirectURI),
             // This is not in the spec at

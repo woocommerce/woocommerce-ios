@@ -4,12 +4,13 @@ import XCTest
 class OAuthTokenRequestBodyTests: XCTestCase {
 
     func testURLEncodedDataConversion() throws {
+        let codeVerifier = ProofKeyForCodeExchange.CodeVerifier.fixture()
         let body = OAuthTokenRequestBody(
             clientId: "clientId",
             clientSecret: "clientSecret",
             audience: "audience",
             code: "codeValue",
-            codeVerifier: "codeVerifier",
+            codeVerifier: codeVerifier,
             grantType: "grantType",
             redirectURI: "redirectUri"
         )
@@ -20,7 +21,7 @@ class OAuthTokenRequestBodyTests: XCTestCase {
 
         XCTAssertTrue(decodedData.contains("client_id=clientId"))
         XCTAssertTrue(decodedData.contains("client_secret=clientSecret"))
-        XCTAssertTrue(decodedData.contains("code_verifier=codeVerifier"))
+        XCTAssertTrue(decodedData.contains("code_verifier=\(codeVerifier.rawValue)"))
         XCTAssertTrue(decodedData.contains("grant_type=grantType"))
         XCTAssertTrue(decodedData.contains("redirect_uri=redirectUri"))
     }

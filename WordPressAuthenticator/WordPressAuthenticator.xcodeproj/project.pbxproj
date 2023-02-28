@@ -16,6 +16,7 @@
 		1A21EE9822832BC300C940C6 /* WordPressComOAuthClientFacade+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A21EE9722832BC200C940C6 /* WordPressComOAuthClientFacade+Swift.swift */; };
 		1A4095182271AEFC009AA86D /* WPAuthenticator-Swift.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4095152271AEFC009AA86D /* WPAuthenticator-Swift.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3108613125AFA4830022F75E /* PasteboardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3108613025AFA4830022F75E /* PasteboardTests.swift */; };
+		3F107B0529A87AF0009B3658 /* CodeVerifier+Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F107B0429A87AF0009B3658 /* CodeVerifier+Fixture.swift */; };
 		3F30A6B4299F10BD0004452F /* Character+URLSafe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F30A6B3299F10BD0004452F /* Character+URLSafe.swift */; };
 		3F30A6BA299F12E30004452F /* Character+URLSafeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F30A6B9299F12E30004452F /* Character+URLSafeTests.swift */; };
 		3F338B6A289B877F0014ADC5 /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F338B69289B877F0014ADC5 /* BuildkiteTestCollector */; };
@@ -262,6 +263,7 @@
 		3108613025AFA4830022F75E /* PasteboardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteboardTests.swift; sourceTree = "<group>"; };
 		33FEF45B466FF8EAAE5F3923 /* Pods-WordPressAuthenticator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.release.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.release.xcconfig"; sourceTree = "<group>"; };
 		37AFD4EF492B00CA7AEC11A3 /* Pods-WordPressAuthenticatorTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.release-alpha.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		3F107B0429A87AF0009B3658 /* CodeVerifier+Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CodeVerifier+Fixture.swift"; sourceTree = "<group>"; };
 		3F30A6B3299F10BD0004452F /* Character+URLSafe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+URLSafe.swift"; sourceTree = "<group>"; };
 		3F30A6B9299F12E30004452F /* Character+URLSafeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+URLSafeTests.swift"; sourceTree = "<group>"; };
 		3F338B6B289B87E60014ADC5 /* UnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UnitTests.xctestplan; sourceTree = "<group>"; };
@@ -582,6 +584,8 @@
 		3FE8072329365FC20088420C /* GoogleSignIn */ = {
 			isa = PBXGroup;
 			children = (
+				3F30A6B9299F12E30004452F /* Character+URLSafeTests.swift */,
+				3F107B0429A87AF0009B3658 /* CodeVerifier+Fixture.swift */,
 				3F82E63829931D95003EFC16 /* CodeVerifierTests.swift */,
 				3F4E646F2990B7B3000DB555 /* Data+Base64URLTests.swift */,
 				3F82E63C29935E65003EFC16 /* Data+SHA256Tests.swift */,
@@ -594,7 +598,6 @@
 				3F879FE3293A545C005C2B48 /* OAuthRequestBody+GoogleSignInTests.swift */,
 				3FE8071E2936558F0088420C /* URL+GoogleSignInTests.swift */,
 				3F879FDE293A501D005C2B48 /* URLRequest+GoogleSignInTests.swift */,
-				3F30A6B9299F12E30004452F /* Character+URLSafeTests.swift */,
 			);
 			path = GoogleSignIn;
 			sourceTree = "<group>";
@@ -1542,6 +1545,7 @@
 				BA53D64B24DFE07D001F1ABF /* WordpressAuthenticatorProvider.swift in Sources */,
 				4A1DEF4A29341B1F00322608 /* LoggingTests.m in Sources */,
 				3FEC44F9293A0F2900EBDECF /* ProofKeyForCodeExchangeTests.swift in Sources */,
+				3F107B0529A87AF0009B3658 /* CodeVerifier+Fixture.swift in Sources */,
 				CE16177821B70C1A00B82A47 /* WordPressAuthenticatorDisplayTextTests.swift in Sources */,
 				3F879FF4293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift in Sources */,
 				B501C048208FC79C00D1E58F /* LoginFacadeTests.m in Sources */,

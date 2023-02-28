@@ -1,20 +1,58 @@
 import SwiftUI
 
+/// Hosting controller for `StoreOnboardingView`.
+///
+final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboardingView> {
+    private let viewModel: StoreOnboardingViewModel
+
+    init(viewModel: StoreOnboardingViewModel,
+         taskTapped: @escaping (StoreOnboardingTask) -> Void,
+         viewAllTapped: (() -> Void)? = nil) {
+        self.viewModel = viewModel
+        super.init(rootView: StoreOnboardingView(viewModel: viewModel,
+                                                 taskTapped: taskTapped,
+                                                 viewAllTapped: viewAllTapped))
+    }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        configureNavigationBarAppearance()
+    }
+
+    /// Shows a transparent navigation bar without a bottom border.
+    private func configureNavigationBarAppearance() {
+        guard viewModel.isExpanded else {
+            return
+        }
+
+        configureTransparentNavigationBar()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .closeButton, style: .plain, target: self, action: #selector(dismissView))
+    }
+
+    @objc
+    private func dismissView() {
+        dismiss(animated: true)
+    }
+}
+
 /// Shows a list of onboarding tasks for store setup with completion state.
 struct StoreOnboardingView: View {
     private let viewModel: StoreOnboardingViewModel
     private let taskTapped: (StoreOnboardingTask) -> Void
     private let viewAllTapped: (() -> Void)?
-    private let dismissAction: (() -> Void)?
 
     init(viewModel: StoreOnboardingViewModel,
          taskTapped: @escaping (StoreOnboardingTask) -> Void,
-         viewAllTapped: (() -> Void)? = nil,
-         dismissAction: (() -> Void)? = nil) {
+         viewAllTapped: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.taskTapped = taskTapped
         self.viewAllTapped = viewAllTapped
-        self.dismissAction = dismissAction
     }
 
     var body: some View {
@@ -25,9 +63,6 @@ struct StoreOnboardingView: View {
 
             let verticalSpacing = viewModel.isExpanded ? Layout.VerticalSpacing.expandedMode : Layout.VerticalSpacing.collapsedMode
             VStack(alignment: viewModel.isExpanded ? .center : .leading, spacing: verticalSpacing) {
-                dismissButton(action: dismissAction)
-                    .renderedIf(viewModel.isExpanded)
-
                 // Progress view
                 StoreSetupProgressView(isExpanded: viewModel.isExpanded,
                                        totalNumberOfTasks: viewModel.taskViewModels.count,
@@ -65,20 +100,6 @@ struct StoreOnboardingView: View {
 // MARK: Helper methods
 //
 private extension StoreOnboardingView {
-    @ViewBuilder
-    func dismissButton(action: (() -> Void)?) -> some View {
-        HStack {
-            Spacer()
-
-            Button {
-                action?()
-            } label: {
-                Image(uiImage: .closeButton)
-                    .foregroundColor(Color(.gray(.shade30)))
-            }
-        }
-    }
-
     @ViewBuilder
     func viewAllButton(action: (() -> Void)?, text: String) -> some View {
         Button {

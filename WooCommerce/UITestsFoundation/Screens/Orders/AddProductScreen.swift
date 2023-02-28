@@ -33,7 +33,7 @@ public final class AddProductScreen: ScreenObject {
     @discardableResult
     public func selectMultipleProducts(byName names: [String]) throws -> UnifiedOrderScreen {
         app.buttons.staticTexts[names[0]].tap()
-        // TODO: Add a wait, and a second product
+        // TODO: Add further scenarios in next iterations: https://github.com/woocommerce/woocommerce-ios/issues/8997
         if doneButton.exists {
             doneButton.tap()
         }

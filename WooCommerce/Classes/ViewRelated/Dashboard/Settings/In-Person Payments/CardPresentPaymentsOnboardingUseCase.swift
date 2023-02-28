@@ -39,11 +39,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
 
-    @Published var state: CardPresentPaymentOnboardingState = .loading {
-        didSet {
-            CardPresentPaymentOnboardingStateCache.shared.update(state)
-        }
-    }
+    @Published var state: CardPresentPaymentOnboardingState = .loading
 
     var statePublisher: Published<CardPresentPaymentOnboardingState>.Publisher {
         $state
@@ -63,6 +59,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         self.featureFlagService = featureFlagService
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
 
+        // Rely on cached value if there's any
         if let cachedValue = cardPresentPaymentOnboardingStateCache.value {
             state = cachedValue
         } else {
@@ -113,7 +110,12 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         }
 
         let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID) { [weak self] result in
-            self?.updateState()
+            guard let self = self else {
+                return
+            }
+
+            self.updateState()
+            CardPresentPaymentOnboardingStateCache.shared.update(self.state)
         }
         stores.dispatch(paymentGatewayAccountsAction)
     }

@@ -53,6 +53,7 @@ struct StoreOnboardingView: View {
                     .renderedIf(viewModel.isExpanded)
             }
             .padding(insets: Layout.insets)
+            .background(Color(uiColor: .listForeground(modal: false)))
 
             Color(.systemColor(.systemGray6))
                 .frame(height: 16)

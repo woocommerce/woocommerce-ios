@@ -19,7 +19,7 @@ class URLGoogleSignInTests: XCTestCase {
         assertQueryItems(
             for: url,
             includeItemNamed: "code_challenge",
-            withValue: pkce.codeCallenge
+            withValue: pkce.codeChallenge
         )
         assertQueryItems(
             for: url,

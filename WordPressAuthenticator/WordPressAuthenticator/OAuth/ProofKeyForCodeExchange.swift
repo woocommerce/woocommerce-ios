@@ -38,7 +38,7 @@ struct ProofKeyForCodeExchange: Equatable {
         self.method = method
     }
 
-    var codeCallenge: String {
+    var codeChallenge: String {
         switch method {
         case .s256:
             // The spec defines code_challenge for the s256 mode as:

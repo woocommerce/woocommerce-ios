@@ -7,7 +7,7 @@ class ProofKeyForCodeExchangeTests: XCTestCase {
         let codeVerifier = try ProofKeyForCodeExchange.CodeVerifier.makeRandomCodeVerifier()
 
         XCTAssertEqual(
-            ProofKeyForCodeExchange(codeVerifier: codeVerifier, method: .plain).codeCallenge,
+            ProofKeyForCodeExchange(codeVerifier: codeVerifier, method: .plain).codeChallenge,
             codeVerifier.rawValue
         )
     }
@@ -16,7 +16,7 @@ class ProofKeyForCodeExchangeTests: XCTestCase {
         let codeVerifier = ProofKeyForCodeExchange.CodeVerifier(value: (0..<9).map { _ in "test-" }.joined())!
 
         XCTAssertEqual(
-            ProofKeyForCodeExchange(codeVerifier: codeVerifier, method: .s256).codeCallenge,
+            ProofKeyForCodeExchange(codeVerifier: codeVerifier, method: .s256).codeChallenge,
             "lWvomVEGuL8FR3DY2DP_9E2q_imlqUHi-s1SPqRhO2c"
         )
     }

@@ -23,11 +23,10 @@ final class AdminRoleRequiredViewModel {
     func reloadRoles() async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
             let action = UserAction.retrieveUser(siteID: siteID) { [weak self] result in
-                guard let self = self else { return }
                 switch result {
                 case .success(let user):
                     let roles = user.roles.compactMap { User.Role(rawValue: $0) }
-                    self.stores.updateDefaultRoles(roles)
+                    self?.stores.updateDefaultRoles(roles)
                     if roles.contains(.administrator) {
                         continuation.resume(returning: true)
                     } else {

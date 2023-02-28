@@ -572,7 +572,6 @@ extension OrderListViewModel {
 private extension OrderListViewModel {
     enum Constants {
         static let wcpayPaymentMethodID = "woocommerce_payments"
-        static let paymentMethodTitle = "WooCommerce In-Person Payments"
         static let receiptURLKey = "receipt_url"
         static let numberOfTransactions = 10
         static let remindIPPBannerDismissalAfterDays = 7

@@ -69,7 +69,7 @@ extension ProofKeyForCodeExchange {
         ///
         /// - Note: This method name is more verbose than the recommended "make<Type>" for this factory to communicate the randomness component.
         static func makeRandomCodeVerifier() throws -> Self {
-            let value = try String.randomSecureCodeVerifier()
+            let value = try randomSecureCodeVerifier()
 
             // It's appropriate to force unwrap here because a `nil` value could only result from
             // a developer error—either wrong coding of the constrained length or of the allowed
@@ -85,9 +85,6 @@ extension ProofKeyForCodeExchange {
             self.rawValue = value
         }
     }
-}
-
-private extension String {
 
     /// Generates a random code verifier according to the PKCE RFC.
     ///
@@ -111,6 +108,8 @@ private extension String {
         //
         // Also notice that by base64url-encoding, we ensure the characters are in the allowed
         // set.
-        return String(data.base64URLEncodedString().prefix(43))
+        //
+        // 43 is also the minimum length for a code verifier, hence the `allowedLengthRange.lowerBound` usage.
+        return String(data.base64URLEncodedString().prefix(CodeVerifier.allowedLengthRange.lowerBound))
     }
 }

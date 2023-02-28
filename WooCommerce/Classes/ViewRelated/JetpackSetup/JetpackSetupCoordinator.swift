@@ -75,7 +75,9 @@ private extension JetpackSetupCoordinator {
             let connectedEmail = user.wpcomUser?.email
             requiresConnectionOnly = !user.isConnected
             if let connectedEmail {
-                checkWordPressComAccount(email: connectedEmail)
+                Task { @MainActor in
+                    await checkWordPressComAccount(email: connectedEmail)
+                }
             } else {
                 showWPComEmailLogin()
             }
@@ -116,9 +118,9 @@ private extension JetpackSetupCoordinator {
     }
 
     func showWPComEmailLogin() {
-        let emailLoginController = WPComEmailLoginHostingController(siteURL: site.url, requiresConnectionOnly: requiresConnectionOnly) { [weak self] email in
-            self?.checkWordPressComAccount(email: email)
-        }
+        let emailLoginController = WPComEmailLoginHostingController(siteURL: site.url,
+                                                                    requiresConnectionOnly: requiresConnectionOnly,
+                                                                    onSubmit: checkWordPressComAccount(email:))
         let loginNavigationController = UINavigationController(rootViewController: emailLoginController)
         navigationController.dismiss(animated: true) {
             self.navigationController.present(loginNavigationController, animated: true)
@@ -126,11 +128,15 @@ private extension JetpackSetupCoordinator {
         self.loginNavigationController = loginNavigationController
     }
 
-    func checkWordPressComAccount(email: String) {
-        accountService.isPasswordlessAccount(username: email, success: { passwordless in
-            DDLogInfo("✅ account check done - passwordless: \(passwordless)")
-        }, failure: { error in
-            DDLogError("⛔️ Error checking for passwordless account: \(error)")
-        })
+    func checkWordPressComAccount(email: String) async {
+        await withCheckedContinuation { continuation -> Void in
+            accountService.isPasswordlessAccount(username: email, success: { passwordless in
+                DDLogInfo("✅ account check done - passwordless: \(passwordless)")
+                continuation.resume()
+            }, failure: { error in
+                DDLogError("⛔️ Error checking for passwordless account: \(error)")
+                continuation.resume()
+            })
+        }
     }
 }

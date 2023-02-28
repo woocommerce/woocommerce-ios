@@ -7,11 +7,13 @@ final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboa
 
     init(viewModel: StoreOnboardingViewModel,
          taskTapped: @escaping (StoreOnboardingTask) -> Void,
-         viewAllTapped: (() -> Void)? = nil) {
+         viewAllTapped: (() -> Void)? = nil,
+         shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         super.init(rootView: StoreOnboardingView(viewModel: viewModel,
                                                  taskTapped: taskTapped,
-                                                 viewAllTapped: viewAllTapped))
+                                                 viewAllTapped: viewAllTapped,
+                                                 shareFeedbackAction: shareFeedbackAction))
     }
 
     @available(*, unavailable)

@@ -1,4 +1,5 @@
 import UIKit
+import Experiments
 import Yosemite
 
 /// The Product Settings contains 2 sections: Publish Settings and More Options
@@ -32,7 +33,8 @@ final class ProductSettingsViewModel {
     init(product: Product,
          password: String?,
          formType: ProductFormType,
-         isProductTypeSettingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
+         isProductTypeSettingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
+            && ABTest.simplifiedProductEditing.variation == .treatment) {
         self.product = product
         self.password = password
         self.isProductTypeSettingEnabled = isProductTypeSettingEnabled

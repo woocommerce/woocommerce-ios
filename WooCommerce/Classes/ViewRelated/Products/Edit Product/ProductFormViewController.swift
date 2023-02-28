@@ -1,4 +1,5 @@
 import Combine
+import Experiments
 import Photos
 import UIKit
 import WordPressUI
@@ -72,7 +73,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         showGroupedTableViewAppearance: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
+         showGroupedTableViewAppearance: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
+            && ABTest.simplifiedProductEditing.variation == .treatment) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency

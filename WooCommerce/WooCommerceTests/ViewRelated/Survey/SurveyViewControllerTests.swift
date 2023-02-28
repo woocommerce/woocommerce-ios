@@ -53,6 +53,22 @@ final class SurveyViewControllerTests: XCTestCase {
                         .tagAppVersion(Bundle.main.bundleVersion()))
     }
 
+    func test_it_loads_the_correct_store_setup_survey() throws {
+        // Given
+        let viewController = SurveyViewController(survey: .storeSetup, onCompletion: {})
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let mirror = try self.mirror(of: viewController)
+
+        // Then
+        XCTAssertTrue(mirror.webView.isLoading)
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.storeSetupFeedback
+                        .asURL()
+                        .tagPlatform("ios")
+                        .tagAppVersion(Bundle.main.bundleVersion()))
+    }
+
     func test_it_completes_after_receiving_a_form_submitted_completed_callback_request() throws {
         // Given
         var surveyCompleted = false

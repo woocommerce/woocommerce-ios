@@ -502,7 +502,8 @@ extension OrderListViewModel {
                     return .error
                 }
 
-                guard hasDismissedIPPFeedbackBanner else {
+                if !hasDismissedIPPFeedbackBanner,
+                   let inPersonPaymentsSurvey = inPersonPaymentsSurvey {
                     return .inPersonPaymentsFeedback(inPersonPaymentsSurvey)
                 }
 
@@ -549,7 +550,7 @@ extension OrderListViewModel {
     enum TopBanner: Equatable {
         case error
         case orderCreation
-        case inPersonPaymentsFeedback(SurveyViewController.Source?)
+        case inPersonPaymentsFeedback(SurveyViewController.Source)
         case none
 
         static func ==(lhs: TopBanner, rhs: TopBanner) -> Bool {

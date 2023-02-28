@@ -254,8 +254,7 @@ private extension OrderListViewController {
                 case .orderCreation:
                     self.setOrderCreationTopBanner()
                 case .inPersonPaymentsFeedback(let survey):
-                    guard let survey = survey,
-                          self.inPersonPaymentsSurveyVariation != survey else {
+                    guard self.inPersonPaymentsSurveyVariation != survey else {
                         return
                     }
                     self.inPersonPaymentsSurveyVariation = survey

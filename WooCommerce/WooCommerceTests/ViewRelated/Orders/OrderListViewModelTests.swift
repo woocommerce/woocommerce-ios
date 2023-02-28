@@ -266,7 +266,12 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_when_having_no_error_and_IPP_banner_should_be_shown_shows_IPP_banner() {
         // Given
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        insertCODPaymentGateway()
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadFeedbackVisibility(.inPersonPayments, onCompletion):
@@ -284,7 +289,7 @@ final class OrderListViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.topBanner == .inPersonPaymentsFeedback(.none)
+            viewModel.topBanner == .inPersonPaymentsFeedback(.inPersonPaymentsCashOnDelivery)
         }
     }
 
@@ -313,8 +318,13 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_when_having_no_error_and_orders_banner_or_IPP_banner_should_be_shown_shows_correct_banner() {
         // Given
+        insertCODPaymentGateway()
         let isIPPFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
 
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
@@ -333,7 +343,7 @@ final class OrderListViewModelTests: XCTestCase {
         if isIPPFeatureFlagEnabled {
             viewModel.hideIPPFeedbackBanner = false
             waitUntil {
-                viewModel.topBanner == .inPersonPaymentsFeedback(.none)
+                viewModel.topBanner == .inPersonPaymentsFeedback(.inPersonPaymentsCashOnDelivery)
             }
         } else {
             waitUntil {

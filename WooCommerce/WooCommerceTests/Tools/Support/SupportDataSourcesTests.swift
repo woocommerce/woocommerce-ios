@@ -12,7 +12,7 @@ final class SupportDataSourcesTests: XCTestCase {
         // Given
         let dataSource = MobileAppSupportDataSource()
         let tagsSet = Set(dataSource.tags)
-        let expectedSet = Set(["iOS", "woo-mobile-sdk", "jetpack", "mobile_app"])
+        let expectedSet = Set(["iOS", "jetpack", "woocommerce_mobile_apps"])
 
         // When & Then
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
@@ -43,7 +43,7 @@ final class SupportDataSourcesTests: XCTestCase {
         // Given
         let dataSource = IPPSupportDataSource()
         let tagsSet = Set(dataSource.tags)
-        let expectedSet = Set(["iOS", "woo-mobile-sdk", "jetpack", "woocommerce_mobile_apps", "product_area_apps_in_person_payments"])
+        let expectedSet = Set(["iOS", "jetpack", "woocommerce_mobile_apps", "product_area_apps_in_person_payments"])
 
         // When & Then
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
@@ -74,7 +74,7 @@ final class SupportDataSourcesTests: XCTestCase {
         // Given
         let dataSource = WCPluginsSupportDataSource()
         let tagsSet = Set(dataSource.tags)
-        let expectedSet = Set(["iOS", "woo-mobile-sdk", "jetpack", "woocommerce_core"])
+        let expectedSet = Set(["iOS", "mobile_app_woo_transfer", "woocommerce_core", "support"])
 
         // When & Then
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
@@ -90,7 +90,7 @@ final class SupportDataSourcesTests: XCTestCase {
             360000086966, // Network Information
             360000086866, // App Version
             22871957, // Legacy Logs
-            25176023, // Sub Category
+            25176003, // Category
             10901699622036, // Logs
             360000089123 // Device Free Space
         ].sorted())
@@ -104,7 +104,7 @@ final class SupportDataSourcesTests: XCTestCase {
     func test_wcpay_tags_have_correct_values() {
         let dataSource = WCPaySupportDataSource()
         let tagsSet = Set(dataSource.tags)
-        let expectedSet = Set(["iOS", "woo-mobile-sdk", "woocommerce_payments", "support", "payment", "product_area_woo_payment_gateway"])
+        let expectedSet = Set(["iOS", "mobile_app_woo_transfer", "woocommerce_payments", "support", "payment", "product_area_woo_payment_gateway"])
 
         // When & Then
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
@@ -135,7 +135,7 @@ final class SupportDataSourcesTests: XCTestCase {
     func test_other_plugins_tags_have_correct_values() {
         let dataSource = OtherPluginsSupportDataSource()
         let tagsSet = Set(dataSource.tags)
-        let expectedSet = Set(["iOS", "woo-mobile-sdk", "jetpack", "product_area_woo_extensions"])
+        let expectedSet = Set(["iOS", "product_area_woo_extensions", "mobile_app_woo_transfer", "support", "store"])
 
         // When & Then
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
@@ -151,6 +151,7 @@ final class SupportDataSourcesTests: XCTestCase {
             360000086966, // Network Information
             360000086866, // App Version
             22871957, // Legacy Logs
+            25176003, // Category
             25176023, // Sub Category
             10901699622036, // Logs
             360000089123 // Device Free Space

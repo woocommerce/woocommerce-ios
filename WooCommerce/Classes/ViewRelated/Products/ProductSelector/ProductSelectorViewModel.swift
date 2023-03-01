@@ -191,6 +191,11 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Select a product to add to the order
     ///
     func selectProduct(_ productID: Int64) {
+        // If it's synching and there's an attempt to select a product, return early
+        if shouldShowScrollIndicator {
+            return
+        }
+
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }

@@ -343,7 +343,7 @@ private extension DashboardViewController {
                 return
             }
             let coordinator = JetpackSetupCoordinator(site: site,
-                                                      navigationController: navigationController)
+                                                      rootViewController: navigationController)
             self.jetpackSetupCoordinator = coordinator
             coordinator.showBenefitModal()
             ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .tapped))

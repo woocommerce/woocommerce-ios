@@ -28,7 +28,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_benefit_modal_is_presented_correctly() {
         // Given
         let testSite = Site.fake()
-        let coordinator = JetpackSetupCoordinator(site: testSite, navigationController: navigationController)
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
 
         // When
         coordinator.showBenefitModal()
@@ -43,7 +43,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_installation_flow_for_jcp_sites_is_presented_for_jcp_sites() throws {
         // Given
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: false, isJetpackConnected: true)
-        let coordinator = JetpackSetupCoordinator(site: testSite, navigationController: navigationController)
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
 
         // When
         coordinator.showBenefitModal()
@@ -63,7 +63,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let mockSessionManager = MockSessionManager()
         mockSessionManager.defaultRoles = [.administrator]
         let stores = DefaultStoresManager(sessionManager: mockSessionManager)
-        let coordinator = JetpackSetupCoordinator(site: testSite, navigationController: navigationController, stores: stores)
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController, stores: stores)
 
         // When
         coordinator.showBenefitModal()
@@ -87,7 +87,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let mockSessionManager = MockSessionManager()
         mockSessionManager.defaultRoles = [.shopManager]
         let stores = DefaultStoresManager(sessionManager: mockSessionManager)
-        let coordinator = JetpackSetupCoordinator(site: testSite, navigationController: navigationController, stores: stores)
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController, stores: stores)
 
         // When
         coordinator.showBenefitModal()
@@ -108,7 +108,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_admin_required_screen_is_presented_for_non_jetpack_sites_when_jetpack_connection_check_returns_403() throws {
         // Given
         let testSite = Site.fake().copy(siteID: -1)
-        let coordinator = JetpackSetupCoordinator(site: testSite, navigationController: navigationController)
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
 
         // When
         coordinator.showBenefitModal()

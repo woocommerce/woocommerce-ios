@@ -6,7 +6,7 @@ import WordPressAuthenticator
 /// Coordinates the Jetpack setup flow in the authenticated state.
 ///
 final class JetpackSetupCoordinator {
-    let navigationController: UINavigationController
+    let rootViewController: UIViewController
 
     private let site: Site
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
@@ -19,12 +19,12 @@ final class JetpackSetupCoordinator {
     private var loginNavigationController: UINavigationController?
 
     init(site: Site,
-         navigationController: UINavigationController,
+         rootViewController: UIViewController,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.site = site
         self.requiresConnectionOnly = false // to be updated later after fetching Jetpack status
-        self.navigationController = navigationController
+        self.rootViewController = rootViewController
         self.stores = stores
         self.analytics = analytics
 
@@ -45,9 +45,9 @@ final class JetpackSetupCoordinator {
                 self.presentJCPJetpackInstallFlow()
             }
         }, dismissAction: { [weak self] in
-            self?.navigationController.dismiss(animated: true, completion: nil)
+            self?.rootViewController.dismiss(animated: true, completion: nil)
         })
-        navigationController.present(benefitsController, animated: true, completion: nil)
+        rootViewController.present(benefitsController, animated: true, completion: nil)
         self.benefitsController = benefitsController
     }
 }
@@ -57,16 +57,16 @@ final class JetpackSetupCoordinator {
 private extension JetpackSetupCoordinator {
     /// Navigates to the Jetpack installation flow for JCP sites.
     func presentJCPJetpackInstallFlow() {
-        navigationController.dismiss(animated: true, completion: { [weak self] in
+        rootViewController.dismiss(animated: true, completion: { [weak self] in
             guard let self else { return }
             let installController = JCPJetpackInstallHostingController(siteID: self.site.siteID,
                                                                        siteURL: self.site.url,
                                                                        siteAdminURL: self.site.adminURL)
 
             installController.setDismissAction { [weak self] in
-                self?.navigationController.dismiss(animated: true, completion: nil)
+                self?.rootViewController.dismiss(animated: true, completion: nil)
             }
-            self.navigationController.present(installController, animated: true, completion: nil)
+            self.rootViewController.present(installController, animated: true, completion: nil)
         })
     }
 
@@ -108,7 +108,7 @@ private extension JetpackSetupCoordinator {
 
     func displayAdminRoleRequiredError() {
         let viewController = AdminRoleRequiredHostingController(siteID: site.siteID, onClose: { [weak self] in
-            self?.navigationController.dismiss(animated: true)
+            self?.rootViewController.dismiss(animated: true)
         }, onSuccess: { [weak self] in
             guard let self else { return }
             self.benefitsController?.dismiss(animated: true) {
@@ -127,8 +127,8 @@ private extension JetpackSetupCoordinator {
                                                                     requiresConnectionOnly: requiresConnectionOnly,
                                                                     onSubmit: checkWordPressComAccount(email:))
         let loginNavigationController = UINavigationController(rootViewController: emailLoginController)
-        navigationController.dismiss(animated: true) {
-            self.navigationController.present(loginNavigationController, animated: true)
+        rootViewController.dismiss(animated: true) {
+            self.rootViewController.present(loginNavigationController, animated: true)
         }
         self.loginNavigationController = loginNavigationController
     }
@@ -208,7 +208,7 @@ private extension JetpackSetupCoordinator {
         }
         let cancelAction = UIAlertAction(title: Localization.cancelButton, style: .cancel)
         alert.addAction(cancelAction)
-        navigationController.topmostPresentedViewController.present(alert, animated: true)
+        rootViewController.topmostPresentedViewController.present(alert, animated: true)
     }
 }
 

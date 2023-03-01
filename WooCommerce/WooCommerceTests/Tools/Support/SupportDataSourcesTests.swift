@@ -3,6 +3,11 @@ import XCTest
 
 final class SupportDataSourcesTests: XCTestCase {
 
+    override class func setUp() {
+        super.setUp()
+        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isSupportRequestEnabled: true))
+    }
+
     func test_mobile_app_formID_has_correct_value() {
         let dataSource = MobileAppSupportDataSource()
         XCTAssertEqual(dataSource.formID, 360000010286)

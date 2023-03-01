@@ -56,12 +56,6 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     // MARK: Subviews
 
-    lazy var refreshControl: UIRefreshControl = {
-        let refreshControl = UIRefreshControl(frame: .zero)
-        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
-        return refreshControl
-    }()
-
     private var containerView: UIView = {
         return .init(frame: .zero)
     }()
@@ -71,8 +65,6 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         stackView.axis = .vertical
         return stackView
     }()
-
-    private lazy var topPerformersHeaderView = TopPerformersSectionHeaderView()
 
     // MARK: Child View Controllers
 
@@ -147,17 +139,6 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         configureSubviews()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        // Fix any incomplete animation of the refresh control
-        // when switching tabs mid-animation
-//        refreshControl.resetAnimation(in: scrollView)
-
-        // After returning to the My Store tab, `restartGhostAnimation` is required to resume ghost animation.
-        restartGhostAnimationIfNeeded()
-    }
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         viewModel.onViewDidAppear()
@@ -188,8 +169,7 @@ extension StoreStatsAndTopPerformersPeriodViewController {
     func displayGhostContent() {
         storeStatsPeriodViewController.displayGhostContent()
         analyticsHubButtonView.startGhostAnimation(style: Constants.ghostStyle)
-        topPerformersHeaderView.startGhostAnimation(style: Constants.ghostStyle)
-//        topPerformersPeriodViewController.displayGhostContent()
+        topPerformersPeriodViewController.displayPlaceholderContent()
     }
 
     /// Removes the placeholder content for store stats.
@@ -197,26 +177,18 @@ extension StoreStatsAndTopPerformersPeriodViewController {
     func removeStoreStatsGhostContent() {
         storeStatsPeriodViewController.removeGhostContent()
         analyticsHubButtonView.stopGhostAnimation()
-        topPerformersHeaderView.stopGhostAnimation()
     }
 
     /// Removes the placeholder content for top performers.
     ///
     func removeTopPerformersGhostContent() {
-//        topPerformersPeriodViewController.removeGhostContent()
+        topPerformersPeriodViewController.removePlaceholderContent()
     }
 
     /// Indicates if the receiver has Remote Stats, or not.
     ///
     var shouldDisplayStoreStatsGhostContent: Bool {
         return storeStatsPeriodViewController.shouldDisplayGhostContent
-    }
-
-    func restartGhostAnimationIfNeeded() {
-        guard topPerformersHeaderView.superview != nil else {
-            return
-        }
-        topPerformersHeaderView.restartGhostAnimation(style: Constants.ghostStyle)
     }
 }
 
@@ -286,9 +258,6 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 
         // In-app Feedback Card
         stackView.addArrangedSubviews(inAppFeedbackCardViewsForStackView)
-
-        // Top performers header.
-        stackView.addArrangedSubview(topPerformersHeaderView)
 
         // Top performers.
         let topPerformersPeriodView = topPerformersPeriodViewController.view!

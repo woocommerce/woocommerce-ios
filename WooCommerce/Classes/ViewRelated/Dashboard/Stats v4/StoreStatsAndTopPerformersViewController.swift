@@ -171,15 +171,11 @@ private extension StoreStatsAndTopPerformersViewController {
 
         var syncError: Error? = nil
 
-        print("~~~syncing \(viewControllerToSync) out of \(periodVCs)")
-
         ensureGhostContentIsDisplayed(for: viewControllerToSync)
-        showSpinner(for: viewControllerToSync, shouldShowSpinner: true)
 
         defer {
             group.notify(queue: .main) { [weak self] in
                 self?.syncingTimeRanges.remove(timeRange)
-                self?.showSpinner(for: viewControllerToSync, shouldShowSpinner: false)
                 if let error = syncError {
                     DDLogError("⛔️ Error loading dashboard: \(error)")
                     self?.handleSyncError(error: error)
@@ -318,13 +314,6 @@ private extension StoreStatsAndTopPerformersViewController {
         }
     }
 
-    func showSpinner(for periodViewController: StoreStatsAndTopPerformersPeriodViewController, shouldShowSpinner: Bool) {
-        if shouldShowSpinner {
-            periodViewController.refreshControl.beginRefreshing()
-        } else {
-            periodViewController.refreshControl.endRefreshing()
-        }
-    }
 
     func observeRemotelyCreatedOrdersToResetLastSyncTimestamp() {
         let siteID = self.siteID

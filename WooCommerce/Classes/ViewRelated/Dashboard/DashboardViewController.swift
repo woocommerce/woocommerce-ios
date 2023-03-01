@@ -27,6 +27,12 @@ final class DashboardViewController: UIViewController {
         return UIScrollView(frame: .zero)
     }()
 
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl(frame: .zero)
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
+        return refreshControl
+    }()
+
     private lazy var containerStackView: UIStackView = {
         .init(arrangedSubviews: [])
     }()
@@ -60,10 +66,6 @@ final class DashboardViewController: UIViewController {
         view.spacing = Constants.headerStackViewSpacing
         return view
     }()
-
-//    /// Constraint to attach the content view's top to the bottom of the header
-//    /// When we hide the header, we disable this constraint so the content view can grow to fill the screen
-//    private var contentTopToHeaderConstraint: NSLayoutConstraint?
 
     /// Stores an animator for showing/hiding the header view while there is an animation in progress
     /// so we can interrupt and reverse if needed
@@ -322,10 +324,15 @@ private extension DashboardViewController {
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
         view.addSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToSafeArea(containerView)
+        containerView.refreshControl = refreshControl
         NSLayoutConstraint.activate([
+            containerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            containerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            // The top anchor of the scroll view needs to pin to the top edge of the view controller view.
+            // Otherwise, the pull-to-refresh animation is broken with large title.
+            containerView.topAnchor.constraint(equalTo: view.topAnchor),
             containerView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor),
-            containerView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor)
         ])
     }
 
@@ -598,9 +605,6 @@ private extension DashboardViewController {
         // Sets `dashboardUI` after its view is added to the view hierarchy so that observers can update UI based on its view.
         dashboardUI = updatedDashboardUI
 
-        updatedDashboardUI.onPullToRefresh = { [weak self] in
-            await self?.pullToRefresh()
-        }
         updatedDashboardUI.displaySyncingError = { [weak self] in
             self?.showTopBannerView()
         }
@@ -652,10 +656,27 @@ private extension DashboardViewController {
     }
 }
 
-// MARK: - Action Handlers
+// MARK: - Pull-to-refresh
 //
 private extension DashboardViewController {
-    func pullToRefresh() async {
+    @objc func pullToRefresh() {
+        Task { @MainActor in
+            showSpinner(shouldShowSpinner: true)
+            await onPullToRefresh()
+            showSpinner(shouldShowSpinner: false)
+        }
+    }
+
+    @MainActor
+    func showSpinner(shouldShowSpinner: Bool) {
+        if shouldShowSpinner {
+            refreshControl.beginRefreshing()
+        } else {
+            refreshControl.endRefreshing()
+        }
+    }
+
+    func onPullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
         await viewModel.syncAnnouncements(for: siteID)
         await reloadDashboardUIStatsVersion(forced: true)

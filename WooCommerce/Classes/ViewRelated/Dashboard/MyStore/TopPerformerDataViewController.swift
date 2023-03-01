@@ -18,10 +18,6 @@ final class TopPerformerDataViewController: UIViewController {
     private let siteTimeZone: TimeZone
     private let currentDate: Date
 
-    var hasTopEarnerStatsItems: Bool {
-        return (topEarnerStats?.items?.count ?? 0) > 0
-    }
-
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///
     private lazy var resultsController: ResultsController<StorageTopEarnerStats> = {
@@ -41,6 +37,12 @@ final class TopPerformerDataViewController: UIViewController {
     private let imageService: ImageService = ServiceLocator.imageService
 
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+
+    private lazy var viewModel = DashboardTopPerformersViewModel(state: .loading) { [weak self] topPerformersItem in
+        guard let self else { return }
+        self.usageTracksEventEmitter.interacted()
+        self.presentProductDetails(statsItem: topPerformersItem)
+    }
 
     // MARK: - Computed Properties
 
@@ -91,7 +93,7 @@ final class TopPerformerDataViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-        showTopPerformers(items: [], isLoading: true)
+        configureTopPerformersView()
         configureResultsController()
     }
 
@@ -99,49 +101,22 @@ final class TopPerformerDataViewController: UIViewController {
         super.viewDidAppear(animated)
         trackChangedTabIfNeeded()
     }
+
+    func displayPlaceholderContent() {
+        viewModel.update(state: .loading)
+    }
+
+    func removePlaceholderContent() {
+        updateUIInLoadedState()
+    }
 }
 
 private extension TopPerformerDataViewController {
-    func updateUI() {
-        guard let items = topEarnerStats?.items, items.isNotEmpty else {
-            // todo-jc: show empty view
-            showEmptyView()
-            return
+    func updateUIInLoadedState() {
+        guard let items = topEarnerStats?.items?.sorted(by: >), items.isNotEmpty else {
+            return viewModel.update(state: .loaded(rows: []))
         }
-        showTopPerformers(items: items, isLoading: false)
-    }
-
-    func showTopPerformers(items: [TopEarnerStatsItem], isLoading: Bool) {
-        view.subviews.forEach { subview in
-            subview.removeFromSuperview()
-        }
-
-        let rows = items.map { item in
-            TopPerformersRow.Data(imageURL: URL(string: item.imageUrl ?? ""),
-                                  name: item.productName ?? "",
-                                  details: AnalyticsHubViewModel.Localization.ProductCard.netSales(value: item.totalString),
-                                  value: "\(item.quantity)")
-        }
-        let hostingController = ConstraintsUpdatingHostingController(rootView: TopPerformersView(itemTitle: "ITEM", valueTitle: "VALUE", rows: rows, isRedacted: isLoading, showsHeader: false))
-
-        addChild(hostingController)
-        view.addSubview(hostingController.view)
-
-        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(hostingController.view)
-        NSLayoutConstraint.activate([
-            hostingController.view.heightAnchor.constraint(equalTo: view.heightAnchor)
-        ])
-
-        hostingController.didMove(toParent: self)
-    }
-
-    func showEmptyView() {
-        view.subviews.forEach { subview in
-            subview.removeFromSuperview()
-        }
-
-        // TODO-JC
+        viewModel.update(state: .loaded(rows: items))
     }
 }
 
@@ -149,17 +124,28 @@ private extension TopPerformerDataViewController {
 // MARK: - Configuration
 //
 private extension TopPerformerDataViewController {
-
     func configureView() {
         view.backgroundColor = .basicBackground
     }
 
+    func configureTopPerformersView() {
+        let hostingController = ConstraintsUpdatingHostingController(rootView: DashboardTopPerformersView(viewModel: viewModel))
+        addChild(hostingController)
+        view.addSubview(hostingController.view)
+
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(hostingController.view)
+        hostingController.didMove(toParent: self)
+
+        viewModel.update(state: .loading)
+    }
+
     func configureResultsController() {
         resultsController.onDidChangeContent = { [weak self] in
-            self?.updateUI()
+            self?.updateUIInLoadedState()
         }
         resultsController.onDidResetContent = { [weak self] in
-            self?.updateUI()
+            self?.updateUIInLoadedState()
         }
 
         do {
@@ -167,58 +153,6 @@ private extension TopPerformerDataViewController {
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
-    }
-}
-
-// MARK: - UITableViewDataSource Conformance
-//
-extension TopPerformerDataViewController: UITableViewDataSource {
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return Constants.numberOfSections
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return numberOfRows()
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        nil
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let statsItem = statsItem(at: indexPath) else {
-            return tableView.dequeueReusableCell(withIdentifier: NoPeriodDataTableViewCell.reuseIdentifier, for: indexPath)
-        }
-        let cell = tableView.dequeueReusableCell(ProductTableViewCell.self, for: indexPath)
-        let viewModel = ProductTableViewCell.ViewModel(statsItem: statsItem)
-        cell.configure(viewModel: viewModel, imageService: imageService)
-        cell.hidesBottomBorder = tableView.lastIndexPathOfTheLastSection() == indexPath ? true : false
-        return cell
-    }
-}
-
-
-// MARK: - UITableViewDelegate Conformance
-//
-extension TopPerformerDataViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        guard let statsItem = statsItem(at: indexPath) else {
-            return
-        }
-
-        usageTracksEventEmitter.interacted()
-
-        presentProductDetails(statsItem: statsItem)
-    }
-
-    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        0
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        0
     }
 }
 
@@ -250,22 +184,6 @@ private extension TopPerformerDataViewController {
         }
         ServiceLocator.analytics.track(event: .Dashboard.dashboardTopPerformersDate(timeRange: timeRange))
         isInitialLoad = false
-    }
-
-    func statsItem(at indexPath: IndexPath) -> TopEarnerStatsItem? {
-        guard let topEarnerStatsItem = topEarnerStats?.items?
-                .sorted(by: >)[safe: indexPath.row] else {
-                    return nil
-                }
-
-        return topEarnerStatsItem
-    }
-
-    func numberOfRows() -> Int {
-        guard hasTopEarnerStatsItems, let itemCount = topEarnerStats?.items?.count else {
-            return Constants.emptyStateRowCount
-        }
-        return itemCount
     }
 }
 

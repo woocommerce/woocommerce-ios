@@ -136,9 +136,9 @@ struct CardReaderSettingsSearchingView: View {
                 .frame(height: isCompact ? 80 : 206)
                 .padding(.bottom, isCompact ? 16 : 32)
 
-            Hint(title: Localization.hintOneTitle, text: Localization.hintOne)
-            Hint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
-            Hint(title: Localization.hintThreeTitle, text: Localization.hintThree)
+            PaymentSettingsFlowHint(title: Localization.hintOneTitle, text: Localization.hintOne)
+            PaymentSettingsFlowHint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
+            PaymentSettingsFlowHint(title: Localization.hintThreeTitle, text: Localization.hintThree)
 
             Spacer()
 
@@ -168,26 +168,6 @@ struct CardReaderSettingsSearchingView: View {
                     content
                 }
             }
-    }
-}
-
-private struct Hint: View {
-    let title: String
-    let text: String
-
-    var body: some View {
-        HStack {
-            Text(title)
-                .font(.callout)
-                .padding(.all, 12)
-                .background(Color(UIColor.systemGray6))
-                .clipShape(Circle())
-            Text(text)
-                .font(.callout)
-                .padding(.leading, 16)
-            Spacer()
-        }
-            .padding(.horizontal, 8)
     }
 }
 

@@ -160,7 +160,7 @@ private extension JetpackSetupCoordinator {
                     #warning("TODO: show magic login UI")
                 } catch {
                     onCompletion()
-                    #warning("TODO: error UI")
+                    showAlert(message: Localization.errorRequestingAuthURL)
                 }
             }
         } else {
@@ -233,6 +233,10 @@ private extension JetpackSetupCoordinator {
         static let errorCheckingWPComAccount = NSLocalizedString(
             "Error checking the WordPress.com account associated with this email. Please try again.",
             comment: "Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow."
+        )
+        static let errorRequestingAuthURL = NSLocalizedString(
+            "Error requesting authentication link for your account. Please try again.",
+            comment: "Message shown on the error alert displayed when requesting authentication link for the Jetpack setup flow fails"
         )
     }
 }

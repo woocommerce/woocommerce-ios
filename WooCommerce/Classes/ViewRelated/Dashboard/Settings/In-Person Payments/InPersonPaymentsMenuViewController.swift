@@ -380,12 +380,9 @@ extension InPersonPaymentsMenuViewController {
         }
 
         ServiceLocator.analytics.track(.paymentsMenuManageCardReadersTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
-            fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
-        }
 
         let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList(configuration: viewModel.cardPresentPaymentsConfiguration)
-        viewController.configure(viewModelsAndViews: viewModelsAndViews)
+        let viewController = CardReaderSettingsPresentingViewController(viewModelsAndViews: viewModelsAndViews)
         show(viewController, sender: self)
     }
 

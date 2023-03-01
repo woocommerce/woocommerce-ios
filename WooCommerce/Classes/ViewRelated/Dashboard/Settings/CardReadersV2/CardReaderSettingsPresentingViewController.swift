@@ -2,19 +2,24 @@ import Foundation
 import UIKit
 
 final class CardReaderSettingsPresentingViewController: UIViewController {
-
     /// An array of viewModels and related view classes
-    private var viewModelsAndViews: CardReaderSettingsPrioritizedViewModelsProvider?
+    private var viewModelsAndViews: CardReaderSettingsPrioritizedViewModelsProvider
 
     /// The view controller we are currently presenting
     private var childViewController: UIViewController?
 
-    /// Set our dependencies
-    func configure(viewModelsAndViews: CardReaderSettingsPrioritizedViewModelsProvider) {
+    init(viewModelsAndViews: CardReaderSettingsPrioritizedViewModelsProvider) {
         self.viewModelsAndViews = viewModelsAndViews
-        self.viewModelsAndViews?.onPriorityChanged = { [weak self] viewModelAndView in
+        super.init(nibName: nil, bundle: nil)
+
+        self.viewModelsAndViews.onPriorityChanged = { [weak self] viewModelAndView in
             self?.onViewModelsPriorityChange(viewModelAndView: viewModelAndView)
         }
+        self.hidesBottomBarWhenPushed = true
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("Not implemented")
     }
 
     override func viewDidLoad() {
@@ -28,7 +33,7 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
         /// To avoid child view controllers extending underneath the navigation bar
         self.edgesForExtendedLayout = []
 
-        onViewModelsPriorityChange(viewModelAndView: viewModelsAndViews?.priorityViewModelAndView)
+        onViewModelsPriorityChange(viewModelAndView: viewModelsAndViews.priorityViewModelAndView)
     }
 
     private func onViewModelsPriorityChange(viewModelAndView: CardReaderSettingsViewModelAndView?) {
@@ -40,7 +45,7 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
             return
         }
 
-        childViewController = storyboard!.instantiateViewController(withIdentifier: viewModelAndView.viewIdentifier)
+        childViewController = UIStoryboard.dashboard.instantiateViewController(withIdentifier: viewModelAndView.viewIdentifier)
 
         guard let childViewController = childViewController else {
             return
@@ -62,13 +67,12 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
 // MARK: - View Configuration
 //
 private extension CardReaderSettingsPresentingViewController {
-
-    private func configureBackground() {
+    func configureBackground() {
         /// Needed to avoid incorrect background appearing near bottom of view, especially on dark mode
         view.backgroundColor = .systemBackground
     }
 
-    private func configureNavigation() {
+    func configureNavigation() {
         title = Localization.screenTitle
     }
 }

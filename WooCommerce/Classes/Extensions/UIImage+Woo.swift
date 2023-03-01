@@ -1210,6 +1210,10 @@ extension UIImage {
     static var builtInReaderError: UIImage {
         return UIImage(named: "built-in-reader-error")!
     }
+
+    static var setUpBuiltInReader: UIImage {
+        return UIImage(named: "built-in-reader-set-up")!
+    }
 }
 
 private extension UIImage {

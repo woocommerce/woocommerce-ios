@@ -397,8 +397,19 @@ extension InPersonPaymentsMenuViewController {
         navigateToInPersonPaymentsSelectPluginView()
     }
 
-    func tapToPayOnIPhoneWasPressed() {
-        // to implement
+    func setUpTapToPayOnIPhoneWasPressed() {
+        ServiceLocator.analytics.track(.setUpTapToPayOnIPhoneTapped)
+
+        guard let siteID = stores.sessionManager.defaultStoreID,
+              let activePaymentGateway = pluginState?.preferred else {
+            return
+        }
+
+        let viewModelsAndViews = SetUpTapToPayViewModelsOrderedList(siteID: siteID,
+                                                                    configuration: viewModel.cardPresentPaymentsConfiguration,
+                                                                    activePaymentGateway: activePaymentGateway)
+        let setUpTapToPayViewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
+        navigationController?.present(setUpTapToPayViewController, animated: true)
     }
 
     func navigateToInPersonPaymentsSelectPluginView() {

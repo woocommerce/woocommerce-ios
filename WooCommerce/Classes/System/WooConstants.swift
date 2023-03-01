@@ -235,6 +235,8 @@ extension WooConstants {
         ///
         case inPersonPaymentsLearnMoreWCPay = "https://docs.woocommerce.com/document/getting-started-with-in-person-payments-with-woocommerce-payments/"
 
+        case inPersonPaymentsLearnMoreWCPayTapToPay = "https://woocommerce.com/document/woocommerce-payments/in-person-payments/woocommerce-in-person-payments-tap-to-pay-on-iphone-quick-start-guide/"
+
         /// URL for Stripe IPP documentation
         ///
         case inPersonPaymentsLearnMoreStripe = "https://docs.woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/"

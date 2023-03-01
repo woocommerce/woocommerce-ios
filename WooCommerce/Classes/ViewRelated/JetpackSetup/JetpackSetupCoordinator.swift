@@ -105,7 +105,7 @@ private extension JetpackSetupCoordinator {
                 displayAdminRoleRequiredError()
                 requiresConnectionOnly = true
             default:
-                showAlert(message: Localization.errorCheckingJetpack, in: navigationController.topmostPresentedViewController)
+                showAlert(message: Localization.errorCheckingJetpack)
             }
         }
     }
@@ -143,10 +143,10 @@ private extension JetpackSetupCoordinator {
                 self?.startAuthentication(email: email, isPasswordlessAccount: passwordless) {
                     continuation.resume()
                 }
-            }, failure: { error in
+            }, failure: { [weak self] error in
                 DDLogError("⛔️ Error checking for passwordless account: \(error)")
-                #warning("TODO: show error alert")
                 continuation.resume()
+                self?.handleAccountCheckError(error)
             })
         }
     }
@@ -183,10 +183,23 @@ private extension JetpackSetupCoordinator {
 // MARK: - Error handling
 //
 private extension JetpackSetupCoordinator {
+    func handleAccountCheckError(_ error: Error) {
+        let userInfo = (error as NSError).userInfo
+        let errorCode = userInfo[Constants.wpcomErrorCodeKey] as? String
+
+        if errorCode == Constants.emailLoginNotAllowedCode {
+            // If we get this error, we know we have a WordPress.com user but their
+            // email address is flagged as suspicious.  They need to login via their
+            // username instead.
+            #warning("TODO: handle username login")
+        } else {
+            showAlert(message: Localization.errorCheckingWPComAccount)
+        }
+    }
+
     /// Shows an error alert with a button to retry the failed action.
     ///
     func showAlert(message: String,
-                   in viewController: UIViewController,
                    onRetry: (() -> Void)? = nil) {
         let alert = UIAlertController(title: message,
                                       message: nil,
@@ -199,7 +212,15 @@ private extension JetpackSetupCoordinator {
         }
         let cancelAction = UIAlertAction(title: Localization.cancelButton, style: .cancel)
         alert.addAction(cancelAction)
-        viewController.present(alert, animated: true)
+        navigationController.topmostPresentedViewController.present(alert, animated: true)
+    }
+}
+
+// MARK: - Subtypes
+private extension JetpackSetupCoordinator {
+    enum Constants {
+        static let wpcomErrorCodeKey = "WordPressComRestApiErrorCodeKey"
+        static let emailLoginNotAllowedCode = "email_login_not_allowed"
     }
 
     enum Localization {
@@ -209,6 +230,9 @@ private extension JetpackSetupCoordinator {
             "Error checking the Jetpack connection on your site",
             comment: "Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow."
         )
+        static let errorCheckingWPComAccount = NSLocalizedString(
+            "Error checking the WordPress.com account associated with this email. Please try again.",
+            comment: "Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow."
+        )
     }
 }
-

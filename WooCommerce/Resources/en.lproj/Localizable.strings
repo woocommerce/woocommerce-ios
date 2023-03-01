@@ -6893,7 +6893,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tell us more about %1$@..." = "Tell us more about %1$@...";
 
 /* Message info on the support screen. */
-"Let us know your site address (URL) and tell us as much as you can about the problem, and we will be in touch soon." = "Let us know your site address (URL) and tell us as much as you can about the problem, and we will be in touch soon.";
+"Tell us much as you can about the problem, and we will be in touch soon." = "Tell us much as you can about the problem, and we will be in touch soon.";
 
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.

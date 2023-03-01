@@ -43,7 +43,7 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
                     configuration: configuration,
                     cardReaderConnectionAnalyticsTracker: cardReaderConnectionAnalyticsTracker
                 ),
-                viewIdentifier: "CardReaderSettingsSearchingViewController"
+                viewPresenter: CardReaderSettingsSearchingViewController.self
             )
         )
 
@@ -57,7 +57,7 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
                     configuration: configuration,
                     analyticsTracker: cardReaderConnectionAnalyticsTracker
                 ),
-                viewIdentifier: "CardReaderSettingsConnectedViewController"
+                viewPresenter: CardReaderSettingsConnectedViewController.self
             )
         )
 

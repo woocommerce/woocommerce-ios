@@ -22,11 +22,11 @@ protocol CardReaderSettingsPresentedViewModel {
 struct CardReaderSettingsViewModelAndView: Equatable {
     static func == (lhs: CardReaderSettingsViewModelAndView, rhs: CardReaderSettingsViewModelAndView) -> Bool {
         // It is sufficient to test on just the view identifier. No need to compare the viewmodels.
-        lhs.viewIdentifier == rhs.viewIdentifier
+        lhs.viewPresenter == rhs.viewPresenter
     }
 
     var viewModel: CardReaderSettingsPresentedViewModel
-    var viewIdentifier: String
+    var viewPresenter: CardReaderSettingsViewModelPresenter.Type
 }
 
 enum CardReaderSettingsTriState {

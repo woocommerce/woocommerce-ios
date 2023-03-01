@@ -1,5 +1,6 @@
 import Foundation
+import UIKit
 
-protocol CardReaderSettingsViewModelPresenter {
-    func configure(viewModel: CardReaderSettingsPresentedViewModel)
+protocol CardReaderSettingsViewModelPresenter: UIViewController {
+    init?(viewModel: CardReaderSettingsPresentedViewModel)
 }

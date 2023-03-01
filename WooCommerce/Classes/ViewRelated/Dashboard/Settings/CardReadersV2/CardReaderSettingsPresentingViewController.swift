@@ -45,21 +45,15 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
             return
         }
 
-        childViewController = UIStoryboard.dashboard.instantiateViewController(withIdentifier: viewModelAndView.viewIdentifier)
-
-        guard let childViewController = childViewController else {
+        guard let childViewController = viewModelAndView.viewPresenter.init(viewModel: viewModelAndView.viewModel) else {
             return
         }
+        self.childViewController = childViewController
 
-        guard let presenter = childViewController as? CardReaderSettingsViewModelPresenter else {
-            return
-        }
-        presenter.configure(viewModel: viewModelAndView.viewModel)
-
-        self.addChild(childViewController)
-        self.view.addSubview(childViewController.view)
+        addChild(childViewController)
+        view.addSubview(childViewController.view)
         childViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        self.view.pinSubviewToAllEdges(childViewController.view)
+        view.pinSubviewToAllEdges(childViewController.view)
         childViewController.didMove(toParent: self)
     }
 }

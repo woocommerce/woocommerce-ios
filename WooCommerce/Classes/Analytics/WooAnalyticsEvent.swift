@@ -81,6 +81,8 @@ extension WooAnalyticsEvent {
         case inPersonPaymentsFirstTransactionBanner
         /// Shown in IPP banner for eligible merchants with a significant number of IPP transactions.
         case inPersonPaymentsPowerUsersBanner
+        /// Shown in store setup task list
+        case storeSetup = "store_setup"
     }
 
     /// The action performed on the survey screen.

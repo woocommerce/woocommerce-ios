@@ -7,6 +7,10 @@ struct StoreSetupProgressView: View {
 
     let numberOfTasksCompleted: Int
 
+    let shareFeedbackAction: (() -> Void)?
+
+    @State private var showingActionSheet = false
+
     var body: some View {
         HStack(alignment: .top) {
             VStack(alignment: isExpanded ? .center : .leading, spacing: Layout.verticalSpacing) {
@@ -35,13 +39,18 @@ struct StoreSetupProgressView: View {
 
             // More button
             Button {
-                // TODO: Show the popup with feedback button
+                showingActionSheet = true
             } label: {
                 Image(uiImage: .ellipsisImage)
                     .flipsForRightToLeftLayoutDirection(true)
                     .foregroundColor(Color(.textTertiary))
             }
             .renderedIf(!isExpanded)
+        }
+        .confirmationDialog(Localization.title, isPresented: $showingActionSheet) {
+            Button(Localization.shareFeedbackButton) {
+                shareFeedbackAction?()
+            }
         }
     }
 }
@@ -79,14 +88,19 @@ private extension StoreSetupProgressView {
                 "This text is displayed when the store setup task list is presented in full-screen/expanded mode."
             )
         }
+
+        static let shareFeedbackButton = NSLocalizedString(
+            "Share feedback",
+            comment: "Title of the feedback button in the action sheet."
+        )
     }
 }
 
 
 struct StoreSetupProgressView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreSetupProgressView(isExpanded: false, totalNumberOfTasks: 5, numberOfTasksCompleted: 1)
+        StoreSetupProgressView(isExpanded: false, totalNumberOfTasks: 5, numberOfTasksCompleted: 1, shareFeedbackAction: nil)
 
-        StoreSetupProgressView(isExpanded: true, totalNumberOfTasks: 5, numberOfTasksCompleted: 1)
+        StoreSetupProgressView(isExpanded: true, totalNumberOfTasks: 5, numberOfTasksCompleted: 1, shareFeedbackAction: nil)
     }
 }

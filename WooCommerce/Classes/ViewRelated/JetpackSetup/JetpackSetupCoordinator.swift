@@ -1,5 +1,4 @@
 import UIKit
-import Experiments
 import Yosemite
 import enum Alamofire.AFError
 import WordPressAuthenticator
@@ -15,7 +14,6 @@ final class JetpackSetupCoordinator {
     private let stores: StoresManager
     private let analytics: Analytics
     private let accountService: WordPressComAccountService
-    private let featureFlagService: FeatureFlagService
 
     private var benefitsController: JetpackBenefitsHostingController?
     private var loginNavigationController: UINavigationController?
@@ -23,14 +21,12 @@ final class JetpackSetupCoordinator {
     init(site: Site,
          navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics) {
         self.site = site
         self.requiresConnectionOnly = false // to be updated later after fetching Jetpack status
         self.navigationController = navigationController
         self.stores = stores
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
 
         /// the authenticator needs to be initialized with configs
         /// to be used for requesting authentication link and handle login later.

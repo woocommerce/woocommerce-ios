@@ -189,57 +189,52 @@ final class DashboardViewController: UIViewController {
 // MARK: - Header animation
 private extension DashboardViewController {
     func showHeaderWithoutAnimation() {
-//        contentTopToHeaderConstraint?.isActive = true
-//        headerStackView.alpha = 1
-//        view.layoutIfNeeded()
+        headerStackView.isHidden = false
     }
 
     func hideHeaderWithoutAnimation() {
-//        contentTopToHeaderConstraint?.isActive = false
-//        headerStackView.alpha = 0
-//        headerStackView.isHidden = true
-//        view.layoutIfNeeded()
+        headerStackView.isHidden = true
     }
 
     func updateHeaderVisibility(animated: Bool) {
-//        if navigationBarIsCollapsed() {
-//            hideHeader(animated: animated)
-//        } else {
-//            showHeader(animated: animated)
-//        }
+        if navigationBarIsCollapsed() {
+            hideHeader(animated: animated)
+        } else {
+            showHeader(animated: animated)
+        }
     }
 
     func showHeader(animated: Bool) {
-//        if animated {
-//            animateHeaderVisibility { [weak self] in
-//                self?.showHeaderWithoutAnimation()
-//            }
-//        } else {
-//            showHeaderWithoutAnimation()
-//        }
+        if animated {
+            animateHeaderVisibility { [weak self] in
+                self?.showHeaderWithoutAnimation()
+            }
+        } else {
+            showHeaderWithoutAnimation()
+        }
     }
 
     func hideHeader(animated: Bool) {
-//        if animated {
-//            animateHeaderVisibility { [weak self] in
-//                self?.hideHeaderWithoutAnimation()
-//            }
-//        } else {
-//            hideHeaderWithoutAnimation()
-//        }
+        if animated {
+            animateHeaderVisibility { [weak self] in
+                self?.hideHeaderWithoutAnimation()
+            }
+        } else {
+            hideHeaderWithoutAnimation()
+        }
     }
 
     func animateHeaderVisibility(animations: @escaping () -> Void) {
-//        if headerAnimator?.isRunning == true {
-//            headerAnimator?.stopAnimation(true)
-//        }
-//        headerAnimator = UIViewPropertyAnimator.runningPropertyAnimator(
-//            withDuration: Constants.animationDurationSeconds,
-//            delay: 0,
-//            animations: animations,
-//            completion: { [weak self] position in
-//                self?.headerAnimator = nil
-//            })
+        if headerAnimator?.isRunning == true {
+            headerAnimator?.stopAnimation(true)
+        }
+        headerAnimator = UIViewPropertyAnimator.runningPropertyAnimator(
+            withDuration: Constants.animationDurationSeconds,
+            delay: 0,
+            animations: animations,
+            completion: { [weak self] position in
+                self?.headerAnimator = nil
+            })
     }
 
     func navigationBarIsCollapsed() -> Bool {
@@ -332,6 +327,7 @@ private extension DashboardViewController {
             // The top anchor of the scroll view needs to pin to the top edge of the view controller view.
             // Otherwise, the pull-to-refresh animation is broken with large title.
             containerView.topAnchor.constraint(equalTo: view.topAnchor),
+            // The width matching constraint is required for the scroll view to be scrollable only vertically.
             containerView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor),
         ])
     }

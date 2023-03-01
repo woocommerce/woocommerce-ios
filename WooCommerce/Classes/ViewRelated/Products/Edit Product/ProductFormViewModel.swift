@@ -1,5 +1,4 @@
 import Combine
-import Experiments
 import Yosemite
 
 import protocol Storage.StorageManagerType
@@ -205,8 +204,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
-         simplifiedProductEditingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
-            && ABTest.simplifiedProductEditing.variation == .treatment) {
+         simplifiedProductEditingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product

@@ -1,5 +1,4 @@
 import UIKit
-import Experiments
 import Yosemite
 
 /// The Product Settings contains 2 sections: Publish Settings and More Options
@@ -36,10 +35,8 @@ final class ProductSettingsViewModel {
     init(product: Product,
          password: String?,
          formType: ProductFormType,
-         isProductTypeSettingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
-            && ABTest.simplifiedProductEditing.variation == .treatment,
-         isDownloadableSettingEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
-            || ABTest.simplifiedProductEditing.variation == nil) { // Control group
+         isProductTypeSettingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isDownloadableSettingEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.product = product
         self.password = password
         self.isProductTypeSettingEnabled = isProductTypeSettingEnabled

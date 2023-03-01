@@ -1,5 +1,4 @@
 import UIKit
-import Experiments
 import WordPressUI
 import Yosemite
 import Combine
@@ -284,7 +283,7 @@ private extension ProductsViewController {
             fatalError("No source view for adding a product")
         }
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing) && ABTest.simplifiedProductEditing.variation == .treatment {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing) {
             coordinatingController.onProductCreated = { product in
                 navigationController.dismiss(animated: true) { [weak self] in
                     self?.didSelectProduct(product: product)

@@ -1,5 +1,4 @@
 import UIKit
-import Experiments
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
@@ -39,8 +38,7 @@ final class AddProductCoordinator: Coordinator {
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         isSimplifiedBottomSheetEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
-            && ABTest.simplifiedProductEditing.variation == .treatment) {
+         isSimplifiedBottomSheetEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.siteID = siteID
         self.sourceBarButtonItem = sourceBarButtonItem
         self.sourceView = nil
@@ -55,8 +53,7 @@ final class AddProductCoordinator: Coordinator {
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         isSimplifiedBottomSheetEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
-            && ABTest.simplifiedProductEditing.variation == .treatment) {
+         isSimplifiedBottomSheetEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.siteID = siteID
         self.sourceBarButtonItem = nil
         self.sourceView = sourceView

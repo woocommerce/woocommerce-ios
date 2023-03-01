@@ -1,5 +1,4 @@
 import Yosemite
-import Experiments
 
 /// Represents an editable data model based on `Product`.
 final class EditableProductModel {
@@ -189,7 +188,6 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
     ///
     func isEmpty() -> Bool {
         let simplifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
-            && ABTest.simplifiedProductEditing.variation == .treatment
         guard let emptyProduct = ProductFactory().createNewProduct(type: productType,
                                                                    isVirtual: virtual,
                                                                    siteID: siteID,

@@ -1,5 +1,4 @@
 import Yosemite
-import Experiments
 
 /// Represents the product types available when creating or editing products.
 /// This includes the remote `ProductType`, whether the product type is virtual, and strings/images shown in the bottom sheet.
@@ -44,7 +43,6 @@ public enum BottomSheetProductType: Hashable {
     ///
     var actionSheetTitle: String {
         let simplifyProductEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
-            && ABTest.simplifiedProductEditing.variation == .treatment
         switch self {
         case .simple(let isVirtual):
             if isVirtual, simplifyProductEditingEnabled {
@@ -81,7 +79,6 @@ public enum BottomSheetProductType: Hashable {
     ///
     var actionSheetDescription: String {
         let simplifyProductEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
-            && ABTest.simplifiedProductEditing.variation == .treatment
         switch self {
         case .simple(let isVirtual):
             if isVirtual, simplifyProductEditingEnabled {

@@ -610,7 +610,7 @@ final class ProductFormViewModelTests: XCTestCase {
         var isCallbackCalled = false
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = createViewModel(product: Product.fake(), formType: .add, stores: stores)
-        viewModel.onProductCreated = {
+        viewModel.onProductCreated = { _ in
             isCallbackCalled = true
         }
 

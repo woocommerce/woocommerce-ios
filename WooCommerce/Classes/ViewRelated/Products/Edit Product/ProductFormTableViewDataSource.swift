@@ -10,6 +10,7 @@ private extension ProductFormSection.SettingsRow.ViewModel {
                                                            imageTintColor: tintColor ?? .textSubtle,
                                                            numberOfLinesForText: numberOfLinesForDetails,
                                                            isActionable: isActionable,
+                                                           showsDisclosureIndicator: isActionable,
                                                            showsSeparator: !hideSeparator)
     }
 }

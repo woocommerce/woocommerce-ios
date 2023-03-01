@@ -412,7 +412,7 @@ private extension DashboardViewController {
     private func startAddProductFlow() {
         guard let announcementView, let navigationController else { return }
         let coordinator = AddProductCoordinator(siteID: siteID, sourceView: announcementView, sourceNavigationController: navigationController)
-        coordinator.onProductCreated = { [weak self] in
+        coordinator.onProductCreated = { [weak self] _ in
             guard let self else { return }
             self.viewModel.announcementViewModel = nil // Remove the products onboarding banner
             Task {
@@ -531,8 +531,12 @@ private extension DashboardViewController {
     func showOnboardingCard() {
         let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false),
                                                                      taskTapped: { [weak self] task in
-            guard let self, let navigationController = self.navigationController else { return }
-            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController)
+            guard let self,
+                  let navigationController = self.navigationController,
+                  let site = ServiceLocator.stores.sessionManager.defaultSite else {
+                return
+            }
+            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: site)
             self.onboardingCoordinator = coordinator
             coordinator.start(task: task)
         })

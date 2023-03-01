@@ -7,23 +7,13 @@ import protocol Storage.StorageManagerType
 ///
 /// This is an incremental WIP. Eventually, we should move all the data loading in here.
 ///
-/// Important: The `OrdersViewController` **owned** by `OrdersTabbedViewController` currently
-/// does not get deallocated when switching sites. This `ViewModel` should consider that and not
-/// keep site-specific information as much as possible. For example, we shouldn't keep `siteID`
-/// in here but grab it from the `SessionManager` when we need it. Hopefully, we will be able to
-/// fix this in the future.
-///
-/// ## Work In Progress
-///
-/// This does not do anything at the moment. We will integrate `FetchResultsSnapshotsProvider`
-/// in here next.
-///
 final class OrderListViewModel {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
     private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
+    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
     ///
@@ -62,35 +52,39 @@ final class OrderListViewModel {
     }
 
     private var isIPPSupportedCountry: Bool {
-        CardPresentConfigurationLoader().configuration.isSupportedCountry
+        cardPresentPaymentsConfiguration.isSupportedCountry
     }
+
+    private lazy var wcPayIPPOrdersPredicate: NSPredicate = {
+        /// In order to filter WCPay transactions processed through IPP we check if these contain `receipt_url`
+        /// in their `customFields` metadata, unlike those processed through a website, which don't.
+        /// This heuristic can't be relied on for other plugins, so the `paymentMethodID` limit is required.
+        NSPredicate(
+            format: "siteID == %lld AND paymentMethodID == %@ AND ANY customFields.key == %@",
+            argumentArray: [siteID, Constants.wcpayPaymentMethodID, Constants.receiptURLKey]
+        )
+    }()
 
     /// Results controller that fetches any WooCommerce Payments In-Person Payments transactions
     ///
-    private lazy var WCPayOrdersResultsController: ResultsController<StorageOrder> = {
-        let wcpay = Constants.wcpayPaymentMethodID
-        let predicate = NSPredicate(
-            format: "siteID == %lld AND paymentMethodID == %@",
-            argumentArray: [siteID, wcpay]
-        )
-        return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    private lazy var wcPayIPPOrdersResultsController: ResultsController<StorageOrder> = {
+        return ResultsController<StorageOrder>(storageManager: storageManager, matching: wcPayIPPOrdersPredicate, sortedBy: [])
     }()
 
-    /// Results controller that fetches WooCommerce Payments In-Person Payments within the last 30 days
-    ///
-    private lazy var recentWCPayIPPResultsController: ResultsController<StorageOrder> = {
+    private lazy var last30DaysPredicate: NSPredicate = {
         let today = Date()
-        let wcpay = Constants.wcpayPaymentMethodID
         let thirtyDaysBeforeToday = Calendar.current.date(
             byAdding: .day,
             value: -30,
             to: today
         ) ?? Date()
+        return NSPredicate(format: "datePaid >= %@", argumentArray: [thirtyDaysBeforeToday])
+    }()
 
-        let predicate = NSPredicate(
-            format: "siteID == %lld AND paymentMethodID == %@ AND datePaid >= %@",
-            argumentArray: [siteID, wcpay, thirtyDaysBeforeToday]
-        )
+    /// Results controller that fetches WooCommerce Payments In-Person Payments within the last 30 days
+    ///
+    private lazy var recentWCPayIPPResultsController: ResultsController<StorageOrder> = {
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [wcPayIPPOrdersPredicate, last30DaysPredicate])
 
         return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
@@ -137,7 +131,10 @@ final class OrderListViewModel {
     ///
     @Published var hideIPPFeedbackBanner: Bool = true
 
+    @Published var ippSurveySource: SurveyViewController.Source? = nil
+
     init(siteID: Int64,
+         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
@@ -145,16 +142,13 @@ final class OrderListViewModel {
          notificationCenter: NotificationCenter = .default,
          filters: FilterOrderListViewModel.Filters?) {
         self.siteID = siteID
+        self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) && !hideIPPFeedbackBanner {
-            topBanner = .IPPFeedback
-        }
     }
 
     deinit {
@@ -168,6 +162,7 @@ final class OrderListViewModel {
     ///
     func activate() {
         setupStatusResultsController()
+        setupWCPayIPPResultsControllers()
         startReceivingSnapshots()
 
         notificationCenter.addObserver(self, selector: #selector(handleAppDeactivation),
@@ -266,19 +261,34 @@ final class OrderListViewModel {
         return useCase.actionFor(pageNumber: pageNumber,
                                  pageSize: pageSize,
                                  reason: reason,
-                                 completionHandler: completionHandler)
+                                 completionHandler: { [weak self] timeInterval, error in
+            /// A bit of a side-effect: `onDidChangeContent` is not called for first load
+            self?.ippSurveySource = self?.feedbackBannerSurveySource()
+            completionHandler(timeInterval, error)
+        })
+    }
+
+    private func setupWCPayIPPResultsControllers() {
+        let updateFeedbackSurveySource = { [weak self] in
+            guard let self = self else { return }
+            self.ippSurveySource = self.feedbackBannerSurveySource()
+        }
+        wcPayIPPOrdersResultsController.onDidChangeContent = updateFeedbackSurveySource
+        recentWCPayIPPResultsController.onDidChangeContent = updateFeedbackSurveySource
+
+        ippSurveySource = feedbackBannerSurveySource()
     }
 
     private func fetchIPPTransactions() {
         do {
-            try WCPayOrdersResultsController.performFetch()
+            try wcPayIPPOrdersResultsController.performFetch()
             try recentWCPayIPPResultsController.performFetch()
         } catch {
             DDLogError("Error fetching IPP transactions: \(error)")
         }
     }
 
-    func trackInPersonPaymentsFeedbackBannerShown(for surveySource: SurveyViewController.Source) {
+    func trackInPersonPaymentsFeedbackBannerShown(for surveySource: SurveyViewController.Source?) {
         var campaign: FeatureAnnouncementCampaign? = nil
 
         switch surveySource {
@@ -303,34 +313,29 @@ final class OrderListViewModel {
         )
     }
 
-    func feedbackBannerSurveySource(onCompletion: (SurveyViewController.Source) -> Void) {
-        if isCODEnabled && isIPPSupportedCountry {
+    func feedbackBannerSurveySource() -> SurveyViewController.Source? {
+        if isIPPSupportedCountry {
             fetchIPPTransactions()
+            let hasWCPayIPPResults = wcPayIPPOrdersResultsController.fetchedObjects.isNotEmpty
+            let wcPayIPPResultsCount = wcPayIPPOrdersResultsController.fetchedObjects.count
+            let hasRecentWCPayIPPResults = recentWCPayIPPResultsController.fetchedObjects.isNotEmpty
+            let recentWCPayIPPResultsCount = recentWCPayIPPResultsController.fetchedObjects.count
 
-            let hasWCPayResults = WCPayOrdersResultsController.fetchedObjects.isEmpty ? false : true
-            let WCPayResultsCount = WCPayOrdersResultsController.fetchedObjects.count
-            let hasOneOrMoreWCPayTransactions = (WCPayResultsCount >= 1) ? true : false
-
-            /// In order to filter WCPay transactions processed through IPP within the last 30 days,
-            /// we check if these contain `receipt_url` in their metadata, unlike those processed through a website,
-            /// which doesn't
-            ///
-            let recentIPPWCPayTransactionsFound = recentWCPayIPPResultsController.fetchedObjects.filter({
-                $0.customFields.contains(where: {$0.key == Constants.receiptURLKey }) &&
-                $0.paymentMethodTitle == Constants.paymentMethodTitle})
-            let recentWCPayResultsCount = recentIPPWCPayTransactionsFound.count
-
-            if !hasWCPayResults {
-                // Case 1: No WCPay transactions
-                onCompletion(.inPersonPaymentsCashOnDelivery)
-            } else if hasOneOrMoreWCPayTransactions && (recentWCPayResultsCount < Constants.numberOfTransactions) {
-                // Case 2: One or more WCPay transactions, but less than 10 within latest 30 days
-                onCompletion(.inPersonPaymentsFirstTransaction)
-            } else if WCPayResultsCount >= Constants.numberOfTransactions {
-                // Case 3: More than 10 WCPay transactions
-                onCompletion(.inPersonPaymentsPowerUsers)
+            if !hasWCPayIPPResults {
+                guard isCODEnabled else {
+                    return .none
+                }
+                // Case 1: No WCPay IPP transactions
+                return .inPersonPaymentsCashOnDelivery
+            } else if hasRecentWCPayIPPResults && recentWCPayIPPResultsCount < Constants.numberOfTransactions {
+                // Case 2: One or more WCPay IPP transactions, but fewer than 10 within the last 30 days
+                return .inPersonPaymentsFirstTransaction
+            } else if wcPayIPPResultsCount >= Constants.numberOfTransactions {
+                // Case 3: More than 10 WCPay IPP transactions
+                return .inPersonPaymentsPowerUsers
             }
         }
+        return .none
     }
 
     private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {
@@ -488,16 +493,18 @@ extension OrderListViewModel {
     ///
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
+        let ippSurvey = $ippSurveySource.removeDuplicates()
 
-        Publishers.CombineLatest3(errorState, $hideIPPFeedbackBanner, $hideOrdersBanners)
-            .map { hasError, hasDismissedIPPFeedbackBanner, hasDismissedOrdersBanners -> TopBanner in
+        Publishers.CombineLatest4(errorState, $hideIPPFeedbackBanner, ippSurvey, $hideOrdersBanners)
+            .map { hasError, hasDismissedIPPFeedbackBanner, inPersonPaymentsSurvey, hasDismissedOrdersBanners -> TopBanner in
 
                 guard !hasError else {
                     return .error
                 }
 
-                guard hasDismissedIPPFeedbackBanner else {
-                    return .IPPFeedback
+                if !hasDismissedIPPFeedbackBanner,
+                   let inPersonPaymentsSurvey = inPersonPaymentsSurvey {
+                    return .inPersonPaymentsFeedback(inPersonPaymentsSurvey)
                 }
 
                 return hasDismissedOrdersBanners ? .none : .orderCreation
@@ -540,11 +547,24 @@ extension OrderListViewModel {
 extension OrderListViewModel {
     /// Possible top banners this view model can show.
     ///
-    enum TopBanner {
+    enum TopBanner: Equatable {
         case error
         case orderCreation
-        case IPPFeedback
+        case inPersonPaymentsFeedback(SurveyViewController.Source)
         case none
+
+        static func ==(lhs: TopBanner, rhs: TopBanner) -> Bool {
+            switch (lhs, rhs) {
+            case (.error, .error),
+                (.orderCreation, .orderCreation),
+                (.none, .none):
+                return true
+            case (.inPersonPaymentsFeedback(let lhsSource), .inPersonPaymentsFeedback(let rhsSource)):
+                return lhsSource == rhsSource
+            default:
+                return false
+            }
+        }
     }
 }
 
@@ -552,7 +572,6 @@ extension OrderListViewModel {
 private extension OrderListViewModel {
     enum Constants {
         static let wcpayPaymentMethodID = "woocommerce_payments"
-        static let paymentMethodTitle = "WooCommerce In-Person Payments"
         static let receiptURLKey = "receipt_url"
         static let numberOfTransactions = 10
         static let remindIPPBannerDismissalAfterDays = 7

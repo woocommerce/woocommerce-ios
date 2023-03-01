@@ -31,7 +31,7 @@ final class AddProductCoordinator: Coordinator {
 
     /// Assign this closure to be notified when a new product is saved remotely
     ///
-    var onProductCreated: () -> Void = {}
+    var onProductCreated: (Product) -> Void = { _ in }
 
     init(siteID: Int64,
          sourceBarButtonItem: UIBarButtonItem,

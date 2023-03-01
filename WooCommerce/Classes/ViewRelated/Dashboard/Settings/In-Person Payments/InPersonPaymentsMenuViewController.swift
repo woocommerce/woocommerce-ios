@@ -33,7 +33,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     /// Main TableView
     ///
     private lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .grouped)
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
         return tableView
     }()
 

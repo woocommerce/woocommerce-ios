@@ -561,6 +561,7 @@
 		CC01CE5329B0DC4C004FF537 /* ProductBundleFormLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC01CE5229B0DC4C004FF537 /* ProductBundleFormLocation.swift */; };
 		CC01CE5529B0DEE2004FF537 /* ProductBundleItemGrouping.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC01CE5429B0DEE2004FF537 /* ProductBundleItemGrouping.swift */; };
 		CC01CE5829B0EBED004FF537 /* product-bundle.json in Resources */ = {isa = PBXBuildFile; fileRef = CC01CE5729B0EBED004FF537 /* product-bundle.json */; };
+		CC01CE5A29B0FD61004FF537 /* ProductBundleItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC01CE5929B0FD61004FF537 /* ProductBundleItem.swift */; };
 		CC07865F267799EE00BA9AC1 /* ShippingLabelPurchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC07865E267799EE00BA9AC1 /* ShippingLabelPurchase.swift */; };
 		CC0786612677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0786602677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift */; };
 		CC0786632678F79500BA9AC1 /* shipping-label-purchase-success.json in Resources */ = {isa = PBXBuildFile; fileRef = CC0786622678F79500BA9AC1 /* shipping-label-purchase-success.json */; };
@@ -1447,6 +1448,7 @@
 		CC01CE5229B0DC4C004FF537 /* ProductBundleFormLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBundleFormLocation.swift; sourceTree = "<group>"; };
 		CC01CE5429B0DEE2004FF537 /* ProductBundleItemGrouping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBundleItemGrouping.swift; sourceTree = "<group>"; };
 		CC01CE5729B0EBED004FF537 /* product-bundle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-bundle.json"; sourceTree = "<group>"; };
+		CC01CE5929B0FD61004FF537 /* ProductBundleItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBundleItem.swift; sourceTree = "<group>"; };
 		CC07865E267799EE00BA9AC1 /* ShippingLabelPurchase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPurchase.swift; sourceTree = "<group>"; };
 		CC0786602677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPurchaseMapper.swift; sourceTree = "<group>"; };
 		CC0786622678F79500BA9AC1 /* shipping-label-purchase-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipping-label-purchase-success.json"; sourceTree = "<group>"; };
@@ -2883,6 +2885,7 @@
 				CC01CE5429B0DEE2004FF537 /* ProductBundleItemGrouping.swift */,
 				CC01CE5029B0DC3B004FF537 /* ProductBundleLayout.swift */,
 				CC01CE4E29AFEB87004FF537 /* ProductBundleSoldIndividuallyContext.swift */,
+				CC01CE5929B0FD61004FF537 /* ProductBundleItem.swift */,
 			);
 			path = ProductBundle;
 			sourceTree = "<group>";
@@ -3663,6 +3666,7 @@
 				3178A49F2703E5CF00A8B4CA /* RemoteReaderLocationMapper.swift in Sources */,
 				45D685F823D0BC78005F87D0 /* ProductSkuMapper.swift in Sources */,
 				7412A8EA21B6E192005D182A /* ReportRemote.swift in Sources */,
+				CC01CE5A29B0FD61004FF537 /* ProductBundleItem.swift in Sources */,
 				B5A2417D217F9ECC00595DEF /* MetaContainer.swift in Sources */,
 				025CA2C4238EBC4300B05C81 /* ProductShippingClassRemote.swift in Sources */,
 				D88D5A4B230BCF0A007B6E01 /* ProductReviewListMapper.swift in Sources */,

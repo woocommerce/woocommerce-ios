@@ -316,7 +316,8 @@ extension MockObjectGraph {
             bundleEditableInCart: nil,
             bundleSoldIndividuallyContext: nil,
             bundleStockStatus: nil,
-            bundleStockQuantity: nil
+            bundleStockQuantity: nil,
+            bundledItems: []
         )
     }
 }

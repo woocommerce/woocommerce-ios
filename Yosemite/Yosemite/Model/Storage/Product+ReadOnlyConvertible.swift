@@ -171,7 +171,8 @@ extension Storage.Product: ReadOnlyConvertible {
                        bundleEditableInCart: nil,
                        bundleSoldIndividuallyContext: nil,
                        bundleStockStatus: nil,
-                       bundleStockQuantity: nil)
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 
     // MARK: - Private Helpers

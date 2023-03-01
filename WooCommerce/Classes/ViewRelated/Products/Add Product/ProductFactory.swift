@@ -103,6 +103,7 @@ private extension ProductFactory {
                 bundleEditableInCart: nil,
                 bundleSoldIndividuallyContext: nil,
                 bundleStockStatus: nil,
-                bundleStockQuantity: nil)
+                bundleStockQuantity: nil,
+                bundledItems: [])
     }
 }

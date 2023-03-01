@@ -1,4 +1,5 @@
 import UIKit
+import Experiments
 import Yosemite
 import enum Alamofire.AFError
 import WordPressAuthenticator
@@ -14,6 +15,7 @@ final class JetpackSetupCoordinator {
     private let stores: StoresManager
     private let analytics: Analytics
     private let accountService: WordPressComAccountService
+    private let featureFlagService: FeatureFlagService
 
     private var benefitsController: JetpackBenefitsHostingController?
     private var loginNavigationController: UINavigationController?
@@ -21,12 +23,14 @@ final class JetpackSetupCoordinator {
     init(site: Site,
          navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics) {
         self.site = site
         self.requiresConnectionOnly = false // to be updated later after fetching Jetpack status
         self.navigationController = navigationController
         self.stores = stores
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
 
         /// the authenticator needs to be initialized with configs
         /// to be used for requesting authentication link and handle login later.
@@ -118,7 +122,11 @@ private extension JetpackSetupCoordinator {
         })
         benefitsController?.present(UINavigationController(rootViewController: viewController), animated: true)
     }
+}
 
+// MARK: - WPCom Login flow
+//
+private extension JetpackSetupCoordinator {
     func showWPComEmailLogin() {
         let emailLoginController = WPComEmailLoginHostingController(siteURL: site.url,
                                                                     requiresConnectionOnly: requiresConnectionOnly,
@@ -132,13 +140,41 @@ private extension JetpackSetupCoordinator {
 
     func checkWordPressComAccount(email: String) async {
         await withCheckedContinuation { continuation -> Void in
-            accountService.isPasswordlessAccount(username: email, success: { passwordless in
-                DDLogInfo("✅ account check done - passwordless: \(passwordless)")
-                continuation.resume()
+            accountService.isPasswordlessAccount(username: email, success: { [weak self] passwordless in
+                self?.startAuthentication(email: email, isPasswordlessAccount: passwordless) {
+                    continuation.resume()
+                }
             }, failure: { error in
                 DDLogError("⛔️ Error checking for passwordless account: \(error)")
+                #warning("TODO: show error alert")
                 continuation.resume()
             })
         }
+    }
+
+    func startAuthentication(email: String, isPasswordlessAccount: Bool, onCompletion: @escaping () -> Void) {
+        if isPasswordlessAccount || featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis) {
+            Task { @MainActor in
+                do {
+                    try await requestAuthenticationLink(email: email)
+                    onCompletion()
+                    #warning("TODO: show magic login UI")
+                } catch {
+                    onCompletion()
+                    if isPasswordlessAccount {
+                        #warning("TODO: error UI")
+                    } else {
+                        #warning("TODO: show password UI")
+                    }
+                }
+            }
+        } else {
+            #warning("TODO: show password UI")
+            onCompletion()
+        }
+    }
+
+    func requestAuthenticationLink(email: String) async throws {
+        // TODO
     }
 }

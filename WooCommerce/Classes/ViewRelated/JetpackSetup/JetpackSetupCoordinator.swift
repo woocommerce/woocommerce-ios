@@ -105,8 +105,7 @@ private extension JetpackSetupCoordinator {
                 displayAdminRoleRequiredError()
                 requiresConnectionOnly = true
             default:
-                #warning("TODO: show generic error alert")
-                break
+                showAlert(message: Localization.errorCheckingJetpack, in: navigationController.topmostPresentedViewController)
             }
         }
     }
@@ -184,3 +183,36 @@ private extension JetpackSetupCoordinator {
         }
     }
 }
+
+// MARK: - Error handling
+//
+private extension JetpackSetupCoordinator {
+    /// Shows an error alert with a button to retry the failed action.
+    ///
+    func showAlert(message: String,
+                   in viewController: UIViewController,
+                   onRetry: (() -> Void)? = nil) {
+        let alert = UIAlertController(title: message,
+                                      message: nil,
+                                      preferredStyle: .alert)
+        if let onRetry {
+            let retryAction = UIAlertAction(title: Localization.retryButton, style: .default) { _ in
+                onRetry()
+            }
+            alert.addAction(retryAction)
+        }
+        let cancelAction = UIAlertAction(title: Localization.cancelButton, style: .cancel)
+        alert.addAction(cancelAction)
+        viewController.present(alert, animated: true)
+    }
+
+    enum Localization {
+        static let retryButton = NSLocalizedString("Try Again", comment: "Button to retry a failed action in the Jetpack setup flow")
+        static let cancelButton = NSLocalizedString("Cancel", comment: "Button to dismiss an error alert in the Jetpack setup flow")
+        static let errorCheckingJetpack = NSLocalizedString(
+            "Error checking the Jetpack connection on your site",
+            comment: "Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow."
+        )
+    }
+}
+

@@ -556,9 +556,9 @@ private extension InPersonPaymentsMenuViewController {
         )
 
         static let tapToPayOnIPhone = NSLocalizedString(
-            "Tap to Pay on iPhone",
-            comment: "Navigates to the Tap to Pay on iPhone setup screen. The full name is expected by Apple. " +
-            "The destination screen also allows for a test payment, after setup.")
+            "Set up Tap to Pay on iPhone",
+            comment: "Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. " +
+            "The destination screen also allows for a test payment, after set up.")
 
         static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
             "In-Person Payments setup is incomplete.",

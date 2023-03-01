@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-02-09 11:54:20+0000 */
+/* Translation-Revision-Date: 2023-02-22 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -49,6 +49,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about adding Pay in Person to your checkout" = "購入手続きに直接支払いを追加する方法について%1$@";
+
+/* Learn more format at the bottom of the domain settings screen. %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains. */
+"%1$@ about domains and how to take domain-related actions." = "ドメインやドメインに関連する対処方法については、%1$@。";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "最後の4桁が%2$@の %1$@ カード";
@@ -1261,6 +1264,9 @@ which should be translated separately and considered part of this sentence. */
 /* Card method title on the select payment method screen */
 "Card" = "カード";
 
+/* Title of the card reader support area option */
+"Card Reader \/ In-Person Payments" = "カードリーダー \/ 対面決済";
+
 /* Navigates to Card Reader Manuals screen */
 "Card Reader Manuals" = "カードリーダーマニュアル";
 
@@ -1510,6 +1516,9 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "設定を更新しました";
 
+/* My Store > Settings > Configure section title */
+"Configure" = "設定";
+
 /* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
 "Configuring iPhone" = "iPhone を設定しています";
 
@@ -1625,7 +1634,8 @@ which should be translated separately and considered part of this sentence. */
    Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
-   Title of the button to contact support for help accessing a store after Jetpack setup */
+   Title of the button to contact support for help accessing a store after Jetpack setup
+   Title of the view for contacting support. */
 "Contact Support" = "サポートに問い合わせる";
 
 /* Contact WooComerce Payments Support title */
@@ -2163,7 +2173,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to domain settings screen.
    Navigation bar title of the domain settings screen. */
-"Domain" = "ドメイン";
+"Domains" = "ドメイン";
 
 /* Country option for a site address. */
 "Dominica" = "ドミニカ";
@@ -2462,6 +2472,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* City field placeholder in Edit Address Form */
 "Enter City" = "都市名を入力";
+
+/* Phone country code field placeholder in Edit Address Form */
+"Enter Country Code" = "国番号を入力してください";
 
 /* Email field placeholder in Edit Address Form
    Placeholder of the row that holds the provided email when creating a simple payment */
@@ -3026,6 +3039,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google の登録に失敗しました。";
 
+/* Confirmation button for the alert after the support request is created. */
+"Got It!" = "承知しました !";
+
 /* Industry option in the store creation category question. */
 "Government Services" = "行政サービス";
 
@@ -3217,6 +3233,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option in the store creation selling status question. */
 "I am selling offline" = "オフラインで販売している";
+
+/* Text on the support form to refer to what area the user has problem with. */
+"I need help with" = "サポートが必要な領域";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "処理するアイテム";
@@ -3625,6 +3644,7 @@ which should be translated separately and considered part of this sentence. */
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
+   Tappable text at the bottom of the domain settings screen that opens a webview.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
@@ -3670,6 +3690,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "レター (8.5 x 11インチ)";
+
+/* Title to let the user know what do we want on the support screen. */
+"Let’s get this sorted" = "問題を解決しましょう";
 
 /* Country option for a site address. */
 "Liberia" = "リベリア";
@@ -3986,7 +4009,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Type Merchandise of content to be declared for the customs form in Shipping Label flow */
 "Merchandise" = "商品";
 
-/* Message phone number button title */
+/* Message on the support form
+   Message phone number button title */
 "Message" = "メッセージ";
 
 /* Country option for a site address. */
@@ -4009,6 +4033,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
 "Mixed" = "混合";
+
+/* Title of the mobile app support area option */
+"Mobile App" = "モバイルアプリ";
 
 /* Country option for a site address. */
 "Moldova" = "モルドバ";
@@ -4559,6 +4586,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Other Entertainment And Recreation" = "その他の娯楽、レクリエーション";
 
+/* Title of the Other Plugin support area option */
+"Other Extension \/ Plugin" = "その他の拡張機能 \/ プラグイン";
+
 /* Industry option in the store creation category question. */
 "Other Financial Institutions" = "その他の金融機関";
 
@@ -4775,6 +4805,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "電話";
+
+/* Text field phone country code in Edit Address Form */
+"Phone country code" = "国番号";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "電話番号: %@";
@@ -5500,6 +5533,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "クラッシュをレポート";
+
+/* Title for the alert after the support request is created. */
+"Request Sent!" = "リクエストを送信しました。";
 
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
@@ -6267,6 +6303,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "ユーザー名には半角小文字 (a-z) を必ず含めてください。";
 
+/* Error message when the app can't create a zendesk identity. */
+"Sorry, we cannot create support requests right now, please try again later." = "申し訳ありません。現在、サポートリクエストを作成できません。しばらくしてからもう一度お試しください。";
+
+/* Error message when the app can't create a support request. */
+"Sorry, we could not create your support request, please try again later." = "申し訳ありません。サポートリクエストを作成できませんでした。しばらくしてからもう一度お試しください。";
+
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "ご指定のサイトアドレスはご利用いただけません。";
 
@@ -6381,6 +6423,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "取り消し線";
+
+/* Subject title on the support form */
+"Subject" = "件名";
+
+/* Button title to submit a support request. */
+"Submit Support Request" = "サポートリクエストを送信";
 
 /* Display label for subscription product type. */
 "Subscription" = "定期購入";
@@ -6651,6 +6699,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@ についてもう少しお聞かせください...";
+
+/* Message info on the support screen. */
+"Tell us much as you can about the problem, and we will be in touch soon." = "問題についてできるだけ詳しくご説明ください。折り返しご連絡いたします。";
 
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
@@ -8116,6 +8167,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce モバイルアプリで、どこからでもストアを運営";
 
+/* Title of the WooCommerce Payments support area option */
+"WooCommerce Payments" = "WooCommerce Payments";
+
+/* Title of the WooCommerce Plugin support area option */
+"WooCommerce Plugin" = "WooCommerce プラグイン";
+
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "WooCommerce 設定";
 
@@ -8283,6 +8340,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "選択したオプションに基づいてストアが作成されます。";
+
+/* Message for the alert after the support request is created. */
+"Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "サポートリクエストを受信しました。 できるだけ早くメールで返信いたします。";
 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "オフラインでの支払いを受け取るには、無料の WooCommerce Payments 拡張機能をストアにインストールする必要があります。";

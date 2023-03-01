@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-02-10 12:22:55+0000 */
+/* Translation-Revision-Date: 2023-02-24 12:03:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -49,6 +49,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about adding Pay in Person to your checkout" = "%1$@ over fysieke betalingen toevoegen aan je online kassa";
+
+/* Learn more format at the bottom of the domain settings screen. %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains. */
+"%1$@ about domains and how to take domain-related actions." = "%1$@ over domeinen en hoe je domeingerelateerde acties kunt ondernemen.";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ eindigt op %2$@";
@@ -1261,6 +1264,9 @@ which should be translated separately and considered part of this sentence. */
 /* Card method title on the select payment method screen */
 "Card" = "Kaart";
 
+/* Title of the card reader support area option */
+"Card Reader \/ In-Person Payments" = "Kaartlezer \/ Fysieke betalingen";
+
 /* Navigates to Card Reader Manuals screen */
 "Card Reader Manuals" = "Handleidingen kaartlezer";
 
@@ -1510,6 +1516,9 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "Configuratie bijgewerkt";
 
+/* My Store > Settings > Configure section title */
+"Configure" = "Configureren";
+
 /* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
 "Configuring iPhone" = "iPhone aan het configureren";
 
@@ -1625,7 +1634,8 @@ which should be translated separately and considered part of this sentence. */
    Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
-   Title of the button to contact support for help accessing a store after Jetpack setup */
+   Title of the button to contact support for help accessing a store after Jetpack setup
+   Title of the view for contacting support. */
 "Contact Support" = "Neem contact op met Support";
 
 /* Contact WooComerce Payments Support title */
@@ -2163,7 +2173,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to domain settings screen.
    Navigation bar title of the domain settings screen. */
-"Domain" = "Domein";
+"Domains" = "Domeinen";
 
 /* Country option for a site address. */
 "Dominica" = "Dominica";
@@ -2462,6 +2472,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* City field placeholder in Edit Address Form */
 "Enter City" = "Stad invoeren";
+
+/* Phone country code field placeholder in Edit Address Form */
+"Enter Country Code" = "Landcode invoeren";
 
 /* Email field placeholder in Edit Address Form
    Placeholder of the row that holds the provided email when creating a simple payment */
@@ -3026,6 +3039,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Aanmelden met Google mislukt.";
 
+/* Confirmation button for the alert after the support request is created. */
+"Got It!" = "Begrepen!";
+
 /* Industry option in the store creation category question. */
 "Government Services" = "Overheidsdiensten";
 
@@ -3217,6 +3233,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option in the store creation selling status question. */
 "I am selling offline" = "Ik verkoop online";
+
+/* Text on the support form to refer to what area the user has problem with. */
+"I need help with" = "Ik heb hulp nodig met";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "ARTIKELEN OM TE VOLTOOIEN";
@@ -3625,6 +3644,7 @@ which should be translated separately and considered part of this sentence. */
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
+   Tappable text at the bottom of the domain settings screen that opens a webview.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
@@ -3670,6 +3690,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Brief (8,5 x 11 inch)";
+
+/* Title to let the user know what do we want on the support screen. */
+"Let’s get this sorted" = "Laten we dit oplossen";
 
 /* Country option for a site address. */
 "Liberia" = "Liberia";
@@ -3986,7 +4009,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Type Merchandise of content to be declared for the customs form in Shipping Label flow */
 "Merchandise" = "Merchandise";
 
-/* Message phone number button title */
+/* Message on the support form
+   Message phone number button title */
 "Message" = "Bericht";
 
 /* Country option for a site address. */
@@ -4009,6 +4033,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
 "Mixed" = "Gecombineerd";
+
+/* Title of the mobile app support area option */
+"Mobile App" = "Mobiele app";
 
 /* Country option for a site address. */
 "Moldova" = "Moldavië";
@@ -4559,6 +4586,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Other Entertainment And Recreation" = "Overige entertainment en recreatie";
 
+/* Title of the Other Plugin support area option */
+"Other Extension \/ Plugin" = "Andere extensie \/ plugin";
+
 /* Industry option in the store creation category question. */
 "Other Financial Institutions" = "Overige financiële instellingen";
 
@@ -4775,6 +4805,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "Telefoonnummer";
+
+/* Text field phone country code in Edit Address Form */
+"Phone country code" = "Landcode telefoon";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Telefoonnummer: %@";
@@ -5500,6 +5533,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Crashes melden";
+
+/* Title for the alert after the support request is created. */
+"Request Sent!" = "Verzoek verstuurd!";
 
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
@@ -6267,6 +6303,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "Sorry, de gebruikersnamen moeten ook de letter (a-z) bevatten!";
 
+/* Error message when the app can't create a zendesk identity. */
+"Sorry, we cannot create support requests right now, please try again later." = "Helaas, we kunnen ondersteuningsverzoeken nu niet aanmaken, probeer het later opnieuw.";
+
+/* Error message when the app can't create a support request. */
+"Sorry, we could not create your support request, please try again later." = "Helaas, we konden je ondersteuningsverzoek niet aanmaken, probeer het later opnieuw.";
+
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Sorry, je mag dit site adres niet gebruiken.";
 
@@ -6381,6 +6423,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Doorstrepen";
+
+/* Subject title on the support form */
+"Subject" = "Onderwerp";
+
+/* Button title to submit a support request. */
+"Submit Support Request" = "Ondersteuningsverzoek indienen";
 
 /* Display label for subscription product type. */
 "Subscription" = "Abonnement";
@@ -6651,6 +6699,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Vertel ons meer over %1$@...";
+
+/* Message info on the support screen. */
+"Tell us much as you can about the problem, and we will be in touch soon." = "Vertel ons zoveel mogelijk over het probleem en we nemen snel contact met je op.";
 
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
@@ -8116,6 +8167,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce mobiele app: run je winkel waar je ook bent";
 
+/* Title of the WooCommerce Payments support area option */
+"WooCommerce Payments" = "WooCommerce Payments";
+
+/* Title of the WooCommerce Plugin support area option */
+"WooCommerce Plugin" = "WooCommerce-plugin";
+
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "WooCommerce instellingen";
 
@@ -8283,6 +8340,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Je winkel wordt aangemaakt op basis van de opties die jij kiest!";
+
+/* Message for the alert after the support request is created. */
+"Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Je ondersteuningsverzoek is in goede orde bij ons aangekomen. We zullen zo snel mogelijk via e-mail reageren.";
 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Je moet de gratis WooCommerce Payments-extensie installeren in je winkel om fysieke betalingen aan te nemen.";

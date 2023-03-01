@@ -64,9 +64,16 @@ struct JetpackBenefitsView: View {
                     JetpackBenefitItem(title: Localization.analyticsBenefitTitle,
                                        subtitle: Localization.analyticsBenefitSubtitle,
                                        icon: .analyticsImage)
-                    JetpackBenefitItem(title: Localization.userProfilesBenefitTitle,
-                                       subtitle: Localization.userProfilesBenefitSubtitle,
-                                       icon: .multipleUsersImage)
+                    if viewModel.isJetpackCPSite {
+                        JetpackBenefitItem(title: Localization.userProfilesBenefitTitle,
+                                           subtitle: Localization.userProfilesBenefitSubtitle,
+                                           icon: .multipleUsersImage)
+                    } else {
+                        #warning("TODO-8912: update icon for multiple stores")
+                        JetpackBenefitItem(title: Localization.multiStoresBenefitTitle,
+                                           subtitle: Localization.multiStoresBenefitSubtitle,
+                                           icon: .multipleUsersImage)
+                    }
                 }.padding([.leading, .trailing], insets: Layout.horizontalPaddingInBenefitList)
 
                 Spacer().frame(height: Layout.verticalSpacing)
@@ -77,7 +84,7 @@ struct JetpackBenefitsView: View {
             // Actions
             VStack(spacing: Layout.spacingBetweenCTAs) {
                 // Primary Button to install Jetpack
-                Button(Localization.installAction) {
+                Button(viewModel.isJetpackCPSite ? Localization.installAction : Localization.loginAction) {
                     Task { @MainActor in
                         isPrimaryButtonLoading = true
                         let result = await viewModel.fetchJetpackUser()
@@ -127,6 +134,11 @@ private extension JetpackBenefitsView {
         static let userProfilesBenefitSubtitle =
         NSLocalizedString("Allow multiple users to access WooCommerce Mobile.",
                           comment: "Subtitle of user profiles as part of Jetpack benefits.")
+        static let multiStoresBenefitTitle = NSLocalizedString("Multiple Stores", comment: "Title of multiple stores as part of Jetpack benefits.")
+        static let multiStoresBenefitSubtitle =
+        NSLocalizedString("Get access to all of your WooCommerce stores.",
+                          comment: "Subtitle of multiple stores as part of Jetpack benefits.")
+        static let loginAction = NSLocalizedString("Log In to Continue", comment: "Button to start the WPCom login flow from the Jetpack benefits screen.")
     }
 }
 

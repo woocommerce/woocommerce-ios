@@ -8,6 +8,8 @@ final class DomainSettingsCoordinator: Coordinator {
     enum Source {
         /// Initiated from the settings.
         case settings
+        /// Initiated from store onboarding in dashboard.
+        case dashboardOnboarding
     }
 
     let navigationController: UINavigationController
@@ -36,6 +38,8 @@ final class DomainSettingsCoordinator: Coordinator {
                                                                               stores: stores)) { [weak self] hasDomainCredit, freeStagingDomain in
             guard let self else { return }
             self.showDomainSelector(from: settingsNavigationController, hasDomainCredit: hasDomainCredit, freeStagingDomain: freeStagingDomain)
+        } onClose: { [weak self] in
+            self?.navigationController.dismiss(animated: true)
         }
         settingsNavigationController.pushViewController(domainSettings, animated: false)
         navigationController.present(settingsNavigationController, animated: true)

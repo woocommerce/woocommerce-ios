@@ -187,7 +187,11 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
     /// Additionally we don't take dates into consideration as we don't control their value when creating a product.
     ///
     func isEmpty() -> Bool {
-        guard let emptyProduct = ProductFactory().createNewProduct(type: productType, isVirtual: virtual, siteID: siteID) else {
+        let simplifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
+        guard let emptyProduct = ProductFactory().createNewProduct(type: productType,
+                                                                   isVirtual: virtual,
+                                                                   siteID: siteID,
+                                                                   status: simplifiedEditingEnabled ? .draft : .published) else {
             return false
         }
 

@@ -33,6 +33,7 @@ public enum ProductFactory {
                             regularPrice: "10.0",
                             salePrice: "5.0",
                             downloadable: true,
+                            downloads: [.fake()],
                             downloadLimit: 100,
                             downloadExpiry: 200,
                             taxStatusKey: ProductTaxStatus.taxable.rawValue,

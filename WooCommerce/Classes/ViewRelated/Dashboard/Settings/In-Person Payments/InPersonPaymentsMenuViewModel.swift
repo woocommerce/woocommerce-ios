@@ -37,6 +37,10 @@ final class InPersonPaymentsMenuViewModel {
         cardPresentPaymentsConfiguration.isSupportedCountry
     }
 
+    var isEligibleForTapToPayOnIPhone: Bool {
+        return isEligibleForCardPresentPayments && cardPresentPaymentsConfiguration.supportedReaders.contains { $0 == .appleBuiltIn }
+    }
+
     let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     init(dependencies: Dependencies = Dependencies(),

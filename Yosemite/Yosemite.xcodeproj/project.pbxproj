@@ -403,7 +403,6 @@
 		DEFD6D972644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */; };
 		E109876C284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109876B284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift */; };
 		E138D4FA269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4F9269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift */; };
-		E16B1BB02906C54C000F683D /* InAppPurchaseReceiptRefreshRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16B1BAF2906C54C000F683D /* InAppPurchaseReceiptRefreshRequest.swift */; };
 		E16C59BB28F9393E007D55BB /* InAppPurchaseStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16C59BA28F9393E007D55BB /* InAppPurchaseStore.swift */; };
 		E16C59BD28F9394F007D55BB /* InAppPurchaseAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16C59BC28F9394F007D55BB /* InAppPurchaseAction.swift */; };
 		E18FDAFE28F97EB9008519BA /* AppAccountToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18FDAFD28F97EB9008519BA /* AppAccountToken.swift */; };
@@ -843,7 +842,6 @@
 		DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		E109876B284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsPluginState.swift; sourceTree = "<group>"; };
 		E138D4F9269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingState.swift; sourceTree = "<group>"; };
-		E16B1BAF2906C54C000F683D /* InAppPurchaseReceiptRefreshRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseReceiptRefreshRequest.swift; sourceTree = "<group>"; };
 		E16C59BA28F9393E007D55BB /* InAppPurchaseStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseStore.swift; sourceTree = "<group>"; };
 		E16C59BC28F9394F007D55BB /* InAppPurchaseAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseAction.swift; sourceTree = "<group>"; };
 		E18FDAFD28F97EB9008519BA /* AppAccountToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAccountToken.swift; sourceTree = "<group>"; };
@@ -1743,7 +1741,6 @@
 			isa = PBXGroup;
 			children = (
 				E18FDAFD28F97EB9008519BA /* AppAccountToken.swift */,
-				E16B1BAF2906C54C000F683D /* InAppPurchaseReceiptRefreshRequest.swift */,
 			);
 			path = InAppPurchases;
 			sourceTree = "<group>";
@@ -1981,7 +1978,6 @@
 				45E18632237046CB009241F3 /* ShippingLine+ReadOnlyConvertible.swift in Sources */,
 				7493750A22498700007D85D1 /* ProductCategory+ReadOnlyConvertible.swift in Sources */,
 				D8C11A5622DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift in Sources */,
-				E16B1BB02906C54C000F683D /* InAppPurchaseReceiptRefreshRequest.swift in Sources */,
 				CC2C0372262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift in Sources */,
 				74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */,
 				7471401121877668009A11CC /* NotificationAction.swift in Sources */,

@@ -797,6 +797,7 @@
 		EE2C09C229AF26B2009396F9 /* StoreOnboardingTaskListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2C09C129AF26B2009396F9 /* StoreOnboardingTaskListMapper.swift */; };
 		EE2C09C429AF5274009396F9 /* StoreOnboardingTaskListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2C09C329AF5274009396F9 /* StoreOnboardingTaskListMapperTests.swift */; };
 		EE2C09C629AF60BA009396F9 /* store-onboarding-tasks-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE2C09C529AF60BA009396F9 /* store-onboarding-tasks-without-data.json */; };
+		EE2C09C829AF6357009396F9 /* StoreOnboardingTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2C09C729AF6357009396F9 /* StoreOnboardingTask.swift */; };
 		EE338A0E294AF9BD00183934 /* ApplicationPasswordMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE338A0D294AF9BD00183934 /* ApplicationPasswordMapperTests.swift */; };
 		EE54C89F2947782E00A9BF61 /* ApplicationPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE54C89E2947782E00A9BF61 /* ApplicationPasswordUseCase.swift */; };
 		EE54C8A729486B6800A9BF61 /* ApplicationPasswordMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE54C8A629486B6800A9BF61 /* ApplicationPasswordMapper.swift */; };
@@ -1684,6 +1685,7 @@
 		EE2C09C129AF26B2009396F9 /* StoreOnboardingTaskListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTaskListMapper.swift; sourceTree = "<group>"; };
 		EE2C09C329AF5274009396F9 /* StoreOnboardingTaskListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTaskListMapperTests.swift; sourceTree = "<group>"; };
 		EE2C09C529AF60BA009396F9 /* store-onboarding-tasks-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "store-onboarding-tasks-without-data.json"; sourceTree = "<group>"; };
+		EE2C09C729AF6357009396F9 /* StoreOnboardingTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTask.swift; sourceTree = "<group>"; };
 		EE338A0D294AF9BD00183934 /* ApplicationPasswordMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordMapperTests.swift; sourceTree = "<group>"; };
 		EE54C89E2947782E00A9BF61 /* ApplicationPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordUseCase.swift; sourceTree = "<group>"; };
 		EE54C8A629486B6800A9BF61 /* ApplicationPasswordMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordMapper.swift; sourceTree = "<group>"; };
@@ -2278,6 +2280,7 @@
 				0359EA1027AAC6740048DE2D /* WCPayPaymentMethodType.swift */,
 				E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */,
 				DE2E8E9C29530EEF002E4B14 /* WordPressSite.swift */,
+				EE2C09C729AF6357009396F9 /* StoreOnboardingTask.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -3647,6 +3650,7 @@
 				7426CA1121AF30BD004E9FFC /* SiteAPIMapper.swift in Sources */,
 				57E8FED3246616AC0057CD68 /* Result+Extensions.swift in Sources */,
 				020D07BC23D856BF00FD9580 /* MediaRemote.swift in Sources */,
+				EE2C09C829AF6357009396F9 /* StoreOnboardingTask.swift in Sources */,
 				D823D91022377B4F00C90817 /* ShipmentTrackingProviderGroup.swift in Sources */,
 				743E84EC22171F4600FAC9D7 /* ShipmentTracking.swift in Sources */,
 				68F48B0B28E3B1CD0045C15B /* WCAnalyticsCustomerRemote.swift in Sources */,

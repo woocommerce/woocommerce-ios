@@ -203,7 +203,7 @@ private extension InPersonPaymentsMenuViewController {
               featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhone) else {
             return nil
         }
-        return Section(header: nil, rows: [.tapToPayOnIPhone])
+        return Section(header: nil, rows: [.setUpTapToPayOnIPhone])
     }
 
     var cardReadersSection: Section? {
@@ -269,8 +269,8 @@ private extension InPersonPaymentsMenuViewController {
             configureCollectPayment(cell: cell)
         case let cell as LeftImageTitleSubtitleToggleTableViewCell where row == .toggleEnableCashOnDelivery:
             configureToggleEnableCashOnDelivery(cell: cell)
-        case let cell as LeftImageTableViewCell where row == .tapToPayOnIPhone:
-            configureTapToPayOnIPhone(cell: cell)
+        case let cell as LeftImageTableViewCell where row == .setUpTapToPayOnIPhone:
+            configureSetUpTapToPayOnIPhone(cell: cell)
         default:
             fatalError()
         }
@@ -323,7 +323,7 @@ private extension InPersonPaymentsMenuViewController {
         })
     }
 
-    func configureTapToPayOnIPhone(cell: LeftImageTableViewCell) {
+    func configureSetUpTapToPayOnIPhone(cell: LeftImageTableViewCell) {
         prepareForReuse(cell)
         cell.configure(image: UIImage(systemName: "wave.3.right.circle") ?? .creditCardIcon,
                        text: Localization.tapToPayOnIPhone)
@@ -480,8 +480,8 @@ extension InPersonPaymentsMenuViewController: UITableViewDelegate {
             collectPaymentWasPressed()
         case .toggleEnableCashOnDelivery:
             break
-        case .tapToPayOnIPhone:
-            tapToPayOnIPhoneWasPressed()
+        case .setUpTapToPayOnIPhone:
+            setUpTapToPayOnIPhoneWasPressed()
         }
     }
 
@@ -590,7 +590,7 @@ private enum Row: CaseIterable {
     case managePaymentGateways
     case collectPayment
     case toggleEnableCashOnDelivery
-    case tapToPayOnIPhone
+    case setUpTapToPayOnIPhone
 
     var type: UITableViewCell.Type {
         switch self {

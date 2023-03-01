@@ -1,7 +1,6 @@
 import Combine
 import UIKit
 import struct WordPressUI.GhostStyle
-import XLPagerTabStrip
 import Yosemite
 import WooFoundation
 
@@ -217,17 +216,6 @@ extension StoreStatsAndTopPerformersPeriodViewController {
             return
         }
         topPerformersHeaderView.restartGhostAnimation(style: Constants.ghostStyle)
-    }
-}
-
-// MARK: - IndicatorInfoProvider Conformance (Tab Bar)
-//
-extension StoreStatsAndTopPerformersPeriodViewController: IndicatorInfoProvider {
-    func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(
-            title: timeRange.tabTitle,
-            accessibilityIdentifier: "period-data-" + timeRange.rawValue + "-tab"
-        )
     }
 }
 

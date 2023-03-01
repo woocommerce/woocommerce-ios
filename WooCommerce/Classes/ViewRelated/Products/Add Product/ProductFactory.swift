@@ -7,11 +7,13 @@ struct ProductFactory {
     ///
     /// - Parameters:
     ///   - type: The type of the product.
+    ///   - isVirtual: Whether the product is virtual (for simple products).
     ///   - siteID: The site ID where the product is added to.
-    func createNewProduct(type: ProductType, isVirtual: Bool, siteID: Int64) -> Product? {
+    ///   - status: The status of the new product.
+    func createNewProduct(type: ProductType, isVirtual: Bool, siteID: Int64, status: ProductStatus = .published) -> Product? {
         switch type {
         case .simple, .grouped, .variable, .affiliate:
-            return createEmptyProduct(type: type, isVirtual: isVirtual, siteID: siteID)
+            return createEmptyProduct(type: type, isVirtual: isVirtual, siteID: siteID, status: status)
         default:
             return nil
         }
@@ -20,13 +22,16 @@ struct ProductFactory {
     /// Copies a product by cleaning properties like `id, name, statusKey, and groupedProducts` to their default state.
     /// This is useful to turn an existing (on core) `auto-draft` product into a new app-product ready to be saved.
     ///
-    func newProduct(from existingProduct: Product) -> Product {
-        existingProduct.copy(productID: 0, name: "", statusKey: ProductStatus.published.rawValue, groupedProducts: [])
+    /// - Parameters:
+    ///   - existingProduct: The product to copy.
+    ///   - status: The status of the new product.
+    func newProduct(from existingProduct: Product, status: ProductStatus = .published) -> Product {
+        return existingProduct.copy(productID: 0, name: "", statusKey: status.rawValue, groupedProducts: [])
     }
 }
 
 private extension ProductFactory {
-    func createEmptyProduct(type: ProductType, isVirtual: Bool, siteID: Int64) -> Product {
+    func createEmptyProduct(type: ProductType, isVirtual: Bool, siteID: Int64, status: ProductStatus) -> Product {
         Product(siteID: siteID,
                 productID: 0,
                 name: "",
@@ -38,7 +43,7 @@ private extension ProductFactory {
                 dateOnSaleStart: nil,
                 dateOnSaleEnd: nil,
                 productTypeKey: type.rawValue,
-                statusKey: ProductStatus.published.rawValue,
+                statusKey: status.rawValue,
                 featured: false,
                 catalogVisibilityKey: ProductCatalogVisibility.visible.rawValue,
                 fullDescription: "",

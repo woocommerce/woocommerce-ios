@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-02-09 15:54:05+0000 */
+/* Translation-Revision-Date: 2023-02-22 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -49,6 +49,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about adding Pay in Person to your checkout" = "%1$@ בנושא הוספת 'תשלום באופן אישי' בקופה שלך";
+
+/* Learn more format at the bottom of the domain settings screen. %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains. */
+"%1$@ about domains and how to take domain-related actions." = "%1$@ על דומיינים ואיך לבצע פעולות שקשורות לדומיינים.";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "כרטיס %1$@ שמסתיים בספרות %2$@";
@@ -1261,6 +1264,9 @@ which should be translated separately and considered part of this sentence. */
 /* Card method title on the select payment method screen */
 "Card" = "כרטיס";
 
+/* Title of the card reader support area option */
+"Card Reader \/ In-Person Payments" = "קורא כרטיסים \/ תשלומים באופן אישי";
+
 /* Navigates to Card Reader Manuals screen */
 "Card Reader Manuals" = "מדריכים לקורא הכרטיסים";
 
@@ -1510,6 +1516,9 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "ההגדרה עודכנה";
 
+/* My Store > Settings > Configure section title */
+"Configure" = "הגדר";
+
 /* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
 "Configuring iPhone" = "מגדיר את ה-iPhone";
 
@@ -1625,7 +1634,8 @@ which should be translated separately and considered part of this sentence. */
    Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
-   Title of the button to contact support for help accessing a store after Jetpack setup */
+   Title of the button to contact support for help accessing a store after Jetpack setup
+   Title of the view for contacting support. */
 "Contact Support" = "ליצור קשר עם התמיכה";
 
 /* Contact WooComerce Payments Support title */
@@ -2163,7 +2173,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to domain settings screen.
    Navigation bar title of the domain settings screen. */
-"Domain" = "דומיין";
+"Domains" = "דומיינים";
 
 /* Country option for a site address. */
 "Dominica" = "דומיניקה";
@@ -2462,6 +2472,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* City field placeholder in Edit Address Form */
 "Enter City" = "יש להזין עיר";
+
+/* Phone country code field placeholder in Edit Address Form */
+"Enter Country Code" = "יש להזין כאן קידומת טלפון בינלאומית";
 
 /* Email field placeholder in Edit Address Form
    Placeholder of the row that holds the provided email when creating a simple payment */
@@ -3026,6 +3039,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "ההרשמה ל-Google נכשלה.";
 
+/* Confirmation button for the alert after the support request is created. */
+"Got It!" = "הבנתי!";
+
 /* Industry option in the store creation category question. */
 "Government Services" = "שירותים ממשלתיים";
 
@@ -3217,6 +3233,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option in the store creation selling status question. */
 "I am selling offline" = "המכירות שלי מתבצעות באופן לא מקוון";
+
+/* Text on the support form to refer to what area the user has problem with. */
+"I need help with" = "דרושה לי עזרה לגבי";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "פריטים להשלמה";
@@ -3625,6 +3644,7 @@ which should be translated separately and considered part of this sentence. */
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Settings > Privacy Settings. A text link to the cookie policy.
+   Tappable text at the bottom of the domain settings screen that opens a webview.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
@@ -3670,6 +3690,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "מכתב (8.5 x‏ 11 אינץ')";
+
+/* Title to let the user know what do we want on the support screen. */
+"Let’s get this sorted" = "ננסה לתקן את הבעיה עכשיו";
 
 /* Country option for a site address. */
 "Liberia" = "ליבריה";
@@ -3986,7 +4009,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Type Merchandise of content to be declared for the customs form in Shipping Label flow */
 "Merchandise" = "סחורה רשמית";
 
-/* Message phone number button title */
+/* Message on the support form
+   Message phone number button title */
 "Message" = "הודעה";
 
 /* Country option for a site address. */
@@ -4009,6 +4033,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
 "Mixed" = "משולב";
+
+/* Title of the mobile app support area option */
+"Mobile App" = "אפליקציה לנייד";
 
 /* Country option for a site address. */
 "Moldova" = "מולדובה";
@@ -4559,6 +4586,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Other Entertainment And Recreation" = "בידור ופנאי אחרים";
 
+/* Title of the Other Plugin support area option */
+"Other Extension \/ Plugin" = "הרחבה \/ תוסף שונה";
+
 /* Industry option in the store creation category question. */
 "Other Financial Institutions" = "מוסדות פיננסיים אחרים";
 
@@ -4775,6 +4805,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "טלפון";
+
+/* Text field phone country code in Edit Address Form */
+"Phone country code" = "קידומת טלפון בינלאומית";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "מספר טלפון: ‎%@";
@@ -5500,6 +5533,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "דיווח על קריסות";
+
+/* Title for the alert after the support request is created. */
+"Request Sent!" = "הבקשה נשלחה!";
 
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
@@ -6267,6 +6303,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "שם המשתמש חייב להכיל גם אותיות!";
 
+/* Error message when the app can't create a zendesk identity. */
+"Sorry, we cannot create support requests right now, please try again later." = "מצטערים, אין לנו אפשרות ליצור בקשות תמיכה כרגע. יש לנסות שוב מאוחר יותר";
+
+/* Error message when the app can't create a support request. */
+"Sorry, we could not create your support request, please try again later." = "מצטערים, לא הצלחנו ליצור את בקשת התמיכה שלך, יש לנסות שוב מאוחר יותר.";
+
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "לא ניתן להשתמש בכתובת את זו.";
 
@@ -6381,6 +6423,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "קו חוצה";
+
+/* Subject title on the support form */
+"Subject" = "נושא";
+
+/* Button title to submit a support request. */
+"Submit Support Request" = "לשלוח בקשת תמיכה";
 
 /* Display label for subscription product type. */
 "Subscription" = "מינוי";
@@ -6651,6 +6699,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "יש להוסיף פרטים על %1$@...";
+
+/* Message info on the support screen. */
+"Tell us much as you can about the problem, and we will be in touch soon." = "אנחנו מבקשים לספק כמה שיותר פרטים לגבי הבעיה וניצור איתך קשר בקרוב.";
 
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
@@ -8116,6 +8167,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "האפליקציה של WooCommerce לנייד – להפעיל את החנות שלך מכל מקום";
 
+/* Title of the WooCommerce Payments support area option */
+"WooCommerce Payments" = "WooCommerce Payments";
+
+/* Title of the WooCommerce Plugin support area option */
+"WooCommerce Plugin" = "תוסף של WooCommerce";
+
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "הגדרות WooCommerce";
 
@@ -8283,6 +8340,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "החנות שלך תיווצר לפי האפשרויות שבחרת!";
+
+/* Message for the alert after the support request is created. */
+"Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "בקשת התמיכה הגיעה בשלום אל תיבת הדואר שלנו. אנחנו נשלח מענה באימייל בהקדם האפשרי.";
 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "יש להתקין את ההרחבה בחינם WooCommerce Payments בחנות שלך כדי לקבל תשלומים באופן אישי.";

@@ -1,5 +1,4 @@
 import Combine
-import protocol Experiments.FeatureFlagService
 import Yosemite
 
 import protocol Storage.StorageManagerType
@@ -125,32 +124,45 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     var actionButtons: [ActionButtonType] {
         // Figure out main action button first
         var buttons: [ActionButtonType] = {
-            switch (formType, originalProductModel.status, productModel.status, originalProduct.product.existsRemotely, hasUnsavedChanges()) {
-            case (.add, .published, .published, false, _): // New product with publish status
-                return [.publish]
-
-            case (.add, .published, _, false, _): // New product with a different status
-                return [.save] // And publish in more
-
-            case (.edit, .published, _, true, true): // Existing published product with changes
+            switch (formType,
+                    originalProductModel.status,
+                    productModel.status,
+                    originalProduct.product.existsRemotely,
+                    hasUnsavedChanges(),
+                    simplifiedProductEditingEnabled) {
+            case (.add, _, _, _, _, true): // New product with simplified editing enabled
                 return [.save]
 
-            case (.edit, .published, _, true, false): // Existing published product with no changes
-                return []
-
-            case (.edit, _, _, true, true): // Any other existing product with changes
-                return [.save] // And publish in more
-
-            case (.edit, _, _, true, false): // Any other existing product with no changes
+            case (.add, .published, .published, false, _, _): // New product with publish status
                 return [.publish]
 
-            case (.readonly, _, _, _, _): // Any product on readonly mode
+            case (.add, .published, _, false, _, _): // New product with a different status
+                return [.save] // And publish in more
+
+            case (.edit, .published, _, true, true, _): // Existing published product with changes
+                return [.save]
+
+            case (.edit, .published, _, true, false, _): // Existing published product with no changes
+                return []
+
+            case (.edit, _, _, true, true, _): // Any other existing product with changes
+                return [.save] // And publish in more
+
+            case (.edit, _, _, true, false, _): // Any other existing product with no changes
+                return [.publish]
+
+            case (.readonly, _, _, _, _, _): // Any product on readonly mode
                  return []
 
             default: // Impossible cases
                 return []
             }
         }()
+
+        // When simplified editing is enabled, only show the "Save" button on the new product form
+        if simplifiedProductEditingEnabled, formType == .add {
+            return buttons
+        }
 
         // The `frame_nonce` value must be stored for the preview to be displayed
         if let site = stores.sessionManager.defaultSite,
@@ -179,11 +191,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let analytics: Analytics
 
-    private let featureFlagService: FeatureFlagService
+    private let simplifiedProductEditingEnabled: Bool
 
     /// Assign this closure to be notified when a new product is saved remotely
     ///
-    var onProductCreated: () -> Void = {}
+    var onProductCreated: (Product) -> Void = { _ in }
 
     init(product: EditableProductModel,
          formType: ProductFormType,
@@ -192,7 +204,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         simplifiedProductEditingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -202,7 +214,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.storageManager = storageManager
         self.productImagesUploader = productImagesUploader
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
+        self.simplifiedProductEditingEnabled = simplifiedProductEditingEnabled
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
@@ -461,10 +473,10 @@ extension ProductFormViewModel {
                     }
                     self.resetProduct(data.product)
                     self.resetPassword(data.password)
-                    onCompletion(.success(data.product))
                     self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
                     self.saveProductImagesWhenNoneIsPendingUploadAnymore()
-                    self.onProductCreated()
+                    self.onProductCreated(data.product.product)
+                    onCompletion(.success(data.product))
                 }
             }
         case .edit:

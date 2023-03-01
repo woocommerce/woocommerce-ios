@@ -11,7 +11,9 @@ final class ProductSettingsViewModel {
 
     var productSettings: ProductSettings {
         didSet {
-            sections = Self.configureSections(productSettings, isProductTypeSettingEnabled: isProductTypeSettingEnabled)
+            sections = Self.configureSections(productSettings,
+                                              isProductTypeSettingEnabled: isProductTypeSettingEnabled,
+                                              isDownloadableSettingEnabled: isDownloadableSettingEnabled)
         }
     }
 
@@ -28,23 +30,30 @@ final class ProductSettingsViewModel {
     var onPasswordRetrieved: ((_ password: String) -> Void)?
 
     private let isProductTypeSettingEnabled: Bool
+    private let isDownloadableSettingEnabled: Bool
 
     init(product: Product,
          password: String?,
          formType: ProductFormType,
-         isProductTypeSettingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
+         isProductTypeSettingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isDownloadableSettingEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.product = product
         self.password = password
         self.isProductTypeSettingEnabled = isProductTypeSettingEnabled
+        self.isDownloadableSettingEnabled = isDownloadableSettingEnabled
         productSettings = ProductSettings(from: product, password: password)
 
         switch formType {
         case .add:
             self.password = ""
             productSettings.password = ""
-            sections = Self.configureSections(productSettings, isProductTypeSettingEnabled: isProductTypeSettingEnabled)
+            sections = Self.configureSections(productSettings,
+                                              isProductTypeSettingEnabled: isProductTypeSettingEnabled,
+                                              isDownloadableSettingEnabled: isDownloadableSettingEnabled)
         case .edit:
-            sections = Self.configureSections(productSettings, isProductTypeSettingEnabled: isProductTypeSettingEnabled)
+            sections = Self.configureSections(productSettings,
+                                              isProductTypeSettingEnabled: isProductTypeSettingEnabled,
+                                              isDownloadableSettingEnabled: isDownloadableSettingEnabled)
             /// If nil, we fetch the password from site post API because it was never fetched
             /// Skip this if the user is not authenticated with WPCom.
             if password == nil && ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
@@ -58,11 +67,15 @@ final class ProductSettingsViewModel {
                     self.onPasswordRetrieved?(password)
                     self.password = password
                     self.productSettings.password = password
-                    self.sections = Self.configureSections(self.productSettings, isProductTypeSettingEnabled: isProductTypeSettingEnabled)
+                    self.sections = Self.configureSections(self.productSettings,
+                                                           isProductTypeSettingEnabled: isProductTypeSettingEnabled,
+                                                           isDownloadableSettingEnabled: isDownloadableSettingEnabled)
                 }
             }
         case .readonly:
-            sections = Self.configureSections(productSettings, isProductTypeSettingEnabled: isProductTypeSettingEnabled)
+            sections = Self.configureSections(productSettings,
+                                              isProductTypeSettingEnabled: isProductTypeSettingEnabled,
+                                              isDownloadableSettingEnabled: isDownloadableSettingEnabled)
         }
     }
 
@@ -105,14 +118,16 @@ private extension ProductSettingsViewModel {
 // MARK: Configure sections and rows in Product Settings
 //
 private extension ProductSettingsViewModel {
-    static func configureSections(_ settings: ProductSettings, isProductTypeSettingEnabled: Bool) -> [ProductSettingsSectionMediator] {
+    static func configureSections(_ settings: ProductSettings,
+                                  isProductTypeSettingEnabled: Bool,
+                                  isDownloadableSettingEnabled: Bool) -> [ProductSettingsSectionMediator] {
         if isProductTypeSettingEnabled {
             return [ProductSettingsSections.ProductTypeSetting(settings),
-                    ProductSettingsSections.PublishSettings(settings),
+                    ProductSettingsSections.PublishSettings(settings, isDownloadableSettingEnabled: isDownloadableSettingEnabled),
                     ProductSettingsSections.MoreOptions(settings)
             ]
         } else {
-            return [ProductSettingsSections.PublishSettings(settings),
+            return [ProductSettingsSections.PublishSettings(settings, isDownloadableSettingEnabled: isDownloadableSettingEnabled),
                     ProductSettingsSections.MoreOptions(settings)
             ]
         }

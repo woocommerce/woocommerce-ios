@@ -541,8 +541,12 @@ private extension DashboardViewController {
             coordinator.start(task: task)
         },
                                                                                                    viewAllTapped: { [weak self] in
-            guard let self, let navigationController = self.navigationController else { return }
-            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController)
+            guard let self,
+                  let navigationController = self.navigationController,
+                  let site = ServiceLocator.stores.sessionManager.defaultSite else {
+                return
+            }
+            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: site)
             self.onboardingCoordinator = coordinator
             coordinator.start()
         },

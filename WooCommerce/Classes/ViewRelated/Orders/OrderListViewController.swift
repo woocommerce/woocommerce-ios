@@ -157,14 +157,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         configureViewModel()
         configureSyncingCoordinator()
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            viewModel.feedbackBannerSurveySource(onCompletion: { survey in
-                // Only assign the survey once we're sure the data is fetched from storage
-                inPersonPaymentsSurveyVariation = survey
-                viewModel.trackInPersonPaymentsFeedbackBannerShown(for: survey)
-            })
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -181,6 +173,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
+
+        viewModel.updateBannerVisibility()
     }
 
     override func viewDidLayoutSubviews() {
@@ -259,9 +253,10 @@ private extension OrderListViewController {
                     self.setErrorTopBanner()
                 case .orderCreation:
                     self.setOrderCreationTopBanner()
-                case .IPPFeedback:
-                    guard let survey = self.inPersonPaymentsSurveyVariation else {
-                        return
+                case .inPersonPaymentsFeedback(let survey):
+                    if self.inPersonPaymentsSurveyVariation != survey {
+                        self.inPersonPaymentsSurveyVariation = survey
+                        self.viewModel.trackInPersonPaymentsFeedbackBannerShown(for: survey)
                     }
                     self.setIPPFeedbackTopBanner(survey: survey)
                 }

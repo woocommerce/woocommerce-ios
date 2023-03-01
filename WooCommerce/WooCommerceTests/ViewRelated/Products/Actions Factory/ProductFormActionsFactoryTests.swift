@@ -11,7 +11,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false, isEmptyReviewsOptionHidden: false)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -38,7 +38,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false, isEmptyReviewsOptionHidden: false)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -65,7 +65,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -91,7 +91,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -116,7 +116,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false, isEmptyReviewsOptionHidden: false)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -143,7 +143,60 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false, isEmptyReviewsOptionHidden: false)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
+                                                                       .reviews,
+                                                                       .inventorySettings(editable: true),
+                                                                       .categories(editable: true),
+                                                                       .tags(editable: true),
+                                                                       .downloadableFiles(editable: true),
+                                                                       .shortDescription(editable: true),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
+    func test_view_model_for_simple_product_with_downloadable_files_action_not_setting_based_and_has_no_files() {
+        // Arrange
+        let product = Fixtures.virtualSimpleProduct
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isDownloadableFilesSettingBased: false)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
+                                                                       .reviews,
+                                                                       .inventorySettings(editable: true),
+                                                                       .categories(editable: true),
+                                                                       .tags(editable: true),
+                                                                       .shortDescription(editable: true),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
+    func test_view_model_for_simple_product_with_downloadable_files_action_not_setting_based_and_has_files() {
+        // Arrange
+        let product = Fixtures.virtualSimpleProduct.copy(downloadable: true, downloads: [.fake()])
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isDownloadableFilesSettingBased: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -170,7 +223,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isConvertToVariableOptionEnabled: false, isEmptyReviewsOptionHidden: false)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -196,7 +249,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false, isCategoriesActionAlwaysEnabled: false)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -219,7 +272,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false, isCategoriesActionAlwaysEnabled: false)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -241,7 +294,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false, isCategoriesActionAlwaysEnabled: false)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -267,7 +320,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false, isCategoriesActionAlwaysEnabled: false)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -294,7 +347,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false, isCategoriesActionAlwaysEnabled: false)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -316,7 +369,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, isEmptyReviewsOptionHidden: false, isCategoriesActionAlwaysEnabled: false)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -602,5 +655,30 @@ private extension ProductFormActionsFactoryTests {
 
         // Non-core product, missing short description/categories/tags
         static let nonCoreProductWithPrice = nonCoreProductWithoutPrice.copy(regularPrice: "2")
+
+        // Factory with default feature settings
+        static func actionsFactory(product: EditableProductModel,
+                                   formType: ProductFormType,
+                                   addOnsFeatureEnabled: Bool = false,
+                                   isLinkedProductsPromoEnabled: Bool = false,
+                                   isAddOptionsButtonEnabled: Bool = false,
+                                   isConvertToVariableOptionEnabled: Bool = false,
+                                   isEmptyReviewsOptionHidden: Bool = false,
+                                   isProductTypeActionEnabled: Bool = true,
+                                   isCategoriesActionAlwaysEnabled: Bool = false,
+                                   isDownloadableFilesSettingBased: Bool = true,
+                                   variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
+            ProductFormActionsFactory(product: product,
+                                      formType: formType,
+                                      addOnsFeatureEnabled: addOnsFeatureEnabled,
+                                      isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
+                                      isAddOptionsButtonEnabled: isAddOptionsButtonEnabled,
+                                      isConvertToVariableOptionEnabled: isConvertToVariableOptionEnabled,
+                                      isEmptyReviewsOptionHidden: isEmptyReviewsOptionHidden,
+                                      isProductTypeActionEnabled: isProductTypeActionEnabled,
+                                      isCategoriesActionAlwaysEnabled: isCategoriesActionAlwaysEnabled,
+                                      isDownloadableFilesSettingBased: isDownloadableFilesSettingBased,
+                                      variationsPrice: variationsPrice)
+        }
     }
 }

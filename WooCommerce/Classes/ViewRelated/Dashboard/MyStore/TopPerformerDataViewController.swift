@@ -154,24 +154,12 @@ private extension TopPerformerDataViewController {
         view.backgroundColor = .basicBackground
     }
 
-    func configureTableView() {
-//        tableView.backgroundColor = TableViewStyle.backgroundColor
-//        tableView.separatorColor = TableViewStyle.separatorColor
-//        tableView.estimatedRowHeight = Constants.estimatedRowHeight
-//        tableView.rowHeight = UITableView.automaticDimension
-//        tableView.applyFooterViewForHidingExtraRowPlaceholders()
-//
-//        // Removes extra top padding in iOS 15+.
-//        tableView.sectionHeaderTopPadding = 0
-    }
-
     func configureResultsController() {
         resultsController.onDidChangeContent = { [weak self] in
             self?.updateUI()
         }
         resultsController.onDidResetContent = { [weak self] in
             self?.updateUI()
-//            self?.tableView.reloadData()
         }
 
         do {

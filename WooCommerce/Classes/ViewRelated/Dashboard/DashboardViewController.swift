@@ -287,7 +287,7 @@ private extension DashboardViewController {
         containerStackView.translatesAutoresizingMaskIntoConstraints = false
         containerView.pinSubviewToAllEdges(containerStackView)
         NSLayoutConstraint.activate([
-            containerStackView.widthAnchor.constraint(equalTo: containerView.widthAnchor)
+            containerView.widthAnchor.constraint(equalTo: containerStackView.widthAnchor)
         ])
     }
 
@@ -312,33 +312,11 @@ private extension DashboardViewController {
     }
 
     func addViewBelowHeaderStackView(contentView: UIView) {
-//        contentView.translatesAutoresizingMaskIntoConstraints = false
-//
-//        // This constraint will pin the bottom of the header to the top of the content
-//        // We want this to be active when the header is visible
-//        contentTopToHeaderConstraint = contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor)
-//        contentTopToHeaderConstraint?.isActive = true
-//
-//        // This constraint has a lower priority and will pin the top of the content view to its superview
-//        // This way, it has a defined height when contentTopToHeaderConstraint is disabled
-//        let contentTopToContainerConstraint = contentView.topAnchor.constraint(equalTo: containerView.safeTopAnchor)
-//        contentTopToContainerConstraint.priority = .defaultLow
-//
-//        NSLayoutConstraint.activate([
-//            contentTopToContainerConstraint,
-//            contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-//            contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-//        ])
-//        contentBottomToContainerConstraint = contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+        let indexAfterHeader = (containerStackView.arrangedSubviews.firstIndex(of: headerStackView) ?? -1) + 1
+        containerStackView.insertArrangedSubview(contentView, at: indexAfterHeader)
     }
 
     func configureDashboardUIContainer() {
-//        hiddenScrollView.configureForLargeTitleWorkaround()
-//        // Adds the "hidden" scroll view to the root of the UIViewController for large titles.
-//        view.addSubview(hiddenScrollView)
-//        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
-//        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
-
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
@@ -346,8 +324,8 @@ private extension DashboardViewController {
         containerView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToSafeArea(containerView)
         NSLayoutConstraint.activate([
-            containerView.widthAnchor.constraint(equalTo: view.widthAnchor),
-//            containerView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            containerView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor),
+            containerView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor)
         ])
     }
 
@@ -386,7 +364,6 @@ private extension DashboardViewController {
             case .v4:
                 dashboardUI = self.storeStatsAndTopPerformersViewController
             }
-//            dashboardUI.scrollDelegate = self
             self.onDashboardUIUpdate(forced: false, updatedDashboardUI: dashboardUI)
         }.store(in: &subscriptions)
     }
@@ -586,13 +563,6 @@ private extension DashboardViewController {
     }
 }
 
-// MARK: - Delegate conformance
-//extension DashboardViewController: DashboardUIScrollDelegate {
-//    func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
-//        hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
-//    }
-//}
-
 extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
@@ -615,12 +585,6 @@ private extension DashboardViewController {
             return
         }
 
-        // Resets the Auto Layout constraint that pins the previous content view to the bottom of the header view.
-        // Otherwise, if `contentTopToHeaderConstraint?.isActive = true` is called after the previous content view is removed
-        // in the next line `remove(previousDashboardUI)`, the app crashes because the content view is no longer in the
-        // view hierarchy.
-//        contentTopToHeaderConstraint = nil
-
         // Tears down the previous child view controller.
         if let previousDashboardUI = dashboardUI {
             remove(previousDashboardUI)
@@ -628,12 +592,8 @@ private extension DashboardViewController {
 
         let contentView = updatedDashboardUI.view!
         addChild(updatedDashboardUI)
-
-        let indexAfterHeader = (containerStackView.arrangedSubviews.firstIndex(of: headerStackView) ?? -1) + 1
-        containerStackView.insertArrangedSubview(contentView, at: indexAfterHeader)
-//        containerView.addSubview(contentView)
+        addViewBelowHeaderStackView(contentView: contentView)
         updatedDashboardUI.didMove(toParent: self)
-//        addViewBelowHeaderStackView(contentView: contentView)
 
         // Sets `dashboardUI` after its view is added to the view hierarchy so that observers can update UI based on its view.
         dashboardUI = updatedDashboardUI

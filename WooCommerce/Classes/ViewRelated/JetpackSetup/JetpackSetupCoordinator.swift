@@ -175,6 +175,12 @@ private extension JetpackSetupCoordinator {
     }
 
     func requestAuthenticationLink(email: String) async throws {
-        // TODO
+        try await withCheckedThrowingContinuation { continuation in
+            accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: {
+                continuation.resume()
+            }, failure: { error in
+                continuation.resume(throwing: error)
+            })
+        }
     }
 }

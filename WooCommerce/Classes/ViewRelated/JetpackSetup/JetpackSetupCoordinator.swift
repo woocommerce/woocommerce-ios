@@ -152,7 +152,7 @@ private extension JetpackSetupCoordinator {
     }
 
     func startAuthentication(email: String, isPasswordlessAccount: Bool, onCompletion: @escaping () -> Void) {
-        if isPasswordlessAccount || featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis) {
+        if isPasswordlessAccount {
             Task { @MainActor in
                 do {
                     try await requestAuthenticationLink(email: email)
@@ -160,11 +160,7 @@ private extension JetpackSetupCoordinator {
                     #warning("TODO: show magic login UI")
                 } catch {
                     onCompletion()
-                    if isPasswordlessAccount {
-                        #warning("TODO: error UI")
-                    } else {
-                        #warning("TODO: show password UI")
-                    }
+                    #warning("TODO: error UI")
                 }
             }
         } else {

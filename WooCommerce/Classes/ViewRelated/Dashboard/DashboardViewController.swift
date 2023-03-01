@@ -94,7 +94,7 @@ final class DashboardViewController: UIViewController {
     private var announcementView: UIView?
 
     /// Onboarding card.
-    private var onboardingHostingController: ConstraintsUpdatingHostingController<StoreOnboardingView>?
+    private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
     private var onboardingCoordinator: StoreOnboardingCoordinator?
 
@@ -529,8 +529,8 @@ private extension DashboardViewController {
     }
 
     func showOnboardingCard() {
-        let hostingController = ConstraintsUpdatingHostingController(rootView: StoreOnboardingView(viewModel: .init(isExpanded: false),
-                                                                                                   taskTapped: { [weak self] task in
+        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false),
+                                                                     taskTapped: { [weak self] task in
             guard let self,
                   let navigationController = self.navigationController,
                   let site = ServiceLocator.stores.sessionManager.defaultSite else {
@@ -539,7 +539,7 @@ private extension DashboardViewController {
             let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: site)
             self.onboardingCoordinator = coordinator
             coordinator.start(task: task)
-        }))
+        })
         guard let uiView = hostingController.view else {
             return
         }

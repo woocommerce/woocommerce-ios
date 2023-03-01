@@ -19,10 +19,9 @@ final class StoreOnboardingCoordinator: Coordinator {
     /// Navigates to the fullscreen store onboarding view.
     @MainActor
     func start() {
-        let onboardingController = UIHostingController(rootView: StoreOnboardingView(viewModel: .init(isExpanded: true), taskTapped: { [weak self] task in
-            self?.start(task: task)
-        }))
-        navigationController.show(onboardingController, sender: self)
+        let onboardingController = UINavigationController(rootViewController: StoreOnboardingViewHostingController(viewModel: .init(isExpanded: true),
+                                                 taskTapped: { [weak self] task in self?.start(task: task) }))
+        navigationController.present(onboardingController, animated: true)
     }
 
     /// Navigates to complete an onboarding task.

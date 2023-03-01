@@ -38,32 +38,38 @@ final class ShippingLabelAddressFormViewController: UIViewController {
             guard let self = self else { return }
             ServiceLocator.analytics.track(.shippingLabelEditAddressContactCustomerButtonTapped)
 
-            let actionSheet = UIAlertController(title: nil, message: Localization.contactActionLabel, preferredStyle: .actionSheet)
-            actionSheet.view.tintColor = .text
+            if PhoneHelper.canCallPhoneNumber(phone: "123456789") == false
+                && MFMailComposeViewController.canSendMail() == false
+                && MFMessageComposeViewController.canSendText() == false {
+                self.displayErrorNotice(title: Localization.contactActionError)
+            } else {
+                let actionSheet = UIAlertController(title: nil, message: Localization.contactActionLabel, preferredStyle: .actionSheet)
+                actionSheet.view.tintColor = .text
 
-            actionSheet.addCancelActionWithTitle(Localization.contactActionCancel)
-            if let email = email, email.isNotEmpty && MFMailComposeViewController.canSendMail() {
-                actionSheet.addDefaultActionWithTitle(Localization.contactActionEmail) { _ in
-                    self.sendEmail(to: email)
-                }
-            }
-            if let phoneNumber = phone, phoneNumber.isNotEmpty {
-                actionSheet.addDefaultActionWithTitle(Localization.contactActionCall) { _ in
-                    if PhoneHelper.callPhoneNumber(phone: phoneNumber) == false {
-                        self.displayErrorNotice(title: Localization.phoneNumberErrorNotice)
+                actionSheet.addCancelActionWithTitle(Localization.contactActionCancel)
+                if let email = email, email.isNotEmpty && MFMailComposeViewController.canSendMail() {
+                    actionSheet.addDefaultActionWithTitle(Localization.contactActionEmail) { _ in
+                        self.sendEmail(to: email)
                     }
                 }
-                if MFMessageComposeViewController.canSendText() {
-                    actionSheet.addDefaultActionWithTitle(Localization.contactActionMessage) { _ in
-                        ServiceLocator.messageComposerPresenter.presentIfPossible(from: self, recipient: phoneNumber)
+                if let phoneNumber = phone, phoneNumber.isNotEmpty {
+                    actionSheet.addDefaultActionWithTitle(Localization.contactActionCall) { _ in
+                        if PhoneHelper.callPhoneNumber(phone: phoneNumber) == false {
+                            self.displayErrorNotice(title: Localization.phoneNumberErrorNotice)
+                        }
+                    }
+                    if MFMessageComposeViewController.canSendText() {
+                        actionSheet.addDefaultActionWithTitle(Localization.contactActionMessage) { _ in
+                            ServiceLocator.messageComposerPresenter.presentIfPossible(from: self, recipient: phoneNumber)
+                        }
                     }
                 }
+
+                let popoverController = actionSheet.popoverPresentationController
+                popoverController?.sourceView = sourceView
+
+                self.present(actionSheet, animated: true)
             }
-
-            let popoverController = actionSheet.popoverPresentationController
-            popoverController?.sourceView = sourceView
-
-            self.present(actionSheet, animated: true)
         }
 
         topBanner.translatesAutoresizingMaskIntoConstraints = false
@@ -621,5 +627,7 @@ private extension ShippingLabelAddressFormViewController {
         static let contactActionEmail = NSLocalizedString("Email", comment: "Email button title")
         static let contactActionCall = NSLocalizedString("Call", comment: "Call phone number button title")
         static let contactActionMessage = NSLocalizedString("Message", comment: "Message phone number button title")
+        static let contactActionError = NSLocalizedString("No supported contact method on this device.",
+                                                          comment: "Error in identifying supported contact methods in the Shipping Label Address Validation")
     }
 }

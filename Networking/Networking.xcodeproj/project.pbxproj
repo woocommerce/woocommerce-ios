@@ -796,6 +796,7 @@
 		EE2C09C029AF2445009396F9 /* store-onboarding-tasks.json in Resources */ = {isa = PBXBuildFile; fileRef = EE2C09BF29AF2445009396F9 /* store-onboarding-tasks.json */; };
 		EE2C09C229AF26B2009396F9 /* StoreOnboardingTaskListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2C09C129AF26B2009396F9 /* StoreOnboardingTaskListMapper.swift */; };
 		EE2C09C429AF5274009396F9 /* StoreOnboardingTaskListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2C09C329AF5274009396F9 /* StoreOnboardingTaskListMapperTests.swift */; };
+		EE2C09C629AF60BA009396F9 /* store-onboarding-tasks-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE2C09C529AF60BA009396F9 /* store-onboarding-tasks-without-data.json */; };
 		EE338A0E294AF9BD00183934 /* ApplicationPasswordMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE338A0D294AF9BD00183934 /* ApplicationPasswordMapperTests.swift */; };
 		EE54C89F2947782E00A9BF61 /* ApplicationPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE54C89E2947782E00A9BF61 /* ApplicationPasswordUseCase.swift */; };
 		EE54C8A729486B6800A9BF61 /* ApplicationPasswordMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE54C8A629486B6800A9BF61 /* ApplicationPasswordMapper.swift */; };
@@ -1682,6 +1683,7 @@
 		EE2C09BF29AF2445009396F9 /* store-onboarding-tasks.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "store-onboarding-tasks.json"; sourceTree = "<group>"; };
 		EE2C09C129AF26B2009396F9 /* StoreOnboardingTaskListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTaskListMapper.swift; sourceTree = "<group>"; };
 		EE2C09C329AF5274009396F9 /* StoreOnboardingTaskListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTaskListMapperTests.swift; sourceTree = "<group>"; };
+		EE2C09C529AF60BA009396F9 /* store-onboarding-tasks-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "store-onboarding-tasks-without-data.json"; sourceTree = "<group>"; };
 		EE338A0D294AF9BD00183934 /* ApplicationPasswordMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordMapperTests.swift; sourceTree = "<group>"; };
 		EE54C89E2947782E00A9BF61 /* ApplicationPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordUseCase.swift; sourceTree = "<group>"; };
 		EE54C8A629486B6800A9BF61 /* ApplicationPasswordMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordMapper.swift; sourceTree = "<group>"; };
@@ -2365,6 +2367,7 @@
 				31A451C827863A2D00FE81AA /* stripe-account-unknown-status.json */,
 				31A451C027863A2D00FE81AA /* stripe-account-wrong-json.json */,
 				EE2C09BF29AF2445009396F9 /* store-onboarding-tasks.json */,
+				EE2C09C529AF60BA009396F9 /* store-onboarding-tasks-without-data.json */,
 				2685C0DD263B5A4200D9EE97 /* add-on-groups.json */,
 				CECC759D23D6231900486676 /* order-560-all-refunds.json */,
 				74C8F06F20EEC3A800B6EDC9 /* broken-notes.json */,
@@ -3469,6 +3472,7 @@
 				EE57C135297F985A00BC31E7 /* product-variations-bulk-create-without-data.json in Resources */,
 				DE2E8EA9295416C9002E4B14 /* wordpress-site-info.json in Resources */,
 				268EC45C26C169F600716F5C /* order-with-faulty-attributes.json in Resources */,
+				EE2C09C629AF60BA009396F9 /* store-onboarding-tasks-without-data.json in Resources */,
 				45AB8B0F24AA29DC00B5B36E /* product-tags-created.json in Resources */,
 				3158FE8426129F3A00E566B9 /* wcpay-account-unknown-status.json in Resources */,
 				314EDF2B27C02CD300A56B6F /* stripe-account-complete-null-descriptor.json in Resources */,

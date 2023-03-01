@@ -171,6 +171,8 @@ private extension StoreStatsAndTopPerformersViewController {
 
         var syncError: Error? = nil
 
+        print("~~~syncing \(viewControllerToSync) out of \(periodVCs)")
+
         ensureGhostContentIsDisplayed(for: viewControllerToSync)
         showSpinner(for: viewControllerToSync, shouldShowSpinner: true)
 

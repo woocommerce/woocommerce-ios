@@ -21,24 +21,36 @@ struct TopPerformersView: View {
     ///
     let isRedacted: Bool
 
+    let showsHeader: Bool
+
     /// Used to track the text margin value from the top performers row.
     /// Text margin value: Where the row text is placed in the X position.
     /// Needed to properly layout the row divider.
     ///
     @State private var rowTextMargin: CGFloat = 0
 
+    init(itemTitle: String, valueTitle: String, rows: [TopPerformersRow.Data], isRedacted: Bool, showsHeader: Bool = true) {
+        self.itemTitle = itemTitle
+        self.valueTitle = valueTitle
+        self.rows = rows
+        self.isRedacted = isRedacted
+        self.showsHeader = showsHeader
+    }
+
     var body: some View {
         VStack() {
 
             // Header
-            HStack {
-                Text(itemTitle)
-                Spacer()
-                Text(valueTitle)
+            if showsHeader {
+                HStack {
+                    Text(itemTitle)
+                    Spacer()
+                    Text(valueTitle)
+                }
+                .font(.subheadline.bold())
+                .foregroundColor(Color(.text))
+                .padding(.bottom, Layout.tableSpacing)
             }
-            .font(.subheadline.bold())
-            .foregroundColor(Color(.text))
-            .padding(.bottom, Layout.tableSpacing)
 
             // Rows
             ForEach(rows.indexed(), id: \.0.self) { index, row in

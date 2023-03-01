@@ -409,7 +409,7 @@ private extension AnalyticsHubViewModel {
 }
 
 // MARK: - Constants
-private extension AnalyticsHubViewModel {
+extension AnalyticsHubViewModel {
     enum Constants {
         static let maxNumberOfTopItemsSold = 5
     }

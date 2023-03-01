@@ -23,8 +23,12 @@ final class DashboardViewController: UIViewController {
 
     // MARK: Subviews
 
-    private lazy var containerView: UIView = {
-        return UIView(frame: .zero)
+    private lazy var containerView: UIScrollView = {
+        return UIScrollView(frame: .zero)
+    }()
+
+    private lazy var containerStackView: UIStackView = {
+        .init(arrangedSubviews: [])
     }()
 
     private lazy var storeNameLabel: UILabel = {
@@ -57,9 +61,9 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
-    /// Constraint to attach the content view's top to the bottom of the header
-    /// When we hide the header, we disable this constraint so the content view can grow to fill the screen
-    private var contentTopToHeaderConstraint: NSLayoutConstraint?
+//    /// Constraint to attach the content view's top to the bottom of the header
+//    /// When we hide the header, we disable this constraint so the content view can grow to fill the screen
+//    private var contentTopToHeaderConstraint: NSLayoutConstraint?
 
     /// Stores an animator for showing/hiding the header view while there is an animation in progress
     /// so we can interrupt and reverse if needed
@@ -100,8 +104,8 @@ final class DashboardViewController: UIViewController {
 
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
-    private var contentBottomToJetpackBenefitsBannerConstraint: NSLayoutConstraint?
-    private var contentBottomToContainerConstraint: NSLayoutConstraint?
+//    private var contentBottomToJetpackBenefitsBannerConstraint: NSLayoutConstraint?
+//    private var contentBottomToContainerConstraint: NSLayoutConstraint?
     private var isJetpackBenefitsBannerShown: Bool {
         bottomJetpackBenefitsBannerController.view?.superview != nil
     }
@@ -183,56 +187,57 @@ final class DashboardViewController: UIViewController {
 // MARK: - Header animation
 private extension DashboardViewController {
     func showHeaderWithoutAnimation() {
-        contentTopToHeaderConstraint?.isActive = true
-        headerStackView.alpha = 1
-        view.layoutIfNeeded()
+//        contentTopToHeaderConstraint?.isActive = true
+//        headerStackView.alpha = 1
+//        view.layoutIfNeeded()
     }
 
     func hideHeaderWithoutAnimation() {
-        contentTopToHeaderConstraint?.isActive = false
-        headerStackView.alpha = 0
-        view.layoutIfNeeded()
+//        contentTopToHeaderConstraint?.isActive = false
+//        headerStackView.alpha = 0
+//        headerStackView.isHidden = true
+//        view.layoutIfNeeded()
     }
 
     func updateHeaderVisibility(animated: Bool) {
-        if navigationBarIsCollapsed() {
-            hideHeader(animated: animated)
-        } else {
-            showHeader(animated: animated)
-        }
+//        if navigationBarIsCollapsed() {
+//            hideHeader(animated: animated)
+//        } else {
+//            showHeader(animated: animated)
+//        }
     }
 
     func showHeader(animated: Bool) {
-        if animated {
-            animateHeaderVisibility { [weak self] in
-                self?.showHeaderWithoutAnimation()
-            }
-        } else {
-            showHeaderWithoutAnimation()
-        }
+//        if animated {
+//            animateHeaderVisibility { [weak self] in
+//                self?.showHeaderWithoutAnimation()
+//            }
+//        } else {
+//            showHeaderWithoutAnimation()
+//        }
     }
 
     func hideHeader(animated: Bool) {
-        if animated {
-            animateHeaderVisibility { [weak self] in
-                self?.hideHeaderWithoutAnimation()
-            }
-        } else {
-            hideHeaderWithoutAnimation()
-        }
+//        if animated {
+//            animateHeaderVisibility { [weak self] in
+//                self?.hideHeaderWithoutAnimation()
+//            }
+//        } else {
+//            hideHeaderWithoutAnimation()
+//        }
     }
 
     func animateHeaderVisibility(animations: @escaping () -> Void) {
-        if headerAnimator?.isRunning == true {
-            headerAnimator?.stopAnimation(true)
-        }
-        headerAnimator = UIViewPropertyAnimator.runningPropertyAnimator(
-            withDuration: Constants.animationDurationSeconds,
-            delay: 0,
-            animations: animations,
-            completion: { [weak self] position in
-                self?.headerAnimator = nil
-            })
+//        if headerAnimator?.isRunning == true {
+//            headerAnimator?.stopAnimation(true)
+//        }
+//        headerAnimator = UIViewPropertyAnimator.runningPropertyAnimator(
+//            withDuration: Constants.animationDurationSeconds,
+//            delay: 0,
+//            animations: animations,
+//            completion: { [weak self] position in
+//                self?.headerAnimator = nil
+//            })
     }
 
     func navigationBarIsCollapsed() -> Bool {
@@ -262,6 +267,7 @@ private extension DashboardViewController {
 
     func configureNavigation() {
         configureTitle()
+        configureContainerStackView()
         configureHeaderStackView()
     }
 
@@ -275,15 +281,20 @@ private extension DashboardViewController {
         navigationItem.title = Localization.title
     }
 
+    func configureContainerStackView() {
+        containerStackView.axis = .vertical
+        containerView.addSubview(containerStackView)
+        containerStackView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.pinSubviewToAllEdges(containerStackView)
+        NSLayoutConstraint.activate([
+            containerStackView.widthAnchor.constraint(equalTo: containerView.widthAnchor)
+        ])
+    }
+
     func configureHeaderStackView() {
         configureSubtitle()
         configureErrorBanner()
-        containerView.addSubview(headerStackView)
-        NSLayoutConstraint.activate([
-            headerStackView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            headerStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            headerStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
-        ])
+        containerStackView.addArrangedSubview(headerStackView)
     }
 
     func configureSubtitle() {
@@ -301,32 +312,32 @@ private extension DashboardViewController {
     }
 
     func addViewBelowHeaderStackView(contentView: UIView) {
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-
-        // This constraint will pin the bottom of the header to the top of the content
-        // We want this to be active when the header is visible
-        contentTopToHeaderConstraint = contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor)
-        contentTopToHeaderConstraint?.isActive = true
-
-        // This constraint has a lower priority and will pin the top of the content view to its superview
-        // This way, it has a defined height when contentTopToHeaderConstraint is disabled
-        let contentTopToContainerConstraint = contentView.topAnchor.constraint(equalTo: containerView.safeTopAnchor)
-        contentTopToContainerConstraint.priority = .defaultLow
-
-        NSLayoutConstraint.activate([
-            contentTopToContainerConstraint,
-            contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-        ])
-        contentBottomToContainerConstraint = contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+//        contentView.translatesAutoresizingMaskIntoConstraints = false
+//
+//        // This constraint will pin the bottom of the header to the top of the content
+//        // We want this to be active when the header is visible
+//        contentTopToHeaderConstraint = contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor)
+//        contentTopToHeaderConstraint?.isActive = true
+//
+//        // This constraint has a lower priority and will pin the top of the content view to its superview
+//        // This way, it has a defined height when contentTopToHeaderConstraint is disabled
+//        let contentTopToContainerConstraint = contentView.topAnchor.constraint(equalTo: containerView.safeTopAnchor)
+//        contentTopToContainerConstraint.priority = .defaultLow
+//
+//        NSLayoutConstraint.activate([
+//            contentTopToContainerConstraint,
+//            contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+//            contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+//        ])
+//        contentBottomToContainerConstraint = contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
     }
 
     func configureDashboardUIContainer() {
-        hiddenScrollView.configureForLargeTitleWorkaround()
-        // Adds the "hidden" scroll view to the root of the UIViewController for large titles.
-        view.addSubview(hiddenScrollView)
-        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+//        hiddenScrollView.configureForLargeTitleWorkaround()
+//        // Adds the "hidden" scroll view to the root of the UIViewController for large titles.
+//        view.addSubview(hiddenScrollView)
+//        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+//        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
 
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
@@ -334,6 +345,10 @@ private extension DashboardViewController {
         view.addSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToSafeArea(containerView)
+        NSLayoutConstraint.activate([
+            containerView.widthAnchor.constraint(equalTo: view.widthAnchor),
+//            containerView.heightAnchor.constraint(equalTo: view.heightAnchor),
+        ])
     }
 
     func configureBottomJetpackBenefitsBanner() {
@@ -371,7 +386,7 @@ private extension DashboardViewController {
             case .v4:
                 dashboardUI = self.storeStatsAndTopPerformersViewController
             }
-            dashboardUI.scrollDelegate = self
+//            dashboardUI.scrollDelegate = self
             self.onDashboardUIUpdate(forced: false, updatedDashboardUI: dashboardUI)
         }.store(in: &subscriptions)
     }
@@ -572,11 +587,11 @@ private extension DashboardViewController {
 }
 
 // MARK: - Delegate conformance
-extension DashboardViewController: DashboardUIScrollDelegate {
-    func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
-        hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
-    }
-}
+//extension DashboardViewController: DashboardUIScrollDelegate {
+//    func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
+//        hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
+//    }
+//}
 
 extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
@@ -592,13 +607,6 @@ extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
 //
 private extension DashboardViewController {
     func onDashboardUIUpdate(forced: Bool, updatedDashboardUI: DashboardUI) {
-        defer {
-            Task { @MainActor [weak self] in
-                // Reloads data of the updated dashboard UI at the end.
-                await self?.reloadData(forced: true)
-            }
-        }
-
         // Optimistically hide the error banner any time the dashboard UI updates (not just pull to refresh)
         hideTopBannerView()
 
@@ -611,7 +619,7 @@ private extension DashboardViewController {
         // Otherwise, if `contentTopToHeaderConstraint?.isActive = true` is called after the previous content view is removed
         // in the next line `remove(previousDashboardUI)`, the app crashes because the content view is no longer in the
         // view hierarchy.
-        contentTopToHeaderConstraint = nil
+//        contentTopToHeaderConstraint = nil
 
         // Tears down the previous child view controller.
         if let previousDashboardUI = dashboardUI {
@@ -620,9 +628,12 @@ private extension DashboardViewController {
 
         let contentView = updatedDashboardUI.view!
         addChild(updatedDashboardUI)
-        containerView.addSubview(contentView)
+
+        let indexAfterHeader = (containerStackView.arrangedSubviews.firstIndex(of: headerStackView) ?? -1) + 1
+        containerStackView.insertArrangedSubview(contentView, at: indexAfterHeader)
+//        containerView.addSubview(contentView)
         updatedDashboardUI.didMove(toParent: self)
-        addViewBelowHeaderStackView(contentView: contentView)
+//        addViewBelowHeaderStackView(contentView: contentView)
 
         // Sets `dashboardUI` after its view is added to the view hierarchy so that observers can update UI based on its view.
         dashboardUI = updatedDashboardUI
@@ -644,40 +655,40 @@ private extension DashboardViewController {
     }
 
     func showJetpackBenefitsBanner(contentView: UIView) {
-        ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .shown))
-
-        hideJetpackBenefitsBanner()
-        guard let banner = bottomJetpackBenefitsBannerController.view else {
-            return
-        }
-        contentBottomToContainerConstraint?.isActive = false
-
-        addChild(bottomJetpackBenefitsBannerController)
-        containerView.addSubview(banner)
-        bottomJetpackBenefitsBannerController.didMove(toParent: self)
-
-        banner.translatesAutoresizingMaskIntoConstraints = false
-
-        // The banner height is calculated in `viewDidLayoutSubviews` to support rotation.
-        let contentBottomToJetpackBenefitsBannerConstraint = banner.topAnchor.constraint(equalTo: contentView.bottomAnchor)
-        self.contentBottomToJetpackBenefitsBannerConstraint = contentBottomToJetpackBenefitsBannerConstraint
-
-        NSLayoutConstraint.activate([
-            contentBottomToJetpackBenefitsBannerConstraint,
-            banner.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            banner.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            // Pins from the safe area layout bottom to accommodate offline banner.
-            banner.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-        ])
+//        ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .shown))
+//
+//        hideJetpackBenefitsBanner()
+//        guard let banner = bottomJetpackBenefitsBannerController.view else {
+//            return
+//        }
+////        contentBottomToContainerConstraint?.isActive = false
+//
+//        addChild(bottomJetpackBenefitsBannerController)
+//        containerView.addSubview(banner)
+//        bottomJetpackBenefitsBannerController.didMove(toParent: self)
+//
+//        banner.translatesAutoresizingMaskIntoConstraints = false
+//
+//        // The banner height is calculated in `viewDidLayoutSubviews` to support rotation.
+//        let contentBottomToJetpackBenefitsBannerConstraint = banner.topAnchor.constraint(equalTo: contentView.bottomAnchor)
+//        self.contentBottomToJetpackBenefitsBannerConstraint = contentBottomToJetpackBenefitsBannerConstraint
+//
+//        NSLayoutConstraint.activate([
+//            contentBottomToJetpackBenefitsBannerConstraint,
+//            banner.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+//            banner.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+//            // Pins from the safe area layout bottom to accommodate offline banner.
+//            banner.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+//        ])
     }
 
     func hideJetpackBenefitsBanner() {
-        contentBottomToJetpackBenefitsBannerConstraint?.isActive = false
-        contentBottomToContainerConstraint?.isActive = true
-        if isJetpackBenefitsBannerShown {
-            bottomJetpackBenefitsBannerController.view?.removeFromSuperview()
-            remove(bottomJetpackBenefitsBannerController)
-        }
+//        contentBottomToJetpackBenefitsBannerConstraint?.isActive = false
+//        contentBottomToContainerConstraint?.isActive = true
+//        if isJetpackBenefitsBannerShown {
+//            bottomJetpackBenefitsBannerController.view?.removeFromSuperview()
+//            remove(bottomJetpackBenefitsBannerController)
+//        }
     }
 }
 

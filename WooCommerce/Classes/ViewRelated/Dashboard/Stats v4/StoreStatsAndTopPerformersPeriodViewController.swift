@@ -62,8 +62,8 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return refreshControl
     }()
 
-    private var scrollView: UIScrollView = {
-        return UIScrollView(frame: .zero)
+    private var containerView: UIView = {
+        return .init(frame: .zero)
     }()
 
     private lazy var stackView: UIStackView = {
@@ -152,7 +152,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
-        refreshControl.resetAnimation(in: scrollView)
+//        refreshControl.resetAnimation(in: scrollView)
 
         // After returning to the My Store tab, `restartGhostAnimation` is required to resume ghost animation.
         restartGhostAnimationIfNeeded()
@@ -169,6 +169,7 @@ extension StoreStatsAndTopPerformersPeriodViewController: UIScrollViewDelegate {
         scrollDelegate?.dashboardUIScrollViewDidScroll(scrollView)
     }
 
+    // TODO: move to scroll view in dashboard VC
     /// We're not using scrollViewDidScroll because that gets executed even while
     /// the app is being loaded for the first time.
     ///
@@ -188,7 +189,7 @@ extension StoreStatsAndTopPerformersPeriodViewController {
         storeStatsPeriodViewController.displayGhostContent()
         analyticsHubButtonView.startGhostAnimation(style: Constants.ghostStyle)
         topPerformersHeaderView.startGhostAnimation(style: Constants.ghostStyle)
-        topPerformersPeriodViewController.displayGhostContent()
+//        topPerformersPeriodViewController.displayGhostContent()
     }
 
     /// Removes the placeholder content for store stats.
@@ -202,7 +203,7 @@ extension StoreStatsAndTopPerformersPeriodViewController {
     /// Removes the placeholder content for top performers.
     ///
     func removeTopPerformersGhostContent() {
-        topPerformersPeriodViewController.removeGhostContent()
+//        topPerformersPeriodViewController.removeGhostContent()
     }
 
     /// Indicates if the receiver has Remote Stats, or not.
@@ -256,20 +257,21 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
     }
 
     func configureSubviews() {
-        view.addSubview(scrollView)
+        view.addSubview(stackView)
         view.backgroundColor = Constants.backgroundColor
-        view.pinSubviewToSafeArea(scrollView)
+        view.pinSubviewToSafeArea(stackView)
 
-        scrollView.refreshControl = refreshControl
-        scrollView.delegate = self
+        // TODO-JC: refresh control support
+//        scrollView.refreshControl = refreshControl
+//        scrollView.delegate = self
 
-        scrollView.addSubview(stackView)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
+//        containerView.addSubview(stackView)
+//        containerView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.pinSubviewToAllEdges(stackView)
-        NSLayoutConstraint.activate([
-            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
-            ])
+//        containerView.pinSubviewToAllEdges(stackView)
+//        NSLayoutConstraint.activate([
+//            stackView.widthAnchor.constraint(equalTo: containerView.widthAnchor)
+//        ])
 
         childViewContrllers.forEach { childViewController in
             childViewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -278,9 +280,6 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         // Store stats.
         let storeStatsPeriodView = storeStatsPeriodViewController.view!
         stackView.addArrangedSubview(storeStatsPeriodView)
-        NSLayoutConstraint.activate([
-            storeStatsPeriodView.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.storeStatsPeriodViewHeight),
-            ])
 
         // Analytics Hub ("See more") button
         stackView.addArrangedSubview(analyticsHubButtonView)

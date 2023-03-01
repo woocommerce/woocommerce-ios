@@ -2,11 +2,13 @@ import UIKit
 import Yosemite
 import Charts
 import Experiments
+import SwiftUI
 import WordPressUI
 import class AutomatticTracks.CrashLogging
 
 
-final class TopPerformerDataViewController: UIViewController, GhostableViewController {
+
+final class TopPerformerDataViewController: UIViewController {
 
     // MARK: - Properties
 
@@ -19,15 +21,6 @@ final class TopPerformerDataViewController: UIViewController, GhostableViewContr
     var hasTopEarnerStatsItems: Bool {
         return (topEarnerStats?.items?.count ?? 0) > 0
     }
-
-    @IBOutlet private weak var tableView: IntrinsicTableView!
-
-    /// A child view controller that is shown when `displayGhostContent()` is called.
-    ///
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductTableViewCell.self,
-                                                                                                estimatedRowHeight: Constants.estimatedRowHeight,
-                                                                                                backgroundColor: .basicBackground,
-                                                                                                separatorStyle: .none))
 
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///
@@ -84,7 +77,7 @@ final class TopPerformerDataViewController: UIViewController, GhostableViewContr
         self.granularity = timeRange.topEarnerStatsGranularity
         self.timeRange = timeRange
         self.usageTracksEventEmitter = usageTracksEventEmitter
-        super.init(nibName: type(of: self).nibName, bundle: nil)
+        super.init(nibName: nil, bundle: nil)
     }
 
     /// NSCoder Conformance
@@ -98,15 +91,57 @@ final class TopPerformerDataViewController: UIViewController, GhostableViewContr
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-        configureTableView()
+        showTopPerformers(items: [], isLoading: true)
         configureResultsController()
-        registerTableViewCells()
-        registerTableViewHeaderFooters()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         trackChangedTabIfNeeded()
+    }
+}
+
+private extension TopPerformerDataViewController {
+    func updateUI() {
+        guard let items = topEarnerStats?.items, items.isNotEmpty else {
+            // todo-jc: show empty view
+            showEmptyView()
+            return
+        }
+        showTopPerformers(items: items, isLoading: false)
+    }
+
+    func showTopPerformers(items: [TopEarnerStatsItem], isLoading: Bool) {
+        view.subviews.forEach { subview in
+            subview.removeFromSuperview()
+        }
+
+        let rows = items.map { item in
+            TopPerformersRow.Data(imageURL: URL(string: item.imageUrl ?? ""),
+                                  name: item.productName ?? "",
+                                  details: AnalyticsHubViewModel.Localization.ProductCard.netSales(value: item.totalString),
+                                  value: "\(item.quantity)")
+        }
+        let hostingController = ConstraintsUpdatingHostingController(rootView: TopPerformersView(itemTitle: "ITEM", valueTitle: "VALUE", rows: rows, isRedacted: isLoading, showsHeader: false))
+
+        addChild(hostingController)
+        view.addSubview(hostingController.view)
+
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(hostingController.view)
+        NSLayoutConstraint.activate([
+            hostingController.view.heightAnchor.constraint(equalTo: view.heightAnchor)
+        ])
+
+        hostingController.didMove(toParent: self)
+    }
+
+    func showEmptyView() {
+        view.subviews.forEach { subview in
+            subview.removeFromSuperview()
+        }
+
+        // TODO-JC
     }
 }
 
@@ -120,41 +155,29 @@ private extension TopPerformerDataViewController {
     }
 
     func configureTableView() {
-        tableView.backgroundColor = TableViewStyle.backgroundColor
-        tableView.separatorColor = TableViewStyle.separatorColor
-        tableView.estimatedRowHeight = Constants.estimatedRowHeight
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.applyFooterViewForHidingExtraRowPlaceholders()
-
-        // Removes extra top padding in iOS 15+.
-        tableView.sectionHeaderTopPadding = 0
+//        tableView.backgroundColor = TableViewStyle.backgroundColor
+//        tableView.separatorColor = TableViewStyle.separatorColor
+//        tableView.estimatedRowHeight = Constants.estimatedRowHeight
+//        tableView.rowHeight = UITableView.automaticDimension
+//        tableView.applyFooterViewForHidingExtraRowPlaceholders()
+//
+//        // Removes extra top padding in iOS 15+.
+//        tableView.sectionHeaderTopPadding = 0
     }
 
     func configureResultsController() {
         resultsController.onDidChangeContent = { [weak self] in
-            self?.tableView.reloadData()
+            self?.updateUI()
         }
         resultsController.onDidResetContent = { [weak self] in
-            self?.tableView.reloadData()
+            self?.updateUI()
+//            self?.tableView.reloadData()
         }
 
         do {
             try resultsController.performFetch()
         } catch {
             ServiceLocator.crashLogging.logError(error)
-        }
-    }
-
-    func registerTableViewCells() {
-        tableView.registerNib(for: ProductTableViewCell.self)
-        tableView.registerNib(for: NoPeriodDataTableViewCell.self)
-    }
-
-    func registerTableViewHeaderFooters() {
-        let headersAndFooters = [TwoColumnSectionHeaderView.self]
-
-        for kind in headersAndFooters {
-            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
     }
 }
@@ -261,13 +284,6 @@ private extension TopPerformerDataViewController {
 // MARK: - Constants!
 //
 private extension TopPerformerDataViewController {
-    enum Text {
-        static let sectionDescription = NSLocalizedString("Gain insights into how products are performing on your store",
-                                                          comment: "Description for Top Performers section of My Store tab.")
-        static let sectionLeftColumn = NSLocalizedString("Products", comment: "Description for Top Performers left column header")
-        static let sectionRightColumn = NSLocalizedString("Items Sold", comment: "Description for Top Performers right column header")
-    }
-
     enum TableViewStyle {
         static let backgroundColor = UIColor.basicBackground
         static let separatorColor = UIColor.systemColor(.separator)

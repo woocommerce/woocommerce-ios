@@ -16,7 +16,7 @@ final class JetpackSetupCoordinator {
     private let accountService: WordPressComAccountService
 
     private var benefitsController: JetpackBenefitsHostingController?
-    private var loginNavigationController: UINavigationController?
+    private var loginNavigationController: LoginNavigationController?
 
     init(site: Site,
          rootViewController: UIViewController,
@@ -50,6 +50,25 @@ final class JetpackSetupCoordinator {
         rootViewController.present(benefitsController, animated: true, completion: nil)
         self.benefitsController = benefitsController
     }
+
+    func handleAuthenticationUrl(_ url: URL) -> Bool {
+        guard WordPressAuthenticator.shared.isWordPressAuthUrl(url) else {
+            return false
+        }
+
+        guard let queryDictionary = url.query?.dictionaryFromQueryString() else {
+            DDLogError("⛔️ Magic link error: we couldn't retrieve the query dictionary from the sign-in URL.")
+            return false
+        }
+
+        guard let authToken = queryDictionary.string(forKey: "token") else {
+            DDLogError("⛔️ Magic link error: we couldn't retrieve the authentication token from the sign-in URL.")
+            return false
+        }
+
+        startJetpackSetupFlow(authToken: authToken)
+        return true
+    }
 }
 
 // MARK: - Private helpers
@@ -71,11 +90,14 @@ private extension JetpackSetupCoordinator {
     }
 
     /// Checks the Jetpack connection status for non-Jetpack sites to infer the setup steps to be handled.
-    func checkJetpackStatus(_ result: Result<JetpackUser, Error>) {
+    func checkJetpackStatus(_ result: Result<JetpackUser, Error>, skipsWPComLogin: Bool = false) {
         switch result {
         case .success(let user):
             let connectedEmail = user.wpcomUser?.email
             requiresConnectionOnly = !user.isConnected
+            guard !skipsWPComLogin else {
+                return
+            }
             if let connectedEmail {
                 Task { @MainActor in
                     await checkWordPressComAccount(email: connectedEmail)
@@ -89,6 +111,9 @@ private extension JetpackSetupCoordinator {
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
                 /// 404 error means Jetpack is not installed or activated yet.
                 requiresConnectionOnly = false
+                guard !skipsWPComLogin else {
+                    return
+                }
                 let roles = stores.sessionManager.defaultRoles
                 if roles.contains(.administrator) {
                     showWPComEmailLogin()
@@ -117,6 +142,23 @@ private extension JetpackSetupCoordinator {
         })
         benefitsController?.present(UINavigationController(rootViewController: viewController), animated: true)
     }
+
+    func startJetpackSetupFlow(authToken: String) {
+        /// Dismiss any existing login flow if possible.
+        if rootViewController.topmostPresentedViewController is LoginNavigationController {
+            rootViewController.dismiss(animated: false)
+        }
+        let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
+        rootViewController.topmostPresentedViewController.present(progressView, animated: true)
+        let action = JetpackConnectionAction.fetchJetpackUser { [weak self] result in
+            guard let self else { return }
+            self.rootViewController.dismiss(animated: true)
+            self.checkJetpackStatus(result, skipsWPComLogin: true)
+            #warning("TODO: sync account with token and start Jetpack setup")
+            DDLogInfo("✅ Ready for Jetpack setup - connection only: \(self.requiresConnectionOnly)")
+        }
+        stores.dispatch(action)
+    }
 }
 
 // MARK: - WPCom Login flow
@@ -126,7 +168,7 @@ private extension JetpackSetupCoordinator {
         let emailLoginController = WPComEmailLoginHostingController(siteURL: site.url,
                                                                     requiresConnectionOnly: requiresConnectionOnly,
                                                                     onSubmit: checkWordPressComAccount(email:))
-        let loginNavigationController = UINavigationController(rootViewController: emailLoginController)
+        let loginNavigationController = LoginNavigationController(rootViewController: emailLoginController)
         rootViewController.dismiss(animated: true) {
             self.rootViewController.present(loginNavigationController, animated: true)
         }
@@ -233,6 +275,10 @@ private extension JetpackSetupCoordinator {
         static let errorRequestingAuthURL = NSLocalizedString(
             "Error requesting authentication link for your account. Please try again.",
             comment: "Message shown on the error alert displayed when requesting authentication link for the Jetpack setup flow fails"
+        )
+        static let pleaseWait = NSLocalizedString(
+            "Please wait",
+            comment: "Message on the loading view displayed when the magic link authentication for Jetpack setup is in progress"
         )
     }
 }

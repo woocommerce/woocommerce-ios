@@ -31,9 +31,11 @@ public final class AddProductScreen: ScreenObject {
     /// Selects multiple products from the list.
     /// - Returns: Unified Order screen object.
     @discardableResult
-    public func selectMultipleProducts(byName names: [String]) throws -> UnifiedOrderScreen {
-        app.buttons.staticTexts[names[0]].tap()
-        // TODO: Add further scenarios in next iterations: https://github.com/woocommerce/woocommerce-ios/issues/8997
+    public func selectMultipleProducts(numberOfProductsToAdd: Int) throws -> UnifiedOrderScreen {
+        for product in 0..<numberOfProductsToAdd {
+            let products = app.buttons.matching(identifier: "product-item")
+            products.element(boundBy: product).tap()
+        }
         if doneButton.exists {
             doneButton.tap()
         }

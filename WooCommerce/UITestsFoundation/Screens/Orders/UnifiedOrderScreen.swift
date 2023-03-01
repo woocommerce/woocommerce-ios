@@ -167,9 +167,9 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Select the first product from the addProductScreen
     /// - Returns: Unified Order screen object.
-    public func addProducts(byName names: [String]) throws -> UnifiedOrderScreen {
+    public func addProducts(numberOfProductsToAdd numberOfProducts: Int) throws -> UnifiedOrderScreen {
         return try openAddProductScreen()
-            .selectMultipleProducts(byName: [names[0]])
+            .selectMultipleProducts(numberOfProductsToAdd: numberOfProducts)
     }
 
     /// Adds minimal customer details on the Customer Details screen

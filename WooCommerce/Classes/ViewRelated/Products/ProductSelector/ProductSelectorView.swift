@@ -72,6 +72,7 @@ struct ProductSelectorView: View {
                             ForEach(viewModel.productRows) { rowViewModel in
                                 createProductRow(rowViewModel: rowViewModel)
                                     .padding(Constants.defaultPadding)
+                                    .accessibilityIdentifier(Constants.productRowAccessibilityIdentifier)
                                 Divider().frame(height: Constants.dividerHeight)
                                     .padding(.leading, Constants.defaultPadding)
                             }
@@ -196,6 +197,7 @@ private extension ProductSelectorView {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
         static let doneButtonAccessibilityIdentifier: String = "product-multiple-selection-done-button"
+        static let productRowAccessibilityIdentifier: String = "product-item"
     }
 
     enum Localization {

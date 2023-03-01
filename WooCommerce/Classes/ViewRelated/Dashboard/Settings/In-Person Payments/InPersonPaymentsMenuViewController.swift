@@ -382,7 +382,7 @@ extension InPersonPaymentsMenuViewController {
         ServiceLocator.analytics.track(.paymentsMenuManageCardReadersTapped)
 
         let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList(configuration: viewModel.cardPresentPaymentsConfiguration)
-        let viewController = CardReaderSettingsPresentingViewController(viewModelsAndViews: viewModelsAndViews)
+        let viewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
         show(viewController, sender: self)
     }
 

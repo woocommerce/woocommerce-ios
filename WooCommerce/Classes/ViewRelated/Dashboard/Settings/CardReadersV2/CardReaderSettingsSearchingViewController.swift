@@ -3,7 +3,7 @@ import SwiftUI
 /// This view controller is used when no reader is connected. It assists
 /// the merchant in connecting to a reader.
 ///
-final class CardReaderSettingsSearchingViewController: UIHostingController<CardReaderSettingsSearchingView>, CardReaderSettingsViewModelPresenter {
+final class CardReaderSettingsSearchingViewController: UIHostingController<CardReaderSettingsSearchingView>, PaymentSettingsFlowViewModelPresenter {
     /// If we know reader(s), begin search automatically once each time this VC becomes visible
     ///
     private var didBeginSearchAutomatically = false
@@ -26,7 +26,7 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
         )
     }()
 
-    init?(viewModel: CardReaderSettingsPresentedViewModel) {
+    init?(viewModel: PaymentSettingsFlowPresentedViewModel) {
         guard let viewModel = viewModel as? CardReaderSettingsSearchingViewModel else {
             return nil
         }

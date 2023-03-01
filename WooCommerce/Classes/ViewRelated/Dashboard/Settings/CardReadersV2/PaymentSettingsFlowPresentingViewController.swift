@@ -1,14 +1,14 @@
 import Foundation
 import UIKit
 
-final class CardReaderSettingsPresentingViewController: UIViewController {
+final class PaymentSettingsFlowPresentingViewController: UIViewController {
     /// An array of viewModels and related view classes
-    private var viewModelsAndViews: CardReaderSettingsPrioritizedViewModelsProvider
+    private var viewModelsAndViews: PaymentSettingsFlowPrioritizedViewModelsProvider
 
     /// The view controller we are currently presenting
     private var childViewController: UIViewController?
 
-    init(viewModelsAndViews: CardReaderSettingsPrioritizedViewModelsProvider) {
+    init(viewModelsAndViews: PaymentSettingsFlowPrioritizedViewModelsProvider) {
         self.viewModelsAndViews = viewModelsAndViews
         super.init(nibName: nil, bundle: nil)
 
@@ -36,7 +36,7 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
         onViewModelsPriorityChange(viewModelAndView: viewModelsAndViews.priorityViewModelAndView)
     }
 
-    private func onViewModelsPriorityChange(viewModelAndView: CardReaderSettingsViewModelAndView?) {
+    private func onViewModelsPriorityChange(viewModelAndView: PaymentSettingsFlowViewModelAndView?) {
         childViewController?.willMove(toParent: nil)
         childViewController?.removeFromParent()
         childViewController?.view.removeFromSuperview()
@@ -60,7 +60,7 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
 
 // MARK: - View Configuration
 //
-private extension CardReaderSettingsPresentingViewController {
+private extension PaymentSettingsFlowPresentingViewController {
     func configureBackground() {
         /// Needed to avoid incorrect background appearing near bottom of view, especially on dark mode
         view.backgroundColor = .systemBackground

@@ -5,7 +5,7 @@ import Yosemite
 /// This view controller is used when a reader is currently connected. It assists
 /// the merchant in updating and/or disconnecting from the reader, as needed.
 ///
-final class CardReaderSettingsConnectedViewController: UIViewController, CardReaderSettingsViewModelPresenter {
+final class CardReaderSettingsConnectedViewController: UIViewController, PaymentSettingsFlowViewModelPresenter {
     /// Main TableView
     ///
     private var tableView: UITableView
@@ -20,7 +20,7 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
 
     private let settingsAlerts = CardReaderSettingsAlerts()
 
-    init?(viewModel: CardReaderSettingsPresentedViewModel) {
+    init?(viewModel: PaymentSettingsFlowPresentedViewModel) {
         guard let viewModel = viewModel as? BluetoothCardReaderSettingsConnectedViewModel else {
             return nil
         }

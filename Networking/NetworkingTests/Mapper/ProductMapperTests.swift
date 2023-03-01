@@ -303,6 +303,7 @@ final class ProductMapperTests: XCTestCase {
         let product = try XCTUnwrap(mapLoadProductBundleResponse())
 
         // Then
+        XCTAssertEqual(product.productType, .bundle)
         XCTAssertEqual(product.bundleLayout, .defaultLayout)
         XCTAssertEqual(product.bundleFormLocation, .defaultLocation)
         XCTAssertEqual(product.bundleItemGrouping, .parent)

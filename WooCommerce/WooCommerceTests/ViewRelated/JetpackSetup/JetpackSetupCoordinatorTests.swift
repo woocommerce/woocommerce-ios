@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
+import enum Alamofire.AFError
 
 final class JetpackSetupCoordinatorTests: XCTestCase {
 
@@ -55,4 +56,74 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             self.navigationController.presentedViewController is JCPJetpackInstallHostingController
         }
     }
+
+    func test_wpcom_email_screen_is_presented_for_non_jetpack_sites_without_jetpack_if_user_is_admin() throws {
+        // Given
+        let testSite = Site.fake().copy(siteID: -1)
+        let mockSessionManager = MockSessionManager()
+        mockSessionManager.defaultRoles = [.administrator]
+        let stores = DefaultStoresManager(sessionManager: mockSessionManager)
+        let coordinator = JetpackSetupCoordinator(site: testSite, navigationController: navigationController, stores: stores)
+
+        // When
+        coordinator.showBenefitModal()
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+        let benefitModal = try XCTUnwrap(navigationController.presentedViewController as? JetpackBenefitsHostingController)
+        benefitModal.rootView.installAction(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))))
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController is UINavigationController
+        }
+        let navigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
+        XCTAssertTrue(navigationController.topViewController is WPComEmailLoginHostingController)
+    }
+
+    func test_admin_required_screen_is_presented_for_non_jetpack_sites_without_jetpack_if_user_is_not_admin() throws {
+        // Given
+        let testSite = Site.fake().copy(siteID: -1)
+        let mockSessionManager = MockSessionManager()
+        mockSessionManager.defaultRoles = [.shopManager]
+        let stores = DefaultStoresManager(sessionManager: mockSessionManager)
+        let coordinator = JetpackSetupCoordinator(site: testSite, navigationController: navigationController, stores: stores)
+
+        // When
+        coordinator.showBenefitModal()
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+        let benefitModal = try XCTUnwrap(navigationController.presentedViewController as? JetpackBenefitsHostingController)
+        benefitModal.rootView.installAction(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))))
+
+        // Then
+        waitUntil {
+            benefitModal.presentedViewController is UINavigationController
+        }
+        let navigationController = try XCTUnwrap(benefitModal.presentedViewController as? UINavigationController)
+        XCTAssertTrue(navigationController.topViewController is AdminRoleRequiredHostingController)
+    }
+
+    func test_admin_required_screen_is_presented_for_non_jetpack_sites_when_jetpack_connection_check_returns_403() throws {
+        // Given
+        let testSite = Site.fake().copy(siteID: -1)
+        let coordinator = JetpackSetupCoordinator(site: testSite, navigationController: navigationController)
+
+        // When
+        coordinator.showBenefitModal()
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+        let benefitModal = try XCTUnwrap(navigationController.presentedViewController as? JetpackBenefitsHostingController)
+        benefitModal.rootView.installAction(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))))
+
+        // Then
+        waitUntil {
+            benefitModal.presentedViewController is UINavigationController
+        }
+        let navigationController = try XCTUnwrap(benefitModal.presentedViewController as? UINavigationController)
+        XCTAssertTrue(navigationController.topViewController is AdminRoleRequiredHostingController)
+    }
+
 }

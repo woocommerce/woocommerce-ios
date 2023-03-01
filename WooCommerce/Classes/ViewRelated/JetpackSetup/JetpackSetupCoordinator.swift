@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import enum Alamofire.AFError
+import WordPressAuthenticator
 
 /// Coordinates the Jetpack setup flow in the authenticated state.
 ///
@@ -12,6 +13,7 @@ final class JetpackSetupCoordinator {
     private var requiresConnectionOnly: Bool
     private let stores: StoresManager
     private let analytics: Analytics
+    private let accountService: WordPressComAccountService
 
     private var benefitsController: JetpackBenefitsHostingController?
     private var loginNavigationController: UINavigationController?
@@ -25,6 +27,11 @@ final class JetpackSetupCoordinator {
         self.navigationController = navigationController
         self.stores = stores
         self.analytics = analytics
+
+        /// the authenticator needs to be initialized with configs
+        /// to be used for requesting authentication link and handle login later.
+        WordPressAuthenticator.initializeWithCustomConfigs()
+        self.accountService = WordPressComAccountService()
     }
 
     func showBenefitModal() {
@@ -70,7 +77,9 @@ private extension JetpackSetupCoordinator {
             let connectedEmail = user.wpcomUser?.email
             requiresConnectionOnly = !user.isConnected
             if let connectedEmail {
-                #warning("TODO-8918: check if account is passwordless and show the next screen")
+                Task { @MainActor in
+                    await checkWordPressComAccount(email: connectedEmail)
+                }
             } else {
                 showWPComEmailLogin()
             }
@@ -111,13 +120,25 @@ private extension JetpackSetupCoordinator {
     }
 
     func showWPComEmailLogin() {
-        let emailLoginController = WPComEmailLoginHostingController(siteURL: site.url, requiresConnectionOnly: requiresConnectionOnly) { email in
-            #warning("TODO-8918: check if account is passwordless and show the next screen")
-        }
+        let emailLoginController = WPComEmailLoginHostingController(siteURL: site.url,
+                                                                    requiresConnectionOnly: requiresConnectionOnly,
+                                                                    onSubmit: checkWordPressComAccount(email:))
         let loginNavigationController = UINavigationController(rootViewController: emailLoginController)
         navigationController.dismiss(animated: true) {
             self.navigationController.present(loginNavigationController, animated: true)
         }
         self.loginNavigationController = loginNavigationController
+    }
+
+    func checkWordPressComAccount(email: String) async {
+        await withCheckedContinuation { continuation -> Void in
+            accountService.isPasswordlessAccount(username: email, success: { passwordless in
+                DDLogInfo("✅ account check done - passwordless: \(passwordless)")
+                continuation.resume()
+            }, failure: { error in
+                DDLogError("⛔️ Error checking for passwordless account: \(error)")
+                continuation.resume()
+            })
+        }
     }
 }

@@ -85,6 +85,35 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     public let addOns: [ProductAddOn]
 
+    // MARK: Product Bundle properties
+
+    /// Single-product details page layout. Applicable for bundle-type products only.
+    public let bundleLayout: ProductBundleLayout?
+
+    /// Controls the form location of the product in the single-product page. Applicable to bundle-type products.
+    public let bundleFormLocation: ProductBundleFormLocation?
+
+    /// Controls the display of bundle container/child items in cart/order templates. Applicable for bundle-type products only.
+    public let bundleItemGrouping: ProductBundleItemGrouping?
+
+    /// Min bundle size. Applicable for bundle-type products only.
+    public let bundleMinSize: Int64?
+
+    /// Max bundle size. Applicable for bundle-type products only.
+    public let bundleMaxSize: Int64?
+
+    /// Controls whether the configuration of this product can be modified from the cart page. Applicable to bundle-type products.
+    public let bundleEditableInCart: Bool?
+
+    /// Sold Individually option context. Applicable to bundle-type products.
+    public let bundleSoldIndividuallyContext: ProductBundleSoldIndividuallyContext?
+
+    /// Stock status of this bundle, taking bundled product quantity requirements and limitations into account. Applicable for bundle-type products only.
+    public let bundleStockStatus: ProductStockStatus?
+
+    /// Quantity of bundles left in stock, taking bundled product quantity requirements into account. Applicable for bundle-type products only.
+    public let bundleStockQuantity: String?
+
     /// Computed Properties
     ///
     public var productStatus: ProductStatus {
@@ -199,7 +228,16 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 variations: [Int64],
                 groupedProducts: [Int64],
                 menuOrder: Int,
-                addOns: [ProductAddOn]) {
+                addOns: [ProductAddOn],
+                bundleLayout: ProductBundleLayout?,
+                bundleFormLocation: ProductBundleFormLocation?,
+                bundleItemGrouping: ProductBundleItemGrouping?,
+                bundleMinSize: Int64?,
+                bundleMaxSize: Int64?,
+                bundleEditableInCart: Bool?,
+                bundleSoldIndividuallyContext: ProductBundleSoldIndividuallyContext?,
+                bundleStockStatus: ProductStockStatus?,
+                bundleStockQuantity: String?) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -263,6 +301,15 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.groupedProducts = groupedProducts
         self.menuOrder = menuOrder
         self.addOns = addOns
+        self.bundleLayout = bundleLayout
+        self.bundleFormLocation = bundleFormLocation
+        self.bundleItemGrouping = bundleItemGrouping
+        self.bundleMinSize = bundleMinSize
+        self.bundleMaxSize = bundleMaxSize
+        self.bundleEditableInCart = bundleEditableInCart
+        self.bundleStockStatus = bundleStockStatus
+        self.bundleStockQuantity = bundleStockQuantity
+        self.bundleSoldIndividuallyContext = bundleSoldIndividuallyContext
     }
 
     /// The public initializer for Product.
@@ -402,6 +449,17 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         // https://github.com/woocommerce/woocommerce-ios/issues/4205
         let addOns = (try? container.decodeIfPresent(ProductAddOnEnvelope.self, forKey: .metadata)?.revolve()) ?? []
 
+        // Product Bundle
+        let bundleLayout = try container.decodeIfPresent(ProductBundleLayout.self, forKey: .bundleLayout)
+        let bundleFormLocation = try container.decodeIfPresent(ProductBundleFormLocation.self, forKey: .bundleFormLocation)
+        let bundleItemGrouping = try container.decodeIfPresent(ProductBundleItemGrouping.self, forKey: .bundleItemGrouping)
+        let bundleEditableInCart = try container.decodeIfPresent(Bool.self, forKey: .bundleEditableInCart)
+        let bundleMinSize = try container.decodeIfPresent(Int64.self, forKey: .bundleMinSize)
+        let bundleMaxSize = try container.decodeIfPresent(Int64.self, forKey: .bundleMaxSize)
+        let bundleSoldIndividuallyContext = try container.decodeIfPresent(ProductBundleSoldIndividuallyContext.self, forKey: .bundleSoldIndividuallyContext)
+        let bundleStockStatus = try container.decodeIfPresent(ProductStockStatus.self, forKey: .bundleStockStatus)
+        let bundleStockQuantity = try container.decodeIfPresent(String.self, forKey: .bundleStockQuantity)
+
         self.init(siteID: siteID,
                   productID: productID,
                   name: name,
@@ -464,7 +522,16 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   variations: variations,
                   groupedProducts: groupedProducts,
                   menuOrder: menuOrder,
-                  addOns: addOns)
+                  addOns: addOns,
+                  bundleLayout: bundleLayout,
+                  bundleFormLocation: bundleFormLocation,
+                  bundleItemGrouping: bundleItemGrouping,
+                  bundleMinSize: bundleMinSize,
+                  bundleMaxSize: bundleMaxSize,
+                  bundleEditableInCart: bundleEditableInCart,
+                  bundleSoldIndividuallyContext: bundleSoldIndividuallyContext,
+                  bundleStockStatus: bundleStockStatus,
+                  bundleStockQuantity: bundleStockQuantity)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -650,6 +717,16 @@ private extension Product {
         case groupedProducts    = "grouped_products"
         case menuOrder          = "menu_order"
         case metadata           = "meta_data"
+
+        case bundleLayout                   = "bundle_layout"
+        case bundleFormLocation             = "bundle_add_to_cart_form_location"
+        case bundleItemGrouping             = "bundle_item_grouping"
+        case bundleMinSize                  = "bundle_min_size"
+        case bundleMaxSize                  = "bundle_max_size"
+        case bundleEditableInCart           = "bundle_editable_in_cart"
+        case bundleSoldIndividuallyContext  = "bundle_sold_individually_context"
+        case bundleStockStatus              = "bundle_stock_status"
+        case bundleStockQuantity            = "bundle_stock_quantity"
     }
 }
 

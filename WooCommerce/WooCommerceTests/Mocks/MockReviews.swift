@@ -118,7 +118,16 @@ extension MockReviews {
                        variations: [192, 194, 193],
                        groupedProducts: [],
                        menuOrder: 0,
-                       addOns: [])
+                       addOns: [],
+                       bundleLayout: nil,
+                       bundleFormLocation: nil,
+                       bundleItemGrouping: nil,
+                       bundleMinSize: nil,
+                       bundleMaxSize: nil,
+                       bundleEditableInCart: nil,
+                       bundleSoldIndividuallyContext: nil,
+                       bundleStockStatus: nil,
+                       bundleStockQuantity: nil)
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {
@@ -264,7 +273,16 @@ extension MockReviews {
                        variations: [],
                        groupedProducts: [111, 222, 333],
                        menuOrder: 0,
-                       addOns: [])
+                       addOns: [],
+                       bundleLayout: nil,
+                       bundleFormLocation: nil,
+                       bundleItemGrouping: nil,
+                       bundleMinSize: nil,
+                       bundleMaxSize: nil,
+                       bundleEditableInCart: nil,
+                       bundleSoldIndividuallyContext: nil,
+                       bundleStockStatus: nil,
+                       bundleStockQuantity: nil)
     }
 
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
@@ -385,7 +403,16 @@ extension MockReviews {
                        variations: [],
                        groupedProducts: [],
                        menuOrder: 2,
-                       addOns: [])
+                       addOns: [],
+                       bundleLayout: nil,
+                       bundleFormLocation: nil,
+                       bundleItemGrouping: nil,
+                       bundleMinSize: nil,
+                       bundleMaxSize: nil,
+                       bundleEditableInCart: nil,
+                       bundleSoldIndividuallyContext: nil,
+                       bundleStockStatus: nil,
+                       bundleStockQuantity: nil)
     }
 
     func sampleVariationTypeDimensions() -> Networking.ProductDimensions {

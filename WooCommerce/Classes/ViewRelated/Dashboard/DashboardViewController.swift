@@ -531,8 +531,12 @@ private extension DashboardViewController {
     func showOnboardingCard() {
         let hostingController = ConstraintsUpdatingHostingController(rootView: StoreOnboardingView(viewModel: .init(isExpanded: false),
                                                                                                    taskTapped: { [weak self] task in
-            guard let self, let navigationController = self.navigationController else { return }
-            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController)
+            guard let self,
+                  let navigationController = self.navigationController,
+                  let site = ServiceLocator.stores.sessionManager.defaultSite else {
+                return
+            }
+            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: site)
             self.onboardingCoordinator = coordinator
             coordinator.start(task: task)
         }))

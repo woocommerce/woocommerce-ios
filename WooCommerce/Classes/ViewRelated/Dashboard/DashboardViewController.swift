@@ -23,6 +23,7 @@ final class DashboardViewController: UIViewController {
 
     // MARK: Subviews
 
+    /// The top-level stack view that contains the scroll view.
     private lazy var stackView: UIStackView = {
         .init(arrangedSubviews: [])
     }()
@@ -110,8 +111,6 @@ final class DashboardViewController: UIViewController {
 
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
-//    private var contentBottomToJetpackBenefitsBannerConstraint: NSLayoutConstraint?
-//    private var contentBottomToContainerConstraint: NSLayoutConstraint?
     private var isJetpackBenefitsBannerShown: Bool {
         bottomJetpackBenefitsBannerController.view?.superview != nil
     }

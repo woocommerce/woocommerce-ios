@@ -2,7 +2,7 @@ import Combine
 import Foundation
 import Yosemite
 
-final class BluetoothCardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedViewModel {
+final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPresentedViewModel {
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?

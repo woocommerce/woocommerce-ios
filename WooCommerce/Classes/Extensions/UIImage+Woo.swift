@@ -268,6 +268,10 @@ extension UIImage {
         UIImage.gridicon(.domains)
     }
 
+    static var emailImage: UIImage {
+        UIImage(named: "email")!
+    }
+
     /// Domain search placeholder image.
     ///
     static var domainSearchPlaceholderImage: UIImage {

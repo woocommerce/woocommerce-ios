@@ -10,16 +10,43 @@ final class WPComPasswordLoginViewModel: ObservableObject {
     /// Entered password
     @Published var password: String = ""
 
-    /// Username/email address of the WPCom account
-    private let username: String
+    /// Email address of the WPCom account
+    let email: String
 
-    init(username: String, requiresConnectionOnly: Bool) {
-        self.username = username
+    @Published private(set) var avatarURL: URL?
+
+    init(email: String, requiresConnectionOnly: Bool) {
+        self.email = email
         self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+        avatarURL = gravatarUrl(of: email)
+    }
+}
+
+// MARK: - Helpers
+private extension WPComPasswordLoginViewModel {
+    /// Constructs Gravatar URL from an email.
+    /// Ref: https://en.gravatar.com/site/implement/images/
+    func gravatarUrl(of email: String) -> URL? {
+        let hash = gravatarHash(of: email)
+        let targetURL = String(format: "%@/%@?d=%@&s=%d&r=%@", Constants.baseGravatarURL, hash, Constants.gravatarDefaultOption, Constants.imageSize, Constants.gravatarRating)
+        return URL(string: targetURL)
+    }
+
+    func gravatarHash(of email: String) -> String {
+        return email
+            .lowercased()
+            .trimmingCharacters(in: .whitespaces)
+            .md5Hash()
     }
 }
 
 extension WPComPasswordLoginViewModel {
+    enum Constants {
+        static let imageSize = 80
+        static let baseGravatarURL = "https://gravatar.com/avatar"
+        static let gravatarRating = "g" // safest rating
+        static let gravatarDefaultOption = "mp" // a simple, cartoon-style silhouetted outline of a person
+    }
     enum Localization {
         static let installJetpack = NSLocalizedString(
             "Install Jetpack",

@@ -1,4 +1,5 @@
 import SwiftUI
+import Kingfisher
 
 /// Screen for entering the password for a WPCom account during the Jetpack setup flow
 /// This is presented for users authenticated with WPOrg credentials.
@@ -18,6 +19,23 @@ struct WPComPasswordLoginView: View {
                 // Title
                 Text(viewModel.titleString)
                     .largeTitleStyle()
+
+                // Avatar and email
+                HStack(spacing: Constants.contentPadding) {
+                    viewModel.avatarURL.map { url in
+                        KFImage(url)
+                            .resizable()
+                            .clipShape(Circle())
+                            .frame(width: Constants.avatarSize, height: Constants.avatarSize)
+                    }
+                    Text(viewModel.email)
+                    Spacer()
+                }
+                .padding(Constants.avatarPadding)
+                .background(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .strokeBorder(.gray, lineWidth: 1)
+                )
 
                 // Password field
                 AccountCreationFormFieldView(viewModel: .init(
@@ -52,6 +70,8 @@ private extension WPComPasswordLoginView {
         static let blockVerticalPadding: CGFloat = 32
         static let contentVerticalSpacing: CGFloat = 8
         static let contentPadding: CGFloat = 16
+        static let avatarSize: CGFloat = 32
+        static let avatarPadding: EdgeInsets = .init(top: 8, leading: 16, bottom: 8, trailing: 16)
     }
 
     enum Localization {
@@ -72,6 +92,6 @@ private extension WPComPasswordLoginView {
 
 struct WPComPasswordLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComPasswordLoginView(viewModel: .init(username: "test@example.com", requiresConnectionOnly: true))
+        WPComPasswordLoginView(viewModel: .init(email: "test@example.com", requiresConnectionOnly: true))
     }
 }

@@ -7,6 +7,7 @@ import struct Yosemite.Site
 final class StoreOnboardingCoordinator: Coordinator {
     let navigationController: UINavigationController
 
+    private var addProductCoordinator: AddProductCoordinator?
     private var domainSettingsCoordinator: DomainSettingsCoordinator?
 
     private let site: Site
@@ -29,6 +30,8 @@ final class StoreOnboardingCoordinator: Coordinator {
     @MainActor
     func start(task: StoreOnboardingTask) {
         switch task {
+        case .addFirstProduct:
+            addProduct()
         case .customizeDomains:
             showCustomDomains()
         default:
@@ -39,6 +42,16 @@ final class StoreOnboardingCoordinator: Coordinator {
 }
 
 private extension StoreOnboardingCoordinator {
+    @MainActor
+    func addProduct() {
+        let coordinator = AddProductCoordinator(siteID: site.siteID, sourceView: nil, sourceNavigationController: navigationController)
+        self.addProductCoordinator = coordinator
+        coordinator.onProductCreated = { _ in
+            #warning("Analytics when a product is added from the onboarding task")
+        }
+        coordinator.start()
+    }
+
     @MainActor
     func showCustomDomains() {
         let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding, site: site, navigationController: navigationController)

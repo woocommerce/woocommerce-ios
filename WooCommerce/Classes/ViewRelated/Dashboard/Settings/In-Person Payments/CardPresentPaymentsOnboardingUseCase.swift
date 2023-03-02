@@ -131,6 +131,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         deferredSaveSelectedPluginWhenOnboardingComplete(selectedPlugin: selectedPlugin)
 
         updateState()
+        CardPresentPaymentOnboardingStateCache.shared.update(self.state)
     }
 
     private func deferredSaveSelectedPluginWhenOnboardingComplete(selectedPlugin: CardPresentPaymentsPlugin) {

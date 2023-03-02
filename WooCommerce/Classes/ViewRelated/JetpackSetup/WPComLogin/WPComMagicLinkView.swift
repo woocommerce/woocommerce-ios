@@ -1,12 +1,46 @@
 import SwiftUI
 
+/// Hosting controller for `WPComMagicLinkView`
+final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkView> {
+
+    init(email: String, requiresConnectionOnly: Bool, onOpenMail: @escaping () -> Void) {
+        let viewModel = WPComMagicLinkViewModel(email: email, requiresConnectionOnly: requiresConnectionOnly)
+        super.init(rootView: WPComMagicLinkView(viewModel: viewModel, onOpenMail: onOpenMail))
+    }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureTransparentNavigationBar()
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
+    }
+
+    @objc
+    private func dismissView() {
+        dismiss(animated: true)
+    }
+}
+
+private extension WPComMagicLinkHostingController {
+    enum Localization {
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
+    }
+}
+
+
 // The magic link screen for the WPCom authentication flow for Jetpack setup.
 //
 struct WPComMagicLinkView: View {
     private let viewModel: WPComMagicLinkViewModel
+    private let onOpenMail: () -> Void
 
-    init(viewModel: WPComMagicLinkViewModel) {
+    init(viewModel: WPComMagicLinkViewModel, onOpenMail: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onOpenMail = onOpenMail
     }
 
     var body: some View {
@@ -40,7 +74,7 @@ struct WPComMagicLinkView: View {
             VStack {
                 // Primary CTA
                 Button(Localization.openMail) {
-                    // TODO
+                    onOpenMail()
                 }
                 .buttonStyle(PrimaryButtonStyle())
             }
@@ -71,6 +105,6 @@ private extension WPComMagicLinkView {
 
 struct WPComMagicLinkView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComMagicLinkView(viewModel: .init(email: "test@example.com", requiresConnectionOnly: true))
+        WPComMagicLinkView(viewModel: .init(email: "test@example.com", requiresConnectionOnly: true)) {}
     }
 }

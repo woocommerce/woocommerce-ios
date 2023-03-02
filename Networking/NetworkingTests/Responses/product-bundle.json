@@ -332,7 +332,7 @@
                     "product_id": 36,
                     "menu_order": 0,
                     "quantity_min": 1,
-                    "quantity_max": 1,
+                    "quantity_max": "",
                     "quantity_default": 1,
                     "priced_individually": true,
                     "shipped_individually": false,
@@ -344,9 +344,24 @@
                     "hide_thumbnail": false,
                     "discount": "10",
                     "override_variations": false,
-                    "allowed_variations": [],
+                    "allowed_variations": [
+                        39,
+                        32,
+                        33
+                    ],
                     "override_default_variation_attributes": false,
-                    "default_variation_attributes": [],
+                    "default_variation_attributes": [
+                        {
+                            "id": 1,
+                            "name": "Color",
+                            "option": "blue"
+                        },
+                        {
+                            "id": 0,
+                            "name": "Logo",
+                            "option": "Yes"
+                        }
+                    ],
                     "single_product_visibility": "visible",
                     "cart_visibility": "visible",
                     "order_visibility": "visible",

@@ -1740,7 +1740,8 @@ private extension ProductStoreTests {
                        bundleEditableInCart: nil,
                        bundleSoldIndividuallyContext: nil,
                        bundleStockStatus: nil,
-                       bundleStockQuantity: nil)
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {
@@ -1905,7 +1906,8 @@ private extension ProductStoreTests {
                        bundleEditableInCart: nil,
                        bundleSoldIndividuallyContext: nil,
                        bundleStockStatus: nil,
-                       bundleStockQuantity: nil)
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
@@ -2044,7 +2046,8 @@ private extension ProductStoreTests {
                        bundleEditableInCart: nil,
                        bundleSoldIndividuallyContext: nil,
                        bundleStockStatus: nil,
-                       bundleStockQuantity: nil)
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 
     func sampleVariationTypeDimensions() -> Networking.ProductDimensions {

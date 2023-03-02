@@ -15,7 +15,6 @@ GHHELPER_REPO = 'woocommerce/woocommerce-ios'
 # Constants
 PROJECT_ROOT_FOLDER = File.dirname(File.expand_path(__dir__))
 RESOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce', 'Resources')
-SPM_CACHE_FOLDER = File.join(Dir.home, 'spm')
 FASTLANE_DIR = __dir__
 DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
@@ -450,8 +449,7 @@ platform :ios do
       workspace: './WooCommerce.xcworkspace',
       clean: true,
       export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' },
-      cloned_source_packages_path: SPM_CACHE_FOLDER
+      export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
     )
 
     testflight(
@@ -522,8 +520,7 @@ platform :ios do
         **COMMON_EXPORT_OPTIONS,
         method: 'enterprise',
         iCloudContainerEnvironment: 'Production'
-      },
-      cloned_source_packages_path: SPM_CACHE_FOLDER
+      }
     )
 
     appcenter_upload(
@@ -584,8 +581,7 @@ platform :ios do
       derived_data_path: 'DerivedData',
       build_for_testing: true,
       device: options[:device],
-      deployment_target_version: options[:ios_version],
-      cloned_source_packages_path: SPM_CACHE_FOLDER
+      deployment_target_version: options[:ios_version]
     )
   end
 
@@ -678,8 +674,7 @@ platform :ios do
       workspace: 'WooCommerce.xcworkspace',
       scheme: 'WooCommerceScreenshots',
       build_for_testing: true,
-      derived_data_path: DERIVED_DATA_DIR,
-      cloned_source_packages_path: SPM_CACHE_FOLDER
+      derived_data_path: DERIVED_DATA_DIR
     )
   end
 
@@ -1141,8 +1136,7 @@ lane :test_without_building do |options|
     result_bundle: true,
     # settings for XML test report generation via `trainer`
     output_types: '',
-    fail_build: false,
-    cloned_source_packages_path: SPM_CACHE_FOLDER
+    fail_build: false
   )
 
   trainer(path: lane_context[SharedValues::SCAN_GENERATED_XCRESULT_PATH], fail_build: true)

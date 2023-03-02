@@ -14,15 +14,18 @@ final class JetpackSetupCoordinator {
     private let stores: StoresManager
     private let analytics: Analytics
     private let accountService: WordPressComAccountService
+    private let dotcomAuthScheme: String
 
     private var benefitsController: JetpackBenefitsHostingController?
     private var loginNavigationController: LoginNavigationController?
 
     init(site: Site,
+         dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
          rootViewController: UIViewController,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.site = site
+        self.dotcomAuthScheme = dotcomAuthScheme
         self.requiresConnectionOnly = false // to be updated later after fetching Jetpack status
         self.rootViewController = rootViewController
         self.stores = stores
@@ -30,7 +33,7 @@ final class JetpackSetupCoordinator {
 
         /// the authenticator needs to be initialized with configs
         /// to be used for requesting authentication link and handle login later.
-        WordPressAuthenticator.initializeWithCustomConfigs()
+        WordPressAuthenticator.initializeWithCustomConfigs(dotcomAuthScheme: dotcomAuthScheme)
         self.accountService = WordPressComAccountService()
     }
 
@@ -52,7 +55,8 @@ final class JetpackSetupCoordinator {
     }
 
     func handleAuthenticationUrl(_ url: URL) -> Bool {
-        guard WordPressAuthenticator.shared.isWordPressAuthUrl(url) else {
+        let expectedPrefix = dotcomAuthScheme + "://" + Constants.magicLinkUrlHostname
+        guard url.absoluteString.hasPrefix(expectedPrefix) else {
             return false
         }
 
@@ -273,6 +277,7 @@ private extension JetpackSetupCoordinator {
 // MARK: - Subtypes
 private extension JetpackSetupCoordinator {
     enum Constants {
+        static let magicLinkUrlHostname = "magic-login"
         static let wpcomErrorCodeKey = "WordPressComRestApiErrorCodeKey"
         static let emailLoginNotAllowedCode = "email_login_not_allowed"
     }

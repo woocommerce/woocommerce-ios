@@ -146,13 +146,15 @@ private extension JetpackSetupCoordinator {
     func startJetpackSetupFlow(authToken: String) {
         /// Dismiss any existing login flow if possible.
         if rootViewController.topmostPresentedViewController is LoginNavigationController {
-            rootViewController.dismiss(animated: false)
+            return rootViewController.topmostPresentedViewController.dismiss(animated: true) {
+                self.startJetpackSetupFlow(authToken: authToken)
+            }
         }
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
         let action = JetpackConnectionAction.fetchJetpackUser { [weak self] result in
             guard let self else { return }
-            self.rootViewController.dismiss(animated: true)
+            progressView.dismiss(animated: true)
             self.checkJetpackStatus(result, skipsWPComLogin: true)
             #warning("TODO: sync account with token and start Jetpack setup")
             DDLogInfo("✅ Ready for Jetpack setup - connection only: \(self.requiresConnectionOnly)")

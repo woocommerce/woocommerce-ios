@@ -72,6 +72,7 @@ struct ProductSelectorView: View {
                             ForEach(viewModel.productRows) { rowViewModel in
                                 createProductRow(rowViewModel: rowViewModel)
                                     .padding(Constants.defaultPadding)
+                                    .accessibilityIdentifier(Constants.productRowAccessibilityIdentifier)
                                 Divider().frame(height: Constants.dividerHeight)
                                     .padding(.leading, Constants.defaultPadding)
                             }
@@ -83,6 +84,7 @@ struct ProductSelectorView: View {
                             }
                             .buttonStyle(PrimaryButtonStyle())
                             .padding(Constants.defaultPadding)
+                            .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
                         }
                         if let variationListViewModel = variationListViewModel {
                             LazyNavigationLink(destination: ProductVariationSelector(
@@ -197,6 +199,8 @@ private extension ProductSelectorView {
     enum Constants {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
+        static let doneButtonAccessibilityIdentifier: String = "product-multiple-selection-done-button"
+        static let productRowAccessibilityIdentifier: String = "product-item"
     }
 
     enum Localization {

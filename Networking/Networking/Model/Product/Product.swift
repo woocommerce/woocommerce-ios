@@ -449,15 +449,15 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         // https://github.com/woocommerce/woocommerce-ios/issues/4205
         let addOns = (try? container.decodeIfPresent(ProductAddOnEnvelope.self, forKey: .metadata)?.revolve()) ?? []
 
-        // Product Bundle
-        let bundleLayout = try container.decodeIfPresent(ProductBundleLayout.self, forKey: .bundleLayout)
-        let bundleFormLocation = try container.decodeIfPresent(ProductBundleFormLocation.self, forKey: .bundleFormLocation)
-        let bundleItemGrouping = try container.decodeIfPresent(ProductBundleItemGrouping.self, forKey: .bundleItemGrouping)
-        let bundleEditableInCart = try container.decodeIfPresent(Bool.self, forKey: .bundleEditableInCart)
-        let bundleSoldIndividuallyContext = try container.decodeIfPresent(ProductBundleSoldIndividuallyContext.self, forKey: .bundleSoldIndividuallyContext)
-        let bundleStockStatus = try container.decodeIfPresent(ProductStockStatus.self, forKey: .bundleStockStatus)
-        // When the bundle min size, max size, or stock quantity is not set, the API returns an empty string.
-        // In those cases, we skip decoding and set the property to `nil`
+        // Product Bundle properties
+        // Uses failsafe decoding because non-bundle product types can return unexpected value types.
+        let bundleLayout = container.failsafeDecodeIfPresent(ProductBundleLayout.self, forKey: .bundleLayout)
+        let bundleFormLocation = container.failsafeDecodeIfPresent(ProductBundleFormLocation.self, forKey: .bundleFormLocation)
+        let bundleItemGrouping = container.failsafeDecodeIfPresent(ProductBundleItemGrouping.self, forKey: .bundleItemGrouping)
+        let bundleEditableInCart = container.failsafeDecodeIfPresent(Bool.self, forKey: .bundleEditableInCart)
+        let bundleSoldIndividuallyContext = container.failsafeDecodeIfPresent(ProductBundleSoldIndividuallyContext.self, forKey: .bundleSoldIndividuallyContext)
+        let bundleStockStatus = container.failsafeDecodeIfPresent(ProductStockStatus.self, forKey: .bundleStockStatus)
+        // When the bundle min size, max size, or stock quantity is not set for a product bundle, the API returns an empty string and the value will be `nil`.
         let bundleMinSize = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleMinSize)
         let bundleMaxSize = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleMaxSize)
         let bundleStockQuantity = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleStockQuantity)

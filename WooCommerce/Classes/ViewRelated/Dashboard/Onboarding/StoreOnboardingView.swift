@@ -6,23 +6,29 @@ import struct Yosemite.Site
 final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboardingView> {
     private let viewModel: StoreOnboardingViewModel
     private let sourceNavigationController: UINavigationController
-    private var coordinator: StoreOnboardingCoordinator?
+    private let site: Site
+    private lazy var coordinator: StoreOnboardingCoordinator = .init(navigationController: sourceNavigationController,
+                                                                     site: site)
 
     init(viewModel: StoreOnboardingViewModel,
          navigationController: UINavigationController,
          site: Site,
-         viewAllTapped: (() -> Void)? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.sourceNavigationController = navigationController
+        self.site = site
         super.init(rootView: StoreOnboardingView(viewModel: viewModel,
-                                                 viewAllTapped: viewAllTapped,
                                                  shareFeedbackAction: shareFeedbackAction))
         rootView.taskTapped = { [weak self] task in
             guard let self else { return }
-            let coordinator = StoreOnboardingCoordinator(navigationController: self.sourceNavigationController, site: site)
-            self.coordinator = coordinator
-            coordinator.start(task: task)
+            self.coordinator.start(task: task)
+        }
+
+        if !viewModel.isExpanded {
+            rootView.viewAllTapped = { [weak self] in
+                guard let self else { return }
+                self.coordinator.start()
+            }
         }
     }
 
@@ -57,16 +63,15 @@ final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboa
 struct StoreOnboardingView: View {
     /// Set externally in the hosting controller.
     var taskTapped: (StoreOnboardingTask) -> Void = { _ in }
+    /// Set externally in the hosting controller.
+    var viewAllTapped: (() -> Void)?
 
     private let viewModel: StoreOnboardingViewModel
-    private let viewAllTapped: (() -> Void)?
     private let shareFeedbackAction: (() -> Void)?
 
     init(viewModel: StoreOnboardingViewModel,
-         viewAllTapped: (() -> Void)? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
-        self.viewAllTapped = viewAllTapped
         self.shareFeedbackAction = shareFeedbackAction
     }
 

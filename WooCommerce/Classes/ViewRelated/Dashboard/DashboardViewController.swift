@@ -110,7 +110,6 @@ final class DashboardViewController: UIViewController {
     /// Onboarding card.
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
-    private var onboardingCoordinator: StoreOnboardingCoordinator?
 
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
@@ -564,17 +563,7 @@ private extension DashboardViewController {
         let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false),
                                                                      navigationController: navigationController,
                                                                      site: site,
-                                                                     viewAllTapped: { [weak self] in
-            guard let self,
-                  let navigationController = self.navigationController,
-                  let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                return
-            }
-            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: site)
-            self.onboardingCoordinator = coordinator
-            coordinator.start()
-        },
-                                                                                                   shareFeedbackAction: { [weak self] in
+                                                                     shareFeedbackAction: { [weak self] in
             // Present survey
             let navigationController = SurveyCoordinatingController(survey: .storeSetup)
             self?.present(navigationController, animated: true, completion: nil)

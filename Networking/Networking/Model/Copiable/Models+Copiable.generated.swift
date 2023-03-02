@@ -1231,7 +1231,7 @@ extension Networking.ProductBundleItem {
         productID: CopiableProp<Int64> = .copy,
         menuOrder: CopiableProp<Int64> = .copy,
         quantityMin: CopiableProp<Int64> = .copy,
-        quantityMax: CopiableProp<Int64> = .copy,
+        quantityMax: NullableCopiableProp<Int64> = .copy,
         quantityDefault: CopiableProp<Int64> = .copy,
         pricedIndividually: CopiableProp<Bool> = .copy,
         shippedIndividually: CopiableProp<Bool> = .copy,

@@ -17,7 +17,7 @@ public struct ProductBundleItem: Codable, Equatable, GeneratedCopiable, Generate
     public let quantityMin: Int64
 
     /// Maximum bundled item quantity.
-    public let quantityMax: Int64
+    public let quantityMax: Int64?
 
     /// Default bundled item quantity.
     public let quantityDefault: Int64
@@ -88,7 +88,7 @@ public struct ProductBundleItem: Codable, Equatable, GeneratedCopiable, Generate
                 productID: Int64,
                 menuOrder: Int64,
                 quantityMin: Int64,
-                quantityMax: Int64,
+                quantityMax: Int64?,
                 quantityDefault: Int64,
                 pricedIndividually: Bool,
                 shippedIndividually: Bool,
@@ -136,6 +136,68 @@ public struct ProductBundleItem: Codable, Equatable, GeneratedCopiable, Generate
         self.cartPriceVisibility = cartPriceVisibility
         self.orderPriceVisibility = orderPriceVisibility
         self.stockStatus = stockStatus
+    }
+
+    /// The public initializer for ProductBundleItem.
+    ///
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let bundledItemID = try container.decode(Int64.self, forKey: .bundledItemID)
+        let productID = try container.decode(Int64.self, forKey: .productID)
+        let menuOrder = try container.decode(Int64.self, forKey: .menuOrder)
+        let quantityMin = try container.decode(Int64.self, forKey: .quantityMin)
+        // When the quantity max is not set, the API returns an empty string.
+        // In that case, we skip decoding and set the property to `nil`.
+        let quantityMax = container.failsafeDecodeIfPresent(Int64.self, forKey: .quantityMax)
+        let quantityDefault = try container.decode(Int64.self, forKey: .quantityDefault)
+        let pricedIndividually = try container.decode(Bool.self, forKey: .pricedIndividually)
+        let shippedIndividually = try container.decode(Bool.self, forKey: .shippedIndividually)
+        let overrideTitle = try container.decode(Bool.self, forKey: .overrideTitle)
+        let title = try container.decode(String.self, forKey: .title)
+        let overrideDescription = try container.decode(Bool.self, forKey: .overrideDescription)
+        let description = try container.decode(String.self, forKey: .description)
+        let optional = try container.decode(Bool.self, forKey: .optional)
+        let hideThumbnail = try container.decode(Bool.self, forKey: .hideThumbnail)
+        let discount = try container.decode(String.self, forKey: .discount)
+        let overrideVariations = try container.decode(Bool.self, forKey: .overrideVariations)
+        let allowedVariations = try container.decode([Int64].self, forKey: .allowedVariations)
+        let overrideDefaultVariationAttributes = try container.decode(Bool.self, forKey: .overrideDefaultVariationAttributes)
+        let defaultVariationAttributes = try container.decode([ProductVariationAttribute].self, forKey: .defaultVariationAttributes)
+        let singleProductVisibility = try container.decode(ProductBundleItemVisibility.self, forKey: .singleProductVisibility)
+        let cartVisibility = try container.decode(ProductBundleItemVisibility.self, forKey: .cartVisibility)
+        let orderVisibility = try container.decode(ProductBundleItemVisibility.self, forKey: .orderVisibility)
+        let singleProductPriceVisibility = try container.decode(ProductBundleItemVisibility.self, forKey: .singleProductPriceVisibility)
+        let cartPriceVisibility = try container.decode(ProductBundleItemVisibility.self, forKey: .cartPriceVisibility)
+        let orderPriceVisibility = try container.decode(ProductBundleItemVisibility.self, forKey: .orderPriceVisibility)
+        let stockStatus = try container.decode(ProductBundleItemStockStatus.self, forKey: .stockStatus)
+
+        self.init(bundledItemID: bundledItemID,
+                  productID: productID,
+                  menuOrder: menuOrder,
+                  quantityMin: quantityMin,
+                  quantityMax: quantityMax,
+                  quantityDefault: quantityDefault,
+                  pricedIndividually: pricedIndividually,
+                  shippedIndividually: shippedIndividually,
+                  overrideTitle: overrideTitle,
+                  title: title,
+                  overrideDescription: overrideDescription,
+                  description: description,
+                  optional: optional,
+                  hideThumbnail: hideThumbnail,
+                  discount: discount,
+                  overrideVariations: overrideVariations,
+                  allowedVariations: allowedVariations,
+                  overrideDefaultVariationAttributes: overrideDefaultVariationAttributes,
+                  defaultVariationAttributes: defaultVariationAttributes,
+                  singleProductVisibility: singleProductVisibility,
+                  cartVisibility: cartVisibility,
+                  orderVisibility: orderVisibility,
+                  singleProductPriceVisibility: singleProductPriceVisibility,
+                  cartPriceVisibility: cartPriceVisibility,
+                  orderPriceVisibility: orderPriceVisibility,
+                  stockStatus: stockStatus)
     }
 }
 

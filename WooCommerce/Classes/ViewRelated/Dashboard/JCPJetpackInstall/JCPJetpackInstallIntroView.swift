@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// Displays the intro view for the Jetpack install flow.
+/// Displays the intro view for the Jetpack install flow for JCP sites.
 ///
-struct JetpackInstallIntroView: View {
+struct JCPJetpackInstallIntroView: View {
     // Closure invoked when Close button is tapped
     private let dismissAction: () -> Void
 
@@ -81,7 +81,7 @@ struct JetpackInstallIntroView: View {
     }
 }
 
-private extension JetpackInstallIntroView {
+private extension JCPJetpackInstallIntroView {
     enum Constants {
         static let cancelButtonTopMargin: CGFloat = 8
         static let jetpackLogoSize: CGFloat = 120
@@ -101,13 +101,13 @@ private extension JetpackInstallIntroView {
     }
 }
 
-struct JetpackInstallIntroView_Previews: PreviewProvider {
+struct JCPJetpackInstallIntroView_Previews: PreviewProvider {
     static var previews: some View {
-        JetpackInstallIntroView(siteURL: "automattic.com", dismissAction: {}, startAction: {})
+        JCPJetpackInstallIntroView(siteURL: "automattic.com", dismissAction: {}, startAction: {})
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 414, height: 780))
 
-        JetpackInstallIntroView(siteURL: "automattic.com", dismissAction: {}, startAction: {})
+        JCPJetpackInstallIntroView(siteURL: "automattic.com", dismissAction: {}, startAction: {})
             .preferredColorScheme(.dark)
             .previewLayout(.fixed(width: 800, height: 400))
     }

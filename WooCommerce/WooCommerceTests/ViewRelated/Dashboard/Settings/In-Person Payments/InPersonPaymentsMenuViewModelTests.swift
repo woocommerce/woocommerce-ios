@@ -1,6 +1,6 @@
 import XCTest
 import TestKit
-import Yosemite
+@testable import Yosemite
 @testable import WooCommerce
 
 class InPersonPaymentsMenuViewModelTests: XCTestCase {
@@ -74,5 +74,53 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssert(query.contains("utm_medium=woo_ios"))
         XCTAssert(query.contains("utm_campaign=payments_menu_item"))
         XCTAssert(query.contains("utm_source=payments_menu"))
+    }
+
+    func test_isEligibleForTapToPayOnIPhone_false_when_built_in_reader_isnt_in_configuration() {
+        // Given
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(stores: stores,
+                                                                      analytics: analytics)
+
+        let configuration = CardPresentPaymentsConfiguration(countryCode: "IN",
+                                                             paymentMethods: [.cardPresent],
+                                                             currencies: [.INR],
+                                                             paymentGateways: [WCPayAccount.gatewayID],
+                                                             supportedReaders: [.wisepad3],
+                                                             supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
+                                                             minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                                                             stripeSmallestCurrencyUnitMultiplier: 100)
+
+        sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
+                                            cardPresentPaymentsConfiguration: configuration)
+
+        // When
+        let eligiblity = sut.isEligibleForTapToPayOnIPhone
+
+        // Then
+        XCTAssertFalse(eligiblity)
+    }
+
+    func test_isEligibleForTapToPayOnIPhone_false_when_built_in_reader_is_in_configuration() {
+        // Given
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(stores: stores,
+                                                                      analytics: analytics)
+
+        let configuration = CardPresentPaymentsConfiguration(countryCode: "IN",
+                                                             paymentMethods: [.cardPresent],
+                                                             currencies: [.INR],
+                                                             paymentGateways: [WCPayAccount.gatewayID],
+                                                             supportedReaders: [.appleBuiltIn],
+                                                             supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
+                                                             minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                                                             stripeSmallestCurrencyUnitMultiplier: 100)
+
+        sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
+                                            cardPresentPaymentsConfiguration: configuration)
+
+        // When
+        let eligiblity = sut.isEligibleForTapToPayOnIPhone
+
+        // Then
+        XCTAssertTrue(eligiblity)
     }
 }

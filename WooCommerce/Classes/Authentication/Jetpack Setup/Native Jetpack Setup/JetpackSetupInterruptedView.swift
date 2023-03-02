@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// View to be displayed when the native Jetpack connection flow is dismissed.
+/// View to be displayed when the Jetpack connection flow is dismissed.
+/// This screen is used only in the Jetpack setup flow for non-JCP sites.
 ///
-struct LoginJetpackSetupInterruptedView: View {
+struct JetpackSetupInterruptedView: View {
     let siteURL: String
     let onSupport: () -> Void
     let onContinue: () -> Void
@@ -90,7 +91,7 @@ struct LoginJetpackSetupInterruptedView: View {
     }
 }
 
-extension LoginJetpackSetupInterruptedView {
+extension JetpackSetupInterruptedView {
     enum Localization {
         static let help = NSLocalizedString("Help", comment: "Button to contact support on the Jetpack setup interrupted screen")
         static let title = NSLocalizedString(
@@ -118,10 +119,10 @@ extension LoginJetpackSetupInterruptedView {
     }
 }
 
-struct LoginJetpackSetupInterruptedView_Previews: PreviewProvider {
+struct JetpackSetupInterruptedView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginJetpackSetupInterruptedView(siteURL: "this-is-a-really-really-long-long-long-store-address.com", onSupport: {}, onContinue: {}, onCancellation: {})
-        LoginJetpackSetupInterruptedView(siteURL: "this-is-an-address.com", onSupport: {}, onContinue: {}, onCancellation: {})
+        JetpackSetupInterruptedView(siteURL: "this-is-a-really-really-long-long-long-store-address.com", onSupport: {}, onContinue: {}, onCancellation: {})
+        JetpackSetupInterruptedView(siteURL: "this-is-an-address.com", onSupport: {}, onContinue: {}, onCancellation: {})
             .previewInterfaceOrientation(.landscapeLeft)
     }
 }

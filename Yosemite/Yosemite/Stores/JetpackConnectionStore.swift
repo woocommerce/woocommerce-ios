@@ -12,6 +12,11 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
         super.init(dispatcher: dispatcher)
     }
 
+    public convenience init(dispatcher: Dispatcher, network: Network, siteURL: String) {
+        self.init(dispatcher: dispatcher)
+        updateRemote(with: siteURL, network: network)
+    }
+
     public override func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: JetpackConnectionAction.self)
     }

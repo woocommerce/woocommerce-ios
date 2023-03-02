@@ -94,7 +94,7 @@ final class DashboardViewController: UIViewController {
     private var announcementView: UIView?
 
     /// Onboarding card.
-    private var onboardingHostingController: ConstraintsUpdatingHostingController<StoreOnboardingView>?
+    private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
     private var onboardingCoordinator: StoreOnboardingCoordinator?
 
@@ -105,6 +105,7 @@ final class DashboardViewController: UIViewController {
     private var isJetpackBenefitsBannerShown: Bool {
         bottomJetpackBenefitsBannerController.view?.superview != nil
     }
+    private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
     /// A spacer view to add a margin below the top banner (between the banner and dashboard UI)
     ///
@@ -337,28 +338,15 @@ private extension DashboardViewController {
 
     func configureBottomJetpackBenefitsBanner() {
         bottomJetpackBenefitsBannerController.setActions { [weak self] in
-            guard let self = self else { return }
-
-            ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .tapped))
-
-            let benefitsController = JetpackBenefitsHostingController()
-            benefitsController.setActions { [weak self] in
-                self?.dismiss(animated: true, completion: { [weak self] in
-                    ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .benefitsModal))
-
-                    guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                        return
-                    }
-                    let installController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
-                    installController.setDismissAction { [weak self] in
-                        self?.dismiss(animated: true, completion: nil)
-                    }
-                    self?.present(installController, animated: true, completion: nil)
-                })
-            } dismissAction: { [weak self] in
-                self?.dismiss(animated: true, completion: nil)
+            guard let self, let navigationController = self.navigationController else { return }
+            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+                return
             }
-            self.present(benefitsController, animated: true, completion: nil)
+            let coordinator = JetpackSetupCoordinator(site: site,
+                                                      navigationController: navigationController)
+            self.jetpackSetupCoordinator = coordinator
+            coordinator.showBenefitModal()
+            ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .tapped))
         } dismissAction: { [weak self] in
             ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .dismissed))
 
@@ -424,7 +412,7 @@ private extension DashboardViewController {
     private func startAddProductFlow() {
         guard let announcementView, let navigationController else { return }
         let coordinator = AddProductCoordinator(siteID: siteID, sourceView: announcementView, sourceNavigationController: navigationController)
-        coordinator.onProductCreated = { [weak self] in
+        coordinator.onProductCreated = { [weak self] _ in
             guard let self else { return }
             self.viewModel.announcementViewModel = nil // Remove the products onboarding banner
             Task {
@@ -541,13 +529,33 @@ private extension DashboardViewController {
     }
 
     func showOnboardingCard() {
-        let hostingController = ConstraintsUpdatingHostingController(rootView: StoreOnboardingView(viewModel: .init(isExpanded: false),
-                                                                                                   taskTapped: { [weak self] task in
-            guard let self, let navigationController = self.navigationController else { return }
-            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController)
+        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false),
+                                                                     taskTapped: { [weak self] task in
+            guard let self,
+                  let navigationController = self.navigationController,
+                  let site = ServiceLocator.stores.sessionManager.defaultSite else {
+                return
+            }
+            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: site)
             self.onboardingCoordinator = coordinator
             coordinator.start(task: task)
-        }))
+        },
+                                                                                                   viewAllTapped: { [weak self] in
+            guard let self,
+                  let navigationController = self.navigationController,
+                  let site = ServiceLocator.stores.sessionManager.defaultSite else {
+                return
+            }
+            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: site)
+            self.onboardingCoordinator = coordinator
+            coordinator.start()
+        },
+                                                                                                   shareFeedbackAction: { [weak self] in
+            // Present survey
+            let navigationController = SurveyCoordinatingController(survey: .storeSetup)
+            self?.present(navigationController, animated: true, completion: nil)
+        })
+
         guard let uiView = hostingController.view else {
             return
         }
@@ -722,7 +730,10 @@ private extension DashboardViewController {
                                                                                    calendar: .current) { [weak self] isVisibleFromAppSettings in
                     guard let self = self else { return }
 
-                    let shouldShowJetpackBenefitsBanner = site?.isJetpackCPConnected == true && isVisibleFromAppSettings
+                    let isJetpackCPSite = site?.isJetpackCPConnected == true
+                    let jetpackSetupForApplicationPassword = site?.isNonJetpackSite == true &&
+                        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)
+                    let shouldShowJetpackBenefitsBanner = (isJetpackCPSite || jetpackSetupForApplicationPassword) && isVisibleFromAppSettings
 
                     self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
                 }

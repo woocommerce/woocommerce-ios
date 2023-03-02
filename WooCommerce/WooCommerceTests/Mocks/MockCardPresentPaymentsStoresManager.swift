@@ -94,7 +94,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
         case .disconnect(let onCompletion):
             onCompletion(Result.success(()))
         default:
-            fatalError("Not available")
+            break
         }
     }
 

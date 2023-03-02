@@ -152,9 +152,7 @@ struct ProductSelectorView: View {
                 ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
-                    if viewModel.toggleAllVariationsOnSelection {
-                        viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
-                    }
+                    viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
                 })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {

@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// Hosting controller wrapper for `JetpackInstallIntroView`
+/// Hosting controller wrapper for `JCPJetpackInstallIntroView`
 ///
-final class JetpackInstallHostingController: UIHostingController<JetpackInstallView> {
+final class JCPJetpackInstallHostingController: UIHostingController<JCPJetpackInstallView> {
     init(siteID: Int64, siteURL: String, siteAdminURL: String) {
-        super.init(rootView: JetpackInstallView(siteID: siteID, siteURL: siteURL, siteAdminURL: siteAdminURL))
+        super.init(rootView: JCPJetpackInstallView(siteID: siteID, siteURL: siteURL, siteAdminURL: siteAdminURL))
         rootView.supportAction = { [unowned self] in
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
                 let supportForm = SupportFormHostingController(viewModel: .init())
@@ -27,9 +27,9 @@ final class JetpackInstallHostingController: UIHostingController<JetpackInstallV
     }
 }
 
-/// Displays Jetpack Install flow.
+/// Displays Jetpack Install flow for JCP sites.
 ///
-struct JetpackInstallView: View {
+struct JCPJetpackInstallView: View {
     /// The presenter to display notice when an error occurs.
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
     let noticePresenter: DefaultNoticePresenter = .init()
@@ -47,24 +47,24 @@ struct JetpackInstallView: View {
     private let siteAdminURL: String
 
     // View model for `JetpackInstallStepsView`
-    private let installStepsViewModel: JetpackInstallStepsViewModel
+    private let installStepsViewModel: JCPJetpackInstallStepsViewModel
 
     @State private var hasStarted = false
 
     init(siteID: Int64, siteURL: String, siteAdminURL: String) {
         self.siteURL = siteURL
         self.siteAdminURL = siteAdminURL
-        self.installStepsViewModel = JetpackInstallStepsViewModel(siteID: siteID, siteURL: siteURL, siteAdminURL: siteAdminURL)
+        self.installStepsViewModel = JCPJetpackInstallStepsViewModel(siteID: siteID, siteURL: siteURL, siteAdminURL: siteAdminURL)
     }
 
     var body: some View {
         if hasStarted {
-            JetpackInstallStepsView(viewModel: installStepsViewModel,
+            JCPJetpackInstallStepsView(viewModel: installStepsViewModel,
                                     noticePresenter: noticePresenter,
                                     supportAction: supportAction,
                                     dismissAction: dismissAction)
         } else {
-            JetpackInstallIntroView(siteURL: siteURL, dismissAction: dismissAction) {
+            JCPJetpackInstallIntroView(siteURL: siteURL, dismissAction: dismissAction) {
                 hasStarted = true
                 ServiceLocator.analytics.track(.jetpackInstallGetStartedButtonTapped)
             }
@@ -72,9 +72,9 @@ struct JetpackInstallView: View {
     }
 }
 
-struct JetpackInstallView_Previews: PreviewProvider {
+struct JCPJetpackInstallView_Previews: PreviewProvider {
     static var previews: some View {
-        JetpackInstallView(siteID: 123, siteURL: "automattic.com", siteAdminURL: "")
+        JCPJetpackInstallView(siteID: 123, siteURL: "automattic.com", siteAdminURL: "")
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 414, height: 780))
     }

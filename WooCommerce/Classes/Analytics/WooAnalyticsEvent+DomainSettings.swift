@@ -57,6 +57,8 @@ private extension DomainSettingsCoordinator.Source {
         switch self {
         case .settings:
             return "settings"
+        case .dashboardOnboarding:
+            return "onboarding"
         }
     }
 }

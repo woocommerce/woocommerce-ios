@@ -41,6 +41,8 @@ final class SettingsViewController: UIViewController {
 
     private let stores: StoresManager
 
+    private var jetpackSetupCoordinator: JetpackSetupCoordinator?
+
     init(viewModel: ViewModel = SettingsViewModel(), stores: StoresManager = ServiceLocator.stores) {
         self.viewModel = viewModel
         self.stores = stores
@@ -368,7 +370,14 @@ private extension SettingsViewController {
 
         ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .settings))
 
-        let installJetpackController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
+        if site.isNonJetpackSite, let navigationController {
+            let coordinator = JetpackSetupCoordinator(site: site,
+                                                      navigationController: navigationController)
+            self.jetpackSetupCoordinator = coordinator
+            return coordinator.showBenefitModal()
+        }
+        let installJetpackController = JCPJetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
+
         installJetpackController.setDismissAction { [weak self] in
             self?.dismiss(animated: true, completion: nil)
             self?.viewModel.onJetpackInstallDismiss()

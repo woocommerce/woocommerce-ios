@@ -56,6 +56,18 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         XCTAssert(factory.settingsSectionActions().contains(.inventorySettings(editable: false)))
     }
 
+    func test_read_only_simple_product_does_not_contain_add_options_row() {
+        // Given
+        let product = Fixtures.simpleProduct
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .readonly, isAddOptionsButtonEnabled: true)
+
+        // Then
+        XCTAssertFalse(factory.optionsCTASectionActions().contains(.addOptions))
+    }
+
     // MARK: - Affiliate products
 
     func test_readonly_affiliate_product_form_actions_are_all_not_editable() {

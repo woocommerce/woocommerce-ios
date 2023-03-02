@@ -737,6 +737,38 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.productRows.count, 1) // only 1 variable product "Pizza"
     }
+
+    func test_selectedProduct_does_not_change_if_selectedProduct_is_called_multiple_times_when_synchronizeProducts() {
+        // Given
+        var selectedProduct: Int64?
+        let products = [
+            Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true),
+            Product.fake().copy(siteID: sampleSiteID, productID: 12345, purchasable: true)
+        ]
+        insert(products)
+
+        let viewModel = ProductSelectorViewModel(
+            siteID: sampleSiteID,
+            storageManager: storageManager,
+            onProductSelected: {
+                selectedProduct = $0.productID
+            })
+
+        // When
+        viewModel.selectProduct(products[0].productID)
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            switch action {
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+                viewModel.selectProduct(products[1].productID)
+                onCompletion(.success(true))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        })
+
+        // Then
+        XCTAssertEqual(selectedProduct, products[0].productID)
+    }
 }
 
 // MARK: - Utils

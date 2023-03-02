@@ -78,6 +78,10 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayOnIPhone
 
+    /// Enables Tap to Pay on iPhone M2 setup flow, on eligible devices.
+    ///
+    case tapToPayOnIPhoneSetupFlow
+
     /// Store creation MVP.
     ///
     case storeCreationMVP
@@ -153,6 +157,10 @@ public enum FeatureFlag: Int {
     /// Whether to enable the simplified product editing experience.
     ///
     case simplifyProductEditing
+
+    /// Whether to enable Jetpack setup for users authenticated with application passwords.
+    ///
+    case jetpackSetupWithApplicationPassword
 
     /// Whether to enable the onboarding checklist in the dashboard for WPCOM stores.
     ///

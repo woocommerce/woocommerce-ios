@@ -787,7 +787,16 @@ extension Networking.Product {
             variations: .fake(),
             groupedProducts: .fake(),
             menuOrder: .fake(),
-            addOns: .fake()
+            addOns: .fake(),
+            bundleLayout: .fake(),
+            bundleFormLocation: .fake(),
+            bundleItemGrouping: .fake(),
+            bundleMinSize: .fake(),
+            bundleMaxSize: .fake(),
+            bundleEditableInCart: .fake(),
+            bundleSoldIndividuallyContext: .fake(),
+            bundleStockStatus: .fake(),
+            bundleStockQuantity: .fake()
         )
     }
 }
@@ -860,6 +869,34 @@ extension ProductBackordersSetting {
     ///
     public static func fake() -> ProductBackordersSetting {
         .allowed
+    }
+}
+extension ProductBundleFormLocation {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ProductBundleFormLocation {
+        .defaultLocation
+    }
+}
+extension ProductBundleItemGrouping {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ProductBundleItemGrouping {
+        .parent
+    }
+}
+extension ProductBundleLayout {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ProductBundleLayout {
+        .defaultLayout
+    }
+}
+extension ProductBundleSoldIndividuallyContext {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ProductBundleSoldIndividuallyContext {
+        .product
     }
 }
 extension ProductCatalogVisibility {

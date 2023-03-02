@@ -804,6 +804,10 @@ private extension AuthenticationManager {
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
         checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
             guard let self else { return }
+            // Tracking `signedIn` after the user logged in using site creds & application password is created
+            // to ensure that we are measuring only the users who can actually start using the app
+            WordPressAuthenticator.track(.signedIn)
+
             // clear scheduled local notifications
             if self.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
                 ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: LocalNotification.Scenario.allCases)

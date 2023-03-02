@@ -3,6 +3,12 @@ import SwiftUI
 /// Screen for entering the password for a WPCom account during the Jetpack setup flow
 /// This is presented for users authenticated with WPOrg credentials.
 struct WPComPasswordLoginView: View {
+    private let viewModel: WPComPasswordLoginViewModel
+
+    init(viewModel: WPComPasswordLoginViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
@@ -29,6 +35,6 @@ private extension WPComPasswordLoginView {
 
 struct WPComPasswordLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComPasswordLoginView()
+        WPComPasswordLoginView(viewModel: .init(username: "test@example.com", requiresConnectionOnly: true))
     }
 }

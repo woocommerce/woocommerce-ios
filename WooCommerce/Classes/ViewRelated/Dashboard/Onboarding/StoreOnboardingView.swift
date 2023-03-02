@@ -1,19 +1,29 @@
 import SwiftUI
+import struct Yosemite.Site
 
 /// Hosting controller for `StoreOnboardingView`.
 ///
 final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboardingView> {
     private let viewModel: StoreOnboardingViewModel
+    private let sourceNavigationController: UINavigationController
+    private var coordinator: StoreOnboardingCoordinator?
 
     init(viewModel: StoreOnboardingViewModel,
-         taskTapped: @escaping (StoreOnboardingTask) -> Void,
+         navigationController: UINavigationController,
+         site: Site,
          viewAllTapped: (() -> Void)? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
+        self.sourceNavigationController = navigationController
         super.init(rootView: StoreOnboardingView(viewModel: viewModel,
-                                                 taskTapped: taskTapped,
                                                  viewAllTapped: viewAllTapped,
                                                  shareFeedbackAction: shareFeedbackAction))
+        rootView.taskTapped = { [weak self] task in
+            guard let self else { return }
+            let coordinator = StoreOnboardingCoordinator(navigationController: self.sourceNavigationController, site: site)
+            self.coordinator = coordinator
+            coordinator.start(task: task)
+        }
     }
 
     @available(*, unavailable)
@@ -45,17 +55,17 @@ final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboa
 
 /// Shows a list of onboarding tasks for store setup with completion state.
 struct StoreOnboardingView: View {
+    /// Set externally in the hosting controller.
+    var taskTapped: (StoreOnboardingTask) -> Void = { _ in }
+
     private let viewModel: StoreOnboardingViewModel
-    private let taskTapped: (StoreOnboardingTask) -> Void
     private let viewAllTapped: (() -> Void)?
     private let shareFeedbackAction: (() -> Void)?
 
     init(viewModel: StoreOnboardingViewModel,
-         taskTapped: @escaping (StoreOnboardingTask) -> Void,
          viewAllTapped: (() -> Void)? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
-        self.taskTapped = taskTapped
         self.viewAllTapped = viewAllTapped
         self.shareFeedbackAction = shareFeedbackAction
     }
@@ -150,8 +160,8 @@ private extension StoreOnboardingView {
 
 struct StoreOnboardingCardView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingView(viewModel: .init(isExpanded: false), taskTapped: { _ in })
+        StoreOnboardingView(viewModel: .init(isExpanded: false))
 
-        StoreOnboardingView(viewModel: .init(isExpanded: true), taskTapped: { _ in })
+        StoreOnboardingView(viewModel: .init(isExpanded: true))
     }
 }

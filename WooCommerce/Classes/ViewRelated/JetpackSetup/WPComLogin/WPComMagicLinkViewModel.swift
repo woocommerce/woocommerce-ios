@@ -22,8 +22,13 @@ final class WPComMagicLinkViewModel {
             let paragraph = NSMutableParagraphStyle()
             paragraph.alignment = .center
 
-            let boldSiteAddress = NSAttributedString(string: email, attributes: [.font: boldFont])
-            let message = NSMutableAttributedString(string: Localization.sentLink, attributes: [.font: font, .paragraphStyle: paragraph])
+            let boldSiteAddress = NSAttributedString(string: email, attributes: [.font: boldFont, .foregroundColor: UIColor.text.cgColor])
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: font,
+                .paragraphStyle: paragraph,
+                .foregroundColor: UIColor.text.cgColor
+            ]
+            let message = NSMutableAttributedString(string: Localization.sentLink, attributes: attributes)
             message.replaceFirstOccurrence(of: "%@", with: boldSiteAddress)
 
             return message

@@ -5,12 +5,22 @@ import SwiftUI
 struct WPComMagicLinkView: View {
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
+            VStack(spacing: Constants.blockVerticalPadding) {
                 JetpackInstallHeaderView()
 
                 // title
                 Text("")
                     .largeTitleStyle()
+
+                Spacer()
+
+                VStack(spacing: Constants.contentVerticalSpacing) {
+                    Image(uiImage: .emailImage)
+                        .padding(.bottom)
+                    Text(Localization.checkYourEmail)
+                        .headlineStyle()
+                    Text(Localization.sentLink)
+                }
 
                 Spacer()
             }
@@ -19,7 +29,8 @@ struct WPComMagicLinkView: View {
         .safeAreaInset(edge: .bottom) {
             VStack {
                 // Primary CTA
-                Button("viewModel.titleString") {
+                Button(Localization.openMail) {
+                    // TODO
                 }
                 .buttonStyle(PrimaryButtonStyle())
             }
@@ -37,9 +48,18 @@ private extension WPComMagicLinkView {
     }
 
     enum Localization {
+        static let openMail = NSLocalizedString(
+            "Open Mail",
+            comment: "Title for the CTA on the magic link screen of the WPCom login flow during Jetpack setup"
+        )
         static let checkYourEmail = NSLocalizedString(
             "Check your email on this device!",
             comment: "Message on the magic link screen of the WPCom login flow during Jetpack setup"
+        )
+        static let sentLink = NSLocalizedString(
+            "We just sent a magic link to %@",
+            comment: "Instruction on the magic link screen of the WPCom login flow during Jetpack setup. " +
+            "%@ is a submitted email address."
         )
     }
 }

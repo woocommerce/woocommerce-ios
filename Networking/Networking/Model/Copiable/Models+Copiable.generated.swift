@@ -962,7 +962,8 @@ extension Networking.Product {
         bundleEditableInCart: NullableCopiableProp<Bool> = .copy,
         bundleSoldIndividuallyContext: NullableCopiableProp<ProductBundleSoldIndividuallyContext> = .copy,
         bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
-        bundleStockQuantity: NullableCopiableProp<Int64> = .copy
+        bundleStockQuantity: NullableCopiableProp<Int64> = .copy,
+        bundledItems: CopiableProp<[ProductBundleItem]> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1036,6 +1037,7 @@ extension Networking.Product {
         let bundleSoldIndividuallyContext = bundleSoldIndividuallyContext ?? self.bundleSoldIndividuallyContext
         let bundleStockStatus = bundleStockStatus ?? self.bundleStockStatus
         let bundleStockQuantity = bundleStockQuantity ?? self.bundleStockQuantity
+        let bundledItems = bundledItems ?? self.bundledItems
 
         return Networking.Product(
             siteID: siteID,
@@ -1109,7 +1111,8 @@ extension Networking.Product {
             bundleEditableInCart: bundleEditableInCart,
             bundleSoldIndividuallyContext: bundleSoldIndividuallyContext,
             bundleStockStatus: bundleStockStatus,
-            bundleStockQuantity: bundleStockQuantity
+            bundleStockQuantity: bundleStockQuantity,
+            bundledItems: bundledItems
         )
     }
 }
@@ -1218,6 +1221,93 @@ extension Networking.ProductAttribute {
             visible: visible,
             variation: variation,
             options: options
+        )
+    }
+}
+
+extension Networking.ProductBundleItem {
+    public func copy(
+        bundledItemID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        menuOrder: CopiableProp<Int64> = .copy,
+        quantityMin: CopiableProp<Int64> = .copy,
+        quantityMax: CopiableProp<Int64> = .copy,
+        quantityDefault: CopiableProp<Int64> = .copy,
+        pricedIndividually: CopiableProp<Bool> = .copy,
+        shippedIndividually: CopiableProp<Bool> = .copy,
+        overrideTitle: CopiableProp<Bool> = .copy,
+        title: CopiableProp<String> = .copy,
+        overrideDescription: CopiableProp<Bool> = .copy,
+        description: CopiableProp<String> = .copy,
+        optional: CopiableProp<Bool> = .copy,
+        hideThumbnail: CopiableProp<Bool> = .copy,
+        discount: CopiableProp<String> = .copy,
+        overrideVariations: CopiableProp<Bool> = .copy,
+        allowedVariations: CopiableProp<[Int64]> = .copy,
+        overrideDefaultVariationAttributes: CopiableProp<Bool> = .copy,
+        defaultVariationAttributes: CopiableProp<[ProductVariationAttribute]> = .copy,
+        singleProductVisibility: CopiableProp<ProductBundleItemVisibility> = .copy,
+        cartVisibility: CopiableProp<ProductBundleItemVisibility> = .copy,
+        orderVisibility: CopiableProp<ProductBundleItemVisibility> = .copy,
+        singleProductPriceVisibility: CopiableProp<ProductBundleItemVisibility> = .copy,
+        cartPriceVisibility: CopiableProp<ProductBundleItemVisibility> = .copy,
+        orderPriceVisibility: CopiableProp<ProductBundleItemVisibility> = .copy,
+        stockStatus: CopiableProp<ProductBundleItemStockStatus> = .copy
+    ) -> Networking.ProductBundleItem {
+        let bundledItemID = bundledItemID ?? self.bundledItemID
+        let productID = productID ?? self.productID
+        let menuOrder = menuOrder ?? self.menuOrder
+        let quantityMin = quantityMin ?? self.quantityMin
+        let quantityMax = quantityMax ?? self.quantityMax
+        let quantityDefault = quantityDefault ?? self.quantityDefault
+        let pricedIndividually = pricedIndividually ?? self.pricedIndividually
+        let shippedIndividually = shippedIndividually ?? self.shippedIndividually
+        let overrideTitle = overrideTitle ?? self.overrideTitle
+        let title = title ?? self.title
+        let overrideDescription = overrideDescription ?? self.overrideDescription
+        let description = description ?? self.description
+        let optional = optional ?? self.optional
+        let hideThumbnail = hideThumbnail ?? self.hideThumbnail
+        let discount = discount ?? self.discount
+        let overrideVariations = overrideVariations ?? self.overrideVariations
+        let allowedVariations = allowedVariations ?? self.allowedVariations
+        let overrideDefaultVariationAttributes = overrideDefaultVariationAttributes ?? self.overrideDefaultVariationAttributes
+        let defaultVariationAttributes = defaultVariationAttributes ?? self.defaultVariationAttributes
+        let singleProductVisibility = singleProductVisibility ?? self.singleProductVisibility
+        let cartVisibility = cartVisibility ?? self.cartVisibility
+        let orderVisibility = orderVisibility ?? self.orderVisibility
+        let singleProductPriceVisibility = singleProductPriceVisibility ?? self.singleProductPriceVisibility
+        let cartPriceVisibility = cartPriceVisibility ?? self.cartPriceVisibility
+        let orderPriceVisibility = orderPriceVisibility ?? self.orderPriceVisibility
+        let stockStatus = stockStatus ?? self.stockStatus
+
+        return Networking.ProductBundleItem(
+            bundledItemID: bundledItemID,
+            productID: productID,
+            menuOrder: menuOrder,
+            quantityMin: quantityMin,
+            quantityMax: quantityMax,
+            quantityDefault: quantityDefault,
+            pricedIndividually: pricedIndividually,
+            shippedIndividually: shippedIndividually,
+            overrideTitle: overrideTitle,
+            title: title,
+            overrideDescription: overrideDescription,
+            description: description,
+            optional: optional,
+            hideThumbnail: hideThumbnail,
+            discount: discount,
+            overrideVariations: overrideVariations,
+            allowedVariations: allowedVariations,
+            overrideDefaultVariationAttributes: overrideDefaultVariationAttributes,
+            defaultVariationAttributes: defaultVariationAttributes,
+            singleProductVisibility: singleProductVisibility,
+            cartVisibility: cartVisibility,
+            orderVisibility: orderVisibility,
+            singleProductPriceVisibility: singleProductPriceVisibility,
+            cartPriceVisibility: cartPriceVisibility,
+            orderPriceVisibility: orderPriceVisibility,
+            stockStatus: stockStatus
         )
     }
 }

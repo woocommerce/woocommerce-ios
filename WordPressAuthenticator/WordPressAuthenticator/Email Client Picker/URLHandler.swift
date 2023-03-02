@@ -1,5 +1,5 @@
 /// Generic type that handles URL Schemes
-protocol URLHandler {
+public protocol URLHandler {
     /// checks if the specified URL can be opened
     func canOpenURL(_ url: URL) -> Bool
     /// opens the specified URL

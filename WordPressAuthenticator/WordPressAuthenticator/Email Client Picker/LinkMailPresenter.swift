@@ -1,11 +1,11 @@
 import MessageUI
 
 /// Email picker presenter
-class LinkMailPresenter {
+public class LinkMailPresenter {
 
     private let emailAddress: String
 
-    init(emailAddress: String) {
+    public init(emailAddress: String) {
         self.emailAddress = emailAddress
     }
 
@@ -16,7 +16,7 @@ class LinkMailPresenter {
     ///   - viewController: the UIViewController that will present the action sheet
     ///   - appSelector: the app picker that contains the available clients. Nil if no clients are available
     ///                  reads the supported email clients from EmailClients.plist
-    func presentEmailClients(on viewController: UIViewController,
+    public func presentEmailClients(on viewController: UIViewController,
                              appSelector: AppSelector?) {
 
         guard let picker = appSelector else {

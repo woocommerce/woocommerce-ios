@@ -16,7 +16,7 @@ final class WPComPasswordLoginViewModel: ObservableObject {
 
     private let siteURL: String
 
-    @Published private(set) var avatarURL: URL?
+    private(set) var avatarURL: URL?
 
     private var loginFields: LoginFields {
         let loginFields = LoginFields()
@@ -45,7 +45,12 @@ private extension WPComPasswordLoginViewModel {
     /// Ref: https://en.gravatar.com/site/implement/images/
     func gravatarUrl(of email: String) -> URL? {
         let hash = gravatarHash(of: email)
-        let targetURL = String(format: "%@/%@?d=%@&s=%d&r=%@", Constants.baseGravatarURL, hash, Constants.gravatarDefaultOption, Constants.imageSize, Constants.gravatarRating)
+        let targetURL = String(format: "%@/%@?d=%@&s=%d&r=%@",
+                               Constants.baseGravatarURL,
+                               hash,
+                               Constants.gravatarDefaultOption,
+                               Constants.imageSize,
+                               Constants.gravatarRating)
         return URL(string: targetURL)
     }
 

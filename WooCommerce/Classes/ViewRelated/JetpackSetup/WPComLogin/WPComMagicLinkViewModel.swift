@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 /// View model for `WPComMagicLinkView`
 ///
@@ -9,9 +9,25 @@ final class WPComMagicLinkViewModel {
     /// Title for `WPComMagicLinkView`
     let titleString: String
 
+    /// Text for the instruction
+    let instructionString: NSAttributedString
+
     init(email: String, requiresConnectionOnly: Bool) {
         self.email = email
         self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+        self.instructionString = {
+            let font: UIFont = .body
+            let boldFont: UIFont = font.bold
+
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.alignment = .center
+
+            let boldSiteAddress = NSAttributedString(string: email, attributes: [.font: boldFont])
+            let message = NSMutableAttributedString(string: Localization.sentLink, attributes: [.font: font, .paragraphStyle: paragraph])
+            message.replaceFirstOccurrence(of: "%@", with: boldSiteAddress)
+
+            return message
+        }()
     }
 }
 
@@ -24,6 +40,11 @@ extension WPComMagicLinkViewModel {
         static let connectJetpack = NSLocalizedString(
             "Connect Jetpack",
             comment: "Title for the WPCom magic link screen when Jetpack is not connected yet"
+        )
+        static let sentLink = NSLocalizedString(
+            "We just sent a magic link to %@",
+            comment: "Instruction on the magic link screen of the WPCom login flow during Jetpack setup. " +
+            "%@ is a submitted email address."
         )
     }
 }

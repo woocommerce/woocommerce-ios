@@ -15,8 +15,11 @@ struct WPComMagicLinkView: View {
                 JetpackInstallHeaderView()
 
                 // title
-                Text(viewModel.titleString)
-                    .largeTitleStyle()
+                HStack {
+                    Text(viewModel.titleString)
+                        .largeTitleStyle()
+                    Spacer()
+                }
 
                 Spacer()
 
@@ -26,7 +29,7 @@ struct WPComMagicLinkView: View {
                         .padding(.bottom)
                     Text(Localization.checkYourEmail)
                         .headlineStyle()
-                    Text(Localization.sentLink)
+                    AttributedText(viewModel.instructionString)
                 }
 
                 Spacer()
@@ -62,11 +65,6 @@ private extension WPComMagicLinkView {
         static let checkYourEmail = NSLocalizedString(
             "Check your email on this device!",
             comment: "Message on the magic link screen of the WPCom login flow during Jetpack setup"
-        )
-        static let sentLink = NSLocalizedString(
-            "We just sent a magic link to %@",
-            comment: "Instruction on the magic link screen of the WPCom login flow during Jetpack setup. " +
-            "%@ is a submitted email address."
         )
     }
 }

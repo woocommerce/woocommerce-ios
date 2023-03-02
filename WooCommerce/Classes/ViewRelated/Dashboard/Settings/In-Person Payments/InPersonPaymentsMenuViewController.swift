@@ -200,7 +200,7 @@ private extension InPersonPaymentsMenuViewController {
 
     var tapToPayOnIPhoneSection: Section? {
         guard featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneSetupFlow),
-              ServiceLocator.generalAppSettings.betaFeatureEnabled(.tapToPayOnIPhone) else {
+              featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhone) else {
             return nil
         }
         return Section(header: nil, rows: [.tapToPayOnIPhone])

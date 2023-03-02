@@ -230,6 +230,10 @@ private extension JetpackSetupCoordinator {
 // MARK: - Error handling
 //
 private extension JetpackSetupCoordinator {
+    /// Handles the result of `accountService`'s `isPasswordlessAccount`.
+    /// The implementation follows what have been done in `WordPressAuthenticator`.
+    /// Please update this when the API changes.
+    /// 
     func handleAccountCheckError(_ error: Error) {
         let userInfo = (error as NSError).userInfo
         let errorCode = userInfo[Constants.wpcomErrorCodeKey] as? String

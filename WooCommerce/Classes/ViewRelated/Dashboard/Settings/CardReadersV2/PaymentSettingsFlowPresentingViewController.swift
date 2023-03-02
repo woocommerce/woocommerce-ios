@@ -41,11 +41,9 @@ final class PaymentSettingsFlowPresentingViewController: UIViewController {
         childViewController?.removeFromParent()
         childViewController?.view.removeFromSuperview()
 
-        guard let viewModelAndView = viewModelAndView else {
-            return
-        }
-
-        guard let childViewController = viewModelAndView.viewPresenter.init(viewModel: viewModelAndView.viewModel) else {
+        guard let viewModelAndView = viewModelAndView,
+              let childViewController = viewModelAndView.viewPresenter.init(viewModel: viewModelAndView.viewModel) else {
+            DDLogError("⛔️ Unexpectedly unable to create PaymentSettingsFlow Child View Controller using: \(String(describing: viewModelAndView))")
             return
         }
         self.childViewController = childViewController

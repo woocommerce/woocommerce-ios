@@ -190,6 +190,11 @@ public class AppSettingsStore: Store {
             setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
         case .loadLastSelectedStatsTimeRange(let siteID, let onCompletion):
             loadLastSelectedStatsTimeRange(siteID: siteID, onCompletion: onCompletion)
+        case .loadInPersonPaymentTransactionFinishedValue(let siteID, let onCompletion):
+            loadInPersonPaymentTransactionFinishedValue(siteID: siteID, onCompletion: onCompletion)
+        case .setInPersonPaymentTransactionFinished(siteID: siteID):
+            setInPersonPaymentTransactionFinished(siteID: siteID)
+
         }
     }
 }
@@ -791,6 +796,10 @@ extension AppSettingsStore {
             let neverDismissed = campaignSettings.dismissedDate == nil
             onCompletion(.success(neverDismissed))
         }
+    }
+
+    func loadInPersonPaymentTransactionFinishedValue(siteID: Int64, onCompletion: (Result<Bool, Error>) -> ()) {
+
     }
 
 }

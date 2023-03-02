@@ -56,6 +56,11 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     /// 
     public var featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]
 
+
+    /// Whether the user finished an IPP transaction for the given site
+    ///
+    public var inPersonPaymentsTransactionFinishedForSite: [Int64: Bool]
+
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
@@ -66,7 +71,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 knownCardReaders: [String],
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                 lastJetpackBenefitsBannerDismissedTime: Date? = nil,
-                featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]) {
+                featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings],
+                inPersonPaymentsTransactionFinishedForSite: [Int64: Bool]) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
@@ -78,6 +84,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.featureAnnouncementCampaignSettings = featureAnnouncementCampaignSettings
         self.isInAppPurchasesSwitchEnabled = isInAppPurchasesSwitchEnabled
         self.isTapToPayOnIPhoneSwitchEnabled = isTapToPayOnIPhoneSwitchEnabled
+        self.inPersonPaymentsTransactionFinishedForSite = inPersonPaymentsTransactionFinishedForSite
     }
 
     public static var `default`: Self {
@@ -90,7 +97,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
               isTapToPayOnIPhoneSwitchEnabled: false,
               knownCardReaders: [],
               lastEligibilityErrorInfo: nil,
-              featureAnnouncementCampaignSettings: [:])
+              featureAnnouncementCampaignSettings: [:],
+              inPersonPaymentsTransactionFinishedForSite: [:])
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -120,7 +128,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
-            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings
+            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
+            inPersonPaymentsTransactionFinishedForSite: inPersonPaymentsTransactionFinishedForSite
         )
     }
 
@@ -141,7 +150,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
-            featureAnnouncementCampaignSettings: updatedSettings
+            featureAnnouncementCampaignSettings: updatedSettings,
+            inPersonPaymentsTransactionFinishedForSite: inPersonPaymentsTransactionFinishedForSite
         )
     }
 }
@@ -166,6 +176,7 @@ extension GeneralAppSettings {
         self.featureAnnouncementCampaignSettings = try container.decodeIfPresent(
             [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings].self,
             forKey: .featureAnnouncementCampaignSettings) ?? [:]
+        self.inPersonPaymentsTransactionFinishedForSite = try container.decodeIfPresent([Int64: Bool].self, forKey: .)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

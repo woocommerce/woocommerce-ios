@@ -18,6 +18,7 @@ public enum ProductAction: Action {
                         productType: ProductType? = nil,
                         productCategory: ProductCategory? = nil,
                         excludedProductIDs: [Int64] = [],
+                        onLocalCompletion: (Result<Void, Error>) -> Void,
                         onCompletion: (Result<Void, Error>) -> Void)
 
     /// Synchronizes the Products matching the specified criteria.

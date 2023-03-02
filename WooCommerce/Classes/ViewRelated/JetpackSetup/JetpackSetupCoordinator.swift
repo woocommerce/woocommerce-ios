@@ -93,32 +93,20 @@ private extension JetpackSetupCoordinator {
     func checkJetpackStatus(_ result: Result<JetpackUser, Error>, skipsWPComLogin: Bool = false) {
         switch result {
         case .success(let user):
-            let connectedEmail = user.wpcomUser?.email
             requiresConnectionOnly = !user.isConnected
-            guard !skipsWPComLogin else {
-                return
+            if !skipsWPComLogin {
+                let connectedEmail = user.wpcomUser?.email
+                startAuthentication(with: connectedEmail)
             }
-            if let connectedEmail {
-                Task { @MainActor in
-                    await checkWordPressComAccount(email: connectedEmail)
-                }
-            } else {
-                showWPComEmailLogin()
-            }
+
         case .failure(let error):
             DDLogError("⛔️ Jetpack status fetched error: \(error)")
             switch error {
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
                 /// 404 error means Jetpack is not installed or activated yet.
                 requiresConnectionOnly = false
-                guard !skipsWPComLogin else {
-                    return
-                }
-                let roles = stores.sessionManager.defaultRoles
-                if roles.contains(.administrator) {
-                    showWPComEmailLogin()
-                } else {
-                    displayAdminRoleRequiredError()
+                if !skipsWPComLogin {
+                    checkAdminRoleAndStartLoginIfPossible()
                 }
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
                 /// 403 means the site Jetpack connection is not established yet
@@ -128,6 +116,25 @@ private extension JetpackSetupCoordinator {
             default:
                 showAlert(message: Localization.errorCheckingJetpack)
             }
+        }
+    }
+
+    func startAuthentication(with email: String?) {
+        if let email {
+            Task { @MainActor in
+                await checkWordPressComAccount(email: email)
+            }
+        } else {
+            showWPComEmailLogin()
+        }
+    }
+
+    func checkAdminRoleAndStartLoginIfPossible() {
+        let roles = stores.sessionManager.defaultRoles
+        if roles.contains(.administrator) {
+            showWPComEmailLogin()
+        } else {
+            displayAdminRoleRequiredError()
         }
     }
 

@@ -17,11 +17,11 @@ final class DashboardTopPerformersViewModel: ObservableObject {
     private var state: State
     private var onTap: (_ item: TopEarnerStatsItem) -> Void
 
-    private let placeholderRows: [TopPerformersRow.Data] = [
-        .init(imageURL: nil, name: "Placeholder", details: "", value: "Value"),
-        .init(imageURL: nil, name: "Placeholder", details: "", value: "Value"),
-        .init(imageURL: nil, name: "Placeholder", details: "", value: "Value")
-    ]
+    private let placeholderRows: [TopPerformersRow.Data] = Array(repeating: .init(imageURL: nil,
+                                                                                  name: "        ",
+                                                                                  details: "",
+                                                                                  value: "     "),
+                                                                 count: 3)
 
     init(state: State, onTap: @escaping (_ item: TopEarnerStatsItem) -> Void) {
         self.state = state

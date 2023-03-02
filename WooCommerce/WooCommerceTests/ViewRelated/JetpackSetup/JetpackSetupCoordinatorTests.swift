@@ -126,4 +126,55 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue(navigationController.topViewController is AdminRoleRequiredHostingController)
     }
 
+    func test_handleAuthenticationUrl_returns_false_for_unsupported_url_scheme() throws {
+        // Given
+        let testSite = Site.fake().copy(siteID: -1)
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
+        let url = try XCTUnwrap(URL(string: "example://handle-authentication"))
+
+        // When
+        let result = coordinator.handleAuthenticationUrl(url)
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func test_handleAuthenticationUrl_returns_false_for_missing_queries() throws {
+        // Given
+        let testSite = Site.fake().copy(siteID: -1)
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
+        let url = try XCTUnwrap(URL(string: "woocommerce://magic-login"))
+
+        // When
+        let result = coordinator.handleAuthenticationUrl(url)
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func test_handleAuthenticationUrl_returns_false_for_incorrect_host_name() throws {
+        // Given
+        let testSite = Site.fake().copy(siteID: -1)
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
+        let url = try XCTUnwrap(URL(string: "woocommerce://handle-authentication?token=test"))
+
+        // When
+        let result = coordinator.handleAuthenticationUrl(url)
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func test_handleAuthenticationUrl_returns_true_for_correct_url_and_sufficient_queries() throws {
+        // Given
+        let testSite = Site.fake().copy(siteID: -1)
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
+        let url = try XCTUnwrap(URL(string: "woocommerce://magic-login?token=test"))
+
+        // When
+        let result = coordinator.handleAuthenticationUrl(url)
+
+        // Then
+        XCTAssertTrue(result)
+    }
 }

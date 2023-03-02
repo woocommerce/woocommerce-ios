@@ -7,11 +7,14 @@ final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswo
     init(siteURL: String,
          email: String,
          requiresConnectionOnly: Bool,
-         onSubmit: @escaping (String) async -> Void) {
+         onSubmit: @escaping (String) async -> Void,
+         onMagicLinkRequest: @escaping (String) async -> Void) {
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: email,
                                                     requiresConnectionOnly: requiresConnectionOnly)
-        super.init(rootView: WPComPasswordLoginView(viewModel: viewModel, onSubmit: onSubmit))
+        super.init(rootView: WPComPasswordLoginView(viewModel: viewModel,
+                                                    onSubmit: onSubmit,
+                                                    onMagicLinkRequest: onMagicLinkRequest))
     }
 
     @available(*, unavailable)
@@ -29,14 +32,19 @@ final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswo
 /// This is presented for users authenticated with WPOrg credentials.
 struct WPComPasswordLoginView: View {
     @State private var isPrimaryButtonLoading = false
+    @State private var isSecondaryButtonLoading = false
     @FocusState private var isPasswordFieldFocused: Bool
     @ObservedObject private var viewModel: WPComPasswordLoginViewModel
 
     private let onSubmit: (String) async -> Void
+    private let onMagicLinkRequest: (String) async -> Void
 
-    init(viewModel: WPComPasswordLoginViewModel, onSubmit: @escaping (String) async -> Void) {
+    init(viewModel: WPComPasswordLoginViewModel,
+         onSubmit: @escaping (String) async -> Void,
+         onMagicLinkRequest: @escaping (String) async -> Void) {
         self.viewModel = viewModel
         self.onSubmit = onSubmit
+        self.onMagicLinkRequest = onMagicLinkRequest
     }
 
     var body: some View {
@@ -105,9 +113,13 @@ struct WPComPasswordLoginView: View {
 
                 // Secondary CTA
                 Button(Localization.secondaryAction) {
-                    // TODO
+                    Task { @MainActor in
+                        isSecondaryButtonLoading = true
+                        await onMagicLinkRequest(viewModel.email)
+                        isSecondaryButtonLoading = false
+                    }
                 }
-                .buttonStyle(SecondaryButtonStyle())
+                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: isSecondaryButtonLoading))
             }
             .padding(Constants.contentPadding)
             .background(Color(uiColor: .systemBackground))
@@ -153,6 +165,7 @@ struct WPComPasswordLoginView_Previews: PreviewProvider {
         WPComPasswordLoginView(viewModel: .init(siteURL: "https://example.com",
                                                 email: "test@example.com",
                                                 requiresConnectionOnly: true),
-                               onSubmit: { _ in })
+                               onSubmit: { _ in },
+                               onMagicLinkRequest: { _ in })
     }
 }

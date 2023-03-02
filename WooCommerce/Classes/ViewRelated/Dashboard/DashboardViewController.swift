@@ -757,7 +757,7 @@ private extension DashboardViewController {
         static let bannerBottomMargin = CGFloat(8)
         static let horizontalMargin = CGFloat(16)
         static let storeNameTextColor: UIColor = .secondaryLabel
-        static let backgroundColor: UIColor = .systemBackground
+        static let backgroundColor: UIColor = .listForeground(modal: false)
         static let iPhoneCollapsedNavigationBarHeight = CGFloat(44)
         static let iPadCollapsedNavigationBarHeight = CGFloat(50)
         static let tabStripSpacing = CGFloat(12)

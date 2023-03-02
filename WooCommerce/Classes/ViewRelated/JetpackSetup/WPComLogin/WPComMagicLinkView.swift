@@ -1,11 +1,17 @@
 import SwiftUI
+import WordPressAuthenticator
 
 /// Hosting controller for `WPComMagicLinkView`
 final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkView> {
 
-    init(email: String, requiresConnectionOnly: Bool, onOpenMail: @escaping () -> Void) {
+    init(email: String, requiresConnectionOnly: Bool) {
         let viewModel = WPComMagicLinkViewModel(email: email, requiresConnectionOnly: requiresConnectionOnly)
-        super.init(rootView: WPComMagicLinkView(viewModel: viewModel, onOpenMail: onOpenMail))
+        super.init(rootView: WPComMagicLinkView(viewModel: viewModel))
+        rootView.onOpenMail = {
+            let linkMailPresenter = LinkMailPresenter(emailAddress: email)
+            let appSelector = AppSelector(sourceView: self.view)
+            linkMailPresenter.presentEmailClients(on: self, appSelector: appSelector)
+        }
     }
 
     @available(*, unavailable)
@@ -16,18 +22,6 @@ final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkV
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTransparentNavigationBar()
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
-    }
-
-    @objc
-    private func dismissView() {
-        dismiss(animated: true)
-    }
-}
-
-private extension WPComMagicLinkHostingController {
-    enum Localization {
-        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
     }
 }
 
@@ -36,11 +30,10 @@ private extension WPComMagicLinkHostingController {
 //
 struct WPComMagicLinkView: View {
     private let viewModel: WPComMagicLinkViewModel
-    private let onOpenMail: () -> Void
+    var onOpenMail: () -> Void = {}
 
-    init(viewModel: WPComMagicLinkViewModel, onOpenMail: @escaping () -> Void) {
+    init(viewModel: WPComMagicLinkViewModel) {
         self.viewModel = viewModel
-        self.onOpenMail = onOpenMail
     }
 
     var body: some View {
@@ -62,7 +55,7 @@ struct WPComMagicLinkView: View {
                     Image(uiImage: .emailImage)
                         .padding(.bottom)
                     Text(Localization.checkYourEmail)
-                        .headlineStyle()
+                        .font(.title3.bold())
                     AttributedText(viewModel.instructionString)
                 }
 
@@ -105,6 +98,6 @@ private extension WPComMagicLinkView {
 
 struct WPComMagicLinkView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComMagicLinkView(viewModel: .init(email: "test@example.com", requiresConnectionOnly: true)) {}
+        WPComMagicLinkView(viewModel: .init(email: "test@example.com", requiresConnectionOnly: true))
     }
 }

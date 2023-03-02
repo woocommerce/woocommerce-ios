@@ -234,9 +234,7 @@ private extension JetpackSetupCoordinator {
     }
 
     func showMagicLinkUI(email: String) {
-        let viewController = WPComMagicLinkHostingController(email: email, requiresConnectionOnly: requiresConnectionOnly) {
-            // TODO
-        }
+        let viewController = WPComMagicLinkHostingController(email: email, requiresConnectionOnly: requiresConnectionOnly)
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 }

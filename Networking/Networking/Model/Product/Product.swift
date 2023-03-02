@@ -112,7 +112,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     public let bundleStockStatus: ProductStockStatus?
 
     /// Quantity of bundles left in stock, taking bundled product quantity requirements into account. Applicable for bundle-type products only.
-    public let bundleStockQuantity: String?
+    public let bundleStockQuantity: Int64?
 
     /// Computed Properties
     ///
@@ -237,7 +237,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 bundleEditableInCart: Bool?,
                 bundleSoldIndividuallyContext: ProductBundleSoldIndividuallyContext?,
                 bundleStockStatus: ProductStockStatus?,
-                bundleStockQuantity: String?) {
+                bundleStockQuantity: Int64?) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -454,11 +454,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let bundleFormLocation = try container.decodeIfPresent(ProductBundleFormLocation.self, forKey: .bundleFormLocation)
         let bundleItemGrouping = try container.decodeIfPresent(ProductBundleItemGrouping.self, forKey: .bundleItemGrouping)
         let bundleEditableInCart = try container.decodeIfPresent(Bool.self, forKey: .bundleEditableInCart)
-        let bundleMinSize = try container.decodeIfPresent(Int64.self, forKey: .bundleMinSize)
-        let bundleMaxSize = try container.decodeIfPresent(Int64.self, forKey: .bundleMaxSize)
         let bundleSoldIndividuallyContext = try container.decodeIfPresent(ProductBundleSoldIndividuallyContext.self, forKey: .bundleSoldIndividuallyContext)
         let bundleStockStatus = try container.decodeIfPresent(ProductStockStatus.self, forKey: .bundleStockStatus)
-        let bundleStockQuantity = try container.decodeIfPresent(String.self, forKey: .bundleStockQuantity)
+        // When the bundle min size, max size, or stock quantity is not set, the API returns an empty string.
+        // In those cases, we skip decoding and set the property to `nil`
+        let bundleMinSize = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleMinSize)
+        let bundleMaxSize = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleMaxSize)
+        let bundleStockQuantity = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleStockQuantity)
 
         self.init(siteID: siteID,
                   productID: productID,

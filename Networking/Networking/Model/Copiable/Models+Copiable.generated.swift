@@ -962,7 +962,7 @@ extension Networking.Product {
         bundleEditableInCart: NullableCopiableProp<Bool> = .copy,
         bundleSoldIndividuallyContext: NullableCopiableProp<ProductBundleSoldIndividuallyContext> = .copy,
         bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
-        bundleStockQuantity: NullableCopiableProp<String> = .copy
+        bundleStockQuantity: NullableCopiableProp<Int64> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID

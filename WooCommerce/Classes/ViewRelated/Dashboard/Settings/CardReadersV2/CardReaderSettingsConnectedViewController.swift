@@ -95,8 +95,8 @@ private extension CardReaderSettingsConnectedViewController {
         tableView.separatorStyle = .none
         tableView.backgroundColor = .systemBackground
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedSectionFooterHeight = 0
-        tableView.estimatedSectionHeaderHeight = 0
+        tableView.estimatedSectionFooterHeight = .zero
+        tableView.estimatedSectionHeaderHeight = .zero
         tableView.dataSource = self
         tableView.delegate = self
         tableView.reloadData()

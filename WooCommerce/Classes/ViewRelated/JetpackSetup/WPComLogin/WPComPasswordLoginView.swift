@@ -9,7 +9,7 @@ struct WPComPasswordLoginView: View {
                 JetpackInstallHeaderView()
 
                 // title
-                Text("")
+                Text(viewModel.titleString)
                     .largeTitleStyle()
 
                 Spacer()

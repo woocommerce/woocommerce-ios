@@ -3,17 +3,24 @@ import SwiftUI
 // The magic link screen for the WPCom authentication flow for Jetpack setup.
 //
 struct WPComMagicLinkView: View {
+    private let viewModel: WPComMagicLinkViewModel
+
+    init(viewModel: WPComMagicLinkViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: Constants.blockVerticalPadding) {
                 JetpackInstallHeaderView()
 
                 // title
-                Text("")
+                Text(viewModel.titleString)
                     .largeTitleStyle()
 
                 Spacer()
 
+                // Image and instructions
                 VStack(spacing: Constants.contentVerticalSpacing) {
                     Image(uiImage: .emailImage)
                         .padding(.bottom)
@@ -66,6 +73,6 @@ private extension WPComMagicLinkView {
 
 struct WPComMagicLinkView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComMagicLinkView()
+        WPComMagicLinkView(viewModel: .init(email: "test@example.com", requiresConnectionOnly: true))
     }
 }

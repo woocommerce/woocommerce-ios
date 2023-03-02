@@ -62,6 +62,24 @@ struct WPComPasswordLoginView: View {
             }
             .padding(Constants.contentPadding)
         }
+        .safeAreaInset(edge: .bottom) {
+            VStack {
+                // Primary CTA
+                Button(Localization.primaryAction) {
+                    // TODO
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .disabled(viewModel.password.isEmpty)
+
+                // Secondary CTA
+                Button(Localization.secondaryAction) {
+                    // TODO
+                }
+                .buttonStyle(SecondaryButtonStyle())
+            }
+            .padding(Constants.contentPadding)
+            .background(Color(uiColor: .systemBackground))
+        }
     }
 }
 
@@ -86,6 +104,14 @@ private extension WPComPasswordLoginView {
         static let resetPassword = NSLocalizedString(
             "Reset your password",
             comment: "Button to reset password on the WPCom password login screen of the Jetpack setup flow."
+        )
+        static let primaryAction = NSLocalizedString(
+            "Continue",
+            comment: "Button to submit password on the WPCom password login screen of the Jetpack setup flow."
+        )
+        static let secondaryAction = NSLocalizedString(
+            "Or Continue using Magic Link",
+            comment: "Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow."
         )
     }
 }

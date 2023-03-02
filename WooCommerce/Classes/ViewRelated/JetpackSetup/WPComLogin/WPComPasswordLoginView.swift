@@ -4,8 +4,13 @@ import Kingfisher
 /// Hosting controller for `WPComPasswordLoginView`
 final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswordLoginView> {
 
-    init(email: String, requiresConnectionOnly: Bool, onSubmit: @escaping (String) async -> Void) {
-        let viewModel = WPComPasswordLoginViewModel(email: email, requiresConnectionOnly: requiresConnectionOnly)
+    init(siteURL: String,
+         email: String,
+         requiresConnectionOnly: Bool,
+         onSubmit: @escaping (String) async -> Void) {
+        let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
+                                                    email: email,
+                                                    requiresConnectionOnly: requiresConnectionOnly)
         super.init(rootView: WPComPasswordLoginView(viewModel: viewModel, onSubmit: onSubmit))
     }
 
@@ -74,7 +79,7 @@ struct WPComPasswordLoginView: View {
 
                 // Reset password button
                 Button {
-                    // TODO
+                    viewModel.resetPassword()
                 } label: {
                     Text(Localization.resetPassword)
                         .linkStyle()
@@ -145,6 +150,9 @@ private extension WPComPasswordLoginView {
 
 struct WPComPasswordLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComPasswordLoginView(viewModel: .init(email: "test@example.com", requiresConnectionOnly: true))
+        WPComPasswordLoginView(viewModel: .init(siteURL: "https://example.com",
+                                                email: "test@example.com",
+                                                requiresConnectionOnly: true),
+                               onSubmit: { _ in })
     }
 }

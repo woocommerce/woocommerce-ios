@@ -1,4 +1,5 @@
 import Foundation
+import WordPressAuthenticator
 
 /// View model for `WPComPasswordLoginView`.
 ///
@@ -13,12 +14,28 @@ final class WPComPasswordLoginViewModel: ObservableObject {
     /// Email address of the WPCom account
     let email: String
 
+    private let siteURL: String
+
     @Published private(set) var avatarURL: URL?
 
-    init(email: String, requiresConnectionOnly: Bool) {
+    private var loginFields: LoginFields {
+        let loginFields = LoginFields()
+        loginFields.username = email
+        loginFields.password = password
+        loginFields.siteAddress = siteURL
+        loginFields.meta.userIsDotCom = true
+        return loginFields
+    }
+
+    init(siteURL: String, email: String, requiresConnectionOnly: Bool) {
+        self.siteURL = siteURL
         self.email = email
         self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
         avatarURL = gravatarUrl(of: email)
+    }
+
+    func resetPassword() {
+        WordPressAuthenticator.openForgotPasswordURL(loginFields)
     }
 }
 

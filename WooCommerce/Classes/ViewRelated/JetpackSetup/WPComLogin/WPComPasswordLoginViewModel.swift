@@ -2,10 +2,13 @@ import Foundation
 
 /// View model for `WPComPasswordLoginView`.
 ///
-final class WPComPasswordLoginViewModel {
+final class WPComPasswordLoginViewModel: ObservableObject {
 
     /// Title of the view.
     let titleString: String
+
+    /// Entered password
+    @Published var password: String = ""
 
     /// Username/email address of the WPCom account
     private let username: String

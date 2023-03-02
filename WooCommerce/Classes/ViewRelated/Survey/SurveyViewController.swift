@@ -71,6 +71,7 @@ extension SurveyViewController {
         case inPersonPaymentsCashOnDelivery
         case inPersonPaymentsFirstTransaction
         case inPersonPaymentsPowerUsers
+        case storeSetup
 
         fileprivate var url: URL {
             switch self {
@@ -120,6 +121,11 @@ extension SurveyViewController {
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
+            case .storeSetup:
+                return WooConstants.URLs.storeSetupFeedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
             }
         }
 
@@ -127,7 +133,7 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback, .inPersonPaymentsCashOnDelivery, .inPersonPaymentsFirstTransaction, .inPersonPaymentsPowerUsers:
                 return Localization.title
-            case .productsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .orderCreation, .couponManagement:
+            case .productsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .orderCreation, .couponManagement, .storeSetup:
                 return Localization.giveFeedback
             }
         }
@@ -153,6 +159,8 @@ extension SurveyViewController {
                 return .inPersonPaymentsFirstTransactionBanner
             case .inPersonPaymentsPowerUsers:
                 return .inPersonPaymentsPowerUsersBanner
+            case .storeSetup:
+                return .storeSetup
             }
         }
     }

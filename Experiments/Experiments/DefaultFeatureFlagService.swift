@@ -76,7 +76,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .supportRequests:
             return true
         case .simplifyProductEditing:
-            return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
+            // Enabled for the A/B experiment treatment group only
+            // Disabled for the control group and UI testing
+            return ABTest.simplifiedProductEditing.variation == .treatment && !isUITesting
         case .jetpackSetupWithApplicationPassword:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .dashboardOnboarding:

@@ -63,6 +63,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let isEmptyReviewsOptionHidden: Bool
     private let isProductTypeActionEnabled: Bool
     private let isCategoriesActionAlwaysEnabled: Bool
+    private let isDownloadableFilesSettingBased: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -74,6 +75,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          isEmptyReviewsOptionHidden: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isProductTypeActionEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isCategoriesActionAlwaysEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isDownloadableFilesSettingBased: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
@@ -86,6 +88,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.isEmptyReviewsOptionHidden = isEmptyReviewsOptionHidden
         self.isProductTypeActionEnabled = isProductTypeActionEnabled
         self.isCategoriesActionAlwaysEnabled = isCategoriesActionAlwaysEnabled
+        self.isDownloadableFilesSettingBased = isDownloadableFilesSettingBased
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -152,7 +155,7 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let canEditProductType = formType != .add && editable
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
-        let shouldShowDownloadableProduct = product.downloadable
+        let shouldShowDownloadableProduct = isDownloadableFilesSettingBased ? product.downloadable : true
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
 
         let actions: [ProductFormEditAction?] = [
@@ -297,7 +300,11 @@ private extension ProductFormActionsFactory {
             return (product.upsellIDs.count > 0 || product.crossSellIDs.count > 0)
         // Downloadable files. Only core product types for downloadable files are able to handle downloadable files.
         case .downloadableFiles:
-            return product.downloadable
+            if isDownloadableFilesSettingBased {
+                return product.downloadable
+            } else {
+                return product.downloadableFiles.isNotEmpty
+            }
         case .shortDescription:
             return product.shortDescription.isNilOrEmpty == false
         // Affiliate products only.

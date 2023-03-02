@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import Yosemite
 
-final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedViewModel {
+final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedViewModel {
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?

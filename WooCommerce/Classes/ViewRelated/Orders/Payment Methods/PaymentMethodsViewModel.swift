@@ -148,7 +148,7 @@ final class PaymentMethodsViewModel: ObservableObject {
          paymentLink: URL? = nil,
          formattedTotal: String,
          flow: WooAnalyticsEvent.PaymentsFlow.Flow,
-         isTapToPayOnIPhoneEnabled: Bool = ServiceLocator.generalAppSettings.settings.isTapToPayOnIPhoneSwitchEnabled,
+         isTapToPayOnIPhoneEnabled: Bool = true,
          dependencies: Dependencies = Dependencies()) {
         self.siteID = siteID
         self.orderID = orderID

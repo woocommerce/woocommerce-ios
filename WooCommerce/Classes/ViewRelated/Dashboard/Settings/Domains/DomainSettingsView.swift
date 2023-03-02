@@ -3,9 +3,11 @@ import SwiftUI
 /// Hosting controller that wraps the `DomainSettingsView` view.
 final class DomainSettingsHostingController: UIHostingController<DomainSettingsView> {
     init(viewModel: DomainSettingsViewModel,
-         addDomain: @escaping (_ hasDomainCredit: Bool, _ freeStagingDomain: String?) -> Void) {
+         addDomain: @escaping (_ hasDomainCredit: Bool, _ freeStagingDomain: String?) -> Void,
+         onClose: @escaping () -> Void) {
         super.init(rootView: DomainSettingsView(viewModel: viewModel,
-                                                addDomain: addDomain))
+                                                addDomain: addDomain,
+                                                onClose: onClose))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -24,10 +26,14 @@ struct DomainSettingsView: View {
     @ObservedObject private var viewModel: DomainSettingsViewModel
     @State private var isFetchingDataOnAppear: Bool = false
     private let addDomain: (_ hasDomainCredit: Bool, _ freeStagingDomain: String?) -> Void
+    private let onClose: () -> Void
 
-    init(viewModel: DomainSettingsViewModel, addDomain: @escaping (Bool, String?) -> Void) {
+    init(viewModel: DomainSettingsViewModel,
+         addDomain: @escaping (Bool, String?) -> Void,
+         onClose: @escaping () -> Void) {
         self.viewModel = viewModel
         self.addDomain = addDomain
+        self.onClose = onClose
     }
 
     var body: some View {
@@ -90,6 +96,14 @@ struct DomainSettingsView: View {
             await viewModel.onAppear()
             isFetchingDataOnAppear = false
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(Localization.cancelButtonTitle) {
+                    onClose()
+                }
+                .buttonStyle(TextButtonStyle())
+            }
+        }
     }
 }
 
@@ -108,6 +122,10 @@ private extension DomainSettingsView {
         static let learnMore = NSLocalizedString(
             "Learn more",
             comment: "Tappable text at the bottom of the domain settings screen that opens a webview."
+        )
+        static let cancelButtonTitle = NSLocalizedString(
+            "Cancel",
+            comment: "Navigation bar button on the domain settings screen to leave the flow."
         )
     }
 
@@ -175,7 +193,8 @@ struct DomainSettingsView_Previews: PreviewProvider {
                                 ]),
                                 // The site has domain credit.
                                 sitePlanResult: .success(.init(hasDomainCredit: true)))),
-                                   addDomain: { _, _ in })
+                                   addDomain: { _, _ in },
+                                   onClose: {})
             }
 
             NavigationView {
@@ -187,7 +206,8 @@ struct DomainSettingsView_Previews: PreviewProvider {
                                     .init(name: "free.test", isPrimary: true, isWPCOMStagingDomain: true, type: .wpcom)
                                 ]),
                                 sitePlanResult: .success(.init(hasDomainCredit: true)))),
-                                   addDomain: { _, _ in })
+                                   addDomain: { _, _ in },
+                                   onClose: {})
             }
 
             // Loading state.
@@ -198,7 +218,8 @@ struct DomainSettingsView_Previews: PreviewProvider {
                                 // No domains are returned to simulate loading state.
                                 domainsResult: nil,
                                 sitePlanResult: .success(.init(hasDomainCredit: true)))),
-                                   addDomain: { _, _ in })
+                                   addDomain: { _, _ in },
+                                   onClose: {})
             }
         }
     }

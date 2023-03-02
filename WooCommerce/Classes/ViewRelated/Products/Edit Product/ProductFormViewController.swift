@@ -787,6 +787,9 @@ private extension ProductFormViewController {
                                                                         case .editReviews:
                                                                             ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                                                                             self?.showReviews()
+                                                                        case .editDownloadableFiles:
+                                                                            ServiceLocator.analytics.track(.productDetailViewDownloadableFilesTapped)
+                                                                            self?.showDownloadableFiles()
                                                                         case .convertToVariable:
                                                                             self?.convertToVariableType()
                                                                         }
@@ -1547,7 +1550,8 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func showDownloadableFiles() {
-        guard let product = product as? EditableProductModel, product.downloadable  else {
+        let isDownloadableFilesActionEnabled = product.downloadable || ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
+        guard let product = product as? EditableProductModel, isDownloadableFilesActionEnabled  else {
             return
         }
 

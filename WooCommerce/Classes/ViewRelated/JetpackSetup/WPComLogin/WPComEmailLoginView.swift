@@ -8,7 +8,7 @@ final class WPComEmailLoginHostingController: UIHostingController<WPComEmailLogi
         return noticePresenter
     }()
 
-    init(siteURL: String, requiresConnectionOnly: Bool, onSubmit: @escaping (String) -> Void) {
+    init(siteURL: String, requiresConnectionOnly: Bool, onSubmit: @escaping (String) async -> Void) {
         let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: requiresConnectionOnly)
         super.init(rootView: WPComEmailLoginView(viewModel: viewModel, onSubmit: onSubmit))
     }
@@ -42,12 +42,13 @@ private extension WPComEmailLoginHostingController {
 struct WPComEmailLoginView: View {
     @ObservedObject private var viewModel: WPComEmailLoginViewModel
     @FocusState private var isEmailFieldFocused: Bool
+    @State private var isPrimaryButtonLoading = false
 
     /// The closure to be triggered when the Install Jetpack button is tapped.
-    private let onSubmit: (String) -> Void
+    private let onSubmit: (String) async -> Void
 
     init(viewModel: WPComEmailLoginViewModel,
-         onSubmit: @escaping (String) -> Void) {
+         onSubmit: @escaping (String) async -> Void) {
         self.viewModel = viewModel
         self.onSubmit = onSubmit
     }
@@ -85,9 +86,13 @@ struct WPComEmailLoginView: View {
             VStack {
                 // Primary CTA
                 Button(viewModel.titleString) {
-                    onSubmit(viewModel.emailAddress)
+                    Task { @MainActor in
+                        isPrimaryButtonLoading = true
+                        await onSubmit(viewModel.emailAddress)
+                        isPrimaryButtonLoading = false
+                    }
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPrimaryButtonLoading))
                 .disabled(!viewModel.isEmailValid)
 
                 // Terms label

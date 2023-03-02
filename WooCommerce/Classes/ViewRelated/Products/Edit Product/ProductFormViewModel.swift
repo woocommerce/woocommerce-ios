@@ -398,9 +398,16 @@ extension ProductFormViewModel {
     }
 
     func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64) {
-        product = EditableProductModel(product: product.product.copy(downloads: downloadableFiles,
-                                                                     downloadLimit: downloadLimit,
-                                                                     downloadExpiry: downloadExpiry))
+        if simplifiedProductEditingEnabled {
+            product = EditableProductModel(product: product.product.copy(downloadable: downloadableFiles.isNotEmpty,
+                                                                         downloads: downloadableFiles,
+                                                                         downloadLimit: downloadLimit,
+                                                                         downloadExpiry: downloadExpiry))
+        } else {
+            product = EditableProductModel(product: product.product.copy(downloads: downloadableFiles,
+                                                                         downloadLimit: downloadLimit,
+                                                                         downloadExpiry: downloadExpiry))
+        }
     }
 
     func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64]) {

@@ -554,17 +554,27 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
     ///
     func getTags(supportSourceTag: String?) -> [String] {
-        let tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag] + ippPluginStatuses
+        var tags = [Constants.platformTag] + ippPluginStatuses
+
+        // Only add the SDK & Jetpack Tag when the SupportRequests feature is disabled to maintain the legacy behaviour.
+        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+            tags += [Constants.sdkTag, Constants.jetpackTag]
+        }
+
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 
     func getWCPayTags(supportSourceTag: String?) -> [String] {
-        let tags = [Constants.platformTag,
-                    Constants.sdkTag,
+        var tags = [Constants.platformTag,
                     Constants.paymentsProduct,
                     Constants.paymentsCategory,
                     Constants.paymentsSubcategory,
                     Constants.paymentsProductArea]
+
+        // Only add the SDK Tag when the SupportRequests feature is disabled to maintain the legacy behaviour.
+        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+            tags += [Constants.sdkTag]
+        }
 
         return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
@@ -831,6 +841,8 @@ private extension ZendeskManager {
             systemStatusReportFieldID = TicketFieldIDs.legacyLogs
         }
 
+        // Only add the subcategory field when the SupportRequests feature is disabled to maintain the legacy behaviour.
+        let isNewSupportRequestDisabled = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests)
         let ticketFields = [
             CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
             CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
@@ -840,7 +852,7 @@ private extension ZendeskManager {
             CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
-            CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory)
+            isNewSupportRequestDisabled ? CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory) : nil
         ].compactMap { $0 }
 
         return createRequest(supportSourceTag: supportSourceTag,

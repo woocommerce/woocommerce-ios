@@ -143,7 +143,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         // Given
         let testSite = Site.fake().copy(siteID: -1)
         let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
-        let url = try XCTUnwrap(URL(string: "\(ApiCredentials.dotcomAuthScheme)://handle-authentication"))
+        let url = try XCTUnwrap(URL(string: "woocommerce://magic-login"))
 
         // When
         let result = coordinator.handleAuthenticationUrl(url)
@@ -156,7 +156,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         // Given
         let testSite = Site.fake().copy(siteID: -1)
         let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
-        let url = try XCTUnwrap(URL(string: "\(ApiCredentials.dotcomAuthScheme)://handle-authentication?token=test"))
+        let url = try XCTUnwrap(URL(string: "woocommerce://handle-authentication?token=test"))
 
         // When
         let result = coordinator.handleAuthenticationUrl(url)
@@ -169,7 +169,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         // Given
         let testSite = Site.fake().copy(siteID: -1)
         let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
-        let url = try XCTUnwrap(URL(string: "\(ApiCredentials.dotcomAuthScheme)://magic-login?token=test"))
+        let url = try XCTUnwrap(URL(string: "woocommerce://magic-login?token=test"))
 
         // When
         let result = coordinator.handleAuthenticationUrl(url)

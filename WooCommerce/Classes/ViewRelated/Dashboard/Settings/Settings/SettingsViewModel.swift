@@ -207,7 +207,9 @@ private extension SettingsViewModel {
         let configureSection: Section? = {
             var rows: [Row] = []
 
-            if featureFlagService.isFeatureFlagEnabled(.domainSettings) && stores.sessionManager.defaultSite?.isWordPressComStore == true {
+            if featureFlagService.isFeatureFlagEnabled(.domainSettings)
+                && stores.sessionManager.defaultSite?.isWordPressComStore == true
+                && stores.sessionManager.defaultRoles.contains(.administrator) {
                 rows.append(.domain)
             }
 
@@ -236,7 +238,10 @@ private extension SettingsViewModel {
         let storeSettingsSection: Section? = {
             var rows: [Row] = []
 
-            if stores.sessionManager.defaultSite?.isJetpackCPConnected == true {
+            let site = stores.sessionManager.defaultSite
+            if site?.isJetpackCPConnected == true ||
+                (site?.isNonJetpackSite == true &&
+                 featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
                 rows.append(.installJetpack)
             }
 

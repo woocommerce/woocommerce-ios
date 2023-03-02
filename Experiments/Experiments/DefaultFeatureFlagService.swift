@@ -4,6 +4,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
     public func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
         let buildConfig = BuildConfiguration.current
 
+        /// Whether this is a UI test run.
+        ///
+        /// This can be used to enable/disable a feature flag specifically for UI testing.
+        ///
+        let isUITesting = CommandLine.arguments.contains("-ui_testing")
+
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
@@ -27,6 +33,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .loginMagicLinkEmphasisM2:
             return true
+        case .productMultiSelectionM1:
+            return false
         case .promptToEnableCodInIppOnboarding:
             return true
         case .searchProductsBySKU:
@@ -40,7 +48,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .storeCreationM2WithInAppPurchasesEnabled:
             return false
         case .storeCreationM3Profiler:
-            return true
+            return false
         case .justInTimeMessagesOnDashboard:
             return true
         case .systemStatusReportInSupportRequest:
@@ -64,7 +72,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .supportRequests:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .simplifyProductEditing:
+            return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
+        case .jetpackSetupWithApplicationPassword:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .dashboardOnboarding:
+            return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
         default:
             return true
         }

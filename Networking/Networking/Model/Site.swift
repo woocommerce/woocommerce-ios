@@ -144,6 +144,14 @@ public extension Site {
     var isJetpackCPConnected: Bool {
         isJetpackConnected && !isJetpackThePluginInstalled
     }
+
+    /// Whether the site has Jetpack plugin install, activated and connected.
+    ///
+    var isNonJetpackSite: Bool {
+        /// when the site ID uses a placeholder ID, we can assume that it's not recognized by Jetpack,
+        /// hence not a Jetpack site.
+        siteID == WooConstants.placeholderSiteID
+    }
 }
 
 /// Defines all of the Site CodingKeys.

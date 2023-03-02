@@ -33,15 +33,36 @@ extension ProductFormViewController {
         alertController.addAction(confirm)
         present(alertController, animated: true)
     }
+
+    enum ProductSavedAlertType {
+        case saved
+        case draftSaved
+        case published
+        case copied
+
+        var alertTitle: String {
+            switch self {
+            case .saved:
+                return Localization.Alert.productSavedAlert
+            case .draftSaved:
+                return Localization.Alert.productDraftSavedAlert
+            case .published:
+                return Localization.Alert.productPublishedAlert
+            case .copied:
+                return Localization.Alert.productCopiedAlert
+            }
+        }
+    }
+
     /// Product Confirmation Save alert
     ///
-    func presentProductConfirmationSaveAlert(title: String = Localization.Alert.presentProductConfirmationSaveAlert) {
+    func presentProductConfirmationSaveAlert(type: ProductSavedAlertType = .saved) {
         let contextNoticePresenter: NoticePresenter = {
             let noticePresenter = DefaultNoticePresenter()
             noticePresenter.presentingViewController = self
             return noticePresenter
         }()
-        contextNoticePresenter.enqueue(notice: .init(title: title))
+        contextNoticePresenter.enqueue(notice: .init(title: type.alertTitle))
     }
 
     /// Product Confirmation Delete alert
@@ -125,8 +146,13 @@ private extension ProductFormViewController {
 private enum Localization {
     enum Alert {
         // Product saved or updated
-        static let presentProductConfirmationSaveAlert = NSLocalizedString("Product saved",
-                                                                           comment: "Title of the alert when a user is saving a product")
+        static let productSavedAlert = NSLocalizedString("Product saved",
+                                                         comment: "Title of the alert when a user is saving a product")
+        static let productDraftSavedAlert = NSLocalizedString("Product draft saved",
+                                                              comment: "Title of the alert when a user is saving a product draft")
+        static let productPublishedAlert = NSLocalizedString("Product published",
+                                                             comment: "Title of the alert when a user is publishing a product")
+        static let productCopiedAlert = NSLocalizedString("Product copied", comment: "Title of the alert when a user has copied a product")
 
         // Product type change
         static let productTypeChangeTitle = NSLocalizedString("Are you sure you want to change the product type?",

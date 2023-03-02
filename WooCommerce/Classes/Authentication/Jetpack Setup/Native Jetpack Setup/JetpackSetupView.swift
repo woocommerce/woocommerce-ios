@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// Hosting controller for `LoginJetpackSetupView`.
+/// Hosting controller for `JetpackSetupView`.
 ///
-final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpackSetupView> {
-    private let viewModel: LoginJetpackSetupViewModel
+final class JetpackSetupHostingController: UIHostingController<JetpackSetupView> {
+    private let viewModel: JetpackSetupViewModel
     private let analytics: Analytics
     private let authentication: Authentication
 
@@ -13,9 +13,9 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
          analytics: Analytics = ServiceLocator.analytics,
          onStoreNavigation: @escaping (String?) -> Void) {
         self.analytics = analytics
-        self.viewModel = LoginJetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
+        self.viewModel = JetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
         self.authentication = authentication
-        super.init(rootView: LoginJetpackSetupView(viewModel: viewModel))
+        super.init(rootView: JetpackSetupView(viewModel: viewModel))
 
         rootView.webViewPresentationHandler = { [weak self] in
             self?.presentJetpackConnectionWebView()
@@ -94,15 +94,16 @@ final class LoginJetpackSetupHostingController: UIHostingController<LoginJetpack
     }
 }
 
-private extension LoginJetpackSetupHostingController {
+private extension JetpackSetupHostingController {
     enum Localization {
         static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
     }
 }
 
-/// View to show the process of Jetpack setup during login.
+/// View to show the process of Jetpack setup for non-JCP sites.
+/// For JCP sites, look for `JCPJetpackInstallView`.
 ///
-struct LoginJetpackSetupView: View {
+struct JetpackSetupView: View {
     /// To be set by the hosting controller
     var webViewPresentationHandler: () -> Void = {}
 
@@ -112,12 +113,12 @@ struct LoginJetpackSetupView: View {
     /// Triggered when the user selects Get support.
     var supportHandler: () -> Void = {}
 
-    @ObservedObject private var viewModel: LoginJetpackSetupViewModel
+    @ObservedObject private var viewModel: JetpackSetupViewModel
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(viewModel: LoginJetpackSetupViewModel) {
+    init(viewModel: JetpackSetupViewModel) {
         self.viewModel = viewModel
         viewModel.startSetup()
     }
@@ -272,7 +273,7 @@ struct LoginJetpackSetupView: View {
             }
         }
         .fullScreenCover(isPresented: $viewModel.jetpackConnectionInterrupted) {
-            LoginJetpackSetupInterruptedView(siteURL: viewModel.siteURL, onSupport: supportHandler, onContinue: {
+            JetpackSetupInterruptedView(siteURL: viewModel.siteURL, onSupport: supportHandler, onContinue: {
                 viewModel.jetpackConnectionInterrupted = false
                 viewModel.didTapContinueConnectionButton()
                 // delay for the dismissal of the interrupted screen to complete.
@@ -290,7 +291,7 @@ struct LoginJetpackSetupView: View {
     }
 }
 
-private extension LoginJetpackSetupView {
+private extension JetpackSetupView {
     enum Localization {
         static let goToStore = NSLocalizedString("Go to Store", comment: "Title for the button to navigate to the home screen after Jetpack setup completes")
         static let authorizing = NSLocalizedString("Connect store to Jetpack", comment: "Name of the connection step on the Jetpack setup screen")
@@ -312,9 +313,9 @@ private extension LoginJetpackSetupView {
     }
 }
 
-struct LoginJetpackSetupView_Previews: PreviewProvider {
+struct JetpackSetupView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginJetpackSetupView(viewModel: LoginJetpackSetupViewModel(siteURL: "https://test.com", connectionOnly: true))
-        LoginJetpackSetupView(viewModel: LoginJetpackSetupViewModel(siteURL: "https://test.com", connectionOnly: false))
+        JetpackSetupView(viewModel: JetpackSetupViewModel(siteURL: "https://test.com", connectionOnly: true))
+        JetpackSetupView(viewModel: JetpackSetupViewModel(siteURL: "https://test.com", connectionOnly: false))
     }
 }

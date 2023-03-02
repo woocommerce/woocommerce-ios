@@ -936,6 +936,21 @@ final class ProductStoreTests: XCTestCase {
         wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `ProductStore.upsertStoredProduct` does not store products with the `importing` product status.
+    ///
+    func test_upsertStoredProduct_does_not_store_import_placeholder_products() {
+        // Given
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let product = Product.fake().copy(statusKey: "importing")
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        // When
+        productStore.upsertStoredProduct(readOnlyProduct: product, in: viewStorage)
+
+        // Then
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
+    }
+
     // MARK: - ProductAction.searchProducts
 
     /// Verifies that `ProductAction.searchProducts` effectively persists the retrieved products.

@@ -7,9 +7,6 @@ import SafariServices
 import SwiftUI
 import WooFoundation
 
-// Used for protocol conformance of IndicatorInfoProvider only.
-import XLPagerTabStrip
-
 private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 
 protocol OrderListViewControllerDelegate: AnyObject {
@@ -748,19 +745,6 @@ private extension OrderListViewController {
     ///
     func transitionToResultsUpdatedState() {
         state = dataSource.isEmpty ? .empty : .results
-    }
-}
-
-// MARK: - IndicatorInfoProvider Conformance
-
-// This conformance is not used directly by `OrderListViewController`. We only need this because
-// `Self` is used as a child of `OrdersTabbedViewController` which is a
-// `ButtonBarPagerTabStripViewController`.
-extension OrderListViewController: IndicatorInfoProvider {
-    /// Return `self.title` under `IndicatorInfo`.
-    ///
-    func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        IndicatorInfo(title: title)
     }
 }
 

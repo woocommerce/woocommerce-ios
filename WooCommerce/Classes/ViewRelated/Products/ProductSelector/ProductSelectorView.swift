@@ -2,7 +2,7 @@ import SwiftUI
 
 /// View showing a list of products to select.
 ///
-struct ProductSelector: View {
+struct ProductSelectorView: View {
 
     let configuration: Configuration
 
@@ -177,7 +177,7 @@ struct ProductSelector: View {
     }
 }
 
-extension ProductSelector {
+extension ProductSelectorView {
     struct Configuration {
         var showsFilters: Bool = false
         var multipleSelectionsEnabled: Bool = false
@@ -192,7 +192,7 @@ extension ProductSelector {
     }
 }
 
-private extension ProductSelector {
+private extension ProductSelectorView {
     enum Constants {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
@@ -212,13 +212,13 @@ private extension ProductSelector {
 struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
-        let configuration = ProductSelector.Configuration(
+        let configuration = ProductSelectorView.Configuration(
             showsFilters: true,
             multipleSelectionsEnabled: true,
             title: "Add Product",
             cancelButtonTitle: "Close",
             productRowAccessibilityHint: "Add product to order",
             variableProductRowAccessibilityHint: "Open variation list")
-        ProductSelector(configuration: configuration, isPresented: .constant(true), viewModel: viewModel)
+        ProductSelectorView(configuration: configuration, isPresented: .constant(true), viewModel: viewModel)
     }
 }

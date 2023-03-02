@@ -17,11 +17,11 @@ struct ProductFactory {
         }
     }
 
-    /// Copies a product by cleaning properties like `id, name, and statusKey` to their default state.
-    /// This is usefult to turn an existing(on core) `auto-draft` product into a new app-product ready to be saved.
+    /// Copies a product by cleaning properties like `id, name, statusKey, and groupedProducts` to their default state.
+    /// This is useful to turn an existing (on core) `auto-draft` product into a new app-product ready to be saved.
     ///
     func newProduct(from existingProduct: Product) -> Product {
-        existingProduct.copy(productID: 0, name: "", statusKey: ProductStatus.published.rawValue)
+        existingProduct.copy(productID: 0, name: "", statusKey: ProductStatus.published.rawValue, groupedProducts: [])
     }
 }
 

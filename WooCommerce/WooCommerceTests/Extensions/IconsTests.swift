@@ -140,6 +140,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.domainPurchaseSuccessImage)
     }
 
+    func test_domainsImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.domainsImage)
+    }
+
     func test_domainSearchPlaceholderImage_is_not_nil() {
         XCTAssertNotNil(UIImage.domainSearchPlaceholderImage)
     }
@@ -234,6 +238,10 @@ final class IconsTests: XCTestCase {
 
     func testStoreImageIsNotNil() {
         XCTAssertNotNil(UIImage.storeImage)
+    }
+
+    func test_launchStoreImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.launchStoreImage)
     }
 
     func test_storeSummaryImage_is_not_nil() {
@@ -739,5 +747,9 @@ final class IconsTests: XCTestCase {
 
     func test_app_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.appIconDefault)
+    }
+
+    func test_blankProductImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.blankProductImage)
     }
 }

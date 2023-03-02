@@ -1,4 +1,3 @@
-
 import SwiftUI
 
 struct PaymentSettingsFlowHint: View {
@@ -18,5 +17,16 @@ struct PaymentSettingsFlowHint: View {
             Spacer()
         }
             .padding(.horizontal, 8)
+    }
+}
+
+struct PaymentSettingsFlowHint_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            PaymentSettingsFlowHint(title: "0", text: "This is some text that acts as a hint.")
+            PaymentSettingsFlowHint(title: "1", text: "This is a hint in Dark Mode.")
+                .preferredColorScheme(.dark)
+        }
+        .previewLayout(.sizeThatFits)
     }
 }

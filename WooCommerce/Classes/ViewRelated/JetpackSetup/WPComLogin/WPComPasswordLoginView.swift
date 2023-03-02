@@ -1,14 +1,37 @@
 import SwiftUI
 import Kingfisher
 
+/// Hosting controller for `WPComPasswordLoginView`
+final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswordLoginView> {
+
+    init(email: String, requiresConnectionOnly: Bool, onSubmit: @escaping (String) async -> Void) {
+        let viewModel = WPComPasswordLoginViewModel(email: email, requiresConnectionOnly: requiresConnectionOnly)
+        super.init(rootView: WPComPasswordLoginView(viewModel: viewModel, onSubmit: onSubmit))
+    }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureTransparentNavigationBar()
+    }
+}
+
 /// Screen for entering the password for a WPCom account during the Jetpack setup flow
 /// This is presented for users authenticated with WPOrg credentials.
 struct WPComPasswordLoginView: View {
+    @State private var isPrimaryButtonLoading = false
     @FocusState private var isPasswordFieldFocused: Bool
     @ObservedObject private var viewModel: WPComPasswordLoginViewModel
 
-    init(viewModel: WPComPasswordLoginViewModel) {
+    private let onSubmit: (String) async -> Void
+
+    init(viewModel: WPComPasswordLoginViewModel, onSubmit: @escaping (String) async -> Void) {
         self.viewModel = viewModel
+        self.onSubmit = onSubmit
     }
 
     var body: some View {
@@ -66,9 +89,13 @@ struct WPComPasswordLoginView: View {
             VStack {
                 // Primary CTA
                 Button(Localization.primaryAction) {
-                    // TODO
+                    Task { @MainActor in
+                        isPrimaryButtonLoading = true
+                        await onSubmit(viewModel.password)
+                        isPrimaryButtonLoading = false
+                    }
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPrimaryButtonLoading))
                 .disabled(viewModel.password.isEmpty)
 
                 // Secondary CTA

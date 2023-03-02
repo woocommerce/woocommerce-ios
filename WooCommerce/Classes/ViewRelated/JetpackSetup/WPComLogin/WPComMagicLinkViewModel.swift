@@ -3,8 +3,6 @@ import UIKit
 /// View model for `WPComMagicLinkView`
 ///
 final class WPComMagicLinkViewModel {
-    /// The input address from the email login screen.
-    let email: String
 
     /// Title for `WPComMagicLinkView`
     let titleString: String
@@ -13,7 +11,6 @@ final class WPComMagicLinkViewModel {
     let instructionString: NSAttributedString
 
     init(email: String, requiresConnectionOnly: Bool) {
-        self.email = email
         self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
         self.instructionString = {
             let font: UIFont = .body

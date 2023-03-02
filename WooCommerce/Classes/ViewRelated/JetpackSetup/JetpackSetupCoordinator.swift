@@ -187,7 +187,10 @@ private extension JetpackSetupCoordinator {
     func checkWordPressComAccount(email: String) async {
         await withCheckedContinuation { continuation -> Void in
             accountService.isPasswordlessAccount(username: email, success: { [weak self] passwordless in
-                self?.startAuthentication(email: email, isPasswordlessAccount: passwordless) {
+                guard let self else {
+                    return continuation.resume()
+                }
+                self.startAuthentication(email: email, isPasswordlessAccount: passwordless) {
                     continuation.resume()
                 }
             }, failure: { [weak self] error in

@@ -228,7 +228,8 @@ private extension SupportForm {
         static let title = NSLocalizedString("Contact Support", comment: "Title of the view for contacting support.")
         static let iNeedHelp = NSLocalizedString("I need help with", comment: "Text on the support form to refer to what area the user has problem with.")
         static let letsGetItSorted = NSLocalizedString("Let’s get this sorted", comment: "Title to let the user know what do we want on the support screen.")
-        static let tellUsInfo = NSLocalizedString("Tell us much as you can about the problem, and we will be in touch soon.",
+        static let tellUsInfo = NSLocalizedString(["Let us know your site address (URL) and tell us as much as you can about the problem,",
+                                                  " and we will be in touch soon."].joined(),
                                                   comment: "Message info on the support screen.")
         static let subject = NSLocalizedString("Subject", comment: "Subject title on the support form")
         static let message = NSLocalizedString("Message", comment: "Message on the support form")

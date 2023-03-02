@@ -60,7 +60,7 @@ public class AppSelector {
 }
 
 /// Initializers for Email Picker
-extension AppSelector {
+public extension AppSelector {
     /// initializes the picker with a plist file in a specified bundle
     convenience init?(with plistFile: String,
                       in bundle: Bundle,

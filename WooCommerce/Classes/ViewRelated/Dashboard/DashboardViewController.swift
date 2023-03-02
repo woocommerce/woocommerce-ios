@@ -23,6 +23,10 @@ final class DashboardViewController: UIViewController {
 
     // MARK: Subviews
 
+    private lazy var stackView: UIStackView = {
+        .init(arrangedSubviews: [])
+    }()
+
     private lazy var containerView: UIScrollView = {
         return UIScrollView(frame: .zero)
     }()
@@ -143,6 +147,7 @@ final class DashboardViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureView()
+        configureStackView()
         configureDashboardUIContainer()
         configureBottomJetpackBenefitsBanner()
         observeSiteForUIUpdates()
@@ -313,22 +318,28 @@ private extension DashboardViewController {
         containerStackView.insertArrangedSubview(contentView, at: indexAfterHeader)
     }
 
+    func configureStackView() {
+        stackView.axis = .vertical
+        view.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(stackView)
+    }
+
     func configureDashboardUIContainer() {
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
-        view.addSubview(containerView)
+        stackView.addArrangedSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.refreshControl = refreshControl
+
+        // Adds the refresh control to table view manually so that the refresh control always appears below the navigation bar title in
+        // large or normal size to be consistent with Dashboard and Orders tab with large titles workaround.
+        // If we do `tableView.refreshControl = refreshControl`, the refresh control appears in the navigation bar when large title is shown.
+        containerView.addSubview(refreshControl)
+
         NSLayoutConstraint.activate([
-            containerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            containerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            // The top anchor of the scroll view needs to pin to the top edge of the view controller view.
-            // Otherwise, the pull-to-refresh animation is broken with large title.
-            containerView.topAnchor.constraint(equalTo: view.topAnchor),
             // The width matching constraint is required for the scroll view to be scrollable only vertically.
-            containerView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor),
+            containerView.widthAnchor.constraint(equalTo: stackView.widthAnchor)
         ])
     }
 
@@ -615,40 +626,23 @@ private extension DashboardViewController {
     }
 
     func showJetpackBenefitsBanner(contentView: UIView) {
-//        ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .shown))
-//
-//        hideJetpackBenefitsBanner()
-//        guard let banner = bottomJetpackBenefitsBannerController.view else {
-//            return
-//        }
-////        contentBottomToContainerConstraint?.isActive = false
-//
-//        addChild(bottomJetpackBenefitsBannerController)
-//        containerView.addSubview(banner)
-//        bottomJetpackBenefitsBannerController.didMove(toParent: self)
-//
-//        banner.translatesAutoresizingMaskIntoConstraints = false
-//
-//        // The banner height is calculated in `viewDidLayoutSubviews` to support rotation.
-//        let contentBottomToJetpackBenefitsBannerConstraint = banner.topAnchor.constraint(equalTo: contentView.bottomAnchor)
-//        self.contentBottomToJetpackBenefitsBannerConstraint = contentBottomToJetpackBenefitsBannerConstraint
-//
-//        NSLayoutConstraint.activate([
-//            contentBottomToJetpackBenefitsBannerConstraint,
-//            banner.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-//            banner.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-//            // Pins from the safe area layout bottom to accommodate offline banner.
-//            banner.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-//        ])
+        ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .shown))
+
+        hideJetpackBenefitsBanner()
+        guard let banner = bottomJetpackBenefitsBannerController.view else {
+            return
+        }
+
+        addChild(bottomJetpackBenefitsBannerController)
+        stackView.addArrangedSubview(banner)
+        bottomJetpackBenefitsBannerController.didMove(toParent: self)
     }
 
     func hideJetpackBenefitsBanner() {
-//        contentBottomToJetpackBenefitsBannerConstraint?.isActive = false
-//        contentBottomToContainerConstraint?.isActive = true
-//        if isJetpackBenefitsBannerShown {
-//            bottomJetpackBenefitsBannerController.view?.removeFromSuperview()
-//            remove(bottomJetpackBenefitsBannerController)
-//        }
+        if isJetpackBenefitsBannerShown {
+            stackView.removeArrangedSubview(bottomJetpackBenefitsBannerController.view)
+            remove(bottomJetpackBenefitsBannerController)
+        }
     }
 }
 

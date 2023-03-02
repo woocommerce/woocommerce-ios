@@ -211,7 +211,7 @@ private extension JetpackSetupCoordinator {
                 do {
                     try await requestAuthenticationLink(email: email)
                     onCompletion()
-                    #warning("TODO: show magic login UI")
+                    showMagicLinkUI(email: email)
                 } catch {
                     onCompletion()
                     showAlert(message: Localization.errorRequestingAuthURL)
@@ -231,6 +231,13 @@ private extension JetpackSetupCoordinator {
                 continuation.resume(throwing: error)
             })
         }
+    }
+
+    func showMagicLinkUI(email: String) {
+        let viewController = WPComMagicLinkHostingController(email: email, requiresConnectionOnly: requiresConnectionOnly) {
+            // TODO
+        }
+        loginNavigationController?.pushViewController(viewController, animated: true)
     }
 }
 

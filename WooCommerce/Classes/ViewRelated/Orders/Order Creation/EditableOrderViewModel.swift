@@ -168,13 +168,21 @@ final class EditableOrderViewModel: ObservableObject {
     /// View model for the product list
     ///
     lazy var addProductViewModel = {
-        ProductSelectorViewModel(siteID: siteID, purchasableItemsOnly: true, storageManager: storageManager, stores: stores) { [weak self] product in
-            guard let self = self else { return }
-            self.addProductToOrder(product)
-        } onVariationSelected: { [weak self] variation, parentProduct in
-            guard let self = self else { return }
-            self.addProductVariationToOrder(variation, parent: parentProduct)
-        }
+        ProductSelectorViewModel(
+            siteID: siteID,
+            purchasableItemsOnly: true,
+            storageManager: storageManager,
+            stores: stores,
+            supportsMultipleSelection: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
+            toggleAllVariationsOnSelection: false,
+            onProductSelected: { [weak self] product in
+                guard let self = self else { return }
+                self.addProductToOrder(product)
+            },
+            onVariationSelected: { [weak self] variation, parentProduct in
+                guard let self = self else { return }
+                self.addProductVariationToOrder(variation, parent: parentProduct)
+            })
     }()
 
     /// View models for each product row in the order.

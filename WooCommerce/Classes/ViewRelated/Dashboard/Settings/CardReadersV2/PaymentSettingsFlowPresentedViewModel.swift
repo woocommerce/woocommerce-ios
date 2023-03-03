@@ -1,9 +1,9 @@
 import Foundation
 import Combine
 
-/// Defines a protocol that all Card Reader Settings View Models should conform to
+/// Defines a protocol that all Payment Settings Flow View Models should conform to
 ///
-protocol CardReaderSettingsPresentedViewModel {
+protocol PaymentSettingsFlowPresentedViewModel {
     /// Whether this view model and the view it connects to should be shown
     ///
     var shouldShow: CardReaderSettingsTriState { get }
@@ -19,14 +19,14 @@ protocol CardReaderSettingsPresentedViewModel {
     var didUpdate: (() -> Void)? { get set }
 }
 
-struct CardReaderSettingsViewModelAndView: Equatable {
-    static func == (lhs: CardReaderSettingsViewModelAndView, rhs: CardReaderSettingsViewModelAndView) -> Bool {
+struct PaymentSettingsFlowViewModelAndView: Equatable {
+    static func == (lhs: PaymentSettingsFlowViewModelAndView, rhs: PaymentSettingsFlowViewModelAndView) -> Bool {
         // It is sufficient to test on just the view identifier. No need to compare the viewmodels.
-        lhs.viewIdentifier == rhs.viewIdentifier
+        lhs.viewPresenter == rhs.viewPresenter
     }
 
-    var viewModel: CardReaderSettingsPresentedViewModel
-    var viewIdentifier: String
+    var viewModel: PaymentSettingsFlowPresentedViewModel
+    var viewPresenter: PaymentSettingsFlowViewModelPresenter.Type
 }
 
 enum CardReaderSettingsTriState {

@@ -82,9 +82,6 @@ final class DashboardViewController: UIViewController {
     /// so we can interrupt and reverse if needed
     private var headerAnimator: UIViewPropertyAnimator?
 
-    // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
-    private let hiddenScrollView = UIScrollView()
-
     /// Top banner that shows an error if there is a problem loading data
     ///
     private lazy var topBannerView = {

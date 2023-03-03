@@ -313,6 +313,42 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.bundleStockStatus, .insufficientStock)
         XCTAssertEqual(product.bundleStockQuantity, 0)
     }
+
+    /// Test that products with bundled items product type are properly parsed.
+    ///
+    func test_product_bundled_items_are_properly_parsed() throws {
+        // Given
+        let product = try XCTUnwrap(mapLoadProductBundleResponse())
+        let bundledItem = try XCTUnwrap(product.bundledItems.first)
+
+        // Then
+        XCTAssertEqual(product.bundledItems.count, 3)
+        XCTAssertEqual(bundledItem.bundledItemID, 6)
+        XCTAssertEqual(bundledItem.productID, 36)
+        XCTAssertEqual(bundledItem.menuOrder, 0)
+        XCTAssertEqual(bundledItem.quantityMin, 1)
+        XCTAssertNil(bundledItem.quantityMax)
+        XCTAssertTrue(bundledItem.pricedIndividually)
+        XCTAssertFalse(bundledItem.shippedIndividually)
+        XCTAssertFalse(bundledItem.overrideTitle)
+        XCTAssertEqual(bundledItem.title, "Beanie with Logo")
+        XCTAssertFalse(bundledItem.overrideDescription)
+        XCTAssertEqual(bundledItem.description, "")
+        XCTAssertTrue(bundledItem.optional)
+        XCTAssertFalse(bundledItem.hideThumbnail)
+        XCTAssertEqual(bundledItem.discount, "10")
+        XCTAssertFalse(bundledItem.overrideVariations)
+        XCTAssertEqual(bundledItem.allowedVariations.count, 3)
+        XCTAssertFalse(bundledItem.overrideDefaultVariationAttributes)
+        XCTAssertEqual(bundledItem.defaultVariationAttributes.count, 2)
+        XCTAssertEqual(bundledItem.singleProductVisibility, .visible)
+        XCTAssertEqual(bundledItem.cartVisibility, .visible)
+        XCTAssertEqual(bundledItem.orderVisibility, .visible)
+        XCTAssertEqual(bundledItem.singleProductPriceVisibility, .visible)
+        XCTAssertEqual(bundledItem.cartPriceVisibility, .visible)
+        XCTAssertEqual(bundledItem.orderPriceVisibility, .visible)
+        XCTAssertEqual(bundledItem.stockStatus, .inStock)
+    }
 }
 
 

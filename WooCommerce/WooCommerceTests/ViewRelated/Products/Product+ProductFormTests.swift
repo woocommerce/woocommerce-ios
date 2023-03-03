@@ -173,6 +173,7 @@ private extension Product_ProductFormTests {
                        bundleEditableInCart: nil,
                        bundleSoldIndividuallyContext: nil,
                        bundleStockStatus: nil,
-                       bundleStockQuantity: nil)
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 }

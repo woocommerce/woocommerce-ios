@@ -127,7 +127,8 @@ extension MockReviews {
                        bundleEditableInCart: nil,
                        bundleSoldIndividuallyContext: nil,
                        bundleStockStatus: nil,
-                       bundleStockQuantity: nil)
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {
@@ -282,7 +283,8 @@ extension MockReviews {
                        bundleEditableInCart: nil,
                        bundleSoldIndividuallyContext: nil,
                        bundleStockStatus: nil,
-                       bundleStockQuantity: nil)
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
@@ -412,7 +414,8 @@ extension MockReviews {
                        bundleEditableInCart: nil,
                        bundleSoldIndividuallyContext: nil,
                        bundleStockStatus: nil,
-                       bundleStockQuantity: nil)
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 
     func sampleVariationTypeDimensions() -> Networking.ProductDimensions {

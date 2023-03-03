@@ -114,7 +114,8 @@ final class ProductsRemoteTests: XCTestCase {
                                       bundleEditableInCart: nil,
                                       bundleSoldIndividuallyContext: nil,
                                       bundleStockStatus: nil,
-                                      bundleStockQuantity: nil)
+                                      bundleStockQuantity: nil,
+                                      bundledItems: [])
         XCTAssertEqual(addedProduct, expectedProduct)
     }
 
@@ -226,7 +227,8 @@ final class ProductsRemoteTests: XCTestCase {
                                       bundleEditableInCart: nil,
                                       bundleSoldIndividuallyContext: nil,
                                       bundleStockStatus: nil,
-                                      bundleStockQuantity: nil)
+                                      bundleStockQuantity: nil,
+                                      bundledItems: [])
         XCTAssertEqual(deletedProduct, expectedProduct)
     }
 
@@ -764,7 +766,8 @@ private extension ProductsRemoteTests {
                        bundleEditableInCart: nil,
                        bundleSoldIndividuallyContext: nil,
                        bundleStockStatus: nil,
-                       bundleStockQuantity: nil)
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {

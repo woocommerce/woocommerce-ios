@@ -114,6 +114,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     /// Quantity of bundles left in stock, taking bundled product quantity requirements into account. Applicable for bundle-type products only.
     public let bundleStockQuantity: Int64?
 
+    /// List of bundled item data contained in this product.
+    public let bundledItems: [ProductBundleItem]
+
     /// Computed Properties
     ///
     public var productStatus: ProductStatus {
@@ -237,7 +240,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 bundleEditableInCart: Bool?,
                 bundleSoldIndividuallyContext: ProductBundleSoldIndividuallyContext?,
                 bundleStockStatus: ProductStockStatus?,
-                bundleStockQuantity: Int64?) {
+                bundleStockQuantity: Int64?,
+                bundledItems: [ProductBundleItem]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -310,6 +314,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.bundleStockStatus = bundleStockStatus
         self.bundleStockQuantity = bundleStockQuantity
         self.bundleSoldIndividuallyContext = bundleSoldIndividuallyContext
+        self.bundledItems = bundledItems
     }
 
     /// The public initializer for Product.
@@ -461,6 +466,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let bundleMinSize = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleMinSize)
         let bundleMaxSize = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleMaxSize)
         let bundleStockQuantity = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleStockQuantity)
+        let bundledItems = try container.decodeIfPresent([ProductBundleItem].self, forKey: .bundledItems) ?? []
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -533,7 +539,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   bundleEditableInCart: bundleEditableInCart,
                   bundleSoldIndividuallyContext: bundleSoldIndividuallyContext,
                   bundleStockStatus: bundleStockStatus,
-                  bundleStockQuantity: bundleStockQuantity)
+                  bundleStockQuantity: bundleStockQuantity,
+                  bundledItems: bundledItems)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -729,6 +736,7 @@ private extension Product {
         case bundleSoldIndividuallyContext  = "bundle_sold_individually_context"
         case bundleStockStatus              = "bundle_stock_status"
         case bundleStockQuantity            = "bundle_stock_quantity"
+        case bundledItems                   = "bundled_items"
     }
 }
 

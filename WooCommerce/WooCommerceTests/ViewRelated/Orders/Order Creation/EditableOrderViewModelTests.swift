@@ -256,25 +256,54 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == sampleProductID }), "Product rows do not contain expected product")
     }
 
-    func test_order_details_are_updated_when_product_quantity_changes() {
+    func test_order_details_are_updated_when_product_quantity_changes_and_ProductMultiSelection_is_disabled() {
         // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: false)
         let storageManager = MockStorageManager()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let anotherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 123456, purchasable: true)
+
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        storageManager.insertSampleProduct(readOnlyProduct: anotherProduct)
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
 
         // When
         viewModel.handleProductsViewModel.selectProduct(product.productID)
         viewModel.productRows[0].incrementQuantity()
-
         // And when another product is added to the order (to confirm the first product's quantity change is retained)
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.handleProductsViewModel.selectProduct(anotherProduct.productID)
 
         // Then
-        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
-            XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
-            XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
-        }
+        XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
+        XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
+    }
+
+    func test_order_details_are_updated_when_product_quantity_changes_and_ProductMultiSelection_is_enabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
+        let storageManager = MockStorageManager()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let anotherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 123456, purchasable: true)
+
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        storageManager.insertSampleProduct(readOnlyProduct: anotherProduct)
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
+
+        // When
+        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productRows[0].incrementQuantity()
+        // And when another product is added to the order (to confirm the first product's quantity change is retained)
+        viewModel.handleProductsViewModel.selectProduct(anotherProduct.productID)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
+        XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
     }
 
     func test_product_is_selected_when_quantity_is_decremented_below_1() {

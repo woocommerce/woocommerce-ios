@@ -92,12 +92,12 @@ struct WPCom2FALoginView: View {
                 Button(viewModel.titleString) {
                     Task { @MainActor in
                         isPrimaryButtonLoading = true
-                        await onSubmit(viewModel.verificationCode)
+                        await onSubmit(viewModel.strippedCode)
                         isPrimaryButtonLoading = false
                     }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPrimaryButtonLoading))
-                .disabled(viewModel.verificationCode.isEmpty)
+                .disabled(viewModel.isValidCode)
             }
             .padding(Constants.contentPadding)
             .background(Color(uiColor: .systemBackground))

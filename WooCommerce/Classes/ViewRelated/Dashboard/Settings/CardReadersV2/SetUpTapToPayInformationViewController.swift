@@ -97,17 +97,23 @@ struct SetUpTapToPayInformationView: View {
 
             Text(Localization.setUpTapToPayOnIPhoneTitle)
                 .font(.title.weight(.semibold))
-                .padding(32)
                 .multilineTextAlignment(.center)
+                .padding([.leading, .trailing])
+                .fixedSize(horizontal: false, vertical: true)
             Image(uiImage: .setUpBuiltInReader)
                 .resizable()
                 .scaledToFit()
                 .frame(height: isCompact ? 80 : 206)
-                .padding(.bottom, isCompact ? 16 : 32)
+                .padding()
 
-            PaymentSettingsFlowHint(title: Localization.hintOneTitle, text: Localization.hintOne)
-            PaymentSettingsFlowHint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
-            PaymentSettingsFlowHint(title: Localization.hintThreeTitle, text: Localization.hintThree)
+            VStack(spacing: 16) {
+                PaymentSettingsFlowHint(title: Localization.hintOneTitle, text: Localization.hintOne)
+                PaymentSettingsFlowHint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
+                PaymentSettingsFlowHint(title: Localization.hintThreeTitle, text: Localization.hintThree)
+            }
+            .fixedSize(horizontal: false, vertical: true)
+            .layoutPriority(1)
+            .padding([.top, .bottom])
 
             Spacer()
 
@@ -166,7 +172,7 @@ private enum Localization {
     )
 
     static let hintTwo = NSLocalizedString(
-        "Accept the Terms of Service during set up",
+        "Accept the Terms of Service during set up.",
         comment: "Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the " +
         "Terms of Service from Apple"
     )

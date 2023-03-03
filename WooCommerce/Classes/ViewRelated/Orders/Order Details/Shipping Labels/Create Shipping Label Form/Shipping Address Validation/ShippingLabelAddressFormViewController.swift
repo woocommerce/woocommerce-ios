@@ -38,38 +38,39 @@ final class ShippingLabelAddressFormViewController: UIViewController {
             guard let self = self else { return }
             ServiceLocator.analytics.track(.shippingLabelEditAddressContactCustomerButtonTapped)
 
-            if PhoneHelper.canCallPhoneNumber(phone: "123456789") == false
-                && MFMailComposeViewController.canSendMail() == false
-                && MFMessageComposeViewController.canSendText() == false {
+            guard PhoneHelper.canCallPhoneNumber(phone: phone)
+                    && MFMailComposeViewController.canSendMail()
+                    && MFMessageComposeViewController.canSendText() else {
                 self.displayErrorNotice(title: Localization.contactActionError)
-            } else {
-                let actionSheet = UIAlertController(title: nil, message: Localization.contactActionLabel, preferredStyle: .actionSheet)
-                actionSheet.view.tintColor = .text
-
-                actionSheet.addCancelActionWithTitle(Localization.contactActionCancel)
-                if let email = email, email.isNotEmpty && MFMailComposeViewController.canSendMail() {
-                    actionSheet.addDefaultActionWithTitle(Localization.contactActionEmail) { _ in
-                        self.sendEmail(to: email)
-                    }
-                }
-                if let phoneNumber = phone, phoneNumber.isNotEmpty {
-                    actionSheet.addDefaultActionWithTitle(Localization.contactActionCall) { _ in
-                        if PhoneHelper.callPhoneNumber(phone: phoneNumber) == false {
-                            self.displayErrorNotice(title: Localization.phoneNumberErrorNotice)
-                        }
-                    }
-                    if MFMessageComposeViewController.canSendText() {
-                        actionSheet.addDefaultActionWithTitle(Localization.contactActionMessage) { _ in
-                            ServiceLocator.messageComposerPresenter.presentIfPossible(from: self, recipient: phoneNumber)
-                        }
-                    }
-                }
-
-                let popoverController = actionSheet.popoverPresentationController
-                popoverController?.sourceView = sourceView
-
-                self.present(actionSheet, animated: true)
+                return
             }
+
+            let actionSheet = UIAlertController(title: nil, message: Localization.contactActionLabel, preferredStyle: .actionSheet)
+            actionSheet.view.tintColor = .text
+
+            actionSheet.addCancelActionWithTitle(Localization.contactActionCancel)
+            if let email = email, email.isNotEmpty && MFMailComposeViewController.canSendMail() {
+                actionSheet.addDefaultActionWithTitle(Localization.contactActionEmail) { _ in
+                    self.sendEmail(to: email)
+                }
+            }
+            if let phoneNumber = phone, phoneNumber.isNotEmpty {
+                actionSheet.addDefaultActionWithTitle(Localization.contactActionCall) { _ in
+                    if PhoneHelper.callPhoneNumber(phone: phoneNumber) == false {
+                        self.displayErrorNotice(title: Localization.phoneNumberErrorNotice)
+                    }
+                }
+                if MFMessageComposeViewController.canSendText() {
+                    actionSheet.addDefaultActionWithTitle(Localization.contactActionMessage) { _ in
+                        ServiceLocator.messageComposerPresenter.presentIfPossible(from: self, recipient: phoneNumber)
+                    }
+                }
+            }
+
+            let popoverController = actionSheet.popoverPresentationController
+            popoverController?.sourceView = sourceView
+
+            self.present(actionSheet, animated: true)
         }
 
         topBanner.translatesAutoresizingMaskIntoConstraints = false

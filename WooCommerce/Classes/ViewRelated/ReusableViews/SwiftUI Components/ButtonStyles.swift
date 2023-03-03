@@ -12,9 +12,46 @@ struct PrimaryButtonStyle: ButtonStyle {
 }
 
 struct SecondaryButtonStyle: ButtonStyle {
+    /// Defines if the content should be hidden.
+    /// Useful for when we want to show an overlay on top of the bottom without hiding its decoration. Like showing a progress view.
+    ///
+    private(set) var hideContent = false
+
     var labelFont: Font = .headline
     func makeBody(configuration: Configuration) -> some View {
-        SecondaryButton(configuration: configuration, labelFont: labelFont)
+        SecondaryButton(configuration: configuration, labelFont: labelFont, hideContent: hideContent)
+    }
+}
+
+/// Adds a secondary button style while showing a progress view on top of the button when required.
+///
+struct SecondaryLoadingButtonStyle: PrimitiveButtonStyle {
+
+    /// Set it to true to show a progress view within the button.
+    ///
+    let isLoading: Bool
+
+    /// Returns a `ProgressView` if the view is loading. Return nil otherwise
+    ///
+    private var progressViewOverlay: ProgressView<EmptyView, EmptyView>? {
+        isLoading ? ProgressView() : nil
+    }
+
+    func makeBody(configuration: Configuration) -> some View {
+        /// Only send trigger if the view is not loading.
+        ///
+        return Button(configuration)
+            .buttonStyle(SecondaryButtonStyle(hideContent: isLoading))
+            .onTapGesture { dispatchTrigger(configuration) }
+            .disabled(isLoading)
+            .overlay(progressViewOverlay)
+    }
+
+    /// Only dispatch events while the view is not loading.
+    ///
+    private func dispatchTrigger(_ configuration: Configuration) {
+        guard !isLoading else { return }
+        configuration.trigger()
     }
 }
 
@@ -156,8 +193,14 @@ private struct SecondaryButton: View {
     let configuration: ButtonStyleConfiguration
     let labelFont: Font
 
+    /// Defines if the content should be hidden.
+    /// Useful for when we want to show an overlay on top of the bottom without hiding its decoration. Like showing a progress view.
+    ///
+    private(set) var hideContent = false
+
     var body: some View {
         BaseButton(configuration: configuration)
+            .opacity(contentOpacity)
             .foregroundColor(Color(foregroundColor))
             .font(labelFont)
             .background(
@@ -199,6 +242,10 @@ private struct SecondaryButton: View {
         } else {
             return .buttonDisabledBorder
         }
+    }
+
+    var contentOpacity: Double {
+        hideContent ? 0.0 : 1.0
     }
 }
 

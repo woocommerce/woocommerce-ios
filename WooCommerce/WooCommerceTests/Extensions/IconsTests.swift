@@ -148,6 +148,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.domainSearchPlaceholderImage)
     }
 
+    func test_emailImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.emailImage)
+    }
+
     func testEllipsisImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.ellipsisImage)
     }

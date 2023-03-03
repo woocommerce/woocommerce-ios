@@ -105,7 +105,17 @@ final class ProductsRemoteTests: XCTestCase {
                                       variations: [],
                                       groupedProducts: [],
                                       menuOrder: 0,
-                                      addOns: [])
+                                      addOns: [],
+                                      bundleLayout: nil,
+                                      bundleFormLocation: nil,
+                                      bundleItemGrouping: nil,
+                                      bundleMinSize: nil,
+                                      bundleMaxSize: nil,
+                                      bundleEditableInCart: nil,
+                                      bundleSoldIndividuallyContext: nil,
+                                      bundleStockStatus: nil,
+                                      bundleStockQuantity: nil,
+                                      bundledItems: [])
         XCTAssertEqual(addedProduct, expectedProduct)
     }
 
@@ -208,7 +218,17 @@ final class ProductsRemoteTests: XCTestCase {
                                       variations: [],
                                       groupedProducts: [],
                                       menuOrder: 0,
-                                      addOns: [])
+                                      addOns: [],
+                                      bundleLayout: nil,
+                                      bundleFormLocation: nil,
+                                      bundleItemGrouping: nil,
+                                      bundleMinSize: nil,
+                                      bundleMaxSize: nil,
+                                      bundleEditableInCart: nil,
+                                      bundleSoldIndividuallyContext: nil,
+                                      bundleStockStatus: nil,
+                                      bundleStockQuantity: nil,
+                                      bundledItems: [])
         XCTAssertEqual(deletedProduct, expectedProduct)
     }
 
@@ -737,7 +757,17 @@ private extension ProductsRemoteTests {
                        variations: [192, 194, 193],
                        groupedProducts: [],
                        menuOrder: 0,
-                       addOns: [])
+                       addOns: [],
+                       bundleLayout: nil,
+                       bundleFormLocation: nil,
+                       bundleItemGrouping: nil,
+                       bundleMinSize: nil,
+                       bundleMaxSize: nil,
+                       bundleEditableInCart: nil,
+                       bundleSoldIndividuallyContext: nil,
+                       bundleStockStatus: nil,
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {

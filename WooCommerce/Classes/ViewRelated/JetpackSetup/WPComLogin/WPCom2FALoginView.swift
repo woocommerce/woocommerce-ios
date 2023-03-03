@@ -57,7 +57,7 @@ struct WPCom2FALoginView: View {
 
                 // Verification field
                 AccountCreationFormFieldView(viewModel: .init(
-                    header: "",
+                    header: nil,
                     placeholder: Localization.verificationCode,
                     keyboardType: .asciiCapableNumberPad,
                     text: $viewModel.verificationCode,
@@ -107,7 +107,7 @@ struct WPCom2FALoginView: View {
 
 private extension WPCom2FALoginView {
     enum Constants {
-        static let blockVerticalPadding: CGFloat = 32
+        static let blockVerticalPadding: CGFloat = 16
         static let contentVerticalSpacing: CGFloat = 8
         static let contentPadding: CGFloat = 16
     }

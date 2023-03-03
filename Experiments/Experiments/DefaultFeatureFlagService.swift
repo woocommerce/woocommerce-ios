@@ -83,6 +83,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .dashboardOnboarding:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
+        case .productBundles:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

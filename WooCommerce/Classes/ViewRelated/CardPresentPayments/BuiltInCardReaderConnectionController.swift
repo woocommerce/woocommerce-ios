@@ -188,8 +188,6 @@ private extension BuiltInCardReaderConnectionController {
     func onInitialization() {
         if gatewayID != nil {
             state = .preparingForSearch
-        } else {
-            state = .connectingFailed(CardReaderServiceError.intentCreation())
         }
     }
 

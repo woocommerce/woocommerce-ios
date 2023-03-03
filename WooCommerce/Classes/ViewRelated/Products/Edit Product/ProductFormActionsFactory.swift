@@ -151,7 +151,7 @@ private extension ProductFormActionsFactory {
             return allSettingsSectionActionsForGroupedProduct()
         case .variable:
             return allSettingsSectionActionsForVariableProduct()
-        case .custom("bundle"): // TODO-8954: Replace with non-custom product type
+        case .bundle:
             return allSettingsSectionActionsForBundleProduct()
         default:
             return allSettingsSectionActionsForNonCoreProduct()

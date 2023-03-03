@@ -698,7 +698,7 @@ private extension ProductFormActionsFactoryTests {
         static let variableProductWithVariations = variableProductWithoutVariations.copy(variations: [123])
 
         // Bundle product, missing price/short description/categories/tags
-        static let bundleProduct = affiliateProduct.copy(productTypeKey: "bundle")
+        static let bundleProduct = affiliateProduct.copy(productTypeKey: ProductType.bundle.rawValue)
 
         // Non-core product, missing price/short description/categories/tags
         static let nonCoreProductWithoutPrice = affiliateProduct.copy(productTypeKey: "other", regularPrice: "")

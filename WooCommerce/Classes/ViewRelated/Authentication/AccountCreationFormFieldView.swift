@@ -3,7 +3,7 @@ import SwiftUI
 /// Necessary data for the account creation form field.
 struct AccountCreationFormFieldViewModel {
     /// Title of the field.
-    let header: String
+    let header: String?
     /// Placeholder of the text field.
     let placeholder: String
     /// The type of keyboard.
@@ -36,9 +36,11 @@ struct AccountCreationFormFieldView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-            Text(viewModel.header)
-                .foregroundColor(Color(.label))
-                .subheadlineStyle()
+            viewModel.header.map { header in
+                Text(header)
+                    .foregroundColor(Color(.label))
+                    .subheadlineStyle()
+            }
             if viewModel.isSecure {
                 ZStack(alignment: .trailing) {
                     // Text field based on the `isTextFieldSecure` state.

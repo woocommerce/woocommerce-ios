@@ -21,6 +21,7 @@ final class JetpackSetupCoordinator: NSObject {
     private var benefitsController: JetpackBenefitsHostingController?
     private var loginNavigationController: LoginNavigationController?
     private var loginCompletionHandler: (() -> Void)?
+    private var loginFields = LoginFields()
 
     init(site: Site,
          dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
@@ -196,6 +197,7 @@ private extension JetpackSetupCoordinator {
         self.loginNavigationController = loginNavigationController
     }
 
+    @MainActor
     func checkWordPressComAccount(email: String) async {
         await withCheckedContinuation { continuation -> Void in
             accountService.isPasswordlessAccount(username: email, success: { [weak self] passwordless in
@@ -225,23 +227,20 @@ private extension JetpackSetupCoordinator {
         }
     }
 
+    @MainActor
     func requestAuthenticationLink(email: String) async {
         await withCheckedContinuation { continuation in
             accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: { [weak self] in
                 guard let self else {
                     return continuation.resume()
                 }
-                DispatchQueue.main.async {
-                    self.showMagicLinkUI(email: email)
-                }
+                self.showMagicLinkUI(email: email)
                 continuation.resume()
             }, failure: { [weak self] error in
                 guard let self else {
                     return continuation.resume()
                 }
-                DispatchQueue.main.async {
-                    self.showAlert(message: self.prepareErrorMessage(for: error, fallback: Localization.errorRequestingAuthURL))
-                }
+                self.showAlert(message: self.prepareErrorMessage(for: error, fallback: Localization.errorRequestingAuthURL))
                 continuation.resume()
             })
         }
@@ -272,12 +271,44 @@ private extension JetpackSetupCoordinator {
     }
 
     func handleLogin(email: String, password: String, onCompletion: @escaping () -> Void) {
-        self.loginCompletionHandler = onCompletion
         let loginFields = LoginFields()
         loginFields.username = email
         loginFields.password = password
         loginFields.meta.userIsDotCom = true
+
+        self.loginFields = loginFields
+        self.loginCompletionHandler = onCompletion
         loginFacade.signIn(with: loginFields)
+    }
+
+    func continueLogin(verificationCode: String, onCompletion: @escaping () -> Void) {
+        guard loginFields.username.isNotEmpty,
+              loginFields.password.isNotEmpty,
+              loginFields.meta.userIsDotCom == true else {
+            DDLogError("⛔️ Missing login details!")
+            return
+        }
+        loginFields.multifactorCode = verificationCode
+
+        // Important! This needs to be set so that the 2FA screen can update the loading indicator.
+        loginCompletionHandler = onCompletion
+        loginFacade.signIn(with: loginFields)
+    }
+
+    /// Requests SMS OTP for the current login.
+    @MainActor
+    func requestOneTimeCode() async {
+        await withCheckedContinuation { continuation in
+            loginFacade.wordpressComOAuthClientFacade.requestOneTimeCode(
+                withUsername: loginFields.username,
+                password: loginFields.password,
+                success: {
+                    continuation.resume()
+                }) { _ in
+                    // Errors for this case doesn't need to be handled: pe5sF9-1er-p2
+                    continuation.resume()
+                }
+        }
     }
 }
 
@@ -336,12 +367,17 @@ extension JetpackSetupCoordinator: LoginFacadeDelegate {
     func needsMultifactorCode() {
         let viewController = WPCom2FALoginHostingController(
             requiresConnectionOnly: requiresConnectionOnly,
-            onSubmit: { code in
-            // TODO: request 2FA code
+            onSubmit: { [weak self] code in
+                await withCheckedContinuation { continuation in
+                    guard let self else {
+                        return continuation.resume()
+                    }
+                    self.continueLogin(verificationCode: code) {
+                        continuation.resume()
+                    }
+                }
         },
-            onSMSRequest: {
-            // TODO: request SMS
-        })
+            onSMSRequest: requestOneTimeCode)
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 
@@ -352,12 +388,6 @@ extension JetpackSetupCoordinator: LoginFacadeDelegate {
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
-        loginCompletionHandler?()
-        DDLogInfo("✅ Ready for Jetpack setup - connection only: \(requiresConnectionOnly)")
-        // TODO: prepare for Jetpack setup
-    }
-
-    func finishedLogin(withNonceAuthToken authToken: String) {
         loginCompletionHandler?()
         DDLogInfo("✅ Ready for Jetpack setup - connection only: \(requiresConnectionOnly)")
         // TODO: prepare for Jetpack setup

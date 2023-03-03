@@ -3,84 +3,17 @@ import UIKit
 import Yosemite
 
 /// View model for `StoreOnboardingView`.
-final class StoreOnboardingViewModel: ObservableObject {
+class StoreOnboardingViewModel: ObservableObject {
     /// UI state of the dashboard top performers.
     enum State {
         /// Shows placeholder rows.
         case loading
         /// Shows a list of onboarding tasks
-        case loaded(rows: [TaskViewModel])
-    }
-
-    struct TaskViewModel: Identifiable, Equatable {
-        let id = UUID()
-        let task: StoreOnboardingTask
-        let icon: UIImage
-        let title: String
-        let subtitle: String
-
-        var isComplete: Bool {
-            task.isComplete
-        }
-
-        init(task: StoreOnboardingTask) {
-            self.task = task
-            switch task.type {
-            case .addFirstProduct:
-                icon = .productImage
-                title = NSLocalizedString(
-                    "Add your first product",
-                    comment: "Title of the store onboarding task to add the first product."
-                )
-                subtitle = NSLocalizedString(
-                    "Start selling by adding products or services to your store.",
-                    comment: "Subtitle of the store onboarding task to add the first product."
-                )
-            case .launchStore:
-                icon = .launchStoreImage
-                title = NSLocalizedString(
-                    "Launch your store",
-                    comment: "Title of the store onboarding task to launch the store."
-                )
-                subtitle = NSLocalizedString(
-                    "Publish your site to the world anytime you want!",
-                    comment: "Subtitle of the store onboarding task to launch the store."
-                )
-            case .customizeDomains:
-                icon = .domainsImage
-                title = NSLocalizedString(
-                    "Customize your domain",
-                    comment: "Title of the store onboarding task to customize the store domain."
-                )
-                subtitle = NSLocalizedString(
-                    "Have a custom URL to host your store.",
-                    comment: "Subtitle of the store onboarding task to customize the store domain."
-                )
-            case .payments:
-                icon = .currencyImage
-                title = NSLocalizedString(
-                    "Get paid",
-                    comment: "Title of the store onboarding task to get paid."
-                )
-                subtitle = NSLocalizedString(
-                    "Give your customers an easy and convenient way to pay!",
-                    comment: "Subtitle of the store onboarding task to get paid."
-                )
-            case .unsupported:
-                icon = .checkCircleImage
-                title = ""
-                subtitle = ""
-            }
-        }
-
-        static func placeHolder() -> TaskViewModel {
-            .init(task: .init(isComplete: true,
-                              type: .launchStore))
-        }
+        case loaded(rows: [StoreOnboardingTaskViewModel])
     }
 
     @Published private(set) var isRedacted: Bool = false
-    @Published private(set) var taskViewModels: [TaskViewModel] = []
+    @Published private(set) var taskViewModels: [StoreOnboardingTaskViewModel] = []
 
     var numberOfTasksCompleted: Int {
         taskViewModels
@@ -88,7 +21,7 @@ final class StoreOnboardingViewModel: ObservableObject {
             .count
     }
 
-    var tasksForDisplay: [TaskViewModel] {
+    var tasksForDisplay: [StoreOnboardingTaskViewModel] {
         guard isRedacted == false else {
             return placeholderTasks
         }
@@ -108,8 +41,8 @@ final class StoreOnboardingViewModel: ObservableObject {
 
     private var state: State
 
-    private let placeholderTasks: [TaskViewModel] = Array(repeating: TaskViewModel.placeHolder(),
-                                                          count: 3)
+    private let placeholderTasks: [StoreOnboardingTaskViewModel] = Array(repeating: StoreOnboardingTaskViewModel.placeHolder(),
+                                                                         count: 3)
 
     /// - Parameter isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
     init(isExpanded: Bool,
@@ -130,7 +63,7 @@ final class StoreOnboardingViewModel: ObservableObject {
 
 private extension StoreOnboardingViewModel {
     @MainActor
-    private func loadTasks() async throws -> [TaskViewModel] {
+    private func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
                 continuation.resume(with: result
@@ -140,7 +73,7 @@ private extension StoreOnboardingViewModel {
                         } else {
                             return true
                         }
-                    }).map { TaskViewModel(task: $0) }})
+                    }).map { .init(task: $0) }})
             })
         }
     }

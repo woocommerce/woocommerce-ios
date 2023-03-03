@@ -97,7 +97,7 @@ struct WPCom2FALoginView: View {
                     }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPrimaryButtonLoading))
-                .disabled(viewModel.isValidCode)
+                .disabled(!viewModel.isValidCode)
             }
             .padding(Constants.contentPadding)
             .background(Color(uiColor: .systemBackground))

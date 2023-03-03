@@ -27,5 +27,45 @@ final class StoreOnboardingTasksRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(tasks.count, 8)
+        
+        var index = 0
+        let task1 = tasks[index]
+        XCTAssertTrue(task1.isComplete)
+        XCTAssertEqual(task1.type, .unsupported)
+
+        index += 1
+        let task2 = tasks[index]
+        XCTAssertFalse(task2.isComplete)
+        XCTAssertEqual(task2.type, .addFirstProduct)
+
+        index += 1
+        let task3 = tasks[index]
+        XCTAssertFalse(task3.isComplete)
+        XCTAssertEqual(task3.type, .payments)
+
+        index += 1
+        let task4 = tasks[index]
+        XCTAssertFalse(task4.isComplete)
+        XCTAssertEqual(task4.type, .unsupported)
+
+        index += 1
+        let task5 = tasks[index]
+        XCTAssertFalse(task5.isComplete)
+        XCTAssertEqual(task5.type, .unsupported)
+
+        index += 1
+        let task6 = tasks[index]
+        XCTAssertFalse(task6.isComplete)
+        XCTAssertEqual(task6.type, .unsupported)
+
+        index += 1
+        let task7 = tasks[index]
+        XCTAssertTrue(task7.isComplete)
+        XCTAssertEqual(task7.type, .customizeDomains)
+
+        index += 1
+        let task8 = tasks[index]
+        XCTAssertFalse(task8.isComplete)
+        XCTAssertEqual(task8.type, .launchStore)
     }
 }

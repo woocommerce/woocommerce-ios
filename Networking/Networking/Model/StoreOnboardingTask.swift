@@ -28,7 +28,7 @@ public extension StoreOnboardingTask {
                 self = .addFirstProduct
             case "add_domain":
                 self = .customizeDomains
-            case "woocommerce-payments":
+            case "payments":
                 self = .payments
             default:
                 self = .unsupported

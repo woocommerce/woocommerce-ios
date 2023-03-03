@@ -720,17 +720,10 @@ private extension EditableOrderViewModel {
     /// Handles a product by adding it to the Order if selected, or removing it from the Order if unselected
     ///
     func handleProduct(_ product: Product) {
-        // All products
-        if !allProducts.contains(product) {
-            allProducts.append(product)
-        }
-
         if !selectedProducts.contains(product) {
-            // Add Product to the Order
             selectedProducts.append(product)
             addProductToOrder(product)
         } else {
-            // Remove Product from the Order
             selectedProducts.removeAll(where: { $0?.productID == product.productID })
             removeProductFromOrder(product)
         }
@@ -739,20 +732,10 @@ private extension EditableOrderViewModel {
     /// Handles a product variation by adding it to the Order if selected, or removing it from the Order if unselected
     ///
     func handleProductVariation(_ variation: ProductVariation, parent product: Product) {
-        if !allProducts.contains(product) {
-            allProducts.append(product)
-        }
-
-        if !allProductVariations.contains(variation) {
-            allProductVariations.append(variation)
-        }
-
         if !selectedProductVariations.contains(variation) {
-            // Add Product variation to the Order
             selectedProductVariations.append(variation)
             addProductVariationToOrder(variation)
         } else {
-            // Remove Product variation from the Order
             selectedProductVariations.removeAll(where: { $0?.productVariationID == variation.productVariationID })
             removeProductVariationFromOrder(variation)
         }

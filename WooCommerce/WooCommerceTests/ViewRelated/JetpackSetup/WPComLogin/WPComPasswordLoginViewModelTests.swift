@@ -9,7 +9,7 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: "test@example.com",
                                                     requiresConnectionOnly: false,
-                                                    onMultifactorCodeRequest: {},
+                                                    onMultifactorCodeRequest: { _ in },
                                                     onLoginFailure: { _ in },
                                                     onLoginSuccess: { _ in })
 
@@ -26,7 +26,7 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: "test@example.com",
                                                     requiresConnectionOnly: true,
-                                                    onMultifactorCodeRequest: {},
+                                                    onMultifactorCodeRequest: { _ in },
                                                     onLoginFailure: { _ in },
                                                     onLoginSuccess: { _ in })
 
@@ -44,7 +44,7 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: email,
                                                     requiresConnectionOnly: true,
-                                                    onMultifactorCodeRequest: {},
+                                                    onMultifactorCodeRequest: { _ in },
                                                     onLoginFailure: { _ in },
                                                     onLoginSuccess: { _ in })
 

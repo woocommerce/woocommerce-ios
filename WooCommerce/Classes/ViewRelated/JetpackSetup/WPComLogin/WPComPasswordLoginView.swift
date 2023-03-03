@@ -150,7 +150,7 @@ struct WPComPasswordLoginView_Previews: PreviewProvider {
         WPComPasswordLoginView(viewModel: .init(siteURL: "https://example.com",
                                                 email: "test@example.com",
                                                 requiresConnectionOnly: true,
-                                                onMultifactorCodeRequest: {},
+                                                onMultifactorCodeRequest: { _ in },
                                                 onLoginFailure: { _ in },
                                                 onLoginSuccess: { _ in }),
                                onMagicLinkRequest: { _ in })

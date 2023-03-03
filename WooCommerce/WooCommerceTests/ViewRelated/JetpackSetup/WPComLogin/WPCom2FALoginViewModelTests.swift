@@ -1,11 +1,15 @@
 import XCTest
 @testable import WooCommerce
+import class WordPressAuthenticator.LoginFields
 
 final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_title_string_is_correct_when_requiresConnectionOnly_is_false() {
         // Given
-        let viewModel = WPCom2FALoginViewModel(requiresConnectionOnly: false)
+        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
+                                               requiresConnectionOnly: false,
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
 
         // When
         let text = viewModel.titleString
@@ -16,7 +20,10 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_title_string_is_correct_when_requiresConnectionOnly_is_true() {
         // Given
-        let viewModel = WPCom2FALoginViewModel(requiresConnectionOnly: true)
+        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
+                                               requiresConnectionOnly: true,
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
 
         // When
         let text = viewModel.titleString
@@ -27,7 +34,10 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_strippedCode_removes_all_white_spaces_from_verification_code() {
         // Given
-        let viewModel = WPCom2FALoginViewModel(requiresConnectionOnly: true)
+        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
+                                               requiresConnectionOnly: false,
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
 
         // When
         viewModel.verificationCode = "43 99 92"
@@ -38,7 +48,10 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_isValidCode_returns_false_when_verification_code_contains_non_digits() {
         // Given
-        let viewModel = WPCom2FALoginViewModel(requiresConnectionOnly: true)
+        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
+                                               requiresConnectionOnly: false,
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
 
         // When
         viewModel.verificationCode = "43gd35"
@@ -49,7 +62,10 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_isValidCode_returns_false_when_verification_code_is_empty() {
         // Given
-        let viewModel = WPCom2FALoginViewModel(requiresConnectionOnly: true)
+        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
+                                               requiresConnectionOnly: false,
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
 
         // When
         viewModel.verificationCode = ""
@@ -60,7 +76,10 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_isValidCode_returns_false_when_verification_code_is_too_long() {
         // Given
-        let viewModel = WPCom2FALoginViewModel(requiresConnectionOnly: true)
+        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
+                                               requiresConnectionOnly: false,
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
 
         // When
         viewModel.verificationCode = "185787878"
@@ -71,7 +90,10 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_isValidCode_returns_true_when_verification_has_acceptable_length() {
         // Given
-        let viewModel = WPCom2FALoginViewModel(requiresConnectionOnly: true)
+        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
+                                               requiresConnectionOnly: false,
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
 
         // When
         viewModel.verificationCode = "185787"

@@ -2,11 +2,10 @@ import UIKit
 import Yosemite
 import enum Alamofire.AFError
 import WordPressAuthenticator
-import class Networking.UserAgent
 
 /// Coordinates the Jetpack setup flow in the authenticated state.
 ///
-final class JetpackSetupCoordinator: NSObject {
+final class JetpackSetupCoordinator {
     let rootViewController: UIViewController
 
     private let site: Site
@@ -16,12 +15,9 @@ final class JetpackSetupCoordinator: NSObject {
     private let analytics: Analytics
     private let accountService: WordPressComAccountService
     private let dotcomAuthScheme: String
-    private let loginFacade: LoginFacade
 
     private var benefitsController: JetpackBenefitsHostingController?
     private var loginNavigationController: LoginNavigationController?
-    private var loginCompletionHandler: (() -> Void)?
-    private var loginFields = LoginFields()
 
     init(site: Site,
          dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
@@ -39,11 +35,6 @@ final class JetpackSetupCoordinator: NSObject {
         /// to be used for requesting authentication link and handle login later.
         WordPressAuthenticator.initializeWithCustomConfigs(dotcomAuthScheme: dotcomAuthScheme)
         self.accountService = WordPressComAccountService()
-        self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
-                                       dotcomSecret: ApiCredentials.dotcomSecret,
-                                       userAgent: UserAgent.defaultUserAgent)
-        super.init()
-        loginFacade.delegate = self
     }
 
     func showBenefitModal() {
@@ -256,8 +247,8 @@ private extension JetpackSetupCoordinator {
             siteURL: site.url,
             email: email,
             requiresConnectionOnly: requiresConnectionOnly,
-            onMultifactorCodeRequest: {
-                // TODO
+            onMultifactorCodeRequest: { [weak self] loginFields in
+                self?.show2FALoginUI(with: loginFields)
             },
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
@@ -271,45 +262,20 @@ private extension JetpackSetupCoordinator {
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 
-    func handleLogin(email: String, password: String, onCompletion: @escaping () -> Void) {
-        let loginFields = LoginFields()
-        loginFields.username = email
-        loginFields.password = password
-        loginFields.meta.userIsDotCom = true
-
-        self.loginFields = loginFields
-        self.loginCompletionHandler = onCompletion
-        loginFacade.signIn(with: loginFields)
-    }
-
-    func continueLogin(verificationCode: String, onCompletion: @escaping () -> Void) {
-        guard loginFields.username.isNotEmpty,
-              loginFields.password.isNotEmpty,
-              loginFields.meta.userIsDotCom == true else {
-            DDLogError("⛔️ Missing login details!")
-            return
-        }
-        loginFields.multifactorCode = verificationCode
-
-        // Important! This needs to be set so that the 2FA screen can update the loading indicator.
-        loginCompletionHandler = onCompletion
-        loginFacade.signIn(with: loginFields)
-    }
-
-    /// Requests SMS OTP for the current login.
-    @MainActor
-    func requestOneTimeCode() async {
-        await withCheckedContinuation { continuation in
-            loginFacade.wordpressComOAuthClientFacade.requestOneTimeCode(
-                withUsername: loginFields.username,
-                password: loginFields.password,
-                success: {
-                    continuation.resume()
-                }) { _ in
-                    // Errors for this case doesn't need to be handled: pe5sF9-1er-p2
-                    continuation.resume()
-                }
-        }
+    func show2FALoginUI(with loginFields: LoginFields) {
+        let viewModel = WPCom2FALoginViewModel(
+            loginFields: loginFields,
+            requiresConnectionOnly: requiresConnectionOnly,
+            onLoginFailure: { [weak self] error in
+                guard let self else { return }
+                let message = self.prepareErrorMessage(for: error, fallback: Localization.errorRequestingAuthURL)
+                self.showAlert(message: message)
+            },
+            onLoginSuccess: { _ in
+                DDLogInfo("✅ Ready for Jetpack setup")
+            })
+        let viewController = WPCom2FALoginHostingController(viewModel: viewModel)
+        loginNavigationController?.pushViewController(viewController, animated: true)
     }
 }
 
@@ -359,39 +325,6 @@ private extension JetpackSetupCoordinator {
         let cancelAction = UIAlertAction(title: Localization.cancelButton, style: .cancel)
         alert.addAction(cancelAction)
         rootViewController.topmostPresentedViewController.present(alert, animated: true)
-    }
-}
-
-// MARK: - LoginFacadeDelegate conformance
-//
-extension JetpackSetupCoordinator: LoginFacadeDelegate {
-    func needsMultifactorCode() {
-        let viewController = WPCom2FALoginHostingController(
-            requiresConnectionOnly: requiresConnectionOnly,
-            onSubmit: { [weak self] code in
-                await withCheckedContinuation { continuation in
-                    guard let self else {
-                        return continuation.resume()
-                    }
-                    self.continueLogin(verificationCode: code) {
-                        continuation.resume()
-                    }
-                }
-        },
-            onSMSRequest: requestOneTimeCode)
-        loginNavigationController?.pushViewController(viewController, animated: true)
-    }
-
-    func displayRemoteError(_ error: Error) {
-        let message = prepareErrorMessage(for: error, fallback: Localization.errorRequestingAuthURL)
-        showAlert(message: message)
-        loginCompletionHandler?()
-    }
-
-    func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
-        loginCompletionHandler?()
-        DDLogInfo("✅ Ready for Jetpack setup - connection only: \(requiresConnectionOnly)")
-        // TODO: prepare for Jetpack setup
     }
 }
 

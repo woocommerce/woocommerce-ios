@@ -1,8 +1,12 @@
 import Foundation
+import WordPressAuthenticator
+import class Networking.UserAgent
 
 /// View model for `WPCom2FALoginView`.
-final class WPCom2FALoginViewModel: ObservableObject {
+final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     @Published var verificationCode: String = ""
+    @Published private(set) var isLoggingIn = false
+    @Published private(set) var isRequestingOTP = false
 
     /// Title for the view
     let titleString: String
@@ -24,8 +28,56 @@ final class WPCom2FALoginViewModel: ObservableObject {
         return false
     }
 
-    init(requiresConnectionOnly: Bool) {
+    private let loginFields: LoginFields
+    private let loginFacade: LoginFacade
+    private let onLoginFailure: (Error) -> Void
+    private let onLoginSuccess: (String) -> Void
+
+    init(loginFields: LoginFields,
+         requiresConnectionOnly: Bool,
+         onLoginFailure: @escaping (Error) -> Void,
+         onLoginSuccess: @escaping (String) -> Void) {
+        self.loginFields = loginFields
         self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+        self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
+                                       dotcomSecret: ApiCredentials.dotcomSecret,
+                                       userAgent: UserAgent.defaultUserAgent)
+        self.onLoginFailure = onLoginFailure
+        self.onLoginSuccess = onLoginSuccess
+        super.init()
+        loginFacade.delegate = self
+    }
+
+    func handleLogin() {
+        isLoggingIn = true
+        loginFields.multifactorCode = strippedCode
+        loginFacade.signIn(with: loginFields)
+    }
+
+    func requestOneTimeCode() {
+        isRequestingOTP = true
+        loginFacade.wordpressComOAuthClientFacade.requestOneTimeCode(
+            withUsername: loginFields.username,
+            password: loginFields.password,
+            success: { [weak self] in
+                self?.isRequestingOTP = false
+            }) { [weak self] _ in
+                // Errors for this case doesn't need to be handled: pe5sF9-1er-p2
+                self?.isRequestingOTP = false
+            }
+    }
+}
+
+extension WPCom2FALoginViewModel: LoginFacadeDelegate {
+
+    func displayRemoteError(_ error: Error) {
+        isLoggingIn = false
+        onLoginFailure(error)
+    }
+
+    func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
+        isLoggingIn = false
+        onLoginSuccess(authToken)
     }
 }
 

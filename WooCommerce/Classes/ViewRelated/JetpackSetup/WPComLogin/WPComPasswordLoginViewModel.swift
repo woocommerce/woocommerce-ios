@@ -18,7 +18,7 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
 
     private let siteURL: String
     private let loginFacade: LoginFacade
-    private let onMultifactorCodeRequest: () -> Void
+    private let onMultifactorCodeRequest: (LoginFields) -> Void
     private let onLoginFailure: (Error) -> Void
     private let onLoginSuccess: (String) -> Void
 
@@ -36,7 +36,7 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
     init(siteURL: String,
          email: String,
          requiresConnectionOnly: Bool,
-         onMultifactorCodeRequest: @escaping () -> Void,
+         onMultifactorCodeRequest: @escaping (LoginFields) -> Void,
          onLoginFailure: @escaping (Error) -> Void,
          onLoginSuccess: @escaping (String) -> Void) {
         self.siteURL = siteURL
@@ -89,7 +89,7 @@ private extension WPComPasswordLoginViewModel {
 extension WPComPasswordLoginViewModel: LoginFacadeDelegate {
     func needsMultifactorCode() {
         isLoggingIn = false
-        onMultifactorCodeRequest()
+        onMultifactorCodeRequest(loginFields)
     }
 
     func displayRemoteError(_ error: Error) {

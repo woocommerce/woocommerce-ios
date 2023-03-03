@@ -1,13 +1,11 @@
 import SwiftUI
+import class WordPressAuthenticator.LoginFields
 
 /// Hosting controller for `WPCom2FALoginView`
 final class WPCom2FALoginHostingController: UIHostingController<WPCom2FALoginView> {
 
-    init(requiresConnectionOnly: Bool,
-         onSubmit: @escaping (String) async -> Void,
-         onSMSRequest: @escaping () async -> Void) {
-        let viewModel = WPCom2FALoginViewModel(requiresConnectionOnly: requiresConnectionOnly)
-        super.init(rootView: WPCom2FALoginView(viewModel: viewModel, onSubmit: onSubmit, onSMSRequest: onSMSRequest))
+    init(viewModel: WPCom2FALoginViewModel) {
+        super.init(rootView: WPCom2FALoginView(viewModel: viewModel))
     }
 
     @available(*, unavailable)
@@ -25,21 +23,9 @@ final class WPCom2FALoginHostingController: UIHostingController<WPCom2FALoginVie
 struct WPCom2FALoginView: View {
     @ObservedObject private var viewModel: WPCom2FALoginViewModel
     @FocusState private var isFieldFocused: Bool
-    @State private var isPrimaryButtonLoading = false
-    @State private var isSMSRequestInProgress = false
 
-    /// The closure to be triggered when the Install Jetpack button is tapped.
-    private let onSubmit: (String) async -> Void
-
-    /// The closure to be triggered when the Text me a code button is tapped.
-    private let onSMSRequest: () async -> Void
-
-    init(viewModel: WPCom2FALoginViewModel,
-         onSubmit: @escaping (String) async -> Void,
-         onSMSRequest: @escaping () async -> Void) {
+    init(viewModel: WPCom2FALoginViewModel) {
         self.viewModel = viewModel
-        self.onSubmit = onSubmit
-        self.onSMSRequest = onSMSRequest
     }
 
     var body: some View {
@@ -69,13 +55,9 @@ struct WPCom2FALoginView: View {
 
                 // Text me a code button
                 Button(action: {
-                    Task { @MainActor in
-                        isSMSRequestInProgress = true
-                        await onSMSRequest()
-                        isSMSRequestInProgress = false
-                    }
+                    viewModel.requestOneTimeCode()
                 }, label: {
-                    if isSMSRequestInProgress {
+                    if viewModel.isRequestingOTP {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
                         Text(Localization.textMeACode)
@@ -90,13 +72,9 @@ struct WPCom2FALoginView: View {
             VStack {
                 // Primary CTA
                 Button(viewModel.titleString) {
-                    Task { @MainActor in
-                        isPrimaryButtonLoading = true
-                        await onSubmit(viewModel.strippedCode)
-                        isPrimaryButtonLoading = false
-                    }
+                    viewModel.handleLogin()
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPrimaryButtonLoading))
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoggingIn))
                 .disabled(!viewModel.isValidCode)
             }
             .padding(Constants.contentPadding)
@@ -129,8 +107,9 @@ private extension WPCom2FALoginView {
 
 struct WPCom2FALoginView_Previews: PreviewProvider {
     static var previews: some View {
-        WPCom2FALoginView(viewModel: .init(requiresConnectionOnly: true),
-                          onSubmit: { _ in },
-                          onSMSRequest: {})
+        WPCom2FALoginView(viewModel: .init(loginFields: LoginFields(),
+                                           requiresConnectionOnly: true,
+                                           onLoginFailure: { _ in },
+                                           onLoginSuccess: { _ in }))
     }
 }

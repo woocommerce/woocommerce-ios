@@ -40,30 +40,12 @@ struct BundledProductsList: View {
                 }
                 .background(Color(.listForeground(modal: false)))
 
-                BundledProductsListNotice(infoText: viewModel.infoNotice)
+                FooterNotice(infoText: viewModel.infoNotice)
             }
         }
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
         )
-    }
-}
-
-/// Renders a info notice with an icon
-///
-private struct BundledProductsListNotice: View {
-
-    /// Content to be rendered next to the info icon.
-    ///
-    let infoText: String
-
-    var body: some View {
-        HStack {
-            Image(uiImage: .infoOutlineImage)
-            Text(infoText)
-        }
-        .footnoteStyle()
-        .padding([.leading, .trailing]).padding(.top, 4)
     }
 }
 

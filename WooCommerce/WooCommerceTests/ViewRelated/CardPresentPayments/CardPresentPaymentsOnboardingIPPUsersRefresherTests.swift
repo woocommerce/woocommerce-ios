@@ -5,30 +5,34 @@ import Storage
 import XCTest
 
 class CardPresentPaymentsOnboardingIPPUsersRefresherTests: XCTestCase {
-    private var storageManager: MockStorageManager!
+    private var stores: MockStoresManager!
     private var sut: CardPresentPaymentsOnboardingIPPUsersRefresher!
     private var cardPresentPaymentsOnboardingUseCase: MockCardPresentPaymentsOnboardingUseCase!
 
     override func setUp() {
         cardPresentPaymentsOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotInstalled)
-        storageManager = MockStorageManager()
+        stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.sessionManager.setStoreId(123)
     }
 
     override func tearDown() {
-        storageManager = nil
+        stores = nil
         sut = nil
         cardPresentPaymentsOnboardingUseCase = nil
     }
 
     func test_refreshIPPUsersOnboardingState_when_there_are_IPP_transactions_then_it_calls_to_refresh() {
         // Given
-        let customField = OrderMetaData(metadataID: 1, key: "receipt_url", value: "Value")
-        let order = Order.fake().copy(siteID: 3, customFields: [customField])
-        let useCase = OrdersUpsertUseCase(storage: storageManager.viewStorage)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .loadSiteHasAtLeastOneIPPTransactionFinished(_, let onCompletion):
+                onCompletion(true)
+            default:
+                break
+            }
+        }
 
-        useCase.upsert([order])
-
-        sut = CardPresentPaymentsOnboardingIPPUsersRefresher(storageManager: storageManager,
+        sut = CardPresentPaymentsOnboardingIPPUsersRefresher(stores: stores,
                                                              cardPresentPaymentsOnboardingUseCase: cardPresentPaymentsOnboardingUseCase)
 
         // When
@@ -40,7 +44,15 @@ class CardPresentPaymentsOnboardingIPPUsersRefresherTests: XCTestCase {
 
     func test_refreshIPPUsersOnboardingState_when_there_are_no_IPP_transactions_then_it_does_not_call_to_refresh() {
         // Given
-        sut = CardPresentPaymentsOnboardingIPPUsersRefresher(storageManager: storageManager,
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .loadSiteHasAtLeastOneIPPTransactionFinished(_, let onCompletion):
+                onCompletion(false)
+            default:
+                break
+            }
+        }
+        sut = CardPresentPaymentsOnboardingIPPUsersRefresher(stores: stores,
                                                              cardPresentPaymentsOnboardingUseCase: cardPresentPaymentsOnboardingUseCase)
 
         // When

@@ -122,7 +122,8 @@ struct SetUpTapToPayInformationView: View {
             })
             .buttonStyle(PrimaryButtonStyle())
 
-            InPersonPaymentsLearnMore()
+            InPersonPaymentsLearnMore(
+                viewModel: LearnMoreViewModel(formatText: Localization.learnMore))
                 .customOpenURL(action: { url in
                     switch url {
                     case LearnMoreViewModel.learnMoreURL:
@@ -195,8 +196,12 @@ private enum Localization {
     )
 
     static let learnMore = NSLocalizedString(
-        "Tap to learn more about accepting payments with Tap to Pay on iPhone",
-        comment: "A label prompting users to learn more about Tap to Pay on iPhone"
+        "%1$@ about accepting payments with Tap to Pay on iPhone.",
+        comment: """
+                 A label prompting users to learn more about Tap to Pay on iPhone"
+                 %1$@ is a placeholder that always replaced with \"Learn more\" string,
+                 which should be translated separately and considered part of this sentence.
+                 """
     )
 }
 

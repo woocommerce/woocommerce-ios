@@ -3,7 +3,7 @@ import UIKit
 
 /// App selector that selects an app from a list and opens it
 /// Note: it's a wrapper of UIAlertController (which cannot be sublcassed)
-class AppSelector {
+public class AppSelector {
     // the action sheet that will contain the list of apps that can be called
     let alertController: UIAlertController
 
@@ -13,7 +13,7 @@ class AppSelector {
     ///   - defaultAction: default action, if not nil, will be the first element of the list
     ///   - sourceView: the sourceView to anchor the action sheet to
     ///   - urlHandler: object that handles app URL schemes; defaults to UIApplication.shared
-    init?(with appList: [String: String],
+    public init?(with appList: [String: String],
           defaultAction: UIAlertAction? = nil,
           sourceView: UIView,
           urlHandler: URLHandler = UIApplication.shared) {
@@ -60,7 +60,7 @@ class AppSelector {
 }
 
 /// Initializers for Email Picker
-extension AppSelector {
+public extension AppSelector {
     /// initializes the picker with a plist file in a specified bundle
     convenience init?(with plistFile: String,
                       in bundle: Bundle,

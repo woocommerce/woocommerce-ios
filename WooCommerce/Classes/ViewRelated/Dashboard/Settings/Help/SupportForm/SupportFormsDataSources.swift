@@ -26,7 +26,7 @@ struct IPPSupportDataSource: SupportFormMetaDataSource {
     }
 
     var tags: [String] {
-        ZendeskProvider.shared.generalTags() + [ZendeskForms.Tags.wcMobileApps, ZendeskForms.Tags.productAreaIPP, ZendeskForms.Tags.jetpack]
+        ZendeskProvider.shared.generalTags() + [ZendeskForms.Tags.wcMobileApps, ZendeskForms.Tags.productAreaIPP, ZendeskForms.Tags.wcPayments]
     }
 
     var customFields: [Int64: String] {
@@ -117,6 +117,7 @@ private enum ZendeskForms {
         static let store = Fields.store
         static let jetpack = "jetpack"
         static let wcCore = "woocommerce_core"
+        static let wcPayments = "woocommerce_payments"
         static let appTransfer = "mobile_app_woo_transfer"
         static let wcMobileApps = "woocommerce_mobile_apps"
         static let productAreaIPP = "product_area_apps_in_person_payments"

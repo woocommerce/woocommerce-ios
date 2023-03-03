@@ -68,7 +68,7 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
         }
     }
 
-    func test_the_subtitle_value_is_correct_for_different_type_of_tasks() {
+    func test_the_subtitle_is_correct_for_different_type_of_tasks() {
         for task in tasks {
             let sut = StoreOnboardingTaskViewModel(task: task)
             switch task.type {

@@ -26,21 +26,24 @@ final class DashboardViewController: UIViewController {
 
     // MARK: Subviews
 
-    /// The top-level stack view that contains the scroll view.
+    /// The top-level stack view that contains the scroll view and other sticky views like the Jetpack benefits banner.
     private lazy var stackView: UIStackView = {
         .init(arrangedSubviews: [])
     }()
 
+    /// The top-level scroll view. All subviews should not be a scroll view to avoid nested scroll views that can result in unexpected scrolling behavior.
     private lazy var containerView: UIScrollView = {
         return UIScrollView(frame: .zero)
     }()
 
+    /// Refresh control for the scroll view.
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl(frame: .zero)
         refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
         return refreshControl
     }()
 
+    /// Embedded in the scroll view. Contains the header view and dashboard content view.
     private lazy var containerStackView: UIStackView = {
         .init(arrangedSubviews: [])
     }()

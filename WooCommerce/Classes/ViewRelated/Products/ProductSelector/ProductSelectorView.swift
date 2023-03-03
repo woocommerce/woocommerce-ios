@@ -46,13 +46,12 @@ struct ProductSelectorView: View {
                     .padding(.horizontal, insets: safeAreaInsets)
                     .accessibilityIdentifier("product-selector-search-bar")
                 HStack {
-                    Button(Localization.clearSelection) {
-                        viewModel.clearSelection()
-                    }
-                    .buttonStyle(LinkButtonStyle())
-                    .fixedSize()
-                    .renderedIf(viewModel.totalSelectedItemsCount > 0 && viewModel.syncStatus == .results)
-
+                        Button(Localization.clearSelection) {
+                            viewModel.clearSelection()
+                        }
+                        .buttonStyle(LinkButtonStyle())
+                        .fixedSize()
+                        .renderedIf(configuration.clearSelectionEnabled && viewModel.totalSelectedItemsCount > 0 && viewModel.syncStatus == .results)
                     Spacer()
 
                     Button(viewModel.filterButtonTitle) {
@@ -184,6 +183,7 @@ extension ProductSelectorView {
     struct Configuration {
         var showsFilters: Bool = false
         var multipleSelectionsEnabled: Bool = false
+        var clearSelectionEnabled: Bool = true
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
         var doneButtonTitleSingularFormat: String = ""

@@ -16,7 +16,7 @@ public extension StoreOnboardingTask {
         case launchStore
         case customizeDomains
         case payments
-        case unsupported
+        case unsupported(String)
 
         public init(from decoder: Decoder) throws {
             let id = try decoder.singleValueContainer().decode(String.self)
@@ -28,10 +28,10 @@ public extension StoreOnboardingTask {
                 self = .addFirstProduct
             case "add_domain":
                 self = .customizeDomains
-            case "woocommerce-payments":
+            case "payments":
                 self = .payments
             default:
-                self = .unsupported
+                self = .unsupported(id)
             }
         }
     }

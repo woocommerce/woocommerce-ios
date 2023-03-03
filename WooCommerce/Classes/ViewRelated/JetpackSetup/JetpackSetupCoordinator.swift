@@ -118,7 +118,7 @@ private extension JetpackSetupCoordinator {
                 displayAdminRoleRequiredError()
                 requiresConnectionOnly = true
             default:
-                showAlert(message: Localization.errorCheckingJetpack)
+                showAlert(message: prepareErrorMessage(for: error, fallback: Localization.errorCheckingJetpack))
             }
         }
     }
@@ -208,35 +208,67 @@ private extension JetpackSetupCoordinator {
     func startAuthentication(email: String, isPasswordlessAccount: Bool, onCompletion: @escaping () -> Void) {
         if isPasswordlessAccount {
             Task { @MainActor in
-                do {
-                    try await requestAuthenticationLink(email: email)
-                    onCompletion()
-                    #warning("TODO: show magic login UI")
-                } catch {
-                    onCompletion()
-                    showAlert(message: Localization.errorRequestingAuthURL)
-                }
+                await requestAuthenticationLink(email: email)
+                onCompletion()
             }
         } else {
-            #warning("TODO: show password UI")
+            showPasswordUI(email: email)
             onCompletion()
         }
     }
 
-    func requestAuthenticationLink(email: String) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: {
+    func requestAuthenticationLink(email: String) async {
+        await withCheckedContinuation { continuation in
+            accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: { [weak self] in
+                guard let self else {
+                    return continuation.resume()
+                }
+                DispatchQueue.main.async {
+                    self.showMagicLinkUI(email: email)
+                }
                 continuation.resume()
-            }, failure: { error in
-                continuation.resume(throwing: error)
+            }, failure: { [weak self] error in
+                guard let self else {
+                    return continuation.resume()
+                }
+                DispatchQueue.main.async {
+                    self.showAlert(message: self.prepareErrorMessage(for: error, fallback: Localization.errorRequestingAuthURL))
+                }
+                continuation.resume()
             })
         }
+    }
+
+    func showMagicLinkUI(email: String) {
+        let viewController = WPComMagicLinkHostingController(email: email, requiresConnectionOnly: requiresConnectionOnly)
+        loginNavigationController?.pushViewController(viewController, animated: true)
+    }
+
+    func showPasswordUI(email: String) {
+        let viewController = WPComPasswordLoginHostingController(
+            siteURL: site.url,
+            email: email,
+            requiresConnectionOnly: requiresConnectionOnly,
+            onSubmit: { _ in
+                #warning("TODO: handle log in")
+            },
+            onMagicLinkRequest: requestAuthenticationLink(email:))
+        loginNavigationController?.pushViewController(viewController, animated: true)
     }
 }
 
 // MARK: - Error handling
 //
 private extension JetpackSetupCoordinator {
+    /// If a localized description is available, use it for the error alert.
+    func prepareErrorMessage(for error: Error, fallback: String) -> String {
+        let description = (error as NSError).localizedDescription
+        guard description.isNotEmpty else {
+            return fallback
+        }
+        return description
+    }
+
     /// Handles the result of `accountService`'s `isPasswordlessAccount`.
     /// The implementation follows what have been done in `WordPressAuthenticator`.
     /// Please update this when the API changes.
@@ -251,7 +283,7 @@ private extension JetpackSetupCoordinator {
             // username instead.
             #warning("TODO: handle username login")
         } else {
-            showAlert(message: Localization.errorCheckingWPComAccount)
+            showAlert(message: prepareErrorMessage(for: error, fallback: Localization.errorCheckingWPComAccount))
         }
     }
 

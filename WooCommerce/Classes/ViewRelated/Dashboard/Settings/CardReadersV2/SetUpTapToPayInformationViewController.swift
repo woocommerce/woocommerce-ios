@@ -59,7 +59,8 @@ private extension SetUpTapToPayInformationViewController {
     func searchAndConnect() {
         connectionController.searchAndConnect { _ in
             /// No need for logic here. Once connected, the connected reader will publish
-            /// through the `cardReaderAvailableSubscription`
+            /// through the `cardReaderAvailableSubscription`, so we can just
+            /// dismiss the connection flow alerts.
             self.alertsPresenter.dismiss()
         }
     }
@@ -75,9 +76,7 @@ struct SetUpTapToPayInformationView: View {
     @Environment(\.sizeCategory) private var sizeCategory
 
     var isCompact: Bool {
-        get {
-            verticalSizeClass == .compact
-        }
+        verticalSizeClass == .compact
     }
 
     var isSizeCategoryLargerThanExtraLarge: Bool {
@@ -112,9 +111,10 @@ struct SetUpTapToPayInformationView: View {
 
             Spacer()
 
-            Button(Localization.setUpButton, action: setUpButtonAction!)
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.bottom, 8)
+            Button(Localization.setUpButton, action: {
+                setUpButtonAction?()
+            })
+            .buttonStyle(PrimaryButtonStyle())
 
             InPersonPaymentsLearnMore()
                 .customOpenURL(action: { url in
@@ -128,16 +128,16 @@ struct SetUpTapToPayInformationView: View {
                     }
                 })
         }
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity
-            )
-            .padding()
-            .if(isCompact || isSizeCategoryLargerThanExtraLarge) { content in
-                ScrollView(.vertical) {
-                    content
-                }
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity
+        )
+        .padding()
+        .if(isCompact || isSizeCategoryLargerThanExtraLarge) { content in
+            ScrollView(.vertical) {
+                content
             }
+        }
     }
 }
 

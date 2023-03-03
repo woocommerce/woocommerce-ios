@@ -2,10 +2,11 @@ import UIKit
 import Yosemite
 import enum Alamofire.AFError
 import WordPressAuthenticator
+import class Networking.UserAgent
 
 /// Coordinates the Jetpack setup flow in the authenticated state.
 ///
-final class JetpackSetupCoordinator {
+final class JetpackSetupCoordinator: NSObject {
     let rootViewController: UIViewController
 
     private let site: Site
@@ -15,6 +16,7 @@ final class JetpackSetupCoordinator {
     private let analytics: Analytics
     private let accountService: WordPressComAccountService
     private let dotcomAuthScheme: String
+    private let loginFacade: LoginFacade
 
     private var benefitsController: JetpackBenefitsHostingController?
     private var loginNavigationController: LoginNavigationController?
@@ -35,6 +37,11 @@ final class JetpackSetupCoordinator {
         /// to be used for requesting authentication link and handle login later.
         WordPressAuthenticator.initializeWithCustomConfigs(dotcomAuthScheme: dotcomAuthScheme)
         self.accountService = WordPressComAccountService()
+        self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
+                                       dotcomSecret: ApiCredentials.dotcomSecret,
+                                       userAgent: UserAgent.defaultUserAgent)
+        super.init()
+        loginFacade.delegate = self
     }
 
     func showBenefitModal() {
@@ -303,6 +310,26 @@ private extension JetpackSetupCoordinator {
         let cancelAction = UIAlertAction(title: Localization.cancelButton, style: .cancel)
         alert.addAction(cancelAction)
         rootViewController.topmostPresentedViewController.present(alert, animated: true)
+    }
+}
+
+// MARK: - LoginFacadeDelegate conformance
+//
+extension JetpackSetupCoordinator: LoginFacadeDelegate {
+    func needsMultifactorCode() {
+        // TODO: show 2FA UI
+    }
+
+    func displayRemoteError(_ error: Error) {
+        // TODO: show error alert
+    }
+
+    func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
+        // TODO: prepare for Jetpack setup
+    }
+
+    func finishedLogin(withNonceAuthToken authToken: String) {
+        // TODO: prepare for Jetpack setup
     }
 }
 

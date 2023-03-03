@@ -1,13 +1,12 @@
 import Combine
 import UIKit
-import XLPagerTabStrip
 import Yosemite
 import class WidgetKit.WidgetCenter
 
 /// Top-level stats container view controller that consists of a button bar with 4 time ranges.
 /// Each time range tab is managed by a `StoreStatsAndTopPerformersPeriodViewController`.
 ///
-final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewController {
+final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     /// For navigation bar large title workaround.
     weak var scrollDelegate: DashboardUIScrollDelegate?
 
@@ -26,17 +25,17 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     // MARK: - Calculated Properties
 
     private var visibleChildViewController: StoreStatsAndTopPerformersPeriodViewController {
-        return periodVCs[currentIndex]
+        return periodVCs[selection]
     }
 
     // MARK: - Private Properties
 
-    private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
+    private let periodVCs: [StoreStatsAndTopPerformersPeriodViewController]
     private let siteID: Int64
     // A set of syncing time ranges is tracked instead of a single boolean so that the stats for each time range
     // can be synced when swiping or tapping to change the time range tab before the syncing finishes for the previously selected tab.
     private var syncingTimeRanges: Set<StatsTimeRangeV4> = []
-    private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let dashboardViewModel: DashboardViewModel
     private let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
 
@@ -44,6 +43,12 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     /// We need to make sure any call to the public `reloadData` is after the selected time range is set to avoid making unnecessary API requests
     /// for the non-selected tab.
     @Published private var selectedTimeRangeIndex: Int?
+    /// The index of the selected tab in the tab bar. `selectedTimeRangeIndex` is an observable version of this.
+    override var selection: Int {
+        didSet {
+            selectedTimeRangeIndex = selection
+        }
+    }
     private var selectedTimeRangeIndexSubscription: AnyCancellable?
     private var reloadDataAfterSelectedTimeRangeSubscriptions: Set<AnyCancellable> = []
 
@@ -59,7 +64,23 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
         self.siteID = siteID
         self.dashboardViewModel = dashboardViewModel
         self.pushNotificationsManager = pushNotificationsManager
-        super.init(nibName: nil, bundle: nil)
+
+        let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
+        self.usageTracksEventEmitter = usageTracksEventEmitter
+
+        let currentDate = Date()
+        let tabItems: [TabbedItem] = timeRanges.map { timeRange in
+            let viewController = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                                timeRange: timeRange,
+                                                                                currentDate: currentDate,
+                                                                                canDisplayInAppFeedbackCard: timeRange == .today,
+                                                                                usageTracksEventEmitter: usageTracksEventEmitter)
+            return .init(title: timeRange.tabTitle,
+                         viewController: viewController,
+                         accessibilityIdentifier: "period-data-" + timeRange.rawValue + "-tab")
+        }
+        periodVCs = tabItems.compactMap { $0.viewController as? StoreStatsAndTopPerformersPeriodViewController }
+        super.init(items: tabItems, tabSizingStyle: .fitting)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -67,70 +88,27 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     }
 
     override func viewDidLoad() {
+        super.viewDidLoad()
+
+        configureView()
+        configureTabBar()
         configurePeriodViewControllers()
-        configureTabStrip()
+        observeRemotelyCreatedOrdersToResetLastSyncTimestamp()
+        observeLocallyCreatedOrdersToResetLastSyncTimestamp()
 
         Task { @MainActor in
             let selectedTimeRange = await loadLastTimeRange() ?? .today
-            guard let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange),
-                  selectedTabIndex != currentIndex else {
-                selectedTimeRangeIndex = currentIndex
+            guard let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange) else {
                 return
             }
-            // There is currently no straightforward way to set a different default tab using `XLPagerTabStrip` without forking.
-            // This is a workaround following https://github.com/xmartlabs/XLPagerTabStrip/issues/537#issuecomment-534903598
-            moveToViewController(at: selectedTabIndex, animated: false)
-            reloadPagerTabStripView()
-            selectedTimeRangeIndex = selectedTabIndex
+            selection = selectedTabIndex
+            observeSelectedTimeRangeIndex()
         }
-
-        // 👆 must be called before super.viewDidLoad()
-
-        super.viewDidLoad()
-        configureView()
-        observeSelectedTimeRangeIndex()
-        observeRemotelyCreatedOrdersToResetLastSyncTimestamp()
-        observeLocallyCreatedOrdersToResetLastSyncTimestamp()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         ensureGhostContentIsAnimated()
-    }
-
-    // MARK: - PagerTabStripDataSource
-
-    override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
-        return periodVCs
-    }
-
-    override func configureCell(_ cell: ButtonBarViewCell, indicatorInfo: IndicatorInfo) {
-        /// Hide the ImageView:
-        /// We don't use it, and if / when "Ghostified" produces a quite awful placeholder UI!
-        cell.imageView.isHidden = true
-        cell.accessibilityIdentifier = indicatorInfo.accessibilityIdentifier
-
-        /// Flip the cells back to their proper state for RTL languages.
-        if traitCollection.layoutDirection == .rightToLeft {
-            cell.transform = CGAffineTransform(scaleX: -1, y: 1)
-        }
-    }
-
-    override func updateIndicator(for viewController: PagerTabStripViewController,
-                                  fromIndex: Int,
-                                  toIndex: Int,
-                                  withProgressPercentage progressPercentage: CGFloat,
-                                  indexWasChanged: Bool) {
-        super.updateIndicator(for: viewController,
-                              fromIndex: fromIndex,
-                              toIndex: toIndex,
-                              withProgressPercentage: progressPercentage,
-                              indexWasChanged: indexWasChanged)
-        // The initially selected tab should be ignored because it should be set after `loadLastTimeRange` in `viewDidLoad`.
-        guard selectedTimeRangeIndex != nil else {
-            return
-        }
-        selectedTimeRangeIndex = toIndex
     }
 
     func observeSelectedTimeRangeIndex() {
@@ -144,10 +122,8 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
             // A short debounce workaround is applied here to avoid making API requests for the middle tabs.
             .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
             .sink { [weak self] timeRangeTabIndex in
-                guard let self = self else { return }
-                guard let periodViewController = self.viewControllers[timeRangeTabIndex] as? StoreStatsAndTopPerformersPeriodViewController else {
-                    return
-                }
+                guard let self else { return }
+                let periodViewController = self.periodVCs[timeRangeTabIndex]
                 self.saveLastTimeRange(periodViewController.timeRange)
                 self.syncStats(forced: false, viewControllerToSync: periodViewController)
             }
@@ -412,40 +388,11 @@ private extension StoreStatsAndTopPerformersViewController {
         return view
     }
 
-    func configureButtonBarBottomBorder() {
-        view.addSubview(buttonBarBottomBorder)
-        NSLayoutConstraint.activate([
-            buttonBarBottomBorder.topAnchor.constraint(equalTo: buttonBarView.bottomAnchor),
-            buttonBarBottomBorder.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            buttonBarBottomBorder.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-            ])
-    }
-
     func configureView() {
         view.backgroundColor = Constants.backgroundColor
-        configureButtonBarBottomBorder()
-
-        // Disables any content inset adjustment since `XLPagerTabStrip` doesn't seem to support safe area insets.
-        containerView.contentInsetAdjustmentBehavior = .never
-
-        /// ButtonBarView is a collection view, and it should flip to support
-        /// RTL languages automatically. And yet it doesn't.
-        /// So, for RTL languages, we flip it. This also flips the cells
-        if traitCollection.layoutDirection == .rightToLeft {
-            buttonBarView.transform = CGAffineTransform(scaleX: -1, y: 1)
-        }
     }
 
     func configurePeriodViewControllers() {
-        let currentDate = Date()
-        let periodViewControllers = timeRanges.map {
-            StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                           timeRange: $0,
-                                                           currentDate: currentDate,
-                                                           canDisplayInAppFeedbackCard: $0 == .today,
-                                                           usageTracksEventEmitter: usageTracksEventEmitter)
-        }
-        periodVCs = periodViewControllers
         periodVCs.forEach { (vc) in
             vc.scrollDelegate = scrollDelegate
             vc.onPullToRefresh = { [weak self] in
@@ -468,30 +415,9 @@ private extension StoreStatsAndTopPerformersViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func configureTabStrip() {
-        settings.style.buttonBarBackgroundColor = .systemColor(.secondarySystemGroupedBackground)
-        settings.style.buttonBarItemBackgroundColor = .systemColor(.secondarySystemGroupedBackground)
-        settings.style.selectedBarBackgroundColor = .primary
-        settings.style.buttonBarItemFont = StyleManager.subheadlineFont
-        settings.style.selectedBarHeight = TabStrip.selectedBarHeight
-        settings.style.buttonBarItemTitleColor = .textSubtle
-        settings.style.buttonBarItemsShouldFillAvailableWidth = false
-        settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
-
-        changeCurrentIndexProgressive = {
-            (oldCell: ButtonBarViewCell?,
-            newCell: ButtonBarViewCell?,
-            progressPercentage: CGFloat,
-            changeCurrentIndex: Bool,
-            animated: Bool) -> Void in
-
-            guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = .textSubtle
-            oldCell?.label.font = StyleManager.subheadlineFont
-
-            newCell?.label.textColor = .primary
-            newCell?.label.font = StyleManager.subheadlineSemiBoldFont
-        }
+    func configureTabBar() {
+        tabBar.equalWidthFill = .equalSpacing
+        tabBar.equalWidthSpacing = TabBar.tabSpacing
     }
 }
 
@@ -543,9 +469,10 @@ private extension StoreStatsAndTopPerformersViewController {
 // MARK: - Constants!
 //
 private extension StoreStatsAndTopPerformersViewController {
-    enum TabStrip {
-        static let buttonLeftRightMargin: CGFloat   = 16.0
-        static let selectedBarHeight: CGFloat       = 3.0
+    enum TabBar {
+        /// With `equalSpacing` distribution, there is a default spacing ~16px even if `stackView.spacing = 0`.
+        /// Setting a negative spacing offsets the default spacing to match the design more.
+        static let tabSpacing: CGFloat = -8.0
     }
 
     enum Constants {

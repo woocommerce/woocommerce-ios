@@ -46,13 +46,12 @@ struct ProductSelectorView: View {
                     .padding(.horizontal, insets: safeAreaInsets)
                     .accessibilityIdentifier("product-selector-search-bar")
                 HStack {
-                    Button(Localization.clearSelection) {
-                        viewModel.clearSelection()
-                    }
-                    .buttonStyle(LinkButtonStyle())
-                    .fixedSize()
-                    .renderedIf(viewModel.totalSelectedItemsCount > 0 && viewModel.syncStatus == .results)
-
+                        Button(Localization.clearSelection) {
+                            viewModel.clearSelection()
+                        }
+                        .buttonStyle(LinkButtonStyle())
+                        .fixedSize()
+                        .renderedIf(configuration.clearSelectionEnabled && viewModel.totalSelectedItemsCount > 0 && viewModel.syncStatus == .results)
                     Spacer()
 
                     Button(viewModel.filterButtonTitle) {
@@ -72,6 +71,7 @@ struct ProductSelectorView: View {
                             ForEach(viewModel.productRows) { rowViewModel in
                                 createProductRow(rowViewModel: rowViewModel)
                                     .padding(Constants.defaultPadding)
+                                    .accessibilityIdentifier(Constants.productRowAccessibilityIdentifier)
                                 Divider().frame(height: Constants.dividerHeight)
                                     .padding(.leading, Constants.defaultPadding)
                             }
@@ -83,6 +83,7 @@ struct ProductSelectorView: View {
                             }
                             .buttonStyle(PrimaryButtonStyle())
                             .padding(Constants.defaultPadding)
+                            .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
                         }
                         if let variationListViewModel = variationListViewModel {
                             LazyNavigationLink(destination: ProductVariationSelector(
@@ -153,9 +154,7 @@ struct ProductSelectorView: View {
                 ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
-                    if viewModel.toggleAllVariationsOnSelection {
-                        viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
-                    }
+                    viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
                 })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
@@ -184,6 +183,7 @@ extension ProductSelectorView {
     struct Configuration {
         var showsFilters: Bool = false
         var multipleSelectionsEnabled: Bool = false
+        var clearSelectionEnabled: Bool = true
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
         var doneButtonTitleSingularFormat: String = ""
@@ -199,6 +199,8 @@ private extension ProductSelectorView {
     enum Constants {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
+        static let doneButtonAccessibilityIdentifier: String = "product-multiple-selection-done-button"
+        static let productRowAccessibilityIdentifier: String = "product-item"
     }
 
     enum Localization {

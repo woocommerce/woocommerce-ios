@@ -2,9 +2,9 @@ import Combine
 import Foundation
 import Yosemite
 
-/// View model for `JetpackInstallStepsView`
+/// View model for `JCPJetpackInstallStepsView`
 ///
-final class JetpackInstallStepsViewModel: ObservableObject {
+final class JCPJetpackInstallStepsViewModel: ObservableObject {
     /// ID of the site to install Jetpack-the-plugin to.
     ///
     private let siteID: Int64
@@ -185,7 +185,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     }
 }
 
-private extension JetpackInstallStepsViewModel {
+private extension JCPJetpackInstallStepsViewModel {
     enum Constants {
         static let jetpackSlug: String = "jetpack"
         static let jetpackPluginName: String = "jetpack/jetpack"

@@ -7,10 +7,11 @@ final class ProductFactoryTests: XCTestCase {
     private let siteID: Int64 = 134
 
     func test_created_simple_physical_product_has_expected_fields() throws {
-        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: siteID))
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: siteID, status: .draft))
         XCTAssertEqual(product.productType, .simple)
         XCTAssertEqual(product.virtual, false)
         XCTAssertEqual(product.siteID, siteID)
+        XCTAssertEqual(product.statusKey, ProductStatus.draft.rawValue)
     }
 
     func test_created_simple_virtual_product_has_expected_fields() throws {
@@ -45,7 +46,12 @@ final class ProductFactoryTests: XCTestCase {
 
     func test_creating_new_product_removes_expected_fields() {
         // Given
-        let product = Product.fake().copy(siteID: 123, productID: 1234, name: "Test Product", statusKey: ProductStatus.autoDraft.rawValue, price: "20.00")
+        let product = Product.fake().copy(siteID: 123,
+                                          productID: 1234,
+                                          name: "Test Product",
+                                          statusKey: ProductStatus.autoDraft.rawValue,
+                                          price: "20.00",
+                                          groupedProducts: [11, 12, 13])
 
         // When
         let newProduct = ProductFactory().newProduct(from: product)
@@ -60,5 +66,6 @@ final class ProductFactoryTests: XCTestCase {
         XCTAssertEqual(newProduct.productID, 0)
         XCTAssertEqual(newProduct.name, "")
         XCTAssertEqual(newProduct.statusKey, ProductStatus.published.rawValue)
+        XCTAssertEqual(newProduct.groupedProducts, [])
     }
 }

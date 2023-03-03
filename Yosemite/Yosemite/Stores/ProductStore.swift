@@ -495,6 +495,10 @@ extension ProductStore {
     ///
     func upsertStoredProducts(readOnlyProducts: [Networking.Product], in storage: StorageType) {
         for readOnlyProduct in readOnlyProducts {
+            // The "importing" status is only used for product import placeholders and should not be stored.
+            guard readOnlyProduct.productStatus != .importing else {
+                continue
+            }
             let storageProduct = storage.loadProduct(siteID: readOnlyProduct.siteID, productID: readOnlyProduct.productID) ??
                 storage.insertNewObject(ofType: Storage.Product.self)
 

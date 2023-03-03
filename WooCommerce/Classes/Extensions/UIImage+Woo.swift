@@ -101,6 +101,12 @@ extension UIImage {
         return UIImage.gridicon(.addImage).imageWithTintColor(tintColor)!
     }
 
+    /// Blank Product
+    ///
+    static var blankProductImage: UIImage {
+        return UIImage(named: "icon-blank-product")!.withRenderingMode(.alwaysTemplate)
+    }
+
     /// Checkmark image, no style applied
     ///
     static var checkmarkImage: UIImage {
@@ -419,6 +425,12 @@ extension UIImage {
     ///
     static var storeImage: UIImage {
         UIImage(named: "icon-store")!
+    }
+
+    /// Launch store Image
+    ///
+    static var launchStoreImage: UIImage {
+        UIImage(named: "icon-launch-store")!
     }
 
     /// Store summary image used in the store creation flow.

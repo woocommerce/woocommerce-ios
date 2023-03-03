@@ -34,7 +34,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .loginMagicLinkEmphasisM2:
             return true
         case .productMultiSelectionM1:
-            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
+            return false
         case .promptToEnableCodInIppOnboarding:
             return true
         case .searchProductsBySKU:
@@ -48,7 +48,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .storeCreationM2WithInAppPurchasesEnabled:
             return false
         case .storeCreationM3Profiler:
-            return true
+            return false
         case .justInTimeMessagesOnDashboard:
             return true
         case .systemStatusReportInSupportRequest:
@@ -67,12 +67,20 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // It is not possible to get the TTPoI entitlement for an enterprise certificate,
             // so we should not enable this for alpha builds.
             return buildConfig == .localDeveloper || buildConfig == .appStore
+        case .tapToPayOnIPhoneSetupFlow:
+            // It is not possible to get the TTPoI entitlement for an enterprise certificate,
+            // so we should not enable this for alpha builds.
+            return buildConfig == .localDeveloper
         case .domainSettings:
             return true
         case .supportRequests:
             return true
         case .simplifyProductEditing:
-            return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
+            // Enabled for the A/B experiment treatment group only
+            // Disabled for the control group and UI testing
+            return ABTest.simplifiedProductEditing.variation == .treatment && !isUITesting
+        case .jetpackSetupWithApplicationPassword:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .dashboardOnboarding:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
         default:

@@ -220,6 +220,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
                                                  supportsMultipleSelection: supportsMultipleSelection,
+                                                 isClearSelectionEnabled: toggleAllVariationsOnSelection,
                                                  onVariationSelected: onVariationSelected)
     }
 
@@ -248,6 +249,9 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Select all variations for a given product
     ///
     func toggleSelectionForAllVariations(of productID: Int64) {
+        guard toggleAllVariationsOnSelection else {
+            return
+        }
         guard let variableProduct = products.first(where: { $0.productID == productID }),
               variableProduct.variations.isNotEmpty else {
             return

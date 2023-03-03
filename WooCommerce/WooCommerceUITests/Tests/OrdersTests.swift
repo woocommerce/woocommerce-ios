@@ -32,7 +32,7 @@ final class OrdersTests: XCTestCase {
         try TabNavComponent().goToOrdersScreen()
             .startOrderCreation()
             .editOrderStatus()
-            .addProduct(byName: products[0].name)
+            .addProducts(numberOfProductsToAdd: 1)
             .addCustomerDetails(name: order.billing.first_name)
             .addShipping(amount: order.shipping_lines[0].total, name: order.shipping_lines[0].method_title)
             .addFee(amount: order.fee_lines[0].amount)

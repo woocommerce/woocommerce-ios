@@ -24,7 +24,7 @@ public final class MyStoreScreen: ScreenObject {
     }
 
     func tapTimeframeTab(timeframeId: String) -> MyStoreScreen {
-        app.cells[timeframeId].tap()
+        app.buttons[timeframeId].tap()
 
         return self
     }

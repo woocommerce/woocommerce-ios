@@ -75,8 +75,14 @@ public enum FeatureFlag: Int {
     case inAppPurchases
 
     /// Enables Tap to Pay on iPhone flow in In-Person Payments, on eligible devices.
+    /// This flag needs to be retained, as we cannot enable TTPoI on the Enterprise certificate,
+    /// so `.alpha` builds must be excluded.
     ///
     case tapToPayOnIPhone
+
+    /// Enables Tap to Pay on iPhone M2 setup flow, on eligible devices.
+    ///
+    case tapToPayOnIPhoneSetupFlow
 
     /// Store creation MVP.
     ///
@@ -153,6 +159,10 @@ public enum FeatureFlag: Int {
     /// Whether to enable the simplified product editing experience.
     ///
     case simplifyProductEditing
+
+    /// Whether to enable Jetpack setup for users authenticated with application passwords.
+    ///
+    case jetpackSetupWithApplicationPassword
 
     /// Whether to enable the onboarding checklist in the dashboard for WPCOM stores.
     ///

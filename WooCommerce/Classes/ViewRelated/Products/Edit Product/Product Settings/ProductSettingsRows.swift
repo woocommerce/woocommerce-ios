@@ -51,14 +51,15 @@ enum ProductSettingsRows {
             }
 
             let details: String
+            let hideDownloadableProductType = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
             switch settings.productType {
             case .simple:
-                switch (settings.downloadable, settings.virtual) {
-                case (true, _):
+                switch (settings.downloadable, settings.virtual, hideDownloadableProductType) {
+                case (true, _, false):
                     details = Localization.downloadableProductType
-                case (false, true):
+                case (_, true, _):
                     details = Localization.virtualProductType
-                case (false, false):
+                case (_, false, _):
                     details = Localization.physicalProductType
                 }
             case .custom(let customProductType):

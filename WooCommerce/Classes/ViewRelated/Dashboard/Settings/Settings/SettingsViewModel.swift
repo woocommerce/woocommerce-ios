@@ -238,7 +238,10 @@ private extension SettingsViewModel {
         let storeSettingsSection: Section? = {
             var rows: [Row] = []
 
-            if stores.sessionManager.defaultSite?.isJetpackCPConnected == true {
+            let site = stores.sessionManager.defaultSite
+            if site?.isJetpackCPConnected == true ||
+                (site?.isNonJetpackSite == true &&
+                 featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
                 rows.append(.installJetpack)
             }
 

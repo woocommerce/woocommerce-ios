@@ -1,20 +1,25 @@
 import Foundation
 import UIKit
 
-final class CardReaderSettingsPresentingViewController: UIViewController {
-
+final class PaymentSettingsFlowPresentingViewController: UIViewController {
     /// An array of viewModels and related view classes
-    private var viewModelsAndViews: CardReaderSettingsPrioritizedViewModelsProvider?
+    private var viewModelsAndViews: PaymentSettingsFlowPrioritizedViewModelsProvider
 
     /// The view controller we are currently presenting
     private var childViewController: UIViewController?
 
-    /// Set our dependencies
-    func configure(viewModelsAndViews: CardReaderSettingsPrioritizedViewModelsProvider) {
+    init(viewModelsAndViews: PaymentSettingsFlowPrioritizedViewModelsProvider) {
         self.viewModelsAndViews = viewModelsAndViews
-        self.viewModelsAndViews?.onPriorityChanged = { [weak self] viewModelAndView in
+        super.init(nibName: nil, bundle: nil)
+
+        self.viewModelsAndViews.onPriorityChanged = { [weak self] viewModelAndView in
             self?.onViewModelsPriorityChange(viewModelAndView: viewModelAndView)
         }
+        self.hidesBottomBarWhenPushed = true
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("Not implemented")
     }
 
     override func viewDidLoad() {
@@ -28,47 +33,38 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
         /// To avoid child view controllers extending underneath the navigation bar
         self.edgesForExtendedLayout = []
 
-        onViewModelsPriorityChange(viewModelAndView: viewModelsAndViews?.priorityViewModelAndView)
+        onViewModelsPriorityChange(viewModelAndView: viewModelsAndViews.priorityViewModelAndView)
     }
 
-    private func onViewModelsPriorityChange(viewModelAndView: CardReaderSettingsViewModelAndView?) {
+    private func onViewModelsPriorityChange(viewModelAndView: PaymentSettingsFlowViewModelAndView?) {
         childViewController?.willMove(toParent: nil)
         childViewController?.removeFromParent()
         childViewController?.view.removeFromSuperview()
 
-        guard let viewModelAndView = viewModelAndView else {
+        guard let viewModelAndView = viewModelAndView,
+              let childViewController = viewModelAndView.viewPresenter.init(viewModel: viewModelAndView.viewModel) else {
+            DDLogError("⛔️ Unexpectedly unable to create PaymentSettingsFlow Child View Controller using: \(String(describing: viewModelAndView))")
             return
         }
+        self.childViewController = childViewController
 
-        childViewController = storyboard!.instantiateViewController(withIdentifier: viewModelAndView.viewIdentifier)
-
-        guard let childViewController = childViewController else {
-            return
-        }
-
-        guard let presenter = childViewController as? CardReaderSettingsViewModelPresenter else {
-            return
-        }
-        presenter.configure(viewModel: viewModelAndView.viewModel)
-
-        self.addChild(childViewController)
-        self.view.addSubview(childViewController.view)
+        addChild(childViewController)
+        view.addSubview(childViewController.view)
         childViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        self.view.pinSubviewToAllEdges(childViewController.view)
+        view.pinSubviewToAllEdges(childViewController.view)
         childViewController.didMove(toParent: self)
     }
 }
 
 // MARK: - View Configuration
 //
-private extension CardReaderSettingsPresentingViewController {
-
-    private func configureBackground() {
+private extension PaymentSettingsFlowPresentingViewController {
+    func configureBackground() {
         /// Needed to avoid incorrect background appearing near bottom of view, especially on dark mode
         view.backgroundColor = .systemBackground
     }
 
-    private func configureNavigation() {
+    func configureNavigation() {
         title = Localization.screenTitle
     }
 }

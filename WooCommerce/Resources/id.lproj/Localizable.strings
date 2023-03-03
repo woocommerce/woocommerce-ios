@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-02-21 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-02-28 12:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -132,6 +132,9 @@ which should be translated separately and considered part of this sentence. */
 /* Total number of items and packages in Shipping Label form. */
 "%1$d items in %2$d packages" = "%1$d item pada paket %2$d";
 
+/* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in full-screen/expanded mode. */
+"%1$d of %2$d tasks completed" = "%1$d dari %2$d langkah selesai";
+
 /* Number of rates selected in Shipping Labels > Carrier and Rates */
 "%1$d rates selected" = "%1$d tarif dipilih";
 
@@ -140,6 +143,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural limit of time for each user to apply a coupon, reads like: 10 uses per user */
 "%1$d uses per user" = "%1$d kali penggunaan per pengguna";
+
+/* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in collapsed mode in the dashboard screen. */
+"%1$d\/%2$d completed" = "%1$d\/%2$d selesai";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */
@@ -262,6 +268,9 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "Formulir bea cukai harus dicetak dan disertakan pada pengiriman internasional ini";
 
+/* Description of the Action sheet option when the user wants to change the Product type to virtual product */
+"A digital product like services, downloadable books, music or videos" = "Produk digital seperti layanan atau buku, musik, dan video yang dapat diunduh";
+
 /* Message when attempting to pay for a test transaction with a live card. */
 "A live card was used on a site in test mode. Use a test card instead." = "Kartu aktual digunakan untuk situs dalam mode pengujian. Gunakan kartu pengujian.";
 
@@ -276,6 +285,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Koneksi aman ke situs tidak dapat dibuat. Harap pastikan bahwa situs Anda memiliki sertifikat SSL yang valid.";
+
+/* Description of the Action sheet option when the user wants to change the Product type to physical product */
+"A tangible item that gets delivered to customers" = "Benda berwujud yang dikirimkan ke pelanggan";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "A unique digital product like services, downloadable books, music or videos" = "Produk digital unik, seperti layanan atau buku, musik, dan video yang dapat diunduh";
@@ -395,6 +407,9 @@ which should be translated separately and considered part of this sentence. */
    Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "Tambahkan Catatan";
 
+/* Title of the CTA button at the bottom of the product form to add more product details. */
+"Add Options" = "Tambah Opsi";
+
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
 "Add Pay in Person to your checkout" = "Tambahkan Pembayaran Langsung pada proses checkout Anda";
 
@@ -459,6 +474,9 @@ which should be translated separately and considered part of this sentence. */
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Tambahkan gambar produk";
 
+/* Description of the Action sheet option when the user wants to create a product manually */
+"Add a product manually" = "Tambahkan produk secara manual";
+
 /* Description for the option to create product manually */
 "Add a product manually." = "Tambahkan produk secara manual.";
 
@@ -499,6 +517,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Tambahkan tautan produk";
 
+/* Title of the product form bottom sheet action for switching to variable product type. */
+"Add product variations" = "Tambah varian produk";
+
 /* Title for the Products onboarding banner */
 "Add products to sell" = "Tambahkan produk untuk dijual";
 
@@ -507,6 +528,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Tambahkan info 'file yang dapat diunduh' untuk produk dari jarak jauh";
+
+/* Subtitle of the product form bottom sheet action for switching to variable product type. */
+"Add sizes, colors, or other options" = "Tambah ukuran, warna, atau opsi lainnya";
 
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Tambahkan deskripsi kupon.";
@@ -519,6 +543,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Tambahkan berat dan dimensi";
+
+/* Title of the store onboarding task to add the first product. */
+"Add your first product" = "Tambahkan produk pertama Anda";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "Tambahkan toko pertama Anda";
@@ -992,6 +1019,9 @@ which should be translated separately and considered part of this sentence. */
 /* Billing Information view Title */
 "Billing Information" = "Informasi Tagihan";
 
+/* Action sheet option when the user wants to create a product manually */
+"Blank" = "Kosong";
+
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Blokir Kutipan";
 
@@ -1390,6 +1420,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product */
 "Choose a template" = "Pilih templat";
+
+/* Message subtitle of bottom sheet for selecting a product type to create a product with a template */
+"Choose a template for your product" = "Pilih templat untuk produk";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Pilih dari perangkat";
@@ -1983,6 +2016,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "Pelanggan perlu memasukkan kode ini untuk menggunakan kupon.";
+
+/* Title of the store onboarding task to customize the store domain. */
+"Customize your domain" = "Sesuaikan domain Anda";
 
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
@@ -2972,6 +3008,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Dapatkan jawaban atas pertanyaan Anda";
 
+/* Title of the store onboarding task to get paid. */
+"Get paid" = "Terima pembayaran";
+
 /* Subtitle of push notifications as part of Jetpack benefits. */
 "Get push notifications for new orders, reviews, etc. delivered to your device." = "Aktifkan notifikasi otomatis untuk pesanan, ulasan baru, dsb. di perangkat Anda.";
 
@@ -2997,7 +3036,8 @@ which should be translated separately and considered part of this sentence. */
 "Get the most out of your store" = "Dapatkan hasil maksimal dari toko Anda";
 
 /* Message shown in the Reviews tab if the list is empty
-   Message shown on the Product Reviews screen if the list is empty */
+   Message shown on the Product Reviews screen if the list is empty
+   Subtitle of the product form bottom sheet action for reviews. */
 "Get your first reviews" = "Dapatkan ulasan pertama Anda";
 
 /* Alerts the user that wpcom account information is being retrieved. */
@@ -3023,6 +3063,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Berikan masukan";
+
+/* Subtitle of the store onboarding task to get paid. */
+"Give your customers an easy and convenient way to pay!" = "Hadirkan metode pembayaran yang praktis dan mudah untuk pelanggan!";
 
 /* Message for the Linked Products announcement banner */
 "Give your customers helpful and relevant product recommendations by adding upsells and cross-sells." = "Berikan rekomendasi produk yang membantu dan relevan bagi pelanggan Anda dengan menambahkan upsell dan cross-sell.";
@@ -3115,6 +3158,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Industry option in the store creation category question. */
 "Hardware Stores" = "Toko Perangkat Keras";
+
+/* Subtitle of the store onboarding task to customize the store domain. */
+"Have a custom URL to host your store." = "Miliki URL khusus untuk menjadi host toko Anda sendiri.";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Siapkan kredensial toko Anda.";
@@ -3633,6 +3679,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Luncurkan debug Wormholy";
+
+/* Title of the store onboarding task to launch the store. */
+"Launch your store" = "Luncurkan toko Anda";
 
 /* Industry option in the store creation category question. */
 "Laundry Or Cleaning Services" = "Layanan Penatu atau Kebersihan";
@@ -4821,6 +4870,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for simple physical product type. */
 "Physical" = "Fisik";
 
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"Physical product" = "Produk fisik";
+
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Pilih Toko yang akan Dihubungkan";
 
@@ -5212,7 +5264,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Product Total label for payment view */
 "Product Total" = "Total Produk";
 
-/* Row title for filtering products by product type. */
+/* Product Type label in Product Settings
+   Row title for filtering products by product type. */
 "Product Type" = "Tipe produk";
 
 /* Title of the text field for editing the external URL for an external/affiliate product */
@@ -5221,8 +5274,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user has copied a product */
 "Product copied" = "Produk disalin";
 
+/* Title of the alert when a user is saving a product draft */
+"Product draft saved" = "Draf produk disimpan";
+
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Tautan produk";
+
+/* Title of the alert when a user is publishing a product */
+"Product published" = "Produk dipublikasikan";
 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Produk disimpan";
@@ -5269,6 +5328,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Pengaturan Publikasi";
+
+/* Subtitle of the store onboarding task to launch the store. */
+"Publish your site to the world anytime you want!" = "Publikasikan situs Anda ke seluruh dunia kapan pun yang Anda mau!";
 
 /* Display label for the product's published status */
 "Published" = "Diterbitkan";
@@ -5618,6 +5680,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Review marked as %@" = "Ulasan ditandai %@";
 
 /* Title of one of the hub menu options
+   Title of the product form bottom sheet action for reviews.
    Title of the Reviews row on Product main screen
    Title of the Reviews tab — plural form of Review
    Title that appears on top of the main Reviews screen (plural form of the word Review).
@@ -6363,6 +6426,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
 "Start a Coupon creation by selecting a discount type in a bottom sheet" = "Buat Kupon dengan memilih jenis diskon di bagian bawah";
 
+/* Subtitle of the store onboarding task to add the first product. */
+"Start selling by adding products or services to your store." = "Mulai berjualan dengan menambahkan produk atau layanan ke toko Anda.";
+
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Mulai berjualan hari ini dengan menambahkan produk pertama ke toko Anda.";
 
@@ -6420,6 +6486,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "Diagram pendapatan toko: Sumbu Y";
+
+/* Title of the store setup progress view. */
+"Store setup" = "Penyiapan toko";
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Coretan";
@@ -7896,6 +7965,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Lihat add-on dari perangkat Anda!";
 
+/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
+"View all (%1$d)" = "Lihat semua (%1$d)";
+
 /* Title of the feedback banner on the coupon list screen */
 "View and edit coupons" = "Lihat dan edit kupon";
 
@@ -7928,6 +8000,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Virtual Product label in Product Settings */
 "Virtual Product" = "Produk Virtual";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"Virtual product" = "Produk virtual";
 
 /* Product Visibility navigation title
    Visibility label in Product Settings */

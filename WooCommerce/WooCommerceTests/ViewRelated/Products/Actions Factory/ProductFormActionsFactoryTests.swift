@@ -604,13 +604,35 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         }
     }
 
-    func test_view_model_for_bundle_product_without_price() {
+    func test_view_model_for_bundle_product_with_feature_flag_disabled() {
         // Arrange
         let product = Fixtures.bundleProduct
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isBundledProductsEnabled: false)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.reviews,
+                                                                       .inventorySettings(editable: false),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: false)]
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
+        assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
+    }
+
+    func test_view_model_for_bundle_product_without_price_with_feature_flag_enabled() {
+        // Arrange
+        let product = Fixtures.bundleProduct
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isBundledProductsEnabled: true)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -627,13 +649,13 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
-    func test_view_model_for_bundle_product_with_price() {
+    func test_view_model_for_bundle_product_with_price_with_feature_flag_enabled() {
         // Arrange
         let product = Fixtures.bundleProduct.copy(regularPrice: "2")
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isBundledProductsEnabled: true)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -717,6 +739,7 @@ private extension ProductFormActionsFactoryTests {
                                    isProductTypeActionEnabled: Bool = true,
                                    isCategoriesActionAlwaysEnabled: Bool = false,
                                    isDownloadableFilesSettingBased: Bool = true,
+                                   isBundledProductsEnabled: Bool = false,
                                    variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
             ProductFormActionsFactory(product: product,
                                       formType: formType,
@@ -728,6 +751,7 @@ private extension ProductFormActionsFactoryTests {
                                       isProductTypeActionEnabled: isProductTypeActionEnabled,
                                       isCategoriesActionAlwaysEnabled: isCategoriesActionAlwaysEnabled,
                                       isDownloadableFilesSettingBased: isDownloadableFilesSettingBased,
+                                      isBundledProductsEnabled: isBundledProductsEnabled,
                                       variationsPrice: variationsPrice)
         }
     }

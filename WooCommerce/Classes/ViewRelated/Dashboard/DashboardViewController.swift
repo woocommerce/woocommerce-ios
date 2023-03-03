@@ -340,6 +340,8 @@ private extension DashboardViewController {
     }
 
     func configureDashboardUIContainer() {
+        containerView.delegate = self
+
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).

@@ -28,7 +28,8 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
         return false
     }
 
-    private let loginFields: LoginFields
+    // set to non-private for testing purpose
+    let loginFields: LoginFields
     private let loginFacade: LoginFacade
     private let onLoginFailure: (Error) -> Void
     private let onLoginSuccess: (String) -> Void

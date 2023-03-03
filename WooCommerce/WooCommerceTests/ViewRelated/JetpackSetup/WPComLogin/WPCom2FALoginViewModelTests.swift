@@ -1,8 +1,13 @@
 import XCTest
 @testable import WooCommerce
-import class WordPressAuthenticator.LoginFields
+import WordPressAuthenticator
 
 final class WPCom2FALoginViewModelTests: XCTestCase {
+
+    override func setUp() {
+        WordPressAuthenticator.initializeAuthenticator()
+        super.setUp()
+    }
 
     func test_title_string_is_correct_when_requiresConnectionOnly_is_false() {
         // Given
@@ -100,5 +105,57 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
         //  Then
         XCTAssertTrue(viewModel.isValidCode)
+    }
+
+    func test_handleLogin_updates_loginFields_correctly() {
+        // Given
+        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
+                                               requiresConnectionOnly: false,
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
+
+        // When
+        viewModel.verificationCode = "113 567"
+        viewModel.handleLogin()
+
+        // Then
+        assertEqual(viewModel.strippedCode, viewModel.loginFields.multifactorCode)
+    }
+
+    func test_isLoggingIn_is_updated_correctly_and_onLoginFailure_is_triggered_when_login_fails() {
+        // Given
+        var errorCaught: Error? = nil
+        let expectedError = NSError(domain: "Test", code: 400)
+        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
+                                               requiresConnectionOnly: false,
+                                               onLoginFailure: { errorCaught = $0 },
+                                               onLoginSuccess: { _ in })
+
+        // When
+        viewModel.handleLogin()
+        XCTAssertTrue(viewModel.isLoggingIn)
+        viewModel.displayRemoteError(expectedError)
+
+        // Then
+        XCTAssertFalse(viewModel.isLoggingIn)
+        assertEqual(expectedError, errorCaught as? NSError)
+    }
+
+    func test_isLoggingIn_is_updated_correctly_and_onLoginSuccess_is_triggered_when_login_succeeds() {
+        // Given
+        var token: String? = nil
+        let expectedToken = "secret"
+        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
+                                               requiresConnectionOnly: false,
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { token = $0 })
+        // When
+        viewModel.handleLogin()
+        XCTAssertTrue(viewModel.isLoggingIn)
+        viewModel.finishedLogin(withAuthToken: expectedToken, requiredMultifactorCode: false)
+
+        // Then
+        XCTAssertFalse(viewModel.isLoggingIn)
+        assertEqual(token, expectedToken)
     }
 }

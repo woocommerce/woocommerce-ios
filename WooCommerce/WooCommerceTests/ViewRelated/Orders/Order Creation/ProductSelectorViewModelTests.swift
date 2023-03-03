@@ -24,6 +24,22 @@ final class ProductSelectorViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_ProductSelectorViewModel_supportsMultipleSelection_is_false_on_initialization() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Then
+        XCTAssertFalse(viewModel.supportsMultipleSelection)
+    }
+
+    func test_ProductSelectorViewModel_toggleAllVariationsOnSelection_is_true_on_initialization() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Then
+        XCTAssertTrue(viewModel.toggleAllVariationsOnSelection)
+    }
+
     func test_view_model_adds_product_rows_with_unchangeable_quantity() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)

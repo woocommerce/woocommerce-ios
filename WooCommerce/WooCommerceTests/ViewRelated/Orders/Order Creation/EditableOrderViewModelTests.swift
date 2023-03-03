@@ -21,6 +21,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "pending")
         XCTAssertEqual(viewModel.productRows.count, 0)
+        XCTAssertEqual(viewModel.selectedProducts.count, 0)
+        XCTAssertEqual(viewModel.selectedProductVariations.count, 0)
     }
 
     func test_edition_view_model_inits_with_expected_values() {

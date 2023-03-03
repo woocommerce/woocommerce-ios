@@ -1,6 +1,5 @@
 import Combine
 import UIKit
-import WordPressShared
 import WordPressAuthenticator
 
 /// View model for `WPComEmailLoginView`
@@ -9,8 +8,6 @@ final class WPComEmailLoginViewModel: ObservableObject {
     let subtitleString: String
 
     @Published var emailAddress: String = ""
-    /// Local validation on the email field.
-    @Published private(set) var isEmailValid: Bool = false
 
     let termsAttributedString: NSAttributedString
 
@@ -52,7 +49,6 @@ final class WPComEmailLoginViewModel: ObservableObject {
                                             linkURL: Constants.jetpackShareDetailsURL + siteURL)
             return mutableAttributedText
         }()
-        observeEmailField(debounceDuration: debounceDuration)
     }
 
     @MainActor
@@ -68,7 +64,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
             }, failure: { [weak self] error in
                 DDLogError("⛔️ Error checking for passwordless account: \(error)")
                 continuation.resume()
-                self?.handleAccountCheckError(error)
+                self?.onError(Localization.errorCheckingWPComAccount)
             })
         }
     }
@@ -105,46 +101,12 @@ final class WPComEmailLoginViewModel: ObservableObject {
     }
 }
 
-private extension WPComEmailLoginViewModel {
-    func observeEmailField(debounceDuration: Double) {
-        emailFieldSubscription = $emailAddress
-            .removeDuplicates()
-            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
-            .sink { [weak self] email in
-                self?.validateEmail(email)
-            }
-    }
-
-    func validateEmail(_ email: String) {
-        isEmailValid = EmailFormatValidator.validate(string: email)
-    }
-
-    /// Handles the result of `accountService`'s `isPasswordlessAccount`.
-    /// The implementation follows what have been done in `WordPressAuthenticator`.
-    /// Please update this when the API changes.
-    ///
-    func handleAccountCheckError(_ error: Error) {
-        let userInfo = (error as NSError).userInfo
-        let errorCode = userInfo[Constants.wpcomErrorCodeKey] as? String
-
-        if errorCode == Constants.emailLoginNotAllowedCode {
-            // If we get this error, we know we have a WordPress.com user but their
-            // email address is flagged as suspicious.  They need to login via their
-            // username instead.
-            #warning("TODO: handle username login")
-        } else {
-            onError(error.prepareErrorMessage(fallback: Localization.errorCheckingWPComAccount))
-        }
-    }
-}
-
 extension WPComEmailLoginViewModel {
     private enum Constants {
         static let fieldDebounceDuration = 0.3
         static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
         static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
         static let wpcomErrorCodeKey = "WordPressComRestApiErrorCodeKey"
-        static let emailLoginNotAllowedCode = "email_login_not_allowed"
     }
 
     enum Localization {

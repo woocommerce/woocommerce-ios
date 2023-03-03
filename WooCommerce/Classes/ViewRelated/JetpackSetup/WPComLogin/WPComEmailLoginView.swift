@@ -87,7 +87,7 @@ struct WPComEmailLoginView: View {
                     }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPrimaryButtonLoading))
-                .disabled(!viewModel.isEmailValid)
+                .disabled(viewModel.emailAddress.isEmpty)
 
                 // Terms label
                 AttributedText(viewModel.termsAttributedString)
@@ -107,11 +107,11 @@ private extension WPComEmailLoginView {
 
     enum Localization {
         static let emailLabel = NSLocalizedString(
-            "Email address",
+            "Email address or Username",
             comment: "Label for the email field on the WPCom email login screen of the Jetpack setup flow."
         )
         static let enterEmail = NSLocalizedString(
-            "Enter email",
+            "Enter email or username",
             comment: "Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow."
         )
     }

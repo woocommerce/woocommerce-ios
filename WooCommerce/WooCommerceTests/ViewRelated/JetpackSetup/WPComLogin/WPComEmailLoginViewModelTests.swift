@@ -85,42 +85,4 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                     WPComEmailLoginViewModel.Localization.shareDetails)
         assertEqual(text, expectedString)
     }
-
-    func test_isEmailValid_is_false_for_invalid_email() {
-        // Given
-        let siteURL = "https://example.com"
-        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
-                                                 requiresConnectionOnly: true,
-                                                 debounceDuration: 0,
-                                                 onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _ in },
-                                                 onError: { _ in })
-
-        // When
-        viewModel.emailAddress = "random@mail."
-
-        // Then
-        waitUntil {
-            viewModel.isEmailValid == false
-        }
-    }
-
-    func test_isEmailValid_is_true_for_valid_email() {
-        // Given
-        let siteURL = "https://test.com"
-        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
-                                                 requiresConnectionOnly: true,
-                                                 debounceDuration: 0,
-                                                 onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _ in },
-                                                 onError: { _ in })
-
-        // When
-        viewModel.emailAddress = "random@example.com"
-
-        // Then
-        waitUntil {
-            viewModel.isEmailValid == true
-        }
-    }
 }

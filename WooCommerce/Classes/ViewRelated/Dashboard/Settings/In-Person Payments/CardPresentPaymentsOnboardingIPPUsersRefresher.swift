@@ -5,41 +5,26 @@ import Storage
 /// Refreshes the CPP onboarding state if there are IPP transactions stored
 ///
 class CardPresentPaymentsOnboardingIPPUsersRefresher {
-    private let storageManager: StorageManagerType
+    private let stores: StoresManager
     private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
 
-    private lazy var ordersResultsController: ResultsController<StorageOrder> = {
-        return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [])
-    }()
-
-    init(storageManager: StorageManagerType = ServiceLocator.storageManager,
+    init(stores: StoresManager = ServiceLocator.stores,
          cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase()) {
-        self.storageManager = storageManager
+        self.stores = stores
         self.cardPresentPaymentsOnboardingUseCase = cardPresentPaymentsOnboardingUseCase
-
-        try? ordersResultsController.performFetch()
     }
 
     func refreshIPPUsersOnboardingState() {
-        guard usedIPPBefore() else {
+        guard let siteID = stores.sessionManager.defaultStoreID else {
             return
         }
 
-        cardPresentPaymentsOnboardingUseCase.refresh()
-    }
-}
+        let action = AppSettingsAction.loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID) { [weak self] result in
+            if result {
+                self?.cardPresentPaymentsOnboardingUseCase.refresh()
+            }
+        }
 
-private extension CardPresentPaymentsOnboardingIPPUsersRefresher {
-    func usedIPPBefore() -> Bool {
-        let IPPTransactionsFound = ordersResultsController.fetchedObjects.filter({
-            $0.customFields.contains(where: { $0.key == Constants.receiptURLKey })})
-
-            return IPPTransactionsFound.count > 0
-    }
-}
-
-private extension CardPresentPaymentsOnboardingIPPUsersRefresher {
-    enum Constants {
-        static let receiptURLKey = "receipt_url"
+        stores.dispatch(action)
     }
 }

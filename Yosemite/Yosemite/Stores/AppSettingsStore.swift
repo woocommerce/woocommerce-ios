@@ -190,10 +190,10 @@ public class AppSettingsStore: Store {
             setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
         case .loadLastSelectedStatsTimeRange(let siteID, let onCompletion):
             loadLastSelectedStatsTimeRange(siteID: siteID, onCompletion: onCompletion)
-        case .loadInPersonPaymentTransactionFinishedValue(let siteID, let onCompletion):
-            loadInPersonPaymentTransactionFinishedValue(siteID: siteID, onCompletion: onCompletion)
-        case .setInPersonPaymentTransactionFinished(siteID: siteID):
-            setInPersonPaymentTransactionFinished(siteID: siteID)
+        case .loadSiteHasAtLeastOneIPPTransactionFinished(let siteID, let onCompletion):
+            loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID, onCompletion: onCompletion)
+        case .markSiteHasAtLeastOneIPPTransactionFinished(let siteID):
+            markSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID)
 
         }
     }
@@ -798,7 +798,13 @@ extension AppSettingsStore {
         }
     }
 
-    func loadInPersonPaymentTransactionFinishedValue(siteID: Int64, onCompletion: (Result<Bool, Error>) -> ()) {
+    func loadSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64, onCompletion: (Bool) -> Void) {
+        onCompletion(generalAppSettings.value(for: \.sitesWithAtLeastOneIPPTransactionFinished).contains(siteID))
+    }
+
+    func markSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64) {
+        let newArray = generalAppSettings.settings.sitesWithAtLeastOneIPPTransactionFinished + [siteID]
+        try? generalAppSettings.setValue(newArray, for: \.sitesWithAtLeastOneIPPTransactionFinished)
 
     }
 

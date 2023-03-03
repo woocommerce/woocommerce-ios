@@ -11,7 +11,8 @@ enum StoreOnboardingTask {
 
 /// View model for `StoreOnboardingView`.
 final class StoreOnboardingViewModel: ObservableObject {
-    struct TaskViewModel {
+    struct TaskViewModel: Identifiable, Equatable {
+        let id = UUID()
         let task: StoreOnboardingTask
         let isComplete: Bool
         let icon: UIImage
@@ -23,6 +24,12 @@ final class StoreOnboardingViewModel: ObservableObject {
         taskViewModels
             .filter({ $0.isComplete })
             .count
+    }
+
+    var tasksForDisplay: [TaskViewModel] {
+        let maxNumberOfTasksToDisplayInCollapsedMode = 3
+        let incompleteTasks = taskViewModels.filter({ !$0.isComplete })
+        return isExpanded ? incompleteTasks : Array(incompleteTasks.prefix(maxNumberOfTasksToDisplayInCollapsedMode))
     }
 
     let isExpanded: Bool

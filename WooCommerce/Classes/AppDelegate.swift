@@ -46,6 +46,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         appCoordinator?.tabBarController
     }
 
+    /// Coordinates the Jetpack setup flow for users authenticated without Jetpack.
+    ///
+    private var jetpackSetupCoordinator: JetpackSetupCoordinator?
+
     private let universalLinkRouter = UniversalLinkRouter.defaultUniversalLinkRouter()
 
     // MARK: - AppDelegate Methods
@@ -105,6 +109,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fatalError()
         }
 
+        if ServiceLocator.stores.isAuthenticatedWithoutWPCom,
+           let site = ServiceLocator.stores.sessionManager.defaultSite {
+            let coordinator = JetpackSetupCoordinator(site: site, rootViewController: rootViewController)
+            jetpackSetupCoordinator = coordinator
+            return coordinator.handleAuthenticationUrl(url)
+        }
         return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
     }
 

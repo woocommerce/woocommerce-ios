@@ -42,9 +42,13 @@ struct TopPerformersView: View {
 
             // Rows
             ForEach(rows.indexed(), id: \.0.self) { index, row in
-
-                // Do not render the divider for the last row.
-                TopPerformersRow(data: row, showDivider: index < rows.count - 1)
+                Button {
+                    row.tapHandler?()
+                } label: {
+                    // Do not render the divider for the last row.
+                    TopPerformersRow(data: row, showDivider: index < rows.count - 1)
+                }
+                .disabled(row.tapHandler == nil)
             }
             .redacted(reason: isRedacted ? .placeholder : [])
             .shimmering(active: isRedacted)
@@ -82,6 +86,17 @@ struct TopPerformersRow: View {
         /// Item Value
         ///
         let value: String
+
+        /// Handles the tap action if the row is tappable. If the row is not tappable, `nil` is set.
+        let tapHandler: (() -> Void)?
+
+        init(imageURL: URL? = nil, name: String, details: String, value: String, tapHandler: (() -> Void)? = nil) {
+            self.imageURL = imageURL
+            self.name = name
+            self.details = details
+            self.value = value
+            self.tapHandler = tapHandler
+        }
     }
 
     /// Row  information to display.

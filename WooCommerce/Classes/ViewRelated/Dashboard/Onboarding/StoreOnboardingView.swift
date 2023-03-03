@@ -1,57 +1,141 @@
 import SwiftUI
 
+/// Hosting controller for `StoreOnboardingView`.
+///
+final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboardingView> {
+    private let viewModel: StoreOnboardingViewModel
+
+    init(viewModel: StoreOnboardingViewModel,
+         taskTapped: @escaping (StoreOnboardingTask) -> Void,
+         viewAllTapped: (() -> Void)? = nil,
+         shareFeedbackAction: (() -> Void)? = nil) {
+        self.viewModel = viewModel
+        super.init(rootView: StoreOnboardingView(viewModel: viewModel,
+                                                 taskTapped: taskTapped,
+                                                 viewAllTapped: viewAllTapped,
+                                                 shareFeedbackAction: shareFeedbackAction))
+    }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        configureNavigationBarAppearance()
+    }
+
+    /// Shows a transparent navigation bar without a bottom border.
+    private func configureNavigationBarAppearance() {
+        guard viewModel.isExpanded else {
+            return
+        }
+
+        configureTransparentNavigationBar()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .closeButton, style: .plain, target: self, action: #selector(dismissView))
+    }
+
+    @objc
+    private func dismissView() {
+        dismiss(animated: true)
+    }
+}
+
 /// Shows a list of onboarding tasks for store setup with completion state.
 struct StoreOnboardingView: View {
     private let viewModel: StoreOnboardingViewModel
     private let taskTapped: (StoreOnboardingTask) -> Void
     private let viewAllTapped: (() -> Void)?
+    private let shareFeedbackAction: (() -> Void)?
 
     init(viewModel: StoreOnboardingViewModel,
          taskTapped: @escaping (StoreOnboardingTask) -> Void,
-         viewAllTapped: (() -> Void)? = nil) {
+         viewAllTapped: (() -> Void)? = nil,
+         shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.taskTapped = taskTapped
         self.viewAllTapped = viewAllTapped
+        self.shareFeedbackAction = shareFeedbackAction
     }
 
     var body: some View {
-        VStack(alignment: viewModel.isExpanded ? .center : .leading, spacing: Layout.verticalSpacing) {
-            // Progress view
-            StoreSetupProgressView(isExpanded: viewModel.isExpanded,
-                                   totalNumberOfTasks: viewModel.taskViewModels.count,
-                                   numberOfTasksCompleted: viewModel.numberOfTasksCompleted)
+        if viewModel.isExpanded {
+            ScrollView {
+                content
+            }
+        } else {
+            content
+        }
+    }
 
-            // Task list
-            VStack(alignment: .leading, spacing: Layout.verticalSpacingBetweenTasks) {
-                ForEach(Array(viewModel.taskViewModels.enumerated()), id: \.offset) { index, taskViewModel in
-                    let isLastTask = index == viewModel.taskViewModels.count - 1
+    private var content: some View {
+        VStack {
+            Color(uiColor: .listBackground)
+                .frame(height: Layout.VerticalSpacing.collapsedMode)
+                .renderedIf(!viewModel.isExpanded)
 
-                    StoreOnboardingTaskView(viewModel: taskViewModel,
-                                            showDivider: !isLastTask) { task in
-                        taskTapped(task)
+            let verticalSpacing = viewModel.isExpanded ? Layout.VerticalSpacing.expandedMode : Layout.VerticalSpacing.collapsedMode
+            VStack(alignment: viewModel.isExpanded ? .center : .leading, spacing: verticalSpacing) {
+                // Progress view
+                StoreSetupProgressView(isExpanded: viewModel.isExpanded,
+                                       totalNumberOfTasks: viewModel.taskViewModels.count,
+                                       numberOfTasksCompleted: viewModel.numberOfTasksCompleted,
+                                       shareFeedbackAction: shareFeedbackAction)
+
+                // Task list
+                VStack(alignment: .leading, spacing: Layout.verticalSpacingBetweenTasks) {
+                    ForEach(viewModel.tasksForDisplay) { taskViewModel in
+                        let isLastTask = taskViewModel == viewModel.tasksForDisplay.last
+
+                        StoreOnboardingTaskView(viewModel: taskViewModel,
+                                                showDivider: !isLastTask) { task in
+                            taskTapped(task)
+                        }
                     }
                 }
-            }
 
-            // View all button
-            Button {
-                viewAllTapped?()
-            } label: {
-                Text(String(format: Localization.viewAll, viewModel.taskViewModels.count))
-                    .fontWeight(.semibold)
-                    .foregroundColor(.init(uiColor: .accent))
-                    .subheadlineStyle()
+                // View all button
+                viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
+                    .renderedIf(!viewModel.isExpanded)
+
+                Spacer()
+                    .renderedIf(viewModel.isExpanded)
             }
-            .renderedIf(!viewModel.isExpanded)
+            .padding(insets: Layout.insets)
+            .if(!viewModel.isExpanded) { $0.background(Color(uiColor: .listForeground(modal: false))) }
+
+            Color(uiColor: .listBackground)
+                .frame(height: Layout.VerticalSpacing.collapsedMode)
+                .renderedIf(!viewModel.isExpanded)
         }
-        .padding(.horizontal, insets: Layout.insets)
+    }
+}
+
+// MARK: Helper methods
+//
+private extension StoreOnboardingView {
+    @ViewBuilder
+    func viewAllButton(action: (() -> Void)?, text: String) -> some View {
+        Button {
+            action?()
+        } label: {
+            Text(text)
+                .fontWeight(.semibold)
+                .foregroundColor(.init(uiColor: .accent))
+                .subheadlineStyle()
+        }
     }
 }
 
 private extension StoreOnboardingView {
     enum Layout {
         static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
-        static let verticalSpacing: CGFloat = 16
+        enum VerticalSpacing {
+            static let collapsedMode: CGFloat = 16
+            static let expandedMode: CGFloat = 40
+        }
         static let verticalSpacingBetweenTasks: CGFloat = 4
     }
 

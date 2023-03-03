@@ -372,7 +372,7 @@ private extension SettingsViewController {
 
         if site.isNonJetpackSite, let navigationController {
             let coordinator = JetpackSetupCoordinator(site: site,
-                                                      navigationController: navigationController)
+                                                      rootViewController: navigationController)
             self.jetpackSetupCoordinator = coordinator
             return coordinator.showBenefitModal()
         }

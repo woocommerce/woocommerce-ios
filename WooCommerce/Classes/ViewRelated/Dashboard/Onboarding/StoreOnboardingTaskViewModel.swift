@@ -37,11 +37,6 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
             subtitle = ""
         }
     }
-
-    static func placeHolder() -> Self {
-        .init(task: .init(isComplete: true,
-                          type: .launchStore))
-    }
 }
 
 

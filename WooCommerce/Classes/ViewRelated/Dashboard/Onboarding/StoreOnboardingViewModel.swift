@@ -89,3 +89,10 @@ private extension StoreOnboardingViewModel {
         }
     }
 }
+
+private extension StoreOnboardingTaskViewModel {
+    static func placeHolder() -> Self {
+        .init(task: .init(isComplete: true,
+                          type: .launchStore))
+    }
+}

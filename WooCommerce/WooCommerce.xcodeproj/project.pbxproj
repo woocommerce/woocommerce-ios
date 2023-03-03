@@ -1875,6 +1875,8 @@
 		DE4D23A429B0A9FA003A4B5D /* WPComPasswordLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23A329B0A9FA003A4B5D /* WPComPasswordLoginView.swift */; };
 		DE4D23A629B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23A529B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift */; };
 		DE4D23A829B0D11E003A4B5D /* WPComPasswordLoginViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23A729B0D11E003A4B5D /* WPComPasswordLoginViewModelTests.swift */; };
+		DE4D23AA29B1B0CA003A4B5D /* WPCom2FALoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23A929B1B0CA003A4B5D /* WPCom2FALoginView.swift */; };
+		DE4D23AE29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23AD29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift */; };
 		DE4D308928507B5B00E36ADD /* CouponCreationSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D308828507B5B00E36ADD /* CouponCreationSuccess.swift */; };
 		DE4FB7732812AE96003D20D6 /* FilterListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4FB7722812AE96003D20D6 /* FilterListView.swift */; };
 		DE50294928BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50294828BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift */; };
@@ -4024,6 +4026,8 @@
 		DE4D23A329B0A9FA003A4B5D /* WPComPasswordLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComPasswordLoginView.swift; sourceTree = "<group>"; };
 		DE4D23A529B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComPasswordLoginViewModel.swift; sourceTree = "<group>"; };
 		DE4D23A729B0D11E003A4B5D /* WPComPasswordLoginViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComPasswordLoginViewModelTests.swift; sourceTree = "<group>"; };
+		DE4D23A929B1B0CA003A4B5D /* WPCom2FALoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPCom2FALoginView.swift; sourceTree = "<group>"; };
+		DE4D23AD29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPCom2FALoginViewModel.swift; sourceTree = "<group>"; };
 		DE4D308828507B5B00E36ADD /* CouponCreationSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponCreationSuccess.swift; sourceTree = "<group>"; };
 		DE4FB7722812AE96003D20D6 /* FilterListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterListView.swift; sourceTree = "<group>"; };
 		DE50294828BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "WordPressOrgCredentials+Authenticator.swift"; path = "Classes/Authentication/WordPressOrgCredentials+Authenticator.swift"; sourceTree = SOURCE_ROOT; };
@@ -9377,6 +9381,8 @@
 				DE4D239D29B073B1003A4B5D /* WPComMagicLinkViewModel.swift */,
 				DE4D23A329B0A9FA003A4B5D /* WPComPasswordLoginView.swift */,
 				DE4D23A529B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift */,
+				DE4D23A929B1B0CA003A4B5D /* WPCom2FALoginView.swift */,
+				DE4D23AD29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift */,
 			);
 			path = WPComLogin;
 			sourceTree = "<group>";
@@ -10944,6 +10950,7 @@
 				DEC2962326BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift in Sources */,
 				E1E649EB28461EDF0070B194 /* BetaFeaturesConfiguration.swift in Sources */,
 				26309F17277D0AEA0012797F /* SafeAreaInsetsKey.swift in Sources */,
+				DE4D23AA29B1B0CA003A4B5D /* WPCom2FALoginView.swift in Sources */,
 				023D1DD124AB2D05002B03A3 /* ProductListSelectorViewController.swift in Sources */,
 				0206483A23FA4160008441BB /* OrdersRootViewController.swift in Sources */,
 				022BF7FD23B9D708000A1DFB /* InProgressViewController.swift in Sources */,
@@ -11458,6 +11465,7 @@
 				D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
 				57532CAC24BFF4DA0032B84E /* MessageComposerPresenter.swift in Sources */,
+				DE4D23AE29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift in Sources */,
 				0270F47824D006F60005210A /* ProductFormPresentationStyle.swift in Sources */,
 				EECB7EE62864647F0028C888 /* ProductImagesProductIDUpdater.swift in Sources */,
 				FE28F7182684EE6A004465C7 /* RoleErrorViewModel.swift in Sources */,

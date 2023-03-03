@@ -3,17 +3,17 @@ import SwiftUI
 /// This view controller is used when no reader is connected. It assists
 /// the merchant in connecting to a reader.
 ///
-final class CardReaderSettingsSearchingViewController: UIHostingController<CardReaderSettingsSearchingView>, CardReaderSettingsViewModelPresenter {
+final class CardReaderSettingsSearchingViewController: UIHostingController<CardReaderSettingsSearchingView>, PaymentSettingsFlowViewModelPresenter {
     /// If we know reader(s), begin search automatically once each time this VC becomes visible
     ///
     private var didBeginSearchAutomatically = false
 
-    private var viewModel: CardReaderSettingsSearchingViewModel?
+    private var viewModel: CardReaderSettingsSearchingViewModel
 
     /// Connection Controller (helps connect readers)
     ///
     private lazy var connectionController: LegacyCardReaderConnectionController? = {
-        guard let viewModel = viewModel, let knownReaderProvider = viewModel.knownReaderProvider else {
+        guard let knownReaderProvider = viewModel.knownReaderProvider else {
             return nil
         }
 
@@ -26,29 +26,28 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
         )
     }()
 
-    required init?(coder: NSCoder) {
-        super.init(coder: coder, rootView: CardReaderSettingsSearchingView())
+    init?(viewModel: PaymentSettingsFlowPresentedViewModel) {
+        guard let viewModel = viewModel as? CardReaderSettingsSearchingViewModel else {
+            return nil
+        }
+        self.viewModel = viewModel
+
+        super.init(rootView: CardReaderSettingsSearchingView())
+        configureView()
+    }
+
+    private func configureView() {
         rootView.connectClickAction = {
             self.searchAndConnect()
         }
-        rootView.showURL = {url in
+        rootView.showURL = { url in
             WebviewHelper.launch(url, with: self)
         }
+        rootView.learnMoreUrl = viewModel.learnMoreURL
     }
 
-    /// Accept our viewmodel and listen for changes on it
-    ///
-    func configure(viewModel: CardReaderSettingsPresentedViewModel) {
-        self.viewModel = viewModel as? CardReaderSettingsSearchingViewModel
-
-        guard self.viewModel != nil else {
-            DDLogError("Unexpectedly unable to downcast to CardReaderSettingsSearchingViewModel")
-            return
-        }
-
-        self.viewModel?.didUpdate = onViewModelDidUpdate
-
-        rootView.learnMoreUrl = self.viewModel?.learnMoreURL
+    required init?(coder: NSCoder) {
+        fatalError("Not implemented")
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -57,7 +56,7 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        viewModel?.didUpdate = nil
+        viewModel.didUpdate = nil
         didBeginSearchAutomatically = false
         super.viewWillDisappear(animated)
     }
@@ -79,14 +78,14 @@ private extension CardReaderSettingsSearchingViewController {
 
         /// Make sure there is no reader connected
         ///
-        let noReaderConnected = viewModel?.noConnectedReader == .isTrue
+        let noReaderConnected = viewModel.noConnectedReader == .isTrue
         guard noReaderConnected else {
             return
         }
 
         /// Make sure we have a known reader
         ///
-        guard let hasKnownReader = viewModel?.hasKnownReader(), hasKnownReader else {
+        guard viewModel.hasKnownReader() else {
             return
         }
 
@@ -137,9 +136,9 @@ struct CardReaderSettingsSearchingView: View {
                 .frame(height: isCompact ? 80 : 206)
                 .padding(.bottom, isCompact ? 16 : 32)
 
-            Hint(title: Localization.hintOneTitle, text: Localization.hintOne)
-            Hint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
-            Hint(title: Localization.hintThreeTitle, text: Localization.hintThree)
+            PaymentSettingsFlowHint(title: Localization.hintOneTitle, text: Localization.hintOne)
+            PaymentSettingsFlowHint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
+            PaymentSettingsFlowHint(title: Localization.hintThreeTitle, text: Localization.hintThree)
 
             Spacer()
 
@@ -169,26 +168,6 @@ struct CardReaderSettingsSearchingView: View {
                     content
                 }
             }
-    }
-}
-
-private struct Hint: View {
-    let title: String
-    let text: String
-
-    var body: some View {
-        HStack {
-            Text(title)
-                .font(.callout)
-                .padding(.all, 12)
-                .background(Color(UIColor.systemGray6))
-                .clipShape(Circle())
-            Text(text)
-                .font(.callout)
-                .padding(.leading, 16)
-            Spacer()
-        }
-            .padding(.horizontal, 8)
     }
 }
 

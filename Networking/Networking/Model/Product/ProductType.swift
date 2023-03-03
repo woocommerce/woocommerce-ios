@@ -9,6 +9,7 @@ public enum ProductType: Codable, Hashable, GeneratedFakeable {
     case affiliate
     case variable
     case subscription
+    case bundle
     case custom(String) // in case there are extensions modifying product types
 }
 
@@ -31,6 +32,8 @@ extension ProductType: RawRepresentable {
             self = .variable
         case Keys.subscription:
             self = .subscription
+        case Keys.bundle:
+            self = .bundle
         default:
             self = .custom(rawValue)
         }
@@ -45,6 +48,7 @@ extension ProductType: RawRepresentable {
         case .affiliate:            return Keys.affiliate
         case .variable:             return Keys.variable
         case .subscription:         return Keys.subscription
+        case .bundle:               return Keys.bundle
         case .custom(let payload):  return payload
         }
     }
@@ -63,6 +67,8 @@ extension ProductType: RawRepresentable {
             return NSLocalizedString("Variable", comment: "Display label for variable product type.")
         case .subscription:
             return NSLocalizedString("Subscription", comment: "Display label for subscription product type.")
+        case .bundle:
+            return NSLocalizedString("Bundle", comment: "Display label for bundle product type.")
         case .custom(let payload):
             return payload // unable to localize at runtime.
         }
@@ -78,4 +84,5 @@ private enum Keys {
     static let affiliate    = "external"
     static let variable     = "variable"
     static let subscription = "subscription"
+    static let bundle       = "bundle"
 }

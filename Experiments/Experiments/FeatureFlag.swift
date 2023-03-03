@@ -75,6 +75,8 @@ public enum FeatureFlag: Int {
     case inAppPurchases
 
     /// Enables Tap to Pay on iPhone flow in In-Person Payments, on eligible devices.
+    /// This flag needs to be retained, as we cannot enable TTPoI on the Enterprise certificate,
+    /// so `.alpha` builds must be excluded.
     ///
     case tapToPayOnIPhone
 

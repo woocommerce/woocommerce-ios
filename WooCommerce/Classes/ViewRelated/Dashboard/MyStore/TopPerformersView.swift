@@ -27,13 +27,6 @@ struct TopPerformersView: View {
     ///
     @State private var rowTextMargin: CGFloat = 0
 
-    init(itemTitle: String, valueTitle: String, rows: [TopPerformersRow.Data], isRedacted: Bool) {
-        self.itemTitle = itemTitle
-        self.valueTitle = valueTitle
-        self.rows = rows
-        self.isRedacted = isRedacted
-    }
-
     var body: some View {
         VStack() {
 

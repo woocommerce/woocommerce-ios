@@ -1878,6 +1878,7 @@
 		DE4D23AA29B1B0CA003A4B5D /* WPCom2FALoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23A929B1B0CA003A4B5D /* WPCom2FALoginView.swift */; };
 		DE4D23AE29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23AD29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift */; };
 		DE4D23B029B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23AF29B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift */; };
+		DE4D23B229B21D4A003A4B5D /* Error+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23B129B21D4A003A4B5D /* Error+Woo.swift */; };
 		DE4D308928507B5B00E36ADD /* CouponCreationSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D308828507B5B00E36ADD /* CouponCreationSuccess.swift */; };
 		DE4FB7732812AE96003D20D6 /* FilterListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4FB7722812AE96003D20D6 /* FilterListView.swift */; };
 		DE50294928BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50294828BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift */; };
@@ -4030,6 +4031,7 @@
 		DE4D23A929B1B0CA003A4B5D /* WPCom2FALoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPCom2FALoginView.swift; sourceTree = "<group>"; };
 		DE4D23AD29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPCom2FALoginViewModel.swift; sourceTree = "<group>"; };
 		DE4D23AF29B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPCom2FALoginViewModelTests.swift; sourceTree = "<group>"; };
+		DE4D23B129B21D4A003A4B5D /* Error+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Woo.swift"; sourceTree = "<group>"; };
 		DE4D308828507B5B00E36ADD /* CouponCreationSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponCreationSuccess.swift; sourceTree = "<group>"; };
 		DE4FB7722812AE96003D20D6 /* FilterListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterListView.swift; sourceTree = "<group>"; };
 		DE50294828BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "WordPressOrgCredentials+Authenticator.swift"; path = "Classes/Authentication/WordPressOrgCredentials+Authenticator.swift"; sourceTree = SOURCE_ROOT; };
@@ -8460,6 +8462,7 @@
 				DE61978A28991F0E005E4362 /* WKWebView+Authenticated.swift */,
 				028CB70E290138EF00331C09 /* Publisher+Concurrency.swift */,
 				DE4D239729ADF8E3003A4B5D /* WordPressAuthenticator+Woo.swift */,
+				DE4D23B129B21D4A003A4B5D /* Error+Woo.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -11394,6 +11397,7 @@
 				45B4F0262860BD0A00F3B16E /* WCShipCTAView.swift in Sources */,
 				DEF13C522963D0B20024A02B /* PostSiteCredentialLoginChecker.swift in Sources */,
 				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
+				DE4D23B229B21D4A003A4B5D /* Error+Woo.swift in Sources */,
 				023D692E2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift in Sources */,
 				CC3B35DD28E5A6EA0036B097 /* ReviewReplyViewModel.swift in Sources */,
 				CC72BB6427BD842500837876 /* DisclosureIndicator.swift in Sources */,

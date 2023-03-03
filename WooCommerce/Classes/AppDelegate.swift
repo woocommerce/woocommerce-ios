@@ -73,9 +73,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
 
-        // Cache onboarding state to speed IPP process
-        refreshCardPresentPaymentsOnboardingIfNeeded()
-
         // Since we are using Injection for refreshing the content of the app in debug mode,
         // we are going to enable Inject.animation that will be used when
         // ever new source code is injected into our application.
@@ -179,6 +176,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If the application was previously in the background, optionally refresh the user interface.
 
         RequirementsChecker.checkMinimumWooVersionForDefaultStore()
+
+        // Cache onboarding state to speed IPP process
+        refreshCardPresentPaymentsOnboardingIfNeeded()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

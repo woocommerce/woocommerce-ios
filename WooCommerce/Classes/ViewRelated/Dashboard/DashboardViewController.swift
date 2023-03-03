@@ -529,7 +529,11 @@ private extension DashboardViewController {
     }
 
     func showOnboardingCard() {
-        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false),
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false, siteID: siteID),
                                                                      taskTapped: { [weak self] task in
             guard let self,
                   let navigationController = self.navigationController,

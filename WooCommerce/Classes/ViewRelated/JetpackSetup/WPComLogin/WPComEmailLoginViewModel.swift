@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import WordPressShared
+import WordPressAuthenticator
 
 /// View model for `WPComEmailLoginView`
 final class WPComEmailLoginViewModel: ObservableObject {
@@ -13,11 +14,24 @@ final class WPComEmailLoginViewModel: ObservableObject {
 
     let termsAttributedString: NSAttributedString
 
+    private let accountService: WordPressComAccountService
+    private let onPasswordUIRequest: (String) -> Void
+    private let onMagicLinkUIRequest: (String) -> Void
+    private let onError: (String) -> Void
+
     private var emailFieldSubscription: AnyCancellable?
 
     init(siteURL: String,
          requiresConnectionOnly: Bool,
-         debounceDuration: Double = Constants.fieldDebounceDuration) {
+         debounceDuration: Double = Constants.fieldDebounceDuration,
+         onPasswordUIRequest: @escaping (String) -> Void,
+         onMagicLinkUIRequest: @escaping (String) -> Void,
+         onError: @escaping (String) -> Void) {
+        self.accountService = WordPressComAccountService()
+        self.onPasswordUIRequest = onPasswordUIRequest
+        self.onMagicLinkUIRequest = onMagicLinkUIRequest
+        self.onError = onError
+
         self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
         self.subtitleString = requiresConnectionOnly ? Localization.loginToConnect : Localization.loginToInstall
         self.termsAttributedString = {
@@ -40,6 +54,55 @@ final class WPComEmailLoginViewModel: ObservableObject {
         }()
         observeEmailField(debounceDuration: debounceDuration)
     }
+
+    @MainActor
+    func checkWordPressComAccount(email: String) async {
+        await withCheckedContinuation { continuation -> Void in
+            accountService.isPasswordlessAccount(username: email, success: { [weak self] passwordless in
+                guard let self else {
+                    return continuation.resume()
+                }
+                self.startAuthentication(email: email, isPasswordlessAccount: passwordless) {
+                    continuation.resume()
+                }
+            }, failure: { [weak self] error in
+                DDLogError("⛔️ Error checking for passwordless account: \(error)")
+                continuation.resume()
+                self?.handleAccountCheckError(error)
+            })
+        }
+    }
+
+    func startAuthentication(email: String, isPasswordlessAccount: Bool, onCompletion: @escaping () -> Void) {
+        if isPasswordlessAccount {
+            Task { @MainActor in
+                await requestAuthenticationLink(email: email)
+                onCompletion()
+            }
+        } else {
+            onPasswordUIRequest(email)
+            onCompletion()
+        }
+    }
+
+    @MainActor
+    func requestAuthenticationLink(email: String) async {
+        await withCheckedContinuation { continuation in
+            accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: { [weak self] in
+                guard let self else {
+                    return continuation.resume()
+                }
+                self.onMagicLinkUIRequest(email)
+                continuation.resume()
+            }, failure: { [weak self] error in
+                guard let self else {
+                    return continuation.resume()
+                }
+                self.onError(error.prepareErrorMessage(fallback: Localization.errorRequestingAuthURL))
+                continuation.resume()
+            })
+        }
+    }
 }
 
 private extension WPComEmailLoginViewModel {
@@ -55,6 +118,24 @@ private extension WPComEmailLoginViewModel {
     func validateEmail(_ email: String) {
         isEmailValid = EmailFormatValidator.validate(string: email)
     }
+
+    /// Handles the result of `accountService`'s `isPasswordlessAccount`.
+    /// The implementation follows what have been done in `WordPressAuthenticator`.
+    /// Please update this when the API changes.
+    ///
+    func handleAccountCheckError(_ error: Error) {
+        let userInfo = (error as NSError).userInfo
+        let errorCode = userInfo[Constants.wpcomErrorCodeKey] as? String
+
+        if errorCode == Constants.emailLoginNotAllowedCode {
+            // If we get this error, we know we have a WordPress.com user but their
+            // email address is flagged as suspicious.  They need to login via their
+            // username instead.
+            #warning("TODO: handle username login")
+        } else {
+            onError(error.prepareErrorMessage(fallback: Localization.errorCheckingWPComAccount))
+        }
+    }
 }
 
 extension WPComEmailLoginViewModel {
@@ -62,6 +143,8 @@ extension WPComEmailLoginViewModel {
         static let fieldDebounceDuration = 0.3
         static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
         static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
+        static let wpcomErrorCodeKey = "WordPressComRestApiErrorCodeKey"
+        static let emailLoginNotAllowedCode = "email_login_not_allowed"
     }
 
     enum Localization {
@@ -92,6 +175,14 @@ extension WPComEmailLoginViewModel {
         static let shareDetails = NSLocalizedString(
             "share details",
             comment: "The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen."
+        )
+        static let errorCheckingWPComAccount = NSLocalizedString(
+            "Error checking the WordPress.com account associated with this email. Please try again.",
+            comment: "Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow."
+        )
+        static let errorRequestingAuthURL = NSLocalizedString(
+            "Error requesting authentication link for your account. Please try again.",
+            comment: "Message shown on the error alert displayed when requesting authentication link for the Jetpack setup flow fails"
         )
     }
 }

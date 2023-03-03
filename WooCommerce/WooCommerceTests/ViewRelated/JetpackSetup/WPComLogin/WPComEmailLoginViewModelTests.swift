@@ -6,7 +6,11 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
     func test_title_string_is_correct_when_requiresConnectionOnly_is_false() {
         // Given
         let siteURL = "https://example.com"
-        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: false)
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
+                                                 requiresConnectionOnly: false,
+                                                 onPasswordUIRequest: { _ in },
+                                                 onMagicLinkUIRequest: { _ in },
+                                                 onError: { _ in })
 
         // When
         let text = viewModel.titleString
@@ -18,7 +22,11 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
     func test_title_string_is_correct_when_requiresConnectionOnly_is_true() {
         // Given
         let siteURL = "https://example.com"
-        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true)
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
+                                                 requiresConnectionOnly: true,
+                                                 onPasswordUIRequest: { _ in },
+                                                 onMagicLinkUIRequest: { _ in },
+                                                 onError: { _ in })
 
         // When
         let text = viewModel.titleString
@@ -30,7 +38,11 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
     func test_subtitle_string_is_correct_when_requiresConnectionOnly_is_false() {
         // Given
         let siteURL = "https://example.com"
-        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: false)
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
+                                                 requiresConnectionOnly: false,
+                                                 onPasswordUIRequest: { _ in },
+                                                 onMagicLinkUIRequest: { _ in },
+                                                 onError: { _ in })
 
         // When
         let text = viewModel.subtitleString
@@ -42,7 +54,11 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
     func test_subtitle_string_is_correct_when_requiresConnectionOnly_is_true() {
         // Given
         let siteURL = "https://example.com"
-        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true)
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
+                                                 requiresConnectionOnly: true,
+                                                 onPasswordUIRequest: { _ in },
+                                                 onMagicLinkUIRequest: { _ in },
+                                                 onError: { _ in })
 
         // When
         let text = viewModel.subtitleString
@@ -54,7 +70,11 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
     func test_terms_string_is_correct() {
         // Given
         let siteURL = "https://example.com"
-        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true)
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
+                                                 requiresConnectionOnly: true,
+                                                 onPasswordUIRequest: { _ in },
+                                                 onMagicLinkUIRequest: { _ in },
+                                                 onError: { _ in })
 
         // When
         let text = viewModel.termsAttributedString.string
@@ -69,7 +89,12 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
     func test_isEmailValid_is_false_for_invalid_email() {
         // Given
         let siteURL = "https://example.com"
-        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true, debounceDuration: 0)
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
+                                                 requiresConnectionOnly: true,
+                                                 debounceDuration: 0,
+                                                 onPasswordUIRequest: { _ in },
+                                                 onMagicLinkUIRequest: { _ in },
+                                                 onError: { _ in })
 
         // When
         viewModel.emailAddress = "random@mail."
@@ -83,7 +108,12 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
     func test_isEmailValid_is_true_for_valid_email() {
         // Given
         let siteURL = "https://test.com"
-        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: true, debounceDuration: 0)
+        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
+                                                 requiresConnectionOnly: true,
+                                                 debounceDuration: 0,
+                                                 onPasswordUIRequest: { _ in },
+                                                 onMagicLinkUIRequest: { _ in },
+                                                 onError: { _ in })
 
         // When
         viewModel.emailAddress = "random@example.com"

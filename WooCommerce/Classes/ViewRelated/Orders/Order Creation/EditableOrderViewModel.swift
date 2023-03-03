@@ -177,11 +177,11 @@ final class EditableOrderViewModel: ObservableObject {
             toggleAllVariationsOnSelection: false,
             onProductSelected: { [weak self] product in
                 guard let self = self else { return }
-                self.addProductToOrder(product)
+                self.handleProduct(product)
             },
             onVariationSelected: { [weak self] variation, parentProduct in
                 guard let self = self else { return }
-                self.addProductVariationToOrder(variation, parent: parentProduct)
+                self.handleProductVariation(variation, parent: parentProduct)
         })
     }()
 

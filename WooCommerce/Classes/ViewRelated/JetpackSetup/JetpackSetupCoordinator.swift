@@ -20,6 +20,7 @@ final class JetpackSetupCoordinator: NSObject {
 
     private var benefitsController: JetpackBenefitsHostingController?
     private var loginNavigationController: LoginNavigationController?
+    private var loginCompletionHandler: (() -> Void)?
 
     init(site: Site,
          dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
@@ -256,11 +257,27 @@ private extension JetpackSetupCoordinator {
             siteURL: site.url,
             email: email,
             requiresConnectionOnly: requiresConnectionOnly,
-            onSubmit: { _ in
-                #warning("TODO: handle log in")
+            onSubmit: { [weak self] password in
+                await withCheckedContinuation { continuation in
+                    guard let self else {
+                        return continuation.resume()
+                    }
+                    self.handleLogin(email: email, password: password, onCompletion: {
+                        continuation.resume()
+                    })
+                }
             },
             onMagicLinkRequest: requestAuthenticationLink(email:))
         loginNavigationController?.pushViewController(viewController, animated: true)
+    }
+
+    func handleLogin(email: String, password: String, onCompletion: @escaping () -> Void) {
+        self.loginCompletionHandler = onCompletion
+        let loginFields = LoginFields()
+        loginFields.username = email
+        loginFields.password = password
+        loginFields.meta.userIsDotCom = true
+        loginFacade.signIn(with: loginFields)
     }
 }
 
@@ -325,10 +342,12 @@ extension JetpackSetupCoordinator: LoginFacadeDelegate {
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
+        loginCompletionHandler?()
         // TODO: prepare for Jetpack setup
     }
 
     func finishedLogin(withNonceAuthToken authToken: String) {
+        loginCompletionHandler?()
         // TODO: prepare for Jetpack setup
     }
 }

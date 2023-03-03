@@ -520,8 +520,7 @@ private extension DefaultProductFormTableViewModel {
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
-                                                        details: details,
-                                                        isActionable: false) // TODO-8954: Make actionable once bundled products screen is ready
+                                                        details: details)
     }
 }
 

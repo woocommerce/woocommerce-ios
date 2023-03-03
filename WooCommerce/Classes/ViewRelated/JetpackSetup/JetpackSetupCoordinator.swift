@@ -346,16 +346,20 @@ extension JetpackSetupCoordinator: LoginFacadeDelegate {
     }
 
     func displayRemoteError(_ error: Error) {
-        // TODO: show error alert
+        let message = prepareErrorMessage(for: error, fallback: Localization.errorRequestingAuthURL)
+        showAlert(message: message)
+        loginCompletionHandler?()
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
         loginCompletionHandler?()
+        DDLogInfo("✅ Ready for Jetpack setup - connection only: \(requiresConnectionOnly)")
         // TODO: prepare for Jetpack setup
     }
 
     func finishedLogin(withNonceAuthToken authToken: String) {
         loginCompletionHandler?()
+        DDLogInfo("✅ Ready for Jetpack setup - connection only: \(requiresConnectionOnly)")
         // TODO: prepare for Jetpack setup
     }
 }
@@ -386,6 +390,10 @@ private extension JetpackSetupCoordinator {
         static let pleaseWait = NSLocalizedString(
             "Please wait",
             comment: "Message on the loading view displayed when the magic link authentication for Jetpack setup is in progress"
+        )
+        static let errorLoggingIn = NSLocalizedString(
+            "Login failed. Please try again.",
+            comment: "Generic message shown on the error alert displayed when the WPCom login for the Jetpack setup flow fails"
         )
     }
 }

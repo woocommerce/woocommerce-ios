@@ -27,11 +27,11 @@ final class StoreOnboardingTasksRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(tasks.count, 8)
-        
+
         var index = 0
         let task1 = tasks[index]
         XCTAssertTrue(task1.isComplete)
-        XCTAssertEqual(task1.type, .unsupported)
+        XCTAssertEqual(task1.type, .unsupported("store_details"))
 
         index += 1
         let task2 = tasks[index]
@@ -46,17 +46,17 @@ final class StoreOnboardingTasksRemoteTests: XCTestCase {
         index += 1
         let task4 = tasks[index]
         XCTAssertFalse(task4.isComplete)
-        XCTAssertEqual(task4.type, .unsupported)
+        XCTAssertEqual(task4.type, .unsupported("tax"))
 
         index += 1
         let task5 = tasks[index]
         XCTAssertFalse(task5.isComplete)
-        XCTAssertEqual(task5.type, .unsupported)
+        XCTAssertEqual(task5.type, .unsupported("marketing"))
 
         index += 1
         let task6 = tasks[index]
         XCTAssertFalse(task6.isComplete)
-        XCTAssertEqual(task6.type, .unsupported)
+        XCTAssertEqual(task6.type, .unsupported("appearance"))
 
         index += 1
         let task7 = tasks[index]

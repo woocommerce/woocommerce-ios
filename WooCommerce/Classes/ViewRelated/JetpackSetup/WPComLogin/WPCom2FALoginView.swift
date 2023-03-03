@@ -1,5 +1,26 @@
 import SwiftUI
 
+/// Hosting controller for `WPCom2FALoginView`
+final class WPCom2FALoginHostingController: UIHostingController<WPCom2FALoginView> {
+
+    init(siteURL: String, requiresConnectionOnly: Bool,
+         onSubmit: @escaping (String) async -> Void,
+         onSMSRequest: @escaping () async -> Void) {
+        let viewModel = WPCom2FALoginViewModel(requiresConnectionOnly: requiresConnectionOnly)
+        super.init(rootView: WPCom2FALoginView(viewModel: viewModel, onSubmit: onSubmit, onSMSRequest: onSMSRequest))
+    }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureTransparentNavigationBar()
+    }
+}
+
 /// View for 2FA login screen of the custom WPCom login flow for Jetpack setup.
 struct WPCom2FALoginView: View {
     @ObservedObject private var viewModel: WPCom2FALoginViewModel
@@ -46,6 +67,7 @@ struct WPCom2FALoginView: View {
                 ))
                 .focused($isFieldFocused)
 
+                // Text me a code button
                 Button(action: {
                     Task { @MainActor in
                         isSMSRequestInProgress = true
@@ -109,6 +131,6 @@ struct WPCom2FALoginView_Previews: PreviewProvider {
     static var previews: some View {
         WPCom2FALoginView(viewModel: .init(requiresConnectionOnly: true),
                           onSubmit: { _ in },
-                           onSMSRequest: {})
+                          onSMSRequest: {})
     }
 }

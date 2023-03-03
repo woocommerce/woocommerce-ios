@@ -354,8 +354,8 @@ private extension DashboardViewController {
         containerView.translatesAutoresizingMaskIntoConstraints = false
 
         // Adds the refresh control to table view manually so that the refresh control always appears below the navigation bar title in
-        // large or normal size to be consistent with Dashboard and Orders tab with large titles workaround.
-        // If we do `tableView.refreshControl = refreshControl`, the refresh control appears in the navigation bar when large title is shown.
+        // large or normal size to be consistent with the products tab.
+        // If we do `scrollView.refreshControl = refreshControl`, the refresh control appears in the navigation bar when large title is shown.
         containerView.addSubview(refreshControl)
 
         NSLayoutConstraint.activate([
@@ -612,6 +612,13 @@ extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
 //
 private extension DashboardViewController {
     func onDashboardUIUpdate(forced: Bool, updatedDashboardUI: DashboardUI) {
+        defer {
+            Task { @MainActor [weak self] in
+                // Reloads data of the updated dashboard UI at the end.
+                await self?.reloadData(forced: true)
+            }
+        }
+
         // Optimistically hide the error banner any time the dashboard UI updates (not just pull to refresh)
         hideTopBannerView()
 

@@ -13,9 +13,6 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     // MARK: Public Interface
 
-    /// For navigation bar large title workaround.
-    weak var scrollDelegate: DashboardUIScrollDelegate?
-
     /// Time range for this period
     let timeRange: StatsTimeRangeV4
 
@@ -145,21 +142,6 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     }
 }
 
-extension StoreStatsAndTopPerformersPeriodViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        scrollDelegate?.dashboardUIScrollViewDidScroll(scrollView)
-    }
-
-    // TODO: move to scroll view in dashboard VC
-    /// We're not using scrollViewDidScroll because that gets executed even while
-    /// the app is being loaded for the first time.
-    ///
-    /// Note: This also covers pull-to-refresh
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        usageTracksEventEmitter.interacted()
-    }
-}
-
 // MARK: Public Interface
 extension StoreStatsAndTopPerformersPeriodViewController {
     func clearAllFields() {
@@ -233,17 +215,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         view.backgroundColor = Constants.backgroundColor
         view.pinSubviewToSafeArea(stackView)
 
-        // TODO-JC: refresh control support
-//        scrollView.refreshControl = refreshControl
-//        scrollView.delegate = self
-
-//        containerView.addSubview(stackView)
-//        containerView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
-//        containerView.pinSubviewToAllEdges(stackView)
-//        NSLayoutConstraint.activate([
-//            stackView.widthAnchor.constraint(equalTo: containerView.widthAnchor)
-//        ])
 
         childViewContrllers.forEach { childViewController in
             childViewController.view.translatesAutoresizingMaskIntoConstraints = false

@@ -7,9 +7,6 @@ import class WidgetKit.WidgetCenter
 /// Each time range tab is managed by a `StoreStatsAndTopPerformersPeriodViewController`.
 ///
 final class StoreStatsAndTopPerformersViewController: TabbedViewController {
-    /// For navigation bar large title workaround.
-    weak var scrollDelegate: DashboardUIScrollDelegate?
-
     // MARK: - DashboardUI protocol
 
     var displaySyncingError: () -> Void = {}
@@ -60,12 +57,12 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
 
     init(siteID: Int64,
          dashboardViewModel: DashboardViewModel,
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteID = siteID
         self.dashboardViewModel = dashboardViewModel
         self.pushNotificationsManager = pushNotificationsManager
 
-        let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         let currentDate = Date()
@@ -385,7 +382,6 @@ private extension StoreStatsAndTopPerformersViewController {
 
     func configurePeriodViewControllers() {
         periodVCs.forEach { (vc) in
-            vc.scrollDelegate = scrollDelegate
             vc.onPullToRefresh = { [weak self] in
                 await self?.onPullToRefresh()
             }

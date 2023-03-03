@@ -16,7 +16,10 @@ final class DashboardViewController: UIViewController {
     @Published private var dashboardUI: DashboardUI?
 
     private lazy var deprecatedStatsViewController = DeprecatedDashboardStatsViewController()
-    private lazy var storeStatsAndTopPerformersViewController = StoreStatsAndTopPerformersViewController(siteID: siteID, dashboardViewModel: viewModel)
+    private lazy var storeStatsAndTopPerformersViewController =
+    StoreStatsAndTopPerformersViewController(siteID: siteID,
+                                             dashboardViewModel: viewModel,
+                                             usageTracksEventEmitter: usageTracksEventEmitter)
 
     // Used to enable subtitle with store name
     private var shouldShowStoreNameAsSubtitle: Bool = false
@@ -126,6 +129,8 @@ final class DashboardViewController: UIViewController {
     }()
 
     private let viewModel: DashboardViewModel = .init()
+
+    private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
 
     private var subscriptions = Set<AnyCancellable>()
     private var navbarObserverSubscription: AnyCancellable?
@@ -255,6 +260,16 @@ private extension DashboardViewController {
         } else {
             return Constants.iPhoneCollapsedNavigationBarHeight
         }
+    }
+}
+
+extension DashboardViewController: UIScrollViewDelegate {
+    /// We're not using scrollViewDidScroll because that gets executed even while
+    /// the app is being loaded for the first time.
+    ///
+    /// Note: This also covers pull-to-refresh
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        usageTracksEventEmitter.interacted()
     }
 }
 

@@ -206,6 +206,11 @@ private extension DashboardViewController {
     }
 
     func updateHeaderVisibility(animated: Bool) {
+        // Only hide/show header when the dashboard content is taller than the scroll view.
+        // Otherwise, the large title state (navigation collapsed state) can be ambiguous because the scroll view becomes not scrollable.
+        guard let dashboardUI, dashboardUI.view.frame.height > containerView.frame.height else {
+            return
+        }
         if navigationBarIsCollapsed() {
             hideHeader(animated: animated)
         } else {

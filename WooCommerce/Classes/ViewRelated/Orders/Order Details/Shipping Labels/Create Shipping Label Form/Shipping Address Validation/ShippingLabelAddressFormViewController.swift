@@ -39,8 +39,8 @@ final class ShippingLabelAddressFormViewController: UIViewController {
             ServiceLocator.analytics.track(.shippingLabelEditAddressContactCustomerButtonTapped)
 
             guard PhoneHelper.canCallPhoneNumber(phone: phone)
-                    && MFMailComposeViewController.canSendMail()
-                    && MFMessageComposeViewController.canSendText() else {
+                    || MFMailComposeViewController.canSendMail()
+                    || MFMessageComposeViewController.canSendText() else {
                 self.displayErrorNotice(title: Localization.contactActionError)
                 return
             }

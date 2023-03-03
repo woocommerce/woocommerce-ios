@@ -252,21 +252,22 @@ private extension JetpackSetupCoordinator {
     }
 
     func showPasswordUI(email: String) {
-        let viewController = WPComPasswordLoginHostingController(
+        let viewModel = WPComPasswordLoginViewModel(
             siteURL: site.url,
             email: email,
             requiresConnectionOnly: requiresConnectionOnly,
-            onSubmit: { [weak self] password in
-                await withCheckedContinuation { continuation in
-                    guard let self else {
-                        return continuation.resume()
-                    }
-                    self.handleLogin(email: email, password: password, onCompletion: {
-                        continuation.resume()
-                    })
-                }
+            onMultifactorCodeRequest: {
+                // TODO
             },
-            onMagicLinkRequest: requestAuthenticationLink(email:))
+            onLoginFailure: { [weak self] error in
+                guard let self else { return }
+                let message = self.prepareErrorMessage(for: error, fallback: Localization.errorRequestingAuthURL)
+                self.showAlert(message: message)
+            },
+            onLoginSuccess: { _ in
+                DDLogInfo("✅ Ready for Jetpack setup")
+            })
+        let viewController = WPComPasswordLoginHostingController(viewModel: viewModel, onMagicLinkRequest: requestAuthenticationLink(email:))
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 

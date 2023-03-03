@@ -8,7 +8,10 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         let siteURL = "https://example.com"
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: "test@example.com",
-                                                    requiresConnectionOnly: false)
+                                                    requiresConnectionOnly: false,
+                                                    onMultifactorCodeRequest: {},
+                                                    onLoginFailure: { _ in },
+                                                    onLoginSuccess: { _ in })
 
         // When
         let text = viewModel.titleString
@@ -22,7 +25,10 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         let siteURL = "https://example.com"
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: "test@example.com",
-                                                    requiresConnectionOnly: true)
+                                                    requiresConnectionOnly: true,
+                                                    onMultifactorCodeRequest: {},
+                                                    onLoginFailure: { _ in },
+                                                    onLoginSuccess: { _ in })
 
         // When
         let text = viewModel.titleString
@@ -37,7 +43,10 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         let email = "test@example.com"
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: email,
-                                                    requiresConnectionOnly: true)
+                                                    requiresConnectionOnly: true,
+                                                    onMultifactorCodeRequest: {},
+                                                    onLoginFailure: { _ in },
+                                                    onLoginSuccess: { _ in })
 
         // When
         let url = try XCTUnwrap(viewModel.avatarURL)

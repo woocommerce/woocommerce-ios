@@ -3,12 +3,12 @@ import struct Yosemite.StoreOnboardingTask
 
 /// Shows a tappable onboarding task to set up the store. If the task is complete, a checkmark is shown.
 struct StoreOnboardingTaskView: View {
-    private let viewModel: StoreOnboardingViewModel.TaskViewModel
+    private let viewModel: StoreOnboardingTaskViewModel
     private let showDivider: Bool
     private let isRedacted: Bool
     private let onTap: (StoreOnboardingTask) -> Void
 
-    init(viewModel: StoreOnboardingViewModel.TaskViewModel,
+    init(viewModel: StoreOnboardingTaskViewModel,
          showDivider: Bool,
          isRedacted: Bool,
          onTap: @escaping (StoreOnboardingTask) -> Void) {

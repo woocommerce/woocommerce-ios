@@ -4,13 +4,14 @@ import class Networking.UserAgent
 import struct Networking.Settings
 
 extension WordPressAuthenticator {
-    static func initializeWithCustomConfigs(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    static func initializeWithCustomConfigs(dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
+                                            featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         let isWPComMagicLinkPreferredToPassword = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let isStoreCreationMVPEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
-                                                                wpcomScheme: ApiCredentials.dotcomAuthScheme,
+                                                                wpcomScheme: dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: WooConstants.URLs.termsOfService.rawValue,
                                                                 wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
                                                                 whatIsWPComURL: WooConstants.URLs.whatIsWPCom.rawValue,

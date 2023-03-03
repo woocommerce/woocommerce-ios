@@ -31,7 +31,7 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
     }
 
     private func configureView() {
-        rootView.connectClickAction = { [weak self] in
+        rootView.setUpButtonAction = { [weak self] in
             self?.searchAndConnect()
         }
         rootView.showURL = { url in
@@ -63,7 +63,7 @@ private extension SetUpTapToPayInformationViewController {
 }
 
 struct SetUpTapToPayInformationView: View {
-    var connectClickAction: (() -> Void)? = nil
+    var setUpButtonAction: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
     var learnMoreUrl: URL? = nil
 
@@ -100,7 +100,7 @@ struct SetUpTapToPayInformationView: View {
 
             Spacer()
 
-            Button(Localization.setUpButton, action: connectClickAction!)
+            Button(Localization.setUpButton, action: setUpButtonAction!)
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.bottom, 8)
 
@@ -184,6 +184,6 @@ private enum Localization {
 
 struct SetUpTapToPayInformationView_Previews: PreviewProvider {
     static var previews: some View {
-        SetUpTapToPayInformationView(connectClickAction: {})
+        SetUpTapToPayInformationView(setUpButtonAction: {})
     }
 }

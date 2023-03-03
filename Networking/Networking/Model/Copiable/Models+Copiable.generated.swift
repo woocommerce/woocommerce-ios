@@ -953,7 +953,16 @@ extension Networking.Product {
         variations: CopiableProp<[Int64]> = .copy,
         groupedProducts: CopiableProp<[Int64]> = .copy,
         menuOrder: CopiableProp<Int> = .copy,
-        addOns: CopiableProp<[ProductAddOn]> = .copy
+        addOns: CopiableProp<[ProductAddOn]> = .copy,
+        bundleLayout: NullableCopiableProp<ProductBundleLayout> = .copy,
+        bundleFormLocation: NullableCopiableProp<ProductBundleFormLocation> = .copy,
+        bundleItemGrouping: NullableCopiableProp<ProductBundleItemGrouping> = .copy,
+        bundleMinSize: NullableCopiableProp<Int64> = .copy,
+        bundleMaxSize: NullableCopiableProp<Int64> = .copy,
+        bundleEditableInCart: NullableCopiableProp<Bool> = .copy,
+        bundleSoldIndividuallyContext: NullableCopiableProp<ProductBundleSoldIndividuallyContext> = .copy,
+        bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
+        bundleStockQuantity: NullableCopiableProp<Int64> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1018,6 +1027,15 @@ extension Networking.Product {
         let groupedProducts = groupedProducts ?? self.groupedProducts
         let menuOrder = menuOrder ?? self.menuOrder
         let addOns = addOns ?? self.addOns
+        let bundleLayout = bundleLayout ?? self.bundleLayout
+        let bundleFormLocation = bundleFormLocation ?? self.bundleFormLocation
+        let bundleItemGrouping = bundleItemGrouping ?? self.bundleItemGrouping
+        let bundleMinSize = bundleMinSize ?? self.bundleMinSize
+        let bundleMaxSize = bundleMaxSize ?? self.bundleMaxSize
+        let bundleEditableInCart = bundleEditableInCart ?? self.bundleEditableInCart
+        let bundleSoldIndividuallyContext = bundleSoldIndividuallyContext ?? self.bundleSoldIndividuallyContext
+        let bundleStockStatus = bundleStockStatus ?? self.bundleStockStatus
+        let bundleStockQuantity = bundleStockQuantity ?? self.bundleStockQuantity
 
         return Networking.Product(
             siteID: siteID,
@@ -1082,7 +1100,16 @@ extension Networking.Product {
             variations: variations,
             groupedProducts: groupedProducts,
             menuOrder: menuOrder,
-            addOns: addOns
+            addOns: addOns,
+            bundleLayout: bundleLayout,
+            bundleFormLocation: bundleFormLocation,
+            bundleItemGrouping: bundleItemGrouping,
+            bundleMinSize: bundleMinSize,
+            bundleMaxSize: bundleMaxSize,
+            bundleEditableInCart: bundleEditableInCart,
+            bundleSoldIndividuallyContext: bundleSoldIndividuallyContext,
+            bundleStockStatus: bundleStockStatus,
+            bundleStockQuantity: bundleStockQuantity
         )
     }
 }

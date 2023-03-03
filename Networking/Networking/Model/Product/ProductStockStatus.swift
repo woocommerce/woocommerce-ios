@@ -7,6 +7,7 @@ public enum ProductStockStatus: Codable, Hashable, GeneratedFakeable {
     case inStock
     case outOfStock
     case onBackOrder
+    case insufficientStock // Product Bundles only
     case custom(String) // in case there are extensions modifying product stock statuses
 }
 
@@ -25,6 +26,8 @@ extension ProductStockStatus: RawRepresentable {
             self = .outOfStock
         case Keys.onBackOrder:
             self = .onBackOrder
+        case Keys.insufficientStock:
+            self = .insufficientStock
         default:
             self = .custom(rawValue)
         }
@@ -37,6 +40,7 @@ extension ProductStockStatus: RawRepresentable {
         case .inStock:              return Keys.inStock
         case .outOfStock:           return Keys.outOfStock
         case .onBackOrder:          return Keys.onBackOrder
+        case .insufficientStock:    return Keys.insufficientStock
         case .custom(let payload):  return payload
         }
     }
@@ -51,6 +55,8 @@ extension ProductStockStatus: RawRepresentable {
             return NSLocalizedString("Out of stock", comment: "Display label for the product's inventory stock status")
         case .onBackOrder:
             return NSLocalizedString("On back order", comment: "Display label for the product's inventory stock status")
+        case .insufficientStock:
+            return NSLocalizedString("Insufficient stock", comment: "Display label for the product's inventory stock status")
         case .custom(let payload):
             return payload // unable to localize at runtime.
         }
@@ -61,7 +67,8 @@ extension ProductStockStatus: RawRepresentable {
 /// Enum containing the 'Known' Product Stock Status Keys
 ///
 private enum Keys {
-    static let inStock     = "instock"
-    static let outOfStock  = "outofstock"
-    static let onBackOrder = "onbackorder"
+    static let inStock           = "instock"
+    static let outOfStock        = "outofstock"
+    static let onBackOrder       = "onbackorder"
+    static let insufficientStock = "insufficientstock"
 }

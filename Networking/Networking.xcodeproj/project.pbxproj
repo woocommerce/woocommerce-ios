@@ -556,6 +556,11 @@
 		B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */; };
 		B963A5CC2853870000EFADA0 /* OrderItemRefundMetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B963A5CB2853870000EFADA0 /* OrderItemRefundMetaData.swift */; };
 		BAB373722795A1FB00837B4A /* OrderTaxLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373712795A1FB00837B4A /* OrderTaxLine.swift */; };
+		CC01CE4F29AFEB87004FF537 /* ProductBundleSoldIndividuallyContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC01CE4E29AFEB87004FF537 /* ProductBundleSoldIndividuallyContext.swift */; };
+		CC01CE5129B0DC3B004FF537 /* ProductBundleLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC01CE5029B0DC3B004FF537 /* ProductBundleLayout.swift */; };
+		CC01CE5329B0DC4C004FF537 /* ProductBundleFormLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC01CE5229B0DC4C004FF537 /* ProductBundleFormLocation.swift */; };
+		CC01CE5529B0DEE2004FF537 /* ProductBundleItemGrouping.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC01CE5429B0DEE2004FF537 /* ProductBundleItemGrouping.swift */; };
+		CC01CE5829B0EBED004FF537 /* product-bundle.json in Resources */ = {isa = PBXBuildFile; fileRef = CC01CE5729B0EBED004FF537 /* product-bundle.json */; };
 		CC07865F267799EE00BA9AC1 /* ShippingLabelPurchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC07865E267799EE00BA9AC1 /* ShippingLabelPurchase.swift */; };
 		CC0786612677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0786602677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift */; };
 		CC0786632678F79500BA9AC1 /* shipping-label-purchase-success.json in Resources */ = {isa = PBXBuildFile; fileRef = CC0786622678F79500BA9AC1 /* shipping-label-purchase-success.json */; };
@@ -1444,6 +1449,11 @@
 		BAB373712795A1FB00837B4A /* OrderTaxLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTaxLine.swift; sourceTree = "<group>"; };
 		BD9439D9B8F2C1ED2EADAA51 /* Pods-NetworkingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
+		CC01CE4E29AFEB87004FF537 /* ProductBundleSoldIndividuallyContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBundleSoldIndividuallyContext.swift; sourceTree = "<group>"; };
+		CC01CE5029B0DC3B004FF537 /* ProductBundleLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBundleLayout.swift; sourceTree = "<group>"; };
+		CC01CE5229B0DC4C004FF537 /* ProductBundleFormLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBundleFormLocation.swift; sourceTree = "<group>"; };
+		CC01CE5429B0DEE2004FF537 /* ProductBundleItemGrouping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBundleItemGrouping.swift; sourceTree = "<group>"; };
+		CC01CE5729B0EBED004FF537 /* product-bundle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-bundle.json"; sourceTree = "<group>"; };
 		CC07865E267799EE00BA9AC1 /* ShippingLabelPurchase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPurchase.swift; sourceTree = "<group>"; };
 		CC0786602677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPurchaseMapper.swift; sourceTree = "<group>"; };
 		CC0786622678F79500BA9AC1 /* shipping-label-purchase-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipping-label-purchase-success.json"; sourceTree = "<group>"; };
@@ -2453,6 +2463,7 @@
 				DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */,
 				02AAD53E250092A300BA1E26 /* product-add-or-delete.json */,
 				02698CF524C17FC1005337C4 /* product-alternative-types.json */,
+				CC01CE5729B0EBED004FF537 /* product-bundle.json */,
 				02DD6491248A3EC00082523E /* product-external.json */,
 				4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */,
 				025CA2C7238F4FF400B05C81 /* product-shipping-classes-load-all.json */,
@@ -2886,9 +2897,21 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		CC01CE5629B0DFD5004FF537 /* ProductBundle */ = {
+			isa = PBXGroup;
+			children = (
+				CC01CE5229B0DC4C004FF537 /* ProductBundleFormLocation.swift */,
+				CC01CE5429B0DEE2004FF537 /* ProductBundleItemGrouping.swift */,
+				CC01CE5029B0DC3B004FF537 /* ProductBundleLayout.swift */,
+				CC01CE4E29AFEB87004FF537 /* ProductBundleSoldIndividuallyContext.swift */,
+			);
+			path = ProductBundle;
+			sourceTree = "<group>";
+		};
 		CE6BFEE62236CF0D005C79FB /* Product */ = {
 			isa = PBXGroup;
 			children = (
+				CC01CE5629B0DFD5004FF537 /* ProductBundle */,
 				CE6BFEE42236BF05005C79FB /* Product.swift */,
 				26650331261FFA1A0079A159 /* ProductAddOnEnvelope.swift */,
 				26650329261F41510079A159 /* ProductAddOn.swift */,
@@ -3179,6 +3202,7 @@
 				3158FE7C26129E2100E566B9 /* wcpay-account-restricted-pending.json in Resources */,
 				DE34051B28BDF12C00CF0D97 /* jetpack-connection-url.json in Resources */,
 				D823D91422377EE600C90817 /* shipment_tracking_providers.json in Resources */,
+				CC01CE5829B0EBED004FF537 /* product-bundle.json in Resources */,
 				4599FC5C24A6276F0056157A /* product-tags-all.json in Resources */,
 				EE57C1562980F3BF00BC31E7 /* shipment_tracking_single_without_data.json in Resources */,
 				03DCB77E262738E300C8953D /* coupon.json in Resources */,
@@ -3579,6 +3603,7 @@
 				311D41302783C0E200052F64 /* StripeRemote.swift in Sources */,
 				267313312559CC930026F7EF /* PaymentGateway.swift in Sources */,
 				B58E5BEA20FFB3D0003C986E /* CodingUserInfoKey+Woo.swift in Sources */,
+				CC01CE5329B0DC4C004FF537 /* ProductBundleFormLocation.swift in Sources */,
 				EE57C10E2979277300BC31E7 /* ApplicationPasswordNameAndUUID.swift in Sources */,
 				B59325D3217E4206000B0E8E /* NoteMedia.swift in Sources */,
 				26731337255ACA850026F7EF /* PaymentGatewayListMapper.swift in Sources */,
@@ -3752,6 +3777,7 @@
 				7426CA0F21AF2C90004E9FFC /* SiteAPI.swift in Sources */,
 				D87F6151226591E10031A13B /* NullNetwork.swift in Sources */,
 				CE43A8F9229F463000A4FF29 /* ProductDownload.swift in Sources */,
+				CC01CE5529B0DEE2004FF537 /* ProductBundleItemGrouping.swift in Sources */,
 				4513382027A8227F00AE5E78 /* InboxNotesRemote.swift in Sources */,
 				B53EF5322180F21C003E146F /* Dictionary+Woo.swift in Sources */,
 				24F98C522502E79800F49B68 /* FeatureFlagsRemote.swift in Sources */,
@@ -3797,6 +3823,7 @@
 				CCB573AA268CCFE90070FBB0 /* ShippingLabelStatusPollingResponse.swift in Sources */,
 				B524193F21AC5FE400D6FC0A /* DotcomDeviceMapper.swift in Sources */,
 				021EAA5625493B3600AA8CCD /* OrderItemAttribute.swift in Sources */,
+				CC01CE4F29AFEB87004FF537 /* ProductBundleSoldIndividuallyContext.swift in Sources */,
 				77CE40602514CB3E003FF69D /* ProductDownloadDragAndDrop.swift in Sources */,
 				2685C0FE263B5D8900D9EE97 /* AddOnGroupRemote.swift in Sources */,
 				AE1950F3296DB2C2004D37D2 /* ProductsBulkUpdateMapper.swift in Sources */,
@@ -3879,6 +3906,7 @@
 				45150A9E26836A57006922EA /* CountryListMapper.swift in Sources */,
 				DE34051928BDEE6A00CF0D97 /* JetpackConnectionURLMapper.swift in Sources */,
 				CE6BFEE82236D133005C79FB /* ProductDimensions.swift in Sources */,
+				CC01CE5129B0DC3B004FF537 /* ProductBundleLayout.swift in Sources */,
 				077F39D426A58DE700ABEADC /* SystemStatusMapper.swift in Sources */,
 				45152811257A81730076B03C /* ProductAttributeMapper.swift in Sources */,
 				B505F6D120BEE39600BB1B69 /* AccountRemote.swift in Sources */,

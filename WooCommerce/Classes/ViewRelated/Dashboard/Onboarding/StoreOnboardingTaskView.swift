@@ -1,16 +1,20 @@
 import SwiftUI
+import struct Yosemite.StoreOnboardingTask
 
 /// Shows a tappable onboarding task to set up the store. If the task is complete, a checkmark is shown.
 struct StoreOnboardingTaskView: View {
     private let viewModel: StoreOnboardingViewModel.TaskViewModel
     private let showDivider: Bool
+    private let isRedacted: Bool
     private let onTap: (StoreOnboardingTask) -> Void
 
     init(viewModel: StoreOnboardingViewModel.TaskViewModel,
          showDivider: Bool,
+         isRedacted: Bool,
          onTap: @escaping (StoreOnboardingTask) -> Void) {
         self.viewModel = viewModel
         self.showDivider = showDivider
+        self.isRedacted = isRedacted
         self.onTap = onTap
     }
 
@@ -29,6 +33,7 @@ struct StoreOnboardingTaskView: View {
                     .foregroundColor(.init(uiColor: viewModel.isComplete ? .accent : .text))
                     .frame(width: scale * Layout.imageDimension,
                            height: scale * Layout.imageDimension)
+                    .redacted(reason: isRedacted ? .placeholder : [])
 
                 VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                     HStack {
@@ -36,14 +41,16 @@ struct StoreOnboardingTaskView: View {
                         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                             Spacer().frame(height: Layout.spacerHeight)
                             // Task title.
-                            Text(viewModel.task.title)
+                            Text(viewModel.title)
                                 .headlineStyle()
                                 .multilineTextAlignment(.leading)
+                                .redacted(reason: isRedacted ? .placeholder : [])
 
                             // Task subtitle.
-                            Text(viewModel.task.subtitle)
+                            Text(viewModel.subtitle)
                                 .subheadlineStyle()
                                 .multilineTextAlignment(.leading)
+                                .redacted(reason: isRedacted ? .placeholder : [])
                         }
                         Spacer()
                         // Chevron icon
@@ -70,71 +77,34 @@ private extension StoreOnboardingTaskView {
     }
 }
 
-private extension StoreOnboardingTask {
-    var title: String {
-        switch self {
-        case .addFirstProduct:
-            return NSLocalizedString(
-                "Add your first product",
-                comment: "Title of the store onboarding task to add the first product."
-            )
-        case .launchStore:
-            return NSLocalizedString(
-                "Launch your store",
-                comment: "Title of the store onboarding task to launch the store."
-            )
-        case .customizeDomains:
-            return NSLocalizedString(
-                "Customize your domain",
-                comment: "Title of the store onboarding task to customize the store domain."
-            )
-        case .payments:
-            return NSLocalizedString(
-                "Get paid",
-                comment: "Title of the store onboarding task to get paid."
-            )
-        }
-    }
-
-    var subtitle: String {
-        switch self {
-        case .addFirstProduct:
-            return NSLocalizedString(
-                "Start selling by adding products or services to your store.",
-                comment: "Subtitle of the store onboarding task to add the first product."
-            )
-        case .launchStore:
-            return NSLocalizedString(
-                "Publish your site to the world anytime you want!",
-                comment: "Subtitle of the store onboarding task to launch the store."
-            )
-        case .customizeDomains:
-            return NSLocalizedString(
-                "Have a custom URL to host your store.",
-                comment: "Subtitle of the store onboarding task to customize the store domain."
-            )
-        case .payments:
-            return NSLocalizedString(
-                "Give your customers an easy and convenient way to pay!",
-                comment: "Subtitle of the store onboarding task to get paid."
-            )
-        }
-    }
-}
-
 struct StoreOnboardingTaskView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
             Group {
-                StoreOnboardingTaskView(viewModel: .init(task: .addFirstProduct, isComplete: false, icon: .productImage), showDivider: true, onTap: { _ in })
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .addFirstProduct)),
+                                        showDivider: true,
+                                        isRedacted: false,
+                                        onTap: { _ in })
 
-                StoreOnboardingTaskView(viewModel: .init(task: .launchStore, isComplete: false, icon: .launchStoreImage), showDivider: true, onTap: { _ in })
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .launchStore)),
+                                        showDivider: true,
+                                        isRedacted: false,
+                                        onTap: { _ in })
 
-                StoreOnboardingTaskView(viewModel: .init(task: .customizeDomains, isComplete: false, icon: .domainsImage), showDivider: true, onTap: { _ in })
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .customizeDomains)),
+                                        showDivider: true,
+                                        isRedacted: false,
+                                        onTap: { _ in })
 
-                StoreOnboardingTaskView(viewModel: .init(task: .payments, isComplete: false, icon: .currencyImage), showDivider: true, onTap: { _ in })
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .payments)),
+                                        showDivider: true,
+                                        isRedacted: false,
+                                        onTap: { _ in })
 
-                StoreOnboardingTaskView(viewModel: .init(task: .payments, isComplete: true, icon: .currencyImage), showDivider: true, onTap: { _ in })
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: true, type: .payments)),
+                                        showDivider: true,
+                                        isRedacted: false,
+                                        onTap: { _ in })
             }
             .previewDisplayName("Customize your domains")
         }

@@ -137,6 +137,7 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Initializer for single selection
     ///
     init(siteID: Int64,
+         selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
@@ -152,7 +153,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onProductSelected = onProductSelected
         self.onVariationSelected = onVariationSelected
         self.onMultipleSelectionCompleted = nil
-        self.initialSelectedItems = []
+        self.initialSelectedItems = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
 
         configureSyncingCoordinator()

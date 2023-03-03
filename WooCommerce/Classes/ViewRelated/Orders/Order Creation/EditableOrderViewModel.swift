@@ -167,9 +167,10 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the product list
     ///
-    lazy var handleProductsViewModel = {
+    var handleProductsViewModel: ProductSelectorViewModel {
         ProductSelectorViewModel(
             siteID: siteID,
+            selectedItemIDs: selectedProducts.compactMap { $0?.productID },
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
@@ -183,7 +184,7 @@ final class EditableOrderViewModel: ObservableObject {
                 guard let self = self else { return }
                 self.handleProductVariation(variation, parent: parentProduct)
         })
-    }()
+    }
 
     /// View models for each product row in the order.
     ///
@@ -330,6 +331,7 @@ final class EditableOrderViewModel: ObservableObject {
     func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
         guard item.quantity > 0, // Don't render any item with `.zero` quantity.
               let product = allProducts.first(where: { $0.productID == item.productID }) else {
+            selectedProducts.removeAll(where: { $0?.productID == item.productID })
             return nil
         }
 

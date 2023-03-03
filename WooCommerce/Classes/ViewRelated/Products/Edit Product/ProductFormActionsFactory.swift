@@ -33,6 +33,8 @@ enum ProductFormEditAction: Equatable {
     case attributes(editable: Bool)
     // Downloadable products only
     case downloadableFiles(editable: Bool)
+    // Bundle products only
+    case bundledProducts
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -64,6 +66,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let isProductTypeActionEnabled: Bool
     private let isCategoriesActionAlwaysEnabled: Bool
     private let isDownloadableFilesSettingBased: Bool
+    private let isBundledProductsEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -76,6 +79,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          isProductTypeActionEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isCategoriesActionAlwaysEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isDownloadableFilesSettingBased: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
@@ -89,6 +93,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.isProductTypeActionEnabled = isProductTypeActionEnabled
         self.isCategoriesActionAlwaysEnabled = isCategoriesActionAlwaysEnabled
         self.isDownloadableFilesSettingBased = isDownloadableFilesSettingBased
+        self.isBundledProductsEnabled = isBundledProductsEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -146,6 +151,8 @@ private extension ProductFormActionsFactory {
             return allSettingsSectionActionsForGroupedProduct()
         case .variable:
             return allSettingsSectionActionsForVariableProduct()
+        case .custom("bundle"): // TODO-8954: Replace with non-custom product type
+            return allSettingsSectionActionsForBundleProduct()
         default:
             return allSettingsSectionActionsForNonCoreProduct()
         }
@@ -243,6 +250,26 @@ private extension ProductFormActionsFactory {
         return actions.compactMap { $0 }
     }
 
+    func allSettingsSectionActionsForBundleProduct() -> [ProductFormEditAction] {
+        let shouldShowBundledProductsRow = isBundledProductsEnabled
+        let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
+        let shouldShowReviewsRow = product.reviewsAllowed
+
+        let actions: [ProductFormEditAction?] = [
+            shouldShowBundledProductsRow ? .bundledProducts : nil,
+            shouldShowPriceSettingsRow ? .priceSettings(editable: false, hideSeparator: false): nil,
+            shouldShowReviewsRow ? .reviews: nil,
+            .inventorySettings(editable: false),
+            .categories(editable: editable),
+            .addOns(editable: editable),
+            .tags(editable: editable),
+            .shortDescription(editable: editable),
+            .linkedProducts(editable: editable),
+            .productType(editable: false)
+        ]
+        return actions.compactMap { $0 }
+    }
+
     func allSettingsSectionActionsForNonCoreProduct() -> [ProductFormEditAction] {
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
@@ -326,6 +353,9 @@ private extension ProductFormActionsFactory {
             return true
         case .attributes:
             // Always visible when available
+            return true
+        case .bundledProducts:
+            // The bundled products row is always visible in the settings section for a bundle product.
             return true
         default:
             return false

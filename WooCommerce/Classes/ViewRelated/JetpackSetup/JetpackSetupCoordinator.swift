@@ -334,7 +334,15 @@ private extension JetpackSetupCoordinator {
 //
 extension JetpackSetupCoordinator: LoginFacadeDelegate {
     func needsMultifactorCode() {
-        // TODO: show 2FA UI
+        let viewController = WPCom2FALoginHostingController(
+            requiresConnectionOnly: requiresConnectionOnly,
+            onSubmit: { code in
+            // TODO: request 2FA code
+        },
+            onSMSRequest: {
+            // TODO: request SMS
+        })
+        loginNavigationController?.pushViewController(viewController, animated: true)
     }
 
     func displayRemoteError(_ error: Error) {

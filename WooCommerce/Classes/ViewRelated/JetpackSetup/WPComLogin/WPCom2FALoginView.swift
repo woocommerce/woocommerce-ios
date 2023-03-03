@@ -3,7 +3,7 @@ import SwiftUI
 /// Hosting controller for `WPCom2FALoginView`
 final class WPCom2FALoginHostingController: UIHostingController<WPCom2FALoginView> {
 
-    init(siteURL: String, requiresConnectionOnly: Bool,
+    init(requiresConnectionOnly: Bool,
          onSubmit: @escaping (String) async -> Void,
          onSMSRequest: @escaping () async -> Void) {
         let viewModel = WPCom2FALoginViewModel(requiresConnectionOnly: requiresConnectionOnly)

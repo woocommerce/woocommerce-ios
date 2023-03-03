@@ -107,7 +107,7 @@ struct WPCom2FALoginView: View {
 
 private extension WPCom2FALoginView {
     enum Constants {
-        static let blockVerticalPadding: CGFloat = 16
+        static let blockVerticalPadding: CGFloat = 24
         static let contentVerticalSpacing: CGFloat = 8
         static let contentPadding: CGFloat = 16
     }

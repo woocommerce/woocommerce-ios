@@ -38,6 +38,9 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
             WebviewHelper.launch(url, with: self)
         }
         rootView.learnMoreUrl = viewModel.learnMoreURL
+        rootView.dismiss = { [weak self] in
+            self?.dismiss(animated: true)
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -66,6 +69,7 @@ struct SetUpTapToPayInformationView: View {
     var setUpButtonAction: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
     var learnMoreUrl: URL? = nil
+    var dismiss: (() -> Void)? = nil
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.sizeCategory) private var sizeCategory
@@ -82,6 +86,14 @@ struct SetUpTapToPayInformationView: View {
 
     var body: some View {
         VStack {
+            HStack {
+                Button("Cancel", action: {
+                    dismiss?()
+                })
+                Spacer()
+            }
+            .padding(.top)
+
             Spacer()
 
             Text(Localization.setUpTapToPayOnIPhoneTitle)

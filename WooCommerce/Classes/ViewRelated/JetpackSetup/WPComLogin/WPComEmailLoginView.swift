@@ -107,7 +107,7 @@ private extension WPComEmailLoginView {
 
     enum Localization {
         static let emailLabel = NSLocalizedString(
-            "Email address or Username",
+            "Email Address or Username",
             comment: "Label for the email field on the WPCom email login screen of the Jetpack setup flow."
         )
         static let enterEmail = NSLocalizedString(

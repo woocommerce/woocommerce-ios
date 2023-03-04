@@ -215,7 +215,10 @@ private extension JetpackSetupCoordinator {
             onLoginSuccess: { _ in
                 DDLogInfo("✅ Ready for Jetpack setup")
             })
-        let viewController = WPComPasswordLoginHostingController(viewModel: viewModel, onMagicLinkRequest: emailLoginViewModel.requestAuthenticationLink(email:))
+        let viewController = WPComPasswordLoginHostingController(
+            viewModel: viewModel,
+            onMagicLinkRequest: emailLoginViewModel.requestAuthenticationLink(email:)
+        )
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 

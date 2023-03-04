@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.7
+-----
+
+
 12.6
 -----
 - [*] Fix: When a product's details can be edited, they display a disclosure indicator (chevron). [https://github.com/woocommerce/woocommerce-ios/pull/8980]

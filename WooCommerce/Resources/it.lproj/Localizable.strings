@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-02-21 19:54:04+0000 */
+/* Translation-Revision-Date: 2023-03-01 17:54:08+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -132,6 +132,9 @@ which should be translated separately and considered part of this sentence. */
 /* Total number of items and packages in Shipping Label form. */
 "%1$d items in %2$d packages" = "%1$d elementi in %2$d pacchetti";
 
+/* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in full-screen/expanded mode. */
+"%1$d of %2$d tasks completed" = "%1$d di %2$d attività completate";
+
 /* Number of rates selected in Shipping Labels > Carrier and Rates */
 "%1$d rates selected" = "%1$d tariffe selezionate";
 
@@ -140,6 +143,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural limit of time for each user to apply a coupon, reads like: 10 uses per user */
 "%1$d uses per user" = "%1$d utilizzi per utente";
+
+/* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in collapsed mode in the dashboard screen. */
+"%1$d\/%2$d completed" = "%1$d\/%2$d completato";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */
@@ -262,6 +268,9 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "È necessario stampare un modulo doganale e allegarlo a questa spedizione internazionale";
 
+/* Description of the Action sheet option when the user wants to change the Product type to virtual product */
+"A digital product like services, downloadable books, music or videos" = "Un prodotto digitale come servizi, libri scaricabili, musica o video";
+
 /* Message when attempting to pay for a test transaction with a live card. */
 "A live card was used on a site in test mode. Use a test card instead." = "Una carta in tempo reale è stata usata su un sito in modalità di prova Usa invece una scheda di prova.";
 
@@ -276,6 +285,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Non è stato possibile stabilire una connessione sicura al sito. Assicurati che il sito abbia un certificato SSL valido.";
+
+/* Description of the Action sheet option when the user wants to change the Product type to physical product */
+"A tangible item that gets delivered to customers" = "Un elemento tangibile che viene consegnato ai clienti";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "A unique digital product like services, downloadable books, music or videos" = "Un prodotto digitale unico come servizi, libri scaricabili, musica o video";
@@ -395,6 +407,9 @@ which should be translated separately and considered part of this sentence. */
    Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "Aggiungi nota";
 
+/* Title of the CTA button at the bottom of the product form to add more product details. */
+"Add Options" = "Aggiungi opzioni";
+
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
 "Add Pay in Person to your checkout" = "Aggiungi Paga di persona al pagamento";
 
@@ -459,6 +474,9 @@ which should be translated separately and considered part of this sentence. */
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Aggiungi un'immagine del prodotto";
 
+/* Description of the Action sheet option when the user wants to create a product manually */
+"Add a product manually" = "Aggiungi un prodotto manualmente";
+
 /* Description for the option to create product manually */
 "Add a product manually." = "Aggiungi un prodotto manualmente.";
 
@@ -499,6 +517,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Aggiungi il link del prodotto";
 
+/* Title of the product form bottom sheet action for switching to variable product type. */
+"Add product variations" = "Aggiungi variazioni di prodotto";
+
 /* Title for the Products onboarding banner */
 "Add products to sell" = "Aggiungi prodotti da vendere";
 
@@ -507,6 +528,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Aggiungi da remoto le informazioni sui file scaricabili dei prodotti";
+
+/* Subtitle of the product form bottom sheet action for switching to variable product type. */
+"Add sizes, colors, or other options" = "Aggiungi dimensioni, colori o altre opzioni";
 
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Aggiungi la descrizione del codice promozionale.";
@@ -519,6 +543,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Aggiungi peso e dimensioni";
+
+/* Title of the store onboarding task to add the first product. */
+"Add your first product" = "Aggiungi il tuo primo prodotto";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "Aggiungi il primo negozio";
@@ -992,6 +1019,9 @@ which should be translated separately and considered part of this sentence. */
 /* Billing Information view Title */
 "Billing Information" = "Informazioni di fatturazione";
 
+/* Action sheet option when the user wants to create a product manually */
+"Blank" = "Vuoto";
+
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Blocco Citazione";
 
@@ -1390,6 +1420,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product */
 "Choose a template" = "Scegli un template";
+
+/* Message subtitle of bottom sheet for selecting a product type to create a product with a template */
+"Choose a template for your product" = "Scegli un template per il tuo prodotto";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Scegli da dispositivo";
@@ -1983,6 +2016,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "I clienti hanno bisogno di inserire questo codice per usare il codice promozionale.";
+
+/* Title of the store onboarding task to customize the store domain. */
+"Customize your domain" = "Personalizza il tuo dominio";
 
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
@@ -2972,6 +3008,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Ottieni risposte alle tue domande";
 
+/* Title of the store onboarding task to get paid. */
+"Get paid" = "Ricevi i pagamenti";
+
 /* Subtitle of push notifications as part of Jetpack benefits. */
 "Get push notifications for new orders, reviews, etc. delivered to your device." = "Ricevi notifiche push per nuovi ordini, recensioni, ecc. inviate al tuo dispositivo.";
 
@@ -2997,7 +3036,8 @@ which should be translated separately and considered part of this sentence. */
 "Get the most out of your store" = "Ottieni il massimo dal tuo negozio";
 
 /* Message shown in the Reviews tab if the list is empty
-   Message shown on the Product Reviews screen if the list is empty */
+   Message shown on the Product Reviews screen if the list is empty
+   Subtitle of the product form bottom sheet action for reviews. */
 "Get your first reviews" = "Ottieni le prime recensioni";
 
 /* Alerts the user that wpcom account information is being retrieved. */
@@ -3023,6 +3063,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Lascia un feedback";
+
+/* Subtitle of the store onboarding task to get paid. */
+"Give your customers an easy and convenient way to pay!" = "Offri ai tuoi clienti un modo semplice e conveniente per pagare!";
 
 /* Message for the Linked Products announcement banner */
 "Give your customers helpful and relevant product recommendations by adding upsells and cross-sells." = "Offri ai tuoi clienti consigli utili e pertinenti sui prodotti sommando upsell e cross-sell.";
@@ -3115,6 +3158,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Industry option in the store creation category question. */
 "Hardware Stores" = "Negozi di ferramenta";
+
+/* Subtitle of the store onboarding task to customize the store domain. */
+"Have a custom URL to host your store." = "Un URL personalizzato per ospitare il tuo negozio";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Prepara le credenziali del negozio.";
@@ -3633,6 +3679,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Avvia il debug di Wormholy";
+
+/* Title of the store onboarding task to launch the store. */
+"Launch your store" = "Lancia il tuo negozio";
 
 /* Industry option in the store creation category question. */
 "Laundry Or Cleaning Services" = "Lavanderia o servizi di pulizia";
@@ -4821,6 +4870,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for simple physical product type. */
 "Physical" = "Bene fisico";
 
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"Physical product" = "Prodotto fisico";
+
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Scegli un negozio da collegare";
 
@@ -5212,7 +5264,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Product Total label for payment view */
 "Product Total" = "Totale prodotti";
 
-/* Row title for filtering products by product type. */
+/* Product Type label in Product Settings
+   Row title for filtering products by product type. */
 "Product Type" = "Tipo di prodotto";
 
 /* Title of the text field for editing the external URL for an external/affiliate product */
@@ -5221,8 +5274,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user has copied a product */
 "Product copied" = "Prodotto copiato";
 
+/* Title of the alert when a user is saving a product draft */
+"Product draft saved" = "Bozza prodotto salvata";
+
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Link del prodotto";
+
+/* Title of the alert when a user is publishing a product */
+"Product published" = "Prodotto pubblicato";
 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Prodotto salvato";
@@ -5269,6 +5328,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Impostazioni di pubblicazione";
+
+/* Subtitle of the store onboarding task to launch the store. */
+"Publish your site to the world anytime you want!" = "Pubblica il tuo sito nel mondo ogni volta che vuoi!";
 
 /* Display label for the product's published status */
 "Published" = "Pubblicata";
@@ -5618,6 +5680,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Review marked as %@" = "Recensione contrassegnata come %@";
 
 /* Title of one of the hub menu options
+   Title of the product form bottom sheet action for reviews.
    Title of the Reviews row on Product main screen
    Title of the Reviews tab — plural form of Review
    Title that appears on top of the main Reviews screen (plural form of the word Review).
@@ -6363,6 +6426,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
 "Start a Coupon creation by selecting a discount type in a bottom sheet" = "Inizia la creazione di un codice promozionale selezionando il tipo di sconto in un foglio inferiore";
 
+/* Subtitle of the store onboarding task to add the first product. */
+"Start selling by adding products or services to your store." = "Inizia a vendere aggiungendo prodotti o servizi al tuo negozio.";
+
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Inizia a vendere oggi aggiungendo il tuo primo prodotto al negozio.";
 
@@ -6420,6 +6486,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "Grafico del fatturato del negozio: Asse Y";
+
+/* Title of the store setup progress view. */
+"Store setup" = "Impostazioni del negozio";
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Barrato";
@@ -7896,6 +7965,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Visualizza i componenti aggiuntivi dal dispositivo.";
 
+/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
+"View all (%1$d)" = "Visualizza tutto (%1$d)";
+
 /* Title of the feedback banner on the coupon list screen */
 "View and edit coupons" = "Visualizza e modifica i coupon";
 
@@ -7928,6 +8000,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Virtual Product label in Product Settings */
 "Virtual Product" = "Prodotto virtuale";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"Virtual product" = "Prodotto virtuale";
 
 /* Product Visibility navigation title
    Visibility label in Product Settings */

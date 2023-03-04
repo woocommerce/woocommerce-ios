@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-02-20 11:54:25+0000 */
+/* Translation-Revision-Date: 2023-03-01 15:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -132,6 +132,9 @@ which should be translated separately and considered part of this sentence. */
 /* Total number of items and packages in Shipping Label form. */
 "%1$d items in %2$d packages" = "Число товаров в посылках (%2$d): %1$d";
 
+/* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in full-screen/expanded mode. */
+"%1$d of %2$d tasks completed" = "Выполнено задач: %1$d из %2$d";
+
 /* Number of rates selected in Shipping Labels > Carrier and Rates */
 "%1$d rates selected" = "Выбрано %1$d ставок";
 
@@ -140,6 +143,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural limit of time for each user to apply a coupon, reads like: 10 uses per user */
 "%1$d uses per user" = "%1$d применений на пользователя";
+
+/* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in collapsed mode in the dashboard screen. */
+"%1$d\/%2$d completed" = "Готово: %1$d из %2$d";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */
@@ -262,6 +268,9 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "Необходимо напечатать таможенную форму и включить ее в это международное отправление";
 
+/* Description of the Action sheet option when the user wants to change the Product type to virtual product */
+"A digital product like services, downloadable books, music or videos" = "Цифровой товар, например сервисы, загружаемые книги, музыка или видео";
+
 /* Message when attempting to pay for a test transaction with a live card. */
 "A live card was used on a site in test mode. Use a test card instead." = "На сайте в тестовом режиме была использована действующая карта. Воспользуйтесь вместо неё картой для тестирования.";
 
@@ -276,6 +285,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Не удалось создать защищенное соединение. Убедитесь, что ваш сайт имеет действительный сертификат SSL.";
+
+/* Description of the Action sheet option when the user wants to change the Product type to physical product */
+"A tangible item that gets delivered to customers" = "Материальный товар, доставляемый клиентам";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "A unique digital product like services, downloadable books, music or videos" = "Уникальный цифровой товар, например услуги, загружаемые книги, музыка или видео.";
@@ -395,6 +407,9 @@ which should be translated separately and considered part of this sentence. */
    Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "Добавить заметку";
 
+/* Title of the CTA button at the bottom of the product form to add more product details. */
+"Add Options" = "Добавить опции";
+
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
 "Add Pay in Person to your checkout" = "Добавьте опцию «Очная оплата» для оформления заказа";
 
@@ -459,6 +474,9 @@ which should be translated separately and considered part of this sentence. */
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Добавить изображение продукта";
 
+/* Description of the Action sheet option when the user wants to create a product manually */
+"Add a product manually" = "Добавление товара вручную";
+
 /* Description for the option to create product manually */
 "Add a product manually." = "Добавьте товар вручную.";
 
@@ -499,6 +517,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Добавление ссылки на товар";
 
+/* Title of the product form bottom sheet action for switching to variable product type. */
+"Add product variations" = "Добавьте варианты товаров";
+
 /* Title for the Products onboarding banner */
 "Add products to sell" = "Добавьте товары для продажи";
 
@@ -507,6 +528,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Добавляйте информацию о загружаемых файлах удаленно";
+
+/* Subtitle of the product form bottom sheet action for switching to variable product type. */
+"Add sizes, colors, or other options" = "Добавьте размеры, цвета и другие опции";
 
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Добавьте описание купона.";
@@ -519,6 +543,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Добавить вес и размеры";
+
+/* Title of the store onboarding task to add the first product. */
+"Add your first product" = "Добавьте свой первый товар";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "Добавьте первый магазин";
@@ -992,6 +1019,9 @@ which should be translated separately and considered part of this sentence. */
 /* Billing Information view Title */
 "Billing Information" = "Платёжные реквизиты";
 
+/* Action sheet option when the user wants to create a product manually */
+"Blank" = "Пустой";
+
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Цитата";
 
@@ -1390,6 +1420,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product */
 "Choose a template" = "Выберите шаблон";
+
+/* Message subtitle of bottom sheet for selecting a product type to create a product with a template */
+"Choose a template for your product" = "Выберите шаблон товара";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Выбрать с устройства";
@@ -1983,6 +2016,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "Клиентам необходимо ввести этот код, чтобы использовать купон.";
+
+/* Title of the store onboarding task to customize the store domain. */
+"Customize your domain" = "Настройте домен";
 
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
@@ -2972,6 +3008,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Получите ответы на возникшие вопросы";
 
+/* Title of the store onboarding task to get paid. */
+"Get paid" = "Принять платёж";
+
 /* Subtitle of push notifications as part of Jetpack benefits. */
 "Get push notifications for new orders, reviews, etc. delivered to your device." = "Мгновенные уведомления на устройстве для новых заказов, отзывов и других функций.";
 
@@ -2997,7 +3036,8 @@ which should be translated separately and considered part of this sentence. */
 "Get the most out of your store" = "Используйте все возможности магазина";
 
 /* Message shown in the Reviews tab if the list is empty
-   Message shown on the Product Reviews screen if the list is empty */
+   Message shown on the Product Reviews screen if the list is empty
+   Subtitle of the product form bottom sheet action for reviews. */
 "Get your first reviews" = "Получить первые отзывы";
 
 /* Alerts the user that wpcom account information is being retrieved. */
@@ -3023,6 +3063,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Оставить отзыв";
+
+/* Subtitle of the store onboarding task to get paid. */
+"Give your customers an easy and convenient way to pay!" = "Дайте клиентам возможность легко и удобно оплачивать покупки!";
 
 /* Message for the Linked Products announcement banner */
 "Give your customers helpful and relevant product recommendations by adding upsells and cross-sells." = "Сделайте рекомендации полезными и актуальными: добавьте продукты для продажи дополнительных и сопутствующих товаров.";
@@ -3115,6 +3158,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Industry option in the store creation category question. */
 "Hardware Stores" = "Хозяйственные магазины";
+
+/* Subtitle of the store onboarding task to customize the store domain. */
+"Have a custom URL to host your store." = "Настройте URL-адрес для своего магазина.";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Подготовьте учётные данные магазина.";
@@ -3633,6 +3679,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Запустить отладчик Wormholy";
+
+/* Title of the store onboarding task to launch the store. */
+"Launch your store" = "Запустите собственный магазин";
 
 /* Industry option in the store creation category question. */
 "Laundry Or Cleaning Services" = "Услуги по стирке вещей и уборке";
@@ -4821,6 +4870,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for simple physical product type. */
 "Physical" = "Физический";
 
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"Physical product" = "Физический товар";
+
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Выберите магазин для подключения";
 
@@ -5212,7 +5264,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Product Total label for payment view */
 "Product Total" = "Итог по товару";
 
-/* Row title for filtering products by product type. */
+/* Product Type label in Product Settings
+   Row title for filtering products by product type. */
 "Product Type" = "Тип товара";
 
 /* Title of the text field for editing the external URL for an external/affiliate product */
@@ -5221,8 +5274,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user has copied a product */
 "Product copied" = "Продукт скопирован";
 
+/* Title of the alert when a user is saving a product draft */
+"Product draft saved" = "Черновик товара сохранён";
+
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Ссылка на товар";
+
+/* Title of the alert when a user is publishing a product */
+"Product published" = "Товар опубликован";
 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Товар сохранен";
@@ -5269,6 +5328,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Настройки публикации";
+
+/* Subtitle of the store onboarding task to launch the store. */
+"Publish your site to the world anytime you want!" = "Покажите свой сайт всему миру, когда захотите!";
 
 /* Display label for the product's published status */
 "Published" = "Опубликовать";
@@ -5618,6 +5680,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Review marked as %@" = "Обзор помечен как %@";
 
 /* Title of one of the hub menu options
+   Title of the product form bottom sheet action for reviews.
    Title of the Reviews row on Product main screen
    Title of the Reviews tab — plural form of Review
    Title that appears on top of the main Reviews screen (plural form of the word Review).
@@ -6363,6 +6426,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
 "Start a Coupon creation by selecting a discount type in a bottom sheet" = "Чтобы создать купон, выберите тип скидки на нижней панели";
 
+/* Subtitle of the store onboarding task to add the first product. */
+"Start selling by adding products or services to your store." = "Начните продажи, добавив товары или услуги в магазин.";
+
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Добавьте в магазин первый продукт, чтобы уже сегодня приступить к продаже товаров.";
 
@@ -6420,6 +6486,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "График выручки магазина: ось Y";
+
+/* Title of the store setup progress view. */
+"Store setup" = "Настройки магазина";
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Зачеркнутый";
@@ -7896,6 +7965,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Просмотрите дополнения на своем устройстве!";
 
+/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
+"View all (%1$d)" = "Посмотреть все (%1$d)";
+
 /* Title of the feedback banner on the coupon list screen */
 "View and edit coupons" = "Просмотр и редактирование купонов";
 
@@ -7928,6 +8000,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Virtual Product label in Product Settings */
 "Virtual Product" = "Виртуальный товар";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"Virtual product" = "Виртуальный товар";
 
 /* Product Visibility navigation title
    Visibility label in Product Settings */

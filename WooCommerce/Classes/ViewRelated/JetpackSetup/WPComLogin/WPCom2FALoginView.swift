@@ -47,7 +47,7 @@ struct WPCom2FALoginView: View {
                     placeholder: Localization.verificationCode,
                     keyboardType: .asciiCapableNumberPad,
                     text: $viewModel.verificationCode,
-                    isSecure: true,
+                    isSecure: false,
                     errorMessage: nil,
                     isFocused: isFieldFocused
                 ))

@@ -131,6 +131,7 @@ struct PaymentMethodsView: View {
                 if completed {
                     dismiss()
                     viewModel.performLinkSharedTasks()
+                    dismiss()
                 }
             }
         }

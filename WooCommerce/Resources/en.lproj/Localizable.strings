@@ -134,6 +134,9 @@ which should be translated separately and considered part of this sentence. */
 /* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
 "%1$d Products" = "%1$d Products";
 
+/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products selected */
+"%1$d Products selected" = "%1$d Products selected";
+
 /* Number of rates selected in Shipping Labels > Carrier and Rates */
 "%1$d rates selected" = "%1$d rates selected";
 
@@ -236,6 +239,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "1 Product Selected";
+
+/* Title of the action button at the bottom of the Select Products screen when one product is selected */
+"1 Product selected" = "1 Product selected";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 2 */
 "2" = "2";
@@ -989,6 +995,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Beauty Products" = "Beauty Products";
 
+/* Display label when a product bundle's add-to-cart form is displayed before the single-product tabs. */
+"Before Tabs" = "Before Tabs";
+
 /* Country option for a site address. */
 "Belarus" = "Belarus";
 
@@ -1109,6 +1118,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button that presents a menu with possible products bulk update options */
 "Bulk update" = "Bulk update";
 
+/* Display label for bundle product type. */
+"Bundle" = "Bundle";
+
 /* Country option for a site address. */
 "Burkina Faso" = "Burkina Faso";
 
@@ -1139,6 +1151,9 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the label at the end of the Jetpack setup required screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com.
    Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
 "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com.";
+
+/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
+"By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com.";
 
 /* Title for the helper field describing calculated amount for given percentage */
 "Calculated amount" = "Calculated amount";
@@ -1186,6 +1201,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
    Button to cancel the creation of an order on the New Order screen
+   Button to dismiss an error alert in the Jetpack setup flow
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
@@ -1195,6 +1211,8 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
    Button to dismiss the alert presented while the reader is being prepared.
+   Button to dismiss the error modal when a user without admin role tries to install Jetpack
+   Button to dismiss the new product form
    Button to dismiss the site credential login screen
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
@@ -1219,6 +1237,7 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
    Label for a cancel button
+   Navigation bar button on the domain settings screen to leave the flow.
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Text for the cancel button in the edit customer provided note screen
@@ -1404,7 +1423,8 @@ which should be translated separately and considered part of this sentence. */
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Check that the URL entered is valid";
 
-/* The title text on the magic link requested screen. */
+/* Message on the magic link screen of the WPCom login flow during Jetpack setup
+   The title text on the magic link requested screen. */
 "Check your email on this device!" = "Check your email on this device!";
 
 /* Instruction text after a login Magic Link was requested. */
@@ -1626,6 +1646,8 @@ which should be translated separately and considered part of this sentence. */
    Button on the Jetpack setup interrupted screen to continue the setup
    Button title on the site credential login screen
    Button to authorize Jetpack connection from the Jetpack setup required screen
+   Title for the WPCom email login screen when Jetpack is not connected yet
+   Title for the WPCom magic link screen when Jetpack is not connected yet
    Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "Connect Jetpack";
 
@@ -1723,6 +1745,7 @@ which should be translated separately and considered part of this sentence. */
 "Content Type" = "Content Type";
 
 /* Button on the Store Picker screen to select a store
+   Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button inside every cell inside Create Shipping Label form
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
@@ -2106,7 +2129,8 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Debt Reduction Services" = "Debt Reduction Services";
 
-/* Description of the default paragraph formatting style in the editor. */
+/* Description of the default paragraph formatting style in the editor.
+   Display label for the product bundle's default form location */
 "Default" = "Default";
 
 /* Button title Delete in Downloadable File Options Action Sheet
@@ -2359,7 +2383,8 @@ which should be translated separately and considered part of this sentence. */
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Downloadable Files";
 
-/* Title of the Downloadable Files row on Product main screen */
+/* Title of the Downloadable Files row on Product main screen
+   Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "Downloadable files";
 
 /* Downloadable Product label in Product Settings */
@@ -2472,6 +2497,7 @@ which should be translated separately and considered part of this sentence. */
 "Email" = "Email";
 
 /* Accessibility label for the email address text field.
+   Label for the email field on the WPCom email login screen of the Jetpack setup flow.
    Placeholder for a textfield. The user may enter their email address.
    Placeholder for the email address textfield.
    Placeholder of the email field on the account creation form. */
@@ -2568,6 +2594,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder of the row that holds the provided email when creating a simple payment */
 "Enter Email" = "Enter Email";
 
+/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
+"Enter email" = "Enter email";
+
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "Enter file URL";
 
@@ -2588,7 +2617,8 @@ which should be translated separately and considered part of this sentence. */
 "Enter number (Optional)" = "Enter number (Optional)";
 
 /* Enter password placeholder in Product Visibility
-   Placeholder for the password field on the site credential login screen */
+   Placeholder for the password field on the site credential login screen
+   Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter password" = "Enter password";
 
 /* Phone field placeholder in Edit Address Form */
@@ -2656,6 +2686,9 @@ which should be translated separately and considered part of this sentence. */
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
 "Enter your store credentials for %@." = "Enter your store credentials for %@.";
 
+/* Label for the password field on the WPCom password login screen of the Jetpack setup flow. */
+"Enter your WordPress.com password" = "Enter your WordPress.com password";
+
 /* Industry group option in the store creation category question. */
 "Entertainment And Recreation" = "Entertainment And Recreation";
 
@@ -2679,6 +2712,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication */
 "Error checking for the WooCommerce plugin." = "Error checking for the WooCommerce plugin.";
+
+/* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
+"Error checking the Jetpack connection on your site" = "Error checking the Jetpack connection on your site";
+
+/* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
+"Error checking the WordPress.com account associated with this email. Please try again." = "Error checking the WordPress.com account associated with this email. Please try again.";
 
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "Error code %1$d";
@@ -2709,6 +2748,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Error purchasing the label";
+
+/* Message shown on the error alert displayed when requesting authentication link for the Jetpack setup flow fails */
+"Error requesting authentication link for your account. Please try again." = "Error requesting authentication link for your account. Please try again.";
 
 /* Title of the notice about an error saving images uploaded in the background to a product. */
 "Error saving product images" = "Error saving product images";
@@ -2945,6 +2987,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Fixed Product Discount";
 
+/* Display label for the product bundle's item grouping */
+"Flat" = "Flat";
+
 /* Industry option in the store creation category question. */
 "Flowers" = "Flowers";
 
@@ -3043,6 +3088,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
 "Get a login link by email" = "Get a login link by email";
+
+/* Subtitle of multiple stores as part of Jetpack benefits. */
+"Get access to all of your WooCommerce stores." = "Get access to all of your WooCommerce stores.";
 
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Get answers to questions you have";
@@ -3144,10 +3192,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Grenada" = "Grenada";
 
+/* Display label for the product bundle's layout */
+"Grid" = "Grid";
+
 /* Industry option in the store creation category question. */
 "Grocery Stores" = "Grocery Stores";
 
-/* Display label for grouped product type. */
+/* Display label for grouped product type.
+   Display label for the product bundle's item grouping */
 "Grouped" = "Grouped";
 
 /* Action sheet option when the user wants to change the Product type to grouped product */
@@ -3408,6 +3460,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the Inbox menu in the hub menu */
 "Inbox" = "Inbox";
 
+/* Subtitle of the product form bottom sheet action for editing downloadable files. */
+"Include downloadable files with purchases" = "Include downloadable files with purchases";
+
 /* Toggle field in the view for adding or editing a coupon's free shipping support. */
 "Include Free Shipping?" = "Include Free Shipping?";
 
@@ -3465,6 +3520,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the site credential login screen
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
+   Title for the WPCom email login screen when Jetpack is not installed yet
+   Title for the WPCom magic link screen when Jetpack is not installed yet
    Title of install action in the Jetpack benefits view.
    Title of the Install Jetpack intro view
    Title of the Install Jetpack view */
@@ -3491,6 +3548,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of installing Jetpack plugin step
    Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "Installing Jetpack";
+
+/* Display label for the product's inventory stock status */
+"Insufficient stock" = "Insufficient stock";
 
 /* Industry option in the store creation category question. */
 "Insurance" = "Insurance";
@@ -3588,6 +3648,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "It looks like you have analytics disabled.";
 
+/* Message on the error modal when a user without admin role tries to install Jetpack */
+"It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help.";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "It seems like you've entered an incorrect password. Want to give it another try?";
 
@@ -3616,7 +3679,8 @@ which should be translated separately and considered part of this sentence. */
 "Item weight must be larger than 0" = "Item weight must be larger than 0";
 
 /* Description for Top Performers right column header
-   Title for the items sold column on the products card on the analytics hub screen. */
+   Title for the items sold column on the products card on the analytics hub screen.
+   Title for the products card at the top of the top performers section in dashboard stats. */
 "Items Sold" = "Items Sold";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
@@ -3765,7 +3829,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Learn more about Jetpack";
 
-/* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
+/* Link on the error modal when a user without admin role tries to install Jetpack
+   Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "Learn more about roles and permissions";
 
 /* Country option for a site address. */
@@ -3789,6 +3854,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know what you think" = "Let us know what you think";
+
+/* Message info on the support screen. */
+"Let us know your site address (URL) and tell us as much as you can about the problem," = "Let us know your site address (URL) and tell us as much as you can about the problem,";
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8.5 x 11 in)";
@@ -3894,6 +3962,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message on the site credential login screen for installing Jetpack. The %1$@ is the site address. */
 "Log in to %1$@ with your store credentials to install Jetpack." = "Log in to %1$@ with your store credentials to install Jetpack.";
 
+/* Button to start the WPCom login flow from the Jetpack benefits screen. */
+"Log In to Continue" = "Log In to Continue";
+
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "Log in to the WordPress.com account you used to connect Jetpack.";
 
@@ -3918,6 +3989,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Sign in instructions on the 'log in using email' screen.
    Sign in instructions on the 'log in using WordPress.com account' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Log in with your WordPress.com account email address to manage your WooCommerce stores.";
+
+/* Subtitle for the WPCom email login screen when Jetpack is not connected yet */
+"Log in with your WordPress.com account to connect Jetpack" = "Log in with your WordPress.com account to connect Jetpack";
+
+/* Subtitle for the WPCom email login screen when Jetpack is not installed yet */
+"Log in with your WordPress.com account to install Jetpack" = "Log in with your WordPress.com account to install Jetpack";
 
 /* Sign in instructions for logging in with a username and password. */
 "Log in with your WordPress.com account to manage your WooCommerce stores." = "Log in with your WordPress.com account to manage your WooCommerce stores.";
@@ -4213,6 +4290,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Multiple payment options";
 
+/* Title of multiple stores as part of Jetpack benefits. */
+"Multiple Stores" = "Multiple Stores";
+
 /* Industry option in the store creation category question. */
 "Music Or Other Media" = "Music Or Other Media";
 
@@ -4348,6 +4428,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when a card reader was expected to already have been connected. */
 "No card reader is connected - connect a reader and try again" = "No card reader is connected - connect a reader and try again";
 
+/* Placeholder of the Product Categories row on Product main screen */
+"No category selected" = "No category selected";
+
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "No connection";
 
@@ -4439,6 +4522,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
+   Display label for the product bundle's item grouping
    Display label for the product's tax status setting option
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
@@ -4548,6 +4632,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Open in a new Window/Tab" = "Open in a new Window/Tab";
 
 /* The button title text for opening the user's preferred email app.
+   Title for the CTA on the magic link screen of the WPCom login flow during Jetpack setup
    Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Open Mail";
 
@@ -4608,6 +4693,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "Or";
+
+/* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
+"Or Continue using Magic Link" = "Or Continue using Magic Link";
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Or log in by _entering your site address_.";
@@ -5099,6 +5187,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message of in-progress modal when preparing for printing customs invoice
    Message of in-progress modal when requesting shipping label document for printing
    Message of the in-progress UI while purchasing a shipping label
+   Message on the loading view displayed when the magic link authentication for Jetpack setup is in progress
    Message when checking if WooCommerce Payments is supported
    Text on the loading view of the survey screen indicating the user to wait
    VoiceOver Accessibility label for the instruction */
@@ -5354,6 +5443,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description for Top Performers left column header
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
    Title of the Products tab — plural form of Product
    Title text of the section that shows the Products when creating or editing an order
@@ -5680,6 +5770,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Reset password" = "Reset password";
 
 /* Button to reset password on the site credential login screen
+   Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Reset your password";
 
@@ -5710,6 +5801,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
+   Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry when there was a network error checking In-Person Payments requirements
    Retry Action
    Retry action for an error notice
@@ -6056,6 +6148,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Set up Jetpack";
 
+/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+"Set up Tap to Pay on iPhone" = "Set up Tap to Pay on iPhone";
+
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Set up the package you'll be using to ship your products. We'll save it for future orders.";
@@ -6085,7 +6180,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "share details";
 
-/* Title of the feedback action button on the In-Person Payments feedback banner */
+/* Title of the feedback action button on the In-Person Payments feedback banner
+   Title of the feedback button in the action sheet. */
 "Share feedback" = "Share feedback";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -6488,6 +6584,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Sri Lanka" = "Sri Lanka";
 
+/* Display label for the product bundle's layout */
+"Standard" = "Standard";
+
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standard rate";
 
@@ -6719,6 +6818,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when attempting to pay for a live transaction with a test card. */
 "System test cards are not permitted for payment. Try another means of payment" = "System test cards are not permitted for payment. Try another means of payment";
 
+/* Display label for the product bundle's layout */
+"Tabular" = "Tabular";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
@@ -6773,8 +6875,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "Tap to modify the item refund quantity";
 
-/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader
-   The button title on the reader type alert, for the user to choose the built-in reader. */
+/* The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "Tap to Pay on iPhone";
 
 /* Error message shown when the built-in reader cannot be used because there is a call in progress */
@@ -6892,9 +6993,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Tell us more about %1$@...";
 
-/* Message info on the support screen. */
-"Tell us much as you can about the problem, and we will be in touch soon." = "Tell us much as you can about the problem, and we will be in touch soon.";
-
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
@@ -6903,9 +7001,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "Test out in-app purchases as we get ready to launch";
-
-/* Cell description on beta features screen to enable in-app purchases */
-"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 16 or above, for US-based stores." = "Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 16 or above, for US-based stores.";
 
 /* Cell description on beta features screen to enable coupon management */
 "Test out managing coupons as we get ready to launch" = "Test out managing coupons as we get ready to launch";
@@ -7518,6 +7613,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
    Button to refetch application password for the current site
+   Button to retry a failed action in the Jetpack setup flow
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
    Button to try again. Presented to users after a failure occurs
@@ -7730,7 +7826,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Unable to refresh list";
 
-/* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
+/* An error message shown when failing to retrieve information about user roles
+   An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
 "Unable to retrieve user roles." = "Unable to retrieve user roles.";
 
 /* Unable to retrieve variations for bulk update screen */
@@ -7768,9 +7865,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Unapproves a comment. Spoken Hint. */
 "Unapproves the comment" = "Unapproves the comment";
-
-/* Placeholder of the Product Categories row on Product main screen */
-"Uncategorized" = "Uncategorized";
 
 /* Accessibility label for underline button on formatting toolbar. */
 "Underline" = "Underline";
@@ -8213,6 +8307,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The subtitle text on the magic link requested screen followed by the email address. */
 "We just sent a magic link to" = "We just sent a magic link to";
 
+/* Instruction on the magic link screen of the WPCom login flow during Jetpack setup. %@ is a submitted email address. */
+"We just sent a magic link to %@" = "We just sent a magic link to %@";
+
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "We know it’s essential to your business.";
 
@@ -8432,6 +8529,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "You are not authorized to access this store.";
+
+/* An error message shown after the user retried checking their roles but they still don't have enough permission to install Jetpack */
+"You are not authorized to install Jetpack" = "You are not authorized to install Jetpack";
 
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "You can choose multiple ones.";

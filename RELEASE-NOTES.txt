@@ -7,6 +7,7 @@
 - [Internal] Mobile Payments: fixed logic on display of IPP feedback banner on Order List [https://github.com/woocommerce/woocommerce-ios/pull/8994]
 - [**] Support: Merchants can now contact support with a new and refined experience. [https://github.com/woocommerce/woocommerce-ios/pull/9006/files]
 - [***] Mobile Payments: Tap to Pay on iPhone enabled for all US merchants [https://github.com/woocommerce/woocommerce-ios/pull/9023]
+- [Internal] Shipping Label: add condition checks before showing contact options [https://github.com/woocommerce/woocommerce-ios/pull/8982]
 
 12.5
 -----

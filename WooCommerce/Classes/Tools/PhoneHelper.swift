@@ -12,4 +12,12 @@ final class PhoneHelper {
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
         return true
     }
+
+    static func canCallPhoneNumber(phone: String?) -> Bool {
+        guard let phone = phone, let url = URL(string: "tel://\(phone)"), UIApplication.shared.canOpenURL(url) else {
+            return false
+        }
+
+        return true
+    }
 }

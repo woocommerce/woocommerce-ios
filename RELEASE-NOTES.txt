@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.7
+-----
+- [Internal] Shipping Label: add condition checks before showing contact options [https://github.com/woocommerce/woocommerce-ios/pull/8982]
+
 12.6
 -----
 - [*] Fix: When a product's details can be edited, they display a disclosure indicator (chevron). [https://github.com/woocommerce/woocommerce-ios/pull/8980]
@@ -7,7 +11,6 @@
 - [Internal] Mobile Payments: fixed logic on display of IPP feedback banner on Order List [https://github.com/woocommerce/woocommerce-ios/pull/8994]
 - [**] Support: Merchants can now contact support with a new and refined experience. [https://github.com/woocommerce/woocommerce-ios/pull/9006/files]
 - [***] Mobile Payments: Tap to Pay on iPhone enabled for all US merchants [https://github.com/woocommerce/woocommerce-ios/pull/9023]
-- [Internal] Shipping Label: add condition checks before showing contact options [https://github.com/woocommerce/woocommerce-ios/pull/8982]
 
 12.5
 -----

@@ -2,7 +2,7 @@
 
 12.7
 -----
-
+- [Internal] Shipping Label: add condition checks before showing contact options [https://github.com/woocommerce/woocommerce-ios/pull/8982]
 
 12.6
 -----

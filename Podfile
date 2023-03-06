@@ -39,6 +39,10 @@ def wordpress_kit
   # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
 end
 
+def wordpress_shared
+  pod 'WordPressShared', '~> 2.0'
+end
+
 def keychain
   pod 'KeychainAccess', '~> 4.2.2'
 end
@@ -61,6 +65,7 @@ def networking_pods
   cocoa_lumberjack
 
   pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
+  wordpress_shared
 
   # Used for HTML parsing
   aztec
@@ -68,7 +73,6 @@ def networking_pods
   # Used for storing application password
   keychain
 
-  wordpress_kit
 end
 
 # Main Target!
@@ -91,7 +95,7 @@ target 'WooCommerce' do
    pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'trunk'
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
-  pod 'WordPressShared', '~> 2.0'
+  wordpress_shared
 
   pod 'WordPressUI', '~> 1.12.5'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''

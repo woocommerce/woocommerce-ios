@@ -53,50 +53,43 @@ final class WPComEmailLoginViewModel: ObservableObject {
 
     @MainActor
     func checkWordPressComAccount(email: String) async {
-        await withCheckedContinuation { continuation -> Void in
-            accountService.isPasswordlessAccount(username: email, success: { [weak self] passwordless in
-                guard let self else {
-                    return continuation.resume()
-                }
-                self.startAuthentication(email: email, isPasswordlessAccount: passwordless) {
-                    continuation.resume()
-                }
-            }, failure: { [weak self] error in
-                DDLogError("⛔️ Error checking for passwordless account: \(error)")
-                continuation.resume()
-                self?.onError(Localization.errorCheckingWPComAccount)
-            })
+        do {
+            let passwordless = try await withCheckedThrowingContinuation { continuation in
+                accountService.isPasswordlessAccount(username: email, success: { passwordless in
+                    continuation.resume(returning: passwordless)
+                }, failure: { error in
+                    DDLogError("⛔️ Error checking for passwordless account: \(error)")
+                    continuation.resume(throwing: error)
+                })
+            }
+            await startAuthentication(email: email, isPasswordlessAccount: passwordless)
+        } catch {
+            onError(error.prepareErrorMessage(fallback: Localization.errorCheckingWPComAccount))
         }
     }
 
-    func startAuthentication(email: String, isPasswordlessAccount: Bool, onCompletion: @escaping () -> Void) {
+    @MainActor
+    func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
         if isPasswordlessAccount {
-            Task { @MainActor in
-                await requestAuthenticationLink(email: email)
-                onCompletion()
-            }
+            await requestAuthenticationLink(email: email)
         } else {
             onPasswordUIRequest(email)
-            onCompletion()
         }
     }
 
     @MainActor
     func requestAuthenticationLink(email: String) async {
-        await withCheckedContinuation { continuation in
-            accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: { [weak self] in
-                guard let self else {
-                    return continuation.resume()
-                }
-                self.onMagicLinkUIRequest(email)
-                continuation.resume()
-            }, failure: { [weak self] error in
-                guard let self else {
-                    return continuation.resume()
-                }
-                self.onError(error.prepareErrorMessage(fallback: Localization.errorRequestingAuthURL))
-                continuation.resume()
-            })
+        do {
+            try await withCheckedThrowingContinuation { continuation in
+                accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: {
+                    continuation.resume()
+                }, failure: { error in
+                    continuation.resume(throwing: error)
+                })
+            }
+            onMagicLinkUIRequest(email)
+        } catch {
+            onError(error.prepareErrorMessage(fallback: Localization.errorRequestingAuthURL))
         }
     }
 }

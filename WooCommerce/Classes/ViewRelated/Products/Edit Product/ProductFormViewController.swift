@@ -445,7 +445,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 break
             case .bundledProducts:
                 // TODO-8954: Add tracking
-                // TODO-8954: Add action to show bundled products settings screen
+                showBundledProducts()
                 return
             }
         case .optionsCTA(let rows):
@@ -1673,6 +1673,19 @@ private extension ProductFormViewController {
             viewModel.updateProductVariations(from: updatedProduct)
         }
         show(variationsViewController, sender: self)
+    }
+}
+
+// MARK: Action - Show Bundled Products
+//
+private extension ProductFormViewController {
+    func showBundledProducts() {
+        guard let product = product as? EditableProductModel else {
+            return
+        }
+        let viewModel = BundledProductsListViewModel()
+        let viewController = BundledProductsListViewController(viewModel: viewModel)
+        show(viewController, sender: self)
     }
 }
 

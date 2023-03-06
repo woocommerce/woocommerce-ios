@@ -129,7 +129,7 @@ private extension TopPerformerDataViewController {
     }
 
     func configureTopPerformersView() {
-        let hostingController = ConstraintsUpdatingHostingController(rootView: DashboardTopPerformersView(viewModel: viewModel))
+        let hostingController = UIHostingController(rootView: DashboardTopPerformersView(viewModel: viewModel))
         addChild(hostingController)
         view.addSubview(hostingController.view)
 

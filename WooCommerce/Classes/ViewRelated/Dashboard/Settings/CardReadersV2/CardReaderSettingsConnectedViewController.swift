@@ -34,7 +34,10 @@ final class CardReaderSettingsConnectedViewController: UIViewController, Payment
     private func configureViews() {
         viewModel.didUpdate = onViewModelDidUpdate
         view.addSubview(tableView)
-        tableView.constrainToSuperViewEdges()
+        tableView.constrainToSuperview(attribute: .top)
+        tableView.constrainToSuperview(attribute: .bottom)
+        tableView.constrainToSuperview(attribute: .leading)
+        tableView.constrainToSuperview(attribute: .trailing)
     }
 
     required init?(coder: NSCoder) {

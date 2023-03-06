@@ -443,6 +443,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 editAttributes()
             case .status:
                 break
+            case .bundledProducts:
+                // TODO-8954: Add tracking
+                // TODO-8954: Add action to show bundled products settings screen
+                return
             }
         case .optionsCTA(let rows):
             let row = rows[indexPath.row]

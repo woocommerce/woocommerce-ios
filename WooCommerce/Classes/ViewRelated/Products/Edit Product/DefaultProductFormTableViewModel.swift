@@ -112,6 +112,8 @@ private extension DefaultProductFormTableViewModel {
                 return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: true))
             case .attributes(let editable):
                 return .attributes(viewModel: productVariationsAttributesRow(product: product.product, isEditable: editable), isEditable: editable)
+            case .bundledProducts:
+                return .bundledProducts(viewModel: bundledProductsRow(product: product))
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -507,6 +509,20 @@ private extension DefaultProductFormTableViewModel {
                                                         details: details,
                                                         isActionable: isEditable)
     }
+
+    // MARK: Bundle products only
+
+    func bundledProductsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.widgetsImage
+        let title = Localization.bundledProductsTitle
+
+        let details = "3 products" // TODO-8954: Display actual bundled product count (localized)
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        isActionable: false) // TODO-8954: Make actionable once bundled products screen is ready
+    }
 }
 
 private extension DefaultProductFormTableViewModel {
@@ -699,5 +715,8 @@ private extension DefaultProductFormTableViewModel {
 
         // Add-ons
         static let addOnsTitle = NSLocalizedString("Product Add-ons", comment: "Title for Add-ons row in the product form screen.")
+
+        // Bundled products
+        static let bundledProductsTitle = NSLocalizedString("Bundled products", comment: "Title for Bundled Products row in the product form screen.")
     }
 }

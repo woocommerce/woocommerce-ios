@@ -195,7 +195,6 @@ final class CardPresentPaymentPreflightController {
     }
 
     private func handlePreflightFailure(error: Error) {
-        CardPresentPaymentOnboardingStateCache.shared.invalidate()
         alertsPresenter.dismiss()
     }
 

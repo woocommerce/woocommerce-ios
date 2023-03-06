@@ -2,6 +2,15 @@ import Combine
 import UIKit
 import WordPressAuthenticator
 
+/// A protocol used to mock `WordPressComAccountService` for unit tests.
+protocol WordPressComAccountServiceProtocol {
+    func isPasswordlessAccount(username: String, success: @escaping (Bool) -> Void, failure: @escaping (Error) -> Void)
+    func requestAuthenticationLink(for email: String, jetpackLogin: Bool, success: @escaping () -> Void, failure: @escaping (Error) -> Void)
+}
+
+/// Conformance
+extension WordPressComAccountService: WordPressComAccountServiceProtocol {}
+
 /// View model for `WPComEmailLoginView`
 final class WPComEmailLoginViewModel: ObservableObject {
     let titleString: String
@@ -11,7 +20,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
 
     let termsAttributedString: NSAttributedString
 
-    private let accountService: WordPressComAccountService
+    private let accountService: WordPressComAccountServiceProtocol
     private let onPasswordUIRequest: (String) -> Void
     private let onMagicLinkUIRequest: (String) -> Void
     private let onError: (String) -> Void
@@ -21,10 +30,11 @@ final class WPComEmailLoginViewModel: ObservableObject {
     init(siteURL: String,
          requiresConnectionOnly: Bool,
          debounceDuration: Double = Constants.fieldDebounceDuration,
+         accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          onPasswordUIRequest: @escaping (String) -> Void,
          onMagicLinkUIRequest: @escaping (String) -> Void,
          onError: @escaping (String) -> Void) {
-        self.accountService = WordPressComAccountService()
+        self.accountService = accountService
         self.onPasswordUIRequest = onPasswordUIRequest
         self.onMagicLinkUIRequest = onMagicLinkUIRequest
         self.onError = onError

@@ -808,6 +808,7 @@ public enum WooAnalyticsStat: String {
     case paymentsMenuManageCardReadersTapped = "payments_hub_manage_card_readers_tapped"
     case paymentsMenuPaymentProviderTapped = "settings_card_present_select_payment_gateway_tapped"
     case inPersonPaymentsLearnMoreTapped = "in_person_payments_learn_more_tapped"
+    case setUpTapToPayOnIPhoneTapped = "set_up_tap_to_pay_on_iphone_tapped"
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"

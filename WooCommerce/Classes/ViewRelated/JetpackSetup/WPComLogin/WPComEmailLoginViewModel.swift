@@ -79,7 +79,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
     }
 
     @MainActor
-    func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
+    private func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
         if isPasswordlessAccount {
             await requestAuthenticationLink(email: email)
         } else {

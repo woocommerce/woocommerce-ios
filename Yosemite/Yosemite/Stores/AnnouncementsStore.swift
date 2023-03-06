@@ -1,21 +1,5 @@
 import Networking
-import WordPressKit
 import Storage
-
-/// Protocol for `AnnouncementsRemote` mainly used for mocking.
-///
-public protocol AnnouncementsRemoteProtocol {
-    func getAnnouncements(appId: String,
-                          appVersion: String,
-                          locale: String,
-                          completion: @escaping (Result<[Announcement], Error>) -> Void)
-}
-
-extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol {
-    public override convenience init() {
-        self.init(wordPressComRestApi: WordPressComRestApi(baseUrlString: Settings.wordpressApiBaseURL))
-    }
-}
 
 public typealias IsDisplayed = Bool
 
@@ -23,16 +7,15 @@ public typealias IsDisplayed = Bool
 //
 public class AnnouncementsStore: Store {
 
-    private let remote: AnnouncementsRemoteProtocol
+    private let remote: AnnouncementsRemote
     private let fileStorage: FileStorage
     private let appVersion = UserAgent.bundleShortVersion
 
     public init(dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
                 network: Network,
-                remote: AnnouncementsRemoteProtocol = AnnouncementServiceRemote(),
                 fileStorage: FileStorage) {
-        self.remote = remote
+        self.remote = AnnouncementsRemote(network: network)
         self.fileStorage = fileStorage
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -74,9 +57,8 @@ public class AnnouncementsStore: Store {
 private extension AnnouncementsStore {
     /// Get Announcements from Announcements API and persist this information on disk.
     func synchronizeAnnouncements(onCompletion: @escaping (Result<Announcement, Error>) -> Void) {
-        remote.getAnnouncements(appId: Constants.WooCommerceAppId,
-                                appVersion: appVersion,
-                                locale: Locale.current.identifier) { [weak self] result in
+        remote.loadAnnouncements(appVersion: appVersion,
+                                 locale: Locale.current.identifier) { [weak self] result in
             switch result {
             case .success(let announcements):
                 guard let self = self, let announcement = announcements.first else {
@@ -213,9 +195,6 @@ private extension Announcement {
 private enum Constants {
     // MARK: File Names
     static let featureAnnouncementsFileName = "feature-announcements.plist"
-
-    // MARK: - App IDs
-    static let WooCommerceAppId = "4"
 }
 
 // MARK: - Errors

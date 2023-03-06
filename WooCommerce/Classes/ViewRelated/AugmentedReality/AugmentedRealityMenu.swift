@@ -4,7 +4,11 @@ struct AugmentedRealityMenu: View {
     var body: some View {
         List {
             Text("Capture images")
-            Text("Create USDZ files")
+            if #available(macCatalyst 16.0, *) {
+                NavigationLink(destination: AugmentedRealityCreateUSDZ()) {
+                    Text("Create USDZ files")
+                }
+            }
         }
     }
 }

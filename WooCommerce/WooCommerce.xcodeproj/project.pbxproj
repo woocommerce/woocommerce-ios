@@ -526,6 +526,7 @@
 		0365986929AFB0C100F297D3 /* SetUpTapToPayInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365986829AFB0C100F297D3 /* SetUpTapToPayInformationViewModel.swift */; };
 		0365986B29AFB11E00F297D3 /* SetUpTapToPayInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365986A29AFB11E00F297D3 /* SetUpTapToPayInformationViewController.swift */; };
 		0365987229B6146600F297D3 /* AugmentedRealityMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365987129B6146600F297D3 /* AugmentedRealityMenu.swift */; };
+		0365987629B61BD200F297D3 /* AugmentedRealityCreateUSDZ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365987529B61BD200F297D3 /* AugmentedRealityCreateUSDZ.swift */; };
 		0366EAE12909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0366EAE02909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift */; };
 		036CA6B9291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036CA6B8291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift */; };
 		036CA6F129229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036CA6F029229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift */; };
@@ -2667,6 +2668,7 @@
 		0365986829AFB0C100F297D3 /* SetUpTapToPayInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayInformationViewModel.swift; sourceTree = "<group>"; };
 		0365986A29AFB11E00F297D3 /* SetUpTapToPayInformationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayInformationViewController.swift; sourceTree = "<group>"; };
 		0365987129B6146600F297D3 /* AugmentedRealityMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AugmentedRealityMenu.swift; sourceTree = "<group>"; };
+		0365987529B61BD200F297D3 /* AugmentedRealityCreateUSDZ.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AugmentedRealityCreateUSDZ.swift; sourceTree = "<group>"; };
 		0366EAE02909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageAnnouncementCardViewModel.swift; sourceTree = "<group>"; };
 		036CA6B8291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalPreparingReader.swift; sourceTree = "<group>"; };
 		036CA6F029229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndefiniteCircularProgressViewStyle.swift; sourceTree = "<group>"; };
@@ -5496,6 +5498,7 @@
 			isa = PBXGroup;
 			children = (
 				0365987129B6146600F297D3 /* AugmentedRealityMenu.swift */,
+				0365987529B61BD200F297D3 /* AugmentedRealityCreateUSDZ.swift */,
 			);
 			path = AugmentedReality;
 			sourceTree = "<group>";
@@ -10665,6 +10668,7 @@
 				024DF32123744798006658FE /* AztecFormatBarCommandCoordinator.swift in Sources */,
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
 				318477E527A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift in Sources */,
+				0365987629B61BD200F297D3 /* AugmentedRealityCreateUSDZ.swift in Sources */,
 				DE46133926B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift in Sources */,
 				68E952D22875A44B0095A23D /* CardReaderType+Manual.swift in Sources */,
 				035DBA4B292E248C003E5125 /* CardPresentPaymentAlertsPresenter.swift in Sources */,

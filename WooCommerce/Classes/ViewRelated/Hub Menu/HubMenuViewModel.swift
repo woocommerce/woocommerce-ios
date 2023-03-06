@@ -78,6 +78,9 @@ final class HubMenuViewModel: ObservableObject {
         if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
             menuElements.append(InAppPurchases())
         }
+        if featureFlagService.isFeatureFlagEnabled(.augmentedReality) {
+            menuElements.append(AugmentedReality())
+        }
 
         let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
         inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
@@ -250,6 +253,17 @@ extension HubMenuViewModel {
         let trackingOption: String = "debug-iap"
     }
 
+    struct AugmentedReality: HubMenuItem {
+        static var id = "augmentedReality"
+
+        let title: String = Localization.augmentedReality
+        let icon: UIImage = UIImage(systemName: "move.3d") ?? .productImage
+        let iconColor: UIColor = .withColorStudio(.green)
+        var badge: HubMenuBadgeType = .number(number: 0)
+        let accessibilityIdentifier: String = "menu-augmentedReality"
+        let trackingOption: String = "augmentedReality"
+    }
+
     enum Localization {
         static let payments = NSLocalizedString("Payments",
                                                 comment: "Title of the hub menu payments button")
@@ -263,5 +277,7 @@ extension HubMenuViewModel {
         static let coupon = NSLocalizedString("Coupons", comment: "Title of the Coupons menu in the hub menu")
         static let reviews = NSLocalizedString("Reviews",
                                                comment: "Title of one of the hub menu options")
+        static let augmentedReality = NSLocalizedString("Augmented Reality",
+                                                        comment: "Title of the Augmented Reality hub menu option")
     }
 }

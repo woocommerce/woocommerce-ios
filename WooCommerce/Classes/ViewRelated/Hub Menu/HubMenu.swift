@@ -17,6 +17,7 @@ struct HubMenu: View {
     @State private var showingReviews = false
     @State private var showingCoupons = false
     @State private var showingIAPDebug = false
+    @State private var showingAugmentedReality = false
 
     /// State to disable multiple taps on menu items
     /// Make sure to reset the value to false after dismissing sub-flows
@@ -76,6 +77,8 @@ struct HubMenu: View {
                                 showingCoupons = true
                             case HubMenuViewModel.InAppPurchases.id:
                                 showingIAPDebug = true
+                            case HubMenuViewModel.AugmentedReality.id:
+                                showingAugmentedReality = true
                             default:
                                 break
                             }
@@ -122,6 +125,9 @@ struct HubMenu: View {
                 EmptyView()
             }.hidden()
             NavigationLink(destination: InAppPurchasesDebugView(), isActive: $showingIAPDebug) {
+                EmptyView()
+            }.hidden()
+            NavigationLink(destination: AugmentedRealityMenu(), isActive: $showingAugmentedReality) {
                 EmptyView()
             }.hidden()
             LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {

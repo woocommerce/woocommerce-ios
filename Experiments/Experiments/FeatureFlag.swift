@@ -167,4 +167,7 @@ public enum FeatureFlag: Int {
     /// Whether to enable the onboarding checklist in the dashboard for WPCOM stores.
     ///
     case dashboardOnboarding
+
+    /// Whether to enable the USDZ-related Augmented Reality (AR) tab in the Hub Menu.
+    case augmentedReality
 }

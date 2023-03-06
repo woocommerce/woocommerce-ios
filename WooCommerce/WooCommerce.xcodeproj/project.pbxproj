@@ -525,6 +525,7 @@
 		0365986729AFAEFC00F297D3 /* SetUpTapToPayViewModelsOrderedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365986629AFAEFC00F297D3 /* SetUpTapToPayViewModelsOrderedList.swift */; };
 		0365986929AFB0C100F297D3 /* SetUpTapToPayInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365986829AFB0C100F297D3 /* SetUpTapToPayInformationViewModel.swift */; };
 		0365986B29AFB11E00F297D3 /* SetUpTapToPayInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365986A29AFB11E00F297D3 /* SetUpTapToPayInformationViewController.swift */; };
+		0365987229B6146600F297D3 /* AugmentedRealityMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365987129B6146600F297D3 /* AugmentedRealityMenu.swift */; };
 		0366EAE12909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0366EAE02909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift */; };
 		036CA6B9291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036CA6B8291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift */; };
 		036CA6F129229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036CA6F029229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift */; };
@@ -2665,6 +2666,7 @@
 		0365986629AFAEFC00F297D3 /* SetUpTapToPayViewModelsOrderedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayViewModelsOrderedList.swift; sourceTree = "<group>"; };
 		0365986829AFB0C100F297D3 /* SetUpTapToPayInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayInformationViewModel.swift; sourceTree = "<group>"; };
 		0365986A29AFB11E00F297D3 /* SetUpTapToPayInformationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayInformationViewController.swift; sourceTree = "<group>"; };
+		0365987129B6146600F297D3 /* AugmentedRealityMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AugmentedRealityMenu.swift; sourceTree = "<group>"; };
 		0366EAE02909A37800B51755 /* JustInTimeMessageAnnouncementCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageAnnouncementCardViewModel.swift; sourceTree = "<group>"; };
 		036CA6B8291E8D4B00E4DF4F /* CardPresentModalPreparingReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalPreparingReader.swift; sourceTree = "<group>"; };
 		036CA6F029229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndefiniteCircularProgressViewStyle.swift; sourceTree = "<group>"; };
@@ -5490,6 +5492,14 @@
 			path = JetpackConnectionPackageSites;
 			sourceTree = "<group>";
 		};
+		0365987029B6144D00F297D3 /* AugmentedReality */ = {
+			isa = PBXGroup;
+			children = (
+				0365987129B6146600F297D3 /* AugmentedRealityMenu.swift */,
+			);
+			path = AugmentedReality;
+			sourceTree = "<group>";
+		};
 		0371C36C2876E91500277E2C /* Feature Announcement Cards */ = {
 			isa = PBXGroup;
 			children = (
@@ -7524,6 +7534,7 @@
 		B56DB3EF2049C06D00D4AA8E /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				0365987029B6144D00F297D3 /* AugmentedReality */,
 				02B1AA6329A4704C00D54FCB /* FilterTabBar */,
 				DEF8CF0829A71ED400800A60 /* JetpackSetup */,
 				02E3B62629026C83007E0F13 /* Authentication */,
@@ -10790,6 +10801,7 @@
 				DEC6C51A2747758D006832D3 /* JCPJetpackInstallView.swift in Sources */,
 				DE37517C28DC5FC6000163CB /* Authenticator.swift in Sources */,
 				AED089F227C794BC0020AE10 /* View+CurrencySymbol.swift in Sources */,
+				0365987229B6146600F297D3 /* AugmentedRealityMenu.swift in Sources */,
 				03BB9EA7292E50B600251E9E /* CardPresentModalSelectSearchType.swift in Sources */,
 				DE4D23A629B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift in Sources */,
 				D85806292642BA5400A8AB6C /* LegacyPaymentCaptureOrchestrator.swift in Sources */,

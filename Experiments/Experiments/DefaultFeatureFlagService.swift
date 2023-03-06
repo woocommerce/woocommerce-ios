@@ -83,6 +83,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .dashboardOnboarding:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
+        case .augmentedReality:
+            return buildConfig == .localDeveloper
         default:
             return true
         }

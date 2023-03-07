@@ -40,7 +40,7 @@ struct ScannedProductsBottomSheetListSelectorCommand: BottomSheetListSelectorCom
     }
 
     func isSelected(model: ProductSKUScannerResult) -> Bool {
-        return model == selected
+        model == selected
     }
 }
 
@@ -69,7 +69,6 @@ extension ProductSKUScannerResult: Equatable {
 }
 
 final class ProductInventoryScannerViewController: UIViewController {
-
     private lazy var barcodeScannerChildViewController = BarcodeScannerViewController(instructionText: Localization.instructionText)
 
     private var results: [ProductSKUScannerResult] = []
@@ -83,12 +82,12 @@ final class ProductInventoryScannerViewController: UIViewController {
         return label
     }()
 
-    private let siteID: Int64
+    private let viewModel: ProductInventoryScannerViewModel
 
     private var cancellables: Set<AnyCancellable> = []
 
-    init(siteID: Int64) {
-        self.siteID = siteID
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+        viewModel = ProductInventoryScannerViewModel(siteID: siteID, stores: stores)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -184,7 +183,7 @@ private extension ProductInventoryScannerViewController {
                                       comment: "Title of the bottom sheet that shows a list of scanned products via the barcode scanner.")
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let command = ScannedProductsBottomSheetListSelectorCommand(results: results) { [weak self] result in
-            self?.dismiss(animated: true, completion: { [weak self] in
+            self?.dismiss(animated: true) { [weak self] in
                 switch result {
                 case .matched(let product):
                     self?.editInventorySettings(for: product)
@@ -229,10 +228,8 @@ private extension ProductInventoryScannerViewController {
     func updateProductInventorySettings(_ product: ProductFormDataModel, inventoryData: ProductInventoryEditableData) {
         // TODO-jc: analytics
 //        ServiceLocator.analytics.track(.productDetailUpdateButtonTapped)
-        let title = NSLocalizedString("Updating inventory", comment: "Title of the in-progress UI while updating the Product inventory settings remotely")
-        let message = NSLocalizedString("Please wait while we update inventory for your products",
-                                        comment: "Message of the in-progress UI while updating the Product inventory settings remotely")
-        let viewProperties = InProgressViewProperties(title: title, message: message)
+        let viewProperties = InProgressViewProperties(title: Localization.productInventoryUpdateInProgressTitle,
+                                                      message: Localization.productInventoryUpdateInProgressMessage)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
         inProgressViewController.modalPresentationStyle = .overCurrentContext
 
@@ -343,8 +340,20 @@ private extension ProductInventoryScannerViewController {
 
 private extension ProductInventoryScannerViewController {
     enum Localization {
-        static let title = NSLocalizedString("Update inventory", comment: "Navigation bar title on the barcode scanner screen.")
+        static let title = NSLocalizedString("Update inventory", comment: "Navigation bar title on the inventory scanner screen.")
         static let instructionText = NSLocalizedString("Scan first product barcode",
-                                                       comment: "The instruction text below the scan area in the barcode scanner for product inventory.")
+                                                       comment: "The instruction text below the scan area in the barcode scanner for inventory scanner.")
+        static let productFoundStatus = NSLocalizedString("Product Found!", comment: "Status text when a product is found from a barcode in inventory scanner.")
+        static let productNotFoundStatus = NSLocalizedString("Product not found",
+                comment: "Status text when a product is not found from a bar in inventory scanner.")
+        static let searchingProductStatus = NSLocalizedString("Scanning barcode", comment: "Status text when searching a product from a bar in inventory scanner.")
+        static let productInventoryUpdateInProgressTitle = NSLocalizedString(
+                "Updating inventory",
+                comment: "Title of the in-progress UI while updating the Product inventory settings remotely"
+        )
+        static let productInventoryUpdateInProgressMessage = NSLocalizedString(
+                "Please wait while we update inventory for your products",
+                comment: "Message of the in-progress UI while updating the Product inventory settings remotely"
+        )
     }
 }

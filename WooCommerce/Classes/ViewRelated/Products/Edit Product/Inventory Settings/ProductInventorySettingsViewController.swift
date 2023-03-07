@@ -282,7 +282,6 @@ private extension ProductInventorySettingsViewController {
         default:
             break
         }
-
         cell.configure(viewModel: cellViewModel)
 
         // Configures accessory view for adding SKU from barcode scanner by fetching switch's state from app settings.

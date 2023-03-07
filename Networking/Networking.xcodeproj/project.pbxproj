@@ -722,6 +722,7 @@
 		DE4D23BA29B5FB3E003A4B5D /* AnnouncementsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23B929B5FB3E003A4B5D /* AnnouncementsRemote.swift */; };
 		DE4D23BC29B5FC0D003A4B5D /* AnnouncementListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23BB29B5FC0D003A4B5D /* AnnouncementListMapper.swift */; };
 		DE4D23BE29B6E10F003A4B5D /* announcements.json in Resources */ = {isa = PBXBuildFile; fileRef = DE4D23BD29B6E10F003A4B5D /* announcements.json */; };
+		DE4D23C029B6E1A8003A4B5D /* AnnouncementListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23BF29B6E1A8003A4B5D /* AnnouncementListMapperTests.swift */; };
 		DE4F2A3F29750EF400B0701C /* inbox-note-list-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE4F2A3D29750EF400B0701C /* inbox-note-list-without-data.json */; };
 		DE4F2A4029750EF400B0701C /* inbox-note-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE4F2A3E29750EF400B0701C /* inbox-note-without-data.json */; };
 		DE4F2A4229751EAE00B0701C /* setting-coupon-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE4F2A4129751EAE00B0701C /* setting-coupon-without-data.json */; };
@@ -1621,6 +1622,7 @@
 		DE4D23B929B5FB3E003A4B5D /* AnnouncementsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsRemote.swift; sourceTree = "<group>"; };
 		DE4D23BB29B5FC0D003A4B5D /* AnnouncementListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementListMapper.swift; sourceTree = "<group>"; };
 		DE4D23BD29B6E10F003A4B5D /* announcements.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = announcements.json; sourceTree = "<group>"; };
+		DE4D23BF29B6E1A8003A4B5D /* AnnouncementListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementListMapperTests.swift; sourceTree = "<group>"; };
 		DE4F2A3D29750EF400B0701C /* inbox-note-list-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "inbox-note-list-without-data.json"; sourceTree = "<group>"; };
 		DE4F2A3E29750EF400B0701C /* inbox-note-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "inbox-note-without-data.json"; sourceTree = "<group>"; };
 		DE4F2A4129751EAE00B0701C /* setting-coupon-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "setting-coupon-without-data.json"; sourceTree = "<group>"; };
@@ -2818,6 +2820,7 @@
 			isa = PBXGroup;
 			children = (
 				B505F6D220BEE3A500BB1B69 /* AccountMapperTests.swift */,
+				DE4D23BF29B6E1A8003A4B5D /* AnnouncementListMapperTests.swift */,
 				DEF13C552965689F0024A02B /* LeaderboardListMapperTests.swift */,
 				DE2E8EAA2954170D002E4B14 /* WordPressSiteMapperTests.swift */,
 				9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */,
@@ -4058,6 +4061,7 @@
 				D800DA0A25EFEB9C001E13CE /* WCPayRemoteTests.swift in Sources */,
 				EE57C13A297F9EBE00BC31E7 /* ProductVariationsBulkCreateMapperTests.swift in Sources */,
 				E13BAD5328F8625600217769 /* InAppPurchasesRemoteTests.swift in Sources */,
+				DE4D23C029B6E1A8003A4B5D /* AnnouncementListMapperTests.swift in Sources */,
 				CC851D1425E52AB500249E9C /* Decimal+ExtensionsTests.swift in Sources */,
 				EE76762F2962B85E000066FA /* RequestProcessorTests.swift in Sources */,
 				B554FA8B2180B1D500C54DFF /* NotificationsRemoteTests.swift in Sources */,

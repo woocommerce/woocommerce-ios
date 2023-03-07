@@ -19,4 +19,11 @@ extension Keychain {
         get { self[WooConstants.authToken] }
         set { self[WooConstants.authToken] = newValue }
     }
+
+    /// Site credential password of the logged-in user
+    ///
+    var siteCredentialPassword: String? {
+        get { self[WooConstants.siteCredentialPassword] }
+        set { self[WooConstants.siteCredentialPassword] = newValue }
+    }
 }

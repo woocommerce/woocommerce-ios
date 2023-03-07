@@ -74,7 +74,6 @@ final class ProductInventoryScannerViewController: UIViewController {
 
     private var results: [ProductSKUScannerResult] = []
 
-    private var bottomSheetViewController: BottomSheetViewController?
     private var listSelectorViewController: BottomSheetListSelectorViewController
     <ScannedProductsBottomSheetListSelectorCommand, ProductSKUScannerResult, ProductsTabProductTableViewCell>?
 
@@ -109,7 +108,10 @@ final class ProductInventoryScannerViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        bottomSheetViewController?.show(from: self)
+        if let listSelectorViewController, listSelectorViewController.isBeingPresented == false {
+            configureBottomSheetPresentation(for: listSelectorViewController)
+            present(listSelectorViewController, animated: true)
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -121,7 +123,9 @@ final class ProductInventoryScannerViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         // Dismisses the bottom sheet if it is presented.
-        bottomSheetViewController?.dismiss(animated: true, completion: nil)
+        if let listSelectorViewController {
+            listSelectorViewController.dismiss(animated: true)
+        }
 
         super.viewWillDisappear(animated)
     }
@@ -175,9 +179,10 @@ private extension ProductInventoryScannerViewController {
     }
 
     func presentSearchResults() {
+        // TODO-JC: Singular or plural
         let title = NSLocalizedString("Scanned products",
                                       comment: "Title of the bottom sheet that shows a list of scanned products via the barcode scanner.")
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let command = ScannedProductsBottomSheetListSelectorCommand(results: results) { [weak self] result in
             self?.dismiss(animated: true, completion: { [weak self] in
                 switch result {
@@ -192,7 +197,6 @@ private extension ProductInventoryScannerViewController {
 
         if let listSelectorViewController = listSelectorViewController {
             listSelectorViewController.update(command: command)
-            bottomSheetViewController?.view.layoutIfNeeded()
             return
         }
 
@@ -201,9 +205,10 @@ private extension ProductInventoryScannerViewController {
                                                                                 self?.dismiss(animated: true, completion: nil)
         }
         self.listSelectorViewController = listSelectorViewController
-        let bottomSheet = BottomSheetViewController(childViewController: listSelectorViewController)
-        self.bottomSheetViewController = bottomSheet
-        bottomSheet.show(from: self)
+
+        configureBottomSheetPresentation(for: listSelectorViewController)
+        listSelectorViewController.isModalInPresentation = true
+        present(listSelectorViewController, animated: true)
     }
 }
 
@@ -275,7 +280,7 @@ private extension ProductInventoryScannerViewController {
 
 private extension ProductInventoryScannerViewController {
     func configureNavigation() {
-        title = NSLocalizedString("Update inventory", comment: "Navigation bar title on the barcode scanner screen.")
+        title = Localization.title
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
     }
@@ -325,7 +330,25 @@ private extension ProductInventoryScannerViewController {
 }
 
 private extension ProductInventoryScannerViewController {
+    func configureBottomSheetPresentation(for listSelectorViewController: UIViewController) {
+        if let sheet = listSelectorViewController.sheetPresentationController {
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .large
+            sheet.prefersGrabberVisible = true
+            if #available(iOS 16.0, *) {
+                sheet.detents = [.custom(resolver: { context in
+                    context.maximumDetentValue * 0.2
+                }), .medium(), .large()]
+            } else {
+                sheet.detents = [.medium(), .large()]
+            }
+        }
+    }
+}
+
+private extension ProductInventoryScannerViewController {
     enum Localization {
+        static let title = NSLocalizedString("Update inventory", comment: "Navigation bar title on the barcode scanner screen.")
         static let instructionText = NSLocalizedString("Scan first product barcode",
                                                        comment: "The instruction text below the scan area in the barcode scanner for product inventory.")
     }

@@ -105,10 +105,6 @@ public enum FeatureFlag: Int {
     ///
     case justInTimeMessagesOnDashboard
 
-    /// Adds the System Status Report to support requests
-    ///
-    case systemStatusReportInSupportRequest
-
     /// IPP in-app feedback banner
     ///
     case IPPInAppFeedbackBanner

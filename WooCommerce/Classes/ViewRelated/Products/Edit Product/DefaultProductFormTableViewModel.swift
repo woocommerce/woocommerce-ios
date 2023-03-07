@@ -570,7 +570,7 @@ private extension DefaultProductFormTableViewModel {
                                                     comment: "Format of the sale period on the Price Settings row until a certain date")
 
         // Reviews
-        static let emptyReviews = NSLocalizedString("No ratings",
+        static let emptyReviews = NSLocalizedString("No (approved) reviews",
                                                     comment: "Placeholder for empty product ratings")
         static let singularReviewFormat = NSLocalizedString("rated once",
                                                             comment: "Format of the number of product ratings in singular form")

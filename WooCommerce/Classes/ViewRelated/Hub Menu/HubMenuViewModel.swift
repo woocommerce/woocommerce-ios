@@ -45,6 +45,8 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published var showingReviewDetail = false
 
+    @Published var shouldAuthenticateAdminPage = false
+
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
@@ -151,6 +153,21 @@ final class HubMenuViewModel: ObservableObject {
                 return url
             }
             .assign(to: &$woocommerceAdminURL)
+
+        stores.site
+            .map { [weak self] site in
+                guard let self, let site else {
+                    return false
+                }
+                /// If the site is self-hosted and user is authenticated with WPCom,
+                /// `AuthenticatedWebView` will attempt to authenticate and redirect to the admin page and fails.
+                /// This should be prevented 💀⛔️
+                guard site.isWordPressComStore || self.stores.isAuthenticatedWithoutWPCom else {
+                    return false
+                }
+                return true
+            }
+            .assign(to: &$shouldAuthenticateAdminPage)
     }
 }
 

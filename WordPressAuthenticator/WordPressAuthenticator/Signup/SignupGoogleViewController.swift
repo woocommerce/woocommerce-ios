@@ -80,9 +80,3 @@ extension SignupGoogleViewController: GoogleAuthenticatorSignupDelegate {
     }
 
 }
-
-extension SignupGoogleViewController: ASWebAuthenticationPresentationContextProviding {
-    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return view.window!
-    }
-}

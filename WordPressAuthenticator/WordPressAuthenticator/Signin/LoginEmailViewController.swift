@@ -633,9 +633,3 @@ extension LoginEmailViewController: GoogleAuthenticatorLoginDelegate {
     }
 
 }
-
-extension LoginEmailViewController: ASWebAuthenticationPresentationContextProviding {
-    public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return view.window!
-    }
-}

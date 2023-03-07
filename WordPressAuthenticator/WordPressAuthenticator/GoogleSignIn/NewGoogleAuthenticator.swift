@@ -13,6 +13,22 @@ public class NewGoogleAuthenticator: NSObject {
         clientId: GoogleClientId,
         scheme: String,
         audience: String,
+        viewController: UIViewController,
+        urlSession: URLSession
+    ) {
+        self.init(
+            clientId: clientId,
+            scheme: scheme,
+            audience: audience,
+            contextProvider: WebAuthenticationPresentationContext(viewController: viewController),
+            oautTokenGetter: GoogleOAuthTokenGetter(dataGetter: urlSession)
+        )
+    }
+
+    public convenience init(
+        clientId: GoogleClientId,
+        scheme: String,
+        audience: String,
         contextProvider: ASWebAuthenticationPresentationContextProviding,
         urlSession: URLSession
     ) {

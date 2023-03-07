@@ -122,7 +122,7 @@ class GoogleAuthenticator: NSObject {
     ///                  and returned to the calling view controller via delegate methods.
     ///   - authType: Indicates the type of authentication (login or signup)
     func showFrom(
-        viewController: UIViewController & ASWebAuthenticationPresentationContextProviding,
+        viewController: UIViewController,
         loginFields: LoginFields,
         for authType: GoogleAuthType = .login
     ) {
@@ -294,7 +294,7 @@ extension GoogleAuthenticator {
 
     private func requestAuthorization(
         for authType: GoogleAuthType,
-        from viewController: UIViewController & ASWebAuthenticationPresentationContextProviding,
+        from viewController: UIViewController,
         loginFields: LoginFields
     ) async throws -> IDToken {
         // Intentionally duplicated from the callsite, so we don't forget about this when removing
@@ -315,7 +315,7 @@ extension GoogleAuthenticator {
             clientId: authConfig.googleClientId,
             scheme: authConfig.googleLoginScheme,
             audience: authConfig.googleLoginServerClientId,
-            contextProvider: viewController,
+            contextProvider: WebAuthenticationPresentationContext(viewController: viewController),
             urlSession: .shared
         )
 

@@ -17,6 +17,7 @@
 		1A4095182271AEFC009AA86D /* WPAuthenticator-Swift.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4095152271AEFC009AA86D /* WPAuthenticator-Swift.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3108613125AFA4830022F75E /* PasteboardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3108613025AFA4830022F75E /* PasteboardTests.swift */; };
 		3F107B0529A87AF0009B3658 /* CodeVerifier+Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F107B0429A87AF0009B3658 /* CodeVerifier+Fixture.swift */; };
+		3F107B1D29B70169009B3658 /* WebAuthenticationPresentationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F107B1C29B70169009B3658 /* WebAuthenticationPresentationContext.swift */; };
 		3F30A6B4299F10BD0004452F /* Character+URLSafe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F30A6B3299F10BD0004452F /* Character+URLSafe.swift */; };
 		3F30A6BA299F12E30004452F /* Character+URLSafeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F30A6B9299F12E30004452F /* Character+URLSafeTests.swift */; };
 		3F338B6A289B877F0014ADC5 /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F338B69289B877F0014ADC5 /* BuildkiteTestCollector */; };
@@ -267,6 +268,7 @@
 		33FEF45B466FF8EAAE5F3923 /* Pods-WordPressAuthenticator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.release.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.release.xcconfig"; sourceTree = "<group>"; };
 		37AFD4EF492B00CA7AEC11A3 /* Pods-WordPressAuthenticatorTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.release-alpha.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		3F107B0429A87AF0009B3658 /* CodeVerifier+Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CodeVerifier+Fixture.swift"; sourceTree = "<group>"; };
+		3F107B1C29B70169009B3658 /* WebAuthenticationPresentationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebAuthenticationPresentationContext.swift; sourceTree = "<group>"; };
 		3F30A6B3299F10BD0004452F /* Character+URLSafe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+URLSafe.swift"; sourceTree = "<group>"; };
 		3F30A6B9299F12E30004452F /* Character+URLSafeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+URLSafeTests.swift"; sourceTree = "<group>"; };
 		3F338B6B289B87E60014ADC5 /* UnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UnitTests.xctestplan; sourceTree = "<group>"; };
@@ -707,6 +709,7 @@
 				B5609113208A555500399AE4 /* SearchTableViewCell.swift */,
 				B5609114208A555500399AE4 /* SearchTableViewCell.xib */,
 				B5609115208A555600399AE4 /* SiteInfoHeaderView.swift */,
+				3F107B1C29B70169009B3658 /* WebAuthenticationPresentationContext.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1445,6 +1448,7 @@
 				B5609139208A563800399AE4 /* LoginEmailViewController.swift in Sources */,
 				984D508224D4B21A00251A63 /* PasswordViewController.swift in Sources */,
 				3F550D5323DA4AC6007E5897 /* URLHandler.swift in Sources */,
+				3F107B1D29B70169009B3658 /* WebAuthenticationPresentationContext.swift in Sources */,
 				D8610CE82570A5B000A5DF27 /* NavigateToRoot.swift in Sources */,
 				98C9195B2308E3DA00A90E12 /* AppleAuthenticator.swift in Sources */,
 				3F4E646C2990B732000DB555 /* Data+Base64URL.swift in Sources */,

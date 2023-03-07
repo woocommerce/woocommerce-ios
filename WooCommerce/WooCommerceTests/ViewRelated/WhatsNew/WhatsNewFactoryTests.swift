@@ -6,7 +6,7 @@ final class WhatsNewFactoryTests: XCTestCase {
 
     func test_create_whats_new_view_controller_has_expected_properties() {
         // Arrange
-        let announcement = Announcement.fake()
+        let announcement = Announcement.fake().copy(features: [Feature.fake()])
 
         // Act
         let viewController = WhatsNewFactory.whatsNew(announcement, onDismiss: {}) as? WhatsNewHostingController

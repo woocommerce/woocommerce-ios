@@ -476,7 +476,7 @@ private extension RefundStoreTests {
     ///
     func sampleRefund(_ siteID: Int64? = nil, refundID: Int64? = nil) -> Networking.Refund {
         let testSiteID = siteID ?? sampleSiteID
-        let testDate = date(with: "2019-10-09T16:18:23")
+        let testDate = DateFormatter.dateFromString(with: "2019-10-09T16:18:23")
         return Refund(refundID: refundID ?? sampleRefundID,
                       orderID: sampleOrderID,
                       siteID: testSiteID,
@@ -494,7 +494,7 @@ private extension RefundStoreTests {
     ///
     func sampleRefundMutated(_ siteID: Int64? = nil) -> Networking.Refund {
         let testSiteID = siteID ?? sampleSiteID
-        let testDate = date(with: "2019-10-09T16:18:23")
+        let testDate = DateFormatter.dateFromString(with: "2019-10-09T16:18:23")
         return Refund(refundID: sampleRefundID,
                       orderID: sampleOrderID,
                       siteID: testSiteID,
@@ -512,7 +512,7 @@ private extension RefundStoreTests {
     ///
     func sampleRefund2(_ siteID: Int64? = nil) -> Networking.Refund {
         let testSiteID = siteID ?? sampleSiteID
-        let testDate = date(with: "2019-10-01T19:33:46")
+        let testDate = DateFormatter.dateFromString(with: "2019-10-01T19:33:46")
         return Refund(refundID: refundID,
                       orderID: sampleOrderID,
                       siteID: testSiteID,
@@ -528,33 +528,11 @@ private extension RefundStoreTests {
 
     /// Returns an `Order` with empty values. Use `copy()` to modify them.
     func sampleOrder() -> Networking.Order {
-        Order(
+        Order.fake().copy(
             siteID: sampleSiteID,
             orderID: sampleOrderID,
-            parentID: 0,
-            customerID: 0,
-            number: "",
             status: .pending,
-            currency: "",
-            customerNote: nil,
-            dateCreated: Date(),
-            dateModified: Date(),
-            datePaid: nil,
-            discountTotal: "",
-            discountTax: "",
-            shippingTotal: "",
-            shippingTax: "",
-            total: "",
-            totalTax: "",
-            paymentMethodID: "",
-            paymentMethodTitle: "",
-            items: [],
-            billingAddress: nil,
-            shippingAddress: nil,
-            shippingLines: [],
-            coupons: [],
-            refunds: [],
-            fees: []
+            items: []
         )
     }
 
@@ -565,6 +543,7 @@ private extension RefundStoreTests {
                                name: "Ninja Silhouette",
                                productID: 22,
                                variationID: 0,
+                               refundedItemID: "60",
                                quantity: -1,
                                price: 18,
                                sku: "T-SHIRT-NINJA-SILHOUETTE",
@@ -583,6 +562,7 @@ private extension RefundStoreTests {
                                name: "Ship Your Idea - Blue, XL",
                                productID: 21,
                                variationID: 70,
+                               refundedItemID: "65",
                                quantity: -1,
                                price: 27,
                                sku: "HOODIE-SHIP-YOUR-IDEA-BLUE-XL",
@@ -601,14 +581,5 @@ private extension RefundStoreTests {
                      total: "-7.00",
                      totalTax: "-0.62",
                      taxes: [.init(taxID: 1, subtotal: "", total: "-0.62")])
-    }
-
-    /// Format GMT string to Date type
-    ///
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
     }
 }

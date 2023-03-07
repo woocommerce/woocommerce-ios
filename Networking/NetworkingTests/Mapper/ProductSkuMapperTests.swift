@@ -9,9 +9,11 @@ final class ProductSkuMapperTests: XCTestCase {
     /// Verifies that SKU are parsed correctly.
     ///
     func test_sku_is_properly_parsed() {
-        let sku = mapLoadSkuResponse()
+        let skus = [mapLoadSkuResponse(), mapLoadSkuResponseWithoutData()]
 
-        XCTAssertEqual(sku, "T-SHIRT-HAPPY-NINJA")
+        for sku in skus {
+            XCTAssertEqual(sku, "T-SHIRT-HAPPY-NINJA")
+        }
     }
 }
 
@@ -34,5 +36,11 @@ private extension ProductSkuMapperTests {
     ///
     func mapLoadSkuResponse() -> String {
         return mapSku(from: "product-search-sku")
+    }
+
+    /// Returns the ProductSkuMapper output upon receiving `product-search-sku-without-data`
+    ///
+    func mapLoadSkuResponseWithoutData() -> String {
+        return mapSku(from: "product-search-sku-without-data")
     }
 }

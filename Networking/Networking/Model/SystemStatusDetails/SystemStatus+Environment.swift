@@ -4,34 +4,34 @@ public extension SystemStatus {
     /// Subtype for details about environment in system status.
     ///
     struct Environment: Decodable {
-        let homeURL: String
-        let siteURL: String
-        let version: String
-        let logDirectoryWritable: Bool
-        let wpVersion: String
-        let wpMultisite: Bool
-        let wpMemoryLimit: Int64
-        let wpDebugMode: Bool
-        let wpCron: Bool
-        let language: String
-        let externalObjectCache: Bool? // this can return null so keeping it optional
-        let serverInfo: String
-        let phpVersion: String
-        let phpPostMaxSize: Int64
-        let phpMaxExecutionTime: Int64
-        let phpMaxInputVars: Int64
-        let curlVersion: String
-        let suhosinInstalled: Bool
-        let maxUploadSize: Int64
-        let mysqlVersion: String
-        let defaultTimezone: String
-        let fsockopenOrCurlEnabled: Bool
-        let soapClientEnabled: Bool
-        let domDocumentEnabled: Bool
-        let gzipEnabled: Bool
-        let mbstringEnabled: Bool
-        let remotePostSuccessful: Bool
-        let remoteGetSuccessful: Bool
+        public let homeURL: String
+        public let siteURL: String
+        public let version: String
+        public let logDirectoryWritable: Bool
+        public let wpVersion: String
+        public let wpMultisite: Bool
+        public let wpMemoryLimit: Int64
+        public let wpDebugMode: Bool
+        public let wpCron: Bool
+        public let language: String
+        public let externalObjectCache: Bool? // this can return null so keeping it optional
+        public let serverInfo: String
+        public let phpVersion: String
+        public let phpPostMaxSize: Int64
+        public let phpMaxExecutionTime: Int64
+        public let phpMaxInputVars: Int64
+        public let curlVersion: String
+        public let suhosinInstalled: Bool
+        public let maxUploadSize: Int64
+        public let mysqlVersion: String
+        public let defaultTimezone: String
+        public let fsockopenOrCurlEnabled: Bool
+        public let soapClientEnabled: Bool
+        public let domDocumentEnabled: Bool
+        public let gzipEnabled: Bool
+        public let mbstringEnabled: Bool
+        public let remotePostSuccessful: Bool
+        public let remoteGetSuccessful: Bool
     }
 }
 

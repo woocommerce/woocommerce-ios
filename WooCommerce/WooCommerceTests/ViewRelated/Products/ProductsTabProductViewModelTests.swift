@@ -73,7 +73,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         let detailsText = viewModel.detailsAttributedString.string
 
         // Assert
-        let singularFormat = NSLocalizedString("%ld variant", comment: "Label about one product variation shown on Products tab")
+        let singularFormat = NSLocalizedString("%ld variation", comment: "Label about one product variation shown on Products tab")
         let expectedStockDetail = String.localizedStringWithFormat(singularFormat, variations.count)
         XCTAssertTrue(detailsText.contains(expectedStockDetail))
     }
@@ -88,11 +88,38 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         let detailsText = viewModel.detailsAttributedString.string
 
         // Assert
-        let pluralFormat = NSLocalizedString("%ld variants", comment: "Label about number of variations shown on Products tab")
+        let pluralFormat = NSLocalizedString("%ld variations", comment: "Label about number of variations shown on Products tab")
         let expectedStockDetail = String.localizedStringWithFormat(pluralFormat, variations.count)
         XCTAssertTrue(detailsText.contains(expectedStockDetail))
     }
 
+    func test_details_contain_sku_when_isSKUShown_is_true() {
+        // Given
+        let sku = "pear"
+        let product = productMock(name: "Yay").copy(sku: sku)
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product, isSKUShown: true)
+        let detailsText = viewModel.detailsAttributedString.string
+
+        // Then
+        let expectedSKU = String.localizedStringWithFormat(Localization.skuFormat, sku)
+        XCTAssertTrue(detailsText.contains(expectedSKU))
+    }
+
+    func test_details_do_not_contain_sku_when_isSKUShown_is_false() {
+        // Given
+        let sku = "pear"
+        let product = productMock(name: "Yay").copy(sku: sku)
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product, isSKUShown: false)
+        let detailsText = viewModel.detailsAttributedString.string
+
+        // Then
+        let skuText = String.localizedStringWithFormat(Localization.skuFormat, sku)
+        XCTAssertFalse(detailsText.contains(skuText))
+    }
 }
 
 extension ProductsTabProductViewModelTests {
@@ -107,5 +134,11 @@ extension ProductsTabProductViewModelTests {
                                    stockStatusKey: stockStatus.rawValue,
                                    images: images,
                                    variations: variations)
+    }
+}
+
+private extension ProductsTabProductViewModelTests {
+    enum Localization {
+        static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "Label about the SKU of a product in the product list. Reads, `SKU: productSku`")
     }
 }

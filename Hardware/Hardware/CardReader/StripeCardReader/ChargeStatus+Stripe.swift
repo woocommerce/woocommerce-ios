@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension ChargeStatus {
@@ -17,3 +18,4 @@ extension ChargeStatus {
         }
     }
 }
+#endif

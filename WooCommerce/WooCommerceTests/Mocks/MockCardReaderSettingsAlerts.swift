@@ -10,11 +10,12 @@ enum MockCardReaderSettingsAlertsMode {
     case connectFoundReader
     case connectFirstFound
     case cancelFoundSeveral
+    case cancelFoundReader
     case continueSearchingAfterConnectionFailure
     case cancelSearchingAfterConnectionFailure
 }
 
-final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
+final class MockCardReaderSettingsAlerts {
     private var mode: MockCardReaderSettingsAlertsMode
     private var didPresentFoundReader: Bool
 
@@ -22,6 +23,13 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         self.mode = mode
         self.didPresentFoundReader = false
     }
+
+    func update(mode: MockCardReaderSettingsAlertsMode) {
+        self.mode = mode
+    }
+}
+
+extension MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     func scanningForReader(from: UIViewController, cancel: @escaping () -> Void) {
         if mode == .cancelScanning {
             cancel()
@@ -42,15 +50,22 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         }
     }
 
-    func foundReader(from: UIViewController, name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) {
+    func foundReader(from: UIViewController,
+                     name: String,
+                     connect: @escaping () -> Void,
+                     continueSearch: @escaping () -> Void,
+                     cancelSearch: @escaping () -> Void) {
         didPresentFoundReader = true
 
-        if mode == .continueSearching {
+        switch mode {
+        case .continueSearching:
             continueSearch()
-        }
-
-        if mode == .connectFoundReader || mode == .cancelSearchingAfterConnectionFailure || mode == .continueSearchingAfterConnectionFailure {
+        case .connectFoundReader, .cancelSearchingAfterConnectionFailure, .continueSearchingAfterConnectionFailure:
             connect()
+        case .cancelFoundReader:
+            cancelSearch()
+        default:
+            break
         }
     }
 
@@ -74,7 +89,10 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         }
     }
 
-    func connectingFailed(from: UIViewController, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+    func connectingFailed(from: UIViewController,
+                          error: Error,
+                          continueSearch: @escaping () -> Void,
+                          cancelSearch: @escaping () -> Void) {
         if mode == .continueSearchingAfterConnectionFailure {
             continueSearch()
         }
@@ -100,6 +118,18 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     func connectingFailedInvalidPostalCode(from: UIViewController,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) {
+        if mode == .continueSearchingAfterConnectionFailure {
+            retrySearch()
+        }
+
+        if mode == .cancelSearchingAfterConnectionFailure {
+            cancelSearch()
+        }
+    }
+
+    func connectingFailedCriticallyLowBattery(from: UIViewController,
+                                              retrySearch: @escaping () -> Void,
+                                              cancelSearch: @escaping () -> Void) {
         if mode == .continueSearchingAfterConnectionFailure {
             retrySearch()
         }

@@ -1,16 +1,10 @@
+import Experiments
 import Yosemite
 
 private extension StatsTimeRangeV4 {
     func timeRangeText(startDate: Date, endDate: Date, selectedDate: Date, timezone: TimeZone) -> String {
-        let selectedDateString = timeRangeSelectedDateFormatter(timezone: timezone).string(from: selectedDate)
-        switch self {
-        case .today, .thisYear:
-            let dateBreadcrumbFormat = NSLocalizedString("%1$@ › %2$@", comment: "Displays a time range followed by a specific date/time")
-            let timeRangeString = timeRangeText(startDate: startDate, endDate: endDate, timezone: timezone)
-            return String.localizedStringWithFormat(dateBreadcrumbFormat, timeRangeString, selectedDateString)
-        case .thisWeek, .thisMonth:
-            return selectedDateString
-        }
+        timeRangeSelectedDateFormatter(timezone: timezone)
+            .string(from: selectedDate)
     }
 
     func timeRangeText(startDate: Date, endDate: Date, timezone: TimeZone) -> String {
@@ -21,7 +15,7 @@ private extension StatsTimeRangeV4 {
         case .thisWeek:
             let startDateString = dateFormatter.string(from: startDate)
             let endDateString = dateFormatter.string(from: endDate)
-            let format = NSLocalizedString("%1$@-%2$@", comment: "Displays a date range for a stats interval")
+            let format = NSLocalizedString("%1$@ - %2$@", comment: "Displays a date range for a stats interval")
             return String.localizedStringWithFormat(format, startDateString, endDateString)
         }
     }
@@ -49,7 +43,7 @@ private extension StatsTimeRangeV4 {
         let dateFormatter: DateFormatter
         switch self {
         case .today:
-            dateFormatter = DateFormatter.Charts.chartAxisHourFormatter
+            dateFormatter = DateFormatter.Charts.chartSelectedDateHourFormatter
         case .thisWeek, .thisMonth:
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
         case .thisYear:
@@ -61,7 +55,7 @@ private extension StatsTimeRangeV4 {
 }
 
 /// View model for `StatsTimeRangeBarView`.
-struct StatsTimeRangeBarViewModel {
+struct StatsTimeRangeBarViewModel: Equatable {
     let timeRangeText: String
 
     init(startDate: Date,

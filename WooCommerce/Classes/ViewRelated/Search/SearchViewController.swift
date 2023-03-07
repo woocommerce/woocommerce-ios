@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import UIKit
 import Yosemite
@@ -20,12 +21,23 @@ where Cell.SearchModel == Command.CellViewModel {
     ///
     @IBOutlet private var searchBar: UISearchBar!
 
+    /// Optional header view between the search bar and table view.
+    @IBOutlet private weak var headerView: UIView!
+
     /// TableView
     ///
     @IBOutlet private var tableView: UITableView!
 
 
     @IBOutlet private weak var bordersView: BordersView!
+
+    /// Current query in the search bar
+    ///
+    @Published private var searchQuery = ""
+
+    /// A reference to the subscription of the search query.
+    ///
+    private var searchQuerySubscription: AnyCancellable?
 
     /// Footer "Loading More" Spinner.
     ///
@@ -67,12 +79,6 @@ where Cell.SearchModel == Command.CellViewModel {
         return resultsController.isEmpty
     }
 
-    /// Returns the active Keyword
-    ///
-    private var keyword: String {
-        return searchBar.text ?? String()
-    }
-
     /// UI Active State
     ///
     private var state: State = .notInitialized {
@@ -89,7 +95,7 @@ where Cell.SearchModel == Command.CellViewModel {
         return keyboardFrameObserver
     }()
 
-    private let searchUICommand: Command
+    private var searchUICommand: Command
     private let tableViewSeparatorStyle: UITableViewCell.SeparatorStyle
 
 
@@ -128,13 +134,16 @@ where Cell.SearchModel == Command.CellViewModel {
         configureMainView()
         configureSearchBar()
         configureSearchBarBordersView()
+        configureHeaderView()
         configureTableView()
         configureResultsController()
         configureStarterViewController()
+        configureSearchResync()
 
         startListeningToNotifications()
 
         transitionToResultsUpdatedState()
+        configureSearchFunctionality()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -205,7 +214,7 @@ where Cell.SearchModel == Command.CellViewModel {
     // MARK: - UISearchBarDelegate Conformance
     //
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        synchronizeSearchResults(with: searchText)
+        searchQuery = searchText
     }
 
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
@@ -286,6 +295,19 @@ private extension SearchViewController {
         cancelButton.accessibilityIdentifier = searchUICommand.cancelButtonAccessibilityIdentifier
     }
 
+    func configureHeaderView() {
+        if let searchHeaderView = searchUICommand.createHeaderView() {
+            headerView.addSubview(searchHeaderView)
+            searchHeaderView.translatesAutoresizingMaskIntoConstraints = false
+            headerView.pinSubviewToSafeArea(searchHeaderView)
+        } else {
+            headerView.isHidden = true
+            NSLayoutConstraint.activate([
+                headerView.heightAnchor.constraint(equalToConstant: 0)
+            ])
+        }
+    }
+
     /// Setup: Actions
     ///
     func configureActions() {
@@ -352,6 +374,25 @@ private extension SearchViewController {
     func startListeningToNotifications() {
         keyboardFrameObserver.startObservingKeyboardFrame()
     }
+
+    /// Handles debouncing search upon update of search query to optimize search requests.
+    ///
+    func configureSearchFunctionality() {
+        searchQuerySubscription = $searchQuery
+            .dropFirst() // ignores initial value as it's not user's input
+            .removeDuplicates()
+            .debounce(for: .milliseconds(Settings.searchDebounceTime), scheduler: DispatchQueue.main)
+            .sink { [weak self] query in
+                self?.synchronizeSearchResults(with: query)
+            }
+    }
+
+    func configureSearchResync() {
+        searchUICommand.resynchronizeModels = { [weak self] in
+            guard let self = self else { return }
+            self.synchronizeSearchResults(with: self.searchQuery)
+        }
+    }
 }
 
 
@@ -362,19 +403,20 @@ extension SearchViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the models for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)? = nil) {
-        let keyword = self.keyword
+        transitionToSyncingState()
+        let keyword = searchUICommand.sanitizeKeyword(searchQuery)
         searchUICommand.synchronizeModels(siteID: storeID,
                                           keyword: keyword,
                                           pageNumber: pageNumber,
                                           pageSize: pageSize,
-                                        onCompletion: { [weak self] isCompleted in
-                                            // Disregard OPs that don't really match the latest keyword
-                                            if keyword == self?.keyword {
-                                                self?.transitionToResultsUpdatedState()
-                                            }
-                                            onCompletion?(isCompleted)
+                                          onCompletion: { [weak self] isCompleted in
+            guard let self = self else { return }
+            // Disregard OPs that don't really match the latest keyword
+            if keyword == self.searchUICommand.sanitizeKeyword(self.searchQuery) {
+                self.transitionToResultsUpdatedState()
+            }
+            onCompletion?(isCompleted)
         })
-        transitionToSyncingState()
     }
 }
 
@@ -387,9 +429,15 @@ private extension SearchViewController {
     ///
     func synchronizeSearchResults(with keyword: String) {
         // When the search query changes, also includes the original results predicate in addition to the search keyword.
-        let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
-        let subpredicates = [resultsPredicate].compactMap { $0 } + [searchResultsPredicate]
+        let keyword = searchUICommand.sanitizeKeyword(keyword)
+        let searchResultsPredicate = searchUICommand.searchResultsPredicate(keyword: keyword)
+        let subpredicates = [resultsPredicate].compactMap { $0 } + [searchResultsPredicate].compactMap { $0 }
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
+        do {
+            try resultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
 
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
@@ -456,7 +504,7 @@ private extension SearchViewController {
         }
 
         searchUICommand.configureEmptyStateViewControllerBeforeDisplay(viewController: childController,
-                                                                       searchKeyword: keyword)
+                                                                       searchKeyword: searchQuery)
 
         childView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -467,7 +515,7 @@ private extension SearchViewController {
         NSLayoutConstraint.activate([
             childView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
             childView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
-            childView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            childView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
             childView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
@@ -534,7 +582,7 @@ private extension SearchViewController {
     /// See `State` for the rules.
     ///
     func transitionToSyncingState() {
-        state = keyword.isEmpty ? stateIfSearchKeywordIsEmpty : .syncing
+        state = searchQuery.isEmpty ? stateIfSearchKeywordIsEmpty : .syncing
     }
 
     /// Transition to the appropriate `State` after search results were received.
@@ -544,7 +592,7 @@ private extension SearchViewController {
     func transitionToResultsUpdatedState() {
         let nextState: State
 
-        if keyword.isEmpty {
+        if searchQuery.isEmpty {
             nextState = stateIfSearchKeywordIsEmpty
         } else if isEmpty {
             nextState = .empty
@@ -562,6 +610,7 @@ private extension SearchViewController {
 private enum Settings {
     static let estimatedHeaderHeight = CGFloat(43)
     static let estimatedRowHeight = CGFloat(86)
+    static let searchDebounceTime = 500
 }
 
 

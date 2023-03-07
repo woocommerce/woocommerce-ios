@@ -5,37 +5,73 @@ import Hardware
 
 @testable import WooCommerce
 
-class ReceiptActionCoordinatorTests: XCTestCase {
-    func test_printReceipt_logs_receiptPrintTapped_analyticEvent() {
-        // Given
-        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: MockAnalyticsProvider()))
-        let order = MockOrders().makeOrder()
-        let params = CardPresentReceiptParameters.makeParams()
+final class ReceiptActionCoordinatorTests: XCTestCase {
+    private var storesManager: MockStoresManager!
 
-        // When
-        ReceiptActionCoordinator.printReceipt(for: order, params: params)
+    override func setUp() {
+        super.setUp()
 
-        // Then
-        let analytics = ServiceLocator.analytics.analyticsProvider as! MockAnalyticsProvider
-        let receivedEvents = analytics.receivedEvents
-
-        XCTAssert(receivedEvents.contains(WooAnalyticsStat.receiptPrintTapped.rawValue))
+        storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
     }
 
-    func test_printReceipt_sends_print_receiptAction() throws {
+    override func tearDown() {
+        storesManager = nil
+    }
+
+    func test_printReceipt_logs_receiptPrintTapped_analyticEvent() async throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let order = MockOrders().makeOrder()
+        let params = CardPresentReceiptParameters.makeParams()
+
+        storesManager.whenReceivingAction(ofType: ReceiptAction.self) { action in
+            switch action {
+            case let .print(_, _, completion):
+                completion(.success)
+            default:
+                break
+            }
+        }
+
+        // When
+        await ReceiptActionCoordinator.printReceipt(for: order,
+                                              params: params,
+                                              countryCode: "CA",
+                                              cardReaderModel: "WISEPAD_3",
+                                              stores: storesManager,
+                                              analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.receiptPrintTapped.rawValue}))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, "WISEPAD_3")
+        XCTAssertEqual(eventProperties["country"] as? String, "CA")
+    }
+
+    func test_printReceipt_sends_print_receiptAction() async throws {
         // Given
         let order = MockOrders().makeOrder()
         let params = CardPresentReceiptParameters.makeParams()
 
-        let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         storesManager.reset()
-
-        ServiceLocator.setStores(storesManager)
 
         assertEmpty(storesManager.receivedActions)
 
+        storesManager.whenReceivingAction(ofType: ReceiptAction.self) { action in
+            switch action {
+            case let .print(_, _, completion):
+                completion(.success)
+            default:
+                break
+            }
+        }
+
         // When
-        ReceiptActionCoordinator.printReceipt(for: order, params: params)
+        await ReceiptActionCoordinator.printReceipt(for: order,
+                                              params: params,
+                                              countryCode: "CA",
+                                              cardReaderModel: nil,
+                                              stores: storesManager, analytics: ServiceLocator.analytics)
 
         //Then
         XCTAssertEqual(storesManager.receivedActions.count, 1)
@@ -50,46 +86,53 @@ class ReceiptActionCoordinatorTests: XCTestCase {
         }
     }
 
-    func test_printReceipt_success_logs_receiptPrintSuccess_analyticEvent() throws {
-        try assertAnalyticLogged(.receiptPrintSuccess, for: .success)
+    func test_printReceipt_success_logs_receiptPrintSuccess_analyticEvent() async throws {
+        try await assertAnalyticLogged(.receiptPrintSuccess, for: .success)
     }
 
-    func test_printReceipt_cancel_logs_receiptPrintCanceled_analyticEvent() throws {
-        try assertAnalyticLogged(.receiptPrintCanceled, for: .cancel)
+    func test_printReceipt_cancel_logs_receiptPrintCanceled_analyticEvent() async throws {
+        try await assertAnalyticLogged(.receiptPrintCanceled, for: .cancel)
     }
 
-    func test_printReceipt_fail_logs_receiptPrintFailed_analyticEvent() throws {
+    func test_printReceipt_fail_logs_receiptPrintFailed_analyticEvent() async throws {
         let error = NSError(domain: "errordomain", code: 123, userInfo: nil)
-        try assertAnalyticLogged(.receiptPrintFailed, for: .failure(error))
+        try await assertAnalyticLogged(.receiptPrintFailed, for: .failure(error))
     }
 }
 
 extension ReceiptActionCoordinatorTests {
-    func assertAnalyticLogged(_ analytic: WooAnalyticsStat, for printingResult: PrintingResult) throws {
+    func assertAnalyticLogged(_ analytic: WooAnalyticsStat, for printingResult: PrintingResult) async throws {
         // Given
         let order = MockOrders().makeOrder()
         let params = CardPresentReceiptParameters.makeParams()
+        let countryCode = "CA"
+        let cardReaderModel = "test_reader"
 
-        let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        ServiceLocator.setStores(storesManager)
-        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: MockAnalyticsProvider()))
+
+        let analytics = MockAnalyticsProvider()
+
+        storesManager.whenReceivingAction(ofType: ReceiptAction.self) { action in
+            switch action {
+            case let .print(_, _, completion):
+                completion(printingResult)
+            default:
+                break
+            }
+        }
 
         // When
-        ReceiptActionCoordinator.printReceipt(for: order, params: params)
+        await ReceiptActionCoordinator.printReceipt(for: order,
+                                              params: params,
+                                              countryCode: "CA",
+                                              cardReaderModel: cardReaderModel,
+                                              stores: storesManager,
+                                              analytics: WooAnalytics(analyticsProvider: analytics))
 
-        //Then
-        let action = try XCTUnwrap(storesManager.receivedActions.first as? ReceiptAction)
-        switch action {
-        case .print(order: _, parameters: _, let completion):
-            completion(printingResult)
-
-            let analytics = ServiceLocator.analytics.analyticsProvider as! MockAnalyticsProvider
-            let receivedEvents = analytics.receivedEvents
-
-            XCTAssert(receivedEvents.contains(analytic.rawValue))
-        default:
-            XCTFail("Print Receipt failed to dispatch .print action")
-        }
+        // Then
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == analytic.rawValue}))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, countryCode)
     }
 }
 

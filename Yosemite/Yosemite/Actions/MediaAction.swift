@@ -12,14 +12,21 @@ public enum MediaAction: Action {
     ///   - onCompletion: Closure to be executed upon completion.
     ///
     case retrieveMediaLibrary(siteID: Int64,
-        pageNumber: Int,
-        pageSize: Int,
-        onCompletion: (Result<[Media], Error>) -> Void)
+                              pageNumber: Int,
+                              pageSize: Int,
+                              onCompletion: (Result<[Media], Error>) -> Void)
 
     /// Uploads an exportable media asset to the site's WP Media Library.
     ///
     case uploadMedia(siteID: Int64,
-        productID: Int64,
-        mediaAsset: ExportableAsset,
-        onCompletion: (Result<Media, Error>) -> Void)
+                     productID: Int64,
+                     mediaAsset: ExportableAsset,
+                     onCompletion: (Result<Media, Error>) -> Void)
+
+    /// Updates the `parent_id` of the media using the provided `productID`.
+    ///
+    case updateProductID(siteID: Int64,
+                         productID: Int64,
+                         mediaID: Int64,
+                         onCompletion: (Result<Media, Error>) -> Void)
 }

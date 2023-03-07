@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
-
+import WooFoundation
 
 /// The main file for Refund Details data.
 /// Must conform to NSObject so it can be the UITableViewDataSource.
@@ -196,7 +196,6 @@ private extension RefundDetailsDataSource {
         cell.update(with: .imageAndTitleOnly(fontStyle: .body),
                     data: .init(title: refundReason ?? "",
                                 textTintColor: .text,
-                                image: .quoteImage,
                                 imageTintColor: .text,
                                 numberOfLinesForTitle: 0,
                                 isActionable: false))

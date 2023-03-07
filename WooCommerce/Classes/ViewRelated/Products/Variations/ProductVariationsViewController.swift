@@ -1,16 +1,24 @@
 import UIKit
 import WordPressUI
 import Yosemite
+import Experiments
 
 import class AutomatticTracks.CrashLogging
 
 /// Displays a paginated list of Product Variations with its price or visibility.
 ///
-final class ProductVariationsViewController: UIViewController {
+final class ProductVariationsViewController: UIViewController, GhostableViewController {
 
     /// Empty state screen
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .medium,
+                                                                                                cellClass: ProductsTabProductTableViewCell.self,
+                                                                                                rowsPerSection: Settings.placeholderRowsPerSection,
+                                                                                                estimatedRowHeight: Settings.estimatedRowHeight,
+                                                                                                separatorStyle: .none,
+                                                                                                isScrollEnabled: false))
 
     @IBOutlet private weak var tableView: UITableView!
 
@@ -22,14 +30,9 @@ final class ProductVariationsViewController: UIViewController {
         return refreshControl
     }()
 
-    /// Stack view that is contained in the table view header.
+    /// Stack view containing the generate new variation button.
     ///
-    private lazy var topStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [])
-        stackView.axis = .vertical
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
+    @IBOutlet private weak var topStackView: UIStackView!
 
     /// Footer "Loading More" Spinner.
     ///
@@ -60,6 +63,7 @@ final class ProductVariationsViewController: UIViewController {
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
     private let syncingCoordinator = SyncingCoordinator()
+
 
     private lazy var stateCoordinator: PaginatedListViewControllerStateCoordinator = {
         let stateCoordinator = PaginatedListViewControllerStateCoordinator(onLeavingState: { [weak self] state in
@@ -97,10 +101,12 @@ final class ProductVariationsViewController: UIViewController {
     }
 
     private let imageService: ImageService = ServiceLocator.imageService
+    private let productImageUploader: ProductImageUploaderProtocol
 
     private let viewModel: ProductVariationsViewModel
     private let noticePresenter: NoticePresenter
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
 
     /// ViewController that pushed `self`. Needed in order to go back to it when the first variation is created.
     ///
@@ -114,12 +120,16 @@ final class ProductVariationsViewController: UIViewController {
          viewModel: ProductVariationsViewModel,
          product: Product,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.initialViewController = initialViewController
         self.product = product
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
+        self.productImageUploader = productImageUploader
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -132,21 +142,15 @@ final class ProductVariationsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigationBar()
+        configureNavigationBarTitle()
         configureMainView()
         configureTableView()
         configureSyncingCoordinator()
         registerTableViewCells()
-        configureHeaderContainerView()
+        configureTopStackView()
         updateEmptyState()
 
         syncingCoordinator.synchronizeFirstPage()
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        tableView.updateHeaderHeight()
     }
 }
 
@@ -157,11 +161,38 @@ private extension ProductVariationsViewController {
 
     /// Set the title and navigation buttons.
     ///
-    func configureNavigationBar() {
+    func configureNavigationBarTitle() {
         title = NSLocalizedString(
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
         )
+    }
+
+    /// Shows or hides the "more" navigation bar button.
+    ///
+    func showOrHideMoreActionsNavigationBarButton() {
+        guard resultsController.fetchedObjects.isNotEmpty else {
+            // Do not display the "more" button with the bulk update option if we do not have any variations
+            hideMoreActionsNavigationBarButton()
+            return
+        }
+
+        showMoreActionsNavigationBarButton()
+    }
+
+    /// Hides the "more" navigation bar button.
+    ///
+    func hideMoreActionsNavigationBarButton() {
+        navigationItem.rightBarButtonItem = nil
+    }
+
+    /// Shows the "more" navigation bar button.
+    ///
+    func showMoreActionsNavigationBarButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(presentMoreActionSheet(_:)))
     }
 
     /// Apply Woo styles.
@@ -179,10 +210,6 @@ private extension ProductVariationsViewController {
         tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
-
-        // Removes extra header spacing in ghost content view.
-        tableView.estimatedSectionHeaderHeight = 0
-        tableView.sectionHeaderHeight = 0
 
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
@@ -253,21 +280,15 @@ private extension ProductVariationsViewController {
     }
 }
 
-// MARK: - Table header view
+// MARK: - Top Stack View
 //
 private extension ProductVariationsViewController {
-    func configureHeaderContainerView() {
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
-        headerContainer.addSubview(topStackView)
-        headerContainer.pinSubviewToAllEdges(topStackView)
-
+    func configureTopStackView() {
         addTopButton(title: Localization.generateVariationAction,
                      insets: .init(top: 16, left: 16, bottom: 8, right: 16),
                      hasBottomBorder: true,
                      actionSelector: #selector(addButtonTapped),
                      stylingHandler: { $0.applySecondaryButtonStyle() })
-
-        tableView.tableHeaderView = headerContainer
     }
 
     func addTopButton(title: String,
@@ -276,7 +297,7 @@ private extension ProductVariationsViewController {
                       actionSelector: Selector,
                       stylingHandler: (UIButton) -> Void) {
         let buttonContainer = UIView()
-        buttonContainer.backgroundColor = .listForeground
+        buttonContainer.backgroundColor = .listForeground(modal: false)
 
         let topButton = UIButton()
         topButton.translatesAutoresizingMaskIntoConstraints = false
@@ -319,11 +340,12 @@ private extension ProductVariationsViewController {
     func createResultsController() -> ResultsController<StorageProductVariation> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "product.siteID == %lld AND product.productID == %lld", siteID, productID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
+        let menuOrderDescriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
+        let variationIdDescriptor = NSSortDescriptor(keyPath: \StorageProductVariation.productVariationID, ascending: false)
 
         return ResultsController<StorageProductVariation>(storageManager: storageManager,
                                                           matching: predicate,
-                                                          sortedBy: [descriptor])
+                                                          sortedBy: [menuOrderDescriptor, variationIdDescriptor])
     }
 
     func configureResultsController(_ resultsController: ResultsController<StorageProductVariation>) {
@@ -341,6 +363,7 @@ private extension ProductVariationsViewController {
     func configureResultsControllerEventHandling(_ resultsController: ResultsController<StorageProductVariation>) {
         let onReload = { [weak self] in
             self?.tableView.reloadData()
+            self?.showOrHideMoreActionsNavigationBarButton()
         }
 
         resultsController.onDidChangeContent = { [weak tableView] in
@@ -359,11 +382,11 @@ private extension ProductVariationsViewController {
 extension ProductVariationsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return resultsController.sections.count
+        resultsController.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultsController.sections[section].numberOfObjects
+        resultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -393,7 +416,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+        UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -422,7 +445,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
 private extension ProductVariationsViewController {
     func createVariationFromEmptyState() {
         if product.attributesForVariations.isNotEmpty {
-            createVariation()
+            presentGenerateVariationOptions()
         } else {
             navigateToAddAttributeViewController()
         }
@@ -452,7 +475,7 @@ private extension ProductVariationsViewController {
 
         let editAttributesViewModel = EditAttributesViewModel(product: product, allowVariationCreation: allowVariationCreation)
         let editAttributeViewController = EditAttributesViewController(viewModel: editAttributesViewModel)
-        editAttributeViewController.onVariationCreation = { [weak self] (updatedProduct, _) in
+        editAttributeViewController.onVariationCreation = { [weak self] updatedProduct in
             self?.product = updatedProduct
             self?.onFirstVariationCreated()
         }
@@ -485,7 +508,11 @@ private extension ProductVariationsViewController {
     /// Presents a notice alerting that the variation was created and navigates back to the `initialViewController` if possible.
     ///
     private func onFirstVariationCreated() {
-        noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
+        // Only show a notice when one variation is created.
+        // When creating multiple variations, the notice presentation is handled on `GenerateAllVariationsPresenter`
+        if product.variations.count == 1 {
+            noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
+        }
 
         guard let initialViewController = initialViewController else {
             navigationController?.popViewController(animated: true)
@@ -501,8 +528,11 @@ private extension ProductVariationsViewController {
 
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        let productImageActionHandler = ProductImageActionHandler(siteID: productVariation.siteID,
-                                                                  product: model)
+        let productImageActionHandler = productImageUploader
+            .actionHandler(key: .init(siteID: productVariation.siteID,
+                                      productOrVariationID: .variation(productID: productVariation.productID, variationID: productVariation.productVariationID),
+                                      isLocalID: !model.existsRemotely),
+                           originalStatuses: model.imageStatuses)
 
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       allAttributes: allAttributes,
@@ -539,31 +569,56 @@ private extension ProductVariationsViewController {
 
     @objc func addButtonTapped() {
         analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
-        createVariation()
+        presentGenerateVariationOptions()
+    }
+
+    /// More Options Action Sheet
+    ///
+    @objc func presentMoreActionSheet(_ sender: UIBarButtonItem) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.bulkUpdate) { [weak self] _ in
+            guard let self = self else { return }
+
+            let viewModel = BulkUpdateViewModel(siteID: self.siteID,
+                                                productID: self.productID,
+                                                variationCount: self.product.variations.count,
+                                                onCancelButtonTapped: { [weak self] in
+                self?.dismiss(animated: true)
+            })
+            let navigationController = WooNavigationController(rootViewController: BulkUpdateViewController(viewModel: viewModel))
+            self.present(navigationController, animated: true)
+
+            self.analytics.track(event: .Variations.bulkUpdateSectionTapped())
+        }
+
+        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel)
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = sender
+
+        present(actionSheet, animated: true)
+    }
+
+    /// Displays a bottom sheet allowing the merchant to choose whether to generate one variation or to generate all variations.
+    ///
+    private func presentGenerateVariationOptions() {
+        let presenter = GenerateVariationsOptionsPresenter(baseViewController: self)
+        presenter.presentGenerationOptions(sourceView: topStackView) { [weak self] selectedOption in
+            switch selectedOption {
+            case .single:
+                self?.createVariation()
+            case .all:
+                self?.generateAllVariations()
+            }
+        }
     }
 }
 
 // MARK: - Placeholders
 //
 private extension ProductVariationsViewController {
-
-    /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
-    ///
-    func displayPlaceholderProducts() {
-        let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
-
-        resultsController.stopForwardingEvents()
-    }
-
-    /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
-    ///
-    func removePlaceholderProducts() {
-        tableView.removeGhostContent()
-        resultsController.startForwardingEvents(to: tableView)
-        configureResultsControllerEventHandling(resultsController)
-        tableView.reloadData()
-    }
 
     /// Displays the Error Notice.
     ///
@@ -588,22 +643,23 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
         transitionToSyncingState(pageNumber: pageNumber)
 
         let action = ProductVariationAction
-            .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
+            .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
                 guard let self = self else {
                     return
                 }
 
-                if let error = error {
+                switch result {
+                case .success:
+                    ServiceLocator.analytics.track(.productVariationListLoaded)
+                case .failure(let error):
                     ServiceLocator.analytics.track(.productVariationListLoadError, withError: error)
 
                     DDLogError("⛔️ Error synchronizing product variations: \(error)")
                     self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
-                } else {
-                    ServiceLocator.analytics.track(.productVariationListLoaded)
                 }
 
                 self.transitionToResultsUpdatedState()
-                onCompletion?(error == nil)
+                onCompletion?(result.isSuccess)
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -630,6 +686,25 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
             }
         }
     }
+
+    /// Generates all possible variations for the product attributes.
+    ///
+    private func generateAllVariations() {
+        let presenter = GenerateAllVariationsPresenter(baseViewController: self)
+        viewModel.generateAllVariations(for: product) { [weak self, presenter] currentState in
+            // Perform Presentation Actions
+            presenter.handleStateChanges(state: currentState)
+
+            // Perform other side effects
+            switch currentState {
+            case .finished(let variationsCreated, let updatedProduct):
+                if variationsCreated {
+                    self?.product = updatedProduct
+                }
+            default: break
+            }
+        }
+    }
 }
 
 // MARK: - Finite State Machine Management
@@ -641,8 +716,9 @@ private extension ProductVariationsViewController {
         case .noResultsPlaceholder:
             break
         case .syncing(let pageNumber):
-            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
-                displayPlaceholderProducts()
+            if pageNumber == syncingCoordinator.pageFirstIndex {
+                displayGhostContent(over: tableView)
+                hideMoreActionsNavigationBarButton()
             } else {
                 ensureFooterSpinnerIsStarted()
             }
@@ -655,7 +731,8 @@ private extension ProductVariationsViewController {
         switch state {
         case .syncing:
             ensureFooterSpinnerIsStopped()
-            removePlaceholderProducts()
+            removeGhostContent()
+            showOrHideMoreActionsNavigationBarButton()
         case .noResultsPlaceholder, .results:
             break
         }
@@ -692,7 +769,7 @@ extension ProductVariationsViewController {
             return false
         }
 
-        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > resultsController.numberOfObjects
+        return highestPageBeingSynced * syncingCoordinator.pageSize > resultsController.numberOfObjects
     }
 
     /// Stops animating the Footer Spinner.
@@ -733,5 +810,12 @@ private extension ProductVariationsViewController {
         static let generateVariationError = NSLocalizedString("The variation couldn't be generated.",
                                                               comment: "Error title when failing to generate a variation.")
         static let variationCreated = NSLocalizedString("Variation created", comment: "Text for the notice after creating the first variation.")
+    }
+
+    /// Localizated strings for the  action sheet options
+    ///
+    private enum ActionSheetStrings {
+        static let bulkUpdate = NSLocalizedString("Bulk Update", comment: "Button title in the action sheet of product variatiosns that shows the bulk update")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button title that closes the action sheet in product variations")
     }
 }

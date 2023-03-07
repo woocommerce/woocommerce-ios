@@ -1,0 +1,1344 @@
+[
+    {
+        "id": 282,
+        "name": "Book the Green Room",
+        "slug": "book-the-green-room",
+        "permalink": "https://example.com/product/book-the-green-room/",
+        "date_created": "2019-02-19T17:33:31",
+        "date_created_gmt": "2019-02-19T17:33:31",
+        "date_modified": "2019-02-19T17:48:01",
+        "date_modified_gmt": "2019-02-19T17:48:01",
+        "type": "booking",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "<p>This is the party room!</p>\n",
+        "short_description": "[contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests for $100.</p>\n",
+        "sku": "",
+        "price": "0",
+        "regular_price": "",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": "2019-10-15T21:30:00",
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": "2019-10-27T21:29:59",
+        "price_html": "Free",
+        "on_sale": false,
+        "purchasable": true,
+        "total_sales": 0,
+        "virtual": true,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "http://somewhere.com",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "stock_status": "instock",
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "sold_individually": true,
+        "weight": "213",
+        "dimensions": {
+            "length": "12",
+            "width": "33",
+            "height": "54"
+        },
+        "shipping_required": false,
+        "shipping_taxable": false,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "4.30",
+        "rating_count": 23,
+        "related_ids": [
+            31,
+            22,
+            369,
+            414,
+            56
+        ],
+        "upsell_ids": [
+            99,
+            1234566
+        ],
+        "cross_sell_ids": [
+            1234,
+            234234,
+            3
+        ],
+        "parent_id": 0,
+        "purchase_note": "Thank you!",
+        "categories": [
+            {
+                "id": 36,
+                "name": "Events",
+                "slug": "events"
+            }
+        ],
+        "tags": [
+            {
+                "id": 37,
+                "name": "room",
+                "slug": "room"
+            },
+            {
+                "id": 38,
+                "name": "party room",
+                "slug": "party-room"
+            },
+            {
+                "id": 39,
+                "name": "30",
+                "slug": "30"
+            },
+            {
+                "id": 40,
+                "name": "20+",
+                "slug": "20"
+            },
+            {
+                "id": 41,
+                "name": "meeting room",
+                "slug": "meeting-room"
+            },
+            {
+                "id": 42,
+                "name": "meetings",
+                "slug": "meetings"
+            },
+            {
+                "id": 43,
+                "name": "parties",
+                "slug": "parties"
+            },
+            {
+                "id": 44,
+                "name": "graduation",
+                "slug": "graduation"
+            },
+            {
+                "id": 45,
+                "name": "birthday party",
+                "slug": "birthday-party"
+            }
+        ],
+        "images": [
+            {
+                "id": 19,
+                "date_created": "2018-01-26T21:49:45",
+                "date_created_gmt": "2018-01-26T21:49:45",
+                "date_modified": "2018-01-26T21:50:11",
+                "date_modified_gmt": "2018-01-26T21:50:11",
+                "src": "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png",
+                "name": "Vneck Tshirt",
+                "alt": ""
+            }
+        ],
+        "attributes": [
+            {
+                "id": 0,
+                "name": "Color",
+                "position": 1,
+                "visible": true,
+                "variation": true,
+                "options": [
+                    "Purple",
+                    "Yellow",
+                    "Hot Pink",
+                    "Lime Green",
+                    "Teal"
+                ]
+            },
+            {
+                "id": 0,
+                "name": "Size",
+                "position": 0,
+                "visible": true,
+                "variation": true,
+                "options": [
+                    "Small",
+                    "Medium",
+                    "Large"
+                ]
+            }
+        ],
+        "default_attributes": [
+            {
+                "id": 0,
+                "name": "Color",
+                "option": "Purple"
+            },
+            {
+                "id": 0,
+                "name": "Size",
+                "option": "Medium"
+            }
+        ],
+        "variations": [
+            192,
+            194,
+            193
+        ],
+        "grouped_products": [],
+        "menu_order": 0,
+        "meta_data": [
+            {
+                "id": 6779,
+                "key": "_wpas_done_all",
+                "value": "1"
+            },
+            {
+                "id": 6780,
+                "key": "_g_feedback_shortcode_5368fb4ef32094b7055b8732bb77a337bdd9331d",
+                "value": "[contact-field label=\"Name\" type=\"name\" required=\"1\"][contact-field label=\"Email\" type=\"email\" required=\"1\"][contact-field label=\"Phone Number\" type=\"text\" required=\"1\"][contact-field label=\"Group or Organization Name (if any)\" type=\"text\"][contact-field label=\"Special Requests / Event Notes\" type=\"textarea\"]"
+            },
+            {
+                "id": 6781,
+                "key": "_g_feedback_shortcode_atts_5368fb4ef32094b7055b8732bb77a337bdd9331d",
+                "value": {
+                    "to": "thuy.copeland@automattic.com",
+                    "subject": "Booking Event",
+                    "show_subject": "no",
+                    "widget": 0,
+                    "id": 282,
+                    "submit_button_text": "Submit"
+                }
+            }
+        ],
+        "jetpack_publicize_connections": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/282"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products"
+                }
+            ]
+        }
+    },
+    {
+        "id": 208,
+        "name": "Dymo LabelWriter 4XL",
+        "slug": "dymo-labelwriter-4xl",
+        "permalink": "https://example.com/product/dymo-labelwriter-4xl/",
+        "date_created": "2018-05-07T21:02:28",
+        "date_created_gmt": "2018-05-07T21:02:28",
+        "date_modified": "2019-02-19T18:22:50",
+        "date_modified_gmt": "2019-02-19T18:22:50",
+        "type": "simple",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "<ul class=\"a-unordered-list a-vertical a-spacing-none\">\n<li><span class=\"a-list-item\">Print Extra Large Shipping Labels up to 4” x 6”</span></li>\n<li><span class=\"a-list-item\">Select from over 60 professional label templates and customize text and graphics with free DYMO Label Software</span></li>\n<li><span class=\"a-list-item\">Compatible with Microsoft Office, Quickbooks, and More</span></li>\n<li><span class=\"a-list-item\">Print shipping labels directly from popular online selling platforms such as DYMO Stamps, eBay, Amazon, Etsy, and Iabol</span></li>\n<li><span class=\"a-list-item\">Direct thermal printing eliminates the need for costly ink or toner</span></li>\n<li><span class=\"a-list-item\">Print USPS-approved DYMO Stamps from your desktop - no monthly fee, contracts, or commitments (US only)</span></li>\n<li><span class=\"a-list-item\">System Requirements: Windows 7 or later, Mac OS v10.10 or later</span></li>\n<li><span class=\"a-list-item\">Includes: LabelWriter® 4XL printer, adapter, power cable, USB 2.0 cable, Quick Start guide, and starter roll of 4x6 extra large shipping labels</span></li>\n<li><span class=\"a-list-item\">For best results use DYMO authentic labels only</span></li>\n<li>Bonus: 1 extra roll of labels when you pay with points!</li>\n</ul>\n<div class=\"a-row a-expander-container a-expander-inline-container\" aria-live=\"polite\">\n<div class=\"a-expander-content a-expander-extend-content a-expander-content-expanded\" aria-expanded=\"true\"></div>\n</div>\n",
+        "short_description": "<h4 class=\"a-spacing-mini a-color-secondary a-text-italic\">High Volume Jobs? Not a Problem.</h4>\n<p class=\"a-spacing-base\">The DYMO LabelWriter 4XL is a wide-format label printer that accommodates the entire line of LabelWriter labels for maximum flexibility, and is also compatible with a variety of popular online selling platforms and shipping carriers. It&#8217;s ideal for extra-large shipping and warehouse labels, along with label styles for file folders, name badges, and more. It&#8217;s ideal for extra-large shipping and warehouse labels, including 4 inch international shipping labels, along with label styles for file folders, name badges, online postage, mailing and shipping labels, and more.</p>\n",
+        "sku": "",
+        "price": "216",
+        "regular_price": "279",
+        "sale_price": "216",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "price_html": "<del><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>279.00</span></del> <ins><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>216.00</span></ins>",
+        "on_sale": true,
+        "purchasable": true,
+        "total_sales": 2,
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "stock_status": "onbackorder",
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": true,
+        "sold_individually": true,
+        "weight": "64",
+        "dimensions": {
+            "length": "10.2",
+            "width": "10",
+            "height": "10"
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "related_ids": [
+            26,
+            27,
+            28,
+            29
+        ],
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 0,
+        "purchase_note": "",
+        "categories": [
+            {
+                "id": 15,
+                "name": "Accessories",
+                "slug": "accessories"
+            }
+        ],
+        "tags": [],
+        "images": [
+            {
+                "id": 209,
+                "date_created": "2018-05-07T21:02:45",
+                "date_created_gmt": "2018-05-07T21:02:45",
+                "date_modified": "2018-05-07T21:03:04",
+                "date_modified_gmt": "2018-05-07T21:03:04",
+                "src": "https://i0.wp.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/05/71PEq6VvFjL._SL1500_.jpg?fit=1500%2C1500&ssl=1",
+                "name": "Dymo LabelWriter 4XL",
+                "alt": ""
+            }
+        ],
+        "attributes": [],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 0,
+        "meta_data": [
+            {
+                "id": 5981,
+                "key": "_wpas_done_all",
+                "value": "1"
+            },
+            {
+                "id": 6847,
+                "key": "_wc_pre_orders_enabled",
+                "value": "yes"
+            },
+            {
+                "id": 6848,
+                "key": "_wc_pre_orders_availability_datetime",
+                "value": "1587262140"
+            },
+            {
+                "id": 6849,
+                "key": "_wc_pre_orders_fee",
+                "value": "2"
+            },
+            {
+                "id": 6850,
+                "key": "_wc_pre_orders_when_to_charge",
+                "value": "upon_release"
+            }
+        ],
+        "jetpack_publicize_connections": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/208"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products"
+                }
+            ]
+        }
+    },
+    {
+        "id": 81,
+        "name": "Woo Singles",
+        "slug": "woo-singles",
+        "permalink": "https://example.com/product/woo-singles/",
+        "date_created": "2018-02-05T18:56:16",
+        "date_created_gmt": "2018-02-05T18:56:16",
+        "date_modified": "2018-02-05T18:56:16",
+        "date_modified_gmt": "2018-02-05T18:56:16",
+        "type": "grouped",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n",
+        "short_description": "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n",
+        "sku": "",
+        "price": "",
+        "regular_price": "",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "price_html": "",
+        "on_sale": false,
+        "purchasable": false,
+        "total_sales": 0,
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "stock_status": "instock",
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "sold_individually": false,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "5.00",
+        "rating_count": 1,
+        "related_ids": [],
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 0,
+        "purchase_note": "",
+        "categories": [],
+        "tags": [],
+        "images": [
+            {
+                "id": 82,
+                "date_created": "2018-02-05T18:56:16",
+                "date_created_gmt": "2018-02-05T18:56:16",
+                "date_modified": "2018-02-05T18:56:16",
+                "date_modified_gmt": "2018-02-05T18:56:16",
+                "src": "https://i1.wp.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/02/cd_6_flat.jpg?fit=1000%2C1000&ssl=1",
+                "name": "Woo Singles 1",
+                "alt": "Woo Singles"
+            }
+        ],
+        "attributes": [],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 0,
+        "meta_data": [
+            {
+                "id": 1352,
+                "key": "_wpas_done_all",
+                "value": "1"
+            },
+            {
+                "id": 1406,
+                "key": "_upsell_skus",
+                "value": []
+            },
+            {
+                "id": 1407,
+                "key": "_crosssell_skus",
+                "value": []
+            },
+            {
+                "id": 1410,
+                "key": "_min_variation_price",
+                "value": ""
+            },
+            {
+                "id": 1411,
+                "key": "_max_variation_price",
+                "value": ""
+            },
+            {
+                "id": 1412,
+                "key": "_min_variation_regular_price",
+                "value": ""
+            },
+            {
+                "id": 1413,
+                "key": "_max_variation_regular_price",
+                "value": ""
+            },
+            {
+                "id": 1414,
+                "key": "_min_variation_sale_price",
+                "value": ""
+            },
+            {
+                "id": 1415,
+                "key": "_max_variation_sale_price",
+                "value": ""
+            },
+            {
+                "id": 1417,
+                "key": "_file_path",
+                "value": ""
+            },
+            {
+                "id": 1421,
+                "key": "_product_url",
+                "value": ""
+            },
+            {
+                "id": 1422,
+                "key": "_button_text",
+                "value": ""
+            }
+        ],
+        "jetpack_publicize_connections": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/81"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products"
+                }
+            ]
+        }
+    },
+    {
+        "id": 37,
+        "name": "Vneck Tshirt",
+        "slug": "vneck-tee",
+        "permalink": "https://example.com/product/vneck-tee/",
+        "date_created": "2018-01-26T21:49:46",
+        "date_created_gmt": "2018-01-26T21:49:46",
+        "date_modified": "2018-09-19T17:45:57",
+        "date_modified_gmt": "2018-09-19T17:45:57",
+        "type": "external",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n",
+        "short_description": "",
+        "sku": "",
+        "price": "180",
+        "regular_price": "180",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>180.00</span>",
+        "on_sale": false,
+        "purchasable": true,
+        "total_sales": 1,
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "stock_status": "instock",
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "sold_individually": false,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "related_ids": [
+            36,
+            35,
+            34
+        ],
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 0,
+        "purchase_note": "",
+        "categories": [
+            {
+                "id": 17,
+                "name": "Tshirts",
+                "slug": "tshirts"
+            }
+        ],
+        "tags": [],
+        "images": [
+            {
+                "id": 19,
+                "date_created": "2018-01-26T21:49:45",
+                "date_created_gmt": "2018-01-26T21:49:45",
+                "date_modified": "2018-01-26T21:50:11",
+                "date_modified_gmt": "2018-01-26T21:50:11",
+                "src": "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png",
+                "name": "Vneck Tshirt",
+                "alt": ""
+            }
+        ],
+        "attributes": [],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 0,
+        "meta_data": [
+            {
+                "id": 110,
+                "key": "_customize_changeset_uuid",
+                "value": "e96101a5-dc4f-4cd7-8f38-30db941b1a97"
+            }
+        ],
+        "jetpack_publicize_connections": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/37"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products"
+                }
+            ]
+        }
+    },
+    {
+        "id": 36,
+        "name": "Tshirt",
+        "slug": "tshirt",
+        "permalink": "https://example.com/product/tshirt/",
+        "date_created": "2018-01-26T21:49:46",
+        "date_created_gmt": "2018-01-26T21:49:46",
+        "date_modified": "2018-02-08T20:42:08",
+        "date_modified_gmt": "2018-02-08T20:42:08",
+        "type": "variable",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n",
+        "short_description": "",
+        "sku": "",
+        "price": "12",
+        "regular_price": "",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>12.00</span> &ndash; <span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>18.00</span>",
+        "on_sale": true,
+        "purchasable": true,
+        "total_sales": 0,
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "stock_status": "instock",
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "sold_individually": false,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "related_ids": [
+            37,
+            34,
+            35
+        ],
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 0,
+        "purchase_note": "",
+        "categories": [
+            {
+                "id": 17,
+                "name": "Tshirts",
+                "slug": "tshirts"
+            }
+        ],
+        "tags": [],
+        "images": [
+            {
+                "id": 18,
+                "date_created": "2018-01-26T21:49:45",
+                "date_created_gmt": "2018-01-26T21:49:45",
+                "date_modified": "2018-01-26T21:49:45",
+                "date_modified_gmt": "2018-01-26T21:49:45",
+                "src": "https://i1.wp.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/tshirt.jpg?fit=801%2C801&ssl=1",
+                "name": "Tshirt",
+                "alt": ""
+            }
+        ],
+        "attributes": [
+            {
+                "id": 0,
+                "name": "Size",
+                "position": 0,
+                "visible": true,
+                "variation": true,
+                "options": [
+                    "Small",
+                    "Medium",
+                    "Large"
+                ]
+            },
+            {
+                "id": 0,
+                "name": "Color",
+                "position": 1,
+                "visible": true,
+                "variation": true,
+                "options": [
+                    "Purple",
+                    "Yellow",
+                    "Hot Pink",
+                    "Lime Green",
+                    "Teal"
+                ]
+            }
+        ],
+        "default_attributes": [
+            {
+                "id": 0,
+                "name": "Size",
+                "option": "Medium"
+            },
+            {
+                "id": 0,
+                "name": "Color",
+                "option": "Purple"
+            }
+        ],
+        "variations": [
+            192,
+            194,
+            193
+        ],
+        "grouped_products": [],
+        "menu_order": 0,
+        "meta_data": [
+            {
+                "id": 107,
+                "key": "_customize_changeset_uuid",
+                "value": "e96101a5-dc4f-4cd7-8f38-30db941b1a97"
+            },
+            {
+                "id": 5758,
+                "key": "_wc_max_points_earned",
+                "value": ""
+            },
+            {
+                "id": 5759,
+                "key": "_wc_min_points_earned",
+                "value": ""
+            }
+        ],
+        "jetpack_publicize_connections": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/36"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products"
+                }
+            ]
+        }
+    },
+    {
+        "id": 35,
+        "name": "Polo",
+        "slug": "polo",
+        "permalink": "https://example.com/product/polo/",
+        "date_created": "2018-01-26T21:49:46",
+        "date_created_gmt": "2018-01-26T21:49:46",
+        "date_modified": "2018-09-19T17:46:25",
+        "date_modified_gmt": "2018-09-19T17:46:25",
+        "type": "simple",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n",
+        "short_description": "",
+        "sku": "",
+        "price": "207",
+        "regular_price": "207",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>207.00</span>",
+        "on_sale": false,
+        "purchasable": true,
+        "total_sales": 2,
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "stock_status": "instock",
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "sold_individually": false,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "related_ids": [
+            36,
+            37,
+            34
+        ],
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 0,
+        "purchase_note": "",
+        "categories": [
+            {
+                "id": 17,
+                "name": "Tshirts",
+                "slug": "tshirts"
+            }
+        ],
+        "tags": [],
+        "images": [
+            {
+                "id": 16,
+                "date_created": "2018-01-26T21:49:45",
+                "date_created_gmt": "2018-01-26T21:49:45",
+                "date_modified": "2018-01-26T21:49:45",
+                "date_modified_gmt": "2018-01-26T21:49:45",
+                "src": "https://i1.wp.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/polo.jpg?fit=801%2C800&ssl=1",
+                "name": "Polo",
+                "alt": ""
+            }
+        ],
+        "attributes": [],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 0,
+        "meta_data": [
+            {
+                "id": 104,
+                "key": "_customize_changeset_uuid",
+                "value": "e96101a5-dc4f-4cd7-8f38-30db941b1a97"
+            }
+        ],
+        "jetpack_publicize_connections": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/35"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products"
+                }
+            ]
+        }
+    },
+    {
+        "id": 34,
+        "name": "Long Sleeve Tee",
+        "slug": "long-sleeve-tee",
+        "permalink": "https://example.com/product/long-sleeve-tee/",
+        "date_created": "2018-01-26T21:49:46",
+        "date_created_gmt": "2018-01-26T21:49:46",
+        "date_modified": "2018-09-19T17:46:38",
+        "date_modified_gmt": "2018-09-19T17:46:38",
+        "type": "simple",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n",
+        "short_description": "",
+        "sku": "",
+        "price": "2517",
+        "regular_price": "2517",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>2,517.00</span>",
+        "on_sale": false,
+        "purchasable": true,
+        "total_sales": 3,
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "stock_status": "instock",
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "sold_individually": false,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "related_ids": [
+            36,
+            37,
+            35
+        ],
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 0,
+        "purchase_note": "",
+        "categories": [
+            {
+                "id": 17,
+                "name": "Tshirts",
+                "slug": "tshirts"
+            }
+        ],
+        "tags": [],
+        "images": [
+            {
+                "id": 15,
+                "date_created": "2018-01-26T21:49:45",
+                "date_created_gmt": "2018-01-26T21:49:45",
+                "date_modified": "2018-01-26T21:49:45",
+                "date_modified_gmt": "2018-01-26T21:49:45",
+                "src": "https://i2.wp.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/long-sleeve-tee.jpg?fit=801%2C801&ssl=1",
+                "name": "Long Sleeve Tee",
+                "alt": ""
+            }
+        ],
+        "attributes": [],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 0,
+        "meta_data": [
+            {
+                "id": 101,
+                "key": "_customize_changeset_uuid",
+                "value": "e96101a5-dc4f-4cd7-8f38-30db941b1a97"
+            }
+        ],
+        "jetpack_publicize_connections": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/34"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products"
+                }
+            ]
+        }
+    },
+    {
+        "id": 33,
+        "name": "Hoodie",
+        "slug": "hoodie",
+        "permalink": "https://example.com/product/hoodie/",
+        "date_created": "2018-01-26T21:49:46",
+        "date_created_gmt": "2018-01-26T21:49:46",
+        "date_modified": "2018-01-26T21:49:46",
+        "date_modified_gmt": "2018-01-26T21:49:46",
+        "type": "simple",
+        "status": "publish",
+        "featured": true,
+        "catalog_visibility": "visible",
+        "description": "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n",
+        "short_description": "",
+        "sku": "",
+        "price": "42",
+        "regular_price": "45",
+        "sale_price": "42",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "price_html": "<del><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>45.00</span></del> <ins><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>42.00</span></ins>",
+        "on_sale": true,
+        "purchasable": true,
+        "total_sales": 2,
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "stock_status": "instock",
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "sold_individually": false,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "related_ids": [
+            31,
+            32,
+            30
+        ],
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 0,
+        "purchase_note": "",
+        "categories": [
+            {
+                "id": 16,
+                "name": "Hoodies",
+                "slug": "hoodies"
+            }
+        ],
+        "tags": [],
+        "images": [
+            {
+                "id": 14,
+                "date_created": "2018-01-26T21:49:45",
+                "date_created_gmt": "2018-01-26T21:49:45",
+                "date_modified": "2018-01-26T21:49:45",
+                "date_modified_gmt": "2018-01-26T21:49:45",
+                "src": "https://i0.wp.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/hoodie.jpg?fit=801%2C801&ssl=1",
+                "name": "Hoodie",
+                "alt": ""
+            }
+        ],
+        "attributes": [],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 0,
+        "meta_data": [
+            {
+                "id": 98,
+                "key": "_customize_changeset_uuid",
+                "value": "e96101a5-dc4f-4cd7-8f38-30db941b1a97"
+            }
+        ],
+        "jetpack_publicize_connections": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/33"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products"
+                }
+            ]
+        }
+    },
+    {
+        "id": 32,
+        "name": "Hoodie with Zipper",
+        "slug": "hoodie-with-zipper",
+        "permalink": "https://example.com/product/hoodie-with-zipper/",
+        "date_created": "2018-01-26T21:49:46",
+        "date_created_gmt": "2018-01-26T21:49:46",
+        "date_modified": "2018-09-19T17:46:50",
+        "date_modified_gmt": "2018-09-19T17:46:50",
+        "type": "simple",
+        "status": "publish",
+        "featured": true,
+        "catalog_visibility": "visible",
+        "description": "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n",
+        "short_description": "",
+        "sku": "",
+        "price": "4537",
+        "regular_price": "4537",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>4,537.00</span>",
+        "on_sale": false,
+        "purchasable": true,
+        "total_sales": 5,
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "stock_status": "instock",
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "sold_individually": false,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "related_ids": [
+            30,
+            31,
+            33
+        ],
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 0,
+        "purchase_note": "",
+        "categories": [
+            {
+                "id": 16,
+                "name": "Hoodies",
+                "slug": "hoodies"
+            }
+        ],
+        "tags": [],
+        "images": [
+            {
+                "id": 13,
+                "date_created": "2018-01-26T21:49:45",
+                "date_created_gmt": "2018-01-26T21:49:45",
+                "date_modified": "2018-01-26T21:49:45",
+                "date_modified_gmt": "2018-01-26T21:49:45",
+                "src": "https://i1.wp.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/hoodie-with-zipper.jpg?fit=800%2C800&ssl=1",
+                "name": "Hoodie with Zipper",
+                "alt": ""
+            }
+        ],
+        "attributes": [],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 0,
+        "meta_data": [
+            {
+                "id": 95,
+                "key": "_customize_changeset_uuid",
+                "value": "e96101a5-dc4f-4cd7-8f38-30db941b1a97"
+            }
+        ],
+        "jetpack_publicize_connections": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/32"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products"
+                }
+            ]
+        }
+    },
+    {
+        "id": 31,
+        "name": "Hoodie with Pocket",
+        "slug": "hoodie-with-pocket",
+        "permalink": "https://example.com/product/hoodie-with-pocket/",
+        "date_created": "2018-01-26T21:49:46",
+        "date_created_gmt": "2018-01-26T21:49:46",
+        "date_modified": "2018-01-26T21:49:46",
+        "date_modified_gmt": "2018-01-26T21:49:46",
+        "type": "simple",
+        "status": "publish",
+        "featured": true,
+        "catalog_visibility": "visible",
+        "description": "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n",
+        "short_description": "",
+        "sku": "",
+        "price": "35",
+        "regular_price": "45",
+        "sale_price": "35",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "price_html": "<del><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>45.00</span></del> <ins><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>35.00</span></ins>",
+        "on_sale": true,
+        "purchasable": true,
+        "total_sales": 1,
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "stock_status": "instock",
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "sold_individually": false,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "related_ids": [
+            32,
+            30,
+            33
+        ],
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 0,
+        "purchase_note": "",
+        "categories": [
+            {
+                "id": 16,
+                "name": "Hoodies",
+                "slug": "hoodies"
+            }
+        ],
+        "tags": [],
+        "images": [
+            {
+                "id": 12,
+                "date_created": "2018-01-26T21:49:45",
+                "date_created_gmt": "2018-01-26T21:49:45",
+                "date_modified": "2018-01-26T21:49:45",
+                "date_modified_gmt": "2018-01-26T21:49:45",
+                "src": "https://i0.wp.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/hoodie-with-pocket.jpg?fit=801%2C801&ssl=1",
+                "name": "Hoodie with Pocket",
+                "alt": ""
+            }
+        ],
+        "attributes": [],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 0,
+        "meta_data": [
+            {
+                "id": 92,
+                "key": "_customize_changeset_uuid",
+                "value": "e96101a5-dc4f-4cd7-8f38-30db941b1a97"
+            }
+        ],
+        "jetpack_publicize_connections": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/31"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products"
+                }
+            ]
+        }
+    }
+]

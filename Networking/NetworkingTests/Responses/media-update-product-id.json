@@ -1,0 +1,24 @@
+{
+    "ID": 2352,
+    "URL": "https://test.com/wp-content/uploads/2020/02/img_0002-8.jpeg",
+    "date": "2020-02-21T12:15:38+08:00",
+    "mime_type": "image/jpeg",
+    "file": "img_0002-8.jpeg",
+    "extension": "jpeg",
+    "title": "DSC_0010",
+    "alt": "",
+    "thumbnails": {
+        "medium": "https://test.com/wp-content/uploads/2020/02/img_0002-8-300x199.jpeg",
+        "large": "https://test.com/wp-content/uploads/2020/02/img_0002-8-1024x680.jpeg",
+        "thumbnail": "https://test.com/wp-content/uploads/2020/02/img_0002-8-150x150.jpeg",
+        "medium_large": "https://test.com/wp-content/uploads/2020/02/img_0002-8-768x510.jpeg",
+        "1536x1536": "https://test.com/wp-content/uploads/2020/02/img_0002-8-1536x1020.jpeg",
+        "2048x2048": "https://test.com/wp-content/uploads/2020/02/img_0002-8-2048x1361.jpeg",
+        "woocommerce_thumbnail": "https://test.com/wp-content/uploads/2020/02/img_0002-8-350x350.jpeg",
+        "woocommerce_single": "https://test.com/wp-content/uploads/2020/02/img_0002-8-685x455.jpeg",
+        "woocommerce_gallery_thumbnail": "https://test.com/wp-content/uploads/2020/02/img_0002-8-100x100.jpeg",
+        "shop_catalog": "https://test.com/wp-content/uploads/2020/02/img_0002-8-350x350.jpeg",
+        "shop_single": "https://test.com/wp-content/uploads/2020/02/img_0002-8-685x455.jpeg",
+        "shop_thumbnail": "https://test.com/wp-content/uploads/2020/02/img_0002-8-100x100.jpeg"
+    }
+}

@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import Observables
 
 public struct MockSessionManager: SessionManagerProtocol {
 
@@ -8,10 +7,10 @@ public struct MockSessionManager: SessionManagerProtocol {
 
     init(objectGraph: MockObjectGraph) {
         self.objectGraph = objectGraph
-        self.storeIDSubject = BehaviorSubject<Int64?>(objectGraph.defaultSite.siteID)
         defaultAccount = objectGraph.defaultAccount
         defaultSite = objectGraph.defaultSite
         defaultStoreID = objectGraph.defaultSite.siteID
+        defaultStoreURL = objectGraph.defaultSite.url
         defaultStoreIDPublisher = Just(objectGraph.defaultSite.siteID).eraseToAnyPublisher()
         defaultCredentials = objectGraph.userCredentials
     }
@@ -28,6 +27,8 @@ public struct MockSessionManager: SessionManagerProtocol {
 
     public var defaultStoreID: Int64?
 
+    public var defaultStoreURL: String?
+
     public var defaultRoles: [User.Role] = []
 
     public var defaultStoreIDPublisher: AnyPublisher<Int64?, Never>
@@ -36,15 +37,11 @@ public struct MockSessionManager: SessionManagerProtocol {
 
     public var anonymousUserID: String? = nil
 
-    /// Observable site ID
-    ///
-    public var siteID: Observable<Int64?> {
-        storeIDSubject
+    public func reset() {
+        // Do nothing
     }
 
-    private let storeIDSubject: BehaviorSubject<Int64?>
-
-    public func reset() {
+    public func deleteApplicationPassword() {
         // Do nothing
     }
 }

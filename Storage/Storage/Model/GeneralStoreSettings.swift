@@ -25,10 +25,33 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let telemetryLastReportedTime: Date?
 
+    /// Stores the last simple payments toggle state.
+    ///
+    public let areSimplePaymentTaxesEnabled: Bool
+
+    /// Stores the preferred payment gateway for In-Person Payments
+    ///
+    public let preferredInPersonPaymentGateway: String?
+
+    /// Stores whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped for this store
+    ///
+    public let skippedCashOnDeliveryOnboardingStep: Bool
+
+    /// The raw value string of `StatsTimeRangeV4` that indicates the last selected time range tab in store stats.
+    public var lastSelectedStatsTimeRange: String
+
     public init(isTelemetryAvailable: Bool = false,
-                telemetryLastReportedTime: Date? = nil) {
+                telemetryLastReportedTime: Date? = nil,
+                areSimplePaymentTaxesEnabled: Bool = false,
+                preferredInPersonPaymentGateway: String? = nil,
+                skippedCashOnDeliveryOnboardingStep: Bool = false,
+                lastSelectedStatsTimeRange: String = "") {
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
+        self.areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled
+        self.preferredInPersonPaymentGateway = preferredInPersonPaymentGateway
+        self.skippedCashOnDeliveryOnboardingStep = skippedCashOnDeliveryOnboardingStep
+        self.lastSelectedStatsTimeRange = lastSelectedStatsTimeRange
     }
 }
 
@@ -41,6 +64,10 @@ extension GeneralStoreSettings {
 
         self.isTelemetryAvailable = try container.decodeIfPresent(Bool.self, forKey: .isTelemetryAvailable) ?? false
         self.telemetryLastReportedTime = try container.decodeIfPresent(Date.self, forKey: .telemetryLastReportedTime)
+        self.areSimplePaymentTaxesEnabled = try container.decodeIfPresent(Bool.self, forKey: .areSimplePaymentTaxesEnabled) ?? false
+        self.preferredInPersonPaymentGateway = try container.decodeIfPresent(String.self, forKey: .preferredInPersonPaymentGateway)
+        self.skippedCashOnDeliveryOnboardingStep = try container.decodeIfPresent(Bool.self, forKey: .skippedCashOnDeliveryOnboardingStep) ?? false
+        self.lastSelectedStatsTimeRange = try container.decodeIfPresent(String.self, forKey: .lastSelectedStatsTimeRange) ?? ""
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

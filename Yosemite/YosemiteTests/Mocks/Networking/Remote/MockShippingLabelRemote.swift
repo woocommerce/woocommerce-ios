@@ -50,9 +50,6 @@ final class MockShippingLabelRemote {
     private struct CreationEligibilityResultKey: Hashable {
         let siteID: Int64
         let orderID: Int64
-        let canCreatePaymentMethod: Bool
-        let canCreateCustomsForm: Bool
-        let canCreatePackage: Bool
     }
 
     private struct PurchaseShippingLabelResultKey: Hashable {
@@ -170,15 +167,9 @@ final class MockShippingLabelRemote {
 
     func whenCheckingCreationEligiblity(siteID: Int64,
                                         orderID: Int64,
-                                        canCreatePaymentMethod: Bool,
-                                        canCreateCustomsForm: Bool,
-                                        canCreatePackage: Bool,
                                         thenReturn result: Result<ShippingLabelCreationEligibilityResponse, Error>) {
         let key = CreationEligibilityResultKey(siteID: siteID,
-                                               orderID: orderID,
-                                               canCreatePaymentMethod: canCreatePaymentMethod,
-                                               canCreateCustomsForm: canCreateCustomsForm,
-                                               canCreatePackage: canCreatePackage)
+                                               orderID: orderID)
         creationEligibilityResults[key] = result
     }
 
@@ -339,18 +330,12 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
 
     func checkCreationEligibility(siteID: Int64,
                                   orderID: Int64,
-                                  canCreatePaymentMethod: Bool,
-                                  canCreateCustomsForm: Bool,
-                                  canCreatePackage: Bool,
                                   completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 
             let key = CreationEligibilityResultKey(siteID: siteID,
-                                                   orderID: orderID,
-                                                   canCreatePaymentMethod: canCreatePaymentMethod,
-                                                   canCreateCustomsForm: canCreateCustomsForm,
-                                                   canCreatePackage: canCreatePackage)
+                                                   orderID: orderID)
             if let result = self.creationEligibilityResults[key] {
                 completion(result)
             } else {

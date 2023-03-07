@@ -1,26 +1,31 @@
 import Foundation
+import struct Yosemite.CardPresentPaymentsConfiguration
 
 /// Aggregates an ordered list of viewmodels, conforming to the viewmodel provider protocol. Priority is given to
 /// the first viewmodel in the list to return true for shouldShow
 ///
-final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritizedViewModelsProvider {
+final class CardReaderSettingsViewModelsOrderedList: PaymentSettingsFlowPrioritizedViewModelsProvider {
 
-    private var viewModelsAndViews = [CardReaderSettingsViewModelAndView]()
+    private var viewModelsAndViews = [PaymentSettingsFlowViewModelAndView]()
 
-    var priorityViewModelAndView: CardReaderSettingsViewModelAndView? {
+    var priorityViewModelAndView: PaymentSettingsFlowViewModelAndView? {
         didSet {
             onPriorityChanged?(priorityViewModelAndView)
         }
     }
 
-    var onPriorityChanged: ((CardReaderSettingsViewModelAndView?) -> ())?
+    var onPriorityChanged: ((PaymentSettingsFlowViewModelAndView?) -> ())?
 
     private var knownReaderProvider: CardReaderSettingsKnownReaderProvider?
 
-    init() {
+    private let cardReaderConnectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
+
+    init(configuration: CardPresentPaymentsConfiguration) {
         /// Initialize dependencies for viewmodels first, then viewmodels
         ///
         knownReaderProvider = CardReaderSettingsKnownReaderStorage()
+
+        cardReaderConnectionAnalyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: configuration)
 
         /// Instantiate and add each viewmodel related to card reader settings to the
         /// array. Viewmodels will be evaluated for shouldShow starting at the top
@@ -29,26 +34,30 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
         /// that expect a connected reader, etc.
         ///
         viewModelsAndViews.append(
-            CardReaderSettingsViewModelAndView(
+            PaymentSettingsFlowViewModelAndView(
                 viewModel: CardReaderSettingsSearchingViewModel(
                     didChangeShouldShow: { [weak self] state in
                         self?.onDidChangeShouldShow(state)
                     },
-                    knownReaderProvider: knownReaderProvider
+                    knownReaderProvider: knownReaderProvider,
+                    configuration: configuration,
+                    cardReaderConnectionAnalyticsTracker: cardReaderConnectionAnalyticsTracker
                 ),
-                viewIdentifier: "CardReaderSettingsSearchingViewController"
+                viewPresenter: CardReaderSettingsSearchingViewController.self
             )
         )
 
         viewModelsAndViews.append(
-            CardReaderSettingsViewModelAndView(
-                viewModel: CardReaderSettingsConnectedViewModel(
+            PaymentSettingsFlowViewModelAndView(
+                viewModel: BluetoothCardReaderSettingsConnectedViewModel(
                     didChangeShouldShow: { [weak self] state in
                         self?.onDidChangeShouldShow(state)
                     },
-                    knownReaderProvider: knownReaderProvider
+                    knownReaderProvider: knownReaderProvider,
+                    configuration: configuration,
+                    analyticsTracker: cardReaderConnectionAnalyticsTracker
                 ),
-                viewIdentifier: "CardReaderSettingsConnectedViewController"
+                viewPresenter: CardReaderSettingsConnectedViewController.self
             )
         )
 

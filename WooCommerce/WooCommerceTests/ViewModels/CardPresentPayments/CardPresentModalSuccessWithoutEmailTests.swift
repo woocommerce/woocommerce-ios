@@ -8,7 +8,8 @@ final class CardPresentModalSuccessWithoutEmailTests: XCTestCase {
     override func setUp() {
         super.setUp()
         closures = Closures()
-        viewModel = CardPresentModalSuccessWithoutEmail(printReceipt: closures.printReceipt(), noReceiptAction: closures.noReceiptAction())
+        viewModel = CardPresentModalSuccessWithoutEmail(printReceipt: closures.printReceipt(),
+                                                        noReceiptAction: closures.noReceiptAction())
     }
 
     override func tearDown() {

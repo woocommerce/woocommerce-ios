@@ -13,6 +13,12 @@ final class DatePickerTableViewCell: UITableViewCell {
         onDateSelected?(sender.date)
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        picker.minimumDate = nil
+        picker.maximumDate = nil
+    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBottomBorder()
@@ -27,11 +33,7 @@ extension DatePickerTableViewCell {
     }
 
     static func getDefaultCellHeight() -> CGFloat {
-        if #available(iOS 14, *) {
-            return CGFloat(50)
-        }
-
-        return CGFloat(216)
+        return CGFloat(50)
     }
 }
 
@@ -41,8 +43,6 @@ private extension DatePickerTableViewCell {
     }
 
     func configureDatePicker() {
-        if #available(iOS 14, *) {
-            picker.preferredDatePickerStyle = .compact
-        }
+        picker.preferredDatePickerStyle = .compact
     }
 }

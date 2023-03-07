@@ -32,30 +32,6 @@ public enum AppSettingsAction: Action {
     ///
     case resetStoredProviders(onCompletion: ((Error?) -> Void)?)
 
-    // MARK: - Stats version
-
-    /// Loads the stats version to be shown given the latest app settings associated with the `siteID`
-    ///
-    case loadInitialStatsVersionToShow(siteID: Int64,
-        onCompletion: (StatsVersion?) -> Void)
-
-    /// Loads whether a stats verion banner should be shown
-    ///
-    case loadStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner, onCompletion: (Bool) -> Void)
-
-    /// Sets whether a stats version banner should be shown
-    ///
-    case setStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner, shouldShowBanner: Bool)
-
-    /// Sets the last shown stats version associated with the `siteID`
-    ///
-    case setStatsVersionLastShown(siteID: Int64,
-        statsVersion: StatsVersion)
-
-    /// Clears all the states related to stats version
-    ///
-    case resetStatsVersionStates
-
     // MARK: - Orders Settings
 
     /// Loads the orders settings
@@ -120,13 +96,21 @@ public enum AppSettingsAction: Action {
     ///
     case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Loads the most recent state for the Order Creation beta feature switch
+    /// Sets the state for the Product SKU Input Scanner beta feature switch.
     ///
-    case loadOrderCreationSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+    case setProductSKUInputScannerFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
 
-    /// Sets the state for the Order Creation beta feature switch.
+    /// Loads the most recent state for the Product SKU Input Scanner beta feature switch
     ///
-    case setOrderCreationFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+    case loadProductSKUInputScannerFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the state for the Coupon Management beta feature switch.
+    ///
+    case setCouponManagementFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads the most recent state for the Coupon Management beta feature switch
+    ///
+    case loadCouponManagementFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Remember the given card reader (to support automatic reconnection)
     /// where `cardReaderID` is a String e.g. "CHB204909005931"
@@ -179,7 +163,51 @@ public enum AppSettingsAction: Action {
     ///
     case getTelemetryInfo(siteID: Int64, onCompletion: (Bool, Date?) -> Void)
 
+    /// Sets the last state of the simple payments taxes toggle for a provided store.
+    ///
+    case setSimplePaymentsTaxesToggleState(siteID: Int64, isOn: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Get the last state of the simple payments taxes toggle for a provided store.
+    ///
+    case getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the preferred payment gateway for In-Person Payments
+    ///
+    case setPreferredInPersonPaymentGateway(siteID: Int64, gateway: String)
+
+    /// Gets the preferred payment gateway for In-Person Payments
+    ///
+    case getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void)
+
+    /// Forgets the preferred payment gateway for In-Person Payments
+    ///
+    case forgetPreferredInPersonPaymentGateway(siteID: Int64)
+
     /// Clears all the products settings
     ///
     case resetGeneralStoreSettings
+
+    /// Marks the Enable Cash on Delivery In-Person Payments Onboarding step as skipped
+    ///
+    case setSkippedCashOnDeliveryOnboardingStep(siteID: Int64)
+
+    /// Gets whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped
+    ///
+    case getSkippedCashOnDeliveryOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void)
+
+    // MARK: - Feature Announcement Card Visibility
+
+    case setFeatureAnnouncementDismissed(
+        campaign: FeatureAnnouncementCampaign,
+        remindAfterDays: Int?,
+        onCompletion: ((Result<Bool, Error>) -> ())?
+    )
+
+    case getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ())
+
+    // MARK: - Stats Time Range Tab
+
+    case setLastSelectedStatsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4)
+
+    case loadLastSelectedStatsTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
 }

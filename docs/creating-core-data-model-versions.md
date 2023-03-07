@@ -12,14 +12,14 @@ The sequential version numbers are important because that sequence is used by th
 
 ## Avoid Modifying Existing Model Versions
 
-Once a model version is merged in `develop`, consider creating a new model version instead. This helps us avoid issues like:
+Once a model version is merged in `trunk`, consider creating a new model version instead. This helps us avoid issues like:
 
-- Different model version sequences between production and `develop`.
+- Different model version sequences between production and `trunk`.
 - Inconsistent model version references if multiple model versions, created by different developers, refer to the same model version.
 
 These scenarios can lead to users' databases to be incompatible with the current model and they would be **unable to load** their data. The app would end up recreating the database. It's not an ideal scenario.
 
-Also, avoid modifying model versions in release branches. If possible, model version changes should be done and merged swiftly in `develop`.
+Also, avoid modifying model versions in release branches. If possible, model version changes should be done and merged swiftly in `trunk`.
 
 ## Always Add Unit Tests
 

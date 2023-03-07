@@ -4,9 +4,9 @@ Instantiating models for tests is not a simple task. Sometimes, the initializer 
 This inconvenience hurts our ability to efficiently unit test our app, which could discourage members from writing them at all.
 
 To help with this, we have introduced a new framework called `Fakes.framework`. This framework defines `.fake()` functions for all of our networking models.
-The `.fake()` function instantiates a type with fake values. As of now, we are [defining](https://github.com/woocommerce/woocommerce-ios/blob/develop/Fakes/Fakes/Fake.swift) fake values as empty values.
+The `.fake()` function instantiates a type with fake values. As of now, we are [defining](https://github.com/woocommerce/woocommerce-ios/blob/trunk/Fakes/Fakes/Fake.swift) fake values as empty values.
 
-This, in conjunction with the [copiable pattern](https://github.com/woocommerce/woocommerce-ios/blob/develop/docs/copiable.md) allow us to write tests like:
+This, in conjunction with the [copiable pattern](https://github.com/woocommerce/woocommerce-ios/blob/trunk/docs/copiable.md) allow us to write tests like:
 
 ```swift
 func test() {
@@ -14,10 +14,10 @@ func test() {
      let initialProduct = Product.fake()
      let expectedProduct = initialProduct.copy(name: "new-name")
      let ViewModel = ViewModel(product: initialProduct)
-     
+
      // When
      viewModel.updateName("new_name")
-     
+
      // Then
      XCTAssertEqual(viewModel.product, expectedProduct)
 }
@@ -28,7 +28,7 @@ func test() {
 
 ## Generating Fake Methods
 
-The `fake()` methods are generated using [Sourcery](https://github.com/krzysztofzablocki/Sourcery). For now, only `classes`, `structs`, and `enums` of the `Networking` and `Yosemite` target are supported.
+The `fake()` methods are generated using [Sourcery](https://github.com/krzysztofzablocki/Sourcery). For now, only `classes`, `structs`, and `enums` of the `Networking`, `Yosemite`, and `Hardware` targets are supported.
 
 To generate a `fake()` method:
 
@@ -41,6 +41,8 @@ To generate a `fake()` method:
         ...
     }
     ```
+    
+    Note: for enum types, if an enum only conforms to `GeneratedFakeable` its `fake()` method won't be generated. As a workaround, the enum can conform to basic protocols like `Equatable`.
 
 2. In the terminal, navigate to the project's root folder and run `rake generate`.
 
@@ -49,20 +51,29 @@ To generate a `fake()` method:
     $ rake generate
     ```
 
-    This will update the [Fakes.generated](https://github.com/woocommerce/woocommerce-ios/blob/develop/Fakes/Fakes/Fakes.generated.swift) file with the new `fake()` method.
+    This will update the [Fakes.generated](https://github.com/woocommerce/woocommerce-ios/blob/trunk/Fakes/Fakes/Fakes.generated.swift) file with the new `fake()` method.
 
 5. Compile the project.
 
 
 ## Modifying The Fakeable Code Generation
 
-The [`rake generate`](../Rakefile) command executes the Sourcery configuration files located in the [`CodeGeneration/Sourcery/Fakes` folder](../CodeGeneration/Sourcery/Fakes). 
+The [`rake generate`](../Rakefile) command executes the Sourcery configuration files located in the [`CodeGeneration/Sourcery/Fakes` folder](../CodeGeneration/Sourcery/Fakes).
 
 ```
 Networking module → Networking-Fakes.yaml
 Yosemite module → Yosemite-Fakes.yaml
+Hardware module → Hardware-Fakes.yaml
 ```
 
 It uses a single template, [`Fakes.swifttemplate`](../CodeGeneration/Sourcery/Fakes/Fakes.swifttemplate), to generate the code. It's written using [Swift templates](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/writing-templates.html).
 
 Please refer to the [Sourcery reference](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html) for more info about how to write templates.
+
+## Adding Fakeable to a New Xcode Framework
+
+1. In Xcode target settings, add Codegen to the Xcode framework in General > Frameworks and Libraries.
+2. Add a new file `{{FrameworkName}}-Fakes.yaml` under [`CodeGeneration/Sourcery/Fakes`](../CodeGeneration/Sourcery/Fakes) similar to other yaml files in the same folder.
+3. In [`Fakes.swifttemplate`](../CodeGeneration/Sourcery/Fakes/Fakes.swifttemplate), add a line to import the new framework.
+4. In [`Rakefile`](../Rakefile) which includes the script for `rake generate` command, add the new framework to the list of frameworks for Fakeable generation similar to other frameworks.
+5. Now you can try generating fake methods as instructed in an earlier section.

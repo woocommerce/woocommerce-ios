@@ -71,7 +71,7 @@ public struct Refund: Codable, GeneratedFakeable, GeneratedCopiable {
         let amount = try container.decode(String.self, forKey: .amount)
         let reason = try container.decode(String.self, forKey: .reason)
         let refundedByUserID = try container.decode(Int64.self, forKey: .refundedByUserID)
-        let isAutomated = try container.decodeIfPresent(Bool.self, forKey: .automatedRefund) ?? false
+        let isAutomated = try container.decodeIfPresent(Bool.self, forKey: .automatedRefund)
         let items = try container.decode([OrderItemRefund].self, forKey: .items)
         let shippingLines = try container.decodeIfPresent([ShippingLine].self, forKey: .shippingLines)
 

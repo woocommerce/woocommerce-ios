@@ -1,6 +1,6 @@
 import Networking
 
-public extension WCPayReaderLocation {
+public extension RemoteReaderLocation {
     /// Maps a WCPayReaderLocation into the ReaderLocation struct
     ///
     func toReaderLocation(siteID: Int64) -> ReaderLocation {

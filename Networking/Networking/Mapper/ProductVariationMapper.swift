@@ -24,10 +24,14 @@ struct ProductVariationMapper: Mapper {
             .siteID: siteID,
             .productID: productID
         ]
-        return try decoder.decode(ProductVariationEnvelope.self, from: response).productVariation
+
+        do {
+            return try decoder.decode(ProductVariationEnvelope.self, from: response).productVariation
+        } catch {
+            return try decoder.decode(ProductVariation.self, from: response)
+        }
     }
 }
-
 
 /// ProductVariationEnvelope Disposable Entity
 ///

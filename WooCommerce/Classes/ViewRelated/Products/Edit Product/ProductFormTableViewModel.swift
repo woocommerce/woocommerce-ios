@@ -4,6 +4,7 @@ import Yosemite
 enum ProductFormSection: Equatable {
     case primaryFields(rows: [PrimaryFieldRow])
     case settings(rows: [SettingsRow])
+    case optionsCTA(rows: [OptionsCTARow])
 
     var isNotEmpty: Bool {
         switch self {
@@ -11,11 +12,14 @@ enum ProductFormSection: Equatable {
             return rows.isNotEmpty
         case .settings(let rows):
             return rows.isNotEmpty
+        case .optionsCTA(let rows):
+            return rows.isNotEmpty
         }
     }
 
     enum PrimaryFieldRow: Equatable {
-        case images(isEditable: Bool, allowsMultiple: Bool)
+        case images(isEditable: Bool, allowsMultiple: Bool, isVariation: Bool)
+        case linkedProductsPromo(viewModel: FeatureAnnouncementCardViewModel)
         case name(name: String?, isEditable: Bool, productStatus: ProductStatus)
         case variationName(name: String)
         case description(description: String?, isEditable: Bool)
@@ -40,6 +44,7 @@ enum ProductFormSection: Equatable {
         case status(viewModel: SwitchableViewModel, isEditable: Bool)
         case linkedProducts(viewModel: ViewModel, isEditable: Bool)
         case attributes(viewModel: ViewModel, isEditable: Bool)
+        case bundledProducts(viewModel: ViewModel)
 
         struct ViewModel {
             let icon: UIImage
@@ -89,6 +94,10 @@ enum ProductFormSection: Equatable {
             let title: String?
             let isActionable: Bool
         }
+    }
+
+    enum OptionsCTARow: Equatable {
+        case addOptions
     }
 }
 

@@ -3,7 +3,6 @@
 ///
 
 import Foundation
-import StripeTerminal
 
 extension DeclineReason {
     init(with stripeDeclineCode: String) {

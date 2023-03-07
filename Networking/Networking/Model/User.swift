@@ -3,7 +3,7 @@ import Codegen
 
 /// Site-specific User representation
 ///
-public struct User: Decodable, GeneratedFakeable {
+public struct User: Decodable, GeneratedFakeable, GeneratedCopiable {
     /// Local ID of the account on the user's site
     ///
     public let localID: Int64
@@ -11,10 +11,6 @@ public struct User: Decodable, GeneratedFakeable {
     /// Linked dotcom site ID
     ///
     public let siteID: Int64
-
-    /// Linked dotcom account ID
-    ///
-    public let wpcomID: Int64
 
     /// User's email
     ///
@@ -44,7 +40,6 @@ public struct User: Decodable, GeneratedFakeable {
     ///
     public init(localID: Int64,
                 siteID: Int64,
-                wpcomID: Int64,
                 email: String,
                 username: String,
                 firstName: String,
@@ -53,7 +48,6 @@ public struct User: Decodable, GeneratedFakeable {
                 roles: [String]) {
         self.localID = localID
         self.siteID = siteID
-        self.wpcomID = wpcomID
         self.email = email
         self.username = username
         self.firstName = firstName
@@ -71,7 +65,6 @@ public struct User: Decodable, GeneratedFakeable {
 
         self.init(localID: try container.decode(Int64.self, forKey: .localID),
                   siteID: siteID,
-                  wpcomID: try container.decode(Int64.self, forKey: .wpcomID),
                   email: try container.decode(String.self, forKey: .email),
                   username: try container.decode(String.self, forKey: .username),
                   firstName: try container.decode(String.self, forKey: .firstName),
@@ -86,7 +79,6 @@ private extension User {
     enum CodingKeys: String, CodingKey {
         case localID    = "id"
         case siteID
-        case wpcomID    = "id_wpcom"
         case email
         case username
         case firstName  = "first_name"
@@ -102,7 +94,6 @@ extension User: Comparable {
     public static func == (lhs: User, rhs: User) -> Bool {
         return lhs.localID == rhs.localID &&
             lhs.siteID == rhs.siteID &&
-            lhs.wpcomID == rhs.wpcomID &&
             lhs.email == rhs.email &&
             lhs.username == rhs.username &&
             lhs.firstName == rhs.firstName &&
@@ -112,9 +103,9 @@ extension User: Comparable {
     }
 
     public static func < (lhs: User, rhs: User) -> Bool {
-        return lhs.wpcomID < rhs.wpcomID ||
-            (lhs.wpcomID == rhs.wpcomID && lhs.username < rhs.username) ||
-            (lhs.wpcomID == rhs.wpcomID && lhs.username == rhs.username && lhs.nickname < rhs.nickname)
+        return lhs.localID < rhs.localID ||
+            (lhs.localID == rhs.localID && lhs.username < rhs.username) ||
+            (lhs.localID == rhs.localID && lhs.username == rhs.username && lhs.nickname < rhs.nickname)
     }
 }
 

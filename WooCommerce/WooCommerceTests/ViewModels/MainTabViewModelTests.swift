@@ -7,6 +7,7 @@ import Yosemite
 
 /// Test cases for `MainTabViewModel`.
 final class MainTabViewModelTests: XCTestCase {
+    private let sampleStoreID: Int64 = 35
 
     func test_onViewDidAppear_will_save_the_installation_date() throws {
         // Given
@@ -47,5 +48,72 @@ final class MainTabViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(storesManager.receivedActions.count, 0)
+    }
+
+    func test_loadHubMenuTabBadge_when_should_show_reviews_badge_only_calls_onMenuBadgeShouldBeDisplayed_with_type_secondary() {
+        // Given
+        let sessionManager = SessionManager.makeForTesting()
+        sessionManager.setStoreId(sampleStoreID)
+        let storesManager = MockStoresManager(sessionManager: sessionManager)
+
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .load(_, type, onCompletion):
+                if case .kind(.comment) = type {
+                    let pendingNotifications = 23
+                    onCompletion(pendingNotifications)
+                }
+            default:
+                break
+            }
+        }
+
+        let viewModel = MainTabViewModel(storesManager: storesManager)
+        var returnedType: NotificationBadgeType?
+        viewModel.onMenuBadgeShouldBeDisplayed = { type in
+            returnedType = type
+
+        }
+
+        // When
+        viewModel.loadHubMenuTabBadge()
+
+        // Then
+        waitUntil {
+            returnedType == .secondary
+        }
+    }
+
+    func test_loadHubMenuTabBadge_when_reviews_badge_should_be_hidden_calls_onMenuBadgeShouldBeHidden() {
+        // Given
+        let sessionManager = SessionManager.makeForTesting()
+        sessionManager.setStoreId(sampleStoreID)
+        let storesManager = MockStoresManager(sessionManager: sessionManager)
+
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .load(_, type, onCompletion):
+                if case .kind(.comment) = type {
+                    onCompletion(0)
+                }
+            default:
+                break
+            }
+        }
+
+        let viewModel = MainTabViewModel(storesManager: storesManager)
+        var onMenuBadgeShouldBeHiddenWasCalled = false
+        viewModel.onMenuBadgeShouldBeHidden = {
+            onMenuBadgeShouldBeHiddenWasCalled = true
+
+        }
+
+        // When
+        viewModel.loadHubMenuTabBadge()
+
+        // Then
+        waitUntil {
+            onMenuBadgeShouldBeHiddenWasCalled
+        }
     }
 }

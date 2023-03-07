@@ -5,7 +5,7 @@ import Fakes
 @testable import Networking
 @testable import Storage
 
-class SystemStatusStoreTests: XCTestCase {
+final class SystemStatusStoreTests: XCTestCase {
     /// Mock Dispatcher
     ///
     private var dispatcher: Dispatcher!
@@ -101,5 +101,23 @@ class SystemStatusStoreTests: XCTestCase {
 
         // Then
         XCTAssertEqual(systemPluginResult?.name, "Plugin 3") // number of systemPlugins in storage
+    }
+
+    func test_fetchSystemStatusReport_returns_systemStatus_correctly() {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")
+        let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<SystemStatus, Error> = waitFor { promise in
+            let action = SystemStatusAction.fetchSystemStatusReport(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual((try? result.get())?.environment?.siteURL, "https://additional-beetle.jurassic.ninja") // site URL of the site in the json file
     }
 }

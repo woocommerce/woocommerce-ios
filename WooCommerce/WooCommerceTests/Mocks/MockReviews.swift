@@ -56,11 +56,11 @@ extension MockReviews {
                        name: productName,
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
-                       date: date(with: "2019-02-19T17:33:31"),
-                       dateCreated: date(with: "2019-02-19T17:33:31"),
-                       dateModified: date(with: "2019-02-19T17:48:01"),
-                       dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
-                       dateOnSaleEnd: date(with: "2019-10-27T21:29:59"),
+                       date: DateFormatter.dateFromString(with: "2019-02-19T17:33:31"),
+                       dateCreated: DateFormatter.dateFromString(with: "2019-02-19T17:33:31"),
+                       dateModified: DateFormatter.dateFromString(with: "2019-02-19T17:48:01"),
+                       dateOnSaleStart: DateFormatter.dateFromString(with: "2019-10-15T21:30:00"),
+                       dateOnSaleEnd: DateFormatter.dateFromString(with: "2019-10-27T21:29:59"),
                        productTypeKey: "booking",
                        statusKey: "publish",
                        featured: false,
@@ -118,7 +118,17 @@ extension MockReviews {
                        variations: [192, 194, 193],
                        groupedProducts: [],
                        menuOrder: 0,
-                       addOns: [])
+                       addOns: [],
+                       bundleLayout: nil,
+                       bundleFormLocation: nil,
+                       bundleItemGrouping: nil,
+                       bundleMinSize: nil,
+                       bundleMaxSize: nil,
+                       bundleEditableInCart: nil,
+                       bundleSoldIndividuallyContext: nil,
+                       bundleStockStatus: nil,
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {
@@ -146,8 +156,8 @@ extension MockReviews {
 
     func sampleImages() -> [Networking.ProductImage] {
         let image1 = ProductImage(imageID: 19,
-                                  dateCreated: date(with: "2018-01-26T21:49:45"),
-                                  dateModified: date(with: "2018-01-26T21:50:11"),
+                                  dateCreated: DateFormatter.dateFromString(with: "2018-01-26T21:49:45"),
+                                  dateModified: DateFormatter.dateFromString(with: "2018-01-26T21:50:11"),
                                   src: "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png",
                                   name: "Vneck Tshirt",
                                   alt: "")
@@ -202,11 +212,11 @@ extension MockReviews {
                        name: productName,
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
-                       date: date(with: "2019-02-19T17:33:31"),
-                       dateCreated: date(with: "2019-02-19T17:33:31"),
-                       dateModified: date(with: "2019-02-19T17:48:01"),
-                       dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
-                       dateOnSaleEnd: date(with: "2019-10-27T21:29:59"),
+                       date: DateFormatter.dateFromString(with: "2019-02-19T17:33:31"),
+                       dateCreated: DateFormatter.dateFromString(with: "2019-02-19T17:33:31"),
+                       dateModified: DateFormatter.dateFromString(with: "2019-02-19T17:48:01"),
+                       dateOnSaleStart: DateFormatter.dateFromString(with: "2019-10-15T21:30:00"),
+                       dateOnSaleEnd: DateFormatter.dateFromString(with: "2019-10-27T21:29:59"),
                        productTypeKey: "booking",
                        statusKey: "publish",
                        featured: false,
@@ -264,7 +274,17 @@ extension MockReviews {
                        variations: [],
                        groupedProducts: [111, 222, 333],
                        menuOrder: 0,
-                       addOns: [])
+                       addOns: [],
+                       bundleLayout: nil,
+                       bundleFormLocation: nil,
+                       bundleItemGrouping: nil,
+                       bundleMinSize: nil,
+                       bundleMaxSize: nil,
+                       bundleEditableInCart: nil,
+                       bundleSoldIndividuallyContext: nil,
+                       bundleStockStatus: nil,
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
@@ -289,14 +309,14 @@ extension MockReviews {
 
     func sampleImagesMutated() -> [Networking.ProductImage] {
         let image1 = ProductImage(imageID: 19,
-                                  dateCreated: date(with: "2018-01-26T21:49:45"),
-                                  dateModified: date(with: "2018-01-26T21:50:11"),
+                                  dateCreated: DateFormatter.dateFromString(with: "2018-01-26T21:49:45"),
+                                  dateModified: DateFormatter.dateFromString(with: "2018-01-26T21:50:11"),
                                   src: "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png",
                                   name: "Vneck Tshirt",
                                   alt: "")
         let image2 = ProductImage(imageID: 999,
-                                  dateCreated: date(with: "2019-01-26T21:44:45"),
-                                  dateModified: date(with: "2019-01-26T21:54:11"),
+                                  dateCreated: DateFormatter.dateFromString(with: "2019-01-26T21:44:45"),
+                                  dateModified: DateFormatter.dateFromString(with: "2019-01-26T21:54:11"),
                                   src: "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/test.png",
                                   name: "ZZZTest Image",
                                   alt: "")
@@ -328,11 +348,11 @@ extension MockReviews {
                        name: "Paper Airplane - Black, Long",
                        slug: "paper-airplane-3",
                        permalink: "https://paperairplane.store/product/paper-airplane/?attribute_color=Black&attribute_length=Long",
-                       date: date(with: "2019-04-04T22:06:45"),
-                       dateCreated: date(with: "2019-04-04T22:06:45"),
-                       dateModified: date(with: "2019-04-09T20:24:03"),
-                       dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
-                       dateOnSaleEnd: date(with: "2019-10-27T21:29:59"),
+                       date: DateFormatter.dateFromString(with: "2019-04-04T22:06:45"),
+                       dateCreated: DateFormatter.dateFromString(with: "2019-04-04T22:06:45"),
+                       dateModified: DateFormatter.dateFromString(with: "2019-04-09T20:24:03"),
+                       dateOnSaleStart: DateFormatter.dateFromString(with: "2019-10-15T21:30:00"),
+                       dateOnSaleEnd: DateFormatter.dateFromString(with: "2019-10-27T21:29:59"),
                        productTypeKey: "variation",
                        statusKey: "publish",
                        featured: false,
@@ -385,7 +405,17 @@ extension MockReviews {
                        variations: [],
                        groupedProducts: [],
                        menuOrder: 2,
-                       addOns: [])
+                       addOns: [],
+                       bundleLayout: nil,
+                       bundleFormLocation: nil,
+                       bundleItemGrouping: nil,
+                       bundleMinSize: nil,
+                       bundleMaxSize: nil,
+                       bundleEditableInCart: nil,
+                       bundleSoldIndividuallyContext: nil,
+                       bundleStockStatus: nil,
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 
     func sampleVariationTypeDimensions() -> Networking.ProductDimensions {
@@ -394,8 +424,8 @@ extension MockReviews {
 
     func sampleVariationTypeImages() -> [Networking.ProductImage] {
         let image1 = ProductImage(imageID: 301,
-                                  dateCreated: date(with: "2019-04-09T20:23:58"),
-                                  dateModified: date(with: "2019-04-09T20:23:58"),
+                                  dateCreated: DateFormatter.dateFromString(with: "2019-04-09T20:23:58"),
+                                  dateModified: DateFormatter.dateFromString(with: "2019-04-09T20:23:58"),
                                   src: "https://i0.wp.com/paperairplane.store/wp-content/uploads/2019/04/paper_plane_black.png?fit=600%2C473&ssl=1",
                                   name: "paper_plane_black",
                                   alt: "")
@@ -421,14 +451,6 @@ extension MockReviews {
 
         return [attribute1, attribute2]
     }
-
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
-    }
-
 }
 
 

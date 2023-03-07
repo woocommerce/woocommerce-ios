@@ -38,8 +38,8 @@ final class ProductImagesHeaderViewModel {
             }
 
             items.append(.addImage)
-        case .extendedAddImages:
-            items.append(.extendedAddImage)
+        case .extendedAddImages(let isVariation):
+            items.append(.extendedAddImage(isVariation: isVariation))
         }
     }
 }

@@ -21,7 +21,7 @@ final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
 
     func testTwoActiveFilters() {
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
-                                                         productStatus: .publish,
+                                                         productStatus: .published,
                                                          productType: nil,
                                                          productCategory: nil,
                                                          numberOfActiveFilters: 0)
@@ -31,7 +31,7 @@ final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
 
     func testThreeActiveFilters() {
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
-                                                         productStatus: .publish,
+                                                         productStatus: .published,
                                                          productType: .variable,
                                                          productCategory: nil,
                                                          numberOfActiveFilters: 0)
@@ -42,7 +42,7 @@ final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
     func testFourActiveFilters() {
         let filterProductCategory = ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "", slug: "")
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
-                                                         productStatus: .publish,
+                                                         productStatus: .published,
                                                          productType: .variable,
                                                          productCategory: filterProductCategory,
                                                          numberOfActiveFilters: 0)

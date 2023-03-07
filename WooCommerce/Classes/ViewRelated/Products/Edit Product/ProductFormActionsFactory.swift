@@ -3,6 +3,7 @@ import Yosemite
 /// Edit actions in the product form. Each action allows the user to edit a subset of product properties.
 enum ProductFormEditAction: Equatable {
     case images(editable: Bool)
+    case linkedProductsPromo(viewModel: FeatureAnnouncementCardViewModel)
     case name(editable: Bool)
     case description(editable: Bool)
     case priceSettings(editable: Bool, hideSeparator: Bool)
@@ -15,6 +16,9 @@ enum ProductFormEditAction: Equatable {
     case tags(editable: Bool)
     case shortDescription(editable: Bool)
     case linkedProducts(editable: Bool)
+    case convertToVariable
+    // Simple products only
+    case addOptions
     // Affiliate products only
     case sku(editable: Bool)
     case externalURL(editable: Bool)
@@ -29,6 +33,8 @@ enum ProductFormEditAction: Equatable {
     case attributes(editable: Bool)
     // Downloadable products only
     case downloadableFiles(editable: Bool)
+    // Bundle products only
+    case bundledProducts
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -48,21 +54,62 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let addOnsFeatureEnabled: Bool
     private let variationsPrice: VariationsPrice
 
+    private let isLinkedProductsPromoEnabled: Bool
+    private let linkedProductsPromoCampaign = LinkedProductsPromoCampaign()
+    private var linkedProductsPromoViewModel: FeatureAnnouncementCardViewModel {
+        .init(analytics: ServiceLocator.analytics,
+              configuration: linkedProductsPromoCampaign.configuration)
+    }
+    private let isAddOptionsButtonEnabled: Bool
+    private let isConvertToVariableOptionEnabled: Bool
+    private let isEmptyReviewsOptionHidden: Bool
+    private let isProductTypeActionEnabled: Bool
+    private let isCategoriesActionAlwaysEnabled: Bool
+    private let isDownloadableFilesSettingBased: Bool
+    private let isBundledProductsEnabled: Bool
+
     // TODO: Remove default parameter
-    init(product: EditableProductModel, formType: ProductFormType, addOnsFeatureEnabled: Bool = true, variationsPrice: VariationsPrice = .unknown) {
+    init(product: EditableProductModel,
+         formType: ProductFormType,
+         addOnsFeatureEnabled: Bool = true,
+         isLinkedProductsPromoEnabled: Bool = false,
+         isAddOptionsButtonEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isConvertToVariableOptionEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isEmptyReviewsOptionHidden: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isProductTypeActionEnabled: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isCategoriesActionAlwaysEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isDownloadableFilesSettingBased: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
+         isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
+         variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
         self.editable = formType != .readonly
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
+        self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
+        self.isAddOptionsButtonEnabled = isAddOptionsButtonEnabled
+        self.isConvertToVariableOptionEnabled = isConvertToVariableOptionEnabled
+        self.isEmptyReviewsOptionHidden = isEmptyReviewsOptionHidden
+        self.isProductTypeActionEnabled = isProductTypeActionEnabled
+        self.isCategoriesActionAlwaysEnabled = isCategoriesActionAlwaysEnabled
+        self.isDownloadableFilesSettingBased = isDownloadableFilesSettingBased
+        self.isBundledProductsEnabled = isBundledProductsEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
     func primarySectionActions() -> [ProductFormEditAction] {
         let shouldShowImagesRow = editable || product.images.isNotEmpty
         let shouldShowDescriptionRow = editable || product.description?.isNotEmpty == true
+
+        let newLinkedProductsPromoViewModel = linkedProductsPromoViewModel
+        let shouldShowLinkedProductsPromo = isLinkedProductsPromoEnabled
+        && newLinkedProductsPromoViewModel.shouldBeVisible
+        && product.upsellIDs.isEmpty
+        && product.crossSellIDs.isEmpty
+
         let actions: [ProductFormEditAction?] = [
             shouldShowImagesRow ? .images(editable: editable): nil,
+            shouldShowLinkedProductsPromo ? .linkedProductsPromo(viewModel: newLinkedProductsPromoViewModel) : nil,
             .name(editable: editable),
             shouldShowDescriptionRow ? .description(editable: editable): nil
         ]
@@ -72,6 +119,14 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     /// Returns an array of actions that are visible in the product form settings section.
     func settingsSectionActions() -> [ProductFormEditAction] {
         return visibleSettingsSectionActions()
+    }
+
+    /// Returns an array of actions that are visible in the product form options CTA section.
+    func optionsCTASectionActions() -> [ProductFormEditAction] {
+        guard isAddOptionsButtonEnabled, product.product.productType == .simple, editable else {
+            return []
+        }
+        return [.addOptions]
     }
 
     /// Returns an array of actions that are visible in the product form bottom sheet.
@@ -96,6 +151,8 @@ private extension ProductFormActionsFactory {
             return allSettingsSectionActionsForGroupedProduct()
         case .variable:
             return allSettingsSectionActionsForVariableProduct()
+        case .bundle:
+            return allSettingsSectionActionsForBundleProduct()
         default:
             return allSettingsSectionActionsForNonCoreProduct()
         }
@@ -105,7 +162,7 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let canEditProductType = formType != .add && editable
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
-        let shouldShowDownloadableProduct = product.downloadable
+        let shouldShowDownloadableProduct = isDownloadableFilesSettingBased ? product.downloadable : true
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
 
         let actions: [ProductFormEditAction?] = [
@@ -119,7 +176,8 @@ private extension ProductFormActionsFactory {
             shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            isConvertToVariableOptionEnabled ? .convertToVariable : nil
         ]
         return actions.compactMap { $0 }
     }
@@ -192,6 +250,26 @@ private extension ProductFormActionsFactory {
         return actions.compactMap { $0 }
     }
 
+    func allSettingsSectionActionsForBundleProduct() -> [ProductFormEditAction] {
+        let shouldShowBundledProductsRow = isBundledProductsEnabled
+        let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
+        let shouldShowReviewsRow = product.reviewsAllowed
+
+        let actions: [ProductFormEditAction?] = [
+            shouldShowBundledProductsRow ? .bundledProducts : nil,
+            shouldShowPriceSettingsRow ? .priceSettings(editable: false, hideSeparator: false): nil,
+            shouldShowReviewsRow ? .reviews: nil,
+            .inventorySettings(editable: false),
+            .categories(editable: editable),
+            .addOns(editable: editable),
+            .tags(editable: editable),
+            .shortDescription(editable: editable),
+            .linkedProducts(editable: editable),
+            .productType(editable: false)
+        ]
+        return actions.compactMap { $0 }
+    }
+
     func allSettingsSectionActionsForNonCoreProduct() -> [ProductFormEditAction] {
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
@@ -222,11 +300,13 @@ private extension ProductFormActionsFactory {
             // The price settings action is always visible in the settings section.
             return true
         case .reviews:
-            // The reviews action is always visible in the settings section.
-            return true
+            if isEmptyReviewsOptionHidden {
+                return product.ratingCount > 0
+            } else {
+                return true
+            }
         case .productType:
-            // The product type action is always visible in the settings section.
-            return true
+            return isProductTypeActionEnabled
         case .inventorySettings(let editable):
             guard editable else {
                 // The inventory row is always visible when readonly.
@@ -240,14 +320,18 @@ private extension ProductFormActionsFactory {
         case .addOns:
             return addOnsFeatureEnabled && product.hasAddOns
         case .categories:
-            return product.product.categories.isNotEmpty
+            return isCategoriesActionAlwaysEnabled || product.product.categories.isNotEmpty
         case .tags:
             return product.product.tags.isNotEmpty
         case .linkedProducts:
             return (product.upsellIDs.count > 0 || product.crossSellIDs.count > 0)
         // Downloadable files. Only core product types for downloadable files are able to handle downloadable files.
         case .downloadableFiles:
-            return product.downloadable
+            if isDownloadableFilesSettingBased {
+                return product.downloadable
+            } else {
+                return product.downloadableFiles.isNotEmpty
+            }
         case .shortDescription:
             return product.shortDescription.isNilOrEmpty == false
         // Affiliate products only.
@@ -269,6 +353,9 @@ private extension ProductFormActionsFactory {
             return true
         case .attributes:
             // Always visible when available
+            return true
+        case .bundledProducts:
+            // The bundled products row is always visible in the settings section for a bundle product.
             return true
         default:
             return false

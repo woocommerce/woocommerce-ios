@@ -27,20 +27,30 @@ final class PaymentGatewayStoreTests: XCTestCase {
         return storageManager.viewStorage
     }
 
+    /// Convenience: returns the number of stored payment gateways
+    ///
+    private var storedPaymentGatewaysCount: Int {
+        return viewStorage.countObjects(ofType: StoragePaymentGateway.self)
+    }
+
     /// Dummy Site ID
     ///
     private let sampleSiteID: Int64 = 123
+
+    /// Store
+    ///
+    private var store: PaymentGatewayStore!
 
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork(useResponseQueue: true)
+        store = PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
     func test_synchronize_gateways_correctly_persists_payment_gateways() throws {
         // Given
-        let store = PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list")
 
         // When
@@ -48,7 +58,7 @@ final class PaymentGatewayStoreTests: XCTestCase {
             let action = PaymentGatewayAction.synchronizePaymentGateways(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
-            store.onAction(action)
+            self.store.onAction(action)
         }
 
         // Then
@@ -61,7 +71,6 @@ final class PaymentGatewayStoreTests: XCTestCase {
 
     func test_synchronize_gateways_correctly_deletes_stale_payment_gateways() throws {
         // Given
-        let store = PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list")
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list-half")
 
@@ -73,7 +82,7 @@ final class PaymentGatewayStoreTests: XCTestCase {
             let secondSync = PaymentGatewayAction.synchronizePaymentGateways(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
-            store.onAction(secondSync)
+            self.store.onAction(secondSync)
         }
 
         // Then
@@ -82,5 +91,74 @@ final class PaymentGatewayStoreTests: XCTestCase {
         XCTAssertNotNil(viewStorage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: "cheque"))
         XCTAssertNil(viewStorage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: "paypal"))
         XCTAssertNil(viewStorage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: "cod"))
+    }
+
+    func test_updatePaymentGateway_returns_network_error_on_failure() {
+        // Given
+        let samplePaymentGatewayID = "cod"
+        let samplePaymentGateway = PaymentGateway.fake().copy(siteID: sampleSiteID,
+                                                              gatewayID: samplePaymentGatewayID,
+                                                              title: "Failing gateway",
+                                                              enabled: false)
+        storePaymentGateway(samplePaymentGateway, for: sampleSiteID)
+        assertEqual(1, storedPaymentGatewaysCount)
+
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "payment_gateways/\(samplePaymentGatewayID)", error: expectedError)
+
+        // When
+        let updatedPaymentGateway = samplePaymentGateway.copy(title: "Cash on delivery")
+        let result: Result<Networking.PaymentGateway, Error> = waitFor { promise in
+            let action = PaymentGatewayAction.updatePaymentGateway(updatedPaymentGateway) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+        assertEqual(1, storedPaymentGatewaysCount)
+        assertEqual("Failing gateway", viewStorage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: samplePaymentGatewayID)?.title)
+    }
+
+    func test_updatePaymentGateway_updates_stored_paymentGateway_upon_success() throws {
+        // Given
+        let samplePaymentGatewayID = "cod"
+        let samplePaymentGateway = PaymentGateway.fake().copy(siteID: sampleSiteID,
+                                                              gatewayID: samplePaymentGatewayID,
+                                                              title: "Old title",
+                                                              enabled: false)
+
+        storePaymentGateway(samplePaymentGateway, for: sampleSiteID)
+        assertEqual(1, storedPaymentGatewaysCount)
+
+        network.simulateResponse(requestUrlSuffix: "payment_gateways/\(samplePaymentGatewayID)", filename: "payment-gateway-cod")
+
+        // When
+        let updatedPaymentGateway = samplePaymentGateway.copy(enabled: true)
+        let result: Result<Networking.PaymentGateway, Error> = waitFor { promise in
+            let action: PaymentGatewayAction
+            action = .updatePaymentGateway(updatedPaymentGateway) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        let storedPaymentGateway = try XCTUnwrap(viewStorage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: samplePaymentGatewayID))
+        assertEqual("Cash on delivery", storedPaymentGateway.title)
+        XCTAssertTrue(storedPaymentGateway.enabled)
+    }
+}
+
+private extension PaymentGatewayStoreTests {
+    @discardableResult
+    func storePaymentGateway(_ paymentGateway: Networking.PaymentGateway, for siteID: Int64) -> Storage.PaymentGateway {
+        let storedPaymentGateway = viewStorage.insertNewObject(ofType: PaymentGateway.self)
+        storedPaymentGateway.update(with: paymentGateway)
+        storedPaymentGateway.siteID = siteID
+        return storedPaymentGateway
     }
 }

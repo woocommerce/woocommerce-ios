@@ -1,5 +1,6 @@
 import Photos
 import Yosemite
+import Combine
 
 /// Provides an image for UI display based on the product image status.
 ///

@@ -1,2 +1,2 @@
-Ver productos y
-consultar el inventario
+Añade y edita productos
+con un solo toque

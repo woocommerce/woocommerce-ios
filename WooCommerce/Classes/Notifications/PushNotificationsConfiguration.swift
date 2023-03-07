@@ -87,7 +87,7 @@ extension PushNotificationsConfiguration {
         return PushNotificationsConfiguration(application: UIApplication.shared,
                                               defaults: .standard,
                                               storesManager: ServiceLocator.stores,
-                                              supportManager: ZendeskManager.shared,
+                                              supportManager: ZendeskProvider.shared,
                                               userNotificationsCenter: UNUserNotificationCenter.current())
     }
 }

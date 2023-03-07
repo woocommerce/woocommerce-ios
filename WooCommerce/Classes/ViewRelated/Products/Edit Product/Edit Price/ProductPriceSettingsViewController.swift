@@ -200,7 +200,7 @@ private extension ProductPriceSettingsViewController {
     /// Displays a Notice onscreen for a given message
     ///
     func displayNotice(for message: String) {
-        UIApplication.shared.currentKeyWindow?.endEditing(true)
+        view.endEditing(true)
         let notice = Notice(title: message, feedbackType: .error)
         noticePresenter.enqueue(notice: notice)
     }

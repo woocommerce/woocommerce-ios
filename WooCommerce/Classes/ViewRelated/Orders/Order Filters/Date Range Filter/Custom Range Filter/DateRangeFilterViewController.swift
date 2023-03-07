@@ -110,15 +110,47 @@ extension DateRangeFilterViewController: UITableViewDelegate {
         switch rows[indexPath.row] {
         case .startDateTitle:
             startDateExpanded.toggle()
+            preselectedStartDateIfNeeded()
             updateRows()
             tableView.reloadData()
         case .endDateTitle:
             endDateExpanded.toggle()
+            preselectedEndDateIfNeeded()
             updateRows()
             tableView.reloadData()
         default:
             return
         }
+    }
+
+    /// If we do not have a startDate then preselect the current (or endDate) day
+    /// to be in synch with the datepicker element that starts with a preselect date
+    ///
+    private func preselectedStartDateIfNeeded() {
+        guard startDateExpanded, startDate == nil else { return }
+
+        let today = Date()
+        if let endDate = endDate {
+            startDate = today <= endDate ? today : endDate
+        } else {
+            startDate = today
+        }
+       onCompletion(self.startDate, self.endDate)
+    }
+
+    /// If we do not have a endDate then preselect the current (or startDate) day
+    /// to be in synch with the datepicker element that starts with a preselect date
+    ///
+    private func preselectedEndDateIfNeeded() {
+        guard endDateExpanded, endDate == nil else { return }
+
+        let today = Date()
+        if let startDate = startDate {
+            endDate = today >= startDate ? today : startDate
+        } else {
+            endDate = today
+        }
+        onCompletion(self.startDate, self.endDate)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

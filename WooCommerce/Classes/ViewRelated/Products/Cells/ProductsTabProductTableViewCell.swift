@@ -66,6 +66,7 @@ extension ProductsTabProductTableViewCell {
     func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
         nameLabel.text = viewModel.createNameLabel()
         detailsLabel.attributedText = viewModel.detailsAttributedString
+        accessibilityIdentifier = viewModel.createNameLabel()
 
         productImageView.contentMode = .center
         if viewModel.isDraggable {
@@ -96,7 +97,7 @@ extension ProductsTabProductTableViewCell {
             selectedProductImageOverlayView?.removeFromSuperview()
             selectedProductImageOverlayView = nil
         }
-        let selectedBackgroundColor = isSelected ? UIColor.primary.withAlphaComponent(0.2): .listForeground
+        let selectedBackgroundColor = isSelected ? UIColor.primary.withAlphaComponent(0.2): .listForeground(modal: false)
         backgroundColor = selectedBackgroundColor
     }
 
@@ -159,16 +160,23 @@ private extension ProductsTabProductTableViewCell {
         bottomBorderView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(stackView)
         contentView.addSubview(bottomBorderView)
-        contentView.pinSubviewToAllEdges(stackView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))
+        contentView.pinSubviewToAllEdges(stackView, insets: UIEdgeInsets(top: Constants.stackViewInset,
+                                                                         left: Constants.stackViewInset,
+                                                                         bottom: Constants.stackViewInset,
+                                                                         right: Constants.stackViewInset))
 
         // Not initially enabled, saved for possible compact icon case
         productImageViewFixedHeightConstraint = productImageView.heightAnchor.constraint(equalTo: stackView.heightAnchor)
+
+        // Assigning a minimum default height to the labels might be helpful (e.g for the ghosting placeholder animation)
+        nameLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.nameLabelDefaultMinimumHeight).isActive = true
+        detailsLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.detailsLabelDefaultMinimumHeight).isActive = true
 
         NSLayoutConstraint.activate([
             bottomBorderView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             bottomBorderView.trailingAnchor.constraint(equalTo: trailingAnchor),
             bottomBorderView.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor),
-            bottomBorderView.heightAnchor.constraint(equalToConstant: 0.5)
+            bottomBorderView.heightAnchor.constraint(equalToConstant: 1.0 / UIScreen.main.scale)
         ])
     }
 
@@ -181,11 +189,14 @@ private extension ProductsTabProductTableViewCell {
     }
 
     func configureBackground() {
-        backgroundColor = .listForeground
+        backgroundColor = .listForeground(modal: false)
 
         //Background when selected
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = .listBackground
+
+        // Prevents overflow of selectedBackgroundView above dividers from adjacent cells
+        clipsToBounds = true
     }
 
     func configureNameLabel() {
@@ -256,12 +267,15 @@ private extension ProductsTabProductTableViewCell {
     enum Constants {
         static let cornerRadius = CGFloat(2.0)
         static let borderWidth = CGFloat(0.5)
+        static let stackViewInset = CGFloat(16)
+        static let nameLabelDefaultMinimumHeight = CGFloat(20)
+        static let detailsLabelDefaultMinimumHeight = CGFloat(16)
     }
 
     enum Colors {
         static let imageBorderColor = UIColor.border
         static let imagePlaceholderTintColor = UIColor.systemColor(.systemGray2)
-        static let imageBackgroundColor = UIColor.listForeground
+        static let imageBackgroundColor = UIColor.listForeground(modal: false)
     }
 }
 
@@ -284,8 +298,8 @@ private struct ProductsTabProductTableViewCellRepresentable: UIViewRepresentable
 }
 
 struct ProductsTabProductTableViewCell_Previews: PreviewProvider {
-    private static var nonSelectedViewModel = ProductsTabProductViewModel(product: Product(), isSelected: false)
-    private static var selectedViewModel = ProductsTabProductViewModel(product: Product().copy(statusKey: ProductStatus.pending.rawValue),
+    private static var nonSelectedViewModel = ProductsTabProductViewModel(product: Product.swiftUIPreviewSample(), isSelected: false)
+    private static var selectedViewModel = ProductsTabProductViewModel(product: Product.swiftUIPreviewSample().copy(statusKey: ProductStatus.pending.rawValue),
                                                                        isSelected: true)
 
     private static func makeStack() -> some View {
@@ -293,7 +307,7 @@ struct ProductsTabProductTableViewCell_Previews: PreviewProvider {
             ProductsTabProductTableViewCellRepresentable(viewModel: nonSelectedViewModel)
             ProductsTabProductTableViewCellRepresentable(viewModel: selectedViewModel)
         }
-        .background(Color(UIColor.listForeground))
+        .background(Color(UIColor.listForeground(modal: false)))
     }
 
     static var previews: some View {

@@ -78,6 +78,25 @@ final class SystemPluginMapperTests: XCTestCase {
         XCTAssertEqual(systemPlugin.networkActivated, expectedNetworkActivated)
         XCTAssertEqual(systemPlugin.active, expectedActive)
     }
+
+    func test_plugins_are_parsed_successfully_when_response_has_no_data_envelope() throws {
+        // When
+        let plugins = try mapLoadSystemStatusResponseWithoutDataEnvelope()
+
+        // Then
+        XCTAssertEqual(plugins.count, 2)
+        let systemPlugin = plugins[0]
+        XCTAssertEqual(systemPlugin.siteID, 999999)
+        XCTAssertEqual(systemPlugin.plugin, "woocommerce/woocommerce.php")
+        XCTAssertEqual(systemPlugin.name, "WooCommerce")
+        XCTAssertEqual(systemPlugin.url, "https://woocommerce.com/")
+        XCTAssertEqual(systemPlugin.version, "5.8.0")
+        XCTAssertEqual(systemPlugin.versionLatest, "5.8.0")
+        XCTAssertEqual(systemPlugin.authorName, "Automattic")
+        XCTAssertEqual(systemPlugin.authorUrl, "https://woocommerce.com")
+        XCTAssertFalse(systemPlugin.networkActivated)
+        XCTAssertTrue(systemPlugin.active)
+    }
 }
 
 /// Private Methods.
@@ -94,9 +113,16 @@ private extension SystemPluginMapperTests {
         return try SystemPluginMapper(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the SystemStatusMapper output upon receiving `systemPlugins`
+    /// Returns the SystemStatusMapper output upon receiving `systemStatusWithPluginsOnly`
     ///
     func mapLoadSystemStatusResponse() throws -> [SystemPlugin] {
         return try mapPlugins(from: "systemStatusWithPluginsOnly")
+    }
+
+    /// Returns the SystemStatusMapper output upon receiving
+    /// `systemStatusWithPluginsOnly-without-data`
+    ///
+    func mapLoadSystemStatusResponseWithoutDataEnvelope() throws -> [SystemPlugin] {
+        return try mapPlugins(from: "systemStatusWithPluginsOnly-without-data")
     }
 }

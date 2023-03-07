@@ -28,7 +28,8 @@ private enum Localization {
     static let message = NSLocalizedString(
         "Please wait",
         comment: "Message when checking if WooCommerce Payments is supported"
-    )}
+    )
+}
 
 struct InPersonPaymentsLoading_Previews: PreviewProvider {
     static var previews: some View {

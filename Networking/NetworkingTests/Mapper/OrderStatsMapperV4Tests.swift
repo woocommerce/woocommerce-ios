@@ -30,6 +30,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(hourlyStats.totals.shipping, 0)
         XCTAssertEqual(hourlyStats.totals.netRevenue, 800)
         XCTAssertEqual(hourlyStats.totals.totalProducts, 2)
+        XCTAssertEqual(hourlyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(hourlyStats.intervals.count, 24)
 
@@ -47,6 +48,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(nonZeroHourTotals.shipping, 0)
         XCTAssertEqual(nonZeroHourTotals.netRevenue, 350)
         XCTAssertNil(nonZeroHourTotals.totalProducts)
+        XCTAssertEqual(nonZeroHourTotals.averageOrderValue, 175)
     }
 
     /// Verifies that all of the daily unit OrderStatsV4 fields are parsed correctly.
@@ -70,6 +72,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(dailyStats.totals.shipping, 0)
         XCTAssertEqual(dailyStats.totals.netRevenue, 800)
         XCTAssertEqual(dailyStats.totals.totalProducts, 2)
+        XCTAssertEqual(dailyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(dailyStats.intervals.count, 1)
 
@@ -87,6 +90,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(nonZeroDayTotals.shipping, 0)
         XCTAssertEqual(nonZeroDayTotals.netRevenue, 800)
         XCTAssertNil(nonZeroDayTotals.totalProducts)
+        XCTAssertEqual(nonZeroDayTotals.averageOrderValue, 266)
     }
 
     /// Verifies that all of the weekly unit OrderStatsV4 fields are parsed correctly.
@@ -110,6 +114,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(weeklyStats.totals.shipping, 0)
         XCTAssertEqual(weeklyStats.totals.netRevenue, 800)
         XCTAssertEqual(weeklyStats.totals.totalProducts, 2)
+        XCTAssertEqual(weeklyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(weeklyStats.intervals.count, 2)
 
@@ -127,6 +132,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(nonZeroWeekTotals.shipping, 0)
         XCTAssertEqual(nonZeroWeekTotals.netRevenue, 800)
         XCTAssertNil(nonZeroWeekTotals.totalProducts)
+        XCTAssertEqual(nonZeroWeekTotals.averageOrderValue, 266)
     }
 
     /// Verifies that all of the monthly unit OrderStatsV4 fields are parsed correctly.
@@ -150,6 +156,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(monthlyStats.totals.shipping, 0)
         XCTAssertEqual(monthlyStats.totals.netRevenue, 800)
         XCTAssertEqual(monthlyStats.totals.totalProducts, 2)
+        XCTAssertEqual(monthlyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(monthlyStats.intervals.count, 1)
 
@@ -167,6 +174,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(nonZeroMonthTotals.shipping, 0)
         XCTAssertEqual(nonZeroMonthTotals.netRevenue, 800)
         XCTAssertNil(nonZeroMonthTotals.totalProducts)
+        XCTAssertEqual(nonZeroMonthTotals.averageOrderValue, 266)
     }
 
     /// Verifies that all of the yearly unit OrderStatsV4 fields are parsed correctly.
@@ -190,6 +198,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(yearlyStats.totals.shipping, 0)
         XCTAssertEqual(yearlyStats.totals.netRevenue, 800)
         XCTAssertEqual(yearlyStats.totals.totalProducts, 2)
+        XCTAssertEqual(yearlyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(yearlyStats.intervals.count, 1)
 
@@ -207,6 +216,50 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(nonZeroYearTotals.shipping, 0)
         XCTAssertEqual(nonZeroYearTotals.netRevenue, 800)
         XCTAssertNil(nonZeroYearTotals.totalProducts)
+        XCTAssertEqual(nonZeroYearTotals.averageOrderValue, 266)
+    }
+
+    /// Verifies that all of the yearly unit OrderStatsV4 fields are parsed correctly
+    /// if the response contains no data envelope.
+    ///
+    func test_yearly_unit_stat_fields_are_properly_parsed_without_data_envelope() {
+        guard let yearlyStats = mapOrderStatsWithYearlyUnitResponseWithoutDataEnvelope() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(yearlyStats.siteID, Constants.siteID)
+        XCTAssertEqual(yearlyStats.granularity, .yearly)
+
+        XCTAssertEqual(yearlyStats.totals.totalOrders, 3)
+        XCTAssertEqual(yearlyStats.totals.totalItemsSold, 5)
+        XCTAssertEqual(yearlyStats.totals.grossRevenue, 800)
+        XCTAssertEqual(yearlyStats.totals.totalCoupons, 0)
+        XCTAssertEqual(yearlyStats.totals.couponDiscount, 0)
+        XCTAssertEqual(yearlyStats.totals.refunds, 0)
+        XCTAssertEqual(yearlyStats.totals.taxes, 0)
+        XCTAssertEqual(yearlyStats.totals.shipping, 0)
+        XCTAssertEqual(yearlyStats.totals.netRevenue, 800)
+        XCTAssertEqual(yearlyStats.totals.totalProducts, 2)
+        XCTAssertEqual(yearlyStats.totals.averageOrderValue, 266)
+
+        XCTAssertEqual(yearlyStats.intervals.count, 1)
+
+        let nonZeroYear = yearlyStats.intervals[0]
+        let nonZeroYearTotals = nonZeroYear.subtotals
+
+        XCTAssertEqual(nonZeroYear.interval, "2019")
+
+        XCTAssertEqual(nonZeroYearTotals.totalOrders, 3)
+        XCTAssertEqual(nonZeroYearTotals.grossRevenue, 800)
+        XCTAssertEqual(nonZeroYearTotals.totalCoupons, 0)
+        XCTAssertEqual(nonZeroYearTotals.couponDiscount, 0)
+        XCTAssertEqual(nonZeroYearTotals.refunds, 0)
+        XCTAssertEqual(nonZeroYearTotals.taxes, 0)
+        XCTAssertEqual(nonZeroYearTotals.shipping, 0)
+        XCTAssertEqual(nonZeroYearTotals.netRevenue, 800)
+        XCTAssertNil(nonZeroYearTotals.totalProducts)
+        XCTAssertEqual(nonZeroYearTotals.averageOrderValue, 266)
     }
 }
 
@@ -239,6 +292,12 @@ private extension OrderStatsV4MapperTests {
     ///
     func mapOrderStatsWithYearlyUnitResponse() -> OrderStatsV4? {
         return mapStatItems(from: "order-stats-v4-year", granularity: .yearly)
+    }
+
+    /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-year-without-data`
+    ///
+    func mapOrderStatsWithYearlyUnitResponseWithoutDataEnvelope() -> OrderStatsV4? {
+        return mapStatItems(from: "order-stats-v4-year-without-data", granularity: .yearly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `filename` (Data Encoded)

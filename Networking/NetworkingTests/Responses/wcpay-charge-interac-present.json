@@ -1,0 +1,134 @@
+{
+    "data": {
+        "id": "ch_3KdC1s2ETjwGHy9P0Cawro7o",
+        "object": "charge",
+        "amount": 200,
+        "amount_captured": 200,
+        "amount_refunded": 0,
+        "application": "ca_Ex84e31yMTLaNU5ozQvi5woLclpIDVpX",
+        "application_fee": null,
+        "application_fee_amount": null,
+        "authorization_code": "123456",
+        "balance_transaction": {
+            "id": "txn_3KdC1s2ETjwGHy9P0zKKeVTf",
+            "object": "balance_transaction",
+            "amount": 200,
+            "available_on": 1647820800,
+            "created": 1647257158,
+            "currency": "cad",
+            "description": "In-Person Payment for Order #86 for My WordPress Site",
+            "exchange_rate": null,
+            "fee": 0,
+            "fee_details": [],
+            "net": 200,
+            "reporting_category": "charge",
+            "source": "ch_3KdC1s2ETjwGHy9P0Cawro7o",
+            "status": "pending",
+            "type": "charge"
+        },
+        "billing_details": {
+            "address": {
+                "city": null,
+                "country": null,
+                "line1": null,
+                "line2": null,
+                "postal_code": null,
+                "state": null
+            },
+            "email": null,
+            "name": null,
+            "phone": null,
+            "formatted_address": ""
+        },
+        "calculated_statement_descriptor": "JHMOOSE.MYSTAGINGWEBSI",
+        "captured": true,
+        "created": 1647257154,
+        "currency": "cad",
+        "customer": "cus_LJph2ywrktFOKY",
+        "description": "In-Person Payment for Order #86 for My WordPress Site",
+        "destination": null,
+        "dispute": null,
+        "disputed": false,
+        "failure_code": null,
+        "failure_message": null,
+        "fraud_details": [],
+        "invoice": null,
+        "livemode": false,
+        "metadata": {
+            "order_id": "86",
+            "payment_type": "single",
+            "paymentintent.storename": "My WordPress Site",
+            "reader_ID": "WPC323026000396",
+            "reader_model": "WISEPAD_3",
+            "site_url": "https://moose.example.com"
+        },
+        "on_behalf_of": null,
+        "order": {
+            "number": "86",
+            "url": "https://moose.example.com/wp-admin/post.php?post=86&action=edit",
+            "customer_url": "admin.php?page=wc-admin&path=/customers&filter=single_customer&customers=27",
+            "subscriptions": []
+        },
+        "outcome": {
+            "network_status": "approved_by_network",
+            "reason": null,
+            "risk_level": "not_assessed",
+            "seller_message": "Payment complete.",
+            "type": "authorized"
+        },
+        "paid": true,
+        "payment_intent": "pi_3KdC1s2ETjwGHy9P0BM3JOST",
+        "payment_method": "pm_1KdC2A2ETjwGHy9PzX5ptD6N",
+        "payment_method_details": {
+            "interac_present": {
+                "brand": "visa",
+                "cardholder_name": "USA INTERAC/Test Card 01",
+                "country": "CA",
+                "emv_auth_data": "8A023030",
+                "exp_month": 12,
+                "exp_year": 2022,
+                "fingerprint": "rRszUUzMmNu5Onxg",
+                "funding": "debit",
+                "generated_card": null,
+                "last4": "1933",
+                "network": "interac",
+                "preferred_locales": [
+                    "en"
+                ],
+                "read_method": "contact_emv",
+                "receipt": {
+                    "account_type": "checking",
+                    "application_cryptogram": "36F7094AF11F1801",
+                    "application_preferred_name": "Interac",
+                    "authorization_code": null,
+                    "authorization_response_code": "3030",
+                    "cardholder_verification_method": "offline_pin",
+                    "dedicated_file_name": "A0000002771010",
+                    "terminal_verification_results": "8000008000",
+                    "transaction_status_information": "6800"
+                }
+            },
+            "type": "interac_present"
+        },
+        "receipt_email": null,
+        "receipt_number": null,
+        "receipt_url": "https://pay.stripe.com/receipts/acct_1KWgPj2ETjwGHy9P/ch_3KdC1s2ETjwGHy9P0Cawro7o/rcpt_LJph4uuWUNwUSmaH7J4cjRCNpP0EyYR",
+        "refunded": false,
+        "refunds": {
+            "object": "list",
+            "data": [],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/charges/ch_3KdC1s2ETjwGHy9P0Cawro7o/refunds"
+        },
+        "review": null,
+        "shipping": null,
+        "source": null,
+        "source_transfer": null,
+        "statement_descriptor": "JHMOOSE.MYSTAGINGWEBSI",
+        "statement_descriptor_suffix": null,
+        "status": "succeeded",
+        "transfer_data": null,
+        "transfer_group": null
+    }
+}

@@ -6,6 +6,7 @@
         "created_via": "checkout",
         "version": "4.6.1",
         "status": "processing",
+        "order_key": "abc123",
         "currency": "GBP",
         "date_created": "2020-10-29T07:38:03",
         "date_created_gmt": "2020-10-29T07:38:03",

@@ -17,7 +17,7 @@ extension Product {
             return nil
         }
 
-        let categoriesNames = categories.map { $0.name }
+        let categoriesNames = categories.map { $0.name.strippedHTML }
         let formatter = ListFormatter()
         formatter.locale = locale
         return formatter.string(from: categoriesNames)

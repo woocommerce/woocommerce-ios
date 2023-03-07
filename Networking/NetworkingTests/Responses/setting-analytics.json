@@ -1,0 +1,23 @@
+{
+    "data": {
+        "id": "woocommerce_analytics_enabled",
+        "label": "Analytics",
+        "description": "Enables WooCommerce Analytics",
+        "type": "checkbox",
+        "default": "yes",
+        "value": "yes",
+        "group_id": "advanced",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v3/settings/advanced/woocommerce_analytics_enabled"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v3/settings/advanced"
+                }
+            ]
+        }
+    }
+}

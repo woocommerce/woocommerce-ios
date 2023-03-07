@@ -9,6 +9,9 @@ extension ProductFormSection {
         case .settings(let rows):
             let row = rows[rowIndex]
             return row.reuseIdentifier
+        case .optionsCTA(let rows):
+            let row = rows[rowIndex]
+            return row.reuseIdentifier
         }
     }
 }
@@ -26,6 +29,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         switch self {
         case .images:
             return [ProductImagesHeaderTableViewCell.self]
+        case .linkedProductsPromo:
+            return [cellType]
         case .name:
             return [LabeledTextViewTableViewCell.self, BasicTableViewCell.self]
         case .variationName:
@@ -43,6 +48,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         switch self {
         case .images:
             return ProductImagesHeaderTableViewCell.self
+        case .linkedProductsPromo:
+            return FeatureAnnouncementCardCell.self
         case .name(_, let editable, _):
             return editable ? LabeledTextViewTableViewCell.self: BasicTableViewCell.self
         case .variationName:
@@ -72,7 +79,8 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
              .linkedProducts,
              .status,
              .noPriceWarning,
-             .attributes:
+             .attributes,
+             .bundledProducts:
             return [ImageAndTitleAndTextTableViewCell.self]
         case .reviews:
             return [ProductReviewsTableViewCell.self]
@@ -101,10 +109,31 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
              .linkedProducts,
              .status,
              .noPriceWarning,
-             .attributes:
+             .attributes,
+             .bundledProducts:
             return ImageAndTitleAndTextTableViewCell.self
         case .reviews:
             return ProductReviewsTableViewCell.self
+        }
+    }
+}
+
+extension ProductFormSection.OptionsCTARow: ReusableTableRow {
+    var cellTypes: [UITableViewCell.Type] {
+        switch self {
+        case .addOptions:
+            return [cellType]
+        }
+    }
+
+    var reuseIdentifier: String {
+        return cellType.reuseIdentifier
+    }
+
+    private var cellType: UITableViewCell.Type {
+        switch self {
+        case .addOptions:
+            return BasicTableViewCell.self
         }
     }
 }

@@ -16,6 +16,11 @@
 		BC10218D75FEA979BDA1E68C /* Pods_Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33CEC0C5283FD4C9EF8C6A3C /* Pods_Experiments.framework */; };
 		C8E16F0EE6954B58A1C402F0 /* Pods_ExperimentsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAC7C082DD376957B4676401 /* Pods_ExperimentsTests.framework */; };
 		CC53FB48275E426900C4CA4F /* ABTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB47275E426900C4CA4F /* ABTest.swift */; };
+		EE2EDFDF29879331004E702B /* ABTestVariationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2EDFDE29879331004E702B /* ABTestVariationProvider.swift */; };
+		EEC8C0ED298A92F10047B4CB /* CachedABTestVariationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC8C0EC298A92F10047B4CB /* CachedABTestVariationProvider.swift */; };
+		EEC8C0EF298A939C0047B4CB /* VariationCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC8C0EE298A939C0047B4CB /* VariationCache.swift */; };
+		EEC8C0F1298B5AFB0047B4CB /* VariationCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC8C0F0298B5AFB0047B4CB /* VariationCacheTests.swift */; };
+		EEC8C0F3298B5F950047B4CB /* CachedABTestVariationProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC8C0F2298B5F950047B4CB /* CachedABTestVariationProviderTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +52,11 @@
 		AAC7C082DD376957B4676401 /* Pods_ExperimentsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ExperimentsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF72D9DB7771E7A5105C88B0 /* Pods-Experiments.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Experiments.release.xcconfig"; path = "Target Support Files/Pods-Experiments/Pods-Experiments.release.xcconfig"; sourceTree = "<group>"; };
 		CC53FB47275E426900C4CA4F /* ABTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABTest.swift; sourceTree = "<group>"; };
+		EE2EDFDE29879331004E702B /* ABTestVariationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABTestVariationProvider.swift; sourceTree = "<group>"; };
+		EEC8C0EC298A92F10047B4CB /* CachedABTestVariationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedABTestVariationProvider.swift; sourceTree = "<group>"; };
+		EEC8C0EE298A939C0047B4CB /* VariationCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariationCache.swift; sourceTree = "<group>"; };
+		EEC8C0F0298B5AFB0047B4CB /* VariationCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariationCacheTests.swift; sourceTree = "<group>"; };
+		EEC8C0F2298B5F950047B4CB /* CachedABTestVariationProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedABTestVariationProviderTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +110,9 @@
 				0270C0A427069B8900FC799F /* DefaultFeatureFlagService.swift */,
 				0270C0A627069BA500FC799F /* BuildConfiguration.swift */,
 				CC53FB47275E426900C4CA4F /* ABTest.swift */,
+				EE2EDFDE29879331004E702B /* ABTestVariationProvider.swift */,
+				EEC8C0EC298A92F10047B4CB /* CachedABTestVariationProvider.swift */,
+				EEC8C0EE298A939C0047B4CB /* VariationCache.swift */,
 			);
 			path = Experiments;
 			sourceTree = "<group>";
@@ -108,6 +121,8 @@
 			isa = PBXGroup;
 			children = (
 				0270C09127069A8900FC799F /* Info.plist */,
+				EEC8C0F0298B5AFB0047B4CB /* VariationCacheTests.swift */,
+				EEC8C0F2298B5F950047B4CB /* CachedABTestVariationProviderTests.swift */,
 			);
 			path = ExperimentsTests;
 			sourceTree = "<group>";
@@ -203,6 +218,7 @@
 					};
 					0270C08927069A8900FC799F = {
 						CreatedOnToolsVersion = 12.5.1;
+						LastSwiftMigration = 1420;
 					};
 				};
 			};
@@ -311,10 +327,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EEC8C0EF298A939C0047B4CB /* VariationCache.swift in Sources */,
 				0270C0A327069B7800FC799F /* FeatureFlagService.swift in Sources */,
 				0270C0A527069B8900FC799F /* DefaultFeatureFlagService.swift in Sources */,
 				0270C09C27069AE700FC799F /* FeatureFlag.swift in Sources */,
+				EE2EDFDF29879331004E702B /* ABTestVariationProvider.swift in Sources */,
 				0270C0A727069BA500FC799F /* BuildConfiguration.swift in Sources */,
+				EEC8C0ED298A92F10047B4CB /* CachedABTestVariationProvider.swift in Sources */,
 				CC53FB48275E426900C4CA4F /* ABTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -323,6 +342,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EEC8C0F1298B5AFB0047B4CB /* VariationCacheTests.swift in Sources */,
+				EEC8C0F3298B5F950047B4CB /* CachedABTestVariationProviderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,7 +410,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -447,7 +468,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -463,6 +484,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2B7FCE683D4058A7A16F7946 /* Pods-Experiments.debug.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -489,6 +511,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AF72D9DB7771E7A5105C88B0 /* Pods-Experiments.release.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -515,6 +538,7 @@
 			baseConfigurationReference = 3022E2766134CE2735C73FC6 /* Pods-ExperimentsTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "${inherited}";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = ExperimentsTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -524,6 +548,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.ExperimentsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -534,6 +559,7 @@
 			baseConfigurationReference = 7C831644164B49828A485590 /* Pods-ExperimentsTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "${inherited}";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = ExperimentsTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -594,7 +620,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -611,6 +637,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8CB554DFAAD3EF41D17099C4 /* Pods-Experiments.release-alpha.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -637,6 +664,7 @@
 			baseConfigurationReference = 3F9DB5FBFF7A42EFBCB746F3 /* Pods-ExperimentsTests.release-alpha.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "${inherited}";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = ExperimentsTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

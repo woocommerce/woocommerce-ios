@@ -155,7 +155,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         viewModel.onLoadTrigger.send()
-        viewModel.updateRemoteAddress { _ in }
+        viewModel.saveAddress { _ in }
 
         // Then
         assertEqual(viewModel.navigationTrailingItem, .loading)
@@ -163,12 +163,25 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
     func test_loading_indicator_gets_disabled_after_the_network_operation_completes() {
         // Given
-        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
+        let viewModel = EditOrderAddressFormViewModel(
+            order: order(withShippingAddress: sampleAddress()),
+            type: .shipping,
+            storageManager: testingStorage,
+            stores: testingStores
+        )
+        testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
 
         // When
         viewModel.onLoadTrigger.send()
         let navigationItem = waitFor { promise in
-            viewModel.updateRemoteAddress { _ in
+            viewModel.saveAddress { _ in
                 promise(viewModel.navigationTrailingItem)
             }
         }
@@ -265,7 +278,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                     XCTFail("Unsupported Action")
                 }
             }
-            viewModel.updateRemoteAddress { _ in }
+            viewModel.saveAddress { _ in }
         }
 
         // Then
@@ -291,7 +304,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                     XCTFail("Unsupported Action")
                 }
             }
-            viewModel.updateRemoteAddress { _ in }
+            viewModel.saveAddress { _ in }
         }
 
         // Then
@@ -316,7 +329,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                     XCTFail("Unsupported Action")
                 }
             }
-            viewModel.updateRemoteAddress { _ in }
+            viewModel.saveAddress { _ in }
         }
 
         // Then
@@ -358,7 +371,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                     XCTFail("Unsupported Action")
                 }
             }
-            viewModel.updateRemoteAddress { _ in }
+            viewModel.saveAddress { _ in }
         }
 
         // Then
@@ -381,13 +394,13 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         let noticeRequest = waitFor { promise in
-            viewModel.updateRemoteAddress { _ in
-                promise(viewModel.presentNotice)
+            viewModel.saveAddress { _ in
+                promise(viewModel.notice)
             }
         }
 
         // Then
-        assertEqual(noticeRequest, .success)
+        assertEqual(noticeRequest, EditOrderAddressFormViewModel.NoticeFactory.createSuccessNotice())
     }
 
     func test_view_model_fires_error_notice_after_failing_to_update_address() {
@@ -404,13 +417,13 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         let noticeRequest = waitFor { promise in
-            viewModel.updateRemoteAddress { _ in
-                promise(viewModel.presentNotice)
+            viewModel.saveAddress { _ in
+                promise(viewModel.notice)
             }
         }
 
         // Then
-        assertEqual(noticeRequest, .error(.unableToUpdateAddress))
+        assertEqual(noticeRequest, AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress))
     }
 
     func test_view_model_fires_error_notice_after_failing_to_fetch_countries() {
@@ -427,7 +440,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         viewModel.onLoadTrigger.send()
 
         // Then
-        assertEqual(viewModel.presentNotice, .error(.unableToLoadCountries))
+        assertEqual(viewModel.notice, AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToLoadCountries))
     }
 
     func test_copying_empty_shipping_address_for_billing_does_not_sends_an_empty_email_field() {
@@ -447,7 +460,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                 }
             }
 
-            viewModel.updateRemoteAddress(onFinish: { _ in })
+            viewModel.saveAddress(onFinish: { _ in })
         }
 
         // Then
@@ -474,7 +487,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                 }
             }
 
-            viewModel.updateRemoteAddress(onFinish: { _ in })
+            viewModel.saveAddress(onFinish: { _ in })
         }
 
         // Then
@@ -501,7 +514,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                 }
             }
 
-            viewModel.updateRemoteAddress(onFinish: { _ in })
+            viewModel.saveAddress(onFinish: { _ in })
         }
 
         // Then
@@ -542,7 +555,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         _ = waitFor { promise in
-            viewModel.updateRemoteAddress(onFinish: { finished in
+            viewModel.saveAddress(onFinish: { finished in
                 promise(finished)
             })
         }
@@ -570,7 +583,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         _ = waitFor { promise in
-            viewModel.updateRemoteAddress(onFinish: { finished in
+            viewModel.saveAddress(onFinish: { finished in
                 promise(finished)
             })
         }
@@ -598,7 +611,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         _ = waitFor { promise in
-            viewModel.updateRemoteAddress(onFinish: { finished in
+            viewModel.saveAddress(onFinish: { finished in
                 promise(finished)
             })
         }
@@ -626,7 +639,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         _ = waitFor { promise in
-            viewModel.updateRemoteAddress(onFinish: { finished in
+            viewModel.saveAddress(onFinish: { finished in
                 promise(finished)
             })
         }
@@ -686,6 +699,111 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         // Then
         assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowStarted.rawValue])
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "billing_address")
+    }
+
+    func test_view_model_when_customerSelectedFromSearch_then_tracks_orderCreationCustomerAdded() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        let customer = Customer.fake().copy(
+            email: "scrambled@scrambled.com",
+            firstName: "Johnny",
+            lastName: "Appleseed",
+            billing: sampleAddressWithEmptyNullableFields(),
+            shipping: sampleAddressWithEmptyNullableFields()
+        )
+
+        // When
+        viewModel.customerSelectedFromSearch(customer: customer)
+
+        // Then
+        XCTAssert(analyticsProvider.receivedEvents.contains("order_creation_customer_added"))
+    }
+
+    func test_view_model_fires_error_notice_when_providing_an_invalid_email() {
+        // Given
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing)
+        viewModel.fields.email = "invalid"
+
+        // When
+        let notice: Notice? = waitFor { promise in
+            viewModel.saveAddress { _ in
+                promise(viewModel.notice)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(notice, AddressFormViewModel.NoticeFactory.createInvalidEmailNotice())
+    }
+
+    func test_OrderAddressForm_billing_fields_are_updated_when_customerSelectedFromSearch() {
+        // Given
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing)
+        let customer = Customer.fake().copy(
+            email: "scrambled@scrambled.com",
+            firstName: "Johnny",
+            lastName: "Appleseed",
+            billing: sampleAddressWithEmptyNullableFields(),
+            shipping: sampleAddressWithEmptyNullableFields()
+        )
+
+        // When
+        viewModel.customerSelectedFromSearch(customer: customer)
+
+        // Then
+        XCTAssertEqual(viewModel.fields.email, customer.billing?.email)
+        XCTAssertEqual(viewModel.fields.firstName, customer.firstName)
+        XCTAssertEqual(viewModel.fields.lastName, customer.lastName)
+        XCTAssertEqual(viewModel.fields.company, customer.billing?.company)
+        XCTAssertEqual(viewModel.fields.address1, customer.billing?.address1)
+        XCTAssertEqual(viewModel.fields.address2, customer.billing?.address2)
+        XCTAssertEqual(viewModel.fields.city, customer.billing?.city)
+        XCTAssertEqual(viewModel.fields.state, customer.billing?.state)
+        XCTAssertEqual(viewModel.fields.postcode, customer.billing?.postcode)
+        XCTAssertEqual(viewModel.fields.country, customer.billing?.country)
+        XCTAssertEqual(viewModel.fields.phone, customer.billing?.phone)
+    }
+
+    func test_OrderAddressForm_shipping_fields_are_updated_when_customerSelectedFromSearch() {
+        // Given
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping)
+        let customer = Customer.fake().copy(
+            email: "scrambled@scrambled.com",
+            firstName: "Johnny",
+            lastName: "Appleseed",
+            billing: sampleAddressWithEmptyNullableFields(),
+            shipping: sampleAddressWithEmptyNullableFields()
+        )
+
+        // When
+        viewModel.customerSelectedFromSearch(customer: customer)
+
+        // Then
+        XCTAssertEqual(viewModel.fields.email, customer.shipping?.email)
+        XCTAssertEqual(viewModel.fields.firstName, customer.firstName)
+        XCTAssertEqual(viewModel.fields.lastName, customer.lastName)
+        XCTAssertEqual(viewModel.fields.company, customer.shipping?.company)
+        XCTAssertEqual(viewModel.fields.address1, customer.shipping?.address1)
+        XCTAssertEqual(viewModel.fields.address2, customer.shipping?.address2)
+        XCTAssertEqual(viewModel.fields.city, customer.shipping?.city)
+        XCTAssertEqual(viewModel.fields.state, customer.shipping?.state)
+        XCTAssertEqual(viewModel.fields.postcode, customer.shipping?.postcode)
+        XCTAssertEqual(viewModel.fields.country, customer.shipping?.country)
+        XCTAssertEqual(viewModel.fields.phone, customer.shipping?.phone)
+    }
+
+    func test_OrderAddressForm_shows_different_address_form_fields_when_addresses_differ_and_customerSelectedFromSearch() {
+        // Given
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing)
+        let billing = sampleAddressWithEmptyNullableFields()
+        let shipping = Address.fake().copy(address1: "123 different fake street")
+        let customer = Customer.fake().copy(billing: billing, shipping: shipping)
+
+        // When
+        viewModel.customerSelectedFromSearch(customer: customer)
+
+        // Then
+        XCTAssertTrue(viewModel.showDifferentAddressForm)
     }
 }
 

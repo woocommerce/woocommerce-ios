@@ -21,7 +21,7 @@ final class FailureDataSource: NSObject, ProductTagsDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: FailureDataSource.cellIdentifier, for: indexPath)
         cell.textLabel?.textColor = .text
-        cell.backgroundColor = .listForeground
+        cell.backgroundColor = .listForeground(modal: false)
         return cell
     }
 }

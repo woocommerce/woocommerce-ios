@@ -15,6 +15,10 @@ struct BindableTextfield: UIViewRepresentable {
     ///
     @Binding var text: String
 
+    /// Binding to focus or unfocus the text field.
+    ///
+    @Binding var focus: Bool
+
     /// Textfield font.
     ///
     var font = UIFont.body
@@ -31,9 +35,10 @@ struct BindableTextfield: UIViewRepresentable {
     ///
     var textAlignment = NSTextAlignment.left
 
-    init(_ placeholder: String?, text: Binding<String>) {
+    init(_ placeholder: String?, text: Binding<String>, focus: Binding<Bool>) {
         self.placeHolder = placeholder
         self._text = text
+        self._focus = focus
     }
 
     /// Creates view with the initial configuration.
@@ -41,13 +46,15 @@ struct BindableTextfield: UIViewRepresentable {
     func makeUIView(context: Context) -> UITextField {
         let textfield = UITextField()
         textfield.delegate = context.coordinator
+        textfield.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        textfield.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         return textfield
     }
 
     /// Creates coordinator.
     ///
     func makeCoordinator() -> Coordinator {
-        Coordinator(_text)
+        Coordinator(_text, focus: _focus)
     }
 
     /// Updates underlying view.
@@ -59,6 +66,15 @@ struct BindableTextfield: UIViewRepresentable {
         uiView.textColor = foregroundColor
         uiView.textAlignment = textAlignment
         uiView.keyboardType = keyboardType
+
+        switch focus {
+        case true:
+            if !uiView.isFirstResponder {
+                uiView.becomeFirstResponder()
+            }
+        case false:
+            uiView.resignFirstResponder()
+        }
     }
 }
 
@@ -73,8 +89,13 @@ extension BindableTextfield {
         ///
         @Binding var text: String
 
-        init(_ text: Binding<String>) {
+        /// Binding to focus or unfocus the text field.
+        ///
+        @Binding var focus: Bool
+
+        init(_ text: Binding<String>, focus: Binding<Bool>) {
             self._text = text
+            self._focus = focus
         }
 
         /// Relays the input value to the binding variable.
@@ -86,6 +107,22 @@ extension BindableTextfield {
                 text = string
             }
             return false
+        }
+
+        /// Binds focus value when text field starts editing.
+        ///
+        func textFieldDidBeginEditing(_ textField: UITextField) {
+            DispatchQueue.main.async {
+                self.focus = true
+            }
+        }
+
+        /// Binds focus value when text field ends editing.
+        ///
+        func textFieldDidEndEditing(_ textField: UITextField) {
+            DispatchQueue.main.async {
+                self.focus = false
+            }
         }
     }
 }

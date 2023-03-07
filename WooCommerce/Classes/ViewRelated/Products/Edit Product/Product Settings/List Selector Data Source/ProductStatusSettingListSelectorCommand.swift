@@ -10,12 +10,12 @@ final class ProductStatusSettingListSelectorCommand: ListSelectorCommand {
     let navigationBarTitle: String? = NSLocalizedString("Status", comment: "Product status setting list selector navigation title")
 
     let data: [ProductStatus] = [
-        .publish,
+        .published,
         .draft,
         .pending
     ]
 
-    private(set) var selected: ProductStatus?
+    @Published private(set) var selected: ProductStatus?
 
     init(selected: ProductStatus?) {
         self.selected = selected

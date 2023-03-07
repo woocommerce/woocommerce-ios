@@ -11,10 +11,10 @@ protocol ProductShippingSettingsViewModelOutput {
     /// The product before any shipping changes.
     var product: ProductFormDataModel { get }
 
-    var weight: String? { get }
-    var length: String? { get }
-    var width: String? { get }
-    var height: String? { get }
+    var localizedWeight: String? { get }
+    var localizedLength: String? { get }
+    var localizedWidth: String? { get }
+    var localizedHeight: String? { get }
 
     /// Only for UI display and list selector
     /// Nil and not editable until the shipping class is synced at a later point.
@@ -45,21 +45,45 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
     let sections: [Section]
     let product: ProductFormDataModel
 
+    // Localizes weight and package dimensions
+    //
+    private let shippingValueLocalizer: ShippingValueLocalizer
+
     // Editable data
     //
-    private(set) var weight: String?
-    private(set) var length: String?
-    private(set) var width: String?
-    private(set) var height: String?
+    private var weight: String?
+    private var length: String?
+    private var width: String?
+    private var height: String?
     private var shippingClassSlug: String?
     private var shippingClassID: Int64
+
+    // Localized values
+    //
+    var localizedWeight: String? {
+        shippingValueLocalizer.localized(shippingValue: weight) ?? weight
+    }
+
+    var localizedLength: String? {
+        shippingValueLocalizer.localized(shippingValue: length) ?? length
+    }
+
+    var localizedWidth: String? {
+        shippingValueLocalizer.localized(shippingValue: width) ?? width
+    }
+
+    var localizedHeight: String? {
+        shippingValueLocalizer.localized(shippingValue: height) ?? height
+    }
 
     /// Nil and not editable until the shipping class is synced at a later point.
     private(set) var shippingClass: ProductShippingClass?
     private var originalShippingClass: ProductShippingClass?
 
-    init(product: ProductFormDataModel) {
+    init(product: ProductFormDataModel,
+         shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer()) {
         self.product = product
+        self.shippingValueLocalizer = shippingValueLocalizer
         weight = product.weight
         length = product.dimensions.length
         width = product.dimensions.width
@@ -86,19 +110,38 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
 
 extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler {
     func handleWeightChange(_ weight: String?) {
-        self.weight = weight
+        guard let weight = weight else {
+            self.weight = nil
+            return
+        }
+
+        self.weight = shippingValueLocalizer.unLocalized(shippingValue: weight) ?? weight
     }
 
     func handleLengthChange(_ length: String?) {
-        self.length = length
+        guard let length = length else {
+            self.length = nil
+            return
+        }
+        self.length = shippingValueLocalizer.unLocalized(shippingValue: length) ?? length
     }
 
     func handleWidthChange(_ width: String?) {
-        self.width = width
+        guard let width = width else {
+            self.width = nil
+            return
+        }
+
+        self.width = shippingValueLocalizer.unLocalized(shippingValue: width) ?? width
     }
 
     func handleHeightChange(_ height: String?) {
-        self.height = height
+        guard let height = height else {
+            self.height = nil
+            return
+        }
+
+        self.height = shippingValueLocalizer.unLocalized(shippingValue: height) ?? height
     }
 
     func handleShippingClassChange(_ shippingClass: ProductShippingClass?) {

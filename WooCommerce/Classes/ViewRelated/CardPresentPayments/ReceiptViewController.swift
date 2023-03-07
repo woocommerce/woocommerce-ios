@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import WebKit
 import Yosemite
@@ -8,6 +9,10 @@ final class ReceiptViewController: UIViewController {
     @IBOutlet private weak var webView: WKWebView!
 
     private let viewModel: ReceiptViewModel
+
+    private var emailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
+    private var receiptContentSubscription: AnyCancellable?
+    private var emailDataSubscription: AnyCancellable?
 
     init(viewModel: ReceiptViewModel) {
         self.viewModel = viewModel
@@ -23,6 +28,7 @@ final class ReceiptViewController: UIViewController {
 
         configureToolbar()
         configureBackground()
+        observeReceiptContent()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -35,10 +41,17 @@ final class ReceiptViewController: UIViewController {
 private extension ReceiptViewController {
     func configureToolbar() {
         title = Localization.title
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .print,
-                                                            style: .plain,
-                                                            target: self,
-                                                            action: #selector(printReceipt))
+        navigationItem.rightBarButtonItems = [
+            viewModel.canSendEmail() ?
+            UIBarButtonItem(image: .mailImage,
+                            style: .plain,
+                            target: self,
+                            action: #selector(emailReceipt)): nil,
+            UIBarButtonItem(image: .print,
+                            style: .plain,
+                            target: self,
+                            action: #selector(printReceipt))
+        ].compactMap { $0 }
     }
 
     func configureBackground() {
@@ -46,13 +59,28 @@ private extension ReceiptViewController {
     }
 
     func syncReceiptContent() {
-        viewModel.generateContent { [weak self] content in
+        viewModel.generateContent()
+    }
+
+    func observeReceiptContent() {
+        receiptContentSubscription = viewModel.content.sink { [weak self] content in
             self?.webView.loadHTMLString(content, baseURL: nil)
         }
     }
 
     @objc func printReceipt() {
         viewModel.printReceipt()
+    }
+
+    @objc func emailReceipt() {
+        emailDataSubscription = viewModel.emailReceiptTapped().sink { [weak self] data, countryCode in
+            guard let self = self else { return }
+            let emailCoordinator = CardPresentPaymentReceiptEmailCoordinator(countryCode: countryCode, cardReaderModel: nil)
+            self.emailCoordinator = emailCoordinator
+            emailCoordinator.presentEmailForm(data: data,
+                                              from: self,
+                                              completion: {})
+        }
     }
 }
 

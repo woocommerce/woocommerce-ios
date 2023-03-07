@@ -13,17 +13,12 @@ protocol EditCustomerNoteViewModelProtocol: ObservableObject {
     ///
     var navigationTrailingItem: EditCustomerNoteNavigationItem { get }
 
-    /// Defines the current notice that should be shown.
+    /// Call it when the user taps on the button Done.
     ///
-    var presentNotice: EditCustomerNoteNotice? { get set }
-
-    /// Emit changes when `presentNotice` changes.
+    /// Use this method when you need to update the note (remotely or locally) and invoke a
+    /// completion block when finished
     ///
-    var presentNoticePublisher: Published<EditCustomerNoteNotice?>.Publisher { get }
-
-    /// Update when you need to update the note (remotely or locally) and invoke a completion block when finished
-    ///
-    func updateNote(onFinish: @escaping (Bool) -> Void)
+    func updateNote(onCompletion: @escaping (Bool) -> Void)
 
     /// Call it when the user cancels the flow.
     ///
@@ -35,11 +30,4 @@ protocol EditCustomerNoteViewModelProtocol: ObservableObject {
 enum EditCustomerNoteNavigationItem: Equatable {
     case done(enabled: Bool)
     case loading
-}
-
-/// Representation of possible notices that can be displayed
-///
-enum EditCustomerNoteNotice: Equatable {
-    case success
-    case error
 }

@@ -20,7 +20,7 @@ struct ShippingLabelCustomPackageForm: View {
                         // Package type
                         TitleAndValueRow(title: Localization.packageTypeLabel,
                                          value: .placeholder(viewModel.packageType.localizedName),
-                                         selectable: true) {
+                                         selectionStyle: .disclosure) {
                             showingPackageTypes.toggle()
                         }
                         .sheet(isPresented: $showingPackageTypes, content: {

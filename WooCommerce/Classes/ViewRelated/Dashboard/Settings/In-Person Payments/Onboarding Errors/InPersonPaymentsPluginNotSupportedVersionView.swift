@@ -1,20 +1,25 @@
 import SwiftUI
+import Yosemite
 
 struct InPersonPaymentsPluginNotSupportedVersion: View {
+    let plugin: CardPresentPaymentsPlugin
+    let analyticReason: String
     let onRefresh: () -> Void
 
     var body: some View {
         InPersonPaymentsOnboardingError(
-            title: Localization.title,
-            message: Localization.message,
-            image: InPersonPaymentsOnboardingError.ImageInfo(
-                image: .paymentsPlugin,
+            title: String(format: Localization.title, plugin.pluginName),
+            message: String(format: Localization.message, plugin.pluginName),
+            image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
+                image: plugin.image,
                 height: 108.0
             ),
             supportLink: false,
             learnMore: true,
-            button: InPersonPaymentsOnboardingError.ButtonInfo(
+            analyticReason: analyticReason,
+            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.primaryButton,
+                analyticReason: analyticReason,
                 action: onRefresh
             )
         )
@@ -23,24 +28,24 @@ struct InPersonPaymentsPluginNotSupportedVersion: View {
 
 private enum Localization {
     static let title = NSLocalizedString(
-        "Unsupported WooCommerce Payments version",
-        comment: "Title for the error screen when the installed version of WooCommerce Payments is unsupported"
+        "Unsupported %1$@ version",
+        comment: "Title for the error screen when the installed version of a Card Present Payments extension is unsupported"
     )
 
     static let message = NSLocalizedString(
-        "The WooCommerce Payments extension is installed on your store, but needs to be updated for In-Person Payments. "
-            + "Please update WooCommerce Payments to the most recent version.",
-        comment: "Error message when WooCommerce Payments is installed but the version is not supported"
+        "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. "
+            + "Please update it to the most recent version.",
+        comment: "Error message when a Card Present Payments extension is installed but the version is not supported"
     )
 
     static let primaryButton = NSLocalizedString(
         "Refresh After Updating",
-        comment: "Button to reload plugin data after updating the WooCommerce Payments plugin"
+        comment: "Button to reload plugin data after updating a Card Present Payments extension plugin"
     )
 }
 
 struct InPersonPaymentsPluginNotSupportedVersion_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotSupportedVersion(onRefresh: {})
+        InPersonPaymentsPluginNotSupportedVersion(plugin: .wcPay, analyticReason: "", onRefresh: {})
     }
 }

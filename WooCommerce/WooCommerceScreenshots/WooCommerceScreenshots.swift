@@ -24,43 +24,53 @@ class WooCommerceScreenshots: XCTestCase {
         let app = XCUIApplication()
         setupSnapshot(app)
         app.launchArguments.append("mocked-network-layer")
+        app.launchArguments.append("-simulate-stripe-card-reader")
         app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-port")
+        app.launchArguments.append("-mocks-push-notification")
         app.launchArguments.append("\(server.listenAddress.port)")
 
         app.launch()
 
+        addUIInterruptionMonitor(withDescription: "System Dialog") {
+            (alert) -> Bool in
+            alert.buttons["Allow"].tap()
+            return true
+        }
+        app.tap()
+
         try MyStoreScreen()
 
-            // My Store
-            .dismissTopBannerIfNeeded()
-            .then { ($0 as! MyStoreScreen).periodStatsTable.switchToYearsTab() }
-            .thenTakeScreenshot(named: "order-dashboard")
+        // My Store
+        .dismissTopBannerIfNeeded()
+        .then { ($0 as! MyStoreScreen).goToThisMonthTab() }
+        .thenTakeScreenshot(named: "order-dashboard")
 
-            // Orders
-            .tabBar.gotoOrdersScreen()
-            .thenTakeScreenshot(named: "order-list")
-            .selectOrder(atIndex: 0)
-            .thenTakeScreenshot(named: "order-detail")
-            .goBackToOrdersScreen()
+        // Orders
+        try TabNavComponent()
+        .goToOrdersScreen()
+        .startOrderCreation()
+        .thenTakeScreenshot(named: "order-creation")
+        .cancelOrderCreation()
 
-            .openSearchPane()
-            .thenTakeScreenshot(named: "order-search")
-            .cancel()
+        // Collect payment
+        .selectOrder(atIndex: 0)
+        .tapCollectPaymentButton()
+        .selectCardPresentPayment()
+        .thenTakeScreenshot(named: "order-payment")
+        .goBackToPaymentMethodsScreen()
+        .goBackToOrderScreen()
+        .goBackToOrdersScreen()
 
-            // Reviews
-            .tabBar.gotoReviewsScreen()
-            .thenTakeScreenshot(named: "review-list")
-            .selectReview(atIndex: 3)
-            .thenTakeScreenshot(named: "review-details")
-            .goBackToReviewsScreen()
+        // Products
+        try TabNavComponent()
+        .goToProductsScreen()
+        .selectAddProduct()
+        .thenTakeScreenshot(named: "product-add")
 
-            // Products
-            .tabBar.gotoProductsScreen()
-            .collapseTopBannerIfNeeded()
-            .thenTakeScreenshot(named: "product-list")
-            .selectProduct(atIndex: 1)
-            .thenTakeScreenshot(named: "product-details")
+        // Push notification
+        .lockScreen()
+        .thenTakeScreenshot(named: "order-notification")
     }
 
     private let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
@@ -139,7 +149,7 @@ extension BaseScreen {
         let mode = XCUIDevice.inDarkMode ? "dark" : "light"
         let filename = "\(screenshotCount)-\(mode)-\(title)"
 
-        snapshot(filename)
+        snapshot(filename, timeWaitingForIdle: 0)
 
         return self
     }
@@ -148,13 +158,22 @@ extension BaseScreen {
 extension ScreenObject {
 
     @discardableResult
+    func lockScreen() -> Self {
+        // This is a hack from https://stackoverflow.com/a/57356929
+        // ☠️ Beware of breaking changes in future updates ☠️
+        XCUIDevice.shared.perform(NSSelectorFromString("pressLockButton"))
+        sleep(5)
+        return self
+    }
+
+    @discardableResult
     func thenTakeScreenshot(named title: String) -> Self {
         screenshotCount += 1
 
         let mode = XCUIDevice.inDarkMode ? "dark" : "light"
         let filename = "\(screenshotCount)-\(mode)-\(title)"
 
-        snapshot(filename)
+        snapshot(filename, timeWaitingForIdle: 0)
 
         return self
     }

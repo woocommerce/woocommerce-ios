@@ -4,6 +4,10 @@ final class MockImageCache: ImageCache {
     // Mocks in-memory cache.
     private var imagesByKey: [String: UIImage] = [:]
 
+    override func imageCachedType(forKey key: String, processorIdentifier identifier: String = DefaultImageProcessor.default.identifier) -> CacheType {
+        imagesByKey[key] != nil ? .memory: .none
+    }
+
     override func retrieveImage(forKey key: String,
                                 options: KingfisherParsedOptionsInfo,
                                 callbackQueue: CallbackQueue = .mainCurrentOrAsync,

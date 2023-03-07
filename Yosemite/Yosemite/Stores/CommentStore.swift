@@ -33,6 +33,8 @@ public class CommentStore: Store {
             updateSpamStatus(siteID: siteID, commentID: commentID, isSpam: isSpam, onCompletion: onCompletion)
         case .updateTrashStatus(let siteID, let commentID, let isTrash, let onCompletion):
             updateTrashStatus(siteID: siteID, commentID: commentID, isTrash: isTrash, onCompletion: onCompletion)
+        case .replyToComment(let siteID, let commentID, let productID, let content, let onCompletion):
+            replyToComment(siteID: siteID, commentID: commentID, productID: productID, content: content, onCompletion: onCompletion)
         }
     }
 }
@@ -66,6 +68,14 @@ private extension CommentStore {
     func moderateComment(siteID: Int64, commentID: Int64, status: CommentStatus, onCompletion: @escaping (CommentStatus?, Error?) -> Void) {
         remote.moderateComment(siteID: siteID, commentID: commentID, status: status) { (updatedStatus, error) in
             onCompletion(updatedStatus, error)
+        }
+    }
+
+    /// Creates a comment as a reply to another comment (including product reviews).
+    ///
+    func replyToComment(siteID: Int64, commentID: Int64, productID: Int64, content: String, onCompletion: @escaping (Result<CommentStatus, Error>) -> Void) {
+        remote.replyToComment(siteID: siteID, commentID: commentID, productID: productID, content: content) { result in
+            onCompletion(result)
         }
     }
 }

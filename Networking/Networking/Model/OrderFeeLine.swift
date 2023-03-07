@@ -3,9 +3,15 @@ import Codegen
 
 /// Represents a FeeLine Entity within an Order.
 ///
-public struct OrderFeeLine: Equatable, Codable, GeneratedFakeable {
+public struct OrderFeeLine: Equatable, Codable, GeneratedFakeable, GeneratedCopiable {
     public let feeID: Int64
-    public let name: String
+
+    /// Fee Name
+    ///
+    /// Sending a null value to the REST API removes the Fee Line from the Order.
+    ///
+    public let name: String?
+
     public let taxClass: String
     public let taxStatus: OrderFeeTaxStatus
     public let total: String
@@ -16,7 +22,7 @@ public struct OrderFeeLine: Equatable, Codable, GeneratedFakeable {
     /// OrderFeeLine struct initializer.
     ///
     public init(feeID: Int64,
-                name: String,
+                name: String?,
                 taxClass: String,
                 taxStatus: OrderFeeTaxStatus,
                 total: String,

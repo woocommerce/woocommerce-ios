@@ -29,7 +29,7 @@ struct ShippingLabelSinglePackage: View {
             ForEach(viewModel.itemsRows) { productItemRow in
                 productItemRow
                     .padding(.horizontal, insets: safeAreaInsets)
-                    .background(Color(.listForeground))
+                    .background(Color(.listForeground(modal: false)))
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)
@@ -42,7 +42,7 @@ struct ShippingLabelSinglePackage: View {
                 VStack(spacing: 0) {
                     Divider()
 
-                    TitleAndValueRow(title: Localization.packageSelected, value: .placeholder(viewModel.selectedPackageName), selectable: true) {
+                    TitleAndValueRow(title: Localization.packageSelected, value: .placeholder(viewModel.selectedPackageName), selectionStyle: .disclosure) {
                         isShowingPackageSelection.toggle()
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
@@ -50,7 +50,7 @@ struct ShippingLabelSinglePackage: View {
                         ShippingLabelPackageSelection(viewModel: viewModel.packageListViewModel)
                     })
                 }
-                .background(Color(.listForeground))
+                .background(Color(.listForeground(modal: false)))
                 .renderedIf(!viewModel.isOriginalPackaging)
 
                 VStack(spacing: 0) {
@@ -70,7 +70,7 @@ struct ShippingLabelSinglePackage: View {
                                     subtitle: Localization.individuallyShipped)
                     .padding(.horizontal, insets: safeAreaInsets)
             }
-            .background(Color(.listForeground))
+            .background(Color(.listForeground(modal: false)))
             .renderedIf(viewModel.isOriginalPackaging)
 
             VStack(spacing: 0) {
@@ -82,7 +82,7 @@ struct ShippingLabelSinglePackage: View {
                                     isError: !viewModel.hasValidPackageDimensions)
                     .padding(.horizontal, insets: safeAreaInsets)
             }
-            .background(Color(.listForeground))
+            .background(Color(.listForeground(modal: false)))
             .renderedIf(viewModel.isOriginalPackaging)
 
             ValidationErrorRow(errorMessage: Localization.invalidDimensions)
@@ -103,7 +103,7 @@ struct ShippingLabelSinglePackage: View {
 
                 Divider()
             }
-            .background(Color(.listForeground))
+            .background(Color(.listForeground(modal: false)))
 
             if viewModel.isValidTotalWeight {
                 ListHeaderView(text: Localization.footer, alignment: .left)
@@ -149,10 +149,11 @@ private extension ShippingLabelSinglePackage {
     }
 }
 
+#if DEBUG
 struct ShippingLabelSinglePackage_Previews: PreviewProvider {
     static var previews: some View {
-        let order = ShippingLabelPackageDetailsViewModel.sampleOrder()
-        let packageResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
+        let order = ShippingLabelSampleData.sampleOrder()
+        let packageResponse = ShippingLabelSampleData.samplePackageDetails()
         let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                             orderItems: [],
                                                             packagesResponse: packageResponse,
@@ -167,3 +168,4 @@ struct ShippingLabelSinglePackage_Previews: PreviewProvider {
                                    viewModel: viewModel)
     }
 }
+#endif

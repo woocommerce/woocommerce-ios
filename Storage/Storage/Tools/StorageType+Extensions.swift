@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 
 // MARK: - StorageType DataModel Specific Extensions
@@ -104,6 +105,20 @@ public extension StorageType {
         return firstObject(ofType: OrderNote.self, matching: predicate)
     }
 
+    /// Retrieves the Stored Order Tax Lines.
+    ///
+    func loadOrderTaxLine(siteID: Int64, taxID: Int64) -> OrderTaxLine? {
+        let predicate = \OrderTaxLine.order.siteID == siteID && \OrderTaxLine.taxID == taxID
+        return firstObject(ofType: OrderTaxLine.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Order Metadata.
+    ///
+    func loadOrderMetaData(siteID: Int64, metadataID: Int64) -> OrderMetaData? {
+        let predicate = \OrderMetaData.order?.siteID == siteID && \OrderMetaData.metadataID == metadataID
+        return firstObject(ofType: OrderMetaData.self, matching: predicate)
+    }
+
     // MARK: - Stats
 
     /// Retrieves the Stored TopEarnerStats.
@@ -132,6 +147,13 @@ public extension StorageType {
     func loadOrderStatsInterval(interval: String, orderStats: OrderStatsV4) -> OrderStatsV4Interval? {
         let predicate = \OrderStatsV4Interval.interval =~ interval && \OrderStatsV4Interval.stats == orderStats
         return firstObject(ofType: OrderStatsV4Interval.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored SiteSummaryStats.
+    ///
+    func loadSiteSummaryStats(date: String, period: String) -> SiteSummaryStats? {
+        let predicate = \SiteSummaryStats.date =~ date && \SiteSummaryStats.period =~ period
+        return firstObject(ofType: SiteSummaryStats.self, matching: predicate)
     }
 
     // MARK: - Order Statuses
@@ -330,8 +352,8 @@ public extension StorageType {
 
     /// Retrieves the Stored ProductSearchResults Lookup.
     ///
-    func loadProductSearchResults(keyword: String) -> ProductSearchResults? {
-        let predicate = \ProductSearchResults.keyword == keyword
+    func loadProductSearchResults(keyword: String, filterKey: String) -> ProductSearchResults? {
+        let predicate = \ProductSearchResults.keyword == keyword && \ProductSearchResults.filterKey == filterKey
         return firstObject(ofType: ProductSearchResults.self, matching: predicate)
     }
 
@@ -501,6 +523,30 @@ public extension StorageType {
         return firstObject(ofType: ShippingLabelSettings.self, matching: predicate)
     }
 
+
+    // MARK: - Coupons
+
+    /// Returns a single Coupon given a `siteID` and `CouponID`
+    ///
+    func loadCoupon(siteID: Int64, couponID: Int64) -> Coupon? {
+        let predicate = \Coupon.siteID == siteID && \Coupon.couponID == couponID
+        return firstObject(ofType: Coupon.self, matching: predicate)
+    }
+
+    /// Returns all stored coupons for a site
+    ///
+    func loadAllCoupons(siteID: Int64) -> [Coupon] {
+        let predicate = \Coupon.siteID == siteID
+        return allObjects(ofType: Coupon.self, matching: predicate, sortedBy: nil)
+    }
+
+    /// Retrieves the Stored CouponSearchResult Lookup.
+    ///
+    func loadCouponSearchResult(keyword: String) -> CouponSearchResult? {
+        let predicate = \CouponSearchResult.keyword == keyword
+        return firstObject(ofType: CouponSearchResult.self, matching: predicate)
+    }
+
     /// Returns all stored shipping label account settings for a site.
     ///
     func loadShippingLabelAccountSettings(siteID: Int64) -> ShippingLabelAccountSettings? {
@@ -553,6 +599,28 @@ public extension StorageType {
         return firstObject(ofType: PaymentGatewayAccount.self, matching: predicate)
     }
 
+    /// Returns a charge with a specified `siteID` and `chargeID`
+    ///
+    func loadWCPayCharge(siteID: Int64, chargeID: String) -> WCPayCharge? {
+        let predicate = \WCPayCharge.siteID == siteID && \WCPayCharge.chargeID == chargeID
+        return firstObject(ofType: WCPayCharge.self, matching: predicate)
+    }
+
+    // MARK: - Customers
+
+    /// Returns a single Customer given a `siteID` and `customerID`
+    ///
+    func loadCustomer(siteID: Int64, customerID: Int64) -> Customer? {
+        let predicate = \Customer.siteID == siteID && \Customer.customerID == customerID
+        return firstObject(ofType: Customer.self, matching: predicate)
+    }
+    /// Returns a CustomerSearchResult given a `siteID` and a `keyword`
+    ///
+    func loadCustomerSearchResult(siteID: Int64, keyword: String) -> CustomerSearchResult? {
+        let predicate = \CustomerSearchResult.siteID == siteID && \CustomerSearchResult.keyword == keyword
+        return firstObject(ofType: CustomerSearchResult.self, matching: predicate)
+    }
+
     // MARK: - System plugins
 
     /// Returns all stored system plugins for a provided `siteID`.
@@ -568,5 +636,22 @@ public extension StorageType {
     func loadSystemPlugin(siteID: Int64, name: String) -> SystemPlugin? {
         let predicate = \SystemPlugin.siteID == siteID && \SystemPlugin.name == name
         return firstObject(ofType: SystemPlugin.self, matching: predicate)
+    }
+
+    // MARK: - Inbox Notes
+
+    /// Returns a single Inbox Note given a `siteID` and `id`
+    ///
+    func loadInboxNote(siteID: Int64, id: Int64) -> InboxNote? {
+        let predicate = \InboxNote.siteID == siteID && \InboxNote.id == id
+        return firstObject(ofType: InboxNote.self, matching: predicate)
+    }
+
+    /// Returns all stored Inbox Notes for a provided `siteID`.
+    ///
+    func loadAllInboxNotes(siteID: Int64) -> [InboxNote] {
+        let predicate = \InboxNote.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \InboxNote.dateCreated, ascending: false)
+        return allObjects(ofType: InboxNote.self, matching: predicate, sortedBy: [descriptor])
     }
 }

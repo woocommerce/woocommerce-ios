@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require 'cocoapods-catalyst-support'
+
 # For security reasons, please always keep the wordpress-mobile source first and the CDN second.
 # For more info, see https://github.com/wordpress-mobile/cocoapods-specs#source-order-and-security-considerations
 install! 'cocoapods', warn_for_multiple_pod_sources: false
@@ -10,16 +14,61 @@ inhibit_all_warnings!
 use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
 use_modular_headers!
 
-app_ios_deployment_target = Gem::Version.new('14.0')
+app_ios_deployment_target = Gem::Version.new('15.0')
 
 platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
 
 ## Pods shared between all the targets
-## ===================================
+## =====================================
 ##
 def aztec
   pod 'WordPress-Editor-iOS', '~> 1.11.0'
+end
+
+def tracks
+  pod 'Automattic-Tracks-iOS', '~> 2.0.0'
+  # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'trunk'
+  # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => ''
+  # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
+end
+
+def wordpress_kit
+  # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
+  pod 'WordPressKit', '~> 6.0'
+  # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
+end
+
+def keychain
+  pod 'KeychainAccess', '~> 4.2.2'
+end
+
+def alamofire
+  pod 'Alamofire', '~> 4.8'
+end
+
+def cocoa_lumberjack
+  pod 'CocoaLumberjack', '~> 3.7.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+end
+
+def stripe_terminal
+  pod 'StripeTerminal', '~> 2.14'
+end
+
+def networking_pods
+  alamofire
+  cocoa_lumberjack
+
+  pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
+
+  # Used for HTML parsing
+  aztec
+
+  # Used for storing application password
+  keychain
+
+  wordpress_kit
 end
 
 # Main Target!
@@ -32,38 +81,35 @@ target 'WooCommerce' do
   # ====================
   #
 
-  #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/build-configuration'
-  pod 'Automattic-Tracks-iOS', '~> 0.9.1'
+  tracks
 
-  pod 'Gridicons', '~> 1.0'
+  pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 1.42.0'
-  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
-  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
+#  pod 'WordPressAuthenticator', '~> 5.1.0'
+#   pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
+   pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'trunk'
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
-  pod 'WordPressShared', '~> 1.15'
+  pod 'WordPressShared', '~> 2.0'
 
-  pod 'WordPressUI', '~> 1.12.1'
+  pod 'WordPressUI', '~> 1.12.5'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
 
   aztec
 
-  pod 'WPMediaPicker', '~> 1.7.3'
+  pod 'WPMediaPicker', '~> 1.8.1'
 
   # External Libraries
   # ==================
   #
-  pod 'Alamofire', '~> 4.8'
-  pod 'KeychainAccess', '~> 3.2'
-  pod 'CocoaLumberjack', '~> 3.5'
-  pod 'CocoaLumberjack/Swift', '~> 3.5'
+  alamofire
+  cocoa_lumberjack
+  keychain
   pod 'XLPagerTabStrip', '~> 9.0'
-  pod 'Charts', '~> 3.6.0'
-  pod 'ZendeskSupportSDK', '~> 5.0'
-  pod 'StripeTerminal', '~> 2.4'
-  pod 'Kingfisher', '~> 6.0.0'
+  pod 'ZendeskSupportSDK', '~> 6.0'
+  stripe_terminal
+  pod 'Kingfisher', '~> 7.2.2'
   pod 'Wormholy', '~> 1.6.5', configurations: ['Debug']
 
   # Unit Tests
@@ -74,18 +120,24 @@ target 'WooCommerce' do
   end
 end
 
+# StoreWidget Target
+# ==========
+#
+target 'StoreWidgetsExtension' do
+  project 'WooCommerce/WooCommerce.xcodeproj'
+  tracks
+  keychain
+end
+
 # Yosemite Layer:
 # ===============
 #
 def yosemite_pods
-  pod 'Alamofire', '~> 4.8'
-  pod 'StripeTerminal', '~> 2.4'
-  pod 'CocoaLumberjack', '~> 3.5'
-  pod 'CocoaLumberjack/Swift', '~> 3.5'
-
-  # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressKit', '~> 4.40.0'
-  # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
+  alamofire
+  stripe_terminal
+  cocoa_lumberjack
+  wordpress_kit
+  networking_pods
 
   aztec
 end
@@ -106,18 +158,27 @@ target 'YosemiteTests' do
   yosemite_pods
 end
 
-# Networking Layer:
-# =================
+# WooFoundation Layer:
+# ===============
 #
-def networking_pods
-  pod 'Alamofire', '~> 4.8'
-  pod 'CocoaLumberjack', '~> 3.5'
-  pod 'CocoaLumberjack/Swift', '~> 3.5'
+def woofoundation_pods
+  cocoa_lumberjack
+end
 
-  pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
+# Tools Target:
+# ================
+#
+target 'WooFoundation' do
+  project 'WooFoundation/WooFoundation.xcodeproj'
+  woofoundation_pods
+end
 
-  # Used for HTML parsing
-  aztec
+# Unit Tests
+# ==========
+#
+target 'WooFoundationTests' do
+  project 'WooFoundation/WooFoundation.xcodeproj'
+  woofoundation_pods
 end
 
 # Networking Target:
@@ -143,8 +204,7 @@ end
 # ==============
 #
 def storage_pods
-  pod 'CocoaLumberjack', '~> 3.5'
-  pod 'CocoaLumberjack/Swift', '~> 3.5'
+  cocoa_lumberjack
 end
 
 # Storage Target:
@@ -167,9 +227,8 @@ end
 # =================
 #
 def hardware_pods
-  pod 'StripeTerminal', '~> 2.4'
-  pod 'CocoaLumberjack', '~> 3.5'
-  pod 'CocoaLumberjack/Swift', '~> 3.5'
+  stripe_terminal
+  cocoa_lumberjack
 end
 
 # Hardware Target:
@@ -200,9 +259,8 @@ end
 # ==================
 #
 def experiments_pods
-  pod 'Automattic-Tracks-iOS', '~> 0.9.1'
-  pod 'CocoaLumberjack', '~> 3.5'
-  pod 'CocoaLumberjack/Swift', '~> 3.5'
+  tracks
+  cocoa_lumberjack
 end
 
 # Experiments Target:
@@ -259,7 +317,19 @@ pre_install do |installer|
   end
 end
 
+# Configure your macCatalyst dependencies
+catalyst_configuration do
+  # Uncomment the next line for a verbose output
+  # verbose!
+
+  # ios '<pod_name>' # This dependency will only be available for iOS
+  ios 'StripeTerminal'
+  ios 'ZendeskSupportSDK'
+  # macos '<pod_name>' # This dependency will only be available for macOS
+end
+
 post_install do |installer|
+  installer.configure_catalyst
   # Workaround: Drop 32 Bit Architectures
   # =====================================
   #
@@ -272,6 +342,12 @@ post_install do |installer|
   # =====================================
   #
   installer.pods_project.targets.each do |target|
+    # Fix bundle targets' 'Signing Certificate' to 'Sign to Run Locally'
+    if target.respond_to?(:product_type) && (target.product_type == 'com.apple.product-type.bundle')
+      target.build_configurations.each do |config|
+        config.build_settings['CODE_SIGN_IDENTITY[sdk=macosx*]'] = '-'
+      end
+    end
     target.build_configurations.each do |configuration|
       pod_ios_deployment_target = Gem::Version.new(configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
       if pod_ios_deployment_target <= app_ios_deployment_target
@@ -282,11 +358,24 @@ post_install do |installer|
 
   # Flag Alpha builds for Tracks
   # ============================
+  # rubocop:disable Style/CombinableLoops
   installer.pods_project.targets.each do |target|
-    next unless target.name == "Automattic-Tracks-iOS"
+    next unless target.name == 'Automattic-Tracks-iOS'
+
     target.build_configurations.each do |config|
-      next unless config.name == "Release-Alpha"
+      next unless config.name == 'Release-Alpha'
+
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'ALPHA=1']
     end
   end
+
+  # Fix a code signing issue in Xcode 14 beta.
+  # This solution is suggested here: https://github.com/CocoaPods/CocoaPods/issues/11402#issuecomment-1189861270
+  # ====================================
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['CODE_SIGN_IDENTITY'] = ''
+    end
+  end
+  # rubocop:enable Style/CombinableLoops
 end

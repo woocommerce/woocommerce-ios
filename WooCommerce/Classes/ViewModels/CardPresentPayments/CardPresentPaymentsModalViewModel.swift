@@ -18,6 +18,8 @@ protocol CardPresentPaymentsModalViewModel {
     /// An illustration accompanying the modal
     var image: UIImage { get }
 
+    var showLoadingIndicator: Bool { get }
+
     /// Provides a title for a primary action button
     var primaryButtonTitle: String? { get }
 
@@ -26,6 +28,9 @@ protocol CardPresentPaymentsModalViewModel {
 
     /// Provides a title for an auxiliary button
     var auxiliaryButtonTitle: String? { get }
+
+    /// Provides a title as a NSAttributedString for an auxiliary button
+    var auxiliaryAttributedButtonTitle: NSAttributedString? { get }
 
     /// The title in the bottom section of the modal. Right below the image
     var bottomTitle: String? { get }
@@ -49,6 +54,14 @@ protocol CardPresentPaymentsModalViewModel {
     func didTapAuxiliaryButton(in viewController: UIViewController?)
 }
 
+/// The type of card-present transaction.
+enum CardPresentTransactionType {
+    /// To collect payment.
+    case collectPayment
+
+    /// To issue a refund.
+    case refund
+}
 
 /// Represents the different visual modes of the modal view's textfields
 enum PaymentsModalTextMode {
@@ -75,9 +88,25 @@ enum PaymentsModalActionsMode {
     /// One secondary action button
     case secondaryOnlyAction
 
+    /// One secondary action button and an auxiliary button
+    case secondaryActionAndAuxiliaryButton
+
     /// Two action buttons
     case twoAction
 
-    /// Two action buttons and an auxiiary button
+    /// Two action buttons and an auxiliary button
     case twoActionAndAuxiliary
+
+}
+
+extension CardPresentPaymentsModalViewModel {
+    /// Default implementation for NSAttributedString auxiliary button title.
+    /// If is not set directly by each Modal's ViewModel, it will default to nil
+    var auxiliaryAttributedButtonTitle: NSAttributedString? {
+        get { return nil }
+    }
+
+    var showLoadingIndicator: Bool {
+        get { return false }
+    }
 }

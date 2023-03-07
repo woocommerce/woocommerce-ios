@@ -4,26 +4,42 @@ import Gridicons
 import Yosemite
 import MessageUI
 import Combine
+import Experiments
+import WooFoundation
+import SwiftUI
 import enum Networking.DotcomError
+import protocol Storage.StorageManagerType
 
 final class OrderDetailsViewModel {
-    private let paymentOrchestrator = PaymentCaptureOrchestrator()
+
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
+    private let currencyFormatter: CurrencyFormatter
 
     private(set) var order: Order
+
+    /// Defines the current sync states of the view model data.
+    ///
+    private var syncState: SyncState = .notSynced
 
     var orderStatus: OrderStatus? {
         return lookUpOrderStatus(for: order)
     }
 
-    init(order: Order, stores: StoresManager = ServiceLocator.stores) {
+    init(order: Order,
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.order = order
         self.stores = stores
+        self.storageManager = storageManager
+        self.currencyFormatter = currencyFormatter
     }
 
     func update(order newOrder: Order) {
         self.order = newOrder
         dataSource.update(order: order)
+        editNoteViewModel.update(order: order)
     }
 
     let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
@@ -69,10 +85,18 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// IPP Configuration loader
+    private lazy var configurationLoader = CardPresentConfigurationLoader(stores: stores)
+
     /// The datasource that will be used to render the Order Details screen
     ///
     private(set) lazy var dataSource: OrderDetailsDataSource = {
-        return OrderDetailsDataSource(order: order)
+        return OrderDetailsDataSource(order: order,
+                                      cardPresentPaymentsConfiguration: configurationLoader.configuration)
+    }()
+
+    private(set) lazy var editNoteViewModel: EditCustomerNoteViewModel = {
+        return EditCustomerNoteViewModel(order: order)
     }()
 
     /// Order Notes
@@ -83,16 +107,6 @@ final class OrderDetailsViewModel {
             dataSource.reloadSections()
             onUIReloadRequired?()
         }
-    }
-
-    /// Name of the user we will be collecting car present payments from
-    ///
-    var collectPaymentFrom: String {
-        guard let name = order.billingAddress?.firstName else {
-            return "Collect payment"
-        }
-
-        return "Collect payment from \(name)"
     }
 
     /// Closure to be executed when the UI needs to be reloaded.
@@ -134,21 +148,22 @@ final class OrderDetailsViewModel {
         order.billingAddress?.email
     }
 
-    /// Subject for the email containing a receipt generated after a card present payment has been captured
-    ///
-    var paymentReceiptEmailSubject: String {
-        guard let storeName = stores.sessionManager.defaultSite?.name else {
-            return Localization.emailSubjectWithoutStoreName
-        }
-
-        return String.localizedStringWithFormat(Localization.emailSubjectWithStoreName, storeName)
-    }
-
-    private var cardPresentPaymentGatewayAccounts: [PaymentGatewayAccount] {
-        return dataSource.cardPresentPaymentGatewayAccounts()
-    }
-
     private var receipt: CardPresentReceiptParameters? = nil
+
+    /// Returns edit action availability given the internal state.
+    ///
+    var editButtonIsEnabled: Bool {
+        syncState == .synced
+    }
+
+    var paymentMethodsViewModel: PaymentMethodsViewModel {
+        let formattedTotal = currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
+        return PaymentMethodsViewModel(siteID: order.siteID,
+                                       orderID: order.orderID,
+                                       paymentLink: order.paymentURL,
+                                       formattedTotal: formattedTotal,
+                                       flow: .orderPayment)
+    }
 
     /// Helpers
     ///
@@ -165,6 +180,110 @@ final class OrderDetailsViewModel {
     }
 }
 
+// MARK: Syncing
+extension OrderDetailsViewModel {
+    /// Syncs all data related to the current order.
+    ///
+    func syncEverything(onReloadSections: (() -> ())? = nil, onCompletion: (() -> ())? = nil) {
+        let group = DispatchGroup()
+
+        group.enter()
+        syncOrder { [weak self] _ in
+            defer {
+                group.leave()
+            }
+
+            // Products require order.items data, so sync them only after the order is loaded
+            guard let self = self else { return }
+
+            group.enter()
+            self.syncProducts { _ in
+                group.leave()
+            }
+
+            group.enter()
+            self.syncProductVariations { _ in
+                group.leave()
+            }
+        }
+
+        group.enter()
+        syncRefunds() { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncShippingLabels() { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncNotes { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncTrackingsEnablingAddButtonIfReachable(onReloadSections: onReloadSections) {
+            group.leave()
+        }
+
+        group.enter()
+        checkShippingLabelCreationEligibility {
+            onReloadSections?()
+            group.leave()
+        }
+
+        group.enter()
+        syncSavedReceipts {_ in
+            group.leave()
+        }
+
+        group.enter()
+        checkOrderAddOnFeatureSwitchState {
+            onReloadSections?()
+            group.leave()
+        }
+
+        group.notify(queue: .main) { [weak self] in
+
+            /// Update state to synced
+            ///
+            self?.syncState = .synced
+
+            onReloadSections?()
+            onCompletion?()
+        }
+    }
+
+    func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
+        syncOrder { [weak self] (order, error) in
+            guard let self = self, let order = order else {
+                onCompletion?(error)
+                return
+            }
+
+            self.update(order: order)
+
+            onCompletion?(nil)
+        }
+    }
+
+    func syncTrackingsEnablingAddButtonIfReachable(onReloadSections: (() -> ())? = nil, onCompletion: (() -> Void)? = nil) {
+        // If the plugin is not active, there is no point on continuing with a request that will fail.
+        isPluginActive(SitePlugin.SupportedPlugin.WCTracking) { [weak self] isActive in
+            guard let self = self, isActive else {
+                onCompletion?()
+                return
+            }
+
+            self.trackingIsReachable = true
+            self.syncTracking { error in
+                onReloadSections?()
+                onCompletion?()
+            }
+        }
+    }
+}
 
 // MARK: - Configuring results controllers
 //
@@ -195,7 +314,8 @@ extension OrderDetailsViewModel {
             SummaryTableViewCell.self,
             ButtonTableViewCell.self,
             IssueRefundTableViewCell.self,
-            ImageAndTitleAndTextTableViewCell.self
+            ImageAndTitleAndTextTableViewCell.self,
+            WCShipInstallTableViewCell.self
         ]
 
         for cellClass in cells {
@@ -275,12 +395,20 @@ extension OrderDetailsViewModel {
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
             let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: true)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
+        case .customFields:
+            ServiceLocator.analytics.track(.orderViewCustomFieldsTapped)
+            let customFields = order.customFields.map {
+                OrderCustomFieldsViewModel(metadata: $0)
+            }
+            let customFieldsView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: customFields))
+            viewController.present(customFieldsView, animated: true)
         case .seeReceipt:
-            ServiceLocator.analytics.track(.receiptViewTapped)
+            let countryCode = configurationLoader.configuration.countryCode
+            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode))
             guard let receipt = receipt else {
                 return
             }
-            let viewModel = ReceiptViewModel(order: order, receipt: receipt)
+            let viewModel = ReceiptViewModel(order: order, receipt: receipt, countryCode: countryCode)
             let receiptViewController = ReceiptViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(receiptViewController, animated: true)
         case .refund:
@@ -301,6 +429,10 @@ extension OrderDetailsViewModel {
             let viewModel = RefundedProductsViewModel(order: order, refundedProducts: refundedProducts)
             let refundedProductsDetailViewController = RefundedProductsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)
+        case .installWCShip:
+            //TODO: add analytics
+            let wcShipInstallationFlowVC = Inject.ViewControllerHost(WCShipCTAHostingController())
+            viewController.present(wcShipInstallationFlowVC, animated: true)
         default:
             break
         }
@@ -311,8 +443,8 @@ extension OrderDetailsViewModel {
 
 extension OrderDetailsViewModel {
     /// Dispatches a network call in order to update `self.order`'s `status` to `.completed`.
-    func markCompleted() -> OrderFulfillmentUseCase.FulfillmentProcess {
-        OrderFulfillmentUseCase(order: order, stores: stores).fulfill()
+    func markCompleted(flow: WooAnalyticsEvent.Orders.Flow) -> OrderFulfillmentUseCase.FulfillmentProcess {
+        OrderFulfillmentUseCase(order: order, stores: stores, flow: flow).fulfill()
     }
 
     func syncOrder(onCompletion: ((Order?, Error?) -> ())? = nil) {
@@ -410,22 +542,32 @@ extension OrderDetailsViewModel {
     }
 
     func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
-            switch result {
-            case .success:
-                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
+        // If the plugin is not active, there is no point on continuing with a request that will fail.
+        isPluginActive(SitePlugin.SupportedPlugin.WCShip) { [weak self] isActive in
+
+            guard let self = self, isActive else {
                 onCompletion?(nil)
-            case .failure(let error):
-                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
-                if error as? DotcomError == .noRestRoute {
-                    DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
-                } else {
-                    DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
-                }
-                onCompletion?(error)
+                return
             }
+
+            let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.order.siteID, orderID: self.order.orderID) { result in
+                switch result {
+                case .success:
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
+                    onCompletion?(nil)
+                case .failure(let error):
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
+                    if error as? DotcomError == .noRestRoute {
+                        DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
+                    } else {
+                        DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+                    }
+                    onCompletion?(error)
+                }
+            }
+            self.stores.dispatch(action)
+
         }
-        stores.dispatch(action)
     }
 
     func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
@@ -443,39 +585,24 @@ extension OrderDetailsViewModel {
     }
 
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
-        // No orders are eligible for shipping label creation unless feature flag for Milestones 2 & 3 is enabled
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsM2M3) else {
-            dataSource.isEligibleForShippingLabelCreation = false
-            onCompletion?()
-            return
-        }
-
-        // Check shipping label creation eligibility remotely, according to client features available in Shipping Labels Milestone 4
-        // like creating Shipping Labels outside of United States
-        let isCustomsFormEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational)
-        let isPaymentMethodCreationEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddPaymentMethods)
-        let isPackageCreationEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddCustomPackages)
-        let action = ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
-                                                                  orderID: order.orderID,
-                                                                  canCreatePaymentMethod: isPaymentMethodCreationEnabled,
-                                                                  canCreateCustomsForm: isCustomsFormEnabled,
-                                                                  canCreatePackage: isPackageCreationEnabled) { [weak self] isEligible in
-            self?.dataSource.isEligibleForShippingLabelCreation = isEligible
-            if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
-                ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
-                                               withProperties: ["order_status": orderStatus])
+        // If the plugin is not active, there is no point on continuing with a request that will fail.
+        isPluginActive(SitePlugin.SupportedPlugin.WCShip) { [weak self] isActive in
+            guard let self = self, isActive else {
+                onCompletion?()
+                return
             }
-            onCompletion?()
-        }
-        stores.dispatch(action)
-    }
 
-    func refreshCardPresentPaymentEligibility() {
-        /// No need for a completion here. The VC will be notified of changes to the stored paymentGatewayAccounts
-        /// by the viewModel (after passing up through the dataSource and originating in the resultsControllers)
-        ///
-        let action = PaymentGatewayAccountAction.loadAccounts(siteID: order.siteID) {_ in}
-        ServiceLocator.stores.dispatch(action)
+            let action = ShippingLabelAction.checkCreationEligibility(siteID: self.order.siteID,
+                                                                      orderID: self.order.orderID) { [weak self] isEligible in
+                self?.dataSource.isEligibleForShippingLabelCreation = isEligible
+                if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
+                    ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
+                                                   withProperties: ["order_status": orderStatus])
+                }
+                onCompletion?()
+            }
+            self.stores.dispatch(action)
+        }
     }
 
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
@@ -519,66 +646,39 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
-    /// Returns a publisher that emits an initial value if there is no reader connected and completes as soon as a
-    /// reader connects.
-    func cardReaderAvailable() -> AnyPublisher<[CardReader], Never> {
-        Future<AnyPublisher<[CardReader], Never>, Never> { [stores] promise in
-            let action = CardPresentPaymentAction.checkCardReaderConnected(onCompletion: { publisher in
-                promise(.success(publisher))
-            })
-
-            stores.dispatch(action)
-        }
-        .switchToLatest()
-        .eraseToAnyPublisher()
-    }
-
-    /// We are passing the ReceiptParameters as part of the completon block
-    /// We do so at this point for testing purposes.
-    /// When we implement persistance, the receipt metadata would be persisted
-    /// to Storage, associated to an order. We would not need to propagate
-    /// that object outside of Yosemite.
-    func collectPayment(onWaitingForInput: @escaping () -> Void, // i.e. waiting for buyer to swipe/insert/tap card
-                        onProcessingMessage: @escaping () -> Void, // i.e. payment is processing
-                        onDisplayMessage: @escaping (String) -> Void, // e.g. "Remove Card"
-                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) { // used to tell user payment completed (or not)
-        /// We don't have a concept of priority yet, so use the first paymentGatewayAccount for now
-        /// since we can't yet have multiple accounts
-        ///
-        if self.cardPresentPaymentGatewayAccounts.count != 1 {
-            DDLogWarn("Expected one card present gateway account. Got something else.")
+    /// Helper function that returns `true` in its callback if the provided plugin name is active on the order's store.
+    /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
+    ///
+    private func isPluginActive(_ plugin: String, completion: @escaping (Bool) -> (Void)) {
+        guard arePluginsSynced() else {
+            DDLogError("⚠️ SystemPlugins acceded without being in sync.")
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.pluginsNotSyncedYet())
+            return completion(false)
         }
 
-        let statementDescriptor = cardPresentPaymentGatewayAccounts.first?.statementDescriptor
-
-        paymentOrchestrator.collectPayment(for: self.order,
-                                           statementDescriptor: statementDescriptor,
-                                           onWaitingForInput: onWaitingForInput,
-                                           onProcessingMessage: onProcessingMessage,
-                                           onDisplayMessage: onDisplayMessage,
-                                           onCompletion: onCompletion)
-
+        let action = SystemStatusAction.fetchSystemPlugin(siteID: order.siteID, systemPluginName: plugin) { plugin in
+            completion(plugin?.active == true)
+        }
+        stores.dispatch(action)
     }
 
-    func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        paymentOrchestrator.cancelPayment(onCompletion: onCompletion)
-    }
-
-    func printReceipt(params: CardPresentReceiptParameters) {
-        ReceiptActionCoordinator.printReceipt(for: order, params: params)
-    }
-
-    func emailReceipt(params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
-        ServiceLocator.analytics.track(.receiptEmailTapped)
-        paymentOrchestrator.emailReceipt(for: order, params: params, onContent: onContent)
+    /// Function that checks for any existing system plugin in the order's store.
+    /// If there is none, we assume plugins are not synced because at least the`WooCommerce` plugin should be present.
+    ///
+    private func arePluginsSynced() -> Bool {
+        let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
+        let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        try? resultsController.performFetch()
+        return !resultsController.isEmpty
     }
 }
 
+// MARK: Definitions
 private extension OrderDetailsViewModel {
-    enum Localization {
-        static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",
-                                                                 comment: "Subject of email sent with a card present payment receipt")
-        static let emailSubjectWithoutStoreName = NSLocalizedString("Your receipt",
-                                                                    comment: "Subject of email sent with a card present payment receipt")
+    /// Defines the possible sync states of the view model data.
+    ///
+    enum SyncState {
+        case notSynced
+        case synced
     }
 }

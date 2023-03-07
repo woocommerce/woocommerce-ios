@@ -13,7 +13,6 @@ public enum NotificationAction: Action {
                         applicationId: String,
                         applicationVersion: String,
                         defaultStoreID: Int64,
-                        pushNotificationsForAllStoresEnabled: Bool,
                         onCompletion: (DotcomDevice?, Error?) -> Void)
 
     /// Unregisters a device for Push Notifications Delivery.

@@ -1,0 +1,65 @@
+{
+  "id": 2352,
+  "date_gmt": "2022-06-29T09:14:15",
+  "slug": "img_0009",
+  "title": {
+    "raw": "img_0009",
+    "rendered": "img_0009"
+  },
+  "alt_text": "",
+  "mime_type": "image/jpeg",
+  "media_details": {
+    "width": 300,
+    "height": 168,
+    "file": "2022/06/img_0009.jpeg",
+    "filesize": 22718,
+    "sizes": {
+      "thumbnail": {
+        "file": "img_0009-150x150.jpeg",
+        "width": 150,
+        "height": 150,
+        "filesize": 7031,
+        "mime_type": "image/jpeg",
+        "source_url": "https://comfortable-polecat.jurassic.ninja/wp-content/uploads/2022/06/img_0009-150x150.jpeg"
+      },
+      "woocommerce_gallery_thumbnail": {
+        "file": "img_0009-100x100.jpeg",
+        "width": 100,
+        "height": 100,
+        "filesize": 4226,
+        "mime_type": "image/jpeg",
+        "source_url": "https://comfortable-polecat.jurassic.ninja/wp-content/uploads/2022/06/img_0009-100x100.jpeg"
+      },
+      "shop_thumbnail": {
+        "file": "img_0009-100x100.jpeg",
+        "width": 100,
+        "height": 100,
+        "filesize": 4226,
+        "mime_type": "image/jpeg",
+        "source_url": "https://comfortable-polecat.jurassic.ninja/wp-content/uploads/2022/06/img_0009-100x100.jpeg"
+      },
+      "full": {
+        "file": "img_0009.jpeg",
+        "width": 300,
+        "height": 168,
+        "mime_type": "image/jpeg",
+        "source_url": "https://comfortable-polecat.jurassic.ninja/wp-content/uploads/2022/06/img_0009.jpeg"
+      }
+    },
+    "image_meta": {
+      "aperture": "0",
+      "credit": "",
+      "camera": "",
+      "caption": "",
+      "created_timestamp": "0",
+      "copyright": "",
+      "focal_length": "0",
+      "iso": "0",
+      "shutter_speed": "0",
+      "title": "",
+      "orientation": "1",
+      "keywords": []
+    }
+  },
+  "source_url": "https://comfortable-polecat.jurassic.ninja/wp-content/uploads/2022/06/img_0009.jpeg"
+}

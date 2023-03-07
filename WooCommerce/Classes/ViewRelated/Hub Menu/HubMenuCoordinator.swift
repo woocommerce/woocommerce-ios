@@ -1,6 +1,6 @@
+import Combine
 import Foundation
 import UIKit
-import Observables
 
 import enum Yosemite.ProductReviewAction
 import enum Yosemite.NotificationAction
@@ -10,23 +10,24 @@ import protocol Yosemite.StoresManager
 /// Coordinator for the HubMenu tab.
 ///
 final class HubMenuCoordinator: Coordinator {
-    var navigationController: UINavigationController
+    let navigationController: UINavigationController
+    var hubMenuController: HubMenuViewController?
 
     private let pushNotificationsManager: PushNotesManager
     private let storesManager: StoresManager
     private let noticePresenter: NoticePresenter
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
-    private var observationToken: ObservationToken?
+    private var notificationsSubscription: AnyCancellable?
 
-    private let willPresentReviewDetailsFromPushNotification: () -> Void
+    private let willPresentReviewDetailsFromPushNotification: () async -> Void
 
     init(navigationController: UINavigationController,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          storesManager: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          switchStoreUseCase: SwitchStoreUseCaseProtocol,
-         willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
+         willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
 
         self.pushNotificationsManager = pushNotificationsManager
         self.storesManager = storesManager
@@ -36,7 +37,7 @@ final class HubMenuCoordinator: Coordinator {
         self.navigationController = navigationController
     }
 
-    convenience init(navigationController: UINavigationController, willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
+    convenience init(navigationController: UINavigationController, willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
         let storesManager = ServiceLocator.stores
         self.init(navigationController: navigationController,
                   storesManager: storesManager,
@@ -45,7 +46,7 @@ final class HubMenuCoordinator: Coordinator {
     }
 
     deinit {
-        observationToken?.cancel()
+        notificationsSubscription?.cancel()
     }
 
     func start() {
@@ -54,16 +55,21 @@ final class HubMenuCoordinator: Coordinator {
 
     /// Replaces `start()` because the menu tab's navigation stack could be updated multiple times when site ID changes.
     func activate(siteID: Int64) {
-        navigationController.viewControllers = [HubMenuViewController(siteID: siteID)]
+        hubMenuController = HubMenuViewController(siteID: siteID, navigationController: navigationController)
+        if let hubMenuController = hubMenuController {
+            navigationController.viewControllers = [hubMenuController]
+        }
 
-        if observationToken == nil {
-            observationToken = pushNotificationsManager.inactiveNotifications.subscribe { [weak self] in
-                self?.handleInactiveNotification($0)
-            }
+        if notificationsSubscription == nil {
+            notificationsSubscription = Publishers
+                .Merge(pushNotificationsManager.inactiveNotifications, pushNotificationsManager.foregroundNotificationsToView)
+                .sink { [weak self] in
+                    self?.handleNotification($0)
+                }
         }
     }
 
-    private func handleInactiveNotification(_ notification: PushNotification) {
+    private func handleNotification(_ notification: PushNotification) {
         guard notification.kind == .comment else {
             return
         }
@@ -88,13 +94,16 @@ final class HubMenuCoordinator: Coordinator {
                         return
                     }
 
-                    self.willPresentReviewDetailsFromPushNotification()
-                    self.pushReviewDetailsViewController(using: parcel)
+                    Task { @MainActor in
+                        ServiceLocator.analytics.track(.reviewOpen)
+                        await self.willPresentReviewDetailsFromPushNotification()
+                        self.pushReviewDetailsViewController(using: parcel)
 
-                    if siteChanged {
-                        let presenter = SwitchStoreNoticePresenter(siteID: Int64(siteID),
-                                                                   noticePresenter: self.noticePresenter)
-                        presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
+                        if siteChanged {
+                            let presenter = SwitchStoreNoticePresenter(siteID: Int64(siteID),
+                                                                       noticePresenter: self.noticePresenter)
+                            presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
+                        }
                     }
                 }
             }
@@ -104,10 +113,7 @@ final class HubMenuCoordinator: Coordinator {
     }
 
     private func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {
-        let detailsVC = ReviewDetailsViewController(productReview: parcel.review,
-                                                    product: parcel.product,
-                                                    notification: parcel.note)
-        navigationController.pushViewController(detailsVC, animated: true)
+        hubMenuController?.pushReviewDetailsViewController(using: parcel)
     }
 }
 

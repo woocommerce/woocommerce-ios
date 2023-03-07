@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import WordPressAuthenticator
 import SafariServices
@@ -11,11 +12,7 @@ final class ULAccountMismatchViewController: UIViewController {
     /// and support for user actions
     private let viewModel: ULAccountMismatchViewModel
 
-    /// Header View: Displays all of the Account Details
-    ///
-    private let accountHeaderView: AccountHeaderView = {
-        return AccountHeaderView.instantiateFromNib()
-    }()
+    private var subscriptions: Set<AnyCancellable> = []
 
     @IBOutlet private weak var gravatarImageView: CircularImageView!
     @IBOutlet private weak var userNameLabel: UILabel!
@@ -23,6 +20,9 @@ final class ULAccountMismatchViewController: UIViewController {
     @IBOutlet private weak var wrongAccountLabel: UILabel!
     @IBOutlet private weak var logOutButton: UIButton!
     @IBOutlet private weak var primaryButton: NUXButton!
+    @IBOutlet private weak var secondaryButton: NUXButton!
+    @IBOutlet private weak var termsLabel: UITextView!
+
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
     @IBOutlet private weak var extraInfoButton: UIButton!
@@ -52,13 +52,18 @@ final class ULAccountMismatchViewController: UIViewController {
         super.viewDidLoad()
 
         configureAccountHeader()
+        configureRightBarButtonItem()
         configureImageView()
         configureErrorMessage()
         configureExtraInfoButton()
+        configureTermsLabel()
 
         configurePrimaryButton()
+        configureSecondaryButon()
 
         setUnifiedMargins(forWidth: view.frame.width)
+
+        viewModel.viewDidLoad(self)
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -75,6 +80,16 @@ final class ULAccountMismatchViewController: UIViewController {
 
 // MARK: - View configuration
 private extension ULAccountMismatchViewController {
+    func configureRightBarButtonItem() {
+        guard let rightBarButtonTitle = viewModel.rightBarButtonItemTitle else {
+            return
+        }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: rightBarButtonTitle,
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(didTapRightBarButtonItem))
+    }
+
     func configureAccountHeader() {
         configureGravatar()
         configureUserNameLabel()
@@ -95,11 +110,13 @@ private extension ULAccountMismatchViewController {
     func configureSignedInAsLabel() {
         singedInAsLabel.applySecondaryBodyStyle()
         singedInAsLabel.text = viewModel.signedInText
+        singedInAsLabel.numberOfLines = 0
     }
 
     func configureWrongAccountLabel() {
         wrongAccountLabel.applySecondaryBodyStyle()
         wrongAccountLabel.text = viewModel.logOutTitle
+        wrongAccountLabel.numberOfLines = 0
     }
 
     func configureLogOutButton() {
@@ -120,10 +137,26 @@ private extension ULAccountMismatchViewController {
         errorMessage.attributedText = viewModel.text
     }
 
+    func configureTermsLabel() {
+        let linkAttributes: [NSAttributedString.Key: Any] = [
+            NSAttributedString.Key.foregroundColor: UIColor.accent,
+            NSAttributedString.Key.underlineColor: UIColor.accent,
+            NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
+        termsLabel.linkTextAttributes = linkAttributes
+        termsLabel.isSelectable = true
+
+        viewModel.termsLabelText.sink { [weak self] text in
+            self?.termsLabel.attributedText = text
+        }
+        .store(in: &subscriptions)
+    }
+
     func configureExtraInfoButton() {
         extraInfoButton.applyLinkButtonStyle()
         extraInfoButton.contentEdgeInsets = Constants.extraInfoCustomInsets
         extraInfoButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
+        extraInfoButton.titleLabel?.numberOfLines = 0
         extraInfoButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapAuxiliaryButton()
         }
@@ -135,8 +168,23 @@ private extension ULAccountMismatchViewController {
         primaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapPrimaryButton()
         }
+
+        viewModel.isPrimaryButtonLoading
+            .sink { [weak self] isLoading in
+                self?.primaryButton.showActivityIndicator(isLoading)
+            }
+            .store(in: &subscriptions)
     }
 
+    func configureSecondaryButon() {
+        secondaryButton.isPrimary = false
+        secondaryButton.isHidden = viewModel.isSecondaryButtonHidden
+        secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
+        secondaryButton.titleLabel?.numberOfLines = 0
+        secondaryButton.on(.touchUpInside) { [weak self] _ in
+            self?.didTapSecondaryButton()
+        }
+    }
 
     /// This logic is lifted from WPAuthenticator's LoginPrologueViewController
     /// This View Controller will be provided to WPAuthenticator. WPAuthenticator
@@ -180,8 +228,16 @@ private extension ULAccountMismatchViewController {
         viewModel.didTapPrimaryButton(in: self)
     }
 
+    func didTapSecondaryButton() {
+        viewModel.didTapSecondaryButton(in: self)
+    }
+
     func didTapLogOutButton() {
         viewModel.didTapLogOutButton(in: self)
+    }
+
+    @objc func didTapRightBarButtonItem() {
+        viewModel.didTapRightBarButtonItem(in: self)
     }
 }
 
@@ -213,6 +269,10 @@ extension ULAccountMismatchViewController {
 
     func getPrimaryActionButton() -> UIButton {
         return primaryButton
+    }
+
+    func getSecondaryActionButton() -> UIButton {
+        return secondaryButton
     }
 
     func getUserNameLabel() -> UILabel {

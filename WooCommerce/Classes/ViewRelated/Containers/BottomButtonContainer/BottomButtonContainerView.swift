@@ -71,14 +71,14 @@ private extension BottomButtonContainerView {
         case .primary:
             button.applyPrimaryButtonStyle()
         case .link:
+            if let image = viewModel.image {
+                var configuration = UIButton.Configuration.plain()
+                button.setImage(image, for: .normal)
+                configuration.imagePadding = Constants.buttonTitleAndImageSpacing
+                button.configuration = configuration
+            }
             button.applyLinkButtonStyle()
             button.contentHorizontalAlignment = .leading
-            button.contentEdgeInsets = .zero
-        }
-
-        if let image = viewModel.image {
-            button.setImage(image, for: .normal)
-            button.distributeTitleAndImage(spacing: Constants.buttonTitleAndImageSpacing)
         }
     }
 

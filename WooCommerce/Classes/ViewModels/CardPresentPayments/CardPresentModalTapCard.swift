@@ -34,15 +34,31 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
 
     let bottomTitle: String? = Localization.readerIsReady
 
-    let bottomSubtitle: String? = Localization.tapInsertOrSwipe
+    let bottomSubtitle: String?
 
-    var accessibilityLabel: String? {
-        return Localization.readerIsReady + Localization.tapInsertOrSwipe
-    }
+    let accessibilityLabel: String?
 
-    init(name: String, amount: String, onCancel: @escaping () -> Void) {
+    init(name: String,
+         amount: String,
+         transactionType: CardPresentTransactionType,
+         inputMethods: CardReaderInput,
+         onCancel: @escaping () -> Void) {
         self.name = name
         self.amount = amount
+
+        if inputMethods == [.swipe, .insert, .tap] {
+            self.bottomSubtitle = Localization.tapInsertOrSwipe(transactionType: transactionType)
+        } else if inputMethods == [.tap, .insert] {
+            self.bottomSubtitle = Localization.tapOrInsert(transactionType: transactionType)
+        } else if inputMethods.contains(.tap) {
+            self.bottomSubtitle = Localization.tap(transactionType: transactionType)
+        } else if inputMethods.contains(.insert) {
+            self.bottomSubtitle = Localization.insert(transactionType: transactionType)
+        } else {
+            self.bottomSubtitle = Localization.presentCard(transactionType: transactionType)
+        }
+
+        self.accessibilityLabel = Localization.readerIsReady + Localization.tapInsertOrSwipe(transactionType: transactionType)
         self.onCancel = onCancel
     }
 
@@ -68,10 +84,80 @@ private extension CardPresentModalTapCard {
             comment: "Indicates the status of a card reader. Presented to users when payment collection starts"
         )
 
-        static let tapInsertOrSwipe = NSLocalizedString(
-            "Tap, insert or swipe to pay",
-            comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
-        )
+        static func tapInsertOrSwipe(transactionType: CardPresentTransactionType) -> String {
+            switch transactionType {
+            case .collectPayment:
+                return NSLocalizedString(
+                    "Tap, insert or swipe to pay",
+                    comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
+                )
+            case .refund:
+                return NSLocalizedString(
+                    "Tap, insert or swipe to refund",
+                    comment: "Label asking users to present a card. Presented to users when an in-person refund is going to be executed"
+                )
+            }
+        }
+
+        static func tapOrInsert(transactionType: CardPresentTransactionType) -> String {
+            switch transactionType {
+            case .collectPayment:
+                return NSLocalizedString(
+                    "Tap or insert card to pay",
+                    comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
+                )
+            case .refund:
+                return NSLocalizedString(
+                    "Tap or insert card to refund",
+                    comment: "Label asking users to present a card. Presented to users when an in-person refund is going to be executed"
+                )
+            }
+        }
+
+        static func tap(transactionType: CardPresentTransactionType) -> String {
+            switch transactionType {
+            case .collectPayment:
+                return NSLocalizedString(
+                    "Tap card to pay",
+                    comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
+                )
+            case .refund:
+                return NSLocalizedString(
+                    "Tap card to refund",
+                    comment: "Label asking users to present a card. Presented to users when an in-person refund is going to be executed"
+                )
+            }
+        }
+
+        static func insert(transactionType: CardPresentTransactionType) -> String {
+            switch transactionType {
+            case .collectPayment:
+                return NSLocalizedString(
+                    "Insert card to pay",
+                    comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
+                )
+            case .refund:
+                return NSLocalizedString(
+                    "Insert card to refund",
+                    comment: "Label asking users to present a card. Presented to users when an in-person refund is going to be executed"
+                )
+            }
+        }
+
+        static func presentCard(transactionType: CardPresentTransactionType) -> String {
+            switch transactionType {
+            case .collectPayment:
+                return NSLocalizedString(
+                    "Present card to pay",
+                    comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
+                )
+            case .refund:
+                return NSLocalizedString(
+                    "Present card to refund",
+                    comment: "Label asking users to present a card. Presented to users when an in-person refund is going to be executed"
+                )
+            }
+        }
 
         static let cancel = NSLocalizedString(
             "Cancel",

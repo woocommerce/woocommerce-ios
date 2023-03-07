@@ -1,6 +1,7 @@
 import XCTest
 import CoreData
 @testable import Storage
+@testable import WooFoundation
 
 
 /// CoreDataManager Unit Tests

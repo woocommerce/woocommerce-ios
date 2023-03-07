@@ -65,19 +65,17 @@ struct ShippingLabelPackageList: View {
                     }
                 }
 
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddCustomPackages) {
-                    NavigationLink(destination: ShippingLabelAddNewPackage(viewModel: viewModel.addNewPackageViewModel),
-                                   isActive: $isShowingNewPackageCreation) {
-                        EmptyView()
-                    }
-                    BottomButtonView(style: LinkButtonStyle(),
-                                     title: Localization.createPackageButton,
-                                     image: .plusImage,
-                                     onButtonTapped: {
-                                        ServiceLocator.analytics.track(.shippingLabelAddPackageTapped)
-                                        self.isShowingNewPackageCreation = true
-                                     })
+                NavigationLink(destination: ShippingLabelAddNewPackage(viewModel: viewModel.addNewPackageViewModel),
+                               isActive: $isShowingNewPackageCreation) {
+                    EmptyView()
                 }
+                BottomButtonView(style: LinkButtonStyle(),
+                                 title: Localization.createPackageButton,
+                                 image: .plusImage,
+                                 onButtonTapped: {
+                                    ServiceLocator.analytics.track(.shippingLabelAddPackageTapped)
+                                    self.isShowingNewPackageCreation = true
+                                 })
             }
         }
     }
@@ -97,10 +95,12 @@ private extension ShippingLabelPackageList {
     }
 }
 
+#if DEBUG
 struct ShippingLabelPackageList_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ShippingLabelPackageListViewModel(siteID: 123,
-                                                          packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
+                                                          packagesResponse: ShippingLabelSampleData.samplePackageDetails())
         ShippingLabelPackageList(viewModel: viewModel)
     }
 }
+#endif

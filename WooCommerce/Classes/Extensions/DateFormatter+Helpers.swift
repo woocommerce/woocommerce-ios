@@ -10,6 +10,14 @@ extension DateFormatter {
 
         // MARK: - Chark axis formatters
 
+        /// Date formatter used for creating the date for a selected date displayed on the time range bar for **hour** granularity.
+        ///
+        public static let chartSelectedDateHourFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.setLocalizedDateFormatFromTemplate("EEEE, MMM d, h:mm a")
+            return formatter
+        }()
+
         /// Date formatter used for creating the date displayed on a chart axis for **hour** granularity.
         ///
         public static let chartAxisHourFormatter: DateFormatter = {
@@ -54,7 +62,7 @@ extension DateFormatter {
         ///
         public static let chartAxisFullMonthFormatter: DateFormatter = {
             let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("MMMM")
+            formatter.setLocalizedDateFormatFromTemplate("MMMM yyyy")
             return formatter
         }()
 
@@ -144,6 +152,17 @@ extension DateFormatter {
     static let timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.setLocalizedDateFormatFromTemplate("hh:mm a")
+        return formatter
+    }()
+
+    /// Date formatter used for creating a **localized** date and time string.
+    ///
+    /// Example output in English: "Jan 28, 2018, 11:23 AM"
+    ///
+    public static let dateAndTimeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.setLocalizedDateFormatFromTemplate("MMM d yyyy hh:mm a")
+
         return formatter
     }()
 }

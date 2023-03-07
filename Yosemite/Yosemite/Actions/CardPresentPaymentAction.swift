@@ -4,9 +4,36 @@
 import Combine
 
 public enum CardPresentPaymentAction: Action {
+    /// Sets the store to use a given payment gateway
+    ///
+    case use(paymentGatewayAccount: PaymentGatewayAccount)
+
+    /// Returns the selected payment gateway account, set previously with CardPresentPaymentAction.use
+    ///
+    case selectedPaymentGatewayAccount(onCompletion: (PaymentGatewayAccount?) -> Void)
+
+    /// Retrieves the current configuration for IPP.
+    ///
+    case loadActivePaymentGatewayExtension(onCompletion: (CardPresentPaymentGatewayExtension) -> Void)
+
+    /// Retrieves and stores payment gateway account(s) for the provided `siteID`
+    /// We support payment gateway accounts for both the WooCommerce Payments extension AND
+    /// the Stripe extension. Let's attempt to load each and update view storage with the results.
+    /// Calls the passed completion with success after both loads have been attempted.
+    ///
+    case loadAccounts(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
+
+    case checkDeviceSupport(siteID: Int64,
+                            cardReaderType: CardReaderType,
+                            discoveryMethod: CardReaderDiscoveryMethod,
+                            onCompletion: (Bool) -> Void)
+
     /// Start the Card Reader discovery process.
     ///
-    case startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: ([CardReader]) -> Void, onError: (Error) -> Void)
+    case startCardReaderDiscovery(siteID: Int64,
+                                  discoveryMethod: CardReaderDiscoveryMethod,
+                                  onReaderDiscovered: ([CardReader]) -> Void,
+                                  onError: (Error) -> Void)
 
     /// Cancels the Card Reader discovery process.
     ///
@@ -32,10 +59,18 @@ public enum CardPresentPaymentAction: Action {
                         orderID: Int64,
                         parameters: PaymentParameters,
                         onCardReaderMessage: (CardReaderEvent) -> Void,
+                        onProcessingCompletion: (PaymentIntent) -> Void,
                         onCompletion: (Result<PaymentIntent, Error>) -> Void)
 
     /// Cancels an active attempt to collect a payment.
     case cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?)
+
+    /// Refund payment of an order, client side. Only for use on Interac payments
+    ///
+    case refundPayment(parameters: RefundParameters, onCardReaderMessage: (CardReaderEvent) -> Void, onCompletion: ((Result<Void, Error>) -> Void)?)
+
+    /// Cancels a refund, if one is in progress
+    case cancelRefund(onCompletion: ((Result<Void, Error>) -> Void)?)
 
     /// Check the state of available software updates.
     case observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void)
@@ -50,6 +85,10 @@ public enum CardPresentPaymentAction: Action {
     /// 3. Reset all status indicators
     case reset
 
-    /// Checks if a reader is connected
-    case checkCardReaderConnected(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void)
+    /// Provides a publisher for card reader connections
+    case publishCardReaderConnections(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void)
+
+    /// Fetches Charge details by charge ID
+    ///
+    case fetchWCPayCharge(siteID: Int64, chargeID: String, onCompletion: (Result<WCPayCharge, Error>) -> Void)
 }

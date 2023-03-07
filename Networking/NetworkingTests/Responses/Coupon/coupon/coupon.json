@@ -1,0 +1,43 @@
+{
+    "data": {
+        "id": 720,
+        "code": "free shipping",
+        "amount": "10.00",
+        "date_created": "2017-03-21T15:25:02",
+        "date_created_gmt": "2017-03-21T18:25:02",
+        "date_modified": "2017-03-21T15:25:02",
+        "date_modified_gmt": "2017-03-21T18:25:02",
+        "discount_type": "fixed_cart",
+        "description": "Coupon description",
+        "date_expires": "2017-03-31T15:25:02",
+        "date_expires_gmt": "2017-03-31T18:25:02",
+        "usage_count": 10,
+        "individual_use": true,
+        "product_ids": [12893712, 12389],
+        "excluded_product_ids": [12213],
+        "usage_limit": 1200,
+        "usage_limit_per_user": 3,
+        "limit_usage_to_x_items": 10,
+        "free_shipping": true,
+        "product_categories": [123, 435, 232],
+        "excluded_product_categories": [908],
+        "exclude_sale_items": false,
+        "minimum_amount": "5.00",
+        "maximum_amount": "500.00",
+        "email_restrictions": ["*@a8c.com", "someone.else@example.com"],
+        "used_by": ["someone.else@example.com", "person@a8c.com"],
+        "meta_data": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/coupons/720"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/coupons"
+                }
+            ]
+        }
+    }
+}

@@ -14,6 +14,8 @@ final class OrderSearchUICommand: SearchUICommand {
 
     let cancelButtonAccessibilityIdentifier = "order-search-screen-cancel-button"
 
+    var resynchronizeModels: (() -> Void) = {}
+
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
@@ -31,8 +33,9 @@ final class OrderSearchUICommand: SearchUICommand {
 
     func createResultsController() -> ResultsController<ResultsControllerModel> {
         let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
-        return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
+        return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 
     func createStarterViewController() -> UIViewController? {
@@ -69,22 +72,40 @@ final class OrderSearchUICommand: SearchUICommand {
         }
 
         ServiceLocator.stores.dispatch(action)
-        ServiceLocator.analytics.track(.ordersListFilterOrSearch, withProperties: ["filter": "", "search": "\(keyword)"])
+        ServiceLocator.analytics.track(.ordersListSearch, withProperties: ["search": "\(keyword)"])
     }
 
     func didSelectSearchResult(model: Order, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
-        guard let detailsViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
-            fatalError()
-        }
-        detailsViewController.viewModel = OrderDetailsViewModel(order: model)
+        let viewModel = OrderDetailsViewModel(order: model)
+        let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
 
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
+    }
+
+    /// Removes the `#` from the start of the search keyword, if present.
+    ///
+    /// This allows searching for an order with `#123` and getting the results for order `123`.
+    /// See https://github.com/woocommerce/woocommerce-ios/issues/2506
+    ///
+    func sanitizeKeyword(_ keyword: String) -> String {
+        if keyword.starts(with: "#") {
+            return keyword.removing(at: keyword.startIndex)
+        }
+        return keyword
+    }
+
+    func searchResultsPredicate(keyword: String) -> NSPredicate? {
+        NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
     }
 }
 
 private extension OrderSearchUICommand {
     func configureResultsController() {
-        try? statusResultsController.performFetch()
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Order statuses in order search for Site \(siteID): \(error)")
+        }
     }
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {

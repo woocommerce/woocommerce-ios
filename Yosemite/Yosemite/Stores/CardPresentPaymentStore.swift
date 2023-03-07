@@ -3,6 +3,8 @@ import Hardware
 import Networking
 import Combine
 
+
+
 /// MARK: CardPresentPaymentStore
 ///
 public final class CardPresentPaymentStore: Store {
@@ -11,16 +13,51 @@ public final class CardPresentPaymentStore: Store {
     // If retaining the service here ended up being a problem, we would need to move this Store out of Yosemite and push it up to WooCommerce.
     private let cardReaderService: CardReaderService
 
+    /// Card reader config provider
+    ///
+    private let commonReaderConfigProvider: CommonReaderConfigProviding
+
+    private var paymentGatewayAccount: PaymentGatewayAccount? {
+        didSet {
+            if paymentGatewayAccount != oldValue {
+                // If we switched accounts, disconnect any connected reader
+                // as its connection token would be tied to the other account
+                disconnect(onCompletion: { _ in })
+            }
+        }
+    }
+
+    /// Which backend is the store using? Default to WCPay until told otherwise
+    private var usingBackend: CardPresentPaymentGatewayExtension {
+        guard let paymentGatewayAccount = paymentGatewayAccount else {
+            return .wcpay
+        }
+
+        return paymentGatewayAccount.isWCPay ? .wcpay : .stripe
+    }
+
     private let remote: WCPayRemote
+    private let stripeRemote: StripeRemote
 
     private var cancellables: Set<AnyCancellable> = []
 
     /// We need to be able to cancel the process of collecting a payment.
     private var paymentCancellable: AnyCancellable? = nil
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, cardReaderService: CardReaderService) {
+    /// We need to be able to cancel the process of refunding a payment.
+    private var refundCancellable: AnyCancellable? = nil
+
+    public init(
+        dispatcher: Dispatcher,
+        storageManager: StorageManagerType,
+        network: Network,
+        cardReaderService: CardReaderService,
+        cardReaderConfigProvider: CommonReaderConfigProviding
+    ) {
         self.cardReaderService = cardReaderService
+        self.commonReaderConfigProvider = cardReaderConfigProvider
         self.remote = WCPayRemote(network: network)
+        self.stripeRemote = StripeRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -39,8 +76,25 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
-        case .startCardReaderDiscovery(let siteID, let onReaderDiscovered, let onError):
-            startCardReaderDiscovery(siteID: siteID, onReaderDiscovered: onReaderDiscovered, onError: onError)
+        case .use(let account):
+            use(paymentGatewayAccount: account)
+        case .selectedPaymentGatewayAccount(let completion):
+            completion(paymentGatewayAccount)
+        case .loadActivePaymentGatewayExtension(let completion):
+            loadActivePaymentGateway(onCompletion: completion)
+        case .loadAccounts(let siteID, let onCompletion):
+            loadAccounts(siteID: siteID,
+                         onCompletion: onCompletion)
+        case .checkDeviceSupport(let siteID, let cardReaderType, let discoveryMethod, let completion):
+            checkDeviceSupport(siteID: siteID,
+                               cardReaderType: cardReaderType,
+                               discoveryMethod: discoveryMethod,
+                               onCompletion: completion)
+        case .startCardReaderDiscovery(let siteID, let discoveryMethod, let onReaderDiscovered, let onError):
+            startCardReaderDiscovery(siteID: siteID,
+                                     discoveryMethod: discoveryMethod,
+                                     onReaderDiscovered: onReaderDiscovered,
+                                     onError: onError)
         case .cancelCardReaderDiscovery(let completion):
             cancelCardReaderDiscovery(completion: completion)
         case .connect(let reader, let completion):
@@ -49,22 +103,29 @@ public final class CardPresentPaymentStore: Store {
             disconnect(onCompletion: completion)
         case .observeConnectedReaders(let completion):
             observeConnectedReaders(onCompletion: completion)
-        case .collectPayment(let siteID, let orderID, let parameters, let event, let completion):
+        case .collectPayment(let siteID, let orderID, let parameters, let event, let processPaymentCompletion, let completion):
             collectPayment(siteID: siteID,
                            orderID: orderID,
                            parameters: parameters,
                            onCardReaderMessage: event,
+                           onProcessingCompletion: processPaymentCompletion,
                            onCompletion: completion)
         case .cancelPayment(let completion):
             cancelPayment(onCompletion: completion)
+        case .refundPayment(let parameters, let onCardReaderMessage, let completion):
+            refundPayment(parameters: parameters, onCardReaderMessage: onCardReaderMessage, onCompletion: completion)
+        case .cancelRefund(let completion):
+            cancelRefund(onCompletion: completion)
         case .observeCardReaderUpdateState(onCompletion: let completion):
             observeCardReaderUpdateState(onCompletion: completion)
         case .startCardReaderUpdate:
             startCardReaderUpdate()
         case .reset:
             reset()
-        case .checkCardReaderConnected(onCompletion: let completion):
-            checkCardReaderConnected(onCompletion: completion)
+        case .publishCardReaderConnections(onCompletion: let completion):
+            publishCardReaderConnections(onCompletion: completion)
+        case .fetchWCPayCharge(let siteID, let chargeID, let completion):
+            fetchCharge(siteID: siteID, chargeID: chargeID, completion: completion)
         }
     }
 }
@@ -73,9 +134,30 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
-    func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
+    func checkDeviceSupport(siteID: Int64,
+                            cardReaderType: CardReaderType,
+                            discoveryMethod: CardReaderDiscoveryMethod,
+                            onCompletion: (Bool) -> Void) {
+        prepareConfigProvider(siteID: siteID)
+        onCompletion(cardReaderService.checkSupport(for: cardReaderType, configProvider: commonReaderConfigProvider, discoveryMethod: discoveryMethod))
+    }
+
+    func prepareConfigProvider(siteID: Int64) {
+        switch usingBackend {
+        case .wcpay:
+            commonReaderConfigProvider.setContext(siteID: siteID, remote: self.remote)
+        case .stripe:
+            commonReaderConfigProvider.setContext(siteID: siteID, remote: self.stripeRemote)
+        }
+    }
+
+    func startCardReaderDiscovery(siteID: Int64,
+                                  discoveryMethod: CardReaderDiscoveryMethod,
+                                  onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void,
+                                  onError: @escaping (Error) -> Void) {
+        prepareConfigProvider(siteID: siteID)
         do {
-            try cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
+            try cardReaderService.start(commonReaderConfigProvider, discoveryMethod: discoveryMethod)
         } catch {
             return onError(error)
         }
@@ -94,7 +176,12 @@ private extension CardPresentPaymentStore {
                     }
                 },
                 receiveValue: { readers in
-                    let supportedReaders = readers.filter({$0.readerType == .chipper || $0.readerType == .stripeM2})
+                    let supportedReaders = readers.filter({
+                        $0.readerType == .chipper ||
+                        $0.readerType == .stripeM2 ||
+                        $0.readerType == .wisepad3 ||
+                        $0.readerType == .appleBuiltIn
+                    })
                     onReaderDiscovered(supportedReaders)
                 }
             ))
@@ -160,23 +247,43 @@ private extension CardPresentPaymentStore {
                         orderID: Int64,
                         parameters: PaymentParameters,
                         onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
+                        onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
         // Observe status events fired by the card reader
         let readerEventsSubscription = cardReaderService.readerEvents.sink { event in
             onCardReaderMessage(event)
         }
 
-        paymentCancellable = cardReaderService.capturePayment(parameters).sink { error in
-            readerEventsSubscription.cancel()
-            switch error {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            default:
-                break
+        paymentCancellable = cardReaderService.capturePayment(parameters)
+            .handleEvents(receiveOutput: { intent in
+                onProcessingCompletion(intent)
+            })
+            .flatMap { intent in
+                Publishers.CombineLatest(
+                    self.cardReaderService.waitForInsertedCardToBeRemoved()
+                        .handleEvents(receiveOutput: {
+                            onCardReaderMessage(.cardRemovedAfterClientSidePaymentCapture)
+                        })
+                        .map { intent },
+                    self.captureOrderPaymentOnSite(siteID: siteID, orderID: orderID, paymentIntent: intent)
+                )
             }
-        } receiveValue: { intent in
-            onCompletion(.success(intent))
-        }
+            .sink { completion in
+                readerEventsSubscription.cancel()
+                switch completion {
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                default:
+                    break
+                }
+            } receiveValue: { intent, captureOrderPaymentResult in
+                switch captureOrderPaymentResult {
+                case .success:
+                    onCompletion(.success(intent))
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                }
+            }
     }
 
     func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {
@@ -194,6 +301,48 @@ private extension CardPresentPaymentStore {
         }, receiveValue: {
             onCompletion?(.success(()))
         }))
+    }
+
+    func refundPayment(parameters: RefundParameters, onCardReaderMessage: @escaping (CardReaderEvent) -> Void, onCompletion: ((Result<Void, Error>) -> Void)?) {
+        // Observes status events fired by the card reader.
+        let readerEventsSubscription = cardReaderService.readerEvents.sink { event in
+            onCardReaderMessage(event)
+        }
+
+        refundCancellable = cardReaderService.refundPayment(parameters: parameters)
+            .sink { error in
+                readerEventsSubscription.cancel()
+                switch error {
+                case .failure(let error):
+                    DDLogError("⛔️ Error during client-side refund: \(error.localizedDescription)")
+                    onCompletion?(.failure(error))
+                case .finished:
+                    break
+                }
+            } receiveValue: { status in
+                DDLogInfo("💳 Refund Success: \(status)")
+                onCompletion?(.success(()))
+            }
+    }
+
+    func cancelRefund(onCompletion: ((Result<Void, Error>) -> Void)?) {
+        refundCancellable?.cancel()
+        refundCancellable = nil
+
+        cardReaderService.cancelRefund()
+            .sink { error in
+                switch error {
+                case .failure(let error):
+                    DDLogError("⛔️ Error cancelling client-side refund: \(error.localizedDescription)")
+                    onCompletion?(.failure(error))
+                case .finished:
+                    break
+                }
+            } receiveValue: {
+                DDLogInfo("🍁 Refund cancelled successfully!")
+                onCompletion?(.success(()))
+            }
+            .store(in: &cancellables)
     }
 
     func observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void) {
@@ -214,80 +363,345 @@ private extension CardPresentPaymentStore {
             ))
     }
 
-    func checkCardReaderConnected(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void) {
+    func publishCardReaderConnections(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void) {
         let publisher = cardReaderService.connectedReaders
-            // We only emit values when there is no reader connected, including an initial value
-            .prefix(while: { cardReaders in
-                cardReaders.count == 0
-            })
-            // Remove duplicates since we don't want to present the connection modal twice
             .removeDuplicates()
-            // Beyond this point, the publisher should emit an empty initial value once
-            // and then finish when a reader is connected.
             .eraseToAnyPublisher()
 
         onCompletion(publisher)
     }
 }
 
-
-/// Implementation of the CardReaderNetworkingAdapter
-/// that fetches a token using WCPayRemote
-private final class WCPayTokenProvider: CardReaderConfigProvider {
-    private let siteID: Int64
-    private let remote: WCPayRemote
-
-    init(siteID: Int64, remote: WCPayRemote) {
-        self.siteID = siteID
-        self.remote = remote
+// MARK: Networking Methods
+private extension CardPresentPaymentStore {
+    /// Sets the store to use a given payment gateway
+    ///
+    func use(paymentGatewayAccount: PaymentGatewayAccount) {
+        self.paymentGatewayAccount = paymentGatewayAccount
     }
 
-    func fetchToken(completion: @escaping(Result<String, Error>) -> Void) {
-        remote.loadConnectionToken(for: siteID) { result in
+    func loadActivePaymentGateway(onCompletion: (CardPresentPaymentGatewayExtension) -> Void) {
+        onCompletion(usingBackend)
+    }
+
+    /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).
+    ///
+    func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        var error: Error? = nil
+
+        let group = DispatchGroup()
+        group.enter()
+        loadWCPayAccount(siteID: siteID, onCompletion: { result in
             switch result {
-            case .success(let token):
-                completion(.success(token.token))
+            case .failure(let loadError):
+                DDLogError("⛔️ Error synchronizing WCPay Account: \(loadError)")
+                error = loadError
+            case .success():
+                break
+            }
+            group.leave()
+        })
+
+        group.enter()
+        loadStripeAccount(siteID: siteID, onCompletion: {result in
+            switch result {
+            case .failure(let loadError):
+                DDLogError("⛔️ Error synchronizing Stripe Account: \(loadError)")
+                error = loadError
+            case .success():
+                break
+            }
+            group.leave()
+        })
+
+        group.notify(queue: .main) {
+            guard let error = error else {
+                onCompletion(.success(()))
+                return
+            }
+            onCompletion(.failure(error))
+        }
+    }
+
+    func loadWCPayAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        /// Delete any WCPay account present. There can be only one.
+        self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
+
+        /// Fetch the WCPay account
+        remote.loadAccount(for: siteID) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
+            switch result {
+            case .success(let wcpayAccount):
+                let account = wcpayAccount.toPaymentGatewayAccount(siteID: siteID)
+                self.upsertStoredAccountInBackground(readonlyAccount: account)
+                onCompletion(.success(()))
             case .failure(let error):
-                if let configError = CardReaderConfigError(error: error) {
-                    completion(.failure(configError))
-                } else {
-                    completion(.failure(error))
-                }
+                self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
+                onCompletion(.failure(error))
             }
         }
     }
 
-    func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void) {
-        remote.loadDefaultReaderLocation(for: siteID) { result in
+    func loadStripeAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        /// Delete any Stripe account present. There can be only one.
+        self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
+
+        stripeRemote.loadAccount(for: siteID) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
             switch result {
-            case .success(let wcpayReaderLocation):
-                let readerLocation = wcpayReaderLocation.toReaderLocation(siteID: self.siteID)
-                completion(.success(readerLocation.id))
+            case .success(let stripeAccount):
+                let account = stripeAccount.toPaymentGatewayAccount(siteID: siteID)
+                self.upsertStoredAccountInBackground(readonlyAccount: account)
+                onCompletion(.success(()))
             case .failure(let error):
-                if let configError = CardReaderConfigError(error: error) {
-                    completion(.failure(configError))
-                } else {
+                self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Submits order to the site for server-side processing.
+    func captureOrderPaymentOnSite(siteID: Int64,
+                                   orderID: Int64,
+                                   paymentIntent: PaymentIntent) -> AnyPublisher<Result<Void, Error>, Never> {
+        let captureOrderPaymentPublisher: AnyPublisher<Result<RemotePaymentIntent, Error>, Never>
+        switch usingBackend {
+        case .wcpay:
+            captureOrderPaymentPublisher = remote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntent.id)
+        case .stripe:
+            captureOrderPaymentPublisher = stripeRemote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntent.id)
+        }
+        return captureOrderPaymentPublisher
+            .map { result in
+                switch result {
+                case .success(let intent):
+                    guard intent.status == .succeeded else {
+                        DDLogDebug("Unexpected payment intent status \(intent.status) after attempting capture")
+                        return .failure(ServerSidePaymentCaptureError.paymentIntentNotSuccessful)
+                    }
+                    return .success(())
+                case .failure(let error):
+                    let error = PaymentGatewayAccountError(underlyingError: error)
+                    return .failure(ServerSidePaymentCaptureError.paymentGateway(error: error))
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+
+    func fetchCharge(siteID: Int64, chargeID: String, completion: @escaping (Result<WCPayCharge, Error>) -> Void) {
+        switch usingBackend {
+        case .wcpay:
+            remote.fetchCharge(for: siteID, chargeID: chargeID) { result in
+                switch result {
+                case .success(let charge):
+                    self.upsertCharge(readonlyCharge: charge)
+                    completion(.success(charge))
+                case .failure(let error):
+                    if case .noSuchChargeError(_) = WCPayChargesError(underlyingError: error) {
+                        self.deleteCharge(siteID: siteID, chargeID: chargeID)
+                    }
                     completion(.failure(error))
                 }
             }
+        case .stripe:
+            break; /// not implemented
         }
     }
 }
 
-private extension CardReaderConfigError {
-    init?(error: Error) {
-        guard let dotcomError = error as? DotcomError else {
-            return nil
+// MARK: Storage Methods
+private extension CardPresentPaymentStore {
+    func upsertStoredAccountInBackground(readonlyAccount: PaymentGatewayAccount) {
+        let storage = storageManager.viewStorage
+        let storageAccount = storage.loadPaymentGatewayAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID) ??
+            storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)
+
+        storageAccount.update(with: readonlyAccount)
+    }
+
+    func deleteStaleAccount(siteID: Int64, gatewayID: String) {
+        let storage = storageManager.viewStorage
+        guard let storageAccount = storage.loadPaymentGatewayAccount(siteID: siteID, gatewayID: gatewayID) else {
+            return
         }
-        switch dotcomError {
-        case .unknown("store_address_is_incomplete", let message):
-            self = .incompleteStoreAddress(adminUrl: URL(string: message ?? ""))
+
+        storage.deleteObject(storageAccount)
+        storage.saveIfNeeded()
+    }
+
+    func upsertCharge(readonlyCharge: WCPayCharge) {
+        let storage = storageManager.viewStorage
+        let storageWCPayCharge = existingOrNewWCPayCharge(siteID: readonlyCharge.siteID, chargeID: readonlyCharge.id, in: storage)
+
+        switch readonlyCharge.paymentMethodDetails {
+        case .cardPresent(let details), .interacPresent(let details):
+            upsertCardPresentDetails(details, for: storageWCPayCharge, in: storage)
+        case .card(let details):
+            upsertCardDetails(details, for: storageWCPayCharge, in: storage)
+        case .unknown:
+            storageWCPayCharge.cardDetails = nil
+            storageWCPayCharge.cardPresentDetails = nil
+        }
+
+        storageWCPayCharge.update(with: readonlyCharge)
+    }
+
+    private func existingOrNewWCPayCharge(siteID: Int64, chargeID: String, in storage: StorageType) -> Storage.WCPayCharge {
+        storage.loadWCPayCharge(siteID: siteID, chargeID: chargeID) ?? storage.insertNewObject(ofType: Storage.WCPayCharge.self)
+    }
+
+    private func upsertCardPresentDetails(_ details: WCPayCardPresentPaymentDetails,
+                                          for storageWCPayCharge: Storage.WCPayCharge,
+                                          in storage: StorageType) {
+        let storageCardPresentDetails = storageWCPayCharge.cardPresentDetails ?? storage.insertNewObject(ofType: Storage.WCPayCardPresentPaymentDetails.self)
+        let storageReceiptDetails = storageCardPresentDetails.receipt ?? storage.insertNewObject(ofType: Storage.WCPayCardPresentReceiptDetails.self)
+
+        storageCardPresentDetails.update(with: details)
+        storageReceiptDetails.update(with: details.receipt)
+
+        storageCardPresentDetails.receipt = storageReceiptDetails
+
+        storageWCPayCharge.cardPresentDetails = storageCardPresentDetails
+        storageWCPayCharge.cardDetails = nil
+    }
+
+    private func upsertCardDetails(_ details: WCPayCardPaymentDetails,
+                                   for storageWCPayCharge: Storage.WCPayCharge,
+                                   in storage: StorageType) {
+        let storageCardDetails = storageWCPayCharge.cardDetails ?? storage.insertNewObject(ofType: Storage.WCPayCardPaymentDetails.self)
+        storageCardDetails.update(with: details)
+
+        storageWCPayCharge.cardDetails = storageCardDetails
+        storageWCPayCharge.cardPresentDetails = nil
+    }
+
+    func deleteCharge(siteID: Int64, chargeID: String) {
+        let storage = storageManager.viewStorage
+        guard let charge = storage.loadWCPayCharge(siteID: siteID, chargeID: chargeID) else {
             return
-        case .unknown("postal_code_invalid", _):
-            self = .invalidPostalCode
+        }
+
+        storage.deleteObject(charge)
+        storage.saveIfNeeded()
+    }
+}
+
+public enum ServerSidePaymentCaptureError: Error {
+    case paymentIntentNotSuccessful
+    case paymentGateway(error: PaymentGatewayAccountError)
+}
+
+public enum PaymentGatewayAccountError: Error, LocalizedError {
+    case orderPaymentCaptureError(message: String?)
+    case otherError(error: AnyError)
+
+    init(underlyingError error: Error) {
+        guard case let DotcomError.unknown(code, message) = error else {
+            self = .otherError(error: error.toAnyError)
             return
-        default:
-            return nil
+        }
+
+        /// See if we recognize this DotcomError code
+        ///
+        self = ErrorCode(rawValue: code)?.error(message: message ?? Localizations.defaultMessage) ?? .otherError(error: error.toAnyError)
+    }
+
+    enum ErrorCode: String {
+        case wcpayCaptureError = "wcpay_capture_error"
+
+        func error(message: String) -> PaymentGatewayAccountError {
+            switch self {
+            case .wcpayCaptureError:
+                return .orderPaymentCaptureError(message: message)
+            }
+        }
+    }
+
+    public var errorDescription: String? {
+        switch self {
+        case .orderPaymentCaptureError(let message):
+            /// Return the message directly from the store, e.g. in the case of fractional quantities, which are not allowed
+            /// "Payment capture failed to complete with the following message: Error: Invalid integer: 2.5"
+            return message
+        case .otherError(let error):
+            return error.localizedDescription
+        }
+    }
+
+    enum Localizations {
+        static let defaultMessage = NSLocalizedString(
+            "An unexpected error occurred with the store's payment gateway when capturing payment for the order",
+            comment: "Message presented when an unexpected error occurs with the store's payment gateway."
+        )
+    }
+}
+
+private extension PaymentGatewayAccount {
+    var isWCPay: Bool {
+        self.gatewayID == WCPayAccount.gatewayID
+    }
+}
+
+// MARK: - CardReaderCapableRemote
+//
+public protocol CardReaderCapableRemote {
+    func loadConnectionToken(for siteID: Int64,
+                             completion: @escaping(Result<ReaderConnectionToken, Error>) -> Void)
+    func loadDefaultReaderLocation(for siteID: Int64,
+                                   onCompletion: @escaping (Result<RemoteReaderLocation, Error>) -> Void)
+}
+
+extension WCPayRemote: CardReaderCapableRemote {}
+extension StripeRemote: CardReaderCapableRemote {}
+
+// MARK: - WCPayChargesError
+public enum WCPayChargesError: Error, LocalizedError {
+    case noSuchChargeError(message: String)
+    case otherError(error: AnyError)
+
+    init(underlyingError error: Error) {
+        guard case let DotcomError.unknown(code, message) = error,
+              let message = message else {
+                  self = .otherError(error: error.toAnyError)
+                  return
+              }
+
+        /// See if we recognize this DotcomError code
+        ///
+        self = ErrorCode(rawValue: code)?.error(message: message) ?? .otherError(error: error.toAnyError)
+    }
+
+    enum ErrorCode: String {
+        case getChargeError = "wcpay_get_charge"
+        case unknown
+
+        func error(message: String) -> WCPayChargesError? {
+            switch self {
+            case .getChargeError:
+                guard message.starts(with: "Error: No such charge") else {
+                    return nil
+                }
+                return .noSuchChargeError(message: message)
+            default:
+                return nil
+            }
+        }
+    }
+
+    public var errorDescription: String? {
+        switch self {
+        case .noSuchChargeError(let message):
+            /// Return the message directly from the store
+            /// "Error: No such charge: 'ch_3KMVapErrorERROR'"
+            return message
+        case .otherError(let error):
+            return error.localizedDescription
         }
     }
 }

@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension PaymentIntent {
@@ -33,3 +34,4 @@ protocol StripePaymentIntent {
 
 
 extension StripeTerminal.PaymentIntent: StripePaymentIntent { }
+#endif

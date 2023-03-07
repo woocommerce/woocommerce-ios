@@ -63,10 +63,15 @@ final class SurveyViewController: UIViewController, SurveyViewControllerOutputs 
 extension SurveyViewController {
     enum Source {
         case inAppFeedback
-        case productsVariationsFeedback
+        case productsFeedback
         case shippingLabelsRelease3Feedback
         case addOnsI1
-        case simplePaymentsPrototype
+        case orderCreation
+        case couponManagement
+        case inPersonPaymentsCashOnDelivery
+        case inPersonPaymentsFirstTransaction
+        case inPersonPaymentsPowerUsers
+        case storeSetup
 
         fileprivate var url: URL {
             switch self {
@@ -75,8 +80,7 @@ extension SurveyViewController {
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
-
-            case .productsVariationsFeedback:
+            case .productsFeedback:
                 return WooConstants.URLs.productsFeedback
                     .asURL()
                     .tagPlatform("ios")
@@ -92,8 +96,33 @@ extension SurveyViewController {
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
-            case .simplePaymentsPrototype:
-                return WooConstants.URLs.simplePaymentsPrototypeFeedback
+            case .orderCreation:
+                return WooConstants.URLs.orderCreationFeedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
+            case .couponManagement:
+                return WooConstants.URLs.couponManagementFeedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
+            case .inPersonPaymentsCashOnDelivery:
+                return WooConstants.URLs.inPersonPaymentsCashOnDeliveryFeedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
+            case .inPersonPaymentsFirstTransaction:
+                return WooConstants.URLs.inPersonPaymentsFirstTransactionFeedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
+            case .inPersonPaymentsPowerUsers:
+                return WooConstants.URLs.inPersonPaymentsPowerUsersFeedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
+            case .storeSetup:
+                return WooConstants.URLs.storeSetupFeedback
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
@@ -102,9 +131,9 @@ extension SurveyViewController {
 
         fileprivate var title: String {
             switch self {
-            case .inAppFeedback:
+            case .inAppFeedback, .inPersonPaymentsCashOnDelivery, .inPersonPaymentsFirstTransaction, .inPersonPaymentsPowerUsers:
                 return Localization.title
-            case .productsVariationsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .simplePaymentsPrototype:
+            case .productsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .orderCreation, .couponManagement, .storeSetup:
                 return Localization.giveFeedback
             }
         }
@@ -114,14 +143,24 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return .general
-            case .productsVariationsFeedback:
-                return .productsVariations
+            case .productsFeedback:
+                return .productsGeneral
             case .shippingLabelsRelease3Feedback:
                 return .shippingLabelsRelease3
             case .addOnsI1:
                 return .addOnsI1
-            case .simplePaymentsPrototype:
-                return .simplePaymentsPrototype
+            case .orderCreation:
+                return .orderCreation
+            case .couponManagement:
+                return .couponManagement
+            case .inPersonPaymentsCashOnDelivery:
+                return .inPersonPaymentsCashOnDeliveryBanner
+            case .inPersonPaymentsFirstTransaction:
+                return .inPersonPaymentsFirstTransactionBanner
+            case .inPersonPaymentsPowerUsers:
+                return .inPersonPaymentsPowerUsersBanner
+            case .storeSetup:
+                return .storeSetup
             }
         }
     }

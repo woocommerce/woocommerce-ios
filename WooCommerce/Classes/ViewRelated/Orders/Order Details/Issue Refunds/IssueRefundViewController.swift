@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import WooFoundation
 
 /// Screen that allows the user to refund items (products and shipping) of an order
 ///
@@ -11,7 +12,7 @@ final class IssueRefundViewController: UIViewController {
 
     @IBOutlet private var headerStackView: UIStackView!
     @IBOutlet private var itemsSelectedLabel: UILabel!
-    @IBOutlet private var nextButton: UIButton!
+    @IBOutlet private var nextButton: ButtonActivityIndicator!
     @IBOutlet private var selectAllButton: UIButton!
 
     private let imageService: ImageService
@@ -44,6 +45,7 @@ final class IssueRefundViewController: UIViewController {
         configureNavigationBar()
         configureTableView()
         observeViewModel()
+        viewModel.fetch()
         updateWithViewModelContent()
     }
 
@@ -69,12 +71,24 @@ private extension IssueRefundViewController {
         viewModel.onChange = { [weak self] in
             self?.updateWithViewModelContent()
         }
+
+        viewModel.showFetchChargeErrorNotice = { [weak self] retryAction in
+            guard let self = self else { return }
+
+            let notice = Notice(title: Localization.retryFetchChargeNoticeTitle,
+                                feedbackType: .error,
+                                actionTitle: Localization.retryFetchChargeNoticeRetryActionTitle,
+                                actionHandler: retryAction)
+            let noticePresenter = DefaultNoticePresenter()
+            noticePresenter.presentingViewController = self
+            noticePresenter.enqueue(notice: notice)
+        }
     }
 
     func updateWithViewModelContent() {
         title = viewModel.title
         itemsSelectedLabel.text = viewModel.selectedItemsTitle
-        nextButton.isEnabled = viewModel.isNextButtonEnabled
+        updateButtonState(enabled: viewModel.isNextButtonEnabled, showActivityIndicator: viewModel.isNextButtonAnimating)
         selectAllButton.isHidden = !viewModel.isSelectAllButtonVisible
         tableView.reloadData()
     }
@@ -83,8 +97,11 @@ private extension IssueRefundViewController {
 // MARK: Actions
 private extension IssueRefundViewController {
     @IBAction func nextButtonWasPressed(_ sender: Any) {
-        let confirmationViewModel = viewModel.createRefundConfirmationViewModel()
-        onNextAction?(confirmationViewModel)
+        viewModel.createRefundConfirmationViewModel() { [weak self] confirmationViewModel in
+            DispatchQueue.main.async {
+                self?.onNextAction?(confirmationViewModel)
+            }
+        }
 
         viewModel.trackNextButtonTapped()
     }
@@ -95,6 +112,10 @@ private extension IssueRefundViewController {
 
     func shippingSwitchChanged() {
         viewModel.toggleRefundShipping()
+    }
+
+    func feesSwitchChanged() {
+        viewModel.toggleRefundFees()
     }
 
     func quantityButtonPressed(sender: UITableViewCell) {
@@ -133,6 +154,7 @@ private extension IssueRefundViewController {
         tableView.registerNib(for: RefundItemTableViewCell.self)
         tableView.registerNib(for: RefundProductsTotalTableViewCell.self)
         tableView.registerNib(for: RefundShippingDetailsTableViewCell.self)
+        tableView.registerNib(for: RefundFeesDetailsTableViewCell.self)
         tableView.registerNib(for: SwitchTableViewCell.self)
         tableView.registerNib(for: ImageAndTitleAndTextTableViewCell.self)
     }
@@ -157,6 +179,15 @@ private extension IssueRefundViewController {
         headerStackView.axis = traitCollection.preferredContentSizeCategory > .extraExtraExtraLarge ? .vertical : .horizontal
         headerStackView.alignment = headerStackView.axis == .vertical ? .center : .fill
         headerStackView.spacing = 8
+    }
+
+    func updateButtonState(enabled: Bool, showActivityIndicator: Bool) {
+        nextButton.isEnabled = enabled && !showActivityIndicator
+        if showActivityIndicator {
+            nextButton.showActivityIndicator()
+        } else {
+            nextButton.hideActivityIndicator()
+        }
     }
 }
 
@@ -214,6 +245,18 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
             let cell = tableView.dequeueReusableCell(RefundShippingDetailsTableViewCell.self, for: indexPath)
             cell.configure(with: viewModel)
             return cell
+        case let viewModel as IssueRefundViewModel.FeesSwitchViewModel:
+            let cell = tableView.dequeueReusableCell(SwitchTableViewCell.self, for: indexPath)
+            cell.title = viewModel.title
+            cell.isOn = viewModel.isOn
+            cell.onChange = { [weak self] _ in
+                self?.feesSwitchChanged()
+            }
+            return cell
+        case let viewModel as RefundFeesDetailsViewModel:
+            let cell = tableView.dequeueReusableCell(RefundFeesDetailsTableViewCell.self, for: indexPath)
+            cell.configure(with: viewModel)
+            return cell
         case let viewModel as ImageAndTitleAndTextTableViewCell.ViewModel:
             let cell = tableView.dequeueReusableCell(ImageAndTitleAndTextTableViewCell.self, for: indexPath)
             cell.updateUI(viewModel: viewModel)
@@ -239,5 +282,11 @@ private extension IssueRefundViewController {
         static let nextTitle = NSLocalizedString("Next", comment: "Title of the next button in the issue refund screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Cancel button title in the issue refund screen")
         static let selectAllTitle = NSLocalizedString("Select All", comment: "Select all button title in the issue refund screen")
+        static let retryFetchChargeNoticeTitle = NSLocalizedString(
+            "Failed to fetch your charge details. Please try again.",
+            comment: "Error message on the Issue Refund screen when fetching the charge details failed")
+        static let retryFetchChargeNoticeRetryActionTitle = NSLocalizedString(
+            "Retry",
+            comment: "Action button that will retry fetching the charge details on the Issue Refund screen")
     }
 }

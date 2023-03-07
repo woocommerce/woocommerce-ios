@@ -29,8 +29,14 @@ final class MockCardReaderService: CardReaderService {
     /// Boolean flag Indicates that clients have called the disconnect method
     var didHitDisconnect = false
 
+    /// Boolean flag Indicates that clients have called the waitForInsertedCardToBeRemoved method
+    var didHitWaitForInsertedCardToBeRemoved = false
+
     /// Boolean flag Indicates that clients have provided a CardReaderConfigProvider
     var didReceiveAConfigurationProvider = false
+
+    /// DiscoveryMethod received on starting a payment
+    var spyStartDiscoveryMethod: CardReaderDiscoveryMethod? = nil
 
     /// Boolean flag Indicates that clients have called the cancel payment method
     var didTapCancelPayment = false
@@ -41,6 +47,18 @@ final class MockCardReaderService: CardReaderService {
     /// Boolean flag indicates that checking for a reader software update should fail
     var shouldFailReaderUpdateCheck = false
 
+    /// The publisher to return in `capturePayment`.
+    private var capturePaymentPublisher: AnyPublisher<PaymentIntent, Error>?
+
+
+    var didCheckSupport = false
+    var spyCheckSupportCardReaderType: CardReaderType? = nil
+    var spyCheckSupportConfigProvider: CardReaderConfigProvider? = nil
+    var spyCheckSupportDiscoveryMethod: CardReaderDiscoveryMethod? = nil
+
+    /// The future to return in `waitForInsertedCardToBeRemoved`.
+    private var waitForInsertedCardToBeRemovedFuture: Future<Void, Never>?
+
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
 
@@ -49,9 +67,21 @@ final class MockCardReaderService: CardReaderService {
 
     }
 
-    func start(_ configProvider: CardReaderConfigProvider) throws {
+    func checkSupport(for cardReaderType: Hardware.CardReaderType,
+                      configProvider: Hardware.CardReaderConfigProvider,
+                      discoveryMethod: Hardware.CardReaderDiscoveryMethod) -> Bool {
+        didCheckSupport = true
+        spyCheckSupportCardReaderType = cardReaderType
+        spyCheckSupportConfigProvider = configProvider
+        spyCheckSupportDiscoveryMethod = discoveryMethod
+
+        return true
+    }
+
+    func start(_ configProvider: Hardware.CardReaderConfigProvider, discoveryMethod: Hardware.CardReaderDiscoveryMethod) throws {
         didHitStart = true
         didReceiveAConfigurationProvider = true
+        spyStartDiscoveryMethod = discoveryMethod
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
             self?.discoveryStatusSubject.send(.discovering)
@@ -90,10 +120,21 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
+    func waitForInsertedCardToBeRemoved() -> Future<Void, Never> {
+        didHitWaitForInsertedCardToBeRemoved = true
+        return waitForInsertedCardToBeRemovedFuture ??
+        Future() { promise in
+            DispatchQueue.main.async {
+                promise(.success(()))
+            }
+        }
+    }
+
     func clear() { }
 
     func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
-        Just(MockPaymentIntent.mock())
+        capturePaymentPublisher ??
+        Just(.fake())
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }
@@ -107,7 +148,31 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
+    func refundPayment(parameters: RefundParameters) -> AnyPublisher<String, Error> {
+        Just("success")
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+
+    func cancelRefund() -> AnyPublisher<Void, Error> {
+        Just(())
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+
     func installUpdate() -> Void {
+    }
+}
+
+extension MockCardReaderService {
+    /// Set the return value if `capturePayment` is called.
+    func whenCapturingPayment(thenReturn publisher: AnyPublisher<PaymentIntent, Error>) {
+        capturePaymentPublisher = publisher
+    }
+
+    /// Set the return value if `waitForInsertedCardToBeRemoved` is called.
+    func whenWaitForInsertedCardToBeRemoved(thenReturn future: Future<Void, Never>) {
+        waitForInsertedCardToBeRemovedFuture = future
     }
 }
 

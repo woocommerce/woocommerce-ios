@@ -1,5 +1,6 @@
 import Fakes
 import XCTest
+import WooFoundation
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -44,7 +45,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeAccount_returns_error_upon_empty_response() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
 
         // When
         let result: Result<Yosemite.Account, Error> = waitFor { promise in
@@ -63,7 +64,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeAccount_returns_error_upon_reponse_error() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         network.simulateResponse(requestUrlSuffix: "me", filename: "generic_error")
 
         // When
@@ -83,7 +84,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeAccount_returns_expected_account_details() throws {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         network.simulateResponse(requestUrlSuffix: "me", filename: "me")
         XCTAssertNil(viewStorage.firstObject(ofType: Storage.Account.self, matching: nil))
 
@@ -109,7 +110,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_upsertStoredAccount_effectively_updates_preexistant_accounts() {
         // Given
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         XCTAssertNil(viewStorage.firstObject(ofType: Storage.Account.self, matching: nil))
 
         // When
@@ -128,7 +129,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_upsertStoredAccount_effectively_persists_new_accounts() {
         // Given
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         let remoteAccount = sampleAccountPristine()
         XCTAssertNil(viewStorage.loadAccount(userID: remoteAccount.userID))
 
@@ -146,7 +147,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeAccountSettings_returns_error_on_empty_response() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
 
         // When
         let result: Result<Yosemite.AccountSettings, Error> = waitFor { promise in
@@ -164,7 +165,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeAccountSettings_effectively_persists_retrieved_settings() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.AccountSettings.self), 0)
 
@@ -185,7 +186,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeAccountSettings_effectively_update_retrieved_settings() throws {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         storageManager.insertSampleAccountSettings(readOnlyAccountSettings: sampleAccountSettings())
         network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
@@ -215,11 +216,11 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeSites_returns_error_on_empty_response() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: false) { result in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -243,7 +244,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: false) { result in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -283,7 +284,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: true) { result in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -309,56 +310,9 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(jetpackSite.siteID, siteIDOfJetpackSite)
     }
 
-    /// Verifies that `synchronizeSites` effectively persists all sites when the response contains a JCP site while the feature flag is off.
-    /// The JCP site is still persisted but the information is not accurate.
+    /// Verifies that `synchronizeSites` effectively persists a Jetpack Connection Package site without any changes when WP site settings request fails.
     ///
-    func test_synchronizeSites_effectively_persists_sites_with_jcp_feature_off() throws {
-        // Given
-        let siteIDOfJCPSite = Int64(255)
-        let siteIDOfJetpackSite = Int64(166)
-        let remote = MockAccountRemote()
-        remote.loadSitesResult = .success([
-            Site.fake().copy(siteID: siteIDOfJCPSite,
-                             name: "old name",
-                             description: "old description",
-                             url: "oldurl",
-                             isJetpackThePluginInstalled: false,
-                             isJetpackConnected: true),
-            Site.fake().copy(siteID: siteIDOfJetpackSite, isJetpackThePluginInstalled: true, isJetpackConnected: true)
-        ])
-
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
-
-        // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: false) { result in
-                promise(result)
-            }
-            store.onAction(action)
-        }
-
-        // Then
-        XCTAssertEqual(remote.invocations, [.loadSites])
-
-        XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 2)
-
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self, matching: jcpSitePredicate), 1)
-        let jcpSite = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.Site.self, matching: jcpSitePredicate))
-        XCTAssertEqual(jcpSite.siteID, siteIDOfJCPSite)
-        XCTAssertEqual(jcpSite.name, "old name")
-        XCTAssertEqual(jcpSite.tagline, "old description")
-        XCTAssertEqual(jcpSite.url, "oldurl")
-
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self, matching: jetpackSitePredicate), 1)
-        let jetpackSite = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.Site.self, matching: jetpackSitePredicate))
-        XCTAssertEqual(jetpackSite.siteID, siteIDOfJetpackSite)
-    }
-
-    /// Verifies that `synchronizeSites` effectively persists a Jetpack Connection Package site with original metadata when WP site settings request fails.
-    ///
-    func test_synchronizeSites_persists_a_jetpack_cp_site_with_existing_metadata_when_wp_settings_request_fails() throws {
+    func test_synchronizeSites_persists_a_jetpack_cp_site_without_any_changes_when_wp_settings_request_fails() throws {
         // Given
         let siteID = Int64(255)
         let remote = MockAccountRemote()
@@ -368,7 +322,8 @@ final class AccountStoreTests: XCTestCase {
                              description: "old description",
                              url: "oldurl",
                              isJetpackThePluginInstalled: false,
-                             isJetpackConnected: true)
+                             isJetpackConnected: true,
+                             isWooCommerceActive: false)
         ])
         remote.whenFetchingWordPressSiteSettings(siteID: siteID, thenReturn: .failure(NetworkError.timeout))
         remote.whenCheckingIfWooCommerceIsActive(siteID: siteID, thenReturn: .success(true))
@@ -378,7 +333,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: true) { result in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -396,17 +351,23 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(jcpSite.name, "old name")
         XCTAssertEqual(jcpSite.tagline, "old description")
         XCTAssertEqual(jcpSite.url, "oldurl")
-        XCTAssertTrue(jcpSite.isWooCommerceActive?.boolValue == true)
+        XCTAssertTrue(jcpSite.isWooCommerceActive?.boolValue == false)
     }
 
-    /// Verifies that `synchronizeSites` persists a Jetpack Connection Package site with original isWooCommerceActive when WC site settings request fails.
+    /// Verifies that `synchronizeSites` persists a Jetpack Connection Package site without any changes when WC site settings request fails.
     ///
-    func test_synchronizeSites_persists_a_jetpack_cp_site_without_isWooCommerceActive_change_when_wc_settings_request_fails() throws {
+    func test_synchronizeSites_persists_a_jetpack_cp_site_without_any_changes_when_wc_settings_request_fails() throws {
         // Given
         let siteID = Int64(255)
         let remote = MockAccountRemote()
         remote.loadSitesResult = .success([
-            Site.fake().copy(siteID: siteID, isJetpackThePluginInstalled: false, isJetpackConnected: true, isWooCommerceActive: false)
+            Site.fake().copy(siteID: siteID,
+                             name: "old name",
+                             description: "old description",
+                             url: "oldurl",
+                             isJetpackThePluginInstalled: false,
+                             isJetpackConnected: true,
+                             isWooCommerceActive: false)
         ])
         remote.whenFetchingWordPressSiteSettings(siteID: siteID, thenReturn: .success(.init(name: "new name",
                                                                                                      description: "new description",
@@ -418,7 +379,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: true) { result in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -431,6 +392,9 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self, matching: jcpSitePredicate), 1)
         let jcpSite = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.Site.self, matching: jcpSitePredicate))
         XCTAssertEqual(jcpSite.siteID, siteID)
+        XCTAssertEqual(jcpSite.name, "old name")
+        XCTAssertEqual(jcpSite.tagline, "old description")
+        XCTAssertEqual(jcpSite.url, "oldurl")
         XCTAssertTrue(jcpSite.isWooCommerceActive?.boolValue == false)
         XCTAssertFalse(jcpSite.isJetpackThePluginInstalled)
         XCTAssertTrue(jcpSite.isJetpackConnected)
@@ -440,7 +404,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeSites_deletes_sites_that_do_not_exist_remotely() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         let siteIDInStorageOnly = Int64(127)
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteIDInStorageOnly))
         network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
@@ -449,7 +413,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: false) { result in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -466,7 +430,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeSites_does_not_delete_selected_site_that_does_not_exist_remotely() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         let selectedSiteID = Int64(127)
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: selectedSiteID))
         network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
@@ -475,7 +439,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AccountAction.synchronizeSites(selectedSiteID: selectedSiteID, isJetpackConnectionPackageSupported: false) { result in
+            let action = AccountAction.synchronizeSites(selectedSiteID: selectedSiteID) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -501,7 +465,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: false) { result in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -521,11 +485,14 @@ final class AccountStoreTests: XCTestCase {
             Site.fake().copy(siteID: 1, isJetpackThePluginInstalled: true, isJetpackConnected: true),
             Site.fake().copy(siteID: 2, isJetpackThePluginInstalled: false, isJetpackConnected: true)
         ])
+        remote.whenCheckingIfWooCommerceIsActive(siteID: 2, thenReturn: .success(true))
+        remote.whenFetchingWordPressSiteSettings(siteID: 2, thenReturn: .failure(NetworkError.notFound))
+
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: false) { result in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -540,7 +507,7 @@ final class AccountStoreTests: XCTestCase {
 
     func test_loadAccount_returns_expected_account() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 0)
         store.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
@@ -561,7 +528,7 @@ final class AccountStoreTests: XCTestCase {
 
     func test_loadAccount_returns_nil_for_unknown_account() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 0)
         store.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
@@ -584,7 +551,7 @@ final class AccountStoreTests: XCTestCase {
     func test_loadAndSynchronizeSite_returns_site_already_in_storage_without_making_network_request_if_forcedUpdate_is_false() throws {
         // Given
         let network = MockNetwork()
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         let siteID = Int64(999)
@@ -599,7 +566,7 @@ final class AccountStoreTests: XCTestCase {
         // When
         let result: Result<Yosemite.Site, Error> = waitFor { promise in
             group.notify(queue: .main) {
-                let action = AccountAction.loadAndSynchronizeSite(siteID: siteID, forcedUpdate: false, isJetpackConnectionPackageSupported: false) { result in
+                let action = AccountAction.loadAndSynchronizeSite(siteID: siteID, forcedUpdate: false) { result in
                     XCTAssertTrue(Thread.isMainThread)
                     promise(result)
                 }
@@ -617,7 +584,7 @@ final class AccountStoreTests: XCTestCase {
         // Given
         let network = MockNetwork()
         network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // The site ID value is in `sites.json` used in the mock network.
@@ -633,9 +600,7 @@ final class AccountStoreTests: XCTestCase {
         // When
         let result: Result<Yosemite.Site, Error> = waitFor { promise in
             group.notify(queue: .main) {
-                let action = AccountAction.loadAndSynchronizeSite(siteID: siteIDInSimulatedResponse,
-                                                                  forcedUpdate: true,
-                                                                  isJetpackConnectionPackageSupported: false) { result in
+                let action = AccountAction.loadAndSynchronizeSite(siteID: siteIDInSimulatedResponse, forcedUpdate: true) { result in
                     XCTAssertTrue(Thread.isMainThread)
                     promise(result)
                 }
@@ -646,12 +611,12 @@ final class AccountStoreTests: XCTestCase {
         // Then
         let site = try XCTUnwrap(result.get())
         XCTAssertEqual(site.isWooCommerceActive, true) // the value in `sites.json` - not the one in storage.
-        XCTAssertEqual(network.requestsForResponseData.count, 1)
+        XCTAssertEqual(network.requestsForResponseData.count, 3)
     }
 
     func test_loadAndSynchronizeSite_returns_unknown_site_error_after_syncing_failure() throws {
         // Given
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         let group = DispatchGroup()
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
@@ -664,7 +629,7 @@ final class AccountStoreTests: XCTestCase {
         // When
         let result: Result<Yosemite.Site, Error> = waitFor { promise in
             group.notify(queue: .main) {
-                let action = AccountAction.loadAndSynchronizeSite(siteID: 9999, forcedUpdate: false, isJetpackConnectionPackageSupported: false) { result in
+                let action = AccountAction.loadAndSynchronizeSite(siteID: 9999, forcedUpdate: false) { result in
                     XCTAssertTrue(Thread.isMainThread)
                     promise(result)
                 }
@@ -683,7 +648,7 @@ final class AccountStoreTests: XCTestCase {
         // Given
         let network = MockNetwork()
         network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         let group = DispatchGroup()
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
@@ -699,8 +664,7 @@ final class AccountStoreTests: XCTestCase {
         let result: Result<Yosemite.Site, Error> = waitFor { promise in
             group.notify(queue: .main) {
                 let action = AccountAction.loadAndSynchronizeSite(siteID: siteIDInSimulatedResponse,
-                                                                  forcedUpdate: true,
-                                                                  isJetpackConnectionPackageSupported: false) { result in
+                                                                  forcedUpdate: true) { result in
                     XCTAssertTrue(Thread.isMainThread)
                     promise(result)
                 }
@@ -728,7 +692,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let _: Void = waitFor { promise in
-            let action = AccountAction.loadAndSynchronizeSite(siteID: 123, forcedUpdate: true, isJetpackConnectionPackageSupported: true) { result in
+            let action = AccountAction.loadAndSynchronizeSite(siteID: 123, forcedUpdate: true) { result in
                 promise(())
             }
             accountStore.onAction(action)
@@ -737,28 +701,6 @@ final class AccountStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(remote.invocations,
                        [.loadSites, .checkIfWooCommerceIsActive(siteID: siteIDOfJCPSite), .fetchWordPressSiteSettings(siteID: siteIDOfJCPSite)])
-    }
-
-    func test_loadAndSynchronizeSite_makes_1_network_request_when_one_site_is_jetpack_cp_connected_with_jcp_feature_off() throws {
-        // Given
-        let network = MockNetwork()
-        let remote = MockAccountRemote()
-        remote.loadSitesResult = .success([
-            Site.fake().copy(siteID: 1, isJetpackThePluginInstalled: true, isJetpackConnected: true),
-            Site.fake().copy(siteID: 2, isJetpackThePluginInstalled: false, isJetpackConnected: true)
-        ])
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
-
-        // When
-        let _: Void = waitFor { promise in
-            let action = AccountAction.loadAndSynchronizeSite(siteID: 123, forcedUpdate: true, isJetpackConnectionPackageSupported: false) { result in
-                promise(())
-            }
-            accountStore.onAction(action)
-        }
-
-        // Then
-        XCTAssertEqual(remote.invocations, [.loadSites])
     }
 
     func test_loadAndSynchronizeSite_makes_1_network_requests_when_all_sites_have_jetpack_plugin() throws {
@@ -774,7 +716,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let _: Void = waitFor { promise in
-            let action = AccountAction.loadAndSynchronizeSite(siteID: 123, forcedUpdate: true, isJetpackConnectionPackageSupported: true) { result in
+            let action = AccountAction.loadAndSynchronizeSite(siteID: 123, forcedUpdate: true) { result in
                 promise(())
             }
             accountStore.onAction(action)
@@ -783,8 +725,61 @@ final class AccountStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(remote.invocations, [.loadSites])
     }
+
+    func test_disconnectFromSocialService_returns_success_on_dotcom_remote_success() throws {
+        // Given
+        let network = MockNetwork()
+        let dotcomRemote = MockDotcomAccountRemote()
+        dotcomRemote.whenClosingAccount(thenReturn: .success(()))
+        let accountStore = AccountStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockAccountRemote(),
+                                        dotcomRemote: dotcomRemote)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.closeAccount { result in
+                promise(result)
+            }
+            accountStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_disconnectFromSocialService_returns_failure_on_dotcom_remote_failure() throws {
+        // Given
+        let network = MockNetwork()
+        let dotcomRemote = MockDotcomAccountRemote()
+        let error = NSError(domain: "disconnect", code: 134)
+        dotcomRemote.whenClosingAccount(thenReturn: .failure(error))
+        let accountStore = AccountStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockAccountRemote(),
+                                        dotcomRemote: dotcomRemote)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.closeAccount { result in
+                promise(result)
+            }
+            accountStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as NSError?, error)
+    }
 }
 
+private extension AccountStore {
+    convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: AccountRemoteProtocol) {
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, dotcomRemote: MockDotcomAccountRemote())
+    }
+}
 
 // MARK: - Private Methods
 //

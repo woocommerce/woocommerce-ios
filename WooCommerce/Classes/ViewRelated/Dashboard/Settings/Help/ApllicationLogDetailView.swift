@@ -31,7 +31,7 @@ struct ApplicationLogDetailView: View {
             }
             .overlay(
                 scrollToBottomButton {
-                    withAnimation {
+                    withAnimation(.easeInOut(duration: 0.1)) {
                         scrollProxy.scrollTo(viewModel.lastLineID)
                     }
                 },
@@ -71,7 +71,6 @@ struct ApplicationLogDetailView: View {
                 .transition(.move(edge: .bottom))
             }
         }
-        .animation(.easeInOut(duration: 0.1))
     }
 }
 

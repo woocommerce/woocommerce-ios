@@ -1,7 +1,7 @@
+import Combine
 import UIKit
 import Yosemite
 import Photos
-import Observables
 
 final class ProductDownloadListViewController: UIViewController {
     private let product: ProductFormDataModel
@@ -25,18 +25,23 @@ final class ProductDownloadListViewController: UIViewController {
     private var onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion?
     private var onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion?
     private let productImageActionHandler: ProductImageActionHandler?
-    private var cancellable: ObservationToken?
+    private var cancellable: AnyCancellable?
 
     /// Loading view displayed while an user is uploading a new image
     ///
     private let loadingView = LoadingView(waitMessage: Localization.loadingMessage,
                                           backgroundColor: UIColor.black.withAlphaComponent(0.4))
 
-    init(product: ProductFormDataModel, completion: @escaping Completion) {
+    init(product: ProductFormDataModel,
+         stores: StoresManager = ServiceLocator.stores,
+         completion: @escaping Completion) {
         self.product = product
         viewModel = ProductDownloadListViewModel(product: product)
         onCompletion = completion
-        productImageActionHandler = ProductImageActionHandler(siteID: product.siteID, product: product)
+        productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
+                                                              productID: .product(id: product.productID),
+                                                              imageStatuses: [],
+                                                              stores: stores)
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         onDeviceMediaLibraryPickerCompletion = { [weak self] assets in
@@ -45,7 +50,10 @@ final class ProductDownloadListViewController: UIViewController {
         onWPMediaPickerCompletion = { [weak self] mediaItems in
             self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
         }
-        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, productImage in
+        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in
+            guard case let .success(productImage) = result else {
+                return
+            }
             self?.addDownloadableFile(fileName: productImage.name, fileURL: productImage.src)
             self?.loadingView.hideLoader()
         }
@@ -153,7 +161,7 @@ extension ProductDownloadListViewController {
 
     @objc private func addButtonTapped(_ sender: UIButton) {
         let title = Localization.bottomSheetTitle
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let actions = viewModel.bottomSheetActions
         let dataSource = DownloadableFileBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
             self?.dismiss(animated: true) { [weak self] in

@@ -2,6 +2,7 @@ import Combine
 import UIKit
 import SwiftUI
 import Yosemite
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 
@@ -445,6 +446,10 @@ extension ShippingLabelPackagesFormViewModel {
                      orderID: 963,
                      parentID: 0,
                      customerID: 11,
+                     orderKey: "",
+                     isEditable: false,
+                     needsPayment: false,
+                     needsProcessing: false,
                      number: "963",
                      status: .processing,
                      currency: "USD",
@@ -460,13 +465,17 @@ extension ShippingLabelPackagesFormViewModel {
                      totalTax: "1.20",
                      paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
+                     paymentURL: nil,
+                     chargeID: nil,
                      items: sampleItems(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
                      shippingLines: sampleShippingLines(),
                      coupons: sampleCoupons(),
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: [],
+                     customFields: [])
     }
 
     static func sampleAddress() -> Address {

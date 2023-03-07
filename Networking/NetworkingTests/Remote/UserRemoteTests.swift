@@ -19,7 +19,7 @@ final class UserRemoteTests: XCTestCase {
         // Given
         let remote = UserRemote(network: network)
         let siteID: Int64 = 1234
-        let urlSuffix = "sites/\(siteID)/users/me"
+        let urlSuffix = "users/me"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "user-complete")
 
         // When

@@ -15,7 +15,9 @@ final class LabeledTextViewTableViewCell: UITableViewCell {
         var style: Style = .headline
 
     }
-    @IBOutlet weak var productLabelHolder: UIView!
+
+    @IBOutlet weak var productStatusBadgeHolder: UIView! // container with extra top margin for badge alignment
+    @IBOutlet weak var productStatusBadgeBg: UIView!
     @IBOutlet weak var productStatusLabel: UILabel!
     @IBOutlet var productTextField: EnhancedTextView!
 
@@ -28,7 +30,6 @@ final class LabeledTextViewTableViewCell: UITableViewCell {
     func configure(with viewModel: ViewModel) {
         productTextField.text = viewModel.text
         productTextField.placeholder = viewModel.placeholder
-        productStatusLabel.text = viewModel.productStatus.description
         productTextField.isScrollEnabled = viewModel.isScrollEnabled
         productTextField.onTextChange = viewModel.onNameChange
         productTextField.onTextDidBeginEditing = viewModel.onTextDidBeginEditing
@@ -45,26 +46,36 @@ private extension LabeledTextViewTableViewCell {
         productTextField.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
     }
 
-
     func configureLabelStyle() {
         productStatusLabel.font = UIFont.preferredFont(forTextStyle: .caption1)
         productStatusLabel.textAlignment = .center
-        productStatusLabel.textColor = UIColor.black
-        productLabelHolder.backgroundColor = .gray(.shade5)
-        productLabelHolder.layer.cornerRadius = CGFloat(4.0)
+        productStatusLabel.textColor = BadgeStyle.Colors.textColor
+        productStatusBadgeBg.backgroundColor = BadgeStyle.Colors.defaultBg
+        productStatusBadgeBg.layer.cornerRadius = BadgeStyle.cornerRadius
     }
 
     func configureProductStatusLabel(productStatus: ProductStatus) {
-        if productStatus == ProductStatus.draft {
-                let statusLabel = NSLocalizedString("Draft", comment: "Display label for the product's draft status")
-                productLabelHolder.isHidden = false
-                productStatusLabel.isHidden = false
-                productStatusLabel.text? = statusLabel
-            } else {
-                productLabelHolder.isHidden = true
-                productStatusLabel.isHidden = true
-            }
+        productStatusLabel.text = productStatus.description
+
+        switch productStatus {
+        case .pending:
+            productStatusBadgeBg.backgroundColor = BadgeStyle.Colors.pendingBg
+        default:
+            productStatusBadgeBg.backgroundColor = BadgeStyle.Colors.defaultBg
         }
+
+        productStatusBadgeHolder.isHidden = productStatus == .published
+    }
+
+    enum BadgeStyle {
+        static let cornerRadius: CGFloat = 4
+
+        enum Colors {
+            static let textColor: UIColor = .black
+            static let defaultBg: UIColor = .gray(.shade5)
+            static let pendingBg: UIColor = .withColorStudio(.orange, shade: .shade10)
+        }
+    }
 }
 
 // Styles

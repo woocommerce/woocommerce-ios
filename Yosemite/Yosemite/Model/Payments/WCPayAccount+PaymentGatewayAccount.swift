@@ -1,6 +1,6 @@
 import Hardware
 
-public extension WCPayAccount {
+extension WCPayAccount {
     /// Maps a WCPayAccount into the PaymentGatewayAccount struct
     ///
     func toPaymentGatewayAccount(siteID: Int64) -> PaymentGatewayAccount { // TODO can we add siteID to WCPayAccount?

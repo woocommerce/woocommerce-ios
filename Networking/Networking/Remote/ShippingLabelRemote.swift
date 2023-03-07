@@ -33,9 +33,6 @@ public protocol ShippingLabelRemoteProtocol {
                                             completion: @escaping (Result<Bool, Error>) -> Void)
     func checkCreationEligibility(siteID: Int64,
                                   orderID: Int64,
-                                  canCreatePaymentMethod: Bool,
-                                  canCreateCustomsForm: Bool,
-                                  canCreatePackage: Bool,
                                   completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void)
     func purchaseShippingLabel(siteID: Int64,
                                orderID: Int64,
@@ -59,7 +56,11 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     ///   - completion: Closure to be executed upon completion.
     public func loadShippingLabels(siteID: Int64, orderID: Int64, completion: @escaping (Result<OrderShippingLabelListResponse, Error>) -> Void) {
         let path = "\(Path.shippingLabels)/\(orderID)"
-        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path)
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
         let mapper = OrderShippingLabelListMapper(siteID: siteID, orderID: orderID)
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -81,7 +82,12 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
             ParameterKey.json: "true" // `json=true` is necessary, otherwise it results in 500 error "no_response_body".
         ]
         let path = "\(Path.shippingLabels)/print"
-        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = ShippingLabelPrintDataMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -95,7 +101,11 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     ///   - completion: Closure to be executed upon completion.
     public func refundShippingLabel(siteID: Int64, orderID: Int64, shippingLabelID: Int64, completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
         let path = "\(Path.shippingLabels)/\(orderID)/\(shippingLabelID)/refund"
-        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path)
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
         let mapper = ShippingLabelRefundMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -111,7 +121,12 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
         do {
             let parameters = try address.toDictionary()
             let path = "\(Path.normalizeAddress)"
-            let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
             let mapper = ShippingLabelAddressValidationSuccessMapper()
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
@@ -126,7 +141,12 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     public func packagesDetails(siteID: Int64,
                                 completion: @escaping (Result<ShippingLabelPackagesResponse, Error>) -> Void) {
         let path = Path.packages
-        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = ShippingLabelPackagesMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -160,7 +180,12 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                 ParameterKey.predefined: predefinedOptionDictionary
             ]
             let path = Path.packages
-            let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
             let mapper = SuccessDataResultMapper()
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
@@ -189,7 +214,12 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                 ParameterKey.packages: try packages.map { try $0.toDictionary() }
             ]
             let path = "\(Path.shippingLabels)/\(orderID)/rates"
-            let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
             let mapper = ShippingLabelCarriersAndRatesMapper()
             enqueue(request, mapper: mapper, completion: completion)
         }
@@ -204,7 +234,11 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     ///   - completion: Closure to be executed upon completion.
     public func loadShippingLabelAccountSettings(siteID: Int64, completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void) {
         let path = Path.accountSettings
-        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path)
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
         let mapper = ShippingLabelAccountSettingsMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -221,7 +255,12 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
             ParameterKey.paperSize: settings.paperSize.rawValue
         ]
         let path = Path.accountSettings
-        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = SuccessDataResultMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -230,23 +269,17 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     /// - Parameters:
     ///     - siteID: Remote ID of the site.
     ///     - orderID: Remote ID of the order that owns the shipping labels.
-    ///     - canCreatePaymentMethod: Whether the client supports creating new payment methods.
-    ///     - canCreateCustomsForm: Whether the client supports creating customs forms.
-    ///     - canCreatePackage: Whether the client supports creating packages.
     ///     - completion: Closure to be executed upon completion.
     public func checkCreationEligibility(siteID: Int64,
                                          orderID: Int64,
-                                         canCreatePaymentMethod: Bool,
-                                         canCreateCustomsForm: Bool,
-                                         canCreatePackage: Bool,
                                          completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void) {
-        let parameters = [
-            ParameterKey.canCreatePaymentMethod: canCreatePaymentMethod,
-            ParameterKey.canCreateCustomsForm: canCreateCustomsForm,
-            ParameterKey.canCreatePackage: canCreatePackage
-        ]
         let path = "\(Path.shippingLabels)/\(orderID)/creation_eligibility"
-        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = ShippingLabelCreationEligibilityMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -279,7 +312,12 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                 ParameterKey.emailReceipt: emailCustomerReceipt
             ]
             let path = "\(Path.shippingLabels)/\(orderID)"
-            let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
             let mapper = ShippingLabelPurchaseMapper(siteID: siteID, orderID: orderID)
             enqueue(request, mapper: mapper, completion: completion)
         }
@@ -303,7 +341,11 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                                     completion: @escaping (Result<[ShippingLabelStatusPollingResponse], Error>) -> Void) {
         let labelIDs = labelIDs.map(String.init).joined(separator: ",")
         let path = "\(Path.shippingLabels)/\(orderID)/\(labelIDs)"
-        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path)
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
         let mapper = ShippingLabelStatusMapper(siteID: siteID, orderID: orderID)
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -325,9 +367,6 @@ private extension ShippingLabelRemote {
         static let json = "json"
         static let custom = "custom"
         static let predefined = "predefined"
-        static let canCreatePaymentMethod = "can_create_payment_method"
-        static let canCreateCustomsForm = "can_create_customs_form"
-        static let canCreatePackage = "can_create_package"
         static let originAddress = "origin"
         static let destinationAddress = "destination"
         static let packages = "packages"

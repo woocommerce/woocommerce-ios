@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// View model for ShippingLabelsCustomsFormList
 ///
@@ -64,7 +65,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
         self.allCountries = countries
         self.destinationCountry = destinationCountry
         let currencySymbol: String = {
-            guard let currencyCode = CurrencySettings.CurrencyCode(rawValue: order.currency) else {
+            guard let currencyCode = CurrencyCode(rawValue: order.currency) else {
                 return ""
             }
             return ServiceLocator.currencySettings.symbol(from: currencyCode)

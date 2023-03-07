@@ -25,13 +25,24 @@ import SwiftUI
  SOFTWARE.
  */
 
+/// Note: the font and foreground color of the text have to be set in `NSAttributedString`'s attributes.
+/// `font` and `attributedTextForegroundColor` functions do not take effect.
+/// The link color can be set with `attributedTextLinkColor`.
 struct AttributedText: View {
-    @StateObject private var textViewStore = TextViewStore()
+    private var textViewStore = TextViewStore()
+    @State private var textSize: CGSize?
 
-    let attributedText: NSAttributedString
+    private let attributedText: NSAttributedString
 
-    init(_ attributedText: NSAttributedString) {
+    private let enablesLinkUnderline: Bool
+
+    /// - Parameters:
+    ///   - attributedText: The attributed text to be shown.
+    ///   - enablesLinkUnderline: If disabled, the underline color is set to clear to hide the underline.
+    ///     Otherwise, the link attributes in the `NSAttributedString` are used.
+    init(_ attributedText: NSAttributedString, enablesLinkUnderline: Bool = false) {
         self.attributedText = attributedText
+        self.enablesLinkUnderline = enablesLinkUnderline
     }
 
     var body: some View {
@@ -39,14 +50,18 @@ struct AttributedText: View {
             TextViewWrapper(
                 attributedText: attributedText,
                 maxLayoutWidth: geometry.maxWidth,
-                textViewStore: textViewStore
+                textViewStore: textViewStore,
+                enablesLinkUnderline: enablesLinkUnderline
             )
         }
         .frame(
-            idealWidth: textViewStore.intrinsicContentSize?.width,
-            idealHeight: textViewStore.intrinsicContentSize?.height
+            idealWidth: textSize?.width,
+            idealHeight: textSize?.height
         )
         .fixedSize(horizontal: false, vertical: true)
+        .onReceive(textViewStore.$intrinsicContentSize) { size in
+            textSize = size
+        }
     }
 }
 
@@ -77,7 +92,7 @@ private extension GeometryProxy {
     }
 }
 
-private final class TextViewStore: ObservableObject {
+private final class TextViewStore {
     @Published var intrinsicContentSize: CGSize?
 
     func didUpdateTextView(_ textView: TextViewWrapper.View) {
@@ -117,6 +132,7 @@ private struct TextViewWrapper: UIViewRepresentable {
     let attributedText: NSAttributedString
     let maxLayoutWidth: CGFloat
     let textViewStore: TextViewStore
+    let enablesLinkUnderline: Bool
 
     func makeUIView(context: Context) -> View {
         let uiView = View()
@@ -138,7 +154,9 @@ private struct TextViewWrapper: UIViewRepresentable {
         uiView.attributedText = attributedText
 
         var linkTextAttributes = uiView.linkTextAttributes ?? [:]
-        linkTextAttributes[.underlineColor] = UIColor.clear
+        if enablesLinkUnderline == false {
+            linkTextAttributes[.underlineColor] = UIColor.clear
+        }
         if let linkColor = context.environment.linkColor.map(UIColor.init) {
             linkTextAttributes[.foregroundColor] = linkColor
         }
@@ -218,6 +236,17 @@ struct AttributedText_Previews: PreviewProvider {
                 .font(.footnote)
                 .attributedTextForegroundColor(.gray)
                 .attributedTextLinkColor(.pink)
+            AttributedText(.init(string: "Link with underline", attributes: [
+                .font: UIFont.body,
+                .link: "woocommerce.com",
+                .underlineStyle: NSUnderlineStyle.single.rawValue
+            ]), enablesLinkUnderline: true)
+            .attributedTextLinkColor(.init(UIColor.accent))
+            AttributedText(.init(string: "Link without underline", attributes: [
+                .font: UIFont.body,
+                .link: "woocommerce.com",
+                .underlineStyle: 0 // No `NSUnderlineStyle` is available.
+            ]), enablesLinkUnderline: true)
         }
     }
 }

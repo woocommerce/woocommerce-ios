@@ -1,0 +1,15 @@
+{
+    "data": {
+        "id": "tml_0123456789abcd",
+        "address": {
+            "city": "Bothell",
+            "country": "US",
+            "line1": "15000 Main Street",
+            "line2": "Suite 42",
+            "postal_code": "98012",
+            "state": "WA"
+        },
+        "display_name": "MY COOL STORE IN BOTHELL",
+        "livemode": true
+    }
+}

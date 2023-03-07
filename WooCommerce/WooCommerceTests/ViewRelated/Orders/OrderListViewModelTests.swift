@@ -10,7 +10,12 @@ final class OrderListViewModelTests: XCTestCase {
     /// The `siteID` value doesn't matter.
     private let siteID: Int64 = 1_000_000
 
-    private var storageManager: StorageManagerType!
+    private var storageManager: MockStorageManager!
+
+    private var stores: MockStoresManager!
+
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
 
     private var storage: StorageType {
         storageManager.viewStorage
@@ -21,11 +26,14 @@ final class OrderListViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.sessionManager.setStoreId(siteID)
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings(stores: stores, storageManager: storageManager))
     }
 
     override func tearDown() {
-        storageManager = nil
-
         cancellables.forEach {
             $0.cancel()
         }
@@ -204,7 +212,7 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Act
-        let notification = PushNotification(noteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "")
+        let notification = PushNotification(noteID: 1, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "")
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
@@ -224,20 +232,142 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Act
-        let notification = PushNotification(noteID: 1, kind: .comment, title: "", subtitle: "", message: "")
+        let notification = PushNotification(noteID: 1, siteID: 1, kind: .comment, title: "", subtitle: "", message: "")
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
         XCTAssertFalse(resynchronizeRequested)
     }
 
-    func test_having_no_error_and_no_simple_payments_does_not_show_banner() {
+    // MARK: - Banner visibility
+
+    func test_when_having_no_error_and_orders_banner_should_not_be_shown_shows_nothing() {
         // Given
-        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
-        let viewModel = OrderListViewModel(siteID: siteID, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        viewModel.activate()
 
         // When
+        viewModel.updateBannerVisibility()
+        viewModel.hideIPPFeedbackBanner = true
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .none
+        }
+    }
+
+    func test_when_having_no_error_and_IPP_banner_should_be_shown_shows_IPP_banner() {
+        // Given
+        insertCODPaymentGateway()
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(.inPersonPayments, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
         viewModel.activate()
+
+        // When
+        viewModel.updateBannerVisibility()
+        viewModel.hideIPPFeedbackBanner = false
+
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .inPersonPaymentsFeedback(.inPersonPaymentsCashOnDelivery)
+        }
+    }
+
+    func test_when_having_no_error_and_orders_banner_should_be_shown_shows_orders_banner() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        viewModel.activate()
+
+        // When
+        viewModel.updateBannerVisibility()
+        viewModel.hideIPPFeedbackBanner = true
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .orderCreation
+        }
+    }
+
+    func test_when_having_no_error_and_orders_banner_or_IPP_banner_should_be_shown_shows_correct_banner() {
+        // Given
+        insertCODPaymentGateway()
+        let isIPPFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(.ordersCreation, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        viewModel.activate()
+
+        // When
+        viewModel.updateBannerVisibility()
+
+        // Then
+        if isIPPFeatureFlagEnabled {
+            viewModel.hideIPPFeedbackBanner = false
+            waitUntil {
+                viewModel.topBanner == .inPersonPaymentsFeedback(.inPersonPaymentsCashOnDelivery)
+            }
+        } else {
+            waitUntil {
+                viewModel.topBanner == .orderCreation
+            }
+        }
+    }
+
+    func test_when_having_no_error_and_orders_banner_visibility_loading_fails_shows_nothing() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(_, onCompletion):
+                let error = NSError(domain: "Test", code: 503, userInfo: nil)
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        viewModel.activate()
+
+        // When
+        viewModel.updateBannerVisibility()
 
         // Then
         waitUntil {
@@ -248,9 +378,10 @@ final class OrderListViewModelTests: XCTestCase {
     func test_storing_error_shows_error_banner() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
+        viewModel.activate()
 
         // When
-        viewModel.activate()
+        viewModel.updateBannerVisibility()
         viewModel.hasErrorLoadingData = true
 
         // Then
@@ -259,45 +390,15 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
-    func test_storing_error_shows_error_banner_with_precedence_over_other_state() {
+    func test_dismissing_banners_does_not_show_banners() {
         // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
-
-        // When
-        viewModel.activate()
-        viewModel.hasErrorLoadingData = true
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .error
-        }
-    }
-
-    func test_having_store_onboarded_and_simple_payments_enabled_shows_enabled_top_banner() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
-
-        // When
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
         viewModel.activate()
 
-        // Then
-        waitUntil {
-            viewModel.topBanner == .simplePaymentsEnabled
-        }
-    }
-
-    func test_having_store_not_onboarded_and_simple_payments_enabled_shows_no_banner() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
-
         // When
-        viewModel.activate()
+        viewModel.updateBannerVisibility()
+        viewModel.hideIPPFeedbackBanner = true
+        viewModel.hideOrdersBanners = true
 
         // Then
         waitUntil {
@@ -305,30 +406,15 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
-    func test_dismissing_simple_payments_banners_does_not_show_banners() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
-
-        // When
-        viewModel.activate()
-        viewModel.hideSimplePaymentsBanners = true
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .none
-        }
-    }
-
-    func test_hiding_simplePayments_banners_still_shows_error_banner() {
+    func test_hiding_orders_banners_still_shows_error_banner() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
+        viewModel.activate()
 
         // When
-        viewModel.activate()
+        viewModel.updateBannerVisibility()
         viewModel.hasErrorLoadingData = true
-        viewModel.hideSimplePaymentsBanners = true
+        viewModel.hideOrdersBanners = true
 
         // Then
         waitUntil {
@@ -375,6 +461,426 @@ final class OrderListViewModelTests: XCTestCase {
         // Assert
         XCTAssertFalse(resynchronizeRequested)
     }
+
+// MARK: - In-Person Payments feedback banner tracks
+
+    func test_trackInPersonPaymentsFeedbackBannerShown_tracks_event_and_properties_correctly() {
+        // Given
+        let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerShown
+        let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
+        let expectedSource = WooAnalyticsEvent.InPersonPaymentsFeedbackBanner.Source.orderList.rawValue
+
+        // When
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        viewModel.trackInPersonPaymentsFeedbackBannerShown(for: .inPersonPaymentsCashOnDelivery)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
+        guard let actualProperties = analyticsProvider.receivedProperties.first(
+            where: { $0.keys.contains("source") }) else {
+            return XCTFail("Expected properties were not tracked"
+            )}
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+        assertEqual(expectedSource, actualProperties["source"] as? String)
+    }
+
+    func test_IPPFeedbackBannerCTATapped_tracks_event_and_properties_correctly() {
+        // Given
+        let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerTapped
+        let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
+        let expectedSource = WooAnalyticsEvent.InPersonPaymentsFeedbackBanner.Source.orderList.rawValue
+
+        // When
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        viewModel.IPPFeedbackBannerCTATapped(for: .inPersonPaymentsCashOnDelivery)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
+        guard let actualProperties = analyticsProvider.receivedProperties.first(
+            where: { $0.keys.contains("source") }) else {
+            return XCTFail("Expected properties were not tracked"
+            )}
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+        assertEqual(expectedSource, actualProperties["source"] as? String)
+    }
+
+    func test_IPPFeedbackBannerDontShowAgainTapped_tracks_dismiss_event_and_properties_correctly() {
+        // Given
+        let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerDismissed
+        let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
+        let expectedSource = WooAnalyticsEvent.InPersonPaymentsFeedbackBanner.Source.orderList.rawValue
+        let expectedRemindLater = false
+
+        // When
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        viewModel.IPPFeedbackBannerDontShowAgainTapped(for: .inPersonPaymentsCashOnDelivery)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
+        guard let actualProperties = analyticsProvider.receivedProperties.first(
+            where: { $0.keys.contains("source") }) else {
+            return XCTFail("Expected properties were not tracked"
+            )}
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+        assertEqual(expectedSource, actualProperties["source"] as? String)
+        assertEqual(expectedRemindLater, actualProperties["remind_later"] as? Bool)
+    }
+
+    func test_IPPFeedbackBannerRemindMeLaterTapped_tracks_dismiss_event_and_properties_correctly() {
+        // Given
+        let expectedEvent = WooAnalyticsStat.inPersonPaymentsBannerDismissed
+        let expectedCampaign = FeatureAnnouncementCampaign.inPersonPaymentsCashOnDelivery
+        let expectedSource = WooAnalyticsEvent.InPersonPaymentsFeedbackBanner.Source.orderList.rawValue
+        let expectedRemindLater = true
+
+        // When
+        let viewModel = OrderListViewModel(siteID: siteID, analytics: analytics, filters: nil)
+        viewModel.IPPFeedbackBannerRemindMeLaterTapped(for: .inPersonPaymentsCashOnDelivery)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent.rawValue)
+        guard let actualProperties = analyticsProvider.receivedProperties.first(
+            where: { $0.keys.contains("source") }) else {
+            return XCTFail("Expected properties were not tracked"
+            )}
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+        assertEqual(expectedSource, actualProperties["source"] as? String)
+        assertEqual(expectedRemindLater, actualProperties["remind_later"] as? Bool)
+    }
+
+// MARK: - In-Person Payments feedback banner survey
+
+    func test_feedbackBannerSurveySource_Cash_on_Delivery_store_in_an_IPP_country_with_non_WCPay_IPP_orders_is_shown_inPersonPaymentsCashOnDelivery_survey() {
+        // Given
+        insertCODPaymentGateway()
+
+        // This is not a WCPay order, so receipt_url does not denote an IPP order in this case
+        let _ = insertOrder(
+            id: 123,
+            status: .completed,
+            dateCreated: Date(),
+            datePaid: Date(),
+            customFields: [OrderMetaData.init(metadataID: 1, key: "receipt_url", value: "https://example.com/receipts/1902384")]
+        )
+
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
+
+        // When
+        let survey = viewModel.feedbackBannerSurveySource()
+
+        // Then
+        assertEqual(.inPersonPaymentsCashOnDelivery, survey)
+    }
+
+    func test_feedbackBannerSurveySource_non_Cash_on_Delivery_store_in_an_IPP_country_without_WCPay_IPP_orders_is_not_shown_a_survey() {
+        // Given
+        // This is not a WCPay order, so receipt_url does not denote an IPP order in this case
+        let _ = insertOrder(
+            id: 123,
+            status: .completed,
+            dateCreated: Date(),
+            datePaid: Date(),
+            customFields: [OrderMetaData.init(metadataID: 1, key: "receipt_url", value: "https://example.com/receipts/1902384")]
+        )
+
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
+
+        // When
+        let survey = viewModel.feedbackBannerSurveySource()
+
+        // Then
+        assertEqual(.none, survey)
+    }
+
+    func test_feedbackBannerSurveySource_Cash_on_Delivery_store_in_a_non_IPP_country_is_not_shown_a_survey() {
+        // Given
+        insertCODPaymentGateway()
+
+        // This is not a WCPay order, so receipt_url does not denote an IPP order in this case
+        let _ = insertOrder(
+            id: 123,
+            status: .completed,
+            dateCreated: Date(),
+            datePaid: Date(),
+            customFields: [OrderMetaData.init(metadataID: 1, key: "receipt_url", value: "https://example.com/receipts/1902384")]
+        )
+
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "AQ"), // Antarctica ;)
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
+
+        // When
+        let survey = viewModel.feedbackBannerSurveySource()
+
+        // Then
+        assertEqual(.none, survey)
+    }
+
+    func test_feedbackBannerSurveySource_Cash_on_Delivery_store_in_an_IPP_country_with_only_WCPay_web_orders_is_shown_inPersonPaymentsCashOnDelivery_survey() {
+        // Given
+        insertCODPaymentGateway()
+
+        // This is not an IPP order, as it has no receipt_url
+        let _ = insertOrder(
+            id: 123,
+            status: .completed,
+            dateCreated: Date(),
+            datePaid: Date(),
+            customFields: [],
+            paymentMethodID: "woocommerce_payments"
+        )
+
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 1)
+
+        // When
+        let survey = viewModel.feedbackBannerSurveySource()
+
+        // Then
+        assertEqual(.inPersonPaymentsCashOnDelivery, survey)
+    }
+
+    func test_feedbackBannerSurveySource_when_there_are_less_than_ten_wcpay_orders_then_assigns_inPersonPaymentsFirstTransaction_survey() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "CA"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        let _ = (0..<9).map { orderID in
+            let metaDataID = Int64(orderID + 100)
+            return insertOrder(
+                id: Int64(orderID),
+                status: .completed,
+                dateCreated: Date(),
+                datePaid: Date(),
+                customFields: [OrderMetaData.init(metadataID: metaDataID, key: "receipt_url", value: "https://example.com/receipts/\(orderID)")],
+                paymentMethodID: "woocommerce_payments"
+            )
+        }
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 9)
+
+        // When
+        let survey = viewModel.feedbackBannerSurveySource()
+
+        // Then
+        assertEqual(.inPersonPaymentsFirstTransaction, survey)
+    }
+
+    func test_feedbackBannerSurveySource_when_there_are_less_than_ten_wcpay_orders_all_older_than_30_days_then_no_survey() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "CA"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        let thirtyOneDaysAgo = Date().adding(days: -31) ?? Date()
+        let _ = (0..<9).map { orderID in
+            let metaDataID = Int64(orderID + 100)
+            return insertOrder(
+                id: Int64(orderID),
+                status: .completed,
+                dateCreated: thirtyOneDaysAgo,
+                datePaid: thirtyOneDaysAgo,
+                customFields: [OrderMetaData.init(metadataID: metaDataID, key: "receipt_url", value: "https://example.com/receipts/\(orderID)")],
+                paymentMethodID: "woocommerce_payments"
+            )
+        }
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 9)
+
+        // When
+        let survey = viewModel.feedbackBannerSurveySource()
+
+        // Then
+        assertEqual(.none, survey)
+    }
+
+    func test_feedbackBannerSurveySource_when_there_are_more_than_ten_wcpay_orders_then_assigns_inPersonPaymentsPowerUsers_survey() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "CA"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        let _ = (0..<15).map { orderID in
+            let metaDataID = Int64(orderID + 100)
+            return insertOrder(
+                id: Int64(orderID),
+                status: .completed,
+                dateCreated: Date(),
+                datePaid: Date(),
+                customFields: [OrderMetaData.init(metadataID: metaDataID, key: "receipt_url", value: "https://example.com/receipts/\(orderID)")],
+                paymentMethodID: "woocommerce_payments"
+            )
+        }
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 15)
+
+        // When
+        let survey = viewModel.feedbackBannerSurveySource()
+
+        // Then
+        assertEqual(.inPersonPaymentsPowerUsers, survey)
+    }
+
+    func test_feedbackBannerSurveySource_when_there_are_ten_or_more_wcpay_ipp_orders_all_older_than_30_days_then_assigns_inPersonPaymentsPowerUsers_survey() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           cardPresentPaymentsConfiguration: .init(country: "CA"),
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        let thirtyOneDaysAgo = Date().adding(days: -31) ?? Date()
+        let _ = (0..<10).map { orderID in
+            let metaDataID = Int64(orderID + 100)
+            return insertOrder(
+                id: Int64(orderID),
+                status: .completed,
+                dateCreated: thirtyOneDaysAgo,
+                datePaid: thirtyOneDaysAgo,
+                customFields: [OrderMetaData.init(metadataID: metaDataID, key: "receipt_url", value: "https://example.com/receipts/\(orderID)")],
+                paymentMethodID: "woocommerce_payments"
+            )
+        }
+
+        // Confidence check
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), 10)
+
+        // When
+        let survey = viewModel.feedbackBannerSurveySource()
+
+        // Then
+        assertEqual(.inPersonPaymentsPowerUsers, survey)
+    }
+
+    func test_IPPFeedbackBannerWasSubmitted_hides_banner_after_being_called() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
+
+        // When
+        viewModel.IPPFeedbackBannerWasSubmitted()
+        viewModel.hasErrorLoadingData = false
+        viewModel.hideOrdersBanners = true
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .none
+        }
+    }
+
+    func test_IPPFeedbackBannerWasSubmitted_then_it_calls_updateFeedbackStatus_with_right_parameters() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        var updatedFeedbackStatus: FeedbackSettings.Status?
+        var receivedFeedbackType: FeedbackType?
+
+        // When
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .updateFeedbackStatus(type, status, onCompletion):
+                receivedFeedbackType = type
+                updatedFeedbackStatus = status
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        viewModel.activate()
+        viewModel.IPPFeedbackBannerWasSubmitted()
+
+        // Then
+        XCTAssertTrue(viewModel.hideIPPFeedbackBanner)
+
+        XCTAssertEqual(receivedFeedbackType, .inPersonPayments)
+
+        switch updatedFeedbackStatus {
+        case .given:
+            break
+        default:
+            XCTFail()
+        }
+    }
+
+    func test_IPPFeedbackBannerWasSubmitted_then_it_calls_setFeatureAnnouncementDismissed_with_right_parameters() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        var receivedCampaign: FeatureAnnouncementCampaign?
+        var receivedRemindAfterDays: Int?
+
+        // When
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .setFeatureAnnouncementDismissed(campaign, remindAfterDays, _):
+                receivedRemindAfterDays = remindAfterDays
+                receivedCampaign = campaign
+            default:
+                break
+            }
+        }
+
+        viewModel.activate()
+        viewModel.IPPFeedbackBannerWasSubmitted()
+
+        // Then
+        XCTAssertEqual(receivedCampaign, .inPersonPaymentsPowerUsers)
+        XCTAssertNil(receivedRemindAfterDays)
+    }
+
+    func test_feedback_status_when_IPPFeedbackBannerWasSubmitted_is_not_called_then_feedback_status_is_nil() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        var feedbackStatus: FeedbackSettings.Status?
+
+        // When
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .updateFeedbackStatus(.inPersonPayments, status, onCompletion):
+                feedbackStatus = status
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        viewModel.activate()
+
+        // Then
+        assertEqual(nil, feedbackStatus)
+    }
 }
 
 // MARK: - Helpers
@@ -386,6 +892,26 @@ private extension OrderListViewModel {
         Set(snapshot.itemIdentifiers.compactMap { objectID in
             detailsViewModel(withID: objectID)?.order.orderID
         })
+    }
+}
+
+private extension OrderListViewModelTests {
+    // MARK: - Country helpers
+    func setupCountry(country: Country) {
+        let setting = SiteSetting.fake()
+            .copy(
+                siteID: siteID,
+                settingID: "woocommerce_default_country",
+                value: country.rawValue,
+                settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
+        ServiceLocator.selectedSiteSettings.refresh()
+    }
+
+    enum Country: String {
+        case us = "US:CA"
+        case es = "ES"
     }
 }
 
@@ -420,14 +946,39 @@ private extension OrderListViewModelTests {
 
     func insertOrder(id orderID: Int64,
                      status: OrderStatusEnum,
-                     dateCreated: Date = Date()) -> Yosemite.Order {
+                     dateCreated: Date = Date(),
+                     datePaid: Date? = nil,
+                     customFields: [Yosemite.OrderMetaData] = [],
+                     paymentMethodID: String? = nil) -> Yosemite.Order {
         let readonlyOrder = MockOrders().empty().copy(siteID: siteID,
                                                       orderID: orderID,
                                                       status: status,
-                                                      dateCreated: dateCreated)
+                                                      dateCreated: dateCreated,
+                                                      datePaid: datePaid,
+                                                      paymentMethodID: paymentMethodID,
+                                                      customFields: customFields)
         let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
         storageOrder.update(with: readonlyOrder)
 
+        for field in customFields {
+            let storageMetaData = storage.insertNewObject(ofType: Storage.OrderMetaData.self)
+            storageMetaData.update(with: field)
+            storageOrder.addToCustomFields(storageMetaData)
+        }
+
         return readonlyOrder
+    }
+
+    func insertCODPaymentGateway() {
+        //let codGateway = PaymentGateway.fake().copy(siteID: siteID, gatewayID: "cod", enabled: true)
+        let codGateway = PaymentGateway(siteID: siteID,
+                                        gatewayID: "cod",
+                                        title: "Pay in Person",
+                                        description: "Pay by cash or card when you pick up in store",
+                                        enabled: true,
+                                        features: [],
+                                        instructions: nil)
+        let storageGateway = storage.insertNewObject(ofType: StoragePaymentGateway.self)
+        storageGateway.update(with: codGateway)
     }
 }

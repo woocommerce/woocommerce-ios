@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 final class StripeCancelable: FallibleCancelable {
@@ -17,3 +18,4 @@ final class StripeCancelable: FallibleCancelable {
         }
     }
 }
+#endif

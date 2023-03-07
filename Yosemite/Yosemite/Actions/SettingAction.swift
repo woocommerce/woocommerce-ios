@@ -17,4 +17,20 @@ public enum SettingAction: Action {
     /// Retrieves the site API details (used to determine the WC version)
     ///
     case retrieveSiteAPI(siteID: Int64, onCompletion: (Result<SiteAPI, Error>) -> Void)
+
+    /// Retrieves the setting for whether coupons are enabled for the specified store
+    ///
+    case retrieveCouponSetting(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Enables coupons for the specified store
+    ///
+    case enableCouponSetting(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Retrieves the setting for whether WC Analytics are enabled for the specified store
+    ///
+    case retrieveAnalyticsSetting(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Enables WC Analytics for the specified store
+    ///
+    case enableAnalyticsSetting(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
 }

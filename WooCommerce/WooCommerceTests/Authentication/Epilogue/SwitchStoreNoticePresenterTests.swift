@@ -34,10 +34,8 @@ final class SwitchStoreNoticePresenterTests: XCTestCase {
         let siteID = Int64(122)
         sessionManager.defaultSite = nil
 
-        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)
         let presenter = SwitchStoreNoticePresenter(siteID: siteID,
-                                                   noticePresenter: noticePresenter,
-                                                   featureFlagService: featureFlagService)
+                                                   noticePresenter: noticePresenter)
 
         assertEmpty(noticePresenter.queuedNotices)
 
@@ -55,11 +53,9 @@ final class SwitchStoreNoticePresenterTests: XCTestCase {
         let site = Site.fake().copy(siteID: siteID, name: siteName)
         sessionManager.defaultSite = site
 
-        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)
         let presenter = SwitchStoreNoticePresenter(siteID: siteID,
                                                    stores: stores,
-                                                   noticePresenter: noticePresenter,
-                                                   featureFlagService: featureFlagService)
+                                                   noticePresenter: noticePresenter)
 
         assertEmpty(noticePresenter.queuedNotices)
 
@@ -81,11 +77,9 @@ final class SwitchStoreNoticePresenterTests: XCTestCase {
         let siteName = "Surprise store"
         let site = Site.fake().copy(siteID: siteID, name: siteName)
 
-        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)
         let presenter = SwitchStoreNoticePresenter(siteID: siteID,
                                                    stores: stores,
-                                                   noticePresenter: noticePresenter,
-                                                   featureFlagService: featureFlagService)
+                                                   noticePresenter: noticePresenter)
 
         assertEmpty(noticePresenter.queuedNotices)
 
@@ -115,33 +109,5 @@ final class SwitchStoreNoticePresenterTests: XCTestCase {
 
         // Then
         assertEmpty(noticePresenter.queuedNotices)
-    }
-
-    func test_notice_title_contains_single_store_push_notifications_message_when_switching_stores_with_pushNotificationsForAllStores_disabled() throws {
-        // Given
-        let siteID = Int64(122)
-        let siteName = "Surprise store"
-        let site = Site.fake().copy(siteID: siteID, name: siteName)
-        sessionManager.defaultSite = site
-
-        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: false)
-        let presenter = SwitchStoreNoticePresenter(siteID: siteID,
-                                                   stores: stores,
-                                                   noticePresenter: noticePresenter,
-                                                   featureFlagService: featureFlagService)
-
-        assertEmpty(noticePresenter.queuedNotices)
-
-        // When
-        presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
-
-        // Then
-        XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
-
-        let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
-        assertThat(notice.title, contains: siteName)
-        let expectedTitle =
-            String.localizedStringWithFormat(SwitchStoreNoticePresenter.Localization.titleFormatWithPushNotificationsForAllStoresDisabled, site.name)
-        XCTAssertEqual(notice.title, expectedTitle)
     }
 }

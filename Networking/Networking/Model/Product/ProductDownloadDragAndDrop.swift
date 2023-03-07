@@ -1,6 +1,7 @@
 import Foundation
 import CoreServices
 import Codegen
+import UniformTypeIdentifiers
 
 /// A wrapper around `ProductDownload`, to make it compatible in using as Drag and Drop data source in a table view. Represents a `ProductDownload` entity.
 /// To make a data draggable and droppable, on an Table/Collection view,
@@ -42,7 +43,7 @@ extension ProductDownloadDragAndDrop: NSItemProviderWriting {
     /// Gets called by the system to get information about our encoded data representation while Dragging
     ///
     public static var writableTypeIdentifiersForItemProvider: [String] {
-        return [(kUTTypeUTF8PlainText) as String]
+        [UTType.utf8PlainText.identifier]
     }
 
     public func loadData(withTypeIdentifier typeIdentifier: String,
@@ -69,7 +70,7 @@ extension ProductDownloadDragAndDrop: NSItemProviderReading {
     ///  In this case it's kUTTypeUTF8PlainText
     ///
     public static var readableTypeIdentifiersForItemProvider: [String] {
-        return [(kUTTypeUTF8PlainText) as String]
+        [UTType.utf8PlainText.identifier]
     }
 
     public static func object(withItemProviderData data: Data, typeIdentifier: String) throws -> Self {

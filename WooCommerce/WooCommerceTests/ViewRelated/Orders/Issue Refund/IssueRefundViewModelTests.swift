@@ -1,5 +1,8 @@
 import XCTest
 import Yosemite
+import WooFoundation
+import protocol Storage.StorageManagerType
+import protocol Storage.StorageType
 
 @testable import WooCommerce
 
@@ -10,8 +13,17 @@ final class IssueRefundViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
+    /// Mock Storage: InMemory
+    private var storageManager: StorageManagerType!
+
+    /// View storage for tests
+    private var storage: StorageType {
+        storageManager.viewStorage
+    }
+
     override func setUp() {
         super.setUp()
+        storageManager = MockStorageManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
@@ -158,23 +170,6 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertNil(unsupportedFeesTooltipRow)
     }
 
-    func test_viewModel_has_unsupported_fees_tooltip_row_if_the_order_has_fees() {
-        // Given
-        let currencySettings = CurrencySettings()
-        let order = Order.fake().copy(fees: [OrderFeeLine.fake()])
-
-        // When
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
-
-        // Then
-        let rows = viewModel.sections.flatMap { $0.rows }
-        XCTAssertFalse(rows.isEmpty)
-
-        let unsupportedFeesTooltipRow = rows.compactMap { $0 as? ImageAndTitleAndTextTableViewCell.ViewModel }
-            .first { $0.title == IssueRefundViewModel.Localization.unsupportedFeesRefund }
-        XCTAssertNotNil(unsupportedFeesTooltipRow)
-    }
-
     func test_viewModel_returns_0_current_refund_quantity_for_a_clean_order() {
         // Given
         let currencySettings = CurrencySettings()
@@ -241,9 +236,9 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3, price: 11.50),
-            MockOrderItem.sampleItem(itemID: 2, productID: 2, quantity: 2, price: 12.50),
-            MockOrderItem.sampleItem(itemID: 3, productID: 3, quantity: 1, price: 13.50),
+            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3),
+            MockOrderItem.sampleItem(itemID: 2, productID: 2, quantity: 2),
+            MockOrderItem.sampleItem(itemID: 3, productID: 3, quantity: 1),
         ]
         let order = MockOrders().makeOrder(items: items)
         let refund = MockRefunds.sampleRefund(items: [
@@ -262,11 +257,21 @@ final class IssueRefundViewModelTests: XCTestCase {
 
     func test_viewModel_correctly_adds_item_selections_to_title() {
         // Given
+        let item1Price: NSDecimalNumber = 11.50
+        let item1Quantity: Decimal  = 3
+
+        let item2Price: NSDecimalNumber = 12.50
+        let item2Quantity: Decimal  = 2
+
+        let item3Price: NSDecimalNumber  = 13.50
+        let item3Quantity: Decimal  = 1
+
+
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
-            MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 12.50),
-            MockOrderItem.sampleItem(itemID: 3, quantity: 1, price: 13.50),
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 1, quantity: item1Quantity, price: item1Price),
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 2, quantity: item2Quantity, price: item2Price),
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 2, quantity: item3Quantity, price: item3Price),
         ]
         let order = MockOrders().makeOrder(items: items)
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
@@ -284,11 +289,20 @@ final class IssueRefundViewModelTests: XCTestCase {
 
     func test_viewModel_correctly_adds_shipping_selection_to_title() {
         // Given
+        let item1Price: NSDecimalNumber = 11.50
+        let item1Quantity: Decimal  = 3
+
+        let item2Price: NSDecimalNumber = 12.50
+        let item2Quantity: Decimal  = 2
+
+        let item3Price: NSDecimalNumber  = 13.50
+        let item3Quantity: Decimal  = 1
+
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
-            MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 12.50),
-            MockOrderItem.sampleItem(itemID: 3, quantity: 1, price: 13.50),
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 1, quantity: item1Quantity, price: item1Price),
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 2, quantity: item2Quantity, price: item2Price),
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 2, quantity: item3Quantity, price: item3Price),
         ]
         let shippingLines = MockOrders.sampleShippingLines(cost: "7.00", tax: "0.62")
         let order = MockOrders().makeOrder(items: items, shippingLines: shippingLines)
@@ -310,9 +324,9 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
-            MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 12.50),
-            MockOrderItem.sampleItem(itemID: 3, quantity: 1, price: 13.50),
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
+            MockOrderItem.sampleItem(itemID: 2, quantity: 2),
+            MockOrderItem.sampleItem(itemID: 3, quantity: 1),
         ]
         let order = MockOrders().makeOrder(items: items)
 
@@ -328,9 +342,9 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
-            MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 12.50),
-            MockOrderItem.sampleItem(itemID: 3, quantity: 1, price: 13.50),
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
+            MockOrderItem.sampleItem(itemID: 2, quantity: 2),
+            MockOrderItem.sampleItem(itemID: 3, quantity: 1),
         ]
         let order = MockOrders().makeOrder(items: items)
 
@@ -347,9 +361,9 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
-            MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 12.50),
-            MockOrderItem.sampleItem(itemID: 3, quantity: 1, price: 13.50),
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
+            MockOrderItem.sampleItem(itemID: 2, quantity: 2),
+            MockOrderItem.sampleItem(itemID: 3, quantity: 1),
         ]
         let order = MockOrders().makeOrder(items: items)
 
@@ -366,9 +380,9 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3, price: 11.50),
-            MockOrderItem.sampleItem(itemID: 2, productID: 2, quantity: 2, price: 12.50),
-            MockOrderItem.sampleItem(itemID: 3, productID: 3, quantity: 1, price: 13.50),
+            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3),
+            MockOrderItem.sampleItem(itemID: 2, productID: 2, quantity: 2),
+            MockOrderItem.sampleItem(itemID: 3, productID: 3, quantity: 1),
         ]
         let order = MockOrders().makeOrder(items: items)
         let refund = MockRefunds.sampleRefund(items: [
@@ -389,9 +403,9 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3, price: 11.50),
-            MockOrderItem.sampleItem(itemID: 2, productID: 2, quantity: 2, price: 12.50),
-            MockOrderItem.sampleItem(itemID: 3, productID: 3, quantity: 1, price: 13.50),
+            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3),
+            MockOrderItem.sampleItem(itemID: 2, productID: 2, quantity: 2),
+            MockOrderItem.sampleItem(itemID: 3, productID: 3, quantity: 1),
         ]
         let order = MockOrders().makeOrder(items: items)
         let refund = MockRefunds.sampleRefund(items: [
@@ -410,9 +424,17 @@ final class IssueRefundViewModelTests: XCTestCase {
 
     func test_viewModel_total_is_correctly_calculated_while_having_previous_refunds() {
         // Given
+        let item1Price: Decimal = 11.50
+        let item1Quantity: Decimal  = 3
+
         let currencySettings = CurrencySettings()
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3, price: 11.50, totalTax: "2.97"),
+            MockOrderItem.sampleItem(itemID: 1,
+                                     productID: 1,
+                                     quantity: item1Quantity,
+                                     total: currencyFormatter.localize(item1Price * item1Quantity) ?? "0",
+                                     totalTax: "2.97")
         ]
         let order = MockOrders().makeOrder(items: items)
         let refund = MockRefunds.sampleRefund(items: [
@@ -432,7 +454,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
         ]
         let order = MockOrders().makeOrder(items: items)
 
@@ -447,7 +469,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
         ]
         let order = MockOrders().makeOrder(items: items)
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
@@ -463,7 +485,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
         ]
         let order = MockOrders().makeOrder(items: items)
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
@@ -480,7 +502,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
         ]
         let order = MockOrders().makeOrder(items: items)
 
@@ -495,7 +517,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
         ]
         let order = MockOrders().makeOrder(items: items)
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
@@ -570,7 +592,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3, price: 11.50, totalTax: "2.97"),
+            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3, totalTax: "2.97"),
         ]
         let order = MockOrders().makeOrder(items: items)
 
@@ -585,7 +607,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3, price: 11.50, totalTax: "2.97"),
+            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3, totalTax: "2.97"),
         ]
         let order = MockOrders().makeOrder(items: items)
         let refund = MockRefunds.sampleRefund(items: [
@@ -597,5 +619,121 @@ final class IssueRefundViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isSelectAllButtonVisible)
+    }
+
+    func test_fetch_when_there_is_a_payment_gateway_stored_then_calls_to_fetch_charge() throws {
+        // Given
+        // The order has a chargeID
+        let order = MockOrders().sampleOrder().copy(chargeID: "ch_id")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        // When
+        let chargeFetched: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                guard case let .fetchWCPayCharge(siteID: _, chargeID: "ch_id", onCompletion: onCompletion) = action else {
+                    return
+                }
+                onCompletion(.success(WCPayCharge.fake()))
+                promise(true)
+            }
+
+            let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: self.storageManager)
+            viewModel.fetch()
+        }
+
+        // Then
+        XCTAssertTrue(chargeFetched)
+    }
+
+    func test_fetch_when_fetching_charge_fails_then_it_notifies_it() throws {
+        // Given
+        var showFetchChargeErrorNotice = false
+        // The order has a chargeID
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
+        ]
+        let order = MockOrders().makeOrder(items: items).copy(chargeID: "ch_id")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .fetchWCPayCharge(siteID: _, chargeID: _, onCompletion: onCompletion) = action {
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
+            }
+        }
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+        viewModel.showFetchChargeErrorNotice = { _ in
+            showFetchChargeErrorNotice = true
+        }
+        viewModel.fetch()
+
+        // Then
+        XCTAssertTrue(showFetchChargeErrorNotice)
+    }
+
+    func test_viewModel_shows_spinner_when_charge_not_fetched_yet() {
+        // Given
+        // The order has a chargeID
+        let order = MockOrders().sampleOrder().copy(chargeID: "ch_id")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+
+        // Then
+        XCTAssertTrue(viewModel.isNextButtonAnimating)
+    }
+
+    func test_viewModel_does_not_show_spinner_when_there_is_no_charge_to_fetch() {
+        // Given
+        // The order has a chargeID
+        let order = MockOrders().sampleOrder().copy(chargeID: nil)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+
+        // Then
+        XCTAssertFalse(viewModel.isNextButtonAnimating)
+    }
+
+    func test_viewModel_does_not_show_spinner_when_there_is_no_charge_to_fetch_but_an_empty_chargeID() {
+        // Given
+        // The order has a chargeID
+        let order = MockOrders().sampleOrder().copy(chargeID: "")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+
+        // Then
+        XCTAssertFalse(viewModel.isNextButtonAnimating)
+    }
+
+    func test_viewModel_hides_spinner_when_charge_found_in_storage() {
+        // Given
+        // The order has a chargeID
+        let order = MockOrders().sampleOrder().copy(chargeID: "ch_id")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+
+        let charge = storage.insertNewObject(ofType: StorageWCPayCharge.self)
+        charge.update(with: WCPayCharge.fake().copy(siteID: order.siteID, id: "ch_id"))
+        storage.saveIfNeeded()
+
+        // Then
+        XCTAssertFalse(viewModel.isNextButtonAnimating)
+    }
+}
+
+private extension MockOrderItem {
+    static func sampleItemWithCalculatedTotal(itemID: Int64,
+                                    quantity: Decimal,
+                                    price: NSDecimalNumber) -> OrderItem {
+        let currencySettings = CurrencySettings()
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+
+        return MockOrderItem.sampleItem(itemID: itemID,
+                                        quantity: quantity,
+                                        price: price,
+                                        total: currencyFormatter.localize((price as Decimal) * quantity) ?? "0")
     }
 }

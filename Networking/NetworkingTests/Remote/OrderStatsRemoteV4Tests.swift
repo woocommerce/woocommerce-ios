@@ -33,7 +33,8 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
                                   unit: .hourly,
                                   earliestDateToInclude: Date(),
                                   latestDateToInclude: Date(),
-                                  quantity: 24) { result in
+                                  quantity: 24,
+                                  forceRefresh: false) { result in
                 promise(result)
             }
         }
@@ -58,7 +59,8 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
                                   unit: .weekly,
                                   earliestDateToInclude: Date(),
                                   latestDateToInclude: Date(),
-                                  quantity: 2) { result in
+                                  quantity: 2,
+                                  forceRefresh: false) { result in
                 promise(result)
             }
         }
@@ -81,7 +83,8 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
                                   unit: .daily,
                                   earliestDateToInclude: Date(),
                                   latestDateToInclude: Date(),
-                                  quantity: 31) { result in
+                                  quantity: 31,
+                                  forceRefresh: false) { result in
                 promise(result)
             }
         }

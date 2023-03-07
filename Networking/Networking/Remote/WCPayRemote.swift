@@ -1,22 +1,9 @@
+import Combine
 import Foundation
 
 /// WCPay: Remote Endpoints
 ///
 public class WCPayRemote: Remote {
-
-    /// Loads a WCPay connection token for a given site ID and parses the rsponse
-    /// - Parameters:
-    ///   - siteID: Site for which we'll fetch the WCPay Connection token.
-    ///   - completion: Closure to be executed upon completion.
-    public func loadConnectionToken(for siteID: Int64,
-                                    completion: @escaping(Result<WCPayConnectionToken, Error>) -> Void) {
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: Path.connectionTokens)
-
-        let mapper = WCPayConnectionTokenMapper()
-
-        enqueue(request, mapper: mapper, completion: completion)
-    }
-
     /// Loads a WCPay account for a given site ID and parses the response
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the WCPay account info.
@@ -25,23 +12,26 @@ public class WCPayRemote: Remote {
                             completion: @escaping (Result<WCPayAccount, Error>) -> Void) {
         let parameters = [AccountParameterKeys.fields: AccountParameterValues.fieldValues]
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Path.accounts, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.accounts,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
 
         let mapper = WCPayAccountMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Captures a payment for an order. See https://stripe.com/docs/terminal/payments#capture-payment
+    /// Captures a payment for an order and returns a publisher of the result. See https://stripe.com/docs/terminal/payments#capture-payment
     /// - Parameters:
     ///   - siteID: Site for which we'll capture the payment.
     ///   - orderID: Order for which we are capturing the payment.
     ///   - paymentIntentID: Stripe Payment Intent ID created using the Terminal SDK.
-    ///   - completion: Closure to be run on completion.
     public func captureOrderPayment(for siteID: Int64,
-                               orderID: Int64,
-                               paymentIntentID: String,
-                               completion: @escaping (Result<WCPayPaymentIntent, Error>) -> Void) {
+                                    orderID: Int64,
+                                    paymentIntentID: String) -> AnyPublisher<Result<RemotePaymentIntent, Error>, Never> {
         let path = "\(Path.orders)/\(orderID)/\(Path.captureTerminalPayment)"
 
         let parameters = [
@@ -49,28 +39,58 @@ public class WCPayRemote: Remote {
             CaptureOrderPaymentKeys.paymentIntentID: paymentIntentID
         ]
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
 
-        let mapper = WCPayPaymentIntentMapper()
+        let mapper = RemotePaymentIntentMapper()
+
+        return enqueue(request, mapper: mapper)
+    }
+
+    /// Fetches the details of a charge, if available. See https://stripe.com/docs/api/charges/object
+    /// Also note that the JSON returned by the WCPay endpoint is an abridged copy of Stripe's response.
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the charge.
+    ///   - chargeID: ID of the charge to fetch
+    ///   - completion: Closure to be run on completion.
+    public func fetchCharge(for siteID: Int64,
+                            chargeID: String,
+                            completion: @escaping (Result<WCPayCharge, Error>) -> Void) {
+        let path = "\(Path.charges)/\(chargeID)"
+
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: [:],
+                                     availableAsRESTRequest: true)
+
+        let mapper = WCPayChargeMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+}
 
-    /// Creates a (or returns an existing) Stripe Connect customer for an order. See https://stripe.com/docs/api/customers/create
-    /// Updates the order meta with the Customer for us.
-    /// Also note that the JSON returned by the WCPay endpoint is an abridged copy of Stripe's response.
+// MARK: - CardReaderCapableRemote
+//
+extension WCPayRemote {
+    /// Loads a card reader connection token for a given site ID and parses the response
     /// - Parameters:
-    ///   - siteID: Site for which we'll create (or simply return) the customer.
-    ///   - orderID: Order for which we'll create (or simply return) the customer.
-    ///   - completion: Closure to be run on completion.
-    public func fetchOrderCustomer(for siteID: Int64,
-                               orderID: Int64,
-                               completion: @escaping (Result<WCPayCustomer, Error>) -> Void) {
-        let path = "\(Path.orders)/\(orderID)/\(Path.createCustomer)"
+    ///   - siteID: Site for which we'll fetch the connection token.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadConnectionToken(for siteID: Int64,
+                                    completion: @escaping(Result<ReaderConnectionToken, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: Path.connectionTokens,
+                                     availableAsRESTRequest: true)
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: [:])
-
-        let mapper = WCPayCustomerMapper()
+        let mapper = ReaderConnectionTokenMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -82,10 +102,15 @@ public class WCPayRemote: Remote {
     ///   - completion: Closure to be run on completion.
     ///
     public func loadDefaultReaderLocation(for siteID: Int64,
-                                          onCompletion: @escaping (Result<WCPayReaderLocation, Error>) -> Void) {
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Path.locations, parameters: [:])
+                                          onCompletion: @escaping (Result<RemoteReaderLocation, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.locations,
+                                     parameters: [:],
+                                     availableAsRESTRequest: true)
 
-        let mapper = WCPayReaderLocationMapper()
+        let mapper = RemoteReaderLocationMapper()
 
         enqueue(request, mapper: mapper, completion: onCompletion)
     }
@@ -101,6 +126,7 @@ private extension WCPayRemote {
         static let captureTerminalPayment = "capture_terminal_payment"
         static let createCustomer = "create_customer"
         static let locations = "payments/terminal/locations/store"
+        static let charges = "payments/charges"
     }
 
     enum AccountParameterKeys {

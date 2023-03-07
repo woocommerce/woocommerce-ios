@@ -18,7 +18,7 @@ final class ProductShippingSettingsViewController: UIViewController {
         _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
-    private let viewModel: ProductShippingSettingsViewModel
+    private let viewModel: ProductShippingSettingsViewModelOutput & ProductShippingSettingsActionHandler
     private let shippingSettingsService: ShippingSettingsService
 
     init(product: ProductFormDataModel,
@@ -206,7 +206,7 @@ private extension ProductShippingSettingsViewController {
     }
 
     func configureWeight(cell: UnitInputTableViewCell) {
-        let cellViewModel = Product.createShippingWeightViewModel(weight: viewModel.weight,
+        let cellViewModel = Product.createShippingWeightViewModel(weight: viewModel.localizedWeight,
                                                                   using: shippingSettingsService) { [weak self] value in
                                                                     self?.viewModel.handleWeightChange(value)
         }
@@ -214,7 +214,7 @@ private extension ProductShippingSettingsViewController {
     }
 
     func configureLength(cell: UnitInputTableViewCell) {
-        let cellViewModel = Product.createShippingLengthViewModel(length: viewModel.length ?? "",
+        let cellViewModel = Product.createShippingLengthViewModel(length: viewModel.localizedLength ?? "",
                                                                   using: shippingSettingsService) { [weak self] value in
                                                                     self?.viewModel.handleLengthChange(value)
         }
@@ -222,7 +222,7 @@ private extension ProductShippingSettingsViewController {
     }
 
     func configureWidth(cell: UnitInputTableViewCell) {
-        let cellViewModel = Product.createShippingWidthViewModel(width: viewModel.width ?? "",
+        let cellViewModel = Product.createShippingWidthViewModel(width: viewModel.localizedWidth ?? "",
                                                                  using: shippingSettingsService) { [weak self] value in
                                                                     self?.viewModel.handleWidthChange(value)
         }
@@ -230,7 +230,7 @@ private extension ProductShippingSettingsViewController {
     }
 
     func configureHeight(cell: UnitInputTableViewCell) {
-        let cellViewModel = Product.createShippingHeightViewModel(height: viewModel.height ?? "",
+        let cellViewModel = Product.createShippingHeightViewModel(height: viewModel.localizedHeight ?? "",
                                                                   using: shippingSettingsService) { [weak self] value in
                                                                     self?.viewModel.handleHeightChange(value)
         }

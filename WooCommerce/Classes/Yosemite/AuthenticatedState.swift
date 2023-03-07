@@ -19,6 +19,9 @@ class AuthenticatedState: StoresManagerState {
     ///
     private var errorObserverToken: NSObjectProtocol?
 
+    /// For tracking events from Networking layer
+    ///
+    private let trackEventRequestNotificationHandler: TrackEventRequestNotificationHandler
 
     /// Designated Initializer
     ///
@@ -26,21 +29,29 @@ class AuthenticatedState: StoresManagerState {
         let storageManager = ServiceLocator.storageManager
         let network = AlamofireNetwork(credentials: credentials)
 
-        services = [
-            AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
+        var services: [ActionsProcessor] = [
+            AppSettingsStore(dispatcher: dispatcher,
+                             storageManager: storageManager,
+                             fileStorage: PListFileStorage(),
+                             generalAppSettings: ServiceLocator.generalAppSettings),
             AddOnGroupStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            AvailabilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CouponStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            DomainStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            InAppPurchaseStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            InboxNotesStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            JustInTimeMessageStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
+            OrderCardPresentPaymentEligibilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            PaymentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            PaymentGatewayAccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductAttributeStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductAttributeTermStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -55,6 +66,11 @@ class AuthenticatedState: StoresManagerState {
             ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            SiteStore(dotcomClientID: ApiCredentials.dotcomAppId,
+                      dotcomClientSecret: ApiCredentials.dotcomSecret,
+                      dispatcher: dispatcher,
+                      storageManager: storageManager,
+                      network: network),
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -63,7 +79,8 @@ class AuthenticatedState: StoresManagerState {
             CardPresentPaymentStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
-                                    cardReaderService: ServiceLocator.cardReaderService),
+                                    cardReaderService: ServiceLocator.cardReaderService,
+                                    cardReaderConfigProvider: ServiceLocator.cardReaderConfigProvider),
             ReceiptStore(dispatcher: dispatcher,
                          storageManager: storageManager,
                          network: network,
@@ -72,8 +89,31 @@ class AuthenticatedState: StoresManagerState {
             AnnouncementsStore(dispatcher: dispatcher,
                                storageManager: storageManager,
                                network: network,
-                               fileStorage: PListFileStorage())
+                               fileStorage: PListFileStorage()),
+            WordPressSiteStore(network: network, dispatcher: dispatcher),
         ]
+
+
+        if case let .wpcom(_, authToken, _) = credentials {
+            services.append(AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: authToken))
+        } else {
+            DDLogInfo("No WordPress.com auth token found. AccountStore is not initialized.")
+        }
+
+        if case let .wporg(_, _, siteURL) = credentials {
+            /// Needs Jetpack connection store to handle Jetpack setup for non-Jetpack sites.
+            /// `AlamofireNetwork` is used here to handle requests with application password auth.
+            services.append(JetpackConnectionStore(dispatcher: dispatcher, network: network, siteURL: siteURL))
+        } else {
+            /// When authenticated with WPCom, the store is used to handle Jetpack setup when a selected site doesn't have Jetpack.
+            /// The store will require cookie-nonce auth, which is handled by a `WordPressOrgNetwork`
+            /// injected later through the `authenticate` action before any other action is triggered.
+            services.append(JetpackConnectionStore(dispatcher: dispatcher))
+        }
+
+        self.services = services
+
+        trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
 
         startListeningToNotifications()
     }
@@ -136,12 +176,10 @@ private extension AuthenticatedState {
 private extension AuthenticatedState {
     func resetServices() {
         let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
-        let resetStoredStatsVersionStates = AppSettingsAction.resetStatsVersionStates
         let resetOrdersSettings = AppSettingsAction.resetOrdersSettings
         let resetProductsSettings = AppSettingsAction.resetProductsSettings
         let resetGeneralStoreSettings = AppSettingsAction.resetGeneralStoreSettings
         ServiceLocator.stores.dispatch([resetStoredProviders,
-                                        resetStoredStatsVersionStates,
                                         resetOrdersSettings,
                                         resetProductsSettings,
                                         resetGeneralStoreSettings])

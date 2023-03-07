@@ -65,18 +65,18 @@ final class OrderDetailsResultsControllers {
                                                        sortedBy: [dateCreatedDescriptor, shippingLabelIDDescriptor])
     }()
 
-    /// PaymentGatewayAccount Results Controller.
-    ///
-    private lazy var paymentGatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
-        let predicate = NSPredicate(format: "siteID = %ld", order.siteID)
-        return ResultsController<StoragePaymentGatewayAccount>(storageManager: storageManager, matching: predicate, sortedBy: [])
-    }()
-
     /// AddOnGroup ResultsController.
     ///
     private lazy var addOnGroupResultsController: ResultsController<StorageAddOnGroup> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         return ResultsController<StorageAddOnGroup>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    /// Site Plugins ResultsController.
+    ///
+    private lazy var sitePluginsResultsController: ResultsController<StorageSitePlugin> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        return ResultsController<StorageSitePlugin>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
     /// Order shipment tracking list
@@ -115,15 +115,14 @@ final class OrderDetailsResultsControllers {
         return shippingLabelResultsController.fetchedObjects
     }
 
-    /// Payment Gateway Accounts for the Site (i.e. that can be used to collect payment for an order)
-    var paymentGatewayAccounts: [PaymentGatewayAccount] {
-        return paymentGatewayAccountResultsController.fetchedObjects
-    }
-
     /// Site's add-on groups.
     ///
     var addOnGroups: [AddOnGroup] {
         return addOnGroupResultsController.fetchedObjects
+    }
+
+    var sitePlugins: [SitePlugin] {
+        return sitePluginsResultsController.fetchedObjects
     }
 
     /// Completion handler for when results controllers reload.
@@ -145,8 +144,8 @@ final class OrderDetailsResultsControllers {
         configureProductVariationResultsController(onReload: onReload)
         configureRefundResultsController(onReload: onReload)
         configureShippingLabelResultsController(onReload: onReload)
-        configurePaymentGatewayAccountResultsController(onReload: onReload)
         configureAddOnGroupResultsController(onReload: onReload)
+        configureSitePluginsResultsController(onReload: onReload)
     }
 
     func update(order: Order) {
@@ -172,7 +171,11 @@ private extension OrderDetailsResultsControllers {
     }
 
     func configureStatusResultsController() {
-        try? statusResultsController.performFetch()
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Order Statuses: \(error)")
+        }
     }
 
     private func configureTrackingResultsController(onReload: @escaping () -> Void) {
@@ -188,7 +191,11 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? trackingResultsController.performFetch()
+        do {
+            try trackingResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Order \(order.orderID) shipment tracking details: \(error)")
+        }
     }
 
     private func configureProductResultsController(onReload: @escaping () -> Void) {
@@ -204,7 +211,11 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? productResultsController.performFetch()
+        do {
+            try productResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Products for Site \(siteID): \(error)")
+        }
     }
 
     private func configureProductVariationResultsController(onReload: @escaping () -> Void) {
@@ -240,7 +251,11 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? refundResultsController.performFetch()
+        do {
+            try refundResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Refunds for Site \(siteID) and Order \(order.orderID): \(error)")
+        }
     }
 
     private func configureShippingLabelResultsController(onReload: @escaping () -> Void) {
@@ -254,24 +269,11 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? shippingLabelResultsController.performFetch()
-    }
-
-    private func configurePaymentGatewayAccountResultsController(onReload: @escaping () -> Void) {
-        paymentGatewayAccountResultsController.onDidChangeContent = {
-            onReload()
+        do {
+            try shippingLabelResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch ShippingLabels for Site \(siteID) and Order \(order.orderID): \(error)")
         }
-
-        paymentGatewayAccountResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.refetchAllResultsControllers()
-            onReload()
-        }
-
-        try? paymentGatewayAccountResultsController.performFetch()
     }
 
     private func configureAddOnGroupResultsController(onReload: @escaping () -> Void) {
@@ -285,7 +287,29 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? addOnGroupResultsController.performFetch()
+        do {
+            try addOnGroupResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch AddOnGroups for Site \(siteID): \(error)")
+        }
+    }
+
+    private func configureSitePluginsResultsController(onReload: @escaping () -> Void) {
+        sitePluginsResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        sitePluginsResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else { return }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        do {
+            try sitePluginsResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Site Plugins for Site \(siteID): \(error)")
+        }
     }
 
     /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
@@ -297,7 +321,7 @@ private extension OrderDetailsResultsControllers {
         try? trackingResultsController.performFetch()
         try? statusResultsController.performFetch()
         try? shippingLabelResultsController.performFetch()
-        try? paymentGatewayAccountResultsController.performFetch()
         try? addOnGroupResultsController.performFetch()
+        try? sitePluginsResultsController.performFetch()
     }
 }

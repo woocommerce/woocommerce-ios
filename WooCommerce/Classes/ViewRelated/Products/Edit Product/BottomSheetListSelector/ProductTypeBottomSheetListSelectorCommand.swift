@@ -9,12 +9,13 @@ public enum BottomSheetProductType: Hashable {
     case affiliate
     case variable
     case custom(String) // in case there are extensions modifying product types
+    case blank // used to create a simple product without a template
 
     /// Remote ProductType
     ///
     var productType: ProductType {
         switch self {
-        case .simple:
+        case .simple, .blank:
             return .simple
         case .variable:
             return .variable
@@ -41,14 +42,21 @@ public enum BottomSheetProductType: Hashable {
     /// Title shown on the action sheet.
     ///
     var actionSheetTitle: String {
+        let simplifyProductEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
         switch self {
         case .simple(let isVirtual):
-            if isVirtual {
+            if isVirtual, simplifyProductEditingEnabled {
+                return NSLocalizedString("Virtual product",
+                                         comment: "Action sheet option when the user wants to change the Product type to simple virtual product")
+            } else if !isVirtual, simplifyProductEditingEnabled {
+                return NSLocalizedString("Physical product",
+                                         comment: "Action sheet option when the user wants to change the Product type to simple physical product")
+            } else if isVirtual {
                 return NSLocalizedString("Simple virtual product",
                                          comment: "Action sheet option when the user wants to change the Product type to simple virtual product")
             } else {
-            return NSLocalizedString("Simple physical product",
-                                     comment: "Action sheet option when the user wants to change the Product type to simple physical product")
+                return NSLocalizedString("Simple physical product",
+                                         comment: "Action sheet option when the user wants to change the Product type to simple physical product")
             }
         case .variable:
             return NSLocalizedString("Variable product",
@@ -61,15 +69,25 @@ public enum BottomSheetProductType: Hashable {
                                      comment: "Action sheet option when the user wants to change the Product type to external product")
         case .custom(let title):
             return title
+        case .blank:
+            return NSLocalizedString("Blank",
+                                     comment: "Action sheet option when the user wants to create a product manually")
         }
     }
 
     /// Description shown on the action sheet.
     ///
     var actionSheetDescription: String {
+        let simplifyProductEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
         switch self {
         case .simple(let isVirtual):
-            if isVirtual {
+            if isVirtual, simplifyProductEditingEnabled {
+                return NSLocalizedString("A digital product like services, downloadable books, music or videos",
+                                         comment: "Description of the Action sheet option when the user wants to change the Product type to virtual product")
+            } else if !isVirtual, simplifyProductEditingEnabled {
+                return NSLocalizedString("A tangible item that gets delivered to customers",
+                                         comment: "Description of the Action sheet option when the user wants to change the Product type to physical product")
+            } else if isVirtual {
                 return NSLocalizedString("A unique digital product like services, downloadable books, music or videos",
                                     comment: "Description of the Action sheet option when the user wants to change the Product type to simple virtual product")
             } else {
@@ -87,6 +105,9 @@ public enum BottomSheetProductType: Hashable {
                                      comment: "Description of the Action sheet option when the user wants to change the Product type to external product")
         case .custom(let title):
             return title
+        case .blank:
+            return NSLocalizedString("Add a product manually",
+                                     comment: "Description of the Action sheet option when the user wants to create a product manually")
         }
     }
 
@@ -108,6 +129,8 @@ public enum BottomSheetProductType: Hashable {
             return UIImage.externalProductImage
         case .custom:
             return UIImage.productImage
+        case .blank:
+            return UIImage.blankProductImage
         }
     }
 
@@ -125,6 +148,9 @@ public enum BottomSheetProductType: Hashable {
             // We need to be aware of subscriptions for Payments
             // but we don't handle them in the UI yet
             self = .custom("subscription")
+        case .bundle:
+            // We do not yet support product editing or creation for bundles
+            self = .custom("bundle")
         case .custom(let string):
             self = .custom(string)
         }
@@ -163,8 +189,7 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
                                                                     text: model.actionSheetDescription,
                                                                     image: model.actionSheetImage,
                                                                     imageTintColor: .gray(.shade20),
-                                                                    numberOfLinesForText: 0,
-                                                                    isActionable: false)
+                                                                    numberOfLinesForText: 0)
         cell.updateUI(viewModel: viewModel)
     }
 

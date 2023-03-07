@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Networking
 import Storage
@@ -61,21 +62,29 @@ public class OrderStore: Store {
 
         case let .updateOrder(siteID, order, fields, onCompletion):
             updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
-
-        case let .createSimplePaymentsOrder(siteID, amount, taxable, onCompletion):
-            createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: taxable, onCompletion: onCompletion)
+        case let .updateOrderOptimistically(siteID, order, fields, onCompletion):
+            updateOrderOptimistically(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
+        case let .createSimplePaymentsOrder(siteID, status, amount, taxable, onCompletion):
+            createSimplePaymentsOrder(siteID: siteID, status: status, amount: amount, taxable: taxable, onCompletion: onCompletion)
         case let .createOrder(siteID, order, onCompletion):
             createOrder(siteID: siteID, order: order, onCompletion: onCompletion)
 
-        case let .updateSimplePaymentsOrder(siteID, orderID, feeID, amount, taxable, orderNote, email, onCompletion):
+        case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, taxable, orderNote, email, onCompletion):
             updateSimplePaymentsOrder(siteID: siteID,
                                       orderID: orderID,
                                       feeID: feeID,
+                                      status: status,
                                       amount: amount,
                                       taxable: taxable,
                                       orderNote: orderNote,
                                       email: email,
                                       onCompletion: onCompletion)
+        case let .markOrderAsPaidLocally(siteID, orderID, datePaid, onCompletion):
+            markOrderAsPaidLocally(siteID: siteID, orderID: orderID, datePaid: datePaid, onCompletion: onCompletion)
+        case let .deleteOrder(siteID, order, deletePermanently, onCompletion):
+            deleteOrder(siteID: siteID, order: order, deletePermanently: deletePermanently, onCompletion: onCompletion)
+        case let .observeInsertedOrders(siteID, completion):
+            observeInsertedOrders(siteID: siteID, completion: completion)
         }
     }
 }
@@ -263,11 +272,20 @@ private extension OrderStore {
 
     /// Creates a simple payments order with a specific amount value and no tax.
     ///
-    func createSimplePaymentsOrder(siteID: Int64, amount: String, taxable: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        let order = OrderFactory.simplePaymentsOrder(amount: amount, taxable: taxable)
-        remote.createOrder(siteID: siteID, order: order, fields: [.feeLines]) { [weak self] result in
+    func createSimplePaymentsOrder(siteID: Int64,
+                                   status: OrderStatusEnum,
+                                   amount: String,
+                                   taxable: Bool,
+                                   onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let order = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
+        remote.createOrder(siteID: siteID, order: order, fields: [.status, .feeLines]) { [weak self] result in
             switch result {
             case .success(let order):
+                // Auto-draft orders are temporary and should not be stored
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
+
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
                     onCompletion(result)
                 })
@@ -282,6 +300,7 @@ private extension OrderStore {
     func updateSimplePaymentsOrder(siteID: Int64,
                                    orderID: Int64,
                                    feeID: Int64,
+                                   status: OrderStatusEnum,
                                    amount: String,
                                    taxable: Bool,
                                    orderNote: String?,
@@ -289,7 +308,7 @@ private extension OrderStore {
                                    onCompletion: @escaping (Result<Order, Error>) -> Void) {
 
         // Recreate the original order
-        let originalOrder = OrderFactory.simplePaymentsOrder(amount: amount, taxable: taxable)
+        let originalOrder = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
 
         // Create updated fields
         let newFee = OrderFactory.simplePaymentFee(feeID: feeID, amount: amount, taxable: taxable)
@@ -307,7 +326,7 @@ private extension OrderStore {
 
         // Set new fields
         let updatedOrder = originalOrder.copy(orderID: orderID, customerNote: orderNote, billingAddress: newBillingAddress, fees: [newFee])
-        let updateFields: [OrderUpdateField] = [.customerNote, .billingAddress, .fees]
+        let updateFields: [OrderUpdateField] = [.customerNote, .billingAddress, .fees, .status]
 
         updateOrder(siteID: siteID, order: updatedOrder, fields: updateFields, onCompletion: onCompletion)
     }
@@ -315,9 +334,15 @@ private extension OrderStore {
     /// Creates a manual order with the provided order details.
     ///
     func createOrder(siteID: Int64, order: Order, onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        remote.createOrder(siteID: siteID, order: order, fields: [.status]) { [weak self] result in
+        remote.createOrder(siteID: siteID,
+                           order: order,
+                           fields: [.status, .items, .billingAddress, .shippingAddress, .shippingLines, .feeLines, .customerNote]) { [weak self] result in
             switch result {
             case .success(let order):
+                // Auto-draft orders are temporary and should not be stored
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
                     onCompletion(result)
                 })
@@ -333,11 +358,12 @@ private extension OrderStore {
         /// Optimistically update the Status
         let oldStatus = updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: status)
 
-        remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (_, error) in
+        remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (order, error) in
             guard let error = error else {
-                // NOTE: We're *not* actually updating the whole entity here. Reason: Prevent UI inconsistencies!!
-                onCompletion(nil)
-                return
+                if let order = order {
+                    self?.upsertStoredOrder(readOnlyOrder: order)
+                }
+                return onCompletion(nil)
             }
 
             /// Revert Optimistic Update
@@ -352,6 +378,10 @@ private extension OrderStore {
         remote.updateOrder(from: siteID, order: order, fields: fields) { [weak self] result in
             switch result {
             case .success(let order):
+                // Auto-draft orders are temporary and should not be stored
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
                     onCompletion(result)
                 })
@@ -359,6 +389,90 @@ private extension OrderStore {
                 onCompletion(result)
             }
         }
+    }
+
+    /// Updates the specified fields from an order optimistically.
+    ///
+    /// Updates will be reverted in case of failure.
+    ///
+    func updateOrderOptimistically(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        // Optimistically update the stored order.
+        let backupOrder = upsertStoredOrder(readOnlyOrder: order)
+
+        remote.updateOrder(from: siteID, order: order, fields: fields) { [weak self] result in
+            guard case .failure = result else {
+                onCompletion(.success(order))
+                return
+            }
+
+            /// Revert optimistic update.
+            ///
+            /// If the backup order is equal to the given order means that the order
+            /// didn't exist locally. So, we have to delete the stored order as workaround.
+            /// Otherwise, we have to revert the updated fields.
+            if order == backupOrder {
+                self?.deleteStoredOrder(siteID: siteID, orderID: order.orderID)
+            } else {
+                self?.upsertStoredOrder(readOnlyOrder: backupOrder)
+            }
+            onCompletion(result)
+        }
+    }
+
+    /// Updates an order to be considered as paid locally, for use cases where the payment is captured in the
+    /// app to prevent from multiple charging for the same order after subsequent failures (e.g. Interac in Canada).
+    ///
+    func markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: (Result<Order, Error>) -> Void) {
+        let storage = storageManager.viewStorage
+        guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+            return onCompletion(.failure(MarkOrderAsPaidLocallyError.orderNotFoundInStorage))
+        }
+        order.datePaid = datePaid
+        order.statusKey = OrderStatusEnum.processing.rawValue
+        storage.saveIfNeeded()
+        onCompletion(.success(order.toReadOnly()))
+    }
+
+    /// Deletes a given order.
+    ///
+    func deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        // Optimistically delete the order from storage
+        deleteStoredOrder(siteID: siteID, orderID: order.orderID)
+
+        remote.deleteOrder(for: siteID, orderID: order.orderID, force: deletePermanently) { [weak self] result in
+            switch result {
+            case .success:
+                onCompletion(result)
+            case .failure:
+                // Revert optimistic deletion unless the order is an auto-draft (shouldn't be stored)
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
+                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
+                    onCompletion(result)
+                })
+            }
+        }
+    }
+
+    func observeInsertedOrders(siteID: Int64, completion: (AnyPublisher<[Order], Never>) -> Void) {
+        completion(
+            NotificationCenter.default
+                .publisher(for: .NSManagedObjectContextObjectsDidChange, object: storageManager.viewStorage)
+                .map { notification -> [Order] in
+                    guard let note = ManagedObjectsDidChangeNotification(notification: notification) else {
+                        return []
+                    }
+
+                    return note.insertedObjects.compactMap { ($0 as? StorageOrder)?.toReadOnly() }
+                }
+                .map { orders in
+                    orders.filter { $0.siteID == siteID }
+                }
+                .filter { $0.isEmpty == false }
+                .removeDuplicates()
+                .eraseToAnyPublisher()
+        )
     }
 }
 
@@ -420,10 +534,28 @@ extension OrderStore {
 // MARK: - Storage: Search Results
 //
 private extension OrderStore {
+    /// Updates or inserts the specified ReadOnly Order Entity.
+    ///
+    /// - Returns: The updated order, prior to performing the update operation or the given order when
+    /// the order doesn't exist locally.
+    ///
+    @discardableResult
+    func upsertStoredOrder(readOnlyOrder: Networking.Order) -> Networking.Order {
+        let storageOrder = storageManager.viewStorage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID)
+        let oldReadOnlyOrder = storageOrder?.toReadOnly()
+
+        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], in: storageManager.viewStorage)
+
+        if storageOrder == nil {
+            DDLogWarn("⚠️ Unable to retrieve stored order with ID \(readOnlyOrder.orderID) to be updated - A new order has been stored as a workaround")
+        }
+
+        return oldReadOnlyOrder ?? readOnlyOrder
+    }
 
     /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)
     ///
-    private func upsertSearchResultsInBackground(keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
+    func upsertSearchResultsInBackground(keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
             guard let self = self else {
@@ -440,7 +572,7 @@ private extension OrderStore {
 
     /// Upserts the Orders, and associates them to the Search Results Entity (in the specified Storage)
     ///
-    private func upsertStoredResults(keyword: String, readOnlyOrders: [Networking.Order], in storage: StorageType) {
+    func upsertStoredResults(keyword: String, readOnlyOrders: [Networking.Order], in storage: StorageType) {
         let searchResults = storage.loadOrderSearchResults(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.OrderSearchResults.self)
         searchResults.keyword = keyword
 
@@ -488,5 +620,11 @@ private extension OrderStore {
                                     in storage: StorageType) {
         let useCase = OrdersUpsertUseCase(storage: storage)
         useCase.upsert(readOnlyOrders, insertingSearchResults: insertingSearchResults)
+    }
+}
+
+extension OrderStore {
+    enum MarkOrderAsPaidLocallyError: Error {
+        case orderNotFoundInStorage
     }
 }

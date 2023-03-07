@@ -3,7 +3,7 @@ import UIKit
 
 /// Renders a Section Header/Footer with two labels [Left / Right].
 ///
-class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
+final class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
 
     /// Left Label
     ///
@@ -13,6 +13,20 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
     ///
     @IBOutlet private weak var rightColumn: UILabel!
 
+    /// Constraint of the top of left/right labels to the view's top margin.
+    @IBOutlet private weak var topMarginSpacingConstraint: NSLayoutConstraint!
+
+    /// The spacing from the top of left/right labels to the view's top margin. The default value matches the value in its xib
+    /// There is an additional 8px top margin by default in iOS.
+    var topMarginSpacing: CGFloat = 14 {
+        didSet {
+            topMarginSpacingConstraint.constant = topMarginSpacing
+        }
+    }
+
+    /// Whether the label text is converted to uppercase.
+    var shouldShowUppercase: Bool = true
+
     /// Left Label's Text
     ///
     var leftText: String? {
@@ -20,7 +34,7 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
             return leftColumn.text
         }
         set {
-            leftColumn.text = newValue?.uppercased()
+            leftColumn.text = shouldShowUppercase ? newValue?.uppercased(): newValue
             leftColumn.isHidden = newValue == nil || newValue?.isEmpty == true
         }
     }
@@ -32,7 +46,7 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
             return rightColumn.text
         }
         set {
-            rightColumn.text = newValue?.uppercased()
+            rightColumn.text = shouldShowUppercase ? newValue?.uppercased(): newValue
             rightColumn.isHidden = newValue == nil || newValue?.isEmpty == true
         }
     }

@@ -51,7 +51,7 @@ struct SelectionList<T: Hashable>: View {
                                     .padding(.leading, horizontalSpacing)
                                     .padding(.horizontal, insets: geometry.safeAreaInsets)
                             }
-                            .background(Color(.listForeground))
+                            .background(Color(.listForeground(modal: false)))
                         }
                     }
                 }

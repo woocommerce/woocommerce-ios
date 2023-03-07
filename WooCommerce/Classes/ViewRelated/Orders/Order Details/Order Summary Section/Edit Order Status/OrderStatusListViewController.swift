@@ -6,36 +6,12 @@ final class OrderStatusListViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
-    /// The index of the status stored in the database when list view is presented
-    ///
-    private var initialStatus: IndexPath?
-    /// The index of (new) order status selected by the user tapping on a table row.
-    ///
-    private var indexOfSelectedStatus: IndexPath? {
-        didSet {
-            if initialStatus != indexOfSelectedStatus {
-                activateApplyButton()
-            } else {
-                deActivateApplyButton()
-            }
-        }
-    }
-
-    /// A cview model containing all possible order statuses and the selected one.
+    /// A view model containing all possible order statuses and the selected one.
     ///
     private let viewModel: OrderStatusListViewModel
 
-    /// A closure to be called when this VC wants its creator to dismiss it without saving changes.
-    ///
-    var didSelectCancel: (() -> Void)?
-
-    /// A closure to be  called when this VC wants its creator to change the order status to the selected status and dismiss it.
-    ///
-    var didSelectApply: ((OrderStatusEnum) -> Void)?
-
-    init(siteID: Int64, status: OrderStatusEnum) {
-        self.viewModel = OrderStatusListViewModel(status: status,
-                                                  dataSource: OrderStatusListDataSource(siteID: siteID))
+    init(viewModel: OrderStatusListViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -60,7 +36,6 @@ final class OrderStatusListViewController: UIViewController {
             return
         }
         tableView.selectRow(at: selectedStatusIndex, animated: false, scrollPosition: .none)
-        initialStatus = selectedStatusIndex
     }
 
     /// Registers all of the available TableViewCells
@@ -74,6 +49,7 @@ final class OrderStatusListViewController: UIViewController {
     func configureTableView() {
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
+        tableView.accessibilityIdentifier = "order-status-list"
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -103,6 +79,10 @@ extension OrderStatusListViewController {
     }
 
     func configureRightButton() {
+        guard !viewModel.autoConfirmSelection else {
+            return
+        }
+
         let applyButtonTitle = NSLocalizedString("Apply",
                                                comment: "Change order status screen - button title to apply selection")
         let rightBarButton = UIBarButtonItem(title: applyButtonTitle,
@@ -110,31 +90,20 @@ extension OrderStatusListViewController {
                                              target: self,
                                              action: #selector(applyButtonTapped))
         navigationItem.setRightBarButton(rightBarButton, animated: false)
-        deActivateApplyButton()
+        navigationItem.rightBarButtonItem?.accessibilityIdentifier = "order-status-list-apply-button"
+        enableApplyButton(viewModel.shouldEnableApplyButton)
     }
 
-    func activateApplyButton() {
-        navigationItem.rightBarButtonItem?.isEnabled = true
-    }
-
-    func deActivateApplyButton() {
-        navigationItem.rightBarButtonItem?.isEnabled = false
+    func enableApplyButton(_ enabled: Bool) {
+        navigationItem.rightBarButtonItem?.isEnabled = enabled
     }
 
     @objc func dismissButtonTapped() {
-        didSelectCancel?()
+        viewModel.didCancelSelection?()
     }
 
     @objc func applyButtonTapped() {
-        guard let indexOfSelectedStatus = indexOfSelectedStatus else {
-            didSelectCancel?()
-            return
-        }
-        guard let selectedStatus = viewModel.status(at: indexOfSelectedStatus) else {
-            didSelectCancel?()
-            return
-        }
-        didSelectApply?(selectedStatus)
+        viewModel.confirmSelectedStatus()
     }
 }
 
@@ -169,6 +138,7 @@ extension OrderStatusListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        indexOfSelectedStatus = indexPath
+        viewModel.indexOfSelectedStatus = indexPath
+        enableApplyButton(viewModel.shouldEnableApplyButton)
     }
 }

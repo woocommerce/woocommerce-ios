@@ -1,5 +1,6 @@
 import Contacts
 import Foundation
+import WooFoundation
 import struct Yosemite.ShippingLabel
 import struct Yosemite.ShippingLabelAddress
 

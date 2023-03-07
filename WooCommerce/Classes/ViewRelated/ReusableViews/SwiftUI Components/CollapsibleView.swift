@@ -46,7 +46,7 @@ struct CollapsibleView<Label: View, Content: View>: View {
             .padding(.horizontal, horizontalPadding)
             .padding(.horizontal, insets: safeAreaInsets)
             .padding(.vertical, verticalPadding)
-            .background(Color(.listForeground))
+            .background(Color(.listForeground(modal: false)))
 
             Divider()
 

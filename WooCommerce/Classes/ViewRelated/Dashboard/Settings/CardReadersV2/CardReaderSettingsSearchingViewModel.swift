@@ -2,10 +2,11 @@ import Foundation
 import Combine
 import Yosemite
 
-final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedViewModel {
+final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedViewModel {
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
+    var learnMoreURL: URL? = nil
 
     private(set) var noConnectedReader: CardReaderSettingsTriState = .isUnknown {
         didSet {
@@ -29,13 +30,23 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
         foundReader?.id
     }
 
-    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil) {
+    let configuration: CardPresentPaymentsConfiguration
+    let cardReaderConnectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
+
+    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
+         knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil,
+         stores: StoresManager = ServiceLocator.stores,
+         configuration: CardPresentPaymentsConfiguration,
+         cardReaderConnectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker) {
         self.didChangeShouldShow = didChangeShouldShow
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
         self.knownReaderProvider = knownReaderProvider
+        self.configuration = configuration
+        self.cardReaderConnectionAnalyticsTracker = cardReaderConnectionAnalyticsTracker
 
         beginKnownReaderObservation()
         beginConnectedReaderObservation()
+        updateLearnMoreUrl(stores: stores)
     }
 
     deinit {
@@ -78,7 +89,7 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
     }
 
     /// Updates whether the view this viewModel is associated with should be shown or not
-    /// Notifes the viewModel owner if a change occurs via didChangeShouldShow
+    /// Notifies the viewModel owner if a change occurs via didChangeShouldShow
     ///
     private func reevaluateShouldShow() {
         let newShouldShow: CardReaderSettingsTriState = noConnectedReader
@@ -90,5 +101,20 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
         if didChange {
             didChangeShouldShow?(shouldShow)
         }
+    }
+
+    /// Load active payment gateway plugin from the payment store and update learn more url
+    ///
+    private func updateLearnMoreUrl(stores: StoresManager) {
+        let loadLearnMoreUrlAction = CardPresentPaymentAction
+            .loadActivePaymentGatewayExtension() { [weak self] result in
+                switch result {
+                case .wcpay:
+                    self?.learnMoreURL = WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
+                case .stripe:
+                    self?.learnMoreURL = WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()
+                }
+            }
+        stores.dispatch(loadLearnMoreUrlAction)
     }
 }

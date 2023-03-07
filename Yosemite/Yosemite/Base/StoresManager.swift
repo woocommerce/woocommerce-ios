@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import Observables
 
 /// Abstracts the Stores coordination
 ///
@@ -37,9 +36,18 @@ public protocol StoresManager {
     ///
     func updateDefaultStore(storeID: Int64)
 
+    /// Updates the default site only in cases where a site's properties are updated (e.g. after installing & activating Jetpack-the-plugin).
+    /// The given site's site ID should match the default site ID, otherwise nothing is updated.
+    ///
+    func updateDefaultStore(_ site: Site)
+
     /// Indicates if the StoresManager is currently authenticated, or not.
     ///
     var isAuthenticated: Bool { get }
+
+    /// Indicates if the StoresManager is currently authenticated with site credentials only.
+    ///
+    var isAuthenticatedWithoutWPCom: Bool { get }
 
     /// Publishes signal that indicates if the user is currently logged in with credentials.
     ///

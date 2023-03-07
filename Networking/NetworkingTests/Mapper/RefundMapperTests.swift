@@ -17,21 +17,24 @@ final class RefundMapperTests: XCTestCase {
     /// Verifies that all of the Refund fields are parsed correctly.
     ///
     func test_Refund_fields_are_properly_parsed() {
-        guard let refund = mapLoadRefundResponse() else {
-            XCTFail("No `refund-single.json` file found.")
-            return
+        let results = [mapLoadRefundResponse(), mapLoadRefundResponseWithoutDataEnvelope()]
+        for refund in results {
+            guard let refund else {
+                XCTFail("No mock file found.")
+                return
+            }
+
+            XCTAssertEqual(refund.siteID, dummySiteID)
+            XCTAssertEqual(refund.refundID, 562)
+
+            let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-01T19:33:46")
+            XCTAssertEqual(refund.dateCreated, dateCreated)
+
+            XCTAssertEqual(refund.amount, "27.00")
+            XCTAssertEqual(refund.reason, "My pet hamster ate the sleeve off of one of the Blue XL hoodies. Sorry! No longer for sale.")
+            XCTAssertEqual(refund.refundedByUserID, 1)
+            XCTAssertEqual(refund.isAutomated, true)
         }
-
-        XCTAssertEqual(refund.siteID, dummySiteID)
-        XCTAssertEqual(refund.refundID, 562)
-
-        let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-01T19:33:46")
-        XCTAssertEqual(refund.dateCreated, dateCreated)
-
-        XCTAssertEqual(refund.amount, "27.00")
-        XCTAssertEqual(refund.reason, "My pet hamster ate the sleeve off of one of the Blue XL hoodies. Sorry! No longer for sale.")
-        XCTAssertEqual(refund.refundedByUserID, 1)
-        XCTAssertEqual(refund.isAutomated, true)
     }
 
     /// Verifies that all of the Refunded Order Items are parsed correctly.
@@ -160,6 +163,12 @@ private extension RefundMapperTests {
         return mapRefund(from: "refund-single")
     }
 
+    /// Returns the RefundsMapper output upon receiving `refund-single-without-data`
+    ///
+    func mapLoadRefundResponseWithoutDataEnvelope() -> Refund? {
+        return mapRefund(from: "refund-single-without-data")
+    }
+
     /// Creates a dummy refund with items and taxes
     ///
     func sampleRefund(includeTaxes: Bool) -> Refund {
@@ -184,6 +193,7 @@ private extension RefundMapperTests {
                                name: "",
                                productID: 1,
                                variationID: 1,
+                               refundedItemID: "1",
                                quantity: 1,
                                price: 18.0,
                                sku: nil,

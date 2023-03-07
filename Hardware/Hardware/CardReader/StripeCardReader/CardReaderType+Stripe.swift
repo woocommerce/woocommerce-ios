@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension CardReaderType {
@@ -10,8 +11,28 @@ extension CardReaderType {
             return .chipper
         case .stripeM2:
             return .stripeM2
+        case .wisePad3:
+            return .wisepad3
+        case .appleBuiltIn:
+            return appleBuiltIn
         default:
             return .other
         }
     }
+
+    func toStripe() -> DeviceType? {
+        switch self {
+        case .chipper:
+            return .chipper2X
+        case .stripeM2:
+            return .stripeM2
+        case .wisepad3:
+            return .wisePad3
+        case .appleBuiltIn:
+            return .appleBuiltIn
+        case .other:
+            return nil
+        }
+    }
 }
+#endif

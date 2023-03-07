@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// ViewModel for `ProductAddOn`
 ///

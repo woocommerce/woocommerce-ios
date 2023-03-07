@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
-
+import WooFoundation
 
 /// All things view-related for Refunds.
 ///
@@ -74,7 +74,7 @@ private extension RefundDetailsViewModel {
     /// Calculate the subtotal for each returned item
     ///
     func calculateItemSubtotal() -> NSDecimalNumber {
-        let itemSubtotals = refund.items.map { currencyFormatter.convertToDecimal(from: $0.subtotal) }
+        let itemSubtotals = refund.items.map { currencyFormatter.convertToDecimal($0.subtotal) }
 
         var subtotal = NSDecimalNumber.zero
         for itemSubtotal in itemSubtotals {
@@ -93,7 +93,7 @@ private extension RefundDetailsViewModel {
     /// Calculate the subtotal tax for each returned item
     ///
     func calculateSubtotalTax() -> NSDecimalNumber {
-        let itemSubtotalTaxes = refund.items.map { currencyFormatter.convertToDecimal(from: $0.subtotalTax) }
+        let itemSubtotalTaxes = refund.items.map { currencyFormatter.convertToDecimal($0.subtotalTax) }
 
         var subtotalTax = NSDecimalNumber.zero
         for itemSubtotalTax in itemSubtotalTaxes {

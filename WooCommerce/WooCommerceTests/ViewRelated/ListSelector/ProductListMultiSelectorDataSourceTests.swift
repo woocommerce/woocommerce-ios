@@ -1,5 +1,5 @@
+import Combine
 import XCTest
-import Observables
 
 @testable import Storage
 @testable import WooCommerce
@@ -14,12 +14,12 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         storageManager.viewStorage
     }
 
-    private var cancellable: ObservationToken?
+    private var productIDsSubscription: AnyCancellable?
 
     override func setUp() {
         super.setUp()
 
-        cancellable = nil
+        productIDsSubscription = nil
     }
 
     func test_dataSource_creates_ResultsController_excluding_specified_product_ids() throws {
@@ -27,12 +27,12 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         let siteID: Int64 = 1
         let excludedProductIDs: [Int64] = [17, 630]
         excludedProductIDs.forEach { productID in
-            insert(Product().copy(siteID: siteID, productID: productID))
+            insert(Product.fake().copy(siteID: siteID, productID: productID))
         }
 
         let otherProductIDs: [Int64] = [22, 671, 5]
         otherProductIDs.forEach { productID in
-            insert(Product().copy(siteID: siteID, productID: productID))
+            insert(Product.fake().copy(siteID: siteID, productID: productID))
         }
 
         let dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: excludedProductIDs)
@@ -51,12 +51,12 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         let siteID: Int64 = 1
         let dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: [])
         var productsSequence = [[Int64]]()
-        cancellable = dataSource.productIDs.subscribe { productIDs in
+        productIDsSubscription = dataSource.productIDs.sink { productIDs in
             productsSequence.append(productIDs)
         }
 
         // Action
-        let product = Product().copy(productID: 17)
+        let product = Product.fake().copy(productID: 17)
         dataSource.handleSelectedChange(selected: product)
         dataSource.handleSelectedChange(selected: product)
 
@@ -71,7 +71,7 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         // Arrange
         let siteID: Int64 = 1
         let dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: [])
-        let product = Product().copy(productID: 17)
+        let product = Product.fake().copy(productID: 17)
         XCTAssertFalse(dataSource.isSelected(model: product))
 
         // Action - step 1: select product
@@ -92,7 +92,7 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         let siteID: Int64 = 1
         let dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: [])
         var productsSequence = [[Int64]]()
-        cancellable = dataSource.productIDs.subscribe { productIDs in
+        productIDsSubscription = dataSource.productIDs.sink { productIDs in
             productsSequence.append(productIDs)
         }
 

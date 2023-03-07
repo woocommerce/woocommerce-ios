@@ -44,16 +44,23 @@ class Product_ProductFormTests: XCTestCase {
         XCTAssertEqual(product.categoriesDescription(using: usLocale), expectedDescription)
     }
 
+    func test_category_description_decodes_HTML_in_category_name() {
+        let category = sampleCategory(name: "Test &amp; Test")
+        let product = sampleProduct(categories: [category])
+        let expectedDescription = "Test & Test"
+        XCTAssertEqual(product.categoriesDescription(), expectedDescription)
+    }
+
     // MARK: image related
 
     func testProductAllowsMultipleImages() {
-        let product = Product().copy(images: [])
+        let product = Product.fake().copy(images: [])
         let model = EditableProductModel(product: product)
         XCTAssertTrue(model.allowsMultipleImages())
     }
 
     func testProductImageDeletionIsEnabled() {
-        let product = Product().copy(images: [])
+        let product = Product.fake().copy(images: [])
         let model = EditableProductModel(product: product)
         XCTAssertTrue(model.isImageDeletionEnabled())
     }
@@ -61,12 +68,12 @@ class Product_ProductFormTests: XCTestCase {
     // MARK: `productTaxStatus`
 
     func testProductTaxStatusFromAnUnexpectedRawValueReturnsDefaultTaxable() {
-        let product = Product().copy(taxStatusKey: "unknown tax status")
+        let product = Product.fake().copy(taxStatusKey: "unknown tax status")
         XCTAssertEqual(product.productTaxStatus, .taxable)
     }
 
     func testProductTaxStatusFromAValidRawValueReturnsTheCorrespondingCase() {
-        let product = Product().copy(taxStatusKey: ProductTaxStatus.shipping.rawValue)
+        let product = Product.fake().copy(taxStatusKey: ProductTaxStatus.shipping.rawValue)
         XCTAssertEqual(product.productTaxStatus, .shipping)
     }
 
@@ -74,12 +81,12 @@ class Product_ProductFormTests: XCTestCase {
 
     func testBackordersSettingFromAnUnexpectedRawValueReturnsACustomCase() {
         let rawValue = "unknown setting"
-        let product = Product().copy(backordersKey: rawValue)
+        let product = Product.fake().copy(backordersKey: rawValue)
         XCTAssertEqual(product.backordersSetting, .custom(rawValue))
     }
 
     func testBackordersSettingFromAValidRawValueReturnsTheCorrespondingCase() {
-        let product = Product().copy(backordersKey: ProductBackordersSetting.notAllowed.rawValue)
+        let product = Product.fake().copy(backordersKey: ProductBackordersSetting.notAllowed.rawValue)
         XCTAssertEqual(product.backordersSetting, .notAllowed)
     }
 }
@@ -103,8 +110,8 @@ private extension Product_ProductFormTests {
                        date: Date(),
                        dateCreated: Date(),
                        dateModified: Date(),
-                       dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
-                       dateOnSaleEnd: date(with: "2019-10-27T21:29:59"),
+                       dateOnSaleStart: DateFormatter.dateFromString(with: "2019-10-15T21:30:00"),
+                       dateOnSaleEnd: DateFormatter.dateFromString(with: "2019-10-27T21:29:59"),
                        productTypeKey: "booking",
                        statusKey: "publish",
                        featured: false,
@@ -157,13 +164,16 @@ private extension Product_ProductFormTests {
                        variations: [192, 194, 193],
                        groupedProducts: [],
                        menuOrder: 0,
-                       addOns: [])
-    }
-
-    private func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
+                       addOns: [],
+                       bundleLayout: nil,
+                       bundleFormLocation: nil,
+                       bundleItemGrouping: nil,
+                       bundleMinSize: nil,
+                       bundleMaxSize: nil,
+                       bundleEditableInCart: nil,
+                       bundleSoldIndividuallyContext: nil,
+                       bundleStockStatus: nil,
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 }

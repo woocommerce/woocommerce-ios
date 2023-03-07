@@ -1,0 +1,896 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		03597A9428F85686005E4A98 /* UTMParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03597A9328F85686005E4A98 /* UTMParameters.swift */; };
+		03597A9928F8799C005E4A98 /* MockUTMParameterProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03597A9728F87948005E4A98 /* MockUTMParameterProvider.swift */; };
+		03597A9B28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03597A9A28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift */; };
+		03597A9D28F93409005E4A98 /* WooCommerceComUTMProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03597A9C28F93409005E4A98 /* WooCommerceComUTMProviderTests.swift */; };
+		035BA3A6290FF98D0056F0AD /* UTMProviderProtocolExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035BA3A5290FF98D0056F0AD /* UTMProviderProtocolExtensionTests.swift */; };
+		036563D728F93F8D00D84BFD /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 036563D628F93F8D00D84BFD /* TestKit */; };
+		03B8C3892914083F002235B1 /* Bundle+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8C3882914083F002235B1 /* Bundle+Woo.swift */; };
+		265C99D828B93F04005E6117 /* ColorPalette.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 265C99D728B93F04005E6117 /* ColorPalette.xcassets */; };
+		265C99DD28B941D5005E6117 /* UIColor+Muriel-Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99DC28B941D5005E6117 /* UIColor+Muriel-Tests.swift */; };
+		265C99DF28B94271005E6117 /* MurielColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99DE28B94271005E6117 /* MurielColorTests.swift */; };
+		26AF1F5328B8362800937BA9 /* UIColor+SemanticColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F4F28B8362800937BA9 /* UIColor+SemanticColors.swift */; };
+		26AF1F5428B8362800937BA9 /* ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5028B8362800937BA9 /* ColorStudio.swift */; };
+		26AF1F5528B8362800937BA9 /* UIColor+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5128B8362800937BA9 /* UIColor+ColorStudio.swift */; };
+		26AF1F5628B8362800937BA9 /* UIColor+SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5228B8362800937BA9 /* UIColor+SystemColors.swift */; };
+		26AF1F5928B9011100937BA9 /* WooStyleModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5828B9011100937BA9 /* WooStyleModifiers.swift */; };
+		397702D42D32EAEEEA3B29FC /* Pods_WooFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */; };
+		686BE912288EE0D300967C86 /* TypedPredicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE911288EE0D300967C86 /* TypedPredicates.swift */; };
+		686BE915288EE2CA00967C86 /* TypedPredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */; };
+		6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6874E81328998AD300074A97 /* LogErrorAndExit.swift */; };
+		689D11D02891B3A300F6A83F /* CrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689D11CF2891B3A300F6A83F /* CrashLogger.swift */; };
+		689D11D32891B7D800F6A83F /* MockCrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689D11D22891B7D800F6A83F /* MockCrashLogger.swift */; };
+		68FBC5B328926B2C00A05461 /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */; };
+		9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */; };
+		AE948D0A28CF67CF009F3246 /* Date+StartAndEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */; };
+		AE948D0D28CF6D50009F3246 /* DateStartAndEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */; };
+		B97190D1292CF3BC0065E413 /* Result+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97190D0292CF3BC0065E413 /* Result+Extensions.swift */; };
+		B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B987B06E284540D300C53CF6 /* CurrencyCode.swift */; };
+		B9C9C63F283E703C001B879F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C9C635283E703C001B879F /* WooFoundation.framework */; };
+		B9C9C659283E7195001B879F /* NSDecimalNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C658283E7195001B879F /* NSDecimalNumber+Helpers.swift */; };
+		B9C9C65D283E71C8001B879F /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65B283E71C8001B879F /* CurrencyFormatter.swift */; };
+		B9C9C65E283E71C8001B879F /* CurrencySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65C283E71C8001B879F /* CurrencySettings.swift */; };
+		B9C9C660283E71F4001B879F /* Double+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65F283E71F4001B879F /* Double+Woo.swift */; };
+		B9C9C663283E7296001B879F /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C662283E7296001B879F /* Logging.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B9C9C640283E703C001B879F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9C9C5EE283E6FAA001B879F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B9C9C634283E703C001B879F;
+			remoteInfo = Tools;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		03597A9328F85686005E4A98 /* UTMParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTMParameters.swift; sourceTree = "<group>"; };
+		03597A9728F87948005E4A98 /* MockUTMParameterProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUTMParameterProvider.swift; sourceTree = "<group>"; };
+		03597A9A28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceComUTMProvider.swift; sourceTree = "<group>"; };
+		03597A9C28F93409005E4A98 /* WooCommerceComUTMProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceComUTMProviderTests.swift; sourceTree = "<group>"; };
+		035BA3A5290FF98D0056F0AD /* UTMProviderProtocolExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTMProviderProtocolExtensionTests.swift; sourceTree = "<group>"; };
+		03B8C3882914083F002235B1 /* Bundle+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Woo.swift"; sourceTree = "<group>"; };
+		265C99D728B93F04005E6117 /* ColorPalette.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ColorPalette.xcassets; sourceTree = "<group>"; };
+		265C99DC28B941D5005E6117 /* UIColor+Muriel-Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Muriel-Tests.swift"; sourceTree = "<group>"; };
+		265C99DE28B94271005E6117 /* MurielColorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MurielColorTests.swift; sourceTree = "<group>"; };
+		26AF1F4F28B8362800937BA9 /* UIColor+SemanticColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+SemanticColors.swift"; sourceTree = "<group>"; };
+		26AF1F5028B8362800937BA9 /* ColorStudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorStudio.swift; sourceTree = "<group>"; };
+		26AF1F5128B8362800937BA9 /* UIColor+ColorStudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+ColorStudio.swift"; sourceTree = "<group>"; };
+		26AF1F5228B8362800937BA9 /* UIColor+SystemColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+SystemColors.swift"; sourceTree = "<group>"; };
+		26AF1F5828B9011100937BA9 /* WooStyleModifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WooStyleModifiers.swift; sourceTree = "<group>"; };
+		532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5BC355411C0A805BF29F38A6 /* Pods-WooFoundationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release.xcconfig"; sourceTree = "<group>"; };
+		686BE911288EE0D300967C86 /* TypedPredicates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicates.swift; sourceTree = "<group>"; };
+		686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicateTests.swift; sourceTree = "<group>"; };
+		6874E81328998AD300074A97 /* LogErrorAndExit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogErrorAndExit.swift; sourceTree = "<group>"; };
+		689D11CF2891B3A300F6A83F /* CrashLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrashLogger.swift; sourceTree = "<group>"; };
+		689D11D22891B7D800F6A83F /* MockCrashLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockCrashLogger.swift; sourceTree = "<group>"; };
+		68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
+		81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.debug.xcconfig"; sourceTree = "<group>"; };
+		A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+StartAndEnd.swift"; sourceTree = "<group>"; };
+		AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateStartAndEndTests.swift; sourceTree = "<group>"; };
+		B97190D0292CF3BC0065E413 /* Result+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Extensions.swift"; sourceTree = "<group>"; };
+		B987B06E284540D300C53CF6 /* CurrencyCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyCode.swift; sourceTree = "<group>"; };
+		B9AED558283E7553002A2668 /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9AED55B283E755A002A2668 /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9C9C635283E703C001B879F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9C9C63E283E703C001B879F /* WooFoundationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooFoundationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9C9C658283E7195001B879F /* NSDecimalNumber+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDecimalNumber+Helpers.swift"; sourceTree = "<group>"; };
+		B9C9C65B283E71C8001B879F /* CurrencyFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyFormatter.swift; sourceTree = "<group>"; };
+		B9C9C65C283E71C8001B879F /* CurrencySettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencySettings.swift; sourceTree = "<group>"; };
+		B9C9C65F283E71F4001B879F /* Double+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Double+Woo.swift"; sourceTree = "<group>"; };
+		B9C9C662283E7296001B879F /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
+		B9C9C665283E72ED001B879F /* CocoaLumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CocoaLumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCA82452EA8EE0170C1AA258 /* Pods-WooFoundationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.debug.xcconfig"; sourceTree = "<group>"; };
+		C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D64F2A76E9373989B3F181FC /* Pods-WooFoundation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.release.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B9C9C632283E703C001B879F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B9C9C63B283E703C001B879F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				036563D728F93F8D00D84BFD /* TestKit in Frameworks */,
+				B9C9C63F283E703C001B879F /* WooFoundation.framework in Frameworks */,
+				397702D42D32EAEEEA3B29FC /* Pods_WooFoundationTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		265C99DB28B941D5005E6117 /* Colors */ = {
+			isa = PBXGroup;
+			children = (
+				265C99DE28B94271005E6117 /* MurielColorTests.swift */,
+				265C99DC28B941D5005E6117 /* UIColor+Muriel-Tests.swift */,
+			);
+			name = Colors;
+			path = WooFoundationTests/Colors;
+			sourceTree = SOURCE_ROOT;
+		};
+		26AF1F4E28B8362800937BA9 /* Colors */ = {
+			isa = PBXGroup;
+			children = (
+				26AF1F4F28B8362800937BA9 /* UIColor+SemanticColors.swift */,
+				26AF1F5028B8362800937BA9 /* ColorStudio.swift */,
+				26AF1F5128B8362800937BA9 /* UIColor+ColorStudio.swift */,
+				26AF1F5228B8362800937BA9 /* UIColor+SystemColors.swift */,
+				265C99D728B93F04005E6117 /* ColorPalette.xcassets */,
+			);
+			path = Colors;
+			sourceTree = "<group>";
+		};
+		26AF1F5728B9011100937BA9 /* ViewModifiers */ = {
+			isa = PBXGroup;
+			children = (
+				26AF1F5828B9011100937BA9 /* WooStyleModifiers.swift */,
+			);
+			name = ViewModifiers;
+			path = WooFoundation/ViewModifiers;
+			sourceTree = SOURCE_ROOT;
+		};
+		686BE910288EE09B00967C86 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				686BE911288EE0D300967C86 /* TypedPredicates.swift */,
+				03597A9328F85686005E4A98 /* UTMParameters.swift */,
+				03597A9A28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		686BE913288EE2BC00967C86 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				265C99DB28B941D5005E6117 /* Colors */,
+				686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */,
+				03597A9C28F93409005E4A98 /* WooCommerceComUTMProviderTests.swift */,
+				035BA3A5290FF98D0056F0AD /* UTMProviderProtocolExtensionTests.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		689D11CE2891B37400F6A83F /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				689D11CF2891B3A300F6A83F /* CrashLogger.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		689D11D12891B7B100F6A83F /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				03597A9728F87948005E4A98 /* MockUTMParameterProvider.swift */,
+				689D11D22891B7D800F6A83F /* MockCrashLogger.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		AE948D0B28CF6D34009F3246 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		B9C9C5ED283E6FAA001B879F = {
+			isa = PBXGroup;
+			children = (
+				B9C9C636283E703C001B879F /* WooFoundation */,
+				B9C9C642283E703C001B879F /* WooFoundationTests */,
+				B9C9C5FB283E6FAB001B879F /* Products */,
+				B9C9C664283E72ED001B879F /* Frameworks */,
+				C8E281DD95DE8EF39194328A /* Pods */,
+			);
+			sourceTree = "<group>";
+		};
+		B9C9C5FB283E6FAB001B879F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B9C9C635283E703C001B879F /* WooFoundation.framework */,
+				B9C9C63E283E703C001B879F /* WooFoundationTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B9C9C636283E703C001B879F /* WooFoundation */ = {
+			isa = PBXGroup;
+			children = (
+				26AF1F4E28B8362800937BA9 /* Colors */,
+				689D11D12891B7B100F6A83F /* Mocks */,
+				689D11CE2891B37400F6A83F /* Protocols */,
+				686BE910288EE09B00967C86 /* Utilities */,
+				B9C9C661283E7296001B879F /* Internal */,
+				B9C9C65A283E71C8001B879F /* Currency */,
+				B9C9C657283E7174001B879F /* Extensions */,
+				26AF1F5728B9011100937BA9 /* ViewModifiers */,
+			);
+			path = WooFoundation;
+			sourceTree = "<group>";
+		};
+		B9C9C642283E703C001B879F /* WooFoundationTests */ = {
+			isa = PBXGroup;
+			children = (
+				AE948D0B28CF6D34009F3246 /* Extensions */,
+				686BE913288EE2BC00967C86 /* Utilities */,
+			);
+			path = WooFoundationTests;
+			sourceTree = "<group>";
+		};
+		B9C9C657283E7174001B879F /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */,
+				B9C9C65F283E71F4001B879F /* Double+Woo.swift */,
+				B9C9C658283E7195001B879F /* NSDecimalNumber+Helpers.swift */,
+				68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */,
+				03B8C3882914083F002235B1 /* Bundle+Woo.swift */,
+				B97190D0292CF3BC0065E413 /* Result+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		B9C9C65A283E71C8001B879F /* Currency */ = {
+			isa = PBXGroup;
+			children = (
+				B987B06E284540D300C53CF6 /* CurrencyCode.swift */,
+				B9C9C65B283E71C8001B879F /* CurrencyFormatter.swift */,
+				B9C9C65C283E71C8001B879F /* CurrencySettings.swift */,
+			);
+			path = Currency;
+			sourceTree = "<group>";
+		};
+		B9C9C661283E7296001B879F /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				B9C9C662283E7296001B879F /* Logging.swift */,
+				6874E81328998AD300074A97 /* LogErrorAndExit.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
+		B9C9C664283E72ED001B879F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B9AED55B283E755A002A2668 /* Hardware.framework */,
+				B9AED558283E7553002A2668 /* Yosemite.framework */,
+				B9C9C665283E72ED001B879F /* CocoaLumberjack.framework */,
+				C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */,
+				532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C8E281DD95DE8EF39194328A /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */,
+				D64F2A76E9373989B3F181FC /* Pods-WooFoundation.release.xcconfig */,
+				BCA82452EA8EE0170C1AA258 /* Pods-WooFoundationTests.debug.xcconfig */,
+				5BC355411C0A805BF29F38A6 /* Pods-WooFoundationTests.release.xcconfig */,
+				81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */,
+				A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */,
+			);
+			name = Pods;
+			path = ../Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		B9C9C630283E703C001B879F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		B9C9C634283E703C001B879F /* WooFoundation */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B9C9C646283E703C001B879F /* Build configuration list for PBXNativeTarget "WooFoundation" */;
+			buildPhases = (
+				785F98CEE4A25B52E109348C /* [CP] Check Pods Manifest.lock */,
+				B9C9C630283E703C001B879F /* Headers */,
+				B9C9C631283E703C001B879F /* Sources */,
+				B9C9C632283E703C001B879F /* Frameworks */,
+				B9C9C633283E703C001B879F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WooFoundation;
+			productName = Tools;
+			productReference = B9C9C635283E703C001B879F /* WooFoundation.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		B9C9C63D283E703C001B879F /* WooFoundationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B9C9C649283E703C001B879F /* Build configuration list for PBXNativeTarget "WooFoundationTests" */;
+			buildPhases = (
+				8412E9AEB5C292FAFA14BB34 /* [CP] Check Pods Manifest.lock */,
+				B9C9C63A283E703C001B879F /* Sources */,
+				B9C9C63B283E703C001B879F /* Frameworks */,
+				B9C9C63C283E703C001B879F /* Resources */,
+				D8F50D6FB8B57B87F4399E61 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B9C9C641283E703C001B879F /* PBXTargetDependency */,
+			);
+			name = WooFoundationTests;
+			packageProductDependencies = (
+				036563D628F93F8D00D84BFD /* TestKit */,
+			);
+			productName = ToolsTests;
+			productReference = B9C9C63E283E703C001B879F /* WooFoundationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B9C9C5EE283E6FAA001B879F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1330;
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					B9C9C634283E703C001B879F = {
+						CreatedOnToolsVersion = 13.3;
+					};
+					B9C9C63D283E703C001B879F = {
+						CreatedOnToolsVersion = 13.3;
+					};
+				};
+			};
+			buildConfigurationList = B9C9C5F1283E6FAA001B879F /* Build configuration list for PBXProject "WooFoundation" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B9C9C5ED283E6FAA001B879F;
+			productRefGroup = B9C9C5FB283E6FAB001B879F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B9C9C634283E703C001B879F /* WooFoundation */,
+				B9C9C63D283E703C001B879F /* WooFoundationTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B9C9C633283E703C001B879F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				265C99D828B93F04005E6117 /* ColorPalette.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B9C9C63C283E703C001B879F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		785F98CEE4A25B52E109348C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WooFoundation-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8412E9AEB5C292FAFA14BB34 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WooFoundationTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D8F50D6FB8B57B87F4399E61 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B9C9C631283E703C001B879F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				03B8C3892914083F002235B1 /* Bundle+Woo.swift in Sources */,
+				B9C9C659283E7195001B879F /* NSDecimalNumber+Helpers.swift in Sources */,
+				26AF1F5328B8362800937BA9 /* UIColor+SemanticColors.swift in Sources */,
+				03597A9B28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift in Sources */,
+				B9C9C663283E7296001B879F /* Logging.swift in Sources */,
+				6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */,
+				B97190D1292CF3BC0065E413 /* Result+Extensions.swift in Sources */,
+				B9C9C65D283E71C8001B879F /* CurrencyFormatter.swift in Sources */,
+				AE948D0A28CF67CF009F3246 /* Date+StartAndEnd.swift in Sources */,
+				03597A9428F85686005E4A98 /* UTMParameters.swift in Sources */,
+				26AF1F5628B8362800937BA9 /* UIColor+SystemColors.swift in Sources */,
+				689D11D32891B7D800F6A83F /* MockCrashLogger.swift in Sources */,
+				B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */,
+				03597A9928F8799C005E4A98 /* MockUTMParameterProvider.swift in Sources */,
+				B9C9C660283E71F4001B879F /* Double+Woo.swift in Sources */,
+				689D11D02891B3A300F6A83F /* CrashLogger.swift in Sources */,
+				26AF1F5928B9011100937BA9 /* WooStyleModifiers.swift in Sources */,
+				686BE912288EE0D300967C86 /* TypedPredicates.swift in Sources */,
+				B9C9C65E283E71C8001B879F /* CurrencySettings.swift in Sources */,
+				26AF1F5528B8362800937BA9 /* UIColor+ColorStudio.swift in Sources */,
+				26AF1F5428B8362800937BA9 /* ColorStudio.swift in Sources */,
+				68FBC5B328926B2C00A05461 /* Collection+Extensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B9C9C63A283E703C001B879F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				03597A9D28F93409005E4A98 /* WooCommerceComUTMProviderTests.swift in Sources */,
+				686BE915288EE2CA00967C86 /* TypedPredicateTests.swift in Sources */,
+				265C99DF28B94271005E6117 /* MurielColorTests.swift in Sources */,
+				AE948D0D28CF6D50009F3246 /* DateStartAndEndTests.swift in Sources */,
+				265C99DD28B941D5005E6117 /* UIColor+Muriel-Tests.swift in Sources */,
+				035BA3A6290FF98D0056F0AD /* UTMProviderProtocolExtensionTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B9C9C641283E703C001B879F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B9C9C634283E703C001B879F /* WooFoundation */;
+			targetProxy = B9C9C640283E703C001B879F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		B9BD4BD42844E20300F835D6 /* Release-Alpha */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = "Release-Alpha";
+		};
+		B9BD4BD52844E20300F835D6 /* Release-Alpha */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.WooFoundation;
+				PRODUCT_NAME = WooFoundation;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = "Release-Alpha";
+		};
+		B9BD4BD62844E20300F835D6 /* Release-Alpha */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.WooFoundationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALPHA;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "Release-Alpha";
+		};
+		B9C9C621283E6FAB001B879F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B9C9C622283E6FAB001B879F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		B9C9C647283E703C001B879F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.WooFoundation;
+				PRODUCT_NAME = WooFoundation;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		B9C9C648283E703C001B879F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D64F2A76E9373989B3F181FC /* Pods-WooFoundation.release.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.WooFoundation;
+				PRODUCT_NAME = WooFoundation;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		B9C9C64A283E703C001B879F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BCA82452EA8EE0170C1AA258 /* Pods-WooFoundationTests.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.WooFoundationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B9C9C64B283E703C001B879F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5BC355411C0A805BF29F38A6 /* Pods-WooFoundationTests.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.WooFoundationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B9C9C5F1283E6FAA001B879F /* Build configuration list for PBXProject "WooFoundation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B9C9C621283E6FAB001B879F /* Debug */,
+				B9C9C622283E6FAB001B879F /* Release */,
+				B9BD4BD42844E20300F835D6 /* Release-Alpha */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B9C9C646283E703C001B879F /* Build configuration list for PBXNativeTarget "WooFoundation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B9C9C647283E703C001B879F /* Debug */,
+				B9C9C648283E703C001B879F /* Release */,
+				B9BD4BD52844E20300F835D6 /* Release-Alpha */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B9C9C649283E703C001B879F /* Build configuration list for PBXNativeTarget "WooFoundationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B9C9C64A283E703C001B879F /* Debug */,
+				B9C9C64B283E703C001B879F /* Release */,
+				B9BD4BD62844E20300F835D6 /* Release-Alpha */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		036563D628F93F8D00D84BFD /* TestKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TestKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = B9C9C5EE283E6FAA001B879F /* Project object */;
+}

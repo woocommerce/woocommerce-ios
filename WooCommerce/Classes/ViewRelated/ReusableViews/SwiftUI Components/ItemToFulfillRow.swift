@@ -14,40 +14,36 @@ struct ItemToFulfillRow: View, Identifiable {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational) {
-            HStack {
-                TitleAndSubtitleRow(title: title, subtitle: subtitle)
-                Spacer()
-                Button(action: {
-                    guard !showingMoveItemDialog else {
-                        return
-                    }
-                    switch horizontalSizeClass {
-                    case .some(.regular): // popover is displayed instead of action sheet
-                        onMoveAction()
-                        // delay to make sure that any other popover has been dismissed.
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            showingMoveItemDialog = true
-                            ServiceLocator.analytics.track(.shippingLabelMoveItemTapped)
-                        }
-                    default:
+        HStack {
+            TitleAndSubtitleRow(title: title, subtitle: subtitle)
+            Spacer()
+            Button(action: {
+                guard !showingMoveItemDialog else {
+                    return
+                }
+                switch horizontalSizeClass {
+                case .some(.regular): // popover is displayed instead of action sheet
+                    onMoveAction()
+                    // delay to make sure that any other popover has been dismissed.
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         showingMoveItemDialog = true
                         ServiceLocator.analytics.track(.shippingLabelMoveItemTapped)
                     }
+                default:
+                    showingMoveItemDialog = true
+                    ServiceLocator.analytics.track(.shippingLabelMoveItemTapped)
+                }
 
-                }, label: {
-                    Text(Localization.moveButton)
-                        .font(.footnote)
-                        .foregroundColor(Color(UIColor(color: .accent)))
-                })
-                .padding(.trailing, Constants.horizontalPadding)
-                .actionSheet(isPresented: $showingMoveItemDialog, content: {
-                    ActionSheet(title: Text(moveItemActionSheetTitle),
-                                buttons: moveItemActionSheetButtons)
-                })
-            }
-        } else {
-            TitleAndSubtitleRow(title: title, subtitle: subtitle)
+            }, label: {
+                Text(Localization.moveButton)
+                    .font(.footnote)
+                    .foregroundColor(Color(UIColor(color: .accent)))
+            })
+            .padding(.trailing, Constants.horizontalPadding)
+            .actionSheet(isPresented: $showingMoveItemDialog, content: {
+                ActionSheet(title: Text(moveItemActionSheetTitle),
+                            buttons: moveItemActionSheetButtons)
+            })
         }
     }
 }

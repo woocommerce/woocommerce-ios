@@ -4,6 +4,7 @@ import XCTest
 
 private struct TestConstants {
     static let mockReaderID = "CHB204909005931"
+    static let mockConfiguration = CardPresentPaymentsConfiguration(country: "US")
 }
 
 final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
@@ -22,7 +23,10 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
         let _ = CardReaderSettingsSearchingViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isTrue)
             expectation.fulfill()
-        }, knownReaderProvider: mockKnownReaderProvider)
+        }, knownReaderProvider: mockKnownReaderProvider,
+                                                     configuration: TestConstants.mockConfiguration,
+                                                     cardReaderConnectionAnalyticsTracker: .init(configuration: TestConstants.mockConfiguration,
+                                                                                                 stores: mockStoresManager))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
@@ -42,7 +46,10 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
         let _ = CardReaderSettingsSearchingViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isFalse)
             expectation.fulfill()
-        }, knownReaderProvider: mockKnownReaderProvider)
+        }, knownReaderProvider: mockKnownReaderProvider,
+                                                     configuration: TestConstants.mockConfiguration,
+                                                     cardReaderConnectionAnalyticsTracker: .init(configuration: TestConstants.mockConfiguration,
+                                                                                                 stores: mockStoresManager))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }

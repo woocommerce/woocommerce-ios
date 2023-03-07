@@ -10,10 +10,7 @@ class VerticalButton: UIButton {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        contentEdgeInsets = Settings.edgeInsets
-        layer.cornerRadius = Settings.cornerRadius
-        titleLabel?.font = UIFont.footnote
+        configureButton()
     }
 
     override func layoutSubviews() {
@@ -42,6 +39,18 @@ class VerticalButton: UIButton {
                                   width: titleSize.width,
                                   height: titleSize.height).integral
     }
+
+    private func configureButton() {
+        var configuration = UIButton.Configuration.filled()
+        configuration.contentInsets = .init(
+            top: .zero,
+            leading: Settings.inset,
+            bottom: .zero,
+            trailing: Settings.inset
+        )
+        layer.cornerRadius = Settings.cornerRadius
+        titleLabel?.font = UIFont.footnote
+    }
 }
 
 
@@ -51,7 +60,7 @@ private extension VerticalButton {
 
     enum Settings {
         static let cornerRadius     = CGFloat(10)
-        static let edgeInsets       = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0)
+        static let inset            = CGFloat(5)
         static let labelPaddingTop  = CGFloat(2)
     }
 }

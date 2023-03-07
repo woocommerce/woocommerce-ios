@@ -10,5 +10,6 @@ extension SiteVisitStatsItem {
 
     @NSManaged public var period: String?
     @NSManaged public var visitors: Int64
+    @NSManaged public var views: Int64
     @NSManaged public var stats: SiteVisitStats?
 }

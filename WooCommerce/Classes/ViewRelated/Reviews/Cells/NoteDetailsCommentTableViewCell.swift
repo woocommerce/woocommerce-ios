@@ -56,6 +56,10 @@ final class NoteDetailsCommentTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var approvalButton: UIButton!
 
+    /// Button: Reply
+    ///
+    @IBOutlet var replyButton: UIButton!
+
     /// Custom UIView: Rating star view
     ///
     @IBOutlet private var starRatingView: RatingView!
@@ -75,6 +79,10 @@ final class NoteDetailsCommentTableViewCell: UITableViewCell {
     /// Closure to be executed whenever the Unapprove Button is pressed.
     ///
     var onUnapprove: (() -> Void)?
+
+    /// Closure to be executed whenever the Reply Button is pressed.
+    ///
+    var onReply: (() -> Void)?
 
 
     /// Indicates if the Spam Button is enabled (or not!)
@@ -120,6 +128,17 @@ final class NoteDetailsCommentTableViewCell: UITableViewCell {
             approvalButton.isSelected = newValue
             refreshApprovalLabels()
             refreshAppearance(button: approvalButton)
+        }
+    }
+
+    /// Indicates if the Reply Button is enabled (or not!)
+    ///
+    var isReplyEnabled: Bool {
+        get {
+            return replyButton.isHidden
+        }
+        set {
+            replyButton.isHidden = !newValue
         }
     }
 
@@ -222,6 +241,10 @@ private extension NoteDetailsCommentTableViewCell {
         approvalButton.accessibilityLabel = Approve.normalLabel
         approvalButton.accessibilityIdentifier = "single-review-approval-button"
 
+        replyButton.applyNoteDetailsActionStyle(icon: .replyImage)
+        replyButton.setTitle(Reply.normalTitle, for: .normal)
+        replyButton.accessibilityLabel = Reply.normalLabel
+        replyButton.accessibilityIdentifier = "single-review-reply-button"
     }
 
     func configureTitleLabel() {
@@ -233,13 +256,14 @@ private extension NoteDetailsCommentTableViewCell {
     }
 
     func configureTextView() {
-        textView.backgroundColor = .listForeground
+        textView.backgroundColor = .listForeground(modal: false)
+        textView.accessibilityIdentifier = "single-review-comment"
     }
 
     /// Setup: Default Action(s) Style
     ///
     func configureDefaultAppearance() {
-        let buttons = [spamButton, trashButton, approvalButton].compactMap { $0 }
+        let buttons = [spamButton, trashButton, approvalButton, replyButton].compactMap { $0 }
 
         for button in buttons {
             refreshAppearance(button: button)
@@ -298,6 +322,13 @@ private extension NoteDetailsCommentTableViewCell {
 
         onClick?()
     }
+
+    /// Reply Button Callback
+    ///
+    @IBAction func replyWasPressed(_ sender: UIButton) {
+        sender.animateImageOverlay(style: .explosion)
+        onReply?()
+    }
 }
 
 
@@ -324,6 +355,14 @@ private struct Approve {
     static let selectedTitle    = NSLocalizedString("Approved", comment: "Unapprove a comment")
     static let normalLabel      = NSLocalizedString("Approves the comment", comment: "Approves a comment. Spoken Hint.")
     static let selectedLabel    = NSLocalizedString("Unapproves the comment", comment: "Unapproves a comment. Spoken Hint.")
+}
+
+
+// MARK: - Reply Button: Strings!
+//
+private struct Reply {
+    static let normalTitle      = NSLocalizedString("Reply", comment: "Reply to a comment")
+    static let normalLabel      = NSLocalizedString("Opens a text view to reply to the comment", comment: "Reply to a comment. Spoken Hint.")
 }
 
 

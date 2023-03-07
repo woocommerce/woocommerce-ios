@@ -97,7 +97,7 @@ final class MockNetworkMonitor: NetworkMonitoring {
     }
 }
 
-struct MockNetwork: NetworkMonitorable {
+private struct MockNetwork: NetworkMonitorable {
     let status: NWPath.Status
     private let currentInterface: NWInterface.InterfaceType
 

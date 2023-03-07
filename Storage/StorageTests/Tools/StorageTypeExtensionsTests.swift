@@ -1,8 +1,9 @@
 import XCTest
 
 @testable import Storage
+@testable import WooFoundation
 
-class StorageTypeExtensionsTests: XCTestCase {
+final class StorageTypeExtensionsTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 98765
 
@@ -129,7 +130,7 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(orderItemTax, storedItemTax)
     }
 
-    func test_loadOrderCoupon_by_siteID_couponID() throws {
+    func test_loadOrderCoupon_by_siteID_and_couponID() throws {
         // Given
         let couponID: Int64 = 123
         let coupon = storage.insertNewObject(ofType: OrderCoupon.self)
@@ -144,6 +145,34 @@ class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(coupon, storedCoupon)
+    }
+
+    func test_loadCustomer_by_siteID_and_customerID() throws {
+        // Given
+        let customerID: Int64 = 123
+        let customer = storage.insertNewObject(ofType: Customer.self)
+        customer.siteID = sampleSiteID
+        customer.customerID = customerID
+
+        // When
+        let storedCustomer = try XCTUnwrap(storage.loadCustomer(siteID: sampleSiteID, customerID: customerID))
+
+        // Then
+        XCTAssertEqual(customer, storedCustomer)
+    }
+
+    func test_loadCustomerSearchResult_by_siteID_and_keyword() throws {
+        // Given
+        let keyword: String = "some keyword"
+        let customerSearchResult = storage.insertNewObject(ofType: CustomerSearchResult.self)
+        customerSearchResult.siteID = sampleSiteID
+        customerSearchResult.keyword = keyword
+
+        // When
+        let storedCustomerSearchResult = try XCTUnwrap(storage.loadCustomerSearchResult(siteID: sampleSiteID, keyword: keyword ))
+
+        // Then
+        XCTAssertEqual(customerSearchResult, storedCustomerSearchResult)
     }
 
     func test_loadOrderFeeLine_by_siteID_feeID() throws {
@@ -197,6 +226,23 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(shippingLine, storedShippingLine)
     }
 
+    func test_loadOrderTaxLine_by_siteID_taxID() throws {
+        // Given
+        let taxID: Int64 = 123
+        let taxLine = storage.insertNewObject(ofType: OrderTaxLine.self)
+        taxLine.taxID = taxID
+
+        let order = storage.insertNewObject(ofType: Order.self)
+        order.siteID = sampleSiteID
+        order.addToTaxes(taxLine)
+
+        // When
+        let storedTaxLine = try XCTUnwrap(storage.loadOrderTaxLine(siteID: sampleSiteID, taxID: taxID))
+
+        // Then
+        XCTAssertEqual(taxLine, storedTaxLine)
+    }
+
     func test_loadOrderNote_by_noteID() throws {
         // Given
         let noteID: Int64 = 123
@@ -208,6 +254,23 @@ class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(orderNote, storedNote)
+    }
+
+    func test_loadOrderMetaData_by_siteID_metadataID() throws {
+        // Given
+        let metadataID: Int64 = 123
+        let metadata = storage.insertNewObject(ofType: OrderMetaData.self)
+        metadata.metadataID = metadataID
+
+        let order = storage.insertNewObject(ofType: Order.self)
+        order.siteID = sampleSiteID
+        order.addToCustomFields(metadata)
+
+        // When
+        let storedMetaData = try XCTUnwrap(storage.loadOrderMetaData(siteID: sampleSiteID, metadataID: metadataID))
+
+        // Then
+        XCTAssertEqual(metadata, storedMetaData)
     }
 
     func test_loadTopEarnerStats_by_date_granularity() throws {
@@ -657,11 +720,13 @@ class StorageTypeExtensionsTests: XCTestCase {
     func test_loadProductSearchResult_by_keyboard() throws {
         // Given
         let keyword = "Keyword"
+        let filterKey = "all"
         let searchResult = storage.insertNewObject(ofType: ProductSearchResults.self)
         searchResult.keyword = keyword
+        searchResult.filterKey = filterKey
 
         // When
-        let storedSearchResult = try XCTUnwrap(storage.loadProductSearchResults(keyword: keyword))
+        let storedSearchResult = try XCTUnwrap(storage.loadProductSearchResults(keyword: keyword, filterKey: filterKey))
 
         // Then
         XCTAssertEqual(searchResult, storedSearchResult)
@@ -964,6 +1029,83 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(labelSettings, storedLabelSettings)
     }
 
+    func test_loadCoupon_by_siteID_couponID() throws {
+        // Given
+        let couponID: Int64 = 5289
+        let coupon = storage.insertNewObject(ofType: Coupon.self)
+        coupon.siteID = sampleSiteID
+        coupon.couponID = couponID
+
+        // When
+        let storedCoupon = try XCTUnwrap(storage.loadCoupon(siteID: sampleSiteID,
+                                                            couponID: couponID))
+
+        // Then
+        XCTAssertEqual(coupon, storedCoupon)
+    }
+
+    func test_loadCoupons_by_siteID() throws {
+        // Given
+        let coupon1 = storage.insertNewObject(ofType: Coupon.self)
+        coupon1.siteID = sampleSiteID
+        coupon1.couponID = 1
+
+        let coupon2 = storage.insertNewObject(ofType: Coupon.self)
+        coupon2.siteID = sampleSiteID
+        coupon2.couponID = 2
+
+        // When
+        let storedCoupons = try XCTUnwrap(storage.loadAllCoupons(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(Set([coupon1, coupon2]), Set(storedCoupons))
+    }
+
+    func test_loadCouponSearchResult_by_keyword() throws {
+        // Given
+        let keyword = "test"
+        let searchResult = storage.insertNewObject(ofType: CouponSearchResult.self)
+        searchResult.keyword = keyword
+
+        // When
+        let storedSearchResult = try XCTUnwrap(storage.loadCouponSearchResult(keyword: keyword))
+
+        // Then
+        XCTAssertEqual(searchResult, storedSearchResult)
+    }
+
+    func test_loadInboxNote_by_siteID_id() throws {
+        // Given
+        let inboxNote = storage.insertNewObject(ofType: InboxNote.self)
+        inboxNote.siteID = 123
+        inboxNote.id = 321
+
+        // When
+        let storedInboxNote = try XCTUnwrap(storage.loadInboxNote(siteID: 123, id: 321))
+
+        // Then
+        XCTAssertEqual(inboxNote, storedInboxNote)
+    }
+
+    func test_loadAllInboxNotes_by_siteID() throws {
+        // Given
+        let inboxNote1 = storage.insertNewObject(ofType: InboxNote.self)
+        inboxNote1.siteID = 123
+        inboxNote1.id = 321
+        inboxNote1.dateCreated = Calendar.current.date(byAdding: DateComponents(day: 1), to: Date())
+
+        let inboxNote2 = storage.insertNewObject(ofType: InboxNote.self)
+        inboxNote2.siteID = 123
+        inboxNote2.id = 654
+        inboxNote2.dateCreated = Calendar.current.date(byAdding: DateComponents(day: 4), to: Date())
+
+        // When
+        let storedInboxNotes = try XCTUnwrap(storage.loadAllInboxNotes(siteID: 123))
+
+        // Then
+        XCTAssertEqual([inboxNote2, inboxNote1], storedInboxNotes)
+    }
+
     func test_loadShippingLabelAccountSettings_by_siteID() throws {
         // Given
         let accountSettings = storage.insertNewObject(ofType: ShippingLabelAccountSettings.self)
@@ -1107,5 +1249,22 @@ class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(foundSystemPlugin, systemPlugin2)
+    }
+
+    func test_load_WCPayCharge_by_siteID_and_chargeID() throws {
+        // Given
+        let charge1 = storage.insertNewObject(ofType: WCPayCharge.self)
+        charge1.chargeID = "ch_1"
+        charge1.siteID = sampleSiteID
+
+        let charge2 = storage.insertNewObject(ofType: WCPayCharge.self)
+        charge2.chargeID = "ch_2"
+        charge2.siteID = sampleSiteID
+
+        // When
+        let foundCharge = try XCTUnwrap(storage.loadWCPayCharge(siteID: sampleSiteID, chargeID: "ch_2"))
+
+        // Then
+        XCTAssertEqual(foundCharge, charge2)
     }
 }

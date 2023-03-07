@@ -16,10 +16,15 @@ final class InProgressViewController: UIViewController {
     @IBOutlet private weak var activityIndicatorView: UIActivityIndicatorView!
     @IBOutlet private weak var messageLabel: UILabel!
 
-    private let viewProperties: InProgressViewProperties
+    private var viewProperties: InProgressViewProperties
+    private let hidesNavigationBar: Bool
 
-    init(viewProperties: InProgressViewProperties) {
+    /// - Parameters:
+    ///   - viewProperties: Configurable view properties.
+    ///   - hidesNavigationBar: Whether the navigation bar is manually hidden when the view controller is shown in a `UINavigationController`.
+    init(viewProperties: InProgressViewProperties, hidesNavigationBar: Bool = false) {
         self.viewProperties = viewProperties
+        self.hidesNavigationBar = hidesNavigationBar
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -38,12 +43,32 @@ final class InProgressViewController: UIViewController {
         configureTitle()
         configureActivityIndicator()
         configureMessage()
+        configureViewsValues()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         activityIndicatorView.startAnimating()
+
+        if hidesNavigationBar {
+            navigationController?.setNavigationBarHidden(true, animated: true)
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        if hidesNavigationBar {
+            navigationController?.setNavigationBarHidden(false, animated: true)
+        }
+
+        super.viewWillDisappear(animated)
+    }
+
+    /// Assign new values for the view to render.
+    ///
+    func updateViewProperties(_ viewProperties: InProgressViewProperties) {
+        self.viewProperties = viewProperties
+        configureViewsValues()
     }
 }
 
@@ -65,8 +90,6 @@ private extension InProgressViewController {
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 0
-
-        titleLabel.text = viewProperties.title
     }
 
     func configureActivityIndicator() {
@@ -79,7 +102,10 @@ private extension InProgressViewController {
         messageLabel.textColor = .gray(.shade10)
         messageLabel.textAlignment = .center
         messageLabel.numberOfLines = 0
+    }
 
+    func configureViewsValues() {
+        titleLabel.text = viewProperties.title
         messageLabel.text = viewProperties.message
     }
 }

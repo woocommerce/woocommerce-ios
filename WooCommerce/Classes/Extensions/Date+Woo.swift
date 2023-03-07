@@ -57,6 +57,46 @@ extension Date {
         return Strings.presentDeicticExpression
     }
 
+    /// Returns a localized string used for describe a date range string based on two dates. E.g.
+    ///
+    /// receiver: 2021-01-01
+    /// other: 2022-12-31
+    /// returns: Jan 1, 2021 - Dec 31, 2022
+    ///
+    /// receiver: 2021-01-01
+    /// other: 2021-01-31
+    /// returns: Jan 1 - 31, 2022
+    ///
+    /// receiver: 2021-01-01
+    /// other: 2022-01-01
+    /// returns: Jan 1, 2021 - Jan 1, 2022
+    ///
+    /// receiver: 2022-01-1
+    /// other: nil
+    /// returns: Jan 1, 2022
+    ///
+    func formatAsRange(with other: Date? = nil, timezone: TimeZone, calendar: Calendar) -> String {
+        guard let other else {
+            return DateFormatter.Stats.createDayMonthYearFormatter(timezone: timezone).string(from: self)
+        }
+
+        let formattedStart: String
+        if self.isSameYear(as: other, using: calendar) {
+            formattedStart = DateFormatter.Stats.createDayMonthFormatter(timezone: timezone).string(from: self)
+        } else {
+            formattedStart = DateFormatter.Stats.createDayMonthYearFormatter(timezone: timezone).string(from: self)
+        }
+
+        let formattedEnd: String
+        if self.isSameMonth(as: other, using: calendar) {
+            formattedEnd = DateFormatter.Stats.createDayYearFormatter(timezone: timezone).string(from: other)
+        } else {
+            formattedEnd = DateFormatter.Stats.createDayMonthYearFormatter(timezone: timezone).string(from: other)
+        }
+
+        return "\(formattedStart) - \(formattedEnd)"
+    }
+
     /// Returns the next midnight starting from `self`.
     ///
     /// For example, if `self` is 2020-01-03 00:41:09, the returned value will be 2020-01-04 00:00:00.
@@ -97,14 +137,19 @@ extension Date {
 
     /// Returns `true` if `self` is in the same year as `other`.
     ///
-    func isSameYear(as otherDate: Date) -> Bool {
-        let calendar = Calendar.current
+    func isSameYear(as otherDate: Date, using calendar: Calendar = .current) -> Bool {
         guard let selfYear = calendar.dateComponents([.year], from: self).year,
             let otherYear = calendar.dateComponents([.year], from: otherDate).year else {
                 return false
         }
 
         return selfYear == otherYear
+    }
+
+    /// Returns `true` if `self` is in the same month as `other`.
+    ///
+    func isSameMonth(as otherDate: Date, using calendar: Calendar = .current) -> Bool {
+        calendar.isDate(self, equalTo: otherDate, toGranularity: .month)
     }
 
     /// Returns `true` if `self` is in the same day as `other`.

@@ -69,7 +69,7 @@ let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
         )
     }
 
-    return FakeableSpec(name: type.name, accessLevelWithSpacePostfix: accessLevel, content: .initializer(propSpecs))
+    return FakeableSpec(name: type.globalName, accessLevelWithSpacePostfix: accessLevel, content: .initializer(propSpecs))
 }
 -%>
 <%#
@@ -79,6 +79,7 @@ let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
 -%>
 import Yosemite
 import Networking
+import Hardware
 
 <% for spec in specsToGenerate { -%>
 extension <%= spec.name -%> {

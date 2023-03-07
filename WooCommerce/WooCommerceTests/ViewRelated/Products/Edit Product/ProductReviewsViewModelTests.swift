@@ -4,7 +4,7 @@ import XCTest
 @testable import Yosemite
 
 final class ProductReviewsViewModelTests: XCTestCase {
-    private var mockDataSource: ReviewsDataSource!
+    private var mockDataSource: ReviewsDataSourceProtocol!
     private var viewModel: ProductReviewsViewModel!
     private let productID: Int64 = 12345
 
@@ -32,24 +32,6 @@ final class ProductReviewsViewModelTests: XCTestCase {
 
     func test_isEmpty_returns_the_same_as_the_dataSource() {
         XCTAssertEqual(viewModel.isEmpty, mockDataSource.isEmpty)
-    }
-
-    func test_display_placeHolder_reviews_stops_forwarding_events_in_dataSource() {
-        let table = UITableView()
-        let ds = mockDataSource as! MockProductReviewsDataSource
-
-        viewModel.displayPlaceholderReviews(tableView: table)
-
-        XCTAssertTrue(ds.stopsForwardingEventsWasHit)
-    }
-
-    func test_remove_placeHolder_reviews_starts_forwarding_events_in_dataSource() {
-        let table = UITableView()
-        let ds = mockDataSource as! MockProductReviewsDataSource
-
-        viewModel.removePlaceholderReviews(tableView: table)
-
-        XCTAssertTrue(ds.startForwardingEventsWasHit)
     }
 
     func test_configure_resultsController_starts_forwarding_events_and_starts_observing_reviews_in_dataSource() {
@@ -81,12 +63,10 @@ final class ProductReviewsViewModelTests: XCTestCase {
 
 // MARK: - Mocks
 
-final class MockProductReviewsDataSource: NSObject, ReviewsDataSource {
+final class MockProductReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     private lazy var reviews: [ProductReview] = {
-        let mocks = MockReviews()
-        let mockReview = mocks.review()
-        return [mockReview, mockReview]
+        return [.fake()]
     }()
 
     var isEmpty: Bool {
@@ -95,12 +75,6 @@ final class MockProductReviewsDataSource: NSObject, ReviewsDataSource {
 
     var reviewCount: Int {
         return reviews.count
-    }
-
-    var reviewsProductsIDs: [Int64] {
-        return reviews
-            .map { return $0.productID }
-            .uniqued()
     }
 
     var notifications: [Note] {
@@ -164,7 +138,7 @@ final class MockProductReviewsStoresManager: DefaultStoresManager {
         switch action {
         case .synchronizeProductReviews(_, _, _, _, _, let onCompletion):
             syncReviewsIsHit = true
-            onCompletion(nil)
+            onCompletion(.success([]))
         default:
             return
         }

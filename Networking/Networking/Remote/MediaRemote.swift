@@ -20,6 +20,14 @@ public protocol MediaRemoteProtocol {
                                     productID: Int64,
                                     mediaItems: [UploadableMedia],
                                     completion: @escaping (Result<WordPressMedia, Error>) -> Void)
+    func updateProductID(siteID: Int64,
+                         productID: Int64,
+                         mediaID: Int64,
+                         completion: @escaping (Result<Media, Error>) -> Void)
+    func updateProductIDToWordPressSite(siteID: Int64,
+                                        productID: Int64,
+                                        mediaID: Int64,
+                                        completion: @escaping (Result<WordPressMedia, Error>) -> Void)
 }
 
 /// Media: Remote Endpoints
@@ -77,13 +85,18 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         ]
 
         let path = "sites/\(siteID)/media"
-        let request = DotcomRequest(wordpressApiVersion: .wpMark2,
-                                    method: .get,
-                                    path: path,
-                                    parameters: parameters)
-        let mapper = WordPressMediaListMapper()
+        do {
+            let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                            method: .get,
+                                            path: path,
+                                            parameters: parameters,
+                                            availableAsRESTRequest: true)
+            let mapper = WordPressMediaListMapper()
 
-        enqueue(request, mapper: mapper, completion: completion)
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 
     /// Uploads an array of media in the local file system.
@@ -148,21 +161,80 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
         ]
         let path = "sites/\(siteID)/media"
-        let request = DotcomRequest(wordpressApiVersion: .wpMark2, method: .post, path: path, parameters: nil)
-        let mapper = WordPressMediaMapper()
+        do {
+            let request = try DotcomRequest(wordpressApiVersion: .wpMark2, method: .post, path: path, parameters: nil, availableAsRESTRequest: true)
+            let mapper = WordPressMediaMapper()
 
-        enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in
-            formParameters.forEach { (key, value) in
-                multipartFormData.append(Data(value.utf8), withName: key)
-            }
+            enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in
+                formParameters.forEach { (key, value) in
+                    multipartFormData.append(Data(value.utf8), withName: key)
+                }
 
-            mediaItems.forEach { mediaItem in
-                multipartFormData.append(mediaItem.localURL,
-                                         withName: ParameterValue.mediaUploadName,
-                                         fileName: mediaItem.filename,
-                                         mimeType: mediaItem.mimeType)
-            }
-        }, completion: completion)
+                mediaItems.forEach { mediaItem in
+                    multipartFormData.append(mediaItem.localURL,
+                                             withName: ParameterValue.mediaUploadName,
+                                             fileName: mediaItem.filename,
+                                             mimeType: mediaItem.mimeType)
+                }
+            }, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    /// Sets the provided `productID` as `parent_id` of the `media`.
+    ///
+    /// API reference: https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/media/%24media_ID/
+    ///
+    /// - Parameters:
+    ///     - siteID: Site in which the media was uploaded to.
+    ///     - productID: Product ID to use as `parent_id` of the media.
+    ///     - mediaID: ID of media for which `parent_id` needs to be updated.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateProductID(siteID: Int64,
+                                productID: Int64,
+                                mediaID: Int64,
+                                completion: @escaping (Result<Media, Error>) -> Void) {
+        let formParameters: [String: String] = [
+            ParameterKey.wordPressMediaParentID: "\(productID)",
+            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
+        ]
+        let path = "sites/\(siteID)/media/\(mediaID)"
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: formParameters)
+        let mapper = MediaMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Sets the provided `productID` as post ID of the Media in WordPress site using WordPress site API
+    ///
+    /// API reference: to the WordPress site.via WordPress site API
+    /// https://developer.wordpress.org/rest-api/reference/media/#update-a-media-item
+    ///
+    /// - Parameters:
+    ///     - siteID: Site in which the media was uploaded to.
+    ///     - productID: Product ID to use as post ID of the media.
+    ///     - mediaID: ID of media for which post ID needs to be updated.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateProductIDToWordPressSite(siteID: Int64,
+                                               productID: Int64,
+                                               mediaID: Int64,
+                                               completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
+        let parameters: [String: String] = [
+            ParameterKey.wordPressMediaPostID: "\(productID)",
+            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
+        ]
+        let path = "sites/\(siteID)/media/\(mediaID)"
+        do {
+            let request = try DotcomRequest(wordpressApiVersion: .wpMark2, method: .post, path: path, parameters: parameters, availableAsRESTRequest: true)
+            let mapper = WordPressMediaMapper()
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 }
 
@@ -183,6 +255,7 @@ public extension MediaRemote {
         static let fieldsWordPressSite: String = "_fields"
         static let mimeType: String   = "mime_type"
         static let contextKey: String = "context"
+        static let wordPressMediaParentID = "parent_id"
     }
 
     private enum ParameterValue {

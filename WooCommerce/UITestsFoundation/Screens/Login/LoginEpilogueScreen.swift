@@ -1,36 +1,44 @@
+import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let displayNameField = "full-name-label"
-    static let siteUrlField = "url-label"
-    static let continueButton = "login-epilogue-continue-button"
-}
+public final class LoginEpilogueScreen: ScreenObject {
 
-public final class LoginEpilogueScreen: BaseScreen {
-    private let continueButton: XCUIElement
-    private let displayNameField: XCUIElement
-    private let siteUrlField: XCUIElement
-
-    init() {
-        let app = XCUIApplication()
-        displayNameField = app.staticTexts[ElementStringIDs.displayNameField]
-        siteUrlField = app.staticTexts[ElementStringIDs.siteUrlField]
-        continueButton = app.buttons[ElementStringIDs.continueButton]
-
-        super.init(element: continueButton)
+    private let emailLabelGetter: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["email-label"]
     }
 
+    private let urlLabelGetter: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["url-label"]
+    }
+
+    private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["login-epilogue-continue-button"]
+    }
+
+    private var emailLabel: String { emailLabelGetter(app).label }
+    private var siteUrlLabel: String { urlLabelGetter(app).label }
+    private var continueButton: XCUIElement { continueButtonGetter(app) }
+
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                emailLabelGetter,
+                urlLabelGetter,
+                continueButtonGetter
+            ],
+            app: app
+        )
+    }
+
+    @discardableResult
     public func continueWithSelectedSite() throws -> MyStoreScreen {
         continueButton.tap()
         return try MyStoreScreen()
     }
 
-    public func verifyEpilogueDisplays(displayName expectedDisplayName: String, siteUrl expectedSiteUrl: String) -> LoginEpilogueScreen {
-        let actualDisplayName = displayNameField.label
-        let actualSiteUrl = siteUrlField.label
-
-        XCTAssertEqual(expectedDisplayName, actualDisplayName, "Display name is '\(actualDisplayName)' but should be '\(expectedDisplayName)'.")
-        XCTAssertEqual(expectedSiteUrl, actualSiteUrl, "Site URL is \(actualSiteUrl) but should be \(expectedSiteUrl)")
+    public func verifyEpilogueDisplays(email expectedEmail: String, siteUrl expectedSiteUrl: String) -> LoginEpilogueScreen {
+        XCTAssertEqual(expectedEmail, emailLabel, "Display name is '\(emailLabel)' but should be '\(expectedEmail)'.")
+        XCTAssertEqual(expectedSiteUrl, siteUrlLabel, "Site URL is \(siteUrlLabel) but should be \(expectedSiteUrl)")
 
         return self
     }

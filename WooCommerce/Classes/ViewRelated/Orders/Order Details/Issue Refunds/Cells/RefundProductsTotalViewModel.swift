@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// Represents products cost details for an order to be refunded. Meant to be rendered by `RefundProductsTotalTableViewCell`
 ///

@@ -31,18 +31,25 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                 case .success:
                     break
                 case .failure:
-                    self?.displayAppleMapsErrorNotice()
+                    self?.displayErrorNotice(title: Localization.appleMapsErrorNotice)
                 }
             }
         } contactCustomerPressed: { [weak self] sourceView in
             guard let self = self else { return }
             ServiceLocator.analytics.track(.shippingLabelEditAddressContactCustomerButtonTapped)
 
+            guard PhoneHelper.canCallPhoneNumber(phone: phone)
+                    || MFMailComposeViewController.canSendMail()
+                    || MFMessageComposeViewController.canSendText() else {
+                self.displayErrorNotice(title: Localization.contactActionError)
+                return
+            }
+
             let actionSheet = UIAlertController(title: nil, message: Localization.contactActionLabel, preferredStyle: .actionSheet)
             actionSheet.view.tintColor = .text
 
             actionSheet.addCancelActionWithTitle(Localization.contactActionCancel)
-            if let email = email, email.isNotEmpty {
+            if let email = email, email.isNotEmpty && MFMailComposeViewController.canSendMail() {
                 actionSheet.addDefaultActionWithTitle(Localization.contactActionEmail) { _ in
                     self.sendEmail(to: email)
                 }
@@ -50,11 +57,13 @@ final class ShippingLabelAddressFormViewController: UIViewController {
             if let phoneNumber = phone, phoneNumber.isNotEmpty {
                 actionSheet.addDefaultActionWithTitle(Localization.contactActionCall) { _ in
                     if PhoneHelper.callPhoneNumber(phone: phoneNumber) == false {
-                        self.displayPhoneNumberErrorNotice()
+                        self.displayErrorNotice(title: Localization.phoneNumberErrorNotice)
                     }
                 }
-                actionSheet.addDefaultActionWithTitle(Localization.contactActionMessage) { _ in
-                    ServiceLocator.messageComposerPresenter.presentIfPossible(from: self, recipient: phoneNumber)
+                if MFMessageComposeViewController.canSendText() {
+                    actionSheet.addDefaultActionWithTitle(Localization.contactActionMessage) { _ in
+                        ServiceLocator.messageComposerPresenter.presentIfPossible(from: self, recipient: phoneNumber)
+                    }
                 }
             }
 
@@ -100,12 +109,6 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                                                       countries: countries)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
-        switch type {
-        case .origin:
-            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "origin_address_started"])
-        case .destination:
-            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_started"])
-        }
     }
 
     required init?(coder: NSCoder) {
@@ -237,8 +240,10 @@ private extension ShippingLabelAddressFormViewController {
             case .success:
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
-            case .failure:
-                break
+            case .failure(let error):
+                if case .local = error {
+                    self.displayErrorNotice(title: Localization.addressLocalValidationErrorNotice)
+                }
             }
         }
     }
@@ -251,8 +256,10 @@ private extension ShippingLabelAddressFormViewController {
             case .success:
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
-            case .failure:
-                break
+            case .failure(let error):
+                if case .local = error {
+                    self.displayErrorNotice(title: Localization.addressLocalValidationErrorNotice)
+                }
             }
         }
     }
@@ -260,17 +267,10 @@ private extension ShippingLabelAddressFormViewController {
 
 // MARK: - Utils
 private extension ShippingLabelAddressFormViewController {
-    /// Enqueues the `Apple Maps` Error Notice.
+    /// Enqueue an error notice
     ///
-    private func displayAppleMapsErrorNotice() {
-        let notice = Notice(title: Localization.appleMapsErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
-
-    /// Enqueues the `Phone Number`  Error Notice.
-    ///
-    private func displayPhoneNumberErrorNotice() {
-        let notice = Notice(title: Localization.phoneNumberErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
+    func displayErrorNotice(title: String) {
+        let notice = Notice(title: title, feedbackType: .error, actionTitle: nil, actionHandler: nil)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
@@ -316,12 +316,6 @@ extension ShippingLabelAddressFormViewController: UITableViewDelegate {
             show(listSelector, sender: self)
 
         case .country:
-            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational) else {
-                let notice = Notice(title: Localization.countryNotEditable, feedbackType: .warning)
-                ServiceLocator.noticePresenter.enqueue(notice: notice)
-                return
-            }
-
             let countries = viewModel.countries
             let selectedCountry = countries.first { $0.code == viewModel.address?.country }
             let command = ShippingLabelCountryListSelectorCommand(countries: countries, selected: selectedCountry)
@@ -627,12 +621,14 @@ private extension ShippingLabelAddressFormViewController {
                                                             comment: "Error in finding the address in the Shipping Label Address Validation in Apple Maps")
         static let phoneNumberErrorNotice = NSLocalizedString("The phone number is not valid or you can't call the customer from this device.",
             comment: "Error in calling the phone number of the customer in the Shipping Label Address Validation")
-        static let countryNotEditable = NSLocalizedString("Currently we support just the United States from mobile.",
-                                                          comment: "Error when the user tap on Country field in Shipping Label Address Validation")
+        static let addressLocalValidationErrorNotice = NSLocalizedString("Certain required fields need attention.",
+                comment: "Error message when local validation fails in Shipping Label Address Validation")
         static let contactActionLabel = NSLocalizedString("Contact Customer", comment: "Contact Customer action in Shipping Label Address Validation.")
         static let contactActionCancel = NSLocalizedString("Cancel", comment: "Close the action sheet")
         static let contactActionEmail = NSLocalizedString("Email", comment: "Email button title")
         static let contactActionCall = NSLocalizedString("Call", comment: "Call phone number button title")
         static let contactActionMessage = NSLocalizedString("Message", comment: "Message phone number button title")
+        static let contactActionError = NSLocalizedString("No supported contact method on this device.",
+                                                          comment: "Error in identifying supported contact methods in the Shipping Label Address Validation")
     }
 }

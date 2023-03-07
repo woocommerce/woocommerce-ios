@@ -13,6 +13,8 @@ final class CardPresentModalTapCardTests: XCTestCase {
         viewModel = CardPresentModalTapCard(
             name: Expectations.name,
             amount: Expectations.amount,
+            transactionType: .collectPayment,
+            inputMethods: [.tap, .swipe, .insert],
             onCancel: closures.onCancel()
         )
     }

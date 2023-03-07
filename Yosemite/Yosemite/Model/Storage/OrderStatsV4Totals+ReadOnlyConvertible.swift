@@ -18,6 +18,8 @@ extension Storage.OrderStatsV4Totals: ReadOnlyConvertible {
         taxes = NSDecimalNumber(decimal: statsTotals.taxes)
         shipping = NSDecimalNumber(decimal: statsTotals.shipping)
         netRevenue = NSDecimalNumber(decimal: statsTotals.netRevenue)
+        totalProducts = Int64(statsTotals.totalProducts ?? 0)
+        averageOrderValue = NSDecimalNumber(decimal: statsTotals.averageOrderValue)
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -32,6 +34,7 @@ extension Storage.OrderStatsV4Totals: ReadOnlyConvertible {
                                   taxes: taxes.decimalValue,
                                   shipping: shipping.decimalValue,
                                   netRevenue: netRevenue.decimalValue,
-                                  totalProducts: Int(totalProducts))
+                                  totalProducts: Int(totalProducts),
+                                  averageOrderValue: averageOrderValue.decimalValue)
     }
 }

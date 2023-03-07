@@ -1,0 +1,183 @@
+{
+    "data": {
+        "id": 211,
+        "parent_id": 0,
+        "status": "processing",
+        "currency": "USD",
+        "version": "6.1.1",
+        "prices_include_tax": true,
+        "date_created": "2022-01-28T13:59:07",
+        "date_modified": "2022-01-28T13:59:09",
+        "discount_total": "0.00",
+        "discount_tax": "0.00",
+        "shipping_total": "15.00",
+        "shipping_tax": "0.30",
+        "cart_tax": "0.35",
+        "total": "33.30",
+        "total_tax": "0.65",
+        "customer_id": 0,
+        "order_key": "wc_order_m4YZzJXESzFBl",
+        "billing": {
+            "first_name": "Marcus",
+            "last_name": "Fisher",
+            "company": "",
+            "address_1": "11403 Goldenview Dr",
+            "address_2": "",
+            "city": "Granger",
+            "state": "AZ",
+            "postcode": "46530",
+            "country": "US",
+            "email": "2177025@example.net",
+            "phone": "(574) 217-7025"
+        },
+        "shipping": {
+            "first_name": "Marcus",
+            "last_name": "Fisher",
+            "company": "",
+            "address_1": "11403 Goldenview Dr",
+            "address_2": "",
+            "city": "Granger",
+            "state": "AZ",
+            "postcode": "46530",
+            "country": "US",
+            "phone": "(574) 217-7025"
+        },
+        "payment_method": "woocommerce_payments",
+        "payment_method_title": "Credit card / debit card",
+        "transaction_id": "pi_3KMuym2EdyGr1FMV0TtJrfac",
+        "customer_ip_address": "185.64.140.251",
+        "customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Safari/605.1.15",
+        "created_via": "checkout",
+        "customer_note": "",
+        "date_completed": null,
+        "date_paid": "2022-01-28T13:59:09",
+        "cart_hash": "cea51379f95f2945c63f69bdf6ae304c",
+        "number": "211",
+        "meta_data": [
+            {
+                "id": 5869,
+                "key": "is_vat_exempt",
+                "value": "no"
+            },
+            {
+                "id": 5870,
+                "key": "_payment_method_id",
+                "value": "pm_1KMuyk2EdyGr1FMVYAz48aiQ"
+            },
+            {
+                "id": 5871,
+                "key": "_stripe_customer_id",
+                "value": "cus_L310Dh3E03COvd"
+            },
+            {
+                "id": 5872,
+                "key": "_intent_id",
+                "value": "pi_3KMuym2EdyGr1FMV0TtJrfac"
+            },
+            {
+                "id": 5873,
+                "key": "_charge_id",
+                "value": "ch_3KMuym2EdyGr1FMV0uQZeFqm"
+            },
+            {
+                "id": 5874,
+                "key": "_intention_status",
+                "value": "succeeded"
+            },
+            {
+                "id": 5875,
+                "key": "_wcpay_intent_currency",
+                "value": "USD"
+            },
+            {
+                "id": 5883,
+                "key": "_new_order_email_sent",
+                "value": "true"
+            }
+        ],
+        "line_items": [
+            {
+                "id": 302,
+                "name": "Beanie",
+                "product_id": 16,
+                "variation_id": 0,
+                "quantity": 1,
+                "tax_class": "",
+                "subtotal": "17.65",
+                "subtotal_tax": "0.35",
+                "total": "17.65",
+                "total_tax": "0.35",
+                "taxes": [
+                    {
+                        "id": 2,
+                        "total": "0.352941",
+                        "subtotal": "0.352941"
+                    }
+                ],
+                "meta_data": [],
+                "sku": "woo-beanie",
+                "price": 17.647059,
+                "parent_name": null
+            }
+        ],
+        "tax_lines": [
+            {
+                "id": 304,
+                "rate_code": "TAX-1",
+                "rate_id": 2,
+                "label": "Tax",
+                "compound": false,
+                "tax_total": "0.35",
+                "shipping_tax_total": "0.30",
+                "rate_percent": 2,
+                "meta_data": []
+            }
+        ],
+        "shipping_lines": [
+            {
+                "id": 303,
+                "method_title": "Flat rate",
+                "method_id": "flat_rate",
+                "instance_id": "1",
+                "total": "15.00",
+                "total_tax": "0.30",
+                "taxes": [
+                    {
+                        "id": 2,
+                        "total": "0.3",
+                        "subtotal": ""
+                    }
+                ],
+                "meta_data": [
+                    {
+                        "id": 2003,
+                        "key": "Items",
+                        "value": "Beanie &times; 1",
+                        "display_key": "Items",
+                        "display_value": "Beanie &times; 1"
+                    }
+                ]
+            }
+        ],
+        "fee_lines": [],
+        "coupon_lines": [],
+        "refunds": [],
+        "date_created_gmt": "2022-01-28T13:59:07",
+        "date_modified_gmt": "2022-01-28T13:59:09",
+        "date_completed_gmt": null,
+        "date_paid_gmt": "2022-01-28T13:59:09",
+        "currency_symbol": "$",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/orders/211"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/orders"
+                }
+            ]
+        }
+    }
+}

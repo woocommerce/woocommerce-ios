@@ -49,6 +49,22 @@ public func assertThat<T>(_ subject: Any?, isAnInstanceOf expectedType: T.Type, 
                   line: line)
 }
 
+/// Asserts that the async throws `expression` throws an error, and asserts the given Bool expression
+/// with the generated error.
+///
+public func assertThrowsError(_ expression: () async throws -> (), errorAssert: (Error) -> Bool, file: StaticString = #file, line: UInt = #line) async {
+    do {
+        _ = try await expression()
+        XCTFail("It should throw an error",
+                file: file,
+                line: line)
+    } catch {
+        XCTAssert(errorAssert(error),
+                  file: file,
+                  line: line)
+    }
+}
+
 extension XCTestCase {
     /// Alternative to the regular `XCTAssertEqual` that outputs a `diff` between the `expect` and `received` objects.
     ///

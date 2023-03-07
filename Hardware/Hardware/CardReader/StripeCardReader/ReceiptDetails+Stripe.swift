@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension ReceiptDetails {
@@ -37,3 +38,4 @@ protocol StripeReceiptDetails {
 
 
 extension StripeTerminal.ReceiptDetails: StripeReceiptDetails { }
+#endif

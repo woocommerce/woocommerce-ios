@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
+import WooFoundation
 
 final class ProductDetailsCellViewModelTests: XCTestCase {
     private let currencyFormatter = CurrencyFormatter(currencySettings: .init())
@@ -104,7 +105,9 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
                                  attributes: [])
 
         // When
-        let viewModel = ProductDetailsCellViewModel(item: item, currency: "$",
+        let viewModel = ProductDetailsCellViewModel(item: item,
+                                                    currency: "$",
+                                                    formatter: CurrencyFormatter(currencySettings: CurrencySettings()),
                                                     hasAddOns: false)
         let quantity = NumberFormatter.localizedString(from: item.quantity as NSDecimalNumber, number: .decimal)
         let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, quantity, "$10.00")
@@ -121,7 +124,9 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
                                  attributes: [])
 
         // When
-        let viewModel = ProductDetailsCellViewModel(item: item, currency: "$",
+        let viewModel = ProductDetailsCellViewModel(item: item,
+                                                    currency: "$",
+                                                    formatter: CurrencyFormatter(currencySettings: CurrencySettings()),
                                                     hasAddOns: false)
         let quantity = NumberFormatter.localizedString(from: item.quantity as NSDecimalNumber, number: .decimal)
         let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, quantity, "-$10.00")
@@ -239,6 +244,7 @@ private extension ProductDetailsCellViewModelTests {
                         name: "Ninja Silhouette",
                         productID: 1,
                         variationID: 6,
+                        refundedItemID: "1",
                         quantity: quantity,
                         price: price,
                         sku: sku,

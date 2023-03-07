@@ -1,13 +1,13 @@
+import Combine
 import XCTest
-import Observables
 
 @testable import WooCommerce
 
 final class ScrollWatcherTests: XCTestCase {
-    private var cancellable: ObservationToken?
+    private var subscription: AnyCancellable?
 
     override func tearDown() {
-        cancellable?.cancel()
+        subscription?.cancel()
 
         super.tearDown()
     }
@@ -22,7 +22,7 @@ final class ScrollWatcherTests: XCTestCase {
         let scrollWatcher = ScrollWatcher(positionThreshold: threshold)
         scrollWatcher.startObservingScrollPosition(tableView: tableView)
         var triggeredScrollPositions = [Double]()
-        cancellable = scrollWatcher.trigger.subscribe { scrollPosition in
+        subscription = scrollWatcher.trigger.sink { scrollPosition in
             triggeredScrollPositions.append(scrollPosition)
         }
 
@@ -50,7 +50,7 @@ final class ScrollWatcherTests: XCTestCase {
         let scrollWatcher = ScrollWatcher(positionThreshold: threshold)
         scrollWatcher.startObservingScrollPosition(tableView: tableView)
         var triggeredScrollPositions = [Double]()
-        cancellable = scrollWatcher.trigger.subscribe { scrollPosition in
+        subscription = scrollWatcher.trigger.sink { scrollPosition in
             triggeredScrollPositions.append(scrollPosition)
         }
 

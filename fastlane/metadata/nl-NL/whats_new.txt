@@ -1,0 +1,3 @@
+Jullie hebben gevraagd om in de app coupons te kunnen creëren. We hebben vanaf nu een sneakpeek beschikbaar voor mensen die ons willen helpen met uittesten! Ga naar de instellingen in de app en zet de experimentele functie aan voor coupons.
+
+Daarnaast hebben we enkele verbeteringen doorgevoerd wat betreft het uploaden van productafbeeldingen en fysieke betalingen. Zo kun je nu betalingen met cash, betaalkaart of betaallinks innen voor alle onbetaalde bestellingen. Blijf ons feedback sturen - wij luisteren!

@@ -2,6 +2,7 @@ import XCTest
 import Foundation
 @testable import WooCommerce
 @testable import Networking
+@testable import WooFoundation
 
 
 /// AggregateOrderItem Tests
@@ -38,9 +39,14 @@ final class AggregateDataHelperTests: XCTestCase {
     /// Verifies refunded products are combined and sorted correctly.
     ///
     func testRefundedProductsSortedSuccessfully() {
+        let productID: Int64 = 1
+        // The itemID (63 in this case) is relevant to retrieve the attributes. A refund order item has in its properties the refunded item id, to be used
+        // to query the attibutes from the order items.
+        let orderItems = [MockOrderItem.sampleItem(itemID: 63, productID: productID, quantity: 3, attributes: testOrderItemAttributes)]
         let refunds = mapLoadAllRefundsResponse()
         let expectedProducts = expectedRefundedProducts()
-        guard let actualProducts = AggregateDataHelper.combineRefundedProducts(from: refunds) else {
+
+        guard let actualProducts = AggregateDataHelper.combineRefundedProducts(from: refunds, orderItems: orderItems) else {
             XCTFail("Error: failed to combine products.")
             return
         }
@@ -55,6 +61,7 @@ final class AggregateDataHelperTests: XCTestCase {
             XCTAssertEqual(expected.quantity, actual.quantity)
             XCTAssertEqual(expected.total, actual.total)
             XCTAssertEqual(expected.sku, actual.sku)
+            XCTAssertEqual(expected.attributes, actual.attributes)
         }
     }
 
@@ -78,8 +85,7 @@ final class AggregateDataHelperTests: XCTestCase {
     func test_AggregateOrderItem_has_attributes_from_OrderItem() {
         // Given
         let productID: Int64 = 1
-        let orderItemAttributes = [OrderItemAttribute(metaID: 170, name: "Packaging", value: "Yes")]
-        let orderItems = [MockOrderItem.sampleItem(itemID: 62, productID: productID, quantity: 3, attributes: orderItemAttributes)]
+        let orderItems = [MockOrderItem.sampleItem(itemID: 62, productID: productID, quantity: 3, attributes: testOrderItemAttributes)]
         let order = MockOrders().empty().copy(items: orderItems)
         let refundItems = [MockRefunds.sampleRefundItem(productID: productID)]
         let refunds = [MockRefunds.sampleRefund(items: refundItems)]
@@ -89,12 +95,17 @@ final class AggregateDataHelperTests: XCTestCase {
 
         // Then
         XCTAssertEqual(aggregatedOrderItems.count, 1)
-        XCTAssertEqual(aggregatedOrderItems[0].attributes, orderItemAttributes)
+        XCTAssertEqual(aggregatedOrderItems[0].attributes, testOrderItemAttributes)
     }
 }
 
 
 private extension AggregateDataHelperTests {
+    /// Used when testing that the item attributes are properly retrieved, for order items and refunds
+    var testOrderItemAttributes: [OrderItemAttribute] {
+        [OrderItemAttribute(metaID: 170, name: "Packaging", value: "Yes")]
+    }
+
     /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)
     ///
     func mapOrders(from filename: String) -> [Order] {
@@ -135,33 +146,35 @@ private extension AggregateDataHelperTests {
         let item0 = AggregateOrderItem(productID: 16,
                                        variationID: 0,
                                        name: "Woo Logo",
-                                       price: currencyFormatter.convertToDecimal(from: "31.5") ?? NSDecimalNumber.zero,
+                                       price: currencyFormatter.convertToDecimal("31.5") ?? NSDecimalNumber.zero,
                                        quantity: -2,
                                        sku: "HOODIE-WOO-LOGO",
-                                       total: currencyFormatter.convertToDecimal(from: "-63.00") ?? NSDecimalNumber.zero,
+                                       total: currencyFormatter.convertToDecimal("-63.00") ?? NSDecimalNumber.zero,
                                        attributes: [])
         expectedArray.append(item0)
         let item1 = AggregateOrderItem(
             productID: 21,
             variationID: 70,
             name: "Ship Your Idea - Blue, XL",
-            price: currencyFormatter.convertToDecimal(from: "27") ?? NSDecimalNumber.zero,
+            price: currencyFormatter.convertToDecimal("27") ?? NSDecimalNumber.zero,
             quantity: -3,
             sku: "HOODIE-SHIP-YOUR-IDEA-BLUE-XL",
-            total: currencyFormatter.convertToDecimal(from: "-81.00") ?? NSDecimalNumber.zero,
+            total: currencyFormatter.convertToDecimal("-81.00") ?? NSDecimalNumber.zero,
             attributes: []
         )
         expectedArray.append(item1)
 
+        /// We expect this item to have these attributes by passing an order item
+        /// with the same refunded item id to the combineRefundedProducts function
         let item2 = AggregateOrderItem(
             productID: 21,
             variationID: 71,
             name: "Ship Your Idea - Black, L",
-            price: currencyFormatter.convertToDecimal(from: "31.5") ?? NSDecimalNumber.zero,
+            price: currencyFormatter.convertToDecimal("31.5") ?? NSDecimalNumber.zero,
             quantity: -1,
             sku: "HOODIE-SHIP-YOUR-IDEA-BLACK-L",
-            total: currencyFormatter.convertToDecimal(from: "-31.50") ?? NSDecimalNumber.zero,
-            attributes: []
+            total: currencyFormatter.convertToDecimal("-31.50") ?? NSDecimalNumber.zero,
+            attributes: testOrderItemAttributes
         )
         expectedArray.append(item2)
 
@@ -169,10 +182,10 @@ private extension AggregateDataHelperTests {
             productID: 22,
             variationID: 0,
             name: "Ninja Silhouette",
-            price: currencyFormatter.convertToDecimal(from: "18") ?? NSDecimalNumber.zero,
+            price: currencyFormatter.convertToDecimal("18") ?? NSDecimalNumber.zero,
             quantity: -1,
             sku: "T-SHIRT-NINJA-SILHOUETTE",
-            total: currencyFormatter.convertToDecimal(from: "-18.00") ?? NSDecimalNumber.zero,
+            total: currencyFormatter.convertToDecimal("-18.00") ?? NSDecimalNumber.zero,
             attributes: []
         )
         expectedArray.append(item3)
@@ -181,10 +194,10 @@ private extension AggregateDataHelperTests {
             productID: 24,
             variationID: 0,
             name: "Happy Ninja",
-            price: currencyFormatter.convertToDecimal(from: "31.5") ?? NSDecimalNumber.zero,
+            price: currencyFormatter.convertToDecimal("31.5") ?? NSDecimalNumber.zero,
             quantity: -1,
             sku: "HOODIE-HAPPY-NINJA",
-            total: currencyFormatter.convertToDecimal(from: "-31.50") ?? NSDecimalNumber.zero,
+            total: currencyFormatter.convertToDecimal("-31.50") ?? NSDecimalNumber.zero,
             attributes: []
         )
         expectedArray.append(item4)

@@ -1,5 +1,7 @@
+import Codegen
+
 /// An object representing details from a transaction using a card_present payment method.
-public struct CardPresentTransactionDetails: Codable, Equatable {
+public struct CardPresentTransactionDetails: Codable, Equatable, GeneratedFakeable {
     /// The last 4 digits of the card.
     public let last4: String
 

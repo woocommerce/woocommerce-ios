@@ -1,39 +1,40 @@
+import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let navBar = "WordPressAuthenticator.LoginSelfHostedView"
-    static let usernameTextField = "usernameField"
-    static let passwordTextField = "passwordField"
-    static let nextButton = "submitButton"
-}
+public final class LoginUsernamePasswordScreen: ScreenObject {
 
-final class LoginUsernamePasswordScreen: BaseScreen {
-    private let navBar: XCUIElement
-    private let usernameTextField: XCUIElement
-    private let passwordTextField: XCUIElement
-    private let nextButton: XCUIElement
-
-    init() {
-        let app = XCUIApplication()
-        navBar = app.navigationBars[ElementStringIDs.navBar]
-        usernameTextField = app.textFields[ElementStringIDs.usernameTextField]
-        passwordTextField = app.secureTextFields[ElementStringIDs.passwordTextField]
-        nextButton = app.buttons[ElementStringIDs.nextButton]
-
-        super.init(element: passwordTextField)
+    private let submitButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["submitButton"]
     }
 
-    func proceedWith(username: String, password: String) -> LoginEpilogueScreen {
-        usernameTextField.tap()
-        usernameTextField.typeText(username)
-        passwordTextField.tap()
-        passwordTextField.typeText(password)
-        nextButton.tap()
-
-        return LoginEpilogueScreen()
+    private let usernameFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.textFields["usernameField"]
     }
 
-    static func isLoaded() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.nextButton].exists
+    private let passwordFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.textFields["passwordField"]
+    }
+
+    private var submitButton: XCUIElement { submitButtonGetter(app) }
+    private var usernameField: XCUIElement { usernameFieldGetter(app) }
+    private var passwordField: XCUIElement { passwordFieldGetter(app) }
+
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                submitButtonGetter,
+                usernameFieldGetter,
+                passwordFieldGetter
+            ],
+            app: app
+        )
+    }
+
+    func proceedWith(username: String, password: String) throws -> LoginEpilogueScreen {
+        usernameField.enterText(text: username)
+        passwordField.enterText(text: password)
+        submitButton.tap()
+
+        return try LoginEpilogueScreen()
     }
 }

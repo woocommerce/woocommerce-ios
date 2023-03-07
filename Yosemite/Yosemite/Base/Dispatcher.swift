@@ -1,5 +1,5 @@
 import Foundation
-
+import WooFoundation
 
 // MARK: - Action: Represents a Flux Action.
 //

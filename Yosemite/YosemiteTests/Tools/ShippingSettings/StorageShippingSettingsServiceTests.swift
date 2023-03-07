@@ -2,6 +2,7 @@ import XCTest
 
 @testable import Storage
 @testable import Yosemite
+@testable import WooFoundation
 
 final class StorageShippingSettingsServiceTests: XCTestCase {
 

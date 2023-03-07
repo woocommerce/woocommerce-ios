@@ -4,7 +4,7 @@ import Alamofire
 
 /// Represents a Jetpack-Tunneled WordPress.com Endpoint
 ///
-struct JetpackRequest: URLRequestConvertible {
+struct JetpackRequest: Request, RESTRequestConvertible {
 
     /// WordPress.com API Version: By Default, we'll go thru Mark 1.1.
     ///
@@ -22,6 +22,10 @@ struct JetpackRequest: URLRequestConvertible {
     ///
     let siteID: Int64
 
+    /// Locale identifier, simplified as `language_Region` e.g. `en_US`
+    ///
+    let locale: String?
+
     /// Jetpack-Tunneled RPC
     ///
     let path: String
@@ -29,6 +33,10 @@ struct JetpackRequest: URLRequestConvertible {
     /// Jetpack-Tunneled Parameters
     ///
     let parameters: [String: Any]
+
+    /// Whether this request should be transformed to a REST request if application password is available.
+    ///
+    private let availableAsRESTRequest: Bool
 
 
     /// Designated Initializer.
@@ -39,16 +47,25 @@ struct JetpackRequest: URLRequestConvertible {
     ///     - siteID: Identifier of the Jetpack-Connected site we'll query.
     ///     - path: RPC that should be called.
     ///     - parameters: Collection of Key/Value parameters, to be forwarded to the Jetpack Connected site.
+    ///     - availableAsRESTRequest: Whether the request should be transformed to a REST request if application password is available.
     ///
-    init(wooApiVersion: WooAPIVersion, method: HTTPMethod, siteID: Int64, path: String, parameters: [String: Any]? = nil) {
+    init(wooApiVersion: WooAPIVersion,
+         method: HTTPMethod,
+         siteID: Int64,
+         locale: String? = nil,
+         path: String,
+         parameters: [String: Any]? = nil,
+         availableAsRESTRequest: Bool = false) {
         if [.mark1, .mark2].contains(wooApiVersion) {
             DDLogWarn("⚠️ You are using an older version of the Woo REST API: \(wooApiVersion.rawValue), for path: \(path)")
         }
         self.wooApiVersion = wooApiVersion
         self.method = method
         self.siteID = siteID
+        self.locale = locale
         self.path = path
         self.parameters = parameters ?? [:]
+        self.availableAsRESTRequest = availableAsRESTRequest
     }
 
 
@@ -59,6 +76,17 @@ struct JetpackRequest: URLRequestConvertible {
         let dotcomRequest = try dotcomEndpoint.asURLRequest()
 
         return try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
+    }
+
+    func responseDataValidator() -> ResponseDataValidator {
+        return DotcomValidator()
+    }
+
+    func asRESTRequest(with siteURL: String) -> RESTRequest? {
+        guard availableAsRESTRequest else {
+            return nil
+        }
+        return RESTRequest(siteURL: siteURL, wooApiVersion: wooApiVersion, method: method, path: path, parameters: parameters)
     }
 }
 
@@ -83,7 +111,15 @@ private extension JetpackRequest {
     ///
     var dotcomMethod: HTTPMethod {
         // If we are calling DELETE via a tunneled connection, use GET instead (DELETE will be added to the `_method` query string param)
-        return method == .delete ? .get : method
+        // Likewise, PUT requests should be sent as POST for the tunneled request
+        switch method {
+        case .get, .delete:
+            return .get
+        case .post, .put:
+            return .post
+        default:
+            return method
+        }
     }
 
     /// Returns the WordPress.com Parameters
@@ -93,6 +129,10 @@ private extension JetpackRequest {
             "json": "true",
             "path": jetpackPath + "&_method=" + method.rawValue.lowercased()
         ]
+
+        if let locale = locale {
+            output["locale"] = locale
+        }
 
         if let jetpackQueryParams = jetpackQueryParams {
             output["query"] = jetpackQueryParams

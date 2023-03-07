@@ -232,6 +232,102 @@ class OrderNoteStoreTests: XCTestCase {
         orderNoteStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that `OrderNoteAction.addOrderNote` returns the expected OrderNote.
+    ///
+    func test_add_order_note_returns_expected_note() {
+        // Given
+        let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes", filename: "new-order-note")
+
+        // When
+        let (orderNote, error): (Networking.OrderNote?, Error?) = waitFor { promise in
+            let action = OrderNoteAction.addOrderNote(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID,
+                                                      isCustomerNote: true,
+                                                      note: "This order would be so much better with ketchup.") { (orderNote, error) in
+                promise((orderNote, error))
+            }
+            orderNoteStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertNotNil(orderNote)
+        XCTAssertEqual(orderNote, self.sampleNewNote())
+        XCTAssertNil(error)
+    }
+
+    /// Verifies that `OrderNoteAction.addOrderNote` effectively persists the new order note.
+    ///
+    func test_add_order_note_effectively_persists_new_order_note() {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes", filename: "new-order-note")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderNote.self), 0)
+
+        // When
+        let (orderNote, error): (Networking.OrderNote?, Error?) = waitFor { promise in
+            let action = OrderNoteAction.addOrderNote(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID,
+                                                      isCustomerNote: true,
+                                                      note: "") { (orderNote, error) in
+                promise((orderNote, error))
+            }
+            orderNoteStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertNotNil(orderNote)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderNote.self), 1)
+        XCTAssertNil(error)
+    }
+
+    /// Verifies that `OrderNoteAction.addOrderNote` returns an error whenever there is an error response from the backend.
+    ///
+    func test_add_order_note_returns_error_upon_response_error() {
+        // Given
+        let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes", filename: "generic_error")
+
+        // When
+        let (orderNote, error): (Networking.OrderNote?, Error?) = waitFor { promise in
+            let action = OrderNoteAction.addOrderNote(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID,
+                                                      isCustomerNote: true,
+                                                      note: "") { (orderNote, error) in
+                promise((orderNote, error))
+            }
+            orderNoteStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertNotNil(error)
+        XCTAssertNil(orderNote)
+    }
+
+    /// Verifies that `OrderNoteAction.addOrderNote` returns an error whenever there is no backend response.
+    ///
+    func test_add_order_note_returns_error_upon_empty_response() {
+        // Given
+        let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let (orderNote, error): (Networking.OrderNote?, Error?) = waitFor { promise in
+            let action = OrderNoteAction.addOrderNote(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID,
+                                                      isCustomerNote: true,
+                                                      note: "") { (orderNote, error) in
+                promise((orderNote, error))
+            }
+            orderNoteStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertNotNil(error)
+        XCTAssertNil(orderNote)
+    }
 }
 
 // MARK: - Private Methods
@@ -239,7 +335,7 @@ class OrderNoteStoreTests: XCTestCase {
 private extension OrderNoteStoreTests {
     func sampleCustomerNote() -> Networking.OrderNote {
         return OrderNote(noteID: 2261,
-                         dateCreated: date(with: "2018-06-23T17:06:55"),
+                         dateCreated: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                          note: "I love your products!",
                          isCustomerNote: true,
                          author: sampleAuthor)
@@ -247,7 +343,7 @@ private extension OrderNoteStoreTests {
 
     func sampleCustomerNoteMutated() -> Networking.OrderNote {
         return OrderNote(noteID: 2261,
-                         dateCreated: date(with: "2018-06-23T18:07:55"),
+                         dateCreated: DateFormatter.dateFromString(with: "2018-06-23T18:07:55"),
                          note: "I HATE your products!",
                          isCustomerNote: true,
                          author: sampleAuthor)
@@ -255,7 +351,7 @@ private extension OrderNoteStoreTests {
 
     func sampleSellerNote() -> Networking.OrderNote {
         return OrderNote(noteID: 2260,
-                         dateCreated: date(with: "2018-06-23T16:05:55"),
+                         dateCreated: DateFormatter.dateFromString(with: "2018-06-23T16:05:55"),
                          note: "This order is going to be a problem.",
                          isCustomerNote: false,
                          author: sampleAdminAuthor)
@@ -263,39 +359,44 @@ private extension OrderNoteStoreTests {
 
     func sampleSystemNote() -> Networking.OrderNote {
         return OrderNote(noteID: 2099,
-                         dateCreated: date(with: "2018-05-29T03:07:46"),
+                         dateCreated: DateFormatter.dateFromString(with: "2018-05-29T03:07:46"),
                          note: "Order status changed from Completed to Processing.",
                          isCustomerNote: false,
                          author: sampleSystemAuthor)
     }
 
+    func sampleNewNote() -> Networking.OrderNote {
+        return OrderNote(noteID: 2235,
+                         dateCreated: DateFormatter.dateFromString(with: "2018-06-22T15:36:20"),
+                         note: "This order would be so much better with ketchup.",
+                         isCustomerNote: true,
+                         author: sampleAdminAuthor)
+    }
+
     func sampleOrder() -> Networking.Order {
-        return Order(siteID: sampleSiteID,
-                     orderID: sampleOrderID,
-                     parentID: 0,
-                     customerID: 11,
-                     number: "963",
-                     status: .processing,
-                     currency: "USD",
-                     customerNote: "",
-                     dateCreated: date(with: "2018-04-03T23:05:12"),
-                     dateModified: date(with: "2018-04-03T23:05:14"),
-                     datePaid: date(with: "2018-04-03T23:05:14"),
-                     discountTotal: "30.00",
-                     discountTax: "1.20",
-                     shippingTotal: "0.00",
-                     shippingTax: "0.00",
-                     total: "31.20",
-                     totalTax: "1.20",
-                     paymentMethodID: "stripe",
-                     paymentMethodTitle: "Credit Card (Stripe)",
-                     items: [],
-                     billingAddress: sampleAddress(),
-                     shippingAddress: sampleAddress(),
-                     shippingLines: sampleShippingLines(),
-                     coupons: [],
-                     refunds: [],
-                     fees: [])
+        return Order.fake().copy(siteID: sampleSiteID,
+                                 orderID: sampleOrderID,
+                                 customerID: 11,
+                                 orderKey: "acbd123",
+                                 number: "963",
+                                 status: .processing,
+                                 currency: "USD",
+                                 customerNote: "",
+                                 dateCreated: DateFormatter.dateFromString(with: "2018-04-03T23:05:12"),
+                                 dateModified: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
+                                 datePaid: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
+                                 discountTotal: "30.00",
+                                 discountTax: "1.20",
+                                 shippingTotal: "0.00",
+                                 shippingTax: "0.00",
+                                 total: "31.20",
+                                 totalTax: "1.20",
+                                 paymentMethodID: "stripe",
+                                 paymentMethodTitle: "Credit Card (Stripe)",
+                                 items: [],
+                                 billingAddress: sampleAddress(),
+                                 shippingAddress: sampleAddress(),
+                                 shippingLines: sampleShippingLines())
     }
 
     func sampleShippingLines() -> [Networking.ShippingLine] {
@@ -322,10 +423,4 @@ private extension OrderNoteStoreTests {
                        email: "scrambled@scrambled.com")
     }
 
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
-    }
 }

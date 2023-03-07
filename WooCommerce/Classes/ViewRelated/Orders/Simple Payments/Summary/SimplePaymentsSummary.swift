@@ -21,7 +21,7 @@ struct SimplePaymentsSummary: View {
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             ScrollView {
                 VStack(spacing: Layout.noSpacing) {
 
@@ -40,25 +40,35 @@ struct SimplePaymentsSummary: View {
                     NoteSection(viewModel: viewModel, showEditNote: $showEditNote)
                 }
             }
+            .ignoresSafeArea(edges: .horizontal)
 
             TakePaymentSection(viewModel: viewModel)
 
             // Navigation To Payment Methods
-            LazyNavigationLink(destination: SimplePaymentsMethod(dismiss: dismiss,
-                                                                 rootViewController: rootViewController,
-                                                                 viewModel: viewModel.createMethodsViewModel()),
+            LazyNavigationLink(destination: PaymentMethodsView(dismiss: dismiss,
+                                                               rootViewController: rootViewController,
+                                                               viewModel: viewModel.createMethodsViewModel()),
                                isActive: $viewModel.navigateToPaymentMethods) {
                 EmptyView()
             }
         }
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(Localization.title)
-        .sheet(isPresented: $showEditNote) {
-            EditCustomerNote(dismiss: {
-                showEditNote.toggle()
+        .sheet(
+            isPresented: $showEditNote,
+            onDismiss: { // Interactive drag dismiss
+                viewModel.noteViewModel.userDidCancelFlow()
                 viewModel.reloadContent()
-                }, viewModel: viewModel.noteViewModel)
-        }
+            },
+            content: {
+                EditCustomerNote(
+                    dismiss: { // Cancel button dismiss
+                        showEditNote.toggle()
+                        viewModel.reloadContent()
+                    },
+                    viewModel: viewModel.noteViewModel
+                )
+            })
         .disabled(viewModel.disableViewActions)
     }
 }
@@ -71,6 +81,11 @@ private struct CustomAmountSection: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
+
     var body: some View {
         Group {
             Divider()
@@ -80,6 +95,7 @@ private struct CustomAmountSection: View {
                     .padding()
                     .foregroundColor(Color(.systemGray))
                     .background(Color(.listBackground))
+                    .accessibilityHidden(true)
 
                 Text(SimplePaymentsSummary.Localization.customAmount)
                     .headlineStyle()
@@ -90,7 +106,9 @@ private struct CustomAmountSection: View {
             }
             .bodyStyle()
             .padding()
-            .background(Color(.listForeground))
+            .padding(.horizontal, insets: safeAreaInsets)
+            .background(Color(.listForeground(modal: false)))
+            .accessibilityElement(children: .combine)
 
             Divider()
         }
@@ -105,6 +123,10 @@ private struct EmailSection: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     var body: some View {
         Group {
             Divider()
@@ -114,7 +136,8 @@ private struct EmailSection: View {
                                  text: $viewModel.email,
                                  keyboardType: .emailAddress)
                 .autocapitalization(.none)
-                .background(Color(.listForeground))
+                .padding(.horizontal, insets: safeAreaInsets)
+                .background(Color(.listForeground(modal: false)))
 
             Divider()
         }
@@ -129,6 +152,10 @@ private struct PaymentsSection: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     var body: some View {
         Group {
             Divider()
@@ -139,7 +166,7 @@ private struct PaymentsSection: View {
                     .headlineStyle()
                     .padding([.horizontal, .top])
 
-                TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content(viewModel.providedAmount), selectable: false) {}
+                TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content(viewModel.providedAmount), selectionStyle: .none) {}
 
                 TitleAndToggleRow(title: SimplePaymentsSummary.Localization.chargeTaxes, isOn: $viewModel.enableTaxes)
                     .padding(.horizontal)
@@ -150,15 +177,18 @@ private struct PaymentsSection: View {
                         .padding(.horizontal)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    TitleAndValueRow(title: SimplePaymentsSummary.Localization.taxRate(viewModel.taxRate),
-                                     value: .content(viewModel.taxAmount),
-                                     selectable: false) {}
+                    ForEach(viewModel.taxLines) { taxLine in
+                        TitleAndValueRow(title: taxLine.title,
+                                         value: .content(taxLine.value),
+                                         selectionStyle: .none) {}
+                    }
                 }
                 .renderedIf(viewModel.enableTaxes)
 
-                TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectable: false) {}
+                TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectionStyle: .none) {}
             }
-            .background(Color(.listForeground))
+            .padding(.horizontal, insets: safeAreaInsets)
+            .background(Color(.listForeground(modal: false)))
 
             Divider()
         }
@@ -172,6 +202,10 @@ private struct NoteSection: View {
     /// ViewModel to drive the view content.
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
+
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     /// Defines if the order note screen should be shown or not.
     ///
@@ -200,7 +234,8 @@ private struct NoteSection: View {
 
             }
             .padding()
-            .background(Color(.listForeground))
+            .padding(.horizontal, insets: safeAreaInsets)
+            .background(Color(.listForeground(modal: false)))
 
             Divider()
         }
@@ -244,15 +279,16 @@ private struct TakePaymentSection: View {
     var body: some View {
         VStack {
             Divider()
+                .ignoresSafeArea()
 
-            Button(SimplePaymentsSummary.Localization.takePayment(total: viewModel.total), action: {
+            Button(String(format: SimplePaymentsSummary.Localization.takePayment, viewModel.total), action: {
                 viewModel.updateOrder()
             })
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.showLoadingIndicator))
             .padding()
 
         }
-        .background(Color(.listForeground).ignoresSafeArea())
+        .background(Color(.listForeground(modal: false)).ignoresSafeArea())
     }
 }
 
@@ -291,39 +327,40 @@ private extension SimplePaymentsSummary {
         static let taxesDisclaimer = NSLocalizedString("Taxes are automatically calculated based on your store address.",
                                                        comment: "Disclaimer in the simple payments summary screen about taxes.")
 
-        static func taxRate(_ rate: String) -> String {
-            NSLocalizedString("Tax (\(rate)%)", comment: "Tax percentage to be applied to the simple payments order")
-        }
-
-        static func takePayment(total: String) -> String {
-            NSLocalizedString("Take Payment (\(total))",
-                              comment: "Text of the button that creates a simple payment order. Contains the total amount to collect")
-        }
+        static let takePayment = NSLocalizedString("Take Payment (%1$@)",
+                                                   comment: "Text of the button that creates a simple payment order. " +
+                                                   "%1$@ is a placeholder for the total amount to collect")
     }
 }
 
 // MARK: Previews
 struct SimplePaymentsSummary_Preview: PreviewProvider {
     static var previews: some View {
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
+        SimplePaymentsSummary(viewModel: createSampleViewModel())
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light")
 
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(
-            providedAmount: "$40.0",
-            totalWithTaxes: "$42.3",
-            taxAmount: "$2.3",
-            noteContent: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."
-        ))
+        SimplePaymentsSummary(viewModel: createSampleViewModel(noteContent: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light Content")
 
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
+        SimplePaymentsSummary(viewModel: createSampleViewModel())
             .environment(\.colorScheme, .dark)
             .previewDisplayName("Dark")
 
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
+        SimplePaymentsSummary(viewModel: createSampleViewModel())
             .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
             .previewDisplayName("Accessibility")
+    }
+
+    static private func createSampleViewModel(noteContent: String? = nil) -> SimplePaymentsSummaryViewModel {
+        let taxAmount = "$2.3"
+        let taxLine: SimplePaymentsSummaryViewModel.TaxLine = .init(id: Int64.random(in: 0 ..< Int64.max),
+                                                                    title: "State Tax (5.55%)",
+                                                                    value: taxAmount)
+        return .init(providedAmount: "40.0",
+                     totalWithTaxes: "$42.3",
+                     taxLines: [taxLine],
+                     noteContent: noteContent)
     }
 }

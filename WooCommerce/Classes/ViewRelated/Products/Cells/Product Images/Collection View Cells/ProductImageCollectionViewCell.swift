@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 final class ProductImageCollectionViewCell: UICollectionViewCell {
 

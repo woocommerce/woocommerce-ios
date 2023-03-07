@@ -1,0 +1,8 @@
+{
+    "success": true,
+    "bearer_token": "🐻",
+    "username": "wootest",
+    "user_id": 134863,
+    "marketing_price_group": false,
+    "plans_reorder_abtest_variation": "control"
+}

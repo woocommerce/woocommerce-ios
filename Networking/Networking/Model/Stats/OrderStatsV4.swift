@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents order stats over a specific period.
 /// v4 API
-public struct OrderStatsV4: Decodable, Equatable, GeneratedFakeable {
+public struct OrderStatsV4: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
     public let siteID: Int64
     public let granularity: StatsGranularityV4
     public let totals: OrderStatsV4Totals

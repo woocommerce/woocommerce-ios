@@ -32,7 +32,7 @@ public class OrdersRemote: Remote {
                 ParameterKeys.page: String(pageNumber),
                 ParameterKeys.perPage: String(pageSize),
                 ParameterKeys.statusKey: statusesString ?? Defaults.statusAny,
-                ParameterKeys.fields: ParameterValues.listFieldValues,
+                ParameterKeys.fields: ParameterValues.fieldValues,
             ]
 
             if let after = after {
@@ -46,7 +46,12 @@ public class OrdersRemote: Remote {
         }()
 
         let path = Constants.ordersPath
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = OrderListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -61,11 +66,16 @@ public class OrdersRemote: Remote {
     ///
     public func loadOrder(for siteID: Int64, orderID: Int64, completion: @escaping (Order?, Error?) -> Void) {
         let parameters = [
-            ParameterKeys.fields: ParameterValues.singleOrderFieldValues
+            ParameterKeys.fields: ParameterValues.fieldValues
         ]
 
         let path = "\(Constants.ordersPath)/\(orderID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = OrderMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -80,7 +90,12 @@ public class OrdersRemote: Remote {
     ///
     public func loadOrderNotes(for siteID: Int64, orderID: Int64, completion: @escaping ([OrderNote]?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/\(orderID)/\(Constants.notesPath)/"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = OrderNotesMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -105,11 +120,16 @@ public class OrdersRemote: Remote {
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: Defaults.statusAny,
-            ParameterKeys.fields: ParameterValues.listFieldValues
+            ParameterKeys.fields: ParameterValues.fieldValues
         ]
 
         let path = Constants.ordersPath
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = OrderListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -134,11 +154,30 @@ public class OrdersRemote: Remote {
                         params[Order.CodingKeys.feeLines.rawValue] = try order.fees.compactMap { try $0.toDictionary() }
                     case .status:
                         params[Order.CodingKeys.status.rawValue] = order.status.rawValue
+                    case .items:
+                        params[Order.CodingKeys.items.rawValue] = try order.items.map { try $0.toDictionary() }
+                    case .billingAddress:
+                        if let billingAddress = order.billingAddress {
+                            params[Order.CodingKeys.billingAddress.rawValue] = try billingAddress.toDictionary()
+                        }
+                    case .shippingAddress:
+                        if let shippingAddress = order.shippingAddress {
+                            params[Order.CodingKeys.shippingAddress.rawValue] = try shippingAddress.toDictionary()
+                        }
+                    case .shippingLines:
+                        params[Order.CodingKeys.shippingLines.rawValue] = try order.shippingLines.compactMap { try $0.toDictionary() }
+                    case .customerNote:
+                        params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
                     }
                 }
             }()
 
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .mark3,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
@@ -158,7 +197,12 @@ public class OrdersRemote: Remote {
         let parameters = [ParameterKeys.statusKey: statusKey.rawValue]
         let mapper = OrderMapper(siteID: siteID)
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         enqueue(request, mapper: mapper, completion: completion)
     }
 
@@ -188,11 +232,23 @@ public class OrdersRemote: Remote {
                     case .fees:
                         let feesEncoded = try order.fees.map { try $0.toDictionary() }
                         params[Order.CodingKeys.feeLines.rawValue] = feesEncoded
+                    case .shippingLines:
+                        let shippingEncoded = try order.shippingLines.map { try $0.toDictionary() }
+                        params[Order.CodingKeys.shippingLines.rawValue] = shippingEncoded
+                    case .status:
+                        params[Order.CodingKeys.status.rawValue] = order.status.rawValue
+                    case .items:
+                        params[Order.CodingKeys.items.rawValue] = try order.items.map { try $0.toDictionary() }
                     }
                 }
             }()
 
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let request = JetpackRequest(wooApiVersion: .mark3,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
@@ -216,7 +272,33 @@ public class OrdersRemote: Remote {
                           ParameterKeys.addedByUser: String(true)] // This will always be true when creating notes in-app
         let mapper = OrderNoteMapper()
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Deletes the given order.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site which hosts the Order.
+    ///   - orderID: Identifier of the Order to be deleted.
+    ///   - force: If true, the Order will be permanently deleted.
+    ///   - completion: Closure to be executed upon completion.
+    ///
+    public func deleteOrder(for siteID: Int64, orderID: Int64, force: Bool, completion: @escaping (Result<Order, Error>) -> Void) {
+        let path = "\(Constants.ordersPath)/\(orderID)"
+        let parameters = [ParameterKeys.force: String(force)]
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .delete,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = OrderMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
 }
@@ -247,29 +329,29 @@ public extension OrdersRemote {
         static let fields: String           = "_fields"
         static let after: String            = "after"
         static let before: String           = "before"
+        static let force: String            = "force"
     }
 
     enum ParameterValues {
-        // Same as singleOrderFieldValues except we exclude the line_items and shipping fields
-        static let listFieldValues: String = commonOrderFieldValues.joined(separator: ",")
-        static let singleOrderFieldValues: String = (commonOrderFieldValues + singleOrderExtraFieldValues).joined(separator: ",")
+        static let fieldValues: String = commonOrderFieldValues.joined(separator: ",")
         private static let commonOrderFieldValues = [
             "id", "parent_id", "number", "status", "currency", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt", "date_paid_gmt",
             "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
-            "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines"
-        ]
-        private static let singleOrderExtraFieldValues = [
-            "line_items", "shipping"
+            "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data",
+            "is_editable", "needs_payment", "needs_processing"
         ]
     }
 
     /// Order fields supported for update
     ///
-    enum UpdateOrderField {
+    enum UpdateOrderField: CaseIterable {
         case customerNote
         case shippingAddress
         case billingAddress
         case fees
+        case shippingLines
+        case items
+        case status
     }
 
     /// Order fields supported for create
@@ -277,5 +359,10 @@ public extension OrdersRemote {
     enum CreateOrderField {
         case feeLines
         case status
+        case items
+        case billingAddress
+        case shippingAddress
+        case shippingLines
+        case customerNote
     }
 }

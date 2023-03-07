@@ -10,6 +10,15 @@ public struct PaymentIntentParameters {
     @CurrencyCode
     public private(set) var currency: String
 
+    /// The amount of the payment needs to be provided in the currency’s smallest unit, determined by Stripe.
+    /// We calculate that amount for each currency multiplying the original amount by this value.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)amount
+    public let stripeSmallestCurrencyUnitMultiplier: Decimal
+
+    /// The base fee to charge the Merchant for the payment. This is for client-side transactions, e.g. Interac, and will
+    /// be overridden server-side for transactions which are captured on the Server.
+    public let applicationFee: Decimal?
+
     /// An arbitrary string attached to the object. If you send a receipt email for this payment, the email will include the description.
     public let receiptDescription: String?
 
@@ -32,24 +41,29 @@ public struct PaymentIntentParameters {
     /// This can be useful for storing additional information about the object in a structured format.
     public let metadata: [AnyHashable: Any]?
 
-    /// A Stripe issued customer ID
-    /// See https://stripe.com/docs/api/customers
+    /// Supported payment methods for this intent.
     ///
-    public let customerID: String?
+    /// Can be `card_present`, `interac_present`.
+    ///
+    public let paymentMethodTypes: [String]
 
     public init(amount: Decimal,
                 currency: String,
+                stripeSmallestCurrencyUnitMultiplier: Decimal,
+                applicationFee: Decimal? = nil,
                 receiptDescription: String? = nil,
                 statementDescription: String? = nil,
                 receiptEmail: String? = nil,
-                metadata: [AnyHashable: Any]? = nil,
-                customerID: String? = nil) {
+                paymentMethodTypes: [String] = [],
+                metadata: [AnyHashable: Any]? = nil) {
         self.amount = amount
         self.currency = currency
+        self.stripeSmallestCurrencyUnitMultiplier = stripeSmallestCurrencyUnitMultiplier
+        self.applicationFee = applicationFee
         self.receiptDescription = receiptDescription
         self.statementDescription = statementDescription
         self.receiptEmail = receiptEmail
+        self.paymentMethodTypes = paymentMethodTypes
         self.metadata = metadata
-        self.customerID = customerID
     }
 }

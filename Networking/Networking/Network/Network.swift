@@ -19,12 +19,7 @@ public protocol MultipartFormData {
 ///
 public protocol Network {
 
-    /// Designated Initializer.
-    ///
-    /// - Parameters:
-    ///     - credentials: WordPress.com Credentials.
-    ///
-    init(credentials: Credentials)
+    var session: URLSession { get }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///

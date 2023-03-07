@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 /// Maps Stripe SDK specific errors to domain errors:
 /// the mapping is done according to the error codes documented here:
@@ -25,7 +26,7 @@ extension UnderlyingError {
         case ErrorCode.Code.featureNotAvailableWithConnectedReader.rawValue:
             self = .featureNotAvailableWithConnectedReader
         case ErrorCode.Code.canceled.rawValue:
-            self = .commandCancelled
+            self = .commandCancelled(from: .unknown)
         case ErrorCode.Code.locationServicesDisabled.rawValue:
             self = .locationServicesDisabled
         case ErrorCode.Code.bluetoothDisabled.rawValue:
@@ -36,6 +37,8 @@ extension UnderlyingError {
             self = .bluetoothScanTimedOut
         case ErrorCode.Code.bluetoothLowEnergyUnsupported.rawValue:
             self = .bluetoothLowEnergyUnsupported
+        case ErrorCode.Code.bluetoothConnectionFailedBatteryCriticallyLow.rawValue:
+            self = .bluetoothConnectionFailedBatteryCriticallyLow
         case ErrorCode.Code.readerSoftwareUpdateFailedBatteryLow.rawValue:
             self = .readerSoftwareUpdateFailedBatteryLow
         case ErrorCode.Code.readerSoftwareUpdateFailedInterrupted.rawValue:
@@ -86,8 +89,39 @@ extension UnderlyingError {
             self = .readerSessionExpired
         case ErrorCode.Code.stripeAPIError.rawValue:
             self = .processorAPIError
+        case ErrorCode.Code.passcodeNotEnabled.rawValue:
+            self = .passcodeNotEnabled
+        case ErrorCode.Code.appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn.rawValue:
+            self = .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn
+        case ErrorCode.Code.nfcDisabled.rawValue:
+            self = .nfcDisabled
+        case ErrorCode.Code.appleBuiltInReaderFailedToPrepare.rawValue:
+            self = .appleBuiltInReaderFailedToPrepare
+        case ErrorCode.Code.appleBuiltInReaderTOSAcceptanceCanceled.rawValue:
+            self = .appleBuiltInReaderTOSAcceptanceCanceled
+        case ErrorCode.Code.appleBuiltInReaderTOSNotYetAccepted.rawValue:
+            self = .appleBuiltInReaderTOSNotYetAccepted
+        case ErrorCode.Code.appleBuiltInReaderTOSAcceptanceFailed.rawValue:
+            self = .appleBuiltInReaderTOSAcceptanceFailed
+        case ErrorCode.Code.appleBuiltInReaderMerchantBlocked.rawValue:
+            self = .appleBuiltInReaderMerchantBlocked
+        case ErrorCode.Code.appleBuiltInReaderInvalidMerchant.rawValue:
+            self = .appleBuiltInReaderInvalidMerchant
+        case ErrorCode.Code.appleBuiltInReaderDeviceBanned.rawValue:
+            self = .appleBuiltInReaderDeviceBanned
+        case ErrorCode.Code.unsupportedMobileDeviceConfiguration.rawValue:
+            self = .unsupportedMobileDeviceConfiguration
+        case ErrorCode.Code.readerNotAccessibleInBackground.rawValue:
+            self = .readerNotAccessibleInBackground
+        case ErrorCode.Code.commandNotAllowedDuringCall.rawValue:
+            self = .commandNotAllowedDuringCall
+        case ErrorCode.Code.invalidAmount.rawValue:
+            self = .invalidAmount
+        case ErrorCode.Code.invalidCurrency.rawValue:
+            self = .invalidCurrency
         default:
             return nil
         }
     }
 }
+#endif

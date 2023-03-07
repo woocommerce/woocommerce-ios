@@ -36,9 +36,6 @@ public enum ShippingLabelAction: Action {
     ///
     case checkCreationEligibility(siteID: Int64,
                                   orderID: Int64,
-                                  canCreatePaymentMethod: Bool,
-                                  canCreateCustomsForm: Bool,
-                                  canCreatePackage: Bool,
                                   onCompletion: (_ isEligible: Bool) -> Void)
 
     /// Creates a custom package with provided package details.

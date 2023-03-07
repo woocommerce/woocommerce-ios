@@ -131,7 +131,7 @@ final class User_RolesTests: XCTestCase {
 private extension User_RolesTests {
     func makeUser(firstName: String = "Johnny", lastName: String = "Appleseed", username: String = "johnny_appleseed",
                   email: String = "johnny@email.blog", roles: [String] = ["author", "editor"]) -> User {
-        return User(localID: 0, siteID: 0, wpcomID: 0, email: email, username: username,
+        User(localID: 0, siteID: 0, email: email, username: username,
                     firstName: firstName, lastName: lastName, nickname: "", roles: roles)
     }
 

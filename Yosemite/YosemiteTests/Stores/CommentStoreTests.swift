@@ -251,4 +251,49 @@ class CommentStoreTests: XCTestCase {
         store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    // MARK: - CommentAction.replyToComment
+
+    func test_replyToComment_returns_expected_comment_status() throws {
+        // Given
+        let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments", filename: "comment-moderate-approved")
+
+        // When
+        let result: Result<Yosemite.CommentStatus, Error> = waitFor { promise in
+            let action = CommentAction.replyToComment(siteID: self.sampleSiteID,
+                                                      commentID: self.sampleCommentID,
+                                                      productID: 123,
+                                                      content: "Test comment") { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(try XCTUnwrap(result.get()), .approved)
+    }
+
+    func test_replyToComment_returns_error_upon_response_error() {
+        // Given
+        let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateError(requestUrlSuffix: "sites/\(sampleSiteID)/comments", error: NetworkError.timeout)
+
+        // When
+        let result: Result<Yosemite.CommentStatus, Error> = waitFor { promise in
+            let action = CommentAction.replyToComment(siteID: self.sampleSiteID,
+                                                      commentID: self.sampleCommentID,
+                                                      productID: 123,
+                                                      content: "Test comment") { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }

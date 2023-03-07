@@ -35,7 +35,7 @@ public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
                                 pageSize: Int = Default.pageSize,
                                 products: [Int64]? = nil,
                                 status: ProductReviewStatus? = nil,
-                                completion: @escaping ([ProductReview]?, Error?) -> Void) {
+                                completion: @escaping (Result<[ProductReview], Error>) -> Void) {
 
 
         let stringOfProductIDs = products?.map { String($0) }.joined(separator: ",") ?? ""
@@ -48,7 +48,12 @@ public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
             ]
 
         let path = Path.reviews
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = ProductReviewListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -63,7 +68,12 @@ public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
     ///
     public func loadProductReview(for siteID: Int64, reviewID: Int64, completion: @escaping (Result<ProductReview, Error>) -> Void) {
         let path = "\(Path.reviews)/\(reviewID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = ProductReviewMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -80,7 +90,12 @@ public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
     public func updateProductReviewStatus(for siteID: Int64, reviewID: Int64, statusKey: String, completion: @escaping (ProductReview?, Error?) -> Void) {
         let path = "\(Path.reviews)/\(reviewID)"
         let parameters = [ParameterKey.status: statusKey]
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = ProductReviewMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

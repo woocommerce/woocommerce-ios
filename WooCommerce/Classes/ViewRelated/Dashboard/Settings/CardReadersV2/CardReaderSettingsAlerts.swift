@@ -21,8 +21,11 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         setViewModelAndPresent(from: from, viewModel: connectingToReader())
     }
 
-    func connectingFailed(from: UIViewController, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
-        setViewModelAndPresent(from: from, viewModel: connectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch))
+    func connectingFailed(from: UIViewController, error: Error, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+        setViewModelAndPresent(from: from,
+                               viewModel: connectingFailed(error: error,
+                                                           continueSearch: continueSearch,
+                                                           cancelSearch: cancelSearch))
     }
 
     func connectingFailedIncompleteAddress(from: UIViewController,
@@ -39,6 +42,10 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         setViewModelAndPresent(from: from, viewModel: connectingFailedUpdatePostalCode(retrySearch: retrySearch, cancelSearch: cancelSearch))
     }
 
+    func connectingFailedCriticallyLowBattery(from: UIViewController, retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+        setViewModelAndPresent(from: from, viewModel: connectingFailedCriticallyLowBattery(retrySearch: retrySearch, cancelSearch: cancelSearch))
+    }
+
     func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) {
         setViewModelAndPresent(from: from, viewModel: updatingFailedLowBattery(from: from, batteryLevel: batteryLevel, close: close))
     }
@@ -50,12 +57,16 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     func foundReader(from: UIViewController,
                      name: String,
                      connect: @escaping () -> Void,
-                     continueSearch: @escaping () -> Void) {
+                     continueSearch: @escaping () -> Void,
+                     cancelSearch: @escaping () -> Void) {
         setViewModelAndPresent(from: from,
                                viewModel: foundReader(name: name,
                                                       connect: connect,
-                                                      continueSearch: continueSearch
-                               )
+                                                      continueSearch: continueSearch,
+                                                      cancel: {
+            cancelSearch()
+            from.dismiss(animated: true)
+        })
         )
     }
 
@@ -71,11 +82,15 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
                              connect: @escaping (String) -> Void,
                              cancelSearch: @escaping () -> Void) {
         severalFoundController = SeveralReadersFoundViewController()
-        severalFoundController?.configureController(
-            readerIDs: readerIDs,
-            connect: connect,
-            cancelSearch: cancelSearch
-        )
+
+        if let severalFoundController = severalFoundController {
+            severalFoundController.configureController(
+                readerIDs: readerIDs,
+                connect: connect,
+                cancelSearch: cancelSearch
+            )
+            severalFoundController.prepareForCardReaderModalFlow()
+        }
 
         dismissCommonAndPresent(animated: false, from: from, present: severalFoundController)
     }
@@ -113,7 +128,8 @@ private extension CardReaderSettingsAlerts {
         /// Dismiss any common modal
         ///
         guard modalController == nil else {
-            modalController?.dismiss(animated: false, completion: { [weak self] in
+            let shouldAnimateDismissal = animated && present == nil
+            modalController?.dismiss(animated: shouldAnimateDismissal, completion: { [weak self] in
                 self?.modalController = nil
                 guard let from = from, let present = present else {
                     return
@@ -136,7 +152,8 @@ private extension CardReaderSettingsAlerts {
     ///
     func dismissSeveralFoundAndPresent(animated: Bool = true, from: UIViewController? = nil, present: CardPresentPaymentsModalViewController? = nil) {
         guard severalFoundController == nil else {
-            severalFoundController?.dismiss(animated: false, completion: { [weak self] in
+            let shouldAnimateDismissal = animated && present == nil
+            severalFoundController?.dismiss(animated: shouldAnimateDismissal, completion: { [weak self] in
                 self?.severalFoundController = nil
                 guard let from = from, let present = present else {
                     return
@@ -170,8 +187,10 @@ private extension CardReaderSettingsAlerts {
         CardPresentModalConnectingToReader()
     }
 
-    func connectingFailed(continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalConnectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch)
+    func connectingFailed(error: Error,
+                          continueSearch: @escaping () -> Void,
+                          cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalConnectingFailed(error: error, retrySearch: continueSearch, cancelSearch: cancelSearch)
     }
 
     func connectingFailedUpdateAddress(openWCSettings: ((UIViewController) -> Void)?,
@@ -180,6 +199,11 @@ private extension CardReaderSettingsAlerts {
         return CardPresentModalConnectingFailedUpdateAddress(openWCSettings: openWCSettings,
                                                              retrySearch: retrySearch,
                                                              cancelSearch: cancelSearch)
+    }
+
+    func connectingFailedCriticallyLowBattery(retrySearch: @escaping () -> Void,
+                                          cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        return CardPresentModalConnectingFailedChargeReader(retrySearch: retrySearch, cancelSearch: cancelSearch)
     }
 
     func connectingFailedUpdatePostalCode(retrySearch: @escaping () -> Void,
@@ -199,8 +223,14 @@ private extension CardReaderSettingsAlerts {
         }
     }
 
-    func foundReader(name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalFoundReader(name: name, connect: connect, continueSearch: continueSearch)
+    func foundReader(name: String, connect: @escaping () -> Void,
+                     continueSearch: @escaping () -> Void,
+                     cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalFoundReader(name: name, connect: connect, continueSearch: continueSearch, cancel: cancel)
+    }
+
+    func preparingReader(from: UIViewController, cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalPreparingReader(cancelAction: cancel)
     }
 
     func setViewModelAndPresent(from: UIViewController, viewModel: CardPresentPaymentsModalViewModel) {
@@ -214,9 +244,8 @@ private extension CardReaderSettingsAlerts {
             return
         }
 
-        modalController.modalPresentationStyle = .custom
-        modalController.transitioningDelegate = AppDelegate.shared.tabBarController
+        modalController.prepareForCardReaderModalFlow()
 
-        dismissSeveralFoundAndPresent(animated: false, from: from, present: modalController)
+        dismissSeveralFoundAndPresent(animated: true, from: from, present: modalController)
     }
 }

@@ -21,26 +21,26 @@ msgstr ""
 #. translators: Multi-paragraph text used to display in the Apple App Store.
 msgctxt "app_store_desc"
 msgid ""
-"Manage your business on the go with the WooCommerce Mobile App. Create products, process orders, and keep an eye on key stats in real-time.\n"
+"Manage your business on the go with the WooCommerce Mobile App. Add products, create orders, take quick payments, and keep an eye on new sales and key stats in real time.\n"
 "\n"
-"ADD PRODUCTS\n"
-"Create, group, and publish products directly from your iPhone or iPad. Capture your creativity in the moment – turn your ideas into products in seconds, or save them as drafts for later.\n"
+"Add and edit products with a touch\n"
+"Get started in seconds! Create, group, and publish products directly from your iPhone or iPad. Capture your creativity the moment it strikes – turn your ideas into products immediately, or save them as drafts for later.\n"
 "\n"
-"GET NOTIFIED\n"
-"Never miss an order or a review. Keep that FOMO at bay by enabling real-time alerts – and listen out for that addictive “cha-ching” sound that comes with every new sale!\n"
+"Create orders on the fly\n"
+"Once you have some products created, it’s simple. Choose items from your catalog, add shipping, and then fill in customer details to quickly create an order that syncs with your inventory.\n"
 "\n"
-"VIEW AND MODIFY ORDERS\n"
-"Scroll the summaries, or search by customer or order specifics. Tap into the details to see itemized billing, begin fulfillment, and change order status. Add notes to the order or email customers directly to follow up.\n"
+"Take payments in person\n"
+"Collect physical payments using WooCommerce In-Person Payments and a card reader (available in the US and Canada). Start a new order – or find an existing one that’s pending payment – and collect payment using the card reader or a digital wallet, such as Apple Pay.\n"
 "\n"
-"TRACK YOUR STATS\n"
-"See which products are winning at a glance. Keep tabs on overall revenue, order count, and visitor data by week, month, and year. Knowledge = power!\n"
+"Get notified of every sale\n"
+"Now that you’re actively selling, never miss an order or a review. Keep yourself in the loop by enabling real-time alerts – and listen for that addictive “cha-ching” sound that comes with each new sale!\n"
 "\n"
-"SWITCH BETWEEN STORES\n"
-"For those with more than one, toggle seamlessly between your businesses in seconds.\n"
+"Track sales and bestselling products\n"
+"See which products are winning at a glance. Keep tabs on your overall revenue, order count, and visitor data by week, month, and year. Knowledge = power.\n"
 "\n"
 "WooCommerce is the world’s most customizable open-source eCommerce platform. Whether you’re launching a business, taking brick-and-mortar retail online, or developing sites for clients, use WooCommerce for a store that powerfully blends content and commerce.\n"
 "\n"
-"Requirements: WooCommerce v3.5+, the Jetpack plugin.\n"
+"Requirements: WooCommerce v3.5+.\n"
 "\n"
 "View the Privacy Notice for California users at https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.\n"
 msgstr ""
@@ -57,25 +57,21 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v8.1-whats-new"
+msgctxt "v12.6-whats-new"
 msgid ""
-"The orders tab has gotten an update with this release. The tabs are now gone, and we’ve given you a filter by status or date range option. This is based upon your direct feedback over the years, and we know you’ll like the change!\n"
-"\n"
-"We fixed a possible crash when creating a shipping label on an order from a push notification. We also improved the login experience with your password manager. Your stored username and password for WordPress.com in your manager will be at the top of the list!\n"
-"\n"
-"As always, please continue to send us your feedback. Thanks for using WooCommerce!\n"
+"Good news! Tap to Pay is now available to USA merchants using WooCommerce Payments. Quickly take an in-person credit card payment using your iPhone! We welcome your feedback on the app, especially the new features we’re working on and giving early access to.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-1"
 msgid ""
-"Track sales and high\n"
-"performing products\n"
+"Track sales and\n"
+"bestselling products\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-1_b"
 msgid ""
 "Made with 💜\n"
@@ -83,39 +79,39 @@ msgid ""
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-2"
 msgid ""
-"View and manage\n"
-"orders on the go\n"
+"Create orders\n"
+"on the fly\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-3"
 msgid ""
-"Review order details\n"
-"and payments\n"
+"Take payments\n"
+"in person\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-4"
 msgid ""
-"View products and\n"
-"check inventory\n"
+"Add and edit products\n"
+"with a touch\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-5"
 msgid ""
-"Get notified about\n"
-"new reviews\n"
+"Get notified of\n"
+"every sale\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-6"
 msgid ""
 "Get notified about new\n"
@@ -123,7 +119,7 @@ msgid ""
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one. 
+#. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-7"
 msgid "Create and manage products"
 msgstr ""

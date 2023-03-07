@@ -1,21 +1,25 @@
 import Foundation
 import UIKit
 import Yosemite
+import protocol Storage.StorageManagerType
 
 final class OrderStatusListDataSource {
+
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld && slug != %@",
                                     siteID,
                                     OrderStatusEnum.refunded.rawValue)
-        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
     private let siteID: Int64
 
-    init(siteID: Int64) {
+    /// Used to inject as a dependency to `ResultsController`.
+    private let storageManager: StorageManagerType
+
+    init(siteID: Int64, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
+        self.storageManager = storageManager
     }
 
     func performFetch() throws {
@@ -27,7 +31,7 @@ final class OrderStatusListDataSource {
     }
 
     func statuses() -> [OrderStatus] {
-        statusResultsController.fetchedObjects
+        statusResultsController.fetchedObjects.sorted(by: { $1.status > $0.status })
     }
 
     func startForwardingEvents(to tableView: UITableView) {

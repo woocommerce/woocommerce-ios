@@ -1,17 +1,6 @@
 import Foundation
 import UIKit
 
-// MARK: - UIApplication Utils
-//
-extension UIApplication {
-
-    /// Returns the keyWindow. Accessing `UIApplication.shared.keyWindow` is deprecated from iOS 13.
-    ///
-    var currentKeyWindow: UIWindow? {
-        UIApplication.shared.windows.filter {$0.isKeyWindow}.first
-    }
-}
-
 // MARK: - UIApplication.State Woo Methods
 //
 extension UIApplication.State {

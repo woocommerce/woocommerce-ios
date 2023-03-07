@@ -1,4 +1,5 @@
 import Yosemite
+import WooFoundation
 
 extension Product {
 
@@ -31,6 +32,7 @@ extension Product {
                                   unitPosition: currencySettings.currencyUnitPosition,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
+                                  style: .primary,
                                   onInputChange: onInputChange)
     }
 
@@ -56,6 +58,7 @@ extension Product {
                                   unitPosition: currencySettings.currencyUnitPosition,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
+                                  style: .primary,
                                   onInputChange: onInputChange)
     }
 }

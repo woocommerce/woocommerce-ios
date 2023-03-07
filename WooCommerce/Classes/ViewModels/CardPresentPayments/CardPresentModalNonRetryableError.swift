@@ -6,8 +6,8 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
     /// Amount charged
     private let amount: String
 
-    /// The error returned by the stack
-    private let error: Error
+    /// Called when the view is dismissed
+    private let onDismiss: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
     let actionsMode: PaymentsModalActionsMode = .oneAction
@@ -18,7 +18,7 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
         amount
     }
 
-    let image: UIImage = .paymentErrorImage
+    let image: UIImage
 
     let primaryButtonTitle: String? = Localization.dismiss
 
@@ -26,9 +26,7 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
 
     let auxiliaryButtonTitle: String? = nil
 
-    var bottomTitle: String? {
-        error.localizedDescription
-    }
+    let bottomTitle: String?
 
     let bottomSubtitle: String? = nil
 
@@ -40,13 +38,24 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
         return topTitle + bottomTitle
     }
 
-    init(amount: String, error: Error) {
+    init(amount: String,
+         errorDescription: String?,
+         image: UIImage = .paymentErrorImage,
+         onDismiss: @escaping () -> Void) {
         self.amount = amount
-        self.error = error
+        self.bottomTitle = errorDescription
+        self.image = image
+        self.onDismiss = onDismiss
+    }
+
+    convenience init(amount: String, error: Error, onDismiss: @escaping () -> Void) {
+        self.init(amount: amount, errorDescription: error.localizedDescription, onDismiss: onDismiss)
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        viewController?.dismiss(animated: true)
+        viewController?.dismiss(animated: true) { [weak self] in
+            self?.onDismiss()
+        }
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) { }

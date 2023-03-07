@@ -6,46 +6,56 @@ final class LoginTests: XCTestCase {
     override func setUp() {
         continueAfterFailure = false
 
-        // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
         app.launch()
     }
 
-    // Login with Store Address and log out.
-    func testSiteAddressLoginLogout() throws {
-        let prologue = try PrologueScreen().selectSiteAddress()
+    func test_site_address_login_logout() throws {
+        // do not test this case if site address login is not available
+        guard try PrologueScreen().isSiteAddressLoginAvailable() else {
+            return
+        }
+        try PrologueScreen()
+            .selectSiteAddress()
             .proceedWith(siteUrl: TestCredentials.siteUrl)
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)
-            .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
-            .continueWithSelectedSite()
 
-            // Log out
+        try TabNavComponent()
+            .goToMenuScreen()
+            .verifySelectedStoreDisplays(storeTitle: TestCredentials.storeName, storeURL: TestCredentials.siteUrl)
             .openSettingsPane()
-            .verifySelectedStoreDisplays(storeName: TestCredentials.storeName, siteUrl: TestCredentials.siteUrl)
             .logOut()
-
-        XCTAssert(prologue.isLoaded)
+            .verifyPrologueScreenLoaded()
     }
 
-    //Login with WordPress.com account and log out
-    func testWordPressLoginLogout() throws {
-        let prologue = try PrologueScreen().selectContinueWithWordPress()
+    func test_WordPress_login_logout() throws {
+        // do not test this case if wpcom login is not available
+        guard try PrologueScreen().isWPComLoginAvailable() else {
+            return
+        }
+        try PrologueScreen().selectContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)
-            .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
+
+        try LoginEpilogueScreen()
+            .verifyEpilogueDisplays(email: "e2eflowtestingmobile@example.com", siteUrl: TestCredentials.siteUrl)
             .continueWithSelectedSite()
 
-            // Log out
+        try TabNavComponent()
+            .goToMenuScreen()
+            .verifySelectedStoreDisplays(storeTitle: TestCredentials.storeName, storeURL: TestCredentials.siteUrl)
             .openSettingsPane()
-            .verifySelectedStoreDisplays(storeName: TestCredentials.storeName, siteUrl: TestCredentials.siteUrl)
             .logOut()
-
-        XCTAssert(prologue.isLoaded)
+            .verifyPrologueScreenLoaded()
     }
 
-    func testWordPressUnsuccessfullLogin() throws {
+    func test_WordPress_unsuccessfull_login() throws {
+        // do not test this case if wpcom login is not available
+        guard try PrologueScreen().isWPComLoginAvailable() else {
+            return
+        }
         _ = try PrologueScreen().selectContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .tryProceed(password: "invalidPswd")

@@ -43,7 +43,7 @@ final class ReviewViewModel {
             return NSAttributedString(string: review.review.strippedHTML).trimNewlines()
         }
 
-        let accentColor = UIColor.orange
+        let accentColor = UIColor.wooOrange
         let textColor = UIColor.textSubtle
 
         let pendingReviewLiteral = NSAttributedString(string: Strings.pendingReviews,

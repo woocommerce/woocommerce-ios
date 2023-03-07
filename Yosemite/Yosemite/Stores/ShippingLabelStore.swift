@@ -49,12 +49,9 @@ public final class ShippingLabelStore: Store {
             validateAddress(siteID: siteID, address: address, completion: completion)
         case .packagesDetails(let siteID, let completion):
             packagesDetails(siteID: siteID, completion: completion)
-        case .checkCreationEligibility(let siteID, let orderID, let canCreatePaymentMethod, let canCreateCustomsForm, let canCreatePackage, let onCompletion):
+        case .checkCreationEligibility(let siteID, let orderID, let onCompletion):
             checkCreationEligibility(siteID: siteID,
                                      orderID: orderID,
-                                     canCreatePaymentMethod: canCreatePaymentMethod,
-                                     canCreateCustomsForm: canCreateCustomsForm,
-                                     canCreatePackage: canCreatePackage,
                                      onCompletion: onCompletion)
         case .createPackage(let siteID, let customPackage, let predefinedOption, let completion):
             createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption, completion: completion)
@@ -142,15 +139,9 @@ private extension ShippingLabelStore {
 
     func checkCreationEligibility(siteID: Int64,
                                   orderID: Int64,
-                                  canCreatePaymentMethod: Bool,
-                                  canCreateCustomsForm: Bool,
-                                  canCreatePackage: Bool,
                                   onCompletion: @escaping (_ isEligible: Bool) -> Void) {
         remote.checkCreationEligibility(siteID: siteID,
-                                        orderID: orderID,
-                                        canCreatePaymentMethod: canCreatePaymentMethod,
-                                        canCreateCustomsForm: canCreateCustomsForm,
-                                        canCreatePackage: canCreatePackage) { result in
+                                        orderID: orderID) { result in
             switch result {
             case .success(let eligibility):
                 if !eligibility.isEligible {

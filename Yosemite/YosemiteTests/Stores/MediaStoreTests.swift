@@ -24,6 +24,10 @@ final class MediaStoreTests: XCTestCase {
     ///
     private let sampleProductID: Int64 = 586
 
+    /// Testing Media ID
+    ///
+    private let sampleMediaID: Int64 = 2352
+
     // MARK: - Overridden Methods
 
     override func setUp() {
@@ -177,7 +181,36 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertEqual(remote.invocations, [.loadMediaLibrary(siteID: sampleSiteID)])
     }
 
-    /// Verifies that `MediaAction.retrieveMediaLibrary` from a JCP site returns the media list from the remote response.
+    /// Verifies that `MediaAction.retrieveMediaLibrary` for a placeholder site ID returns the media list from the remote response.
+    func test_retrieveMediaLibrary_returns_media_list_when_connecting_to_site_with_placeholder_site_id() throws {
+        // Given
+        let siteID = WooConstants.placeholderSiteID
+        let remote = MockMediaRemote()
+        let media = WordPressMedia.fake()
+        remote.whenLoadingMediaLibraryFromWordPressSite(siteID: siteID, thenReturn: .success([media]))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(siteID: siteID,
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadMediaLibraryFromWordPressSite(siteID: siteID)])
+
+        let mediaList = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaList, [media.toMedia()])
+    }
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` for a placeholder site ID returns the media list from the remote response.
     func test_retrieveMediaLibrary_from_jcp_site_returns_media_list() throws {
         // Given
         let remote = MockMediaRemote()
@@ -339,6 +372,47 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertEqual(remote.invocations, [.uploadMedia(siteID: sampleSiteID)])
     }
 
+    /// Verifies that `MediaAction.uploadMedia` for a placeholder site ID returns the uploaded media from the remote response.
+    func test_uploadMediareturns_uploaded_media_and_deletes_input_media_file_when_connecting_to_site_with_placeholder_site_id() throws {
+        // Given
+        let siteID = WooConstants.placeholderSiteID
+        let fileManager = FileManager.default
+
+        // Creates a temporary file to simulate a uploadable media file.
+        let targetURL: URL = {
+            let filename = "test.txt"
+            return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
+        }()
+
+        let remote = MockMediaRemote()
+        let media = WordPressMedia.fake()
+        remote.whenUploadingMediaToWordPressSite(siteID: siteID, thenReturn: .success(media))
+
+        let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager, remote: remote)
+
+        let asset = PHAsset()
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadMedia(siteID: siteID,
+                                                 productID: self.sampleProductID,
+                                                 mediaAsset: asset) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.uploadMediaToWordPressSite(siteID: siteID)])
+
+        let mediaList = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaList, media.toMedia())
+
+        // Verifies that the temporary file is removed after the media is uploaded.
+        XCTAssertFalse(fileManager.fileExists(atPath: targetURL.path))
+    }
+
+
     /// Verifies that `MediaAction.uploadMedia` from a JCP site returns the uploaded media from the remote response.
     func test_uploadMedia_to_jcp_site_returns_uploaded_media_and_deletes_input_media_file() throws {
         // Given
@@ -413,6 +487,142 @@ final class MediaStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(remote.invocations, [.uploadMediaToWordPressSite(siteID: sampleSiteID)])
 
+        let error = try XCTUnwrap(result.failure as? DotcomError)
+        XCTAssertEqual(error, .unauthorized)
+    }
+
+    // MARK: test cases for `MediaAction.updateProductID`
+
+    /// Verifies that `MediaAction.updateProductID` returns the expected response.
+    ///
+    func test_updateProductID_returns_media() throws {
+        // Given
+        let remote = MockMediaRemote()
+        let media = Media.fake()
+        remote.whenUpdatingProductID(siteID: sampleSiteID, thenReturn: .success(media))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+                                                     productID: self.sampleProductID,
+                                                     mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let mediaFromResult = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaFromResult, media)
+    }
+
+    /// Verifies that `MediaAction.updateProductID` returns an error whenever there is an error response from the backend.
+    ///
+    func test_updateProductID_returns_error_upon_response_error() throws {
+        // Given
+        let remote = MockMediaRemote()
+        remote.whenUpdatingProductID(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+                                                     productID: self.sampleProductID,
+                                                     mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? DotcomError)
+        XCTAssertEqual(error, .unauthorized)
+    }
+
+    /// Verifies that `MediaAction.updateProductID` returns the expected response while connecting to site with placeholder site ID.
+    ///
+    func test_updateProductID_returns_media_when_connecting_to_site_with_placeholder_site_id() throws {
+        // Given
+        let siteID = WooConstants.placeholderSiteID
+        let remote = MockMediaRemote()
+        let media = WordPressMedia.fake()
+        remote.whenUpdatingProductIDToWordPressSite(siteID: siteID, thenReturn: .success(media))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.updateProductID(siteID: siteID,
+                                                     productID: self.sampleProductID,
+                                                     mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let mediaFromResult = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaFromResult, media.toMedia())
+    }
+
+    /// Verifies that `MediaAction.updateProductID` returns the expected response while connecting to JCP sites.
+    ///
+    func test_updateProductIDToWordPressSite_returns_media() throws {
+        // Given
+        let remote = MockMediaRemote()
+        let media = WordPressMedia.fake()
+        remote.whenUpdatingProductIDToWordPressSite(siteID: sampleSiteID, thenReturn: .success(media))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+        insertJCPSiteToStorage(siteID: sampleSiteID)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+                                                     productID: self.sampleProductID,
+                                                     mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let mediaFromResult = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaFromResult, media.toMedia())
+    }
+
+    /// Verifies that `MediaAction.updateProductID` while connecting to JCP sites returns an error whenever there is an error response from the backend.
+    ///
+    func test_updateProductIDToWordPressSite_returns_error_upon_response_error() throws {
+        // Given
+        let remote = MockMediaRemote()
+        remote.whenUpdatingProductIDToWordPressSite(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+        insertJCPSiteToStorage(siteID: sampleSiteID)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+                                                     productID: self.sampleProductID,
+                                                     mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
         let error = try XCTUnwrap(result.failure as? DotcomError)
         XCTAssertEqual(error, .unauthorized)
     }

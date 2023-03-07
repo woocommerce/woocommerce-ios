@@ -75,6 +75,7 @@ final class ReviewDetailsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         markAsReadIfNeeded(notification)
+        resetApplicationBadge()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -126,6 +127,12 @@ private extension ReviewDetailsViewController {
 
     func reloadRows() {
         rows = [.header, .content]
+    }
+
+    /// Nukes the BadgeCount
+    ///
+    func resetApplicationBadge() {
+        ServiceLocator.pushNotesManager.resetBadgeCount(type: .comment)
     }
 }
 
@@ -325,6 +332,7 @@ private extension ReviewDetailsViewController {
         commentCell.isTrashEnabled    = true
         commentCell.isSpamEnabled     = true
         commentCell.isApproveSelected = productReview.status == .approved
+        commentCell.isReplyEnabled    = true
 
         let reviewID = productReview.reviewID
         let reviewSiteID = productReview.siteID
@@ -370,6 +378,14 @@ private extension ReviewDetailsViewController {
             ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": ProductReviewStatus.spam.rawValue])
 
             self.moderateReview(siteID: reviewSiteID, reviewID: reviewID, doneStatus: .spam, undoStatus: .unspam)
+        }
+
+        commentCell.onReply = { [weak self] in
+            guard let self else { return }
+
+            let reviewReplyViewModel = ReviewReplyViewModel(siteID: self.siteID, reviewID: self.productReview.reviewID, productID: self.productReview.productID)
+            let reviewReplyViewController = ReviewReplyHostingController(viewModel: reviewReplyViewModel)
+            self.present(reviewReplyViewController, animated: true)
         }
     }
 }

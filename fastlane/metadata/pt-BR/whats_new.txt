@@ -1,0 +1,3 @@
+Vocês pediram para que fosse possível criar cupons no aplicativo. Estamos felizes em anunciar que temos uma prévia pronta se você quiser nos ajudar a testá-la! Vá para as configurações do aplicativo e ative a funcionalidade experimental para cupons.
+
+Também fizemos várias melhorias nos uploads de imagens de produtos e pagamentos presenciais, incluindo a opção de receber pagamentos em dinheiro, cartão ou link de pagamento para todos os pedidos não pagos. Continue compartilhando seu feedback conosco. Estamos ouvindo.

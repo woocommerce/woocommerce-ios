@@ -1,0 +1,133 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+    "queryParameters": {
+      "json": {
+        "equalTo": "true"
+      },
+      "path": {
+        "matches": "/wc-analytics/leaderboards(.*)"
+      },
+      "query": {
+        "matches": "(.*)interval\":\"week(.*)"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "data": [{
+        "id": "customers",
+        "label": "Top Customers - Total Spend",
+        "headers": [{
+          "label": "Customer Name"
+        }, {
+          "label": "Orders"
+        }, {
+          "label": "Total Spend"
+        }],
+        "rows": [
+          [{
+            "display": "<a href='https:\/\/automatticwidgets.com\/wp-admin\/admin.php?page=wc-admin&path=\/analytics\/customers&filter=single_customer&customers=36'>Mira Workman<\/a>",
+            "value": "Mira Workman"
+          }, {
+            "display": "1",
+            "value": 1
+          }, {
+            "display": "<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>1,310.00<\/bdi><\/span>",
+            "value": 1310
+          }],
+          [{
+            "display": "<a href='https:\/\/automatticwidgets.com\/wp-admin\/admin.php?page=wc-admin&path=\/analytics\/customers&filter=single_customer&customers=35'>Jack Smith<\/a>",
+            "value": "Jack Smith"
+          }, {
+            "display": "1",
+            "value": 1
+          }, {
+            "display": "<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>700.00<\/bdi><\/span>",
+            "value": 700
+          }],
+          [{
+            "display": "<a href='https:\/\/automatticwidgets.com\/wp-admin\/admin.php?page=wc-admin&path=\/analytics\/customers&filter=single_customer&customers=29'> <\/a>",
+            "value": " "
+          }, {
+            "display": "1",
+            "value": 1
+          }, {
+            "display": "<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>450.00<\/bdi><\/span>",
+            "value": 450
+          }]
+        ]
+      }, {
+        "id": "coupons",
+        "label": "Top Coupons - Number of Orders",
+        "headers": [{
+          "label": "Coupon Code"
+        }, {
+          "label": "Orders"
+        }, {
+          "label": "Amount Discounted"
+        }],
+        "rows": []
+      }, {
+        "id": "categories",
+        "label": "Top Categories - Items Sold",
+        "headers": [{
+          "label": "Category"
+        }, {
+          "label": "Items Sold"
+        }, {
+          "label": "Net Sales"
+        }],
+        "rows": []
+      }, {
+        "id": "products",
+        "label": "Top Products - Items Sold",
+        "headers": [{
+          "label": "Product"
+        }, {
+          "label": "Items Sold"
+        }, {
+          "label": "Net Sales"
+        }],
+        "rows": [
+          [{
+            "display": "<a href='https:\/\/automatticwidgets.com\/wp-admin\/admin.php?page=wc-admin&path=\/analytics\/products&filter=single_product&products=2130'>Black Coral shades<\/a>",
+            "value": "Black Coral shades"
+          }, {
+            "display": "5",
+            "value": 5
+          }, {
+            "display": "<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>2,550.00<\/bdi><\/span>",
+            "value": 990
+          }],
+          [{
+            "display": "<a href='https:\/\/automatticwidgets.com\/wp-admin\/admin.php?page=wc-admin&path=\/analytics\/products&filter=single_product&products=2123'>Malaya shades<\/a>",
+            "value": "Malaya shades"
+          }, {
+            "display": "3",
+            "value": 3
+          }, {
+            "display": "<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>1,540.00<\/bdi><\/span>",
+            "value": 345
+          }],
+          [{
+            "display": "<a href='https:\/\/automatticwidgets.com\/wp-admin\/admin.php?page=wc-admin&path=\/analytics\/products&filter=single_product&products=2131'>Colorado shades<\/a>",
+            "value": "Colorado shades"
+          }, {
+            "display": "2",
+            "value": 2
+          }, {
+            "display": "<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>500.00<\/bdi><\/span>",
+            "value": 121
+          }]
+        ]
+      }]
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Connection": "keep-alive"
+    }
+  }
+}

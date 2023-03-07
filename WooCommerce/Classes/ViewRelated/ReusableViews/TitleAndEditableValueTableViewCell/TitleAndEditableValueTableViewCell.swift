@@ -29,7 +29,7 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
     func update(style: Style = .condensed, viewModel: TitleAndEditableValueTableViewCellViewModel?) {
         title.text = viewModel?.title
         value.placeholder = viewModel?.placeholder
-        value.text = viewModel?.currentValue
+        value.text = viewModel?.value
         value.isEnabled = viewModel?.allowsEditing ?? false
 
         if viewModel?.hidesKeyboardOnReturn == true {

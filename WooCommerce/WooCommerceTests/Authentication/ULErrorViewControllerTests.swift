@@ -7,13 +7,26 @@ final class ULErrorViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        initializeAuthenticator()
+        WordPressAuthenticator.initializeAuthenticator()
     }
 
     override func tearDown() {
         // There is no known tear down for the Authenticator. So this method intentionally does
         // nothing.
         super.tearDown()
+    }
+
+    func test_viewcontroller_presents_title_provided_by_viewmodel() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let title = viewController.title
+
+        // Then
+        XCTAssertEqual(title, viewModel.title)
     }
 
     func test_viewcontroller_presents_image_provided_by_viewmodel() throws {
@@ -66,6 +79,50 @@ final class ULErrorViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(auxiliaryButtonHidden, viewModel.isAuxiliaryButtonHidden)
+    }
+
+    func test_viewcontroller_does_not_have_right_bar_button_item_when_rightBarButtonItemTitle_is_nil_in_viewmodel() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        viewModel.rightBarButtonItemTitle = nil
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+
+        // Then
+        XCTAssertNil(viewController.navigationItem.rightBarButtonItem)
+    }
+
+    func test_viewcontroller_shows_right_bar_button_item_when_rightBarButtonItemTitle_provided_by_viewmodel() throws {
+        // Given
+        let title = "Title"
+        let viewModel = ErrorViewModel()
+        viewModel.rightBarButtonItemTitle = title
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let rightBarButtonItem = try XCTUnwrap(viewController.navigationItem.rightBarButtonItem)
+
+        // Then
+        XCTAssertEqual(rightBarButtonItem.title, title)
+    }
+
+    func test_viewcontroller_hits_viewmodel_when_right_bar_button_item_is_tapped() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        viewModel.rightBarButtonItemTitle = "Button"
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let rightBarButtonItem = try XCTUnwrap(viewController.navigationItem.rightBarButtonItem)
+
+        _ = rightBarButtonItem.target?.perform(rightBarButtonItem.action)
+
+        // Then
+        XCTAssertTrue(viewModel.rightBarButtonItemTapped)
     }
 
     func test_viewcontroller_hits_viewmodel_when_auxbutton_is_tapped() throws {
@@ -151,10 +208,25 @@ final class ULErrorViewControllerTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.viewDidLoadTriggered)
     }
+
+    func test_terms_label_is_hidden_if_terms_text_is_nil() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let termsLabel = viewController.getTermsLabel()
+
+        // Then
+        XCTAssertTrue(termsLabel.isHidden)
+    }
 }
 
 
 private final class ErrorViewModel: ULErrorViewModel {
+    let title: String? = "Test"
+
     let image: UIImage = .loginNoJetpackError
 
     let text: NSAttributedString = NSAttributedString(string: "woocommerce")
@@ -167,10 +239,15 @@ private final class ErrorViewModel: ULErrorViewModel {
 
     let secondaryButtonTitle: String = "Secondary"
 
+    var rightBarButtonItemTitle: String?
+
+    var termsLabelText: NSAttributedString?
+
     var primaryButtonTapped: Bool = false
     var secondaryButtonTapped: Bool = false
     var auxiliaryButtonTapped: Bool = false
     var viewDidLoadTriggered = false
+    var rightBarButtonItemTapped = false
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
         primaryButtonTapped = true
@@ -184,109 +261,11 @@ private final class ErrorViewModel: ULErrorViewModel {
         auxiliaryButtonTapped = true
     }
 
-    func viewDidLoad() {
-        viewDidLoadTriggered = true
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        rightBarButtonItemTapped = true
     }
-}
 
-// MARK: - WordPressAuthenticator Initialization
-
-private extension ULErrorViewControllerTests {
-    /// Initialize `WordPressAuthenticator` with dummy configuration.
-    ///
-    /// For some reason, the tests in this class fail when the `.view` is loaded because
-    /// `NUXButton` instances used within `ULErrorViewController` seem to _phone home_ and access
-    /// the `WordPressAuthenticator` instance. And since the `WordPressAuthenticator` instance
-    /// was not initialized, I get a unit test fatal error:
-    ///
-    /// ```
-    /// WordPressAuthenticator wasn't initialized
-    /// ```
-    ///
-    /// Initializing with dummy data seems to work.
-    ///
-    /// There is no known way to tear down this instance. Once initialized, it's initialized. And
-    /// I don't believe we use `WordPressAuthenticator` anywhere else. So hopefully this will not
-    /// bleed into the other unit tests. ¯\(°_o)/¯
-    func initializeAuthenticator() {
-        let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: "",
-                                                                wpcomSecret: "",
-                                                                wpcomScheme: "",
-                                                                wpcomTermsOfServiceURL: "",
-                                                                wpcomAPIBaseURL: "",
-                                                                googleLoginClientId: "",
-                                                                googleLoginServerClientId: "",
-                                                                googleLoginScheme: "",
-                                                                userAgent: "",
-                                                                showLoginOptions: true,
-                                                                enableSignUp: false,
-                                                                enableSignInWithApple: false,
-                                                                enableSignupWithGoogle: false,
-                                                                enableUnifiedAuth: true,
-                                                                continueWithSiteAddressFirst: true)
-
-        let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: .red,
-                                                primaryNormalBorderColor: .red,
-                                                primaryHighlightBackgroundColor: .red,
-                                                primaryHighlightBorderColor: .red,
-                                                secondaryNormalBackgroundColor: .red,
-                                                secondaryNormalBorderColor: .red,
-                                                secondaryHighlightBackgroundColor: .red,
-                                                secondaryHighlightBorderColor: .red,
-                                                disabledBackgroundColor: .red,
-                                                disabledBorderColor: .red,
-                                                primaryTitleColor: .primaryButtonTitle,
-                                                secondaryTitleColor: .red,
-                                                disabledTitleColor: .red,
-                                                disabledButtonActivityIndicatorColor: .red,
-                                                textButtonColor: .red,
-                                                textButtonHighlightColor: .red,
-                                                instructionColor: .red,
-                                                subheadlineColor: .red,
-                                                placeholderColor: .red,
-                                                viewControllerBackgroundColor: .red,
-                                                textFieldBackgroundColor: .red,
-                                                buttonViewBackgroundColor: .red,
-                                                buttonViewTopShadowImage: nil,
-                                                navBarImage: UIImage(),
-                                                navBarBadgeColor: .red,
-                                                navBarBackgroundColor: .red,
-                                                prologueTopContainerChildViewController: nil,
-                                                statusBarStyle: .default)
-
-        let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: "",
-                                                                  getStartedInstructions: "",
-                                                                  jetpackLoginInstructions: "",
-                                                                  siteLoginInstructions: "",
-                                                                  usernamePasswordInstructions: "",
-                                                                  continueWithWPButtonTitle: "",
-                                                                  enterYourSiteAddressButtonTitle: "",
-                                                                  findSiteButtonTitle: "",
-                                                                  signupTermsOfService: "",
-                                                                  getStartedTitle: "")
-
-        let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .red,
-                                                              errorColor: .red,
-                                                              textColor: .red,
-                                                              textSubtleColor: .red,
-                                                              textButtonColor: .red,
-                                                              textButtonHighlightColor: .red,
-                                                              viewControllerBackgroundColor: .red,
-                                                              prologueButtonsBackgroundColor: .red,
-                                                              prologueViewBackgroundColor: .red,
-                                                              navBarBackgroundColor: .red,
-                                                              navButtonTextColor: .red,
-                                                              navTitleTextColor: .red)
-
-        let displayImages = WordPressAuthenticatorDisplayImages(
-            magicLink: UIImage(),
-            siteAddressModalPlaceholder: UIImage()
-        )
-
-        WordPressAuthenticator.initialize(configuration: configuration,
-                                          style: style,
-                                          unifiedStyle: unifiedStyle,
-                                          displayImages: displayImages,
-                                          displayStrings: displayStrings)
+    func viewDidLoad(_ viewController: UIViewController?) {
+        viewDidLoadTriggered = true
     }
 }

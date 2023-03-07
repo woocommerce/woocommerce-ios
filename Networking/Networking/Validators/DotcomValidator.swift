@@ -3,11 +3,13 @@ import Foundation
 
 /// WordPress.com Response Validator
 ///
-struct DotcomValidator {
-
-    /// Returns the DotcomError contained in a given Data Instance (if any).
+struct DotcomValidator: ResponseDataValidator {
+    /// Throws a DotcomError contained in a given Data Instance (if any).
     ///
-    static func error(from response: Data) -> Error? {
-        return try? JSONDecoder().decode(DotcomError.self, from: response)
+    func validate(data: Data) throws {
+        guard let error = try? JSONDecoder().decode(DotcomError.self, from: data) else {
+            return
+        }
+        throw error
     }
 }

@@ -8,7 +8,7 @@ extension Decimal {
         NSDecimalNumber(decimal: whole).intValue
     }
 
-    private func rounded(_ roundingMode: NSDecimalNumber.RoundingMode = .up, scale: Int = 0) -> Self {
+    func rounded(_ roundingMode: NSDecimalNumber.RoundingMode = .up, scale: Int = 0) -> Self {
         var result = Self()
         var number = self
         NSDecimalRound(&result, &number, scale, roundingMode)

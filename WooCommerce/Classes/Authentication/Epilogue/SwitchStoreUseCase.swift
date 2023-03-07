@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import protocol Storage.StorageManagerType
 
 protocol SwitchStoreUseCaseProtocol {
     func switchStore(with storeID: Int64, onCompletion: @escaping (Bool) -> Void)
@@ -10,9 +11,52 @@ protocol SwitchStoreUseCaseProtocol {
 final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
 
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
+    private let zendeskShared: ZendeskManagerProtocol = ZendeskProvider.shared
 
-    init(stores: StoresManager) {
+    private lazy var resultsController: ResultsController<StorageSite> = {
+        return ResultsController(storageManager: storageManager, sortedBy: [])
+    }()
+
+    private var wooCommerceSites: [Site] {
+        resultsController.fetchedObjects.filter { $0.isWooCommerceActive == true }
+    }
+
+    init(stores: StoresManager, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.stores = stores
+        self.storageManager = storageManager
+    }
+
+    /// The async version of `switchStore` that wraps the completion block version.
+    /// - Parameter storeID: target store ID.
+    /// - Returns: a boolean that indicates whether the site was changed.
+    @MainActor
+    func switchStore(with storeID: Int64) async -> Bool {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            self.switchStore(with: storeID) { siteChanged in
+                continuation.resume(returning: siteChanged)
+            }
+        }
+    }
+
+    /// Switches the to store with the given id if it was previously synced and stored.
+    /// This is done to check whether the user has access to that store, avoiding undetermined states if we log out
+    /// from the current one and try to switch to a store they don't have access to.
+    ///
+    /// - Parameter storeID: target store ID.
+    /// - Returns: a boolean that indicates whether the site was changed.
+    ///
+    func switchToStoreIfSiteIsStored(with storeID: Int64, onCompletion: @escaping (Bool) -> Void) {
+        refreshStoredSites()
+
+        let siteWasStored = wooCommerceSites.first(where: { $0.siteID == storeID }) != nil
+
+        guard siteWasStored else {
+            return onCompletion(false)
+        }
+
+        switchStore(with: storeID, onCompletion: onCompletion)
     }
 
     /// A static method which allows easily to switch store. The boolean argument in `onCompletion` indicates that the site was changed.
@@ -29,9 +73,9 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         // https://github.com/woocommerce/woocommerce-ios/pull/2013#discussion_r454620804
         logOutOfCurrentStore {
             self.finalizeStoreSelection(storeID)
-
-            // Reload orders badge
-            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+            // Inform the Zendesk shared instance that the Store has been switched
+            // https://github.com/woocommerce/woocommerce-ios/pull/8008/
+            self.zendeskShared.observeStoreSwitch()
             onCompletion(true)
         }
     }
@@ -99,5 +143,13 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
                                   ])
 
         AppDelegate.shared.authenticatorWasDismissed()
+    }
+
+    private func refreshStoredSites() {
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to refresh stored sites: \(error) ")
+        }
     }
 }

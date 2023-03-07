@@ -19,6 +19,14 @@ final class ProductVariationMapperTests: XCTestCase {
 
         XCTAssertEqual(productVariation, sampleProductVariation(siteID: dummySiteID, productID: dummyProductID, id: 2783))
     }
+
+    /// Verifies that all of the ProductVariation Fields are parsed correctly when response has no data envelope.
+    ///
+    func test_ProductVariation_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
+        let productVariation = try XCTUnwrap(mapLoadProductVariationResponseWithoutDataEnvelope())
+
+        XCTAssertEqual(productVariation, sampleProductVariation(siteID: dummySiteID, productID: dummyProductID, id: 2783))
+    }
 }
 
 /// Private Helpers
@@ -39,6 +47,12 @@ private extension ProductVariationMapperTests {
     func mapLoadProductVariationResponse() -> ProductVariation? {
         return mapProductVariation(from: "product-variation-update")
     }
+
+    /// Returns the ProductVariationMapper output upon receiving `ProductVariation`
+    ///
+    func mapLoadProductVariationResponseWithoutDataEnvelope() -> ProductVariation? {
+        return mapProductVariation(from: "product-variation-update-without-data")
+    }
 }
 
 private extension ProductVariationMapperTests {
@@ -51,17 +65,17 @@ private extension ProductVariationMapperTests {
                                 productVariationID: id,
                                 attributes: sampleProductVariationAttributes(),
                                 image: ProductImage(imageID: 2432,
-                                                    dateCreated: dateFromGMT("2020-03-13T03:13:57"),
-                                                    dateModified: dateFromGMT("2020-07-21T08:29:16"),
+                                                    dateCreated: DateFormatter.dateFromString(with: "2020-03-13T03:13:57"),
+                                                    dateModified: DateFormatter.dateFromString(with: "2020-07-21T08:29:16"),
                                                     src: imageSource,
                                                     name: "DSC_0010",
                                                     alt: ""),
                                 permalink: "https://chocolate.com/marble",
-                                dateCreated: dateFromGMT("2020-06-12T14:36:02"),
-                                dateModified: dateFromGMT("2020-07-21T08:35:47"),
+                                dateCreated: DateFormatter.dateFromString(with: "2020-06-12T14:36:02"),
+                                dateModified: DateFormatter.dateFromString(with: "2020-07-21T08:35:47"),
                                 dateOnSaleStart: nil,
                                 dateOnSaleEnd: nil,
-                                status: .publish,
+                                status: .published,
                                 description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
                                 sku: "87%-strawberry-marble",
                                 price: "14.99",
@@ -97,10 +111,5 @@ private extension ProductVariationMapperTests {
             ProductVariationAttribute(id: 0, name: "Flavor", option: "strawberry"),
             ProductVariationAttribute(id: 0, name: "Shape", option: "marble")
         ]
-    }
-
-    func dateFromGMT(_ dateStringInGMT: String) -> Date {
-        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        return dateFormatter.date(from: dateStringInGMT)!
     }
 }

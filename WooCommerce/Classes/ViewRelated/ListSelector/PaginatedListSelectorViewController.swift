@@ -1,7 +1,7 @@
+import Combine
 import UIKit
 import WordPressUI
 import Yosemite
-import Observables
 
 import class AutomatticTracks.CrashLogging
 
@@ -54,13 +54,17 @@ extension PaginatedListSelectorDataSource {
 /// Displays a paginated list (implemented by table view) for the user to select a generic model.
 ///
 final class PaginatedListSelectorViewController<DataSource: PaginatedListSelectorDataSource, Model, StorageModel, Cell>: UIViewController,
-    UITableViewDataSource, UITableViewDelegate, UITableViewDragDelegate, PaginationTrackerDelegate
+    UITableViewDataSource, UITableViewDelegate, UITableViewDragDelegate, PaginationTrackerDelegate, GhostableViewController
 where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.ReadOnlyType, Model: Equatable, DataSource.Cell == Cell {
     private let viewProperties: PaginatedListSelectorViewProperties
     private var dataSource: DataSource
     private let onDismiss: (_ selected: Model?) -> Void
 
     private let rowType = Cell.self
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .large,
+                                                                                                cellClass: Cell.self,
+                                                                                                separatorStyle: viewProperties.separatorStyle))
 
     private lazy var tableView: UITableView = UITableView(frame: .zero, style: viewProperties.tableViewStyle)
 
@@ -95,7 +99,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     private let scrollWatcher = ScrollWatcher()
     private let paginationTracker = PaginationTracker()
 
-    private var cancellableScrollWatcher: ObservationToken?
+    private var scrollWatcherSubscription: AnyCancellable?
 
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
@@ -294,10 +298,6 @@ private extension PaginatedListSelectorViewController {
 
         tableView.separatorStyle = viewProperties.separatorStyle
 
-        // Removes extra header spacing in ghost content view.
-        tableView.estimatedSectionHeaderHeight = 0
-        tableView.sectionHeaderHeight = 0
-
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(tableView)
@@ -328,7 +328,7 @@ private extension PaginatedListSelectorViewController {
 
     func configurePaginationTracker() {
         paginationTracker.delegate = self
-        cancellableScrollWatcher = scrollWatcher.trigger.subscribe { [weak self] _ in
+        scrollWatcherSubscription = scrollWatcher.trigger.sink { [weak self] _ in
             self?.paginationTracker.ensureNextPageIsSynced()
         }
     }
@@ -381,9 +381,7 @@ private extension PaginatedListSelectorViewController {
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderProducts() {
-        let options = GhostOptions(reuseIdentifier: Cell.reuseIdentifier, rowsPerSection: placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options,
-                                      style: .wooDefaultGhostStyle)
+        displayGhostContent()
 
         resultsController.stopForwardingEvents()
     }
@@ -391,7 +389,7 @@ private extension PaginatedListSelectorViewController {
     /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderProducts() {
-        tableView.removeGhostContent()
+        removeGhostContent()
         resultsController.startForwardingEvents(to: tableView)
         tableView.reloadData()
     }

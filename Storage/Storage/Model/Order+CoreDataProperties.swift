@@ -19,6 +19,7 @@ extension Order {
     @NSManaged public var billingPhone: String?
     @NSManaged public var billingPostcode: String?
     @NSManaged public var billingState: String?
+    @NSManaged public var chargeID: String?
     @NSManaged public var currency: String?
     @NSManaged public var customerID: Int64
     @NSManaged public var customerNote: String?
@@ -29,11 +30,16 @@ extension Order {
     @NSManaged public var discountTotal: String?
     @NSManaged public var exclusiveForSearch: Bool
     @NSManaged public var fees: Set<OrderFeeLine>?
+    @NSManaged public var isEditable: Bool
+    @NSManaged public var needsPayment: Bool
+    @NSManaged public var needsProcessing: Bool
     @NSManaged public var number: String?
     @NSManaged public var orderID: Int64
     @NSManaged public var parentID: Int64
+    @NSManaged public var orderKey: String
     @NSManaged public var paymentMethodID: String?
     @NSManaged public var paymentMethodTitle: String?
+    @NSManaged public var paymentURL: NSURL?
     @NSManaged public var shippingAddress1: String?
     @NSManaged public var shippingAddress2: String?
     @NSManaged public var shippingCity: String?
@@ -53,12 +59,14 @@ extension Order {
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
     @NSManaged public var coupons: Set<OrderCoupon>?
-    @NSManaged public var items: Set<OrderItem>?
+    @NSManaged public var customFields: Set<OrderMetaData>?
+    @NSManaged public var items: NSOrderedSet?
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
     @NSManaged public var refunds: Set<OrderRefundCondensed>?
     @NSManaged public var shippingLabels: Set<ShippingLabel>?
     @NSManaged public var shippingLabelSettings: ShippingLabelSettings?
+    @NSManaged public var taxes: Set<OrderTaxLine>?
 
 }
 
@@ -96,8 +104,43 @@ extension Order {
 
 }
 
+// MARK: Generated accessors for customFields
+extension Order {
+
+    @objc(addCustomFieldsObject:)
+    @NSManaged public func addToCustomFields(_ value: OrderMetaData)
+
+    @objc(removeCustomFieldsObject:)
+    @NSManaged public func removeFromCustomFields(_ value: OrderMetaData)
+
+    @objc(addCustomFields:)
+    @NSManaged public func addToCustomFields(_ values: NSSet)
+
+    @objc(removeCustomFields:)
+    @NSManaged public func removeFromCustomFields(_ values: NSSet)
+
+}
+
 // MARK: Generated accessors for items
 extension Order {
+
+    @objc(insertObject:inItemsAtIndex:)
+    @NSManaged public func insertIntoItems(_ value: OrderItem, at idx: Int)
+
+    @objc(removeObjectFromItemsAtIndex:)
+    @NSManaged public func removeFromItems(at idx: Int)
+
+    @objc(insertItems:atIndexes:)
+    @NSManaged public func insertIntoItems(_ values: [OrderItem], at indexes: NSIndexSet)
+
+    @objc(removeItemsAtIndexes:)
+    @NSManaged public func removeFromItems(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInItemsAtIndex:withObject:)
+    @NSManaged public func replaceItems(at idx: Int, with value: OrderItem)
+
+    @objc(replaceItemsAtIndexes:withItems:)
+    @NSManaged public func replaceItems(at indexes: NSIndexSet, with values: [OrderItem])
 
     @objc(addItemsObject:)
     @NSManaged public func addToItems(_ value: OrderItem)
@@ -106,10 +149,10 @@ extension Order {
     @NSManaged public func removeFromItems(_ value: OrderItem)
 
     @objc(addItems:)
-    @NSManaged public func addToItems(_ values: NSSet)
+    @NSManaged public func addToItems(_ values: NSOrderedSet)
 
     @objc(removeItems:)
-    @NSManaged public func removeFromItems(_ values: NSSet)
+    @NSManaged public func removeFromItems(_ values: NSOrderedSet)
 
 }
 
@@ -194,5 +237,22 @@ extension Order {
 
     @objc(removeFees:)
     @NSManaged public func removeFromFees(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for taxes
+extension Order {
+
+    @objc(addTaxesObject:)
+    @NSManaged public func addToTaxes(_ value: OrderTaxLine)
+
+    @objc(removeTaxesObject:)
+    @NSManaged public func removeFromTaxes(_ value: OrderTaxLine)
+
+    @objc(addTaxes:)
+    @NSManaged public func addToTaxes(_ values: NSSet)
+
+    @objc(removeTaxes:)
+    @NSManaged public func removeFromTaxes(_ values: NSSet)
 
 }

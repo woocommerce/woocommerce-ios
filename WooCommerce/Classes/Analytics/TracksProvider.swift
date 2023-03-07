@@ -64,33 +64,34 @@ public extension TracksProvider {
 private extension TracksProvider {
     func switchTracksUsersIfNeeded() {
         let currentAnalyticsUsername = UserDefaults.standard[.analyticsUsername] as? String ?? ""
+        let anonymousID = ServiceLocator.stores.sessionManager.anonymousUserID
         if ServiceLocator.stores.isAuthenticated,
-            let account = ServiceLocator.stores.sessionManager.defaultAccount,
-            let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
+           let account = ServiceLocator.stores.sessionManager.defaultAccount,
+           case let .wpcom(_, authToken, _) = ServiceLocator.stores.sessionManager.defaultCredentials {
             if currentAnalyticsUsername.isEmpty {
                 // No previous username logged
                 UserDefaults.standard[.analyticsUsername] = account.username
                 tracksService.switchToAuthenticatedUser(withUsername: account.username,
                                                         userID: String(account.userID),
-                                                        wpComToken: credentials.authToken,
+                                                        wpComToken: authToken,
                                                         skipAliasEventCreation: false)
             } else if currentAnalyticsUsername == account.username {
                 // Username did not change - just make sure Tracks client has it
                 tracksService.switchToAuthenticatedUser(withUsername: account.username,
                                                         userID: String(account.userID),
-                                                        wpComToken: credentials.authToken,
+                                                        wpComToken: authToken,
                                                         skipAliasEventCreation: true)
             } else {
                 // Username changed for some reason - switch back to anonymous first
-                tracksService.switchToAnonymousUser(withAnonymousID: ServiceLocator.stores.sessionManager.anonymousUserID)
+                tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
                 tracksService.switchToAuthenticatedUser(withUsername: account.username,
                                                         userID: String(account.userID),
-                                                        wpComToken: credentials.authToken,
+                                                        wpComToken: authToken,
                                                         skipAliasEventCreation: false)
             }
         } else {
             UserDefaults.standard[.analyticsUsername] = nil
-            tracksService.switchToAnonymousUser(withAnonymousID: ServiceLocator.stores.sessionManager.anonymousUserID)
+            tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
         }
     }
 

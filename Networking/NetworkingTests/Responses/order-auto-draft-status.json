@@ -1,0 +1,205 @@
+{
+    "data":              {
+        "id": 963,
+        "parent_id": 0,
+        "number": "963",
+        "status": "auto-draft",
+        "order_key": "abc123",
+        "currency": "USD",
+        "date_created_gmt": "2018-04-03T23:05:12",
+        "date_modified_gmt": "2018-04-03T23:05:14",
+        "discount_total": "30.00",
+        "discount_tax": "1.20",
+        "shipping_total": "0.00",
+        "shipping_tax": "0.00",
+        "cart_tax": "1.20",
+        "total": "31.20",
+        "total_tax": "1.20",
+        "customer_id": 11,
+        "customer_note": "",
+        "billing": {
+            "first_name": "Johnny",
+            "last_name": "Appleseed",
+            "company": "",
+            "address_1": "234 70th Street",
+            "address_2": "",
+            "city": "Niagara Falls",
+            "state": "NY",
+            "postcode": "14304",
+            "country": "US",
+            "email": "scrambled@scrambled.com",
+            "phone": "333-333-3333"
+        },
+        "shipping": {
+            "first_name": "Johnny",
+            "last_name": "Appleseed",
+            "company": "",
+            "address_1": "234 70th Street",
+            "address_2": "",
+            "city": "Niagara Falls",
+            "state": "NY",
+            "postcode": "14304",
+            "country": "US",
+            "email": "scrambled@scrambled.com",
+            "phone": "333-333-3333"
+        },
+        "shipping_lines": [
+            {
+                "id": 123,
+                "method_title": "International Priority Mail Express Flat Rate",
+                "method_id": "usps",
+                "instance_id": "5",
+                "total": "133.00",
+                "total_tax": "0.00",
+                "taxes": [
+                    {
+                        "id": 1,
+                        "total": "0.62125",
+                        "subtotal": ""
+                    }
+                ],
+                "meta_data": [
+                    {
+                        "id": 1307,
+                        "key": "Package 1",
+                        "value": "1 × 1 × 1 (in) 4lbs × 1"
+                    },
+                    {
+                        "id": 1308,
+                        "key": "Package 2",
+                        "value": "1 × 1 × 1 (in) 1lbs × 1"
+                    }
+                ]
+            }
+        ],
+        "fee_lines": [
+            {
+                "id": 60,
+                "name": "$125.50 fee",
+                "tax_class": "",
+                "tax_status": "taxable",
+                "amount": "125.5",
+                "total": "125.50",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": []
+            }
+        ],
+        "tax_lines": [
+            {
+                "id": 1330,
+                "rate_code": "US-NY-STATE-2",
+                "rate_id": 6,
+                "label": "State",
+                "compound": true,
+                "tax_total": "7.71",
+                "shipping_tax_total": "0.00",
+                "rate_percent": 4.5,
+                "meta_data": []
+            }
+        ],
+        "payment_method": "stripe",
+        "payment_method_title": "Credit Card (Stripe)",
+        "date_paid_gmt": "2018-04-03T23:05:14",
+        "date_completed_gmt": null,
+        "line_items": [
+                       {
+                       "id": 890,
+                       "name": "Fruits Basket (Mix & Match Product)",
+                       "product_id": 52,
+                       "variation_id": 0,
+                       "quantity": 2,
+                       "tax_class": "",
+                       "subtotal": "50.00",
+                       "subtotal_tax": "2.00",
+                       "total": "30.00",
+                       "total_tax": "1.20",
+                       "taxes": [
+                                 {
+                                 "id": 1,
+                                 "total": "1.2",
+                                 "subtotal": "2"
+                                 }
+                                 ],
+                       "meta_data": [],
+                       "sku": "",
+                       "price": 30
+                       },
+                       {
+                       "id": 891,
+                       "name": "Fruits Bundle",
+                       "product_id": 234,
+                       "variation_id": 0,
+                       "quantity": 1.5,
+                       "tax_class": "",
+                       "subtotal": "10.00",
+                       "subtotal_tax": "0.40",
+                       "total": "0.00",
+                       "total_tax": "0.00",
+                       "taxes": [
+                           {
+                               "id": 1,
+                               "total": "0",
+                               "subtotal": "0.4"
+                           }
+                                 ],
+                       "meta_data": [],
+                       "sku": "5555-A",
+                       "price": 0.00
+                       }
+                       ],
+        "coupon_lines": [
+                         {
+                         "id": 894,
+                         "code": "30$off",
+                         "discount": "30",
+                         "discount_tax": "1.2",
+                         "meta_data": [
+                                       {
+                                       "id": 6515,
+                                       "key": "coupon_data",
+                                       "value": {
+                                       "id": 673,
+                                       "code": "30$off",
+                                       "amount": "30",
+                                       "date_created": {
+                                       "date": "2017-10-29 18:20:07.000000",
+                                       "timezone_type": 3,
+                                       "timezone": "America/New_York"
+                                       },
+                                       "date_modified": {
+                                       "date": "2017-10-29 18:20:07.000000",
+                                       "timezone_type": 3,
+                                       "timezone": "America/New_York"
+                                       },
+                                       "date_expires": null,
+                                       "discount_type": "fixed_cart",
+                                       "description": "",
+                                       "usage_count": 2,
+                                       "individual_use": false,
+                                       "product_ids": [],
+                                       "excluded_product_ids": [],
+                                       "usage_limit": 0,
+                                       "usage_limit_per_user": 0,
+                                       "limit_usage_to_x_items": null,
+                                       "free_shipping": false,
+                                       "product_categories": [],
+                                       "excluded_product_categories": [],
+                                       "exclude_sale_items": false,
+                                       "minimum_amount": "",
+                                       "maximum_amount": "",
+                                       "email_restrictions": [],
+                                       "used_by": [
+                                                   "1",
+                                                   "1"
+                                                   ],
+                                       "virtual": false,
+                                       "meta_data": []
+                                       }
+                                       }
+                                       ]
+                         }
+                         ]
+    }
+}
+

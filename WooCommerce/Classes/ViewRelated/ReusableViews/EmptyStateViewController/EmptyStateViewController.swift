@@ -1,5 +1,4 @@
 import UIKit
-import SafariServices.SFSafariViewController
 
 /// A configurable view to display an "empty state".
 ///
@@ -87,6 +86,10 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     ///
     private var lastActionButtonTapHandler: (() -> ())?
 
+    /// The handler to execute when the view is pulled to refresh.
+    ///
+    private var pullToRefreshHandler: ((UIRefreshControl) -> ())?
+
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
         self?.verticallyAlignStackViewUsing(keyboardHeight: frame.height)
@@ -119,19 +122,37 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         ErrorTopBannerFactory.createTopBanner(isExpanded: false,
                                               expandedStateChangeHandler: {},
                                               onTroubleshootButtonPressed: { [weak self] in
-                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-                                                self?.present(safariViewController, animated: true, completion: nil)
+                                                guard let self = self else { return }
+
+                                                WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
                                               },
                                               onContactSupportButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
-                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+                let supportForm = SupportFormHostingController(viewModel: .init())
+                supportForm.show(from: self)
+            } else {
+                ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
+            }
                                               })
     }()
 
-    init(style: Style = .basic, configuration: Config? = nil, zendeskManager: ZendeskManagerProtocol = ZendeskManager.shared) {
+    convenience init(style: Style = .basic, configuration: Config? = nil, zendeskManager: ZendeskManagerProtocol? = nil) {
+        if let zendeskManager = zendeskManager {
+            self.init(style: style, configuration: configuration, zendesk: zendeskManager)
+        } else {
+            #if !targetEnvironment(macCatalyst)
+            self.init(style: style, configuration: configuration, zendesk: ZendeskProvider.shared)
+            #else
+            self.init(style: style, configuration: configuration, zendesk: NoZendeskManager())
+            #endif
+        }
+    }
+
+    init(style: Style, configuration: Config?, zendesk: ZendeskManagerProtocol) {
         self.style = style
         self.configuration = configuration
-        self.zendeskManager = zendeskManager
+        self.zendeskManager = zendesk
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -165,6 +186,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// Configure the elements to be displayed.
     ///
     func configure(_ config: Config) {
+        _ = view // trigger loading view before configuring contents
         configuration = config
         messageLabel.attributedText = config.message
 
@@ -178,13 +200,13 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
         lastActionButtonTapHandler = {
             switch config {
-            case .withLink(_, _, _, _, let linkURL):
+            case .withLink(_, _, _, _, let linkURL, _):
                 return { [weak self] in
                     if let self = self {
                         WebviewHelper.launch(linkURL, with: self)
                     }
                 }
-            case .withButton(_, _, _, _, let tapClosure):
+            case .withButton(_, _, _, _, let tapClosure, _):
                 return { [weak self] in
                     if let self = self {
                         tapClosure(self.actionButton)
@@ -193,13 +215,20 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
             case .withSupportRequest:
                 return { [weak self] in
                     if let self = self {
-                        self.zendeskManager.showNewRequestIfPossible(from: self, with: nil)
+                        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+                            let supportForm = SupportFormHostingController(viewModel: .init())
+                            supportForm.show(from: self)
+                        } else {
+                            self.zendeskManager.showNewRequestIfPossible(from: self, with: nil)
+                        }
                     }
                 }
             default:
                 return nil
             }
         }()
+
+        configurePullToRefresh(config)
     }
 
     /// Watch for device orientation changes and update the `imageView`'s visibility accordingly.
@@ -272,21 +301,53 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 // MARK: - Configuration
 
 private extension EmptyStateViewController {
+    @objc func onPullToRefresh(sender: UIRefreshControl) {
+        pullToRefreshHandler?(sender)
+    }
+
     /// Configures the `actionButton` based on the given `config`.
     func configureActionButton(_ config: Config) {
         switch config {
         case .simple:
             actionButton.isHidden = true
-        case .withLink(_, _, _, let title, _), .withButton(_, _, _, let title, _):
+        case .withLink(_, _, _, let title, _, _), .withButton(_, _, _, let title, _, _):
             actionButton.isHidden = false
             actionButton.applyPrimaryButtonStyle()
             actionButton.setTitle(title, for: .normal)
-        case .withSupportRequest(_, _, _, let buttonTitle):
+        case .withSupportRequest(_, _, _, let buttonTitle, _):
             actionButton.isHidden = false
             actionButton.applyLinkButtonStyle()
-            actionButton.contentEdgeInsets = .zero
+            var configuration = UIButton.Configuration.filled()
+            configuration.contentInsets = .init(.zero)
             actionButton.setTitle(buttonTitle, for: .normal)
         }
+    }
+
+    /// Configures pull to refresh based on the given `config`
+    func configurePullToRefresh(_ config: Config) {
+        pullToRefreshHandler = {
+            switch config {
+            case .simple(_, _, let pullToRefreshClosure):
+                return pullToRefreshClosure
+            case .withLink(_, _, _, _, _, let pullToRefreshClosure):
+                return pullToRefreshClosure
+            case .withButton(_, _, _, _, _, let pullToRefreshClosure):
+                return pullToRefreshClosure
+            case .withSupportRequest(_, _, _, _, let pullToRefreshClosure):
+                return pullToRefreshClosure
+            }
+        }()
+
+        guard pullToRefreshHandler != nil else {
+            // Remove refresh control if config doesn't have action handler
+            return scrollView.refreshControl = nil
+        }
+
+        // Create refresh control if needed
+        if scrollView.refreshControl == nil {
+            scrollView.refreshControl = UIRefreshControl()
+        }
+        scrollView.refreshControl?.addTarget(self, action: #selector(onPullToRefresh(sender:)), for: .valueChanged)
     }
 }
 
@@ -332,9 +393,10 @@ extension EmptyStateViewController {
     /// having a high degree of customizability.
     ///
     enum Config {
+        typealias PullToRequestActionHandler = ((UIRefreshControl) -> Void)
         /// Show a message and image only.
         ///
-        case simple(message: NSAttributedString, image: UIImage)
+        case simple(message: NSAttributedString, image: UIImage, onPullToRefresh: PullToRequestActionHandler? = nil)
 
         /// Show all the elements and a prominent button which navigates to a URL when activated.
         ///
@@ -342,7 +404,12 @@ extension EmptyStateViewController {
         ///     - linkTitle: The content shown on the `actionButton`.
         ///     - linkURL: The URL that will be navigated to when the `actionButton` is activated.
         ///
-        case withLink(message: NSAttributedString, image: UIImage, details: String, linkTitle: String, linkURL: URL)
+        case withLink(message: NSAttributedString,
+                      image: UIImage,
+                      details: String,
+                      linkTitle: String,
+                      linkURL: URL,
+                      onPullToRefresh: PullToRequestActionHandler? = nil)
 
         /// Show all the elements and a prominent button which calls back the provided closure when tapped.
         ///
@@ -350,13 +417,22 @@ extension EmptyStateViewController {
         ///     - buttonTitle: The content shown on the `actionButton`.
         ///     - onTap: Closure to be executed when the button is tapped.
         ///
-        case withButton(message: NSAttributedString, image: UIImage, details: String, buttonTitle: String, onTap: (UIButton) -> Void)
+        case withButton(message: NSAttributedString,
+                        image: UIImage,
+                        details: String,
+                        buttonTitle: String,
+                        onTap: (UIButton) -> Void,
+                        onPullToRefresh: PullToRequestActionHandler? = nil)
 
         /// Shows all the elements and a text-style button which shows the Contact Us dialog when activated.
         ///
         /// - Parameter buttonTitle: The content shown on the button that displays the Contact Support dialog.
         ///
-        case withSupportRequest(message: NSAttributedString, image: UIImage, details: String, buttonTitle: String)
+        case withSupportRequest(message: NSAttributedString,
+                                image: UIImage,
+                                details: String,
+                                buttonTitle: String,
+                                onPullToRefresh: PullToRequestActionHandler? = nil)
 
         /// The font used by the message's `UILabel`.
         ///
@@ -369,20 +445,20 @@ extension EmptyStateViewController {
 
         fileprivate var message: NSAttributedString {
             switch self {
-            case .simple(let message, _),
-                 .withLink(let message, _, _, _, _),
-                 .withButton(let message, _, _, _, _),
-                 .withSupportRequest(let message, _, _, _):
+            case .simple(let message, _, _),
+                 .withLink(let message, _, _, _, _, _),
+                 .withButton(let message, _, _, _, _, _),
+                 .withSupportRequest(let message, _, _, _, _):
                 return message
             }
         }
 
         fileprivate var image: UIImage {
             switch self {
-            case .simple(_, let image),
-                 .withLink(_, let image, _, _, _),
-                 .withButton(_, let image, _, _, _),
-                 .withSupportRequest(_, let image, _, _):
+            case .simple(_, let image, _),
+                 .withLink(_, let image, _, _, _, _),
+                 .withButton(_, let image, _, _, _, _),
+                 .withSupportRequest(_, let image, _, _, _):
                 return image
             }
         }
@@ -391,9 +467,9 @@ extension EmptyStateViewController {
             switch self {
             case .simple:
                 return nil
-            case .withLink(_, _, let detail, _, _),
-                 .withButton(_, _, let detail, _, _),
-                 .withSupportRequest(_, _, let detail, _):
+            case .withLink(_, _, let detail, _, _, _),
+                 .withButton(_, _, let detail, _, _, _),
+                 .withSupportRequest(_, _, let detail, _, _):
                 return detail
             }
         }

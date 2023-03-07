@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
-
+import WooFoundation
 
 /// ProductLoaderViewController: Loads product and/or product variation async and render its details.
 ///
@@ -228,7 +228,7 @@ private extension ProductLoaderViewController {
     ///
     func presentProductDetails(for product: Product) {
         ProductDetailsFactory.productDetails(product: product,
-                                             presentationStyle: .contained(containerViewController: self),
+                                             presentationStyle: .contained(containerViewController: { [weak self] in self }),
                                              forceReadOnly: forceReadOnly) { [weak self] viewController in
             self?.attachProductDetailsChildViewController(viewController)
         }
@@ -239,7 +239,7 @@ private extension ProductLoaderViewController {
     func presentProductVariationDetails(for productVariation: ProductVariation, parentProduct: Product) {
         ProductVariationDetailsFactory.productVariationDetails(productVariation: productVariation,
                                                                parentProduct: parentProduct,
-                                                               presentationStyle: .contained(containerViewController: self),
+                                                               presentationStyle: .contained(containerViewController: { [weak self] in self }),
                                                                forceReadOnly: forceReadOnly) { [weak self] viewController in
             self?.attachProductDetailsChildViewController(viewController)
         }

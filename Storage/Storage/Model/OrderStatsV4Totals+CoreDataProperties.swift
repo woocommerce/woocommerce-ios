@@ -18,6 +18,7 @@ extension OrderStatsV4Totals {
     @NSManaged public var shipping: NSDecimalNumber
     @NSManaged public var netRevenue: NSDecimalNumber
     @NSManaged public var totalProducts: Int64
+    @NSManaged public var averageOrderValue: NSDecimalNumber
     @NSManaged public var interval: OrderStatsV4Interval?
     @NSManaged public var stats: OrderStatsV4?
 }

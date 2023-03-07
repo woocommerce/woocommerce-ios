@@ -21,7 +21,8 @@ protocol CardReaderSettingsAlertsProvider {
     func foundReader(from: UIViewController,
                      name: String,
                      connect: @escaping () -> Void,
-                     continueSearch: @escaping () -> Void)
+                     continueSearch: @escaping () -> Void,
+                     cancelSearch: @escaping () -> Void)
 
     /// Defines an interactive alert indicating more than one reader has been found. The user must
     /// choose to connect to that reader or cancel searching
@@ -43,6 +44,7 @@ protocol CardReaderSettingsAlertsProvider {
     /// or cancel
     ///
     func connectingFailed(from: UIViewController,
+                          error: Error,
                           continueSearch: @escaping () -> Void,
                           cancelSearch: @escaping () -> Void)
 
@@ -58,6 +60,13 @@ protocol CardReaderSettingsAlertsProvider {
     /// The user may try again or cancel
     ///
     func connectingFailedInvalidPostalCode(from: UIViewController,
+                                           retrySearch: @escaping () -> Void,
+                                           cancelSearch: @escaping () -> Void)
+
+    /// Defines an alert indicating connecting failed because the reader battery is critically low.
+    /// The user may try searching again (i.e. for a different reader) or cancel
+    ///
+    func connectingFailedCriticallyLowBattery(from: UIViewController,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void)
 

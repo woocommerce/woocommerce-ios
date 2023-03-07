@@ -9,30 +9,28 @@ struct MockAppSettingsActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-            case .loadInitialStatsVersionToShow(let siteId, let onCompletion):
-                loadInitialStatsVersionToShow(siteId: siteId, onCompletion: onCompletion)
-            case .setStatsVersionLastShown:
-                // This case needs to be handled to avoid crashing when running screenshots
-                // Once the enum is removed, this can be as well.
-                success()
-            case .loadFeedbackVisibility(let type, let onCompletion):
-                loadFeedbackVisibility(type: type, onCompletion: onCompletion)
-            case .setInstallationDateIfNecessary(let date, let onCompletion):
-                setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
-            case .loadProductsSettings(let siteId, let onCompletion):
-                loadProductSettings(siteId: siteId, onCompletion: onCompletion)
-            case .loadEligibilityErrorInfo(let onCompletion):
-                onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
-            case .loadOrderAddOnsSwitchState(let onCompletion):
-                onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
-            case .resetEligibilityErrorInfo:
-                break
-            default: unimplementedAction(action: action)
+        case .loadFeedbackVisibility(let type, let onCompletion):
+            loadFeedbackVisibility(type: type, onCompletion: onCompletion)
+        case .setInstallationDateIfNecessary(let date, let onCompletion):
+            setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
+        case .loadProductsSettings(let siteId, let onCompletion):
+            loadProductSettings(siteId: siteId, onCompletion: onCompletion)
+        case .loadEligibilityErrorInfo(let onCompletion):
+            onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
+        case .loadOrderAddOnsSwitchState(let onCompletion):
+            onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
+        case .loadJetpackBenefitsBannerVisibility(_, _, let onCompletion):
+            onCompletion(false)
+        case .getFeatureAnnouncementVisibility(_, let onCompletion):
+            onCompletion(.success(false))
+        case .resetEligibilityErrorInfo,
+                .setTelemetryAvailability,
+                .loadOrdersSettings,
+                .upsertProductsSettings,
+                .loadCouponManagementFeatureSwitchState:
+            break
+        default: unimplementedAction(action: action)
         }
-    }
-
-    func loadInitialStatsVersionToShow(siteId: Int64, onCompletion: (StatsVersion?) -> Void) {
-        onCompletion(.v4)
     }
 
     func loadFeedbackVisibility(type: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void) {

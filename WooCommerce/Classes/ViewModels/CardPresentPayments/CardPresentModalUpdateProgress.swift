@@ -2,18 +2,16 @@ import UIKit
 
 /// Modal presented when a firmware update is being installed
 ///
-final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel {
+final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel, CardPresentModalProgressDisplaying {
     /// Called when cancel button is tapped
     private let cancelAction: (() -> Void)?
 
     let textMode: PaymentsModalTextMode = .fullInfo
     let actionsMode: PaymentsModalActionsMode
 
-    var topTitle: String
-
     var topSubtitle: String? = nil
 
-    let image: UIImage
+    var progress: Float
 
     let primaryButtonTitle: String? = nil
 
@@ -21,25 +19,28 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel {
 
     let auxiliaryButtonTitle: String? = nil
 
-    let bottomTitle: String?
+    var titleComplete: String
 
-    var bottomSubtitle: String? = nil
+    var titleInProgress: String
+
+    var messageComplete: String?
+
+    var messageInProgress: String?
 
     var accessibilityLabel: String? {
         Localization.title
     }
 
     init(requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) {
+        self.progress = progress
         self.cancelAction = cancel
-
-        let isComplete = progress == 1
-        topTitle = isComplete ? Localization.titleComplete : Localization.title
-        image = .softwareUpdateProgress(progress: CGFloat(progress))
-        bottomTitle = String(format: Localization.percentComplete, 100 * progress)
-        if !isComplete {
-            bottomSubtitle = requiredUpdate ? Localization.messageRequired : Localization.messageOptional
-        }
         actionsMode = cancel != nil ? .secondaryOnlyAction : .none
+        titleComplete = Localization.titleComplete
+        titleInProgress = Localization.title
+
+        if !isComplete {
+            messageInProgress = requiredUpdate ? Localization.messageRequired : Localization.messageOptional
+        }
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {}
@@ -61,12 +62,6 @@ private extension CardPresentModalUpdateProgress {
         static let titleComplete = NSLocalizedString(
             "Software updated",
             comment: "Dialog title that displays when a software update just finished installing"
-        )
-
-
-        static let percentComplete = NSLocalizedString(
-            "%.0f%% complete",
-            comment: "Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is"
         )
 
         static let messageRequired = NSLocalizedString(

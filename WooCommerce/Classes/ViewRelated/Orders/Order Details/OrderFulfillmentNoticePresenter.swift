@@ -12,10 +12,36 @@ import Combine
 ///
 final class OrderFulfillmentNoticePresenter {
 
+    /// Represents notices titles.
+    ///
+    struct NoticeConfiguration {
+        /// Custom success notice title.
+        ///
+        let successTitle: String
+
+        /// Custom error notice title. When `nil` the concrete `error.message` will be used.
+        ///
+        let errorTitle: String?
+
+        /// Default messages configuration.
+        ///
+        fileprivate static let `default` = NoticeConfiguration(
+            successTitle: NSLocalizedString("🎉 Order Completed", comment: "Success notice when tapping Mark Order Complete on Review Order screen"),
+            errorTitle: nil
+        )
+    }
+
     private let noticePresenter: NoticePresenter = ServiceLocator.noticePresenter
     private let analytics: Analytics = ServiceLocator.analytics
-
+    private var noticeConfiguration: NoticeConfiguration
     private var cancellables = Set<AnyCancellable>()
+
+    /// Custom initializer.
+    /// Useful to provide a different message configuration
+    ///
+    init(noticeConfiguration: NoticeConfiguration = .default) {
+        self.noticeConfiguration = noticeConfiguration
+    }
 
     /// Start presenting notices for the given fulfillment process.
     ///
@@ -48,7 +74,7 @@ final class OrderFulfillmentNoticePresenter {
     /// executed.
     ///
     private func displayOptimisticFulfillmentNotice(_ fulfillmentProcess: OrderFulfillmentUseCase.FulfillmentProcess) {
-        let message = NSLocalizedString("🎉 Order Completed", comment: "Success notice when tapping Mark Order Complete on Review Order screen")
+        let message = noticeConfiguration.successTitle
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle) {
             self.analytics.track(.orderMarkedCompleteUndoButtonTapped)
@@ -61,10 +87,16 @@ final class OrderFulfillmentNoticePresenter {
 
     private func displayFulfillmentErrorNotice(error: OrderFulfillmentUseCase.FulfillmentError) {
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: error.message, message: nil, feedbackType: .error, actionTitle: actionTitle) {
+        let errorMessage = noticeConfiguration.errorTitle ?? error.message
+        let notice = Notice(title: errorMessage, message: nil, feedbackType: .error, actionTitle: actionTitle) {
             self.observe(fulfillmentProcess: error.retry())
         }
 
-        noticePresenter.enqueue(notice: notice)
+        // Give the previous error notice(if any) time to be dismissed from the view.
+        // If the previous error notice has not completely being dismissed(due to the animation time)
+        // The new notice won't be shown because `noticePresenter` thinks it is already displaying a notice with the same title.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.noticePresenter.enqueue(notice: notice)
+        }
     }
 }

@@ -1,32 +1,55 @@
 import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let continueButton = "Prologue Continue Button"
-    static let siteAddressButton = "Prologue Self Hosted Button"
-}
-
 public final class PrologueScreen: ScreenObject {
 
-    private var continueButton: XCUIElement { expectedElement }
-    private var siteAddressButton: XCUIElement { app.buttons[ElementStringIDs.siteAddressButton] }
+    private let titleLabelGetter: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["prologue-title-label"]
+    }
+
+    private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Prologue Continue Button"]
+    }
+
+    private let selectSiteButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Prologue Self Hosted Button"]
+    }
+
+    private var continueButton: XCUIElement { continueButtonGetter(app) }
+    private var selectSiteButton: XCUIElement { selectSiteButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetter: { $0.buttons[ElementStringIDs.continueButton] },
+            expectedElementGetters: [
+                /// due to the changes of CTAs on the prologue screen,
+                /// it is safer to check for the title label only.
+                titleLabelGetter
+            ],
             app: app
         )
     }
 
-    public func selectContinueWithWordPress() -> GetStartedScreen {
+    public func selectContinueWithWordPress() throws -> GetStartedScreen {
         continueButton.tap()
-
-        return GetStartedScreen()
+        return try GetStartedScreen()
     }
 
-    public func selectSiteAddress() -> LoginSiteAddressScreen {
-        siteAddressButton.tap()
+    public func selectSiteAddress() throws -> LoginSiteAddressScreen {
+        selectSiteButton.tap()
+        return try LoginSiteAddressScreen()
+    }
 
-        return LoginSiteAddressScreen()
+    @discardableResult
+    public func verifyPrologueScreenLoaded() throws -> Self {
+        XCTAssertTrue(isLoaded)
+        return self
+    }
+
+    public func isSiteAddressLoginAvailable() throws -> Bool {
+        selectSiteButton.waitForExistence(timeout: 1)
+    }
+
+    public func isWPComLoginAvailable() throws -> Bool {
+        continueButton.waitForExistence(timeout: 1)
     }
 }

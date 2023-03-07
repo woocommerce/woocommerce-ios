@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import SafariServices
 import UIKit
@@ -19,18 +20,30 @@ protocol StorePickerViewControllerDelegate: AnyObject {
     ///
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure)
 
+    /// Shows a Role Error page using the provided error information.
+    /// The error page is pushed to the navigation stack so the user is not locked out, and can go back to select another store.
+    ///
+    func showRoleErrorScreen(for siteID: Int64, errorInfo: StorageEligibilityErrorInfo, onCompletion: @escaping SelectStoreClosure)
+
     /// Notifies the delegate to dismiss the store picker and restart authentication.
     func restartAuthentication()
+
+    /// Notifies the delegate to create a store.
+    func createStore()
 }
 
 
 /// Configuration option enum for the StorePickerViewController
 ///
-enum StorePickerConfiguration {
+enum StorePickerConfiguration: Equatable {
 
     /// Setup the store picker for use in the login flow
     ///
     case login
+
+    /// Setup the store picker for store creation initiated from the logged out state
+    ///
+    case storeCreationFromLogin(source: LoggedOutStoreCreationCoordinator.Source)
 
     /// Setup the store picker for use in the store switching flow
     ///
@@ -56,7 +69,13 @@ final class StorePickerViewController: UIViewController {
 
     /// Selected configuration for the store picker
     ///
-    var configuration: StorePickerConfiguration = .login
+    private let configuration: StorePickerConfiguration
+
+    /// View model for the controller
+    ///
+    private let viewModel: StorePickerViewModel
+
+    private var stateSubscription: AnyCancellable?
 
     // MARK: - Private Properties
 
@@ -76,9 +95,17 @@ final class StorePickerViewController: UIViewController {
         didSet {
             secondaryActionButton.backgroundColor = .clear
             secondaryActionButton.titleFont = StyleManager.actionButtonTitleFont
-            secondaryActionButton.setTitle(NSLocalizedString("Try With Another Account",
-                                                             comment: "Button to trigger connection to another account in store picker"),
-                                           for: .normal)
+            secondaryActionButton.setTitle(Localization.tryAnotherAccount, for: .normal)
+        }
+    }
+
+    /// Enter site address / Add Store Button.
+    ///
+    @IBOutlet private var addStoreButton: FancyAnimatedButton! {
+        didSet {
+            addStoreButton.backgroundColor = .clear
+            addStoreButton.titleFont = StyleManager.actionButtonTitleFont
+            addStoreButton.setTitle(Localization.addStoreButton, for: .normal)
         }
     }
 
@@ -90,18 +117,18 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
-    /// Represents the internal StorePicker State
-    ///
-    private var state: StorePickerState = .empty {
-        didSet {
-            stateWasUpdated()
-        }
-    }
-
     /// Header View: Displays all of the Account Details
     ///
     private let accountHeaderView: AccountHeaderView = {
-        return AccountHeaderView.instantiateFromNib()
+        AccountHeaderView.instantiateFromNib()
+    }()
+
+    private lazy var addStoreFooterView: AddStoreFooterView = {
+       AddStoreFooterView(addStoreHandler: { [weak self] in
+           guard let self else { return }
+           ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
+           self.presentAddStoreActionSheet(from: self.addStoreFooterView)
+       })
     }()
 
     /// Site Picker's dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
@@ -110,16 +137,6 @@ final class StorePickerViewController: UIViewController {
         let noticePresenter = DefaultNoticePresenter()
         noticePresenter.presentingViewController = self
         return noticePresenter
-    }()
-
-    /// ResultsController: Loads Sites from the Storage Layer.
-    ///
-    private let resultsController: ResultsController<StorageSite> = {
-        let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "isWooCommerceActive == YES")
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
@@ -138,6 +155,38 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
+    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    CloseAccountCoordinator(sourceViewController: self) { [weak self] in
+        guard let self = self else { throw CloseAccountError.presenterDeallocated }
+        return try await self.closeAccount()
+    } onRemoveSuccess: { [weak self] in
+        self?.restartAuthentication()
+    }
+
+    private var storeCreationCoordinator: StoreCreationCoordinator?
+
+    private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
+    private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
+    private let isStoreCreationEnabled: Bool
+
+    init(configuration: StorePickerConfiguration,
+         appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
+         stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.configuration = configuration
+        self.appleIDCredentialChecker = appleIDCredentialChecker
+        self.stores = stores
+        self.featureFlagService = featureFlagService
+        self.viewModel = StorePickerViewModel(configuration: configuration)
+        self.isStoreCreationEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+        super.init(nibName: Self.nibName, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -147,18 +196,22 @@ final class StorePickerViewController: UIViewController {
         setupAccountHeader()
         setupTableView()
         refreshResults()
+        observeStateChange()
 
         switch configuration {
         case .login:
             startListeningToNotifications()
-            startABTesting()
         case .switchingStores:
             secondaryActionButton.isHidden = true
-        case .listStores:
-            hideActionButtons()
         default:
             break
         }
+    }
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        tableView.updateHeaderHeight()
+        tableView.updateFooterHeight()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -191,6 +244,7 @@ private extension StorePickerViewController {
         tableView.registerNib(for: EmptyStoresTableViewCell.self)
         tableView.registerNib(for: StoreTableViewCell.self)
         tableView.backgroundColor = backgroundColor()
+        tableView.sectionFooterHeight = 0
     }
 
     func setupAccountHeader() {
@@ -198,15 +252,20 @@ private extension StorePickerViewController {
             return
         }
 
-        accountHeaderView.username = "@" + defaultAccount.username
-        accountHeaderView.fullname = defaultAccount.displayName
+        accountHeaderView.email = defaultAccount.email
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
-        accountHeaderView.isHelpButtonEnabled = configuration == .login || configuration == .standard
-        accountHeaderView.onHelpRequested = { [weak self] in
-            guard let self = self else {
-                return
+        let showsActionButton: Bool = {
+            switch configuration {
+            case .login, .standard, .storeCreationFromLogin:
+                return true
+            case .switchingStores, .listStores:
+                return false
             }
-            self.presentHelp()
+        }()
+        accountHeaderView.isActionButtonEnabled = showsActionButton
+        accountHeaderView.onActionButtonTapped = { [weak self] sourceView in
+            guard let self else { return }
+            self.presentActionMenu(from: sourceView)
         }
     }
 
@@ -223,11 +282,6 @@ private extension StorePickerViewController {
         title = NSLocalizedString("Connected Stores", comment: "Page title for the list of connected stores")
     }
 
-    func hideActionButtons() {
-        actionButton.isHidden = true
-        secondaryActionButton.isHidden = true
-    }
-
     func setupViewForCurrentConfiguration() {
         guard isViewLoaded else {
             return
@@ -237,7 +291,6 @@ private extension StorePickerViewController {
         case .switchingStores:
             setupNavigation()
         case .listStores:
-            hideActionButtons()
             setupNavigationForListOfConnectedStores()
         default:
             navigationController?.setNavigationBarHidden(true, animated: true)
@@ -245,54 +298,104 @@ private extension StorePickerViewController {
     }
 
     func refreshResults() {
-        refetchSitesAndUpdateState()
-        ServiceLocator.analytics.track(.sitePickerStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
+        viewModel.refreshSites(currentlySelectedSiteID: currentlySelectedSite?.siteID)
+        viewModel.trackScreenView()
+    }
 
-        synchronizeSites { [weak self] _ in
-            self?.refetchSitesAndUpdateState()
+    func observeStateChange() {
+        stateSubscription = viewModel.$state.sink { [weak self] _ in
+            guard let self = self else { return }
+            self.preselectStoreIfPossible()
+            self.reloadInterface()
+            self.updateFooterViewIfNeeded()
         }
-    }
-
-    func refetchSitesAndUpdateState() {
-        try? resultsController.performFetch()
-        state = StorePickerState(sites: resultsController.fetchedObjects)
-    }
-
-    func stateWasUpdated() {
-        preselectStoreIfPossible()
-        reloadInterface()
     }
 
     func backgroundColor() -> UIColor {
         return WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor ?? .listBackground
     }
 
-    func presentHelp() {
-        ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
-    }
-}
+    func presentActionMenu(from sourceView: UIView) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
 
-// MARK: - Syncing
-//
-private extension StorePickerViewController {
-    func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let syncStartTime = Date()
-        let isJetpackConnectionPackageSupported = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
-        let action = AccountAction
-            .synchronizeSites(selectedSiteID: currentlySelectedSite?.siteID,
-                              isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { result in
-                switch result {
-                case .success(let containsJCPSites):
-                    if containsJCPSites {
-                        let syncDuration = round(Date().timeIntervalSince(syncStartTime) * 1000)
-                        ServiceLocator.analytics.track(.jetpackCPSitesFetched, withProperties: ["duration": syncDuration])
-                    }
-                    onCompletion(.success(()))
-                case .failure(let error):
-                    onCompletion(.failure(error))
+        let logOutAction = UIAlertAction(title: Localization.ActionMenu.logOut, style: .default) { [weak self] _ in
+            self?.restartAuthentication()
+        }
+        actionSheet.addAction(logOutAction)
+
+        let helpAction = UIAlertAction(title: Localization.ActionMenu.help, style: .default) { [weak self] _ in
+            guard let self else { return }
+            ServiceLocator.analytics.track(.sitePickerHelpButtonTapped)
+            self.presentHelp()
+        }
+        actionSheet.addAction(helpAction)
+
+        let isCloseAccountButtonVisible: Bool = {
+            let hasEmptyStores: Bool = {
+                if case .empty = viewModel.state {
+                    return true
                 }
+                return false
+            }()
+            return (appleIDCredentialChecker.hasAppleUserID()
+                    || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+                    || featureFlagService.isFeatureFlagEnabled(.storeCreationM2)) && hasEmptyStores
+        }()
+        if isCloseAccountButtonVisible {
+            let closeAccountAction = UIAlertAction(title: Localization.ActionMenu.closeAccount, style: .destructive) { [weak self] _ in
+                guard let self else { return }
+                ServiceLocator.analytics.track(event: .closeAccountTapped(source: .emptyStores))
+                self.closeAccountCoordinator.start()
             }
-        ServiceLocator.stores.dispatch(action)
+            actionSheet.addAction(closeAccountAction)
+        }
+
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
+        actionSheet.addAction(cancelAction)
+
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = sourceView
+            popoverController.sourceRect = sourceView.bounds
+        }
+
+        present(actionSheet, animated: true)
+    }
+
+    func presentHelp() {
+        ServiceLocator.authenticationManager.presentSupport(from: self, screen: .storePicker)
+    }
+
+    func presentAddStoreActionSheet(from view: UIView) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+        let createStoreAction = UIAlertAction(title: Localization.createStore, style: .default) { [weak self] _ in
+            // TODO: add tracks for site creation
+            self?.createStoreButtonPressed()
+        }
+        let addExistingStoreAction = UIAlertAction(title: Localization.connectExistingStore, style: .default) { [weak self] _ in
+            ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
+            self?.presentSiteDiscovery()
+        }
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
+
+        actionSheet.addAction(createStoreAction)
+        actionSheet.addAction(addExistingStoreAction)
+        actionSheet.addAction(cancelAction)
+
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = view
+            popoverController.sourceRect = view.bounds
+        }
+
+        present(actionSheet, animated: true)
+    }
+
+    func presentSiteDiscovery() {
+        guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
+            return
+        }
+        navigationController?.show(viewController, sender: nil)
     }
 }
 
@@ -337,11 +440,8 @@ private extension StorePickerViewController {
     /// Sets the first available Store as the default one. If possible!
     ///
     func preselectStoreIfPossible() {
-        guard configuration != .listStores else {
-            return
-        }
 
-        guard case let .available(sites) = state, let firstSite = sites.first else {
+        guard case let .available(sites) = viewModel.state, let firstSite = sites.first(where: { $0.isWooCommerceActive }) else {
             return
         }
         guard currentlySelectedSite == nil else {
@@ -355,8 +455,9 @@ private extension StorePickerViewController {
         }
 
         // If a site address was passed in credentials, select it
-        if let siteAddress = ServiceLocator.stores.sessionManager.defaultCredentials?.siteAddress,
-            let site = sites.filter({ $0.url == siteAddress }).first {
+        if case let .wpcom(_, _, siteAddress) = ServiceLocator.stores.sessionManager.defaultCredentials,
+           let site = sites.filter({ $0.url == siteAddress }).first,
+           site.isWooCommerceActive {
             currentlySelectedSite = site
             return
         }
@@ -368,16 +469,32 @@ private extension StorePickerViewController {
     /// Reloads the UI.
     ///
     func reloadInterface() {
-        actionButton.setTitle(state.actionTitle, for: .normal)
-        switch state {
+        actionButton.setTitle(Localization.continueButton, for: .normal)
+        switch viewModel.state {
         case .empty:
             updateActionButtonAndTableState(animating: false, enabled: false)
-        default:
-            break
+            addStoreButton.isHidden = false
+            secondaryActionButton.isHidden = true
+        case .available(let sites):
+            addStoreButton.isHidden = true
+            if sites.allSatisfy({ $0.isWooCommerceActive == false }) {
+                updateActionButtonAndTableState(animating: false, enabled: false)
+            }
         }
 
-        tableView.separatorStyle = state.separatorStyle
+        tableView.separatorStyle = viewModel.separatorStyle
         tableView.reloadData()
+    }
+
+    /// Shows the Add a Store button at the end of the store list if possible
+    ///
+    func updateFooterViewIfNeeded() {
+        switch viewModel.state {
+        case .available:
+            tableView.tableFooterView = addStoreFooterView
+        case .empty:
+            tableView.tableFooterView = UIView()
+        }
     }
 
     /// Dismiss this VC
@@ -405,42 +522,14 @@ private extension StorePickerViewController {
         dismissButton.isEnabled = enabled
     }
 
-    /// This method will reload the [Selected Row]
-    ///
-    func reloadSelectedStoreRows(afterRunning block: () -> Void) {
-        /// Preserve: Selected and Checked Rows
-        ///
-        var rowsToReload = [IndexPath]()
-
-        if let oldSiteID = currentlySelectedSite?.siteID,
-            let oldCheckedRow = state.indexPath(for: oldSiteID) {
-            rowsToReload.append(oldCheckedRow)
-        }
-
-        if let oldSelectedRow = tableView.indexPathForSelectedRow {
-            rowsToReload.append(oldSelectedRow)
-        }
-
-        /// Update the Default Store
-        ///
-        block()
-
-        if let newSiteID = currentlySelectedSite?.siteID,
-            let selectedRow = state.indexPath(for: newSiteID) {
-            rowsToReload.append(selectedRow)
-        }
-
-        /// Refresh: Selected and Checked Rows
-        ///
-        tableView.reloadRows(at: rowsToReload, with: .none)
-    }
-
     /// Re-initializes the Login Flow, forcing a logout. This may be required if the WordPress.com Account has no Stores available.
     ///
     func restartAuthentication() {
         guard ServiceLocator.stores.needsDefaultStore else {
             return
         }
+
+        ServiceLocator.analytics.track(.sitePickerLogoutButtonTapped)
 
         delegate?.restartAuthentication()
     }
@@ -472,7 +561,7 @@ private extension StorePickerViewController {
     ///
     func updateUIForInvalidSite(named siteName: String) {
         toggleDismissButton(enabled: false)
-        switch state {
+        switch viewModel.state {
         case .empty:
             updateUIForNoSitesFound(named: siteName)
         default:
@@ -504,6 +593,7 @@ private extension StorePickerViewController {
     func updateUIForNoSitesFound(named siteName: String) {
         hideActionButton()
         displayFancyWCRequirementAlert(siteName: siteName)
+        addStoreButton.isHidden = false
     }
 
     /// Update the UI when the user has a valid login
@@ -538,15 +628,6 @@ private extension StorePickerViewController {
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         present(fancyAlert, animated: true)
     }
-
-    /// Refreshes the AB testing assignments (refresh is needed after a user logs in)
-    ///
-    func startABTesting() {
-        guard ServiceLocator.stores.isAuthenticated else {
-            return
-        }
-        ABTest.start()
-    }
 }
 
 // MARK: Transition Controller Delegate
@@ -560,25 +641,33 @@ extension StorePickerViewController: UIViewControllerTransitioningDelegate {
 
 // MARK: - Action Handlers
 //
-extension StorePickerViewController {
+private extension StorePickerViewController {
 
     /// Proceeds with the Login Flow.
     ///
     @IBAction func actionWasPressed() {
-        switch state {
+        switch viewModel.state {
         case .empty:
             restartAuthentication()
         default:
-            guard let delegate = delegate else {
-                return
-            }
             guard let site = currentlySelectedSite else {
                 return
             }
 
-            delegate.didSelectStore(with: site.siteID) { [weak self] in
-                self?.dismiss()
-            }
+            checkRoleEligibility(for: site)
+        }
+    }
+
+    /// Presents a screen to enter a store address to connect,
+    /// or the add store action sheet for simplified login.
+    ///
+    @IBAction private func addStoreWasPressed() {
+        if featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) {
+            ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
+            presentAddStoreActionSheet(from: addStoreButton)
+        } else {
+            ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
+            presentSiteDiscovery()
         }
     }
 
@@ -586,6 +675,29 @@ extension StorePickerViewController {
     ///
     @IBAction func secondaryActionWasPressed() {
         restartAuthentication()
+    }
+
+    func createStoreButtonPressed() {
+        let source: WooAnalyticsEvent.StoreCreation.StorePickerSource = {
+            switch configuration {
+            case .switchingStores:
+                return .switchStores
+            case .login, .standard:
+                return .login
+            case .storeCreationFromLogin(let loggedOutSource):
+                switch loggedOutSource {
+                case .prologue:
+                    return .loginPrologue
+                case .loginEmailError:
+                    return .other
+                }
+            default:
+                return .other
+            }
+        }()
+        ServiceLocator.analytics.track(event: .StoreCreation.sitePickerCreateSiteTapped(source: source))
+
+        delegate?.createStore()
     }
 }
 
@@ -595,37 +707,30 @@ extension StorePickerViewController {
 extension StorePickerViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return state.numberOfSections
+        return viewModel.numberOfSections
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return state.numberOfRows
+        return viewModel.numberOfRows(inSection: section)
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard configuration != .listStores else {
-            return nil
-        }
-
-        return state.headerTitle?.uppercased()
+        return viewModel.titleForSection(at: section)?.uppercased()
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let site = state.site(at: indexPath) else {
+        guard let site = viewModel.site(at: indexPath) else {
             hideActionButton()
             let cell = tableView.dequeueReusableCell(EmptyStoresTableViewCell.self, for: indexPath)
-            cell.onJetpackSetupButtonTapped = { [weak self] in
-                let safariViewController = SFSafariViewController(url: WooConstants.URLs.emptyStoresJetpackSetup.asURL())
-                self?.present(safariViewController, animated: true, completion: nil)
-            }
             return cell
         }
         let cell = tableView.dequeueReusableCell(StoreTableViewCell.self, for: indexPath)
 
         cell.name = site.name
         cell.url = site.url
-        cell.allowsCheckmark = state.multipleStoresAvailable
-        cell.displaysCheckmark = currentlySelectedSite?.siteID == site.siteID
+        cell.allowsCheckmark = viewModel.multipleStoresAvailable && site.isWooCommerceActive
+        cell.displaysCheckmark = currentlySelectedSite?.siteID == site.siteID && site.isWooCommerceActive
+        cell.displaysNotice = site.isWooCommerceActive == false
 
         return cell
     }
@@ -645,7 +750,7 @@ extension StorePickerViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        guard state.multipleStoresAvailable && configuration != .listStores else {
+        guard viewModel.multipleStoresAvailable else {
             // If we only have a single store available, don't allow the row to be selected
             return false
         }
@@ -653,17 +758,26 @@ extension StorePickerViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let site = state.site(at: indexPath) else {
+        guard let site = viewModel.site(at: indexPath) else {
             tableView.deselectRow(at: indexPath, animated: true)
             return
         }
 
-        reloadSelectedStoreRows() {
-            currentlySelectedSite = site
+        guard site.isWooCommerceActive else {
+            let isNonAtomicSite = !site.isJetpackConnected
+            ServiceLocator.analytics.track(.sitePickerNonWooSiteTapped, withProperties: ["is_non_atomic": isNonAtomicSite])
+
+            if isNonAtomicSite {
+                showNonAtomicSiteError(for: site)
+            } else {
+                showNoWooError(for: site)
+            }
+
+            return tableView.deselectRow(at: indexPath, animated: true)
         }
 
-        tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-        tableView.deselectRow(at: indexPath, animated: true)
+        currentlySelectedSite = site
+        tableView.reloadData()
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -677,19 +791,109 @@ extension StorePickerViewController: UITableViewDelegate {
     }
 }
 
+private extension StorePickerViewController {
+    func closeAccount() async throws {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            let action = AccountAction.closeAccount { result in
+                continuation.resume(with: result)
+            }
+            self.stores.dispatch(action)
+        }
+    }
+
+    func showNonAtomicSiteError(for site: Site) {
+        let viewModel = NonAtomicSiteViewModel(site: site, stores: stores)
+        let errorController = ULErrorViewController(viewModel: viewModel)
+        navigationController?.show(errorController, sender: nil)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+
+    func showNoWooError(for site: Site) {
+        let viewModel = NoWooErrorViewModel(
+            site: site,
+            showsConnectedStores: false, // avoid looping from store picker > no woo > store picker
+            onSetupCompletion: { [weak self] siteID in
+                guard let self = self else { return }
+                self.navigationController?.popViewController(animated: true)
+                self.viewModel.refreshSites(currentlySelectedSiteID: siteID)
+                self.delegate?.didSelectStore(with: siteID) { [weak self] in
+                    self?.dismiss()
+                }
+        })
+        let noWooUI = ULErrorViewController(viewModel: viewModel)
+        navigationController?.show(noWooUI, sender: nil)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+
+    func checkRoleEligibility(for site: Site) {
+        guard let delegate = delegate else {
+            return
+        }
+
+        updateActionButtonAndTableState(animating: true, enabled: false)
+
+        viewModel.checkEligibility(for: site.siteID) { [weak self] result in
+            guard let self = self else { return }
+
+            self.updateActionButtonAndTableState(animating: false, enabled: true)
+
+            switch result {
+            case .success:
+                // if user is eligible, then switch to the desired store.
+                delegate.didSelectStore(with: site.siteID) { [weak self] in
+                    self?.dismiss()
+                }
+            case .failure(let error):
+                if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
+                    ServiceLocator.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
+                    delegate.showRoleErrorScreen(for: site.siteID, errorInfo: errorInfo) { [weak self] in
+                        self?.dismiss()
+                    }
+                } else {
+                    self.displayUnknownErrorModal()
+                }
+            }
+        }
+    }
+}
+
+private extension StorePickerViewController {
+    enum Localization {
+        static let continueButton = NSLocalizedString("Continue", comment: "Button on the Store Picker screen to select a store")
+        static let tryAnotherAccount = NSLocalizedString("Log In With Another Account",
+                                                         comment: "Button to trigger connection to another account in store picker")
+        static let createStore = NSLocalizedString("Create a new store",
+                                                   comment: "Button to create a new store from the store picker")
+        static let connectExistingStore = NSLocalizedString("Connect an existing store",
+                                                            comment: "Button to connect to an existing store from the store picker")
+        static let cancel = NSLocalizedString("Cancel",
+                                              comment: "Button to dismiss the action sheet on the store picker")
+        static let addStoreButton = NSLocalizedString("Add a Store",
+                                                      comment: "Button title on the store picker for store creation")
+        enum ActionMenu {
+            static let logOut = NSLocalizedString("Log out",
+                                                  comment: "Button to log out from the current account from the store picker")
+            static let help = NSLocalizedString("Help",
+                                                comment: "Button to get help from the store picker")
+            static let closeAccount = NSLocalizedString(
+                "Close account",
+                comment: "Button to close the WordPress.com account on the store picker."
+            )
+        }
+    }
+}
 
 // MARK: - StorePickerConstants: Contains all of the constants required by the Picker.
 //
 private enum StorePickerConstants {
-    static let numberOfSections = 1
-    static let emptyStateRowCount = 1
     static let estimatedRowHeight = CGFloat(50)
 }
 
 
 // MARK: - Represents the StorePickerViewController's Internal State.
 //
-private enum StorePickerState {
+enum StorePickerState {
 
     /// No Stores onScreen
     ///
@@ -708,89 +912,5 @@ private enum StorePickerState {
         } else {
             self = .available(sites: sites)
         }
-    }
-}
-
-
-// MARK: - StorePickerState Properties
-//
-private extension StorePickerState {
-
-    /// Action Button's Title
-    ///
-    var actionTitle: String {
-            return NSLocalizedString("Continue", comment: "")
-    }
-
-    /// Results Table's Header Title
-    ///
-    var headerTitle: String? {
-        switch self {
-        case .empty:
-            return nil
-        case .available(let sites) where sites.count > 1:
-            return NSLocalizedString("Pick Store to Connect", comment: "Store Picker's Section Title: Displayed whenever there are multiple Stores.")
-        default:
-            return NSLocalizedString("Connected Store", comment: "Store Picker's Section Title: Displayed when there's a single pre-selected Store.")
-        }
-    }
-
-    /// Indicates if there is more than one Store.
-    ///
-    var multipleStoresAvailable: Bool {
-        return numberOfRows > 1
-    }
-
-    /// Number of TableView Sections
-    ///
-    var numberOfSections: Int {
-        return StorePickerConstants.numberOfSections
-    }
-
-    /// Number of TableView Rows
-    ///
-    var numberOfRows: Int {
-        switch self {
-        case .available(let sites):
-            return sites.count
-        default:
-            return StorePickerConstants.emptyStateRowCount
-        }
-    }
-
-    /// Results Table's Separator Style
-    ///
-    var separatorStyle: UITableViewCell.SeparatorStyle {
-        switch self {
-        case .empty:
-            return .none
-        default:
-            return .singleLine
-        }
-    }
-
-    /// Returns the site to be displayed at a given IndexPath
-    ///
-    func site(at indexPath: IndexPath) -> Yosemite.Site? {
-        switch self {
-        case .empty:
-            return nil
-        case .available(let sites):
-            return sites[indexPath.row]
-        }
-    }
-
-    /// Returns the IndexPath for the specified Site.
-    ///
-    func indexPath(for siteID: Int64) -> IndexPath? {
-        guard case let .available(sites) = self else {
-            return nil
-        }
-
-        guard let row = sites.firstIndex(where: { $0.siteID == siteID }) else {
-            return nil
-        }
-
-        return IndexPath(row: row, section: 0)
     }
 }

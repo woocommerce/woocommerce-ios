@@ -7,18 +7,24 @@ import Combine
 final class CountrySelectorViewModelTests: XCTestCase {
 
     var subscriptions = Set<AnyCancellable>()
+    var binding: Binding<AreaSelectorCommandProtocol?>!
+    var viewModel: CountrySelectorViewModel!
 
     override func setUp () {
         super.setUp()
 
+        binding = Binding<AreaSelectorCommandProtocol?>(get: { nil }, set: { _ in })
+        viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
+    }
+
+    override func tearDown() {
         subscriptions.removeAll()
+        binding = nil
+        viewModel = nil
+        super.tearDown()
     }
 
     func test_filter_countries_return_expected_results() {
-        // Given
-        let binding = Binding<Country?>(get: { nil }, set: { _ in })
-        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
-
         // When
         viewModel.searchTerm = "Co"
         let countries = viewModel.command.data.map { $0.name }
@@ -40,11 +46,29 @@ final class CountrySelectorViewModelTests: XCTestCase {
         ])
     }
 
-    func test_filter_countries_with_uppercase_letters_return_expected_results() {
-        // Given
-        let binding = Binding<Country?>(get: { nil }, set: { _ in })
-        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
+    func test_filter_term_with_last_character_whitespace_return_expected_result() {
+        // When
+        viewModel.searchTerm = "Indonesia "
+        let countries = viewModel.command.data.map { $0.name }
 
+        // Then
+        assertEqual(countries, [
+            "Indonesia"
+        ])
+    }
+
+    func test_filter_term_with_last_character_newline_return_expected_result() {
+        // When
+        viewModel.searchTerm = "Indonesia\n"
+        let countries = viewModel.command.data.map { $0.name }
+
+        // Then
+        assertEqual(countries, [
+            "Indonesia"
+        ])
+    }
+
+    func test_filter_countries_with_uppercase_letters_return_expected_results() {
         // When
         viewModel.searchTerm = "CO"
         let countries = viewModel.command.data.map { $0.name }
@@ -68,8 +92,6 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_cleaning_search_terms_return_all_countries() {
         // Given
-        let binding = Binding<Country?>(get: { nil }, set: { _ in })
-        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
         let totalNumberOfCountries = viewModel.command.data.count
 
         // When
@@ -83,20 +105,20 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_providing_a_selected_country_is_reflected_on_command() {
         // Given
-        let binding = Binding<Country?>(get: { Self.sampleCountries[0] }, set: { _ in })
+        let binding = Binding<AreaSelectorCommandProtocol?>(get: { Self.sampleCountries[0]}, set: { _ in })
 
         // When
         let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // Then
-        XCTAssertEqual(viewModel.command.selected, binding.wrappedValue)
+        XCTAssertEqual(viewModel.command.selected?.name, binding.wrappedValue?.name)
     }
 
     func test_selecting_country_via_command_updates_binding() {
         // Given
         let expectedCountry = Self.sampleCountries[0]
         var selectedCountry: Country? = nil
-        let binding = Binding<Country?>(get: { selectedCountry }, set: { selectedCountry = $0 })
+        let binding = Binding<AreaSelectorCommandProtocol?>(get: { selectedCountry }, set: { selectedCountry = $0 as? Country})
         let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // When

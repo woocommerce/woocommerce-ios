@@ -1,6 +1,8 @@
 import UIKit
 import Yosemite
 import Combine
+import protocol Storage.StorageManagerType
+import Experiments
 
 /// The root tab controller for Orders, which contains the `OrderListViewController` .
 ///
@@ -16,10 +18,7 @@ final class OrdersRootViewController: UIViewController {
         siteID: siteID,
         title: Localization.defaultOrderListTitle,
         viewModel: orderListViewModel,
-        emptyStateConfig: .simple(
-            message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-            image: .waitingForCustomersImage
-        )
+        switchDetailsHandler: handleSwitchingDetails(viewModel:)
     )
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
@@ -29,10 +28,6 @@ final class OrdersRootViewController: UIViewController {
 
     private let analytics = ServiceLocator.analytics
 
-    /// Lets us know if the store is ready to receive in person payments
-    ///
-    private let inPersonPaymentsUseCase = CardPresentPaymentsOnboardingUseCase()
-
     /// Stores any active observation.
     ///
     private var subscriptions = Set<AnyCancellable>()
@@ -41,7 +36,7 @@ final class OrdersRootViewController: UIViewController {
     ///
     private var filtersBar: FilteredOrdersHeaderBar = {
         let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
-        filteredOrdersBar.backgroundColor = .listForeground
+        filteredOrdersBar.backgroundColor = .listForeground(modal: false)
         return filteredOrdersBar
     }()
 
@@ -55,22 +50,39 @@ final class OrdersRootViewController: UIViewController {
         }
     }
 
-    /// Stores status for order creation availability.
-    ///
-    private var isOrderCreationEnabled: Bool = false
+    private let storageManager: StorageManagerType
 
-    /// Stores status for Simple Payments availability.
+    /// Used for looking up the `OrderStatus` to show in the `Order Filters`.
     ///
-    private var shouldShowSimplePaymentsButton: Bool = false
+    /// The `OrderStatus` data is fetched from the API by `OrderListViewModel`.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    private let featureFlagService: FeatureFlagService
+
+    private let orderDurationRecorder: OrderDurationRecorderProtocol
 
     // MARK: View Lifecycle
 
-    init(siteID: Int64) {
+    init(siteID: Int64,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared) {
         self.siteID = siteID
+        self.storageManager = storageManager
+        self.featureFlagService = ServiceLocator.featureFlagService
+        self.orderDurationRecorder = orderDurationRecorder
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
-        configureTabBarItem()
+
+        if !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            configureTabBarItem()
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -81,22 +93,30 @@ final class OrdersRootViewController: UIViewController {
         super.viewDidLoad()
         configureTitle()
         configureView()
+        configureNavigationButtons()
         configureFiltersBar()
         configureChildViewController()
-        observeInPersonPaymentsStoreState()
 
         /// We sync the local order settings for configuring local statuses and date range filters.
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
         ///
-        syncLocalOrdersSettings { _ in }
+        syncLocalOrdersSettings { [weak self] _ in
+            guard let self = self else { return }
+            self.configureStatusResultsController()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        // Needed in ViewWillAppear because this View Controller is never recreated.
-        fetchExperimentalTogglesAndConfigureNavigationButtons()
+        super.viewWillAppear(animated)
+
+        // Clears application icon badge
+        ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
     }
 
     override var shouldShowOfflineBanner: Bool {
+        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            return false
+        }
         return true
     }
 
@@ -117,12 +137,17 @@ final class OrdersRootViewController: UIViewController {
     /// Presents the Details for the Notification with the specified Identifier.
     ///
     func presentDetails(for note: Note) {
-        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
+        guard let orderID = note.meta.identifier(forKey: .order),
+              let siteID = note.meta.identifier(forKey: .site) else {
             DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
             return
         }
 
-        let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
+        presentDetails(for: Int64(orderID), siteID: Int64(siteID), note: note)
+    }
+
+    func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
+        let loaderViewController = OrderLoaderViewController(orderID: Int64(orderID), siteID: Int64(siteID), note: note)
         navigationController?.pushViewController(loaderViewController, animated: true)
     }
 
@@ -130,13 +155,48 @@ final class OrdersRootViewController: UIViewController {
     ///
     private func filterButtonTapped() {
         ServiceLocator.analytics.track(.orderListViewFilterOptionsTapped)
-        let viewModel = FilterOrderListViewModel(filters: filters)
+
+        // Fetch stored statuses
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch stored statuses for Site \(siteID): \(error)")
+        }
+
+        let allowedStatuses = statusResultsController.fetchedObjects.map { $0 }
+
+        let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             self?.filters = filters
+            let statuses = (filters.orderStatus ?? []).map { $0.rawValue }.joined(separator: ",")
+            let dateRange = filters.dateRange?.analyticsDescription ?? ""
+            ServiceLocator.analytics.track(.ordersListFilter,
+                                           withProperties: ["status": statuses,
+                                                            "date_range": dateRange])
         }, onClearAction: {
         }, onDismissAction: {
         })
         present(filterOrderListViewController, animated: true, completion: nil)
+    }
+
+    /// This is to update the order detail in split view
+    ///
+    private func handleSwitchingDetails(viewModel: OrderDetailsViewModel?) {
+        guard let viewModel = viewModel else {
+            let emptyStateViewController = EmptyStateViewController(style: .basic)
+            let config = EmptyStateViewController.Config.simple(
+                message: .init(string: Localization.emptyOrderDetails),
+                image: .emptySearchResultsImage
+            )
+            emptyStateViewController.configure(config)
+            splitViewController?.showDetailViewController(UINavigationController(rootViewController: emptyStateViewController), sender: nil)
+            return
+        }
+
+        let orderDetailsViewController = OrderDetailsViewController(viewModel: viewModel)
+        let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
+
+        splitViewController?.showDetailViewController(orderDetailsNavigationController, sender: nil)
     }
 }
 
@@ -162,24 +222,19 @@ private extension OrdersRootViewController {
 
     /// Sets navigation buttons.
     /// Search: Is always present.
-    /// Simple Payments: Depends  on the store inPersonPayments state.
+    /// Add: Always present.
     ///
-    func configureNavigationButtons(isOrderCreationExperimentalToggleEnabled: Bool) {
-        let shouldShowSimplePaymentsButton = inPersonPaymentsUseCase.state == .completed
-        let buttons: [UIBarButtonItem?] = [
-            createSearchBarButtonItem(),
-            createAddOrderItem(isOrderCreationEnabled: isOrderCreationExperimentalToggleEnabled, shouldShowSimplePaymentsButton: shouldShowSimplePaymentsButton)
+    func configureNavigationButtons() {
+        let buttons: [UIBarButtonItem] = [
+            createAddOrderItem(),
+            createSearchBarButtonItem()
         ]
-        navigationItem.rightBarButtonItems = buttons.compactMap { $0 }
+        navigationItem.rightBarButtonItems = buttons
     }
 
     func configureFiltersBar() {
         // Display the filtered orders bar
-        // if the feature flag is enabled
-        let isOrderListFiltersEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderListFilters)
-        if isOrderListFiltersEnabled {
-            stackView.addArrangedSubview(filtersBar)
-        }
+        stackView.addArrangedSubview(filtersBar)
         filtersBar.onAction = { [weak self] in
             self?.filterButtonTapped()
         }
@@ -187,15 +242,13 @@ private extension OrdersRootViewController {
 
     func configureChildViewController() {
         // Configure large title using the `hiddenScrollView` trick.
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
-            hiddenScrollView.configureForLargeTitleWorkaround()
-            // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
-            view.addSubview(hiddenScrollView)
-            view.sendSubviewToBack(hiddenScrollView)
-            hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
-            view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
-            ordersViewController.delegate = self
-        }
+        hiddenScrollView.configureForLargeTitleWorkaround()
+        // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
+        view.addSubview(hiddenScrollView)
+        view.sendSubviewToBack(hiddenScrollView)
+        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+        ordersViewController.delegate = self
 
         // Add contentView to stackview
         let contentView = ordersViewController.view!
@@ -204,33 +257,32 @@ private extension OrdersRootViewController {
         ordersViewController.didMove(toParent: self)
     }
 
-    /// Observes the store `InPersonPayments` state and reconfigure navigation buttons appropriately.
+    /// Connect hooks on `ResultsController` and query cached data.
+    /// This is useful for stay up to date with the remote statuses, resetting the filters if one of the local status filters was deleted remotely.
     ///
-    func observeInPersonPaymentsStoreState() {
-        inPersonPaymentsUseCase.$state
-            .removeDuplicates()
-            .sink { [weak self] _ in
-                self?.fetchExperimentalTogglesAndConfigureNavigationButtons()
-            }
-            .store(in: &subscriptions)
-        inPersonPaymentsUseCase.refresh()
+    func configureStatusResultsController() {
+        statusResultsController.onDidChangeObject = { [weak self] (updatedOrdersStatus, _, _, _) in
+            guard let self = self else { return }
+            self.resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
+        }
+
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch stored order statuses for Site \(siteID): \(error)")
+        }
+        resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: statusResultsController.fetchedObjects)
     }
 
-    /// Fetches the latest values of order-related experimental feature toggles and re configures navigation buttons.
+    /// If the current applied status filters does not match the existing status filters fetched from API, we reset them.
     ///
-    func fetchExperimentalTogglesAndConfigureNavigationButtons() {
-        let group = DispatchGroup()
-        var isOrderCreationEnabled = false
-
-        group.enter()
-        let orderCreationAction = AppSettingsAction.loadOrderCreationSwitchState { result in
-            isOrderCreationEnabled = (try? result.get()) ?? false
-            group.leave()
-        }
-        ServiceLocator.stores.dispatch(orderCreationAction)
-
-        group.notify(queue: .main) { [weak self] in
-            self?.configureNavigationButtons(isOrderCreationExperimentalToggleEnabled: isOrderCreationEnabled)
+    func resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: [OrderStatus]) {
+        guard let storedOrderFilters = filters.orderStatus else { return }
+        for storedOrderFilter in storedOrderFilters {
+            if !orderStatuses.map({$0.status}).contains(storedOrderFilter) {
+                clearFilters()
+                break
+            }
         }
     }
 }
@@ -260,9 +312,10 @@ private extension OrdersRootViewController {
                 self?.filters = FilterOrderListViewModel.Filters(orderStatus: settings.orderStatusesFilter,
                                                                  dateRange: settings.dateRangeFilter,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
-            case .failure:
-                break
+            case .failure(let error):
+                print("It was not possible to sync local orders settings: \(String(describing: error))")
             }
+            onCompletion(result)
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -300,59 +353,55 @@ private extension OrdersRootViewController {
 
     /// Create a `UIBarButtonItem` to be used as a way to create a new order.
     ///
-    func createAddOrderItem(isOrderCreationEnabled: Bool, shouldShowSimplePaymentsButton: Bool) -> UIBarButtonItem? {
-        self.isOrderCreationEnabled = isOrderCreationEnabled
-        self.shouldShowSimplePaymentsButton = shouldShowSimplePaymentsButton
-
+    func createAddOrderItem() -> UIBarButtonItem {
         let button = UIBarButtonItem(image: .plusBarButtonItemImage,
                                      style: .plain,
                                      target: self,
                                      action: #selector(presentOrderCreationFlow(sender:)))
         button.accessibilityTraits = .button
-
-        switch (isOrderCreationEnabled, shouldShowSimplePaymentsButton) {
-        case (false, false):
-            return nil
-        case (true, true):
-            button.accessibilityLabel = NSLocalizedString("Choose new order type", comment: "Opens action sheet to choose a type of a new order")
-            button.accessibilityIdentifier = "new-order-type-sheet-button"
-        case (true, false):
-            button.accessibilityLabel = NSLocalizedString("Add a new order", comment: "Navigates to a screen to create a full manual order")
-            button.accessibilityIdentifier = "full-order-add-button"
-        case (false, true):
-            button.accessibilityLabel = NSLocalizedString("Add simple payments order", comment: "Navigates to a screen to create a simple payments order")
-            button.accessibilityIdentifier = "simple-payments-add-button"
-        }
+        button.accessibilityLabel = NSLocalizedString("Choose new order type", comment: "Opens action sheet to choose a type of a new order")
+        button.accessibilityIdentifier = "new-order-type-sheet-button"
         return button
     }
 
-    /// Presents Order Creation or Simple Payments flows.
+    /// Presents the Order Creation flow.
     ///
     @objc func presentOrderCreationFlow(sender: UIBarButtonItem) {
         guard let navigationController = navigationController else {
             return
         }
 
-        let coordinatingController = AddOrderCoordinator(siteID: siteID,
-                                                         isOrderCreationEnabled: isOrderCreationEnabled,
-                                                         shouldShowSimplePaymentsButton: shouldShowSimplePaymentsButton,
-                                                         sourceBarButtonItem: sender,
-                                                         sourceNavigationController: navigationController)
-        coordinatingController.onOrderCreated = { [weak self] order in
+        let viewModel = EditableOrderViewModel(siteID: siteID)
+        viewModel.onFinished = { [weak self] order in
             guard let self = self else { return }
 
             self.dismiss(animated: true) {
                 self.navigateToOrderDetail(order)
             }
         }
-        coordinatingController.start()
+
+        let viewController = OrderFormHostingController(viewModel: viewModel)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
+            navigationController.present(newOrderNavigationController, animated: true)
+        } else {
+            viewController.hidesBottomBarWhenPushed = true
+            navigationController.pushViewController(viewController, animated: true)
+        }
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
+        orderDurationRecorder.startRecording()
     }
 
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
     private func navigateToOrderDetail(_ order: Order) {
-        guard let orderViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else { return }
-        orderViewController.viewModel = OrderDetailsViewModel(order: order)
+        let viewModel = OrderDetailsViewModel(order: order)
+        guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+            return handleSwitchingDetails(viewModel: viewModel)
+        }
+
+        let orderViewController = OrderDetailsViewController(viewModel: viewModel)
 
         // Cleanup navigation (remove new order flow views) before navigating to order details
         if let navigationController = navigationController, let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {
@@ -362,7 +411,7 @@ private extension OrdersRootViewController {
             show(orderViewController, sender: self)
         }
 
-        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID, "status": order.status.rawValue])
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
     }
 }
 
@@ -370,15 +419,13 @@ private extension OrdersRootViewController {
 private extension OrdersRootViewController {
     enum Localization {
         static let defaultOrderListTitle = NSLocalizedString("Orders", comment: "The title of the Orders tab.")
-        static let allOrdersEmptyStateMessage =
-        NSLocalizedString("Waiting for your first order",
-                          comment: "The message shown in the Orders → All Orders tab if the list is empty.")
         static let accessibilityLabelSearchOrders = NSLocalizedString("Search orders", comment: "Search Orders")
         static let accessibilityHintSearchOrders = NSLocalizedString(
             "Retrieves a list of orders that contain a given keyword.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
         )
-        static let accessibilityLabelAddSimplePayment = NSLocalizedString("Add simple payments order",
-                                                                          comment: "Navigates to a screen to create a simple payments order")
+
+        static let emptyOrderDetails = NSLocalizedString("No order selected",
+                                                         comment: "Message on the detail view of the Orders tab before any order is selected")
     }
 }

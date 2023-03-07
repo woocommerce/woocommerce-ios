@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--Warning: Auto-generated file, do not edit.-->
+<plist version="1.0">
+  <dict>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>האפליקציה הזו משתמשת ב-Bluetooth כדי להתחבר לקוראי הכרטיסים הנתמכים.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>נדרשת גישה ל-Bluetooth כדי להתחבר לקוראי הכרטיסים הנתמכים.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>כדי לצלם תמונות או סרטוני וידאו להוספה למוצרים שלך, לסרוק ברקוד ל-SKU של מוצר או לכרטיסטי תמיכה.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>נדרשת גישה למיקום כדי לקבל תשלומים.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>כדי לשמור תמונות מהמצלמה לצורך תמונות של מוצרים, או כדי להוסיף תמונות או סרטוני וידאו למוצרים או לכרטיסי תמיכה.</string>
+  </dict>
+</plist>

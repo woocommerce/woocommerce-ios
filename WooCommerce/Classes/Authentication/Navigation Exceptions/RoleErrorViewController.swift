@@ -5,6 +5,8 @@ import WordPressAuthenticator
 /// RoleErrorOutput enables communication from the view model to the view controller.
 /// Note that it's important for the view model to weakly retain the view controller.
 protocol RoleErrorOutput: AnyObject {
+    func updatePrimaryButtonState(loading: Bool)
+
     /// Updates title and subtitle label text with latest content.
     func refreshTitleLabels()
 
@@ -26,7 +28,7 @@ class RoleErrorViewController: UIViewController {
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var linkButton: UIButton!
 
-    @IBOutlet weak var primaryActionButton: UIButton!
+    @IBOutlet weak var primaryActionButton: ButtonActivityIndicator!
     @IBOutlet weak var secondaryActionButton: UIButton!
 
     // MARK: Properties
@@ -111,6 +113,7 @@ class RoleErrorViewController: UIViewController {
 
     func configurePrimaryActionButton() {
         primaryActionButton.applyPrimaryButtonStyle()
+        primaryActionButton.indicator.color = .white
         primaryActionButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
         primaryActionButton.on(.touchUpInside) { [weak self] _ in
             self?.viewModel.didTapPrimaryButton()
@@ -170,6 +173,14 @@ class RoleErrorViewController: UIViewController {
 // MARK: - RoleErrorOutput
 
 extension RoleErrorViewController: RoleErrorOutput {
+    func updatePrimaryButtonState(loading: Bool) {
+        if loading {
+            primaryActionButton.showActivityIndicator()
+        } else {
+            primaryActionButton.hideActivityIndicator()
+        }
+    }
+
     func refreshTitleLabels() {
         // these are the only components that may change on runtime, e.g. the role changed
         // to something else, but still incorrect; or the user updated their display name.

@@ -1,0 +1,4 @@
+{
+    "error": "blog_name_only_lowercase_letters_and_numbers",
+    "message": "Site names can only contain lowercase letters (a-z) and numbers."
+}

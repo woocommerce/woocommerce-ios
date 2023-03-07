@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension CardReader {
@@ -40,3 +41,4 @@ protocol StripeCardReader {
 
 
 extension Reader: StripeCardReader { }
+#endif

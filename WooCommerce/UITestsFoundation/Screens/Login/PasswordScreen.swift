@@ -1,51 +1,52 @@
+import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let navBar = "WordPress.PasswordView"
-    static let passwordTextField = "Password"
-    static let continueButton = "Continue Button"
-    static let errorLabel = "Password Error"
-}
+public final class PasswordScreen: ScreenObject {
 
-public final class PasswordScreen: BaseScreen {
-    private let navBar: XCUIElement
-    private let passwordTextField: XCUIElement
-    private let continueButton: XCUIElement
-
-    init() {
-        let app = XCUIApplication()
-        navBar = app.navigationBars[ElementStringIDs.navBar]
-        passwordTextField = app.secureTextFields[ElementStringIDs.passwordTextField]
-        continueButton = app.buttons[ElementStringIDs.continueButton]
-
-        super.init(element: passwordTextField)
+    private let passwordFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.secureTextFields["Password"]
     }
 
-    public func proceedWith(password: String) -> LoginEpilogueScreen {
-        _ = tryProceed(password: password)
-
-        return LoginEpilogueScreen()
+    private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Continue Button"]
     }
 
-    public func tryProceed(password: String) -> PasswordScreen {
-        passwordTextField.tap()
-        passwordTextField.typeText(password)
+    private let passwordErrorLabelGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells["Password Error"]
+    }
+
+    private var passwordField: XCUIElement { passwordFieldGetter(app) }
+    private var continueButton: XCUIElement { continueButtonGetter(app) }
+    private var passwordErrorLabel: XCUIElement { passwordErrorLabelGetter(app) }
+
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                passwordFieldGetter,
+                continueButtonGetter
+            ],
+            app: app
+        )
+    }
+
+    public func proceedWith(password: String) throws {
+        _ = try tryProceed(password: password)
+    }
+
+    public func tryProceed(password: String) throws -> PasswordScreen {
+        passwordField.enterText(text: password)
         continueButton.tap()
         if continueButton.exists && !continueButton.isHittable {
             waitFor(element: continueButton, predicate: "isEnabled == true")
         }
+
         return self
     }
 
-    public func verifyLoginError() -> PasswordScreen {
-        let errorLabel = app.cells[ElementStringIDs.errorLabel]
-        _ = errorLabel.waitForExistence(timeout: 2)
+    public func verifyLoginError() throws -> PasswordScreen {
+        _ = passwordErrorLabel.waitForExistence(timeout: 2)
+        XCTAssertTrue(passwordErrorLabel.exists)
 
-        XCTAssertTrue(errorLabel.exists)
         return self
-    }
-
-    static func isLoaded() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.continueButton].exists
     }
 }

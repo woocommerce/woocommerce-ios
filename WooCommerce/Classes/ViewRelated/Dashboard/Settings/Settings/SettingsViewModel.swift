@@ -38,6 +38,14 @@ protocol SettingsViewModelActionsHandler {
     /// Presenter (SettingsViewController in this case) is responsible for calling this method when store picker is dismissed.
     ///
     func onStorePickerDismiss()
+
+    /// Reloads settings if the site is no longer Jetpack CP.
+    ///
+    func onJetpackInstallDismiss()
+
+    /// Reloads settings. This can be used to show or hide content depending on their visibility logic.
+    ///
+    func reloadSettings()
 }
 
 protocol SettingsViewModelInput: AnyObject {
@@ -93,13 +101,20 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
+    private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
+
+    /// Reference to the Zendesk shared instance
+    ///
+    private let zendeskShared: ZendeskManagerProtocol = ZendeskProvider.shared
 
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker()) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
+        self.appleIDCredentialChecker = appleIDCredentialChecker
 
         /// Initialize Sites Results Controller
         ///
@@ -116,6 +131,18 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         } else {
             paymentGatewayAccountsResultsController = nil
         }
+
+        /// Synchronize system plugins for the WooCommerce plugin version row
+        ///
+        if let siteID = stores.sessionManager.defaultSite?.siteID {
+            let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID, onCompletion: { _ in })
+            stores.dispatch(action)
+        }
+
+        /// Fetch System Status Report from Zendesk
+        /// so it will be ready to be attached to a a support request when needed
+        ///
+        zendeskShared.fetchSystemStatusReport()
     }
 
     /// Sets up the view model and loads the settings.
@@ -140,16 +167,25 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         loadSites()
         reloadSettings()
     }
-}
 
-private extension SettingsViewModel {
+    /// Reloads settings if the site is no longer Jetpack CP.
+    ///
+    func onJetpackInstallDismiss() {
+        guard stores.sessionManager.defaultSite?.isJetpackCPConnected == false else {
+            return
+        }
+        reloadSettings()
+    }
+
     /// Reload the sections and refresh the view (presenter)
     ///
     func reloadSettings() {
         configureSections()
         presenter?.refreshViewContent()
     }
+}
 
+private extension SettingsViewModel {
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
             guard let self = self else { return }
@@ -168,12 +204,20 @@ private extension SettingsViewModel {
     }
 
     func configureSections() {
-        // Selected Store
-        let selectedStoreSection: Section = {
-            let storeRows: [Row] = sites.count > 1 ?
-                [.selectedStore, .switchStore] : [.selectedStore]
-            return Section(title: Localization.selectedStoreTitle,
-                           rows: storeRows,
+        let configureSection: Section? = {
+            var rows: [Row] = []
+
+            if featureFlagService.isFeatureFlagEnabled(.domainSettings)
+                && stores.sessionManager.defaultSite?.isWordPressComStore == true
+                && stores.sessionManager.defaultRoles.contains(.administrator) {
+                rows.append(.domain)
+            }
+
+            guard rows.isNotEmpty else {
+                return nil
+            }
+            return Section(title: Localization.configureTitle,
+                           rows: rows,
                            footerHeight: UITableView.automaticDimension)
         }()
 
@@ -186,19 +230,25 @@ private extension SettingsViewModel {
             }
 
             return Section(title: Localization.pluginsTitle,
-                           rows: [.plugins],
+                           rows: [.plugins, .woocommerceDetails],
                            footerHeight: UITableView.automaticDimension)
         }()
 
         // Store settings
-        let storeSettingsSection: Section = {
-            let rows: [Row]
-            if stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
-                featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
-                rows = [.inPersonPayments, .installJetpack]
-            } else {
-                rows = [.inPersonPayments]
+        let storeSettingsSection: Section? = {
+            var rows: [Row] = []
+
+            let site = stores.sessionManager.defaultSite
+            if site?.isJetpackCPConnected == true ||
+                (site?.isNonJetpackSite == true &&
+                 featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
+                rows.append(.installJetpack)
             }
+
+            guard rows.isNotEmpty else {
+                return nil
+            }
+
             return Section(title: Localization.storeSettingsTitle,
                            rows: rows,
                            footerHeight: UITableView.automaticDimension)
@@ -227,9 +277,9 @@ private extension SettingsViewModel {
             let rows: [Row]
             // Show the whats new row only there is a non-nil announcement available.
             if announcement != nil {
-                rows = [.about, .whatsNew, .licenses]
+                rows = [.about, .whatsNew]
             } else {
-                rows = [.about, .licenses]
+                rows = [.about]
             }
             return Section(title: Localization.aboutTheAppTitle,
                            rows: rows,
@@ -249,25 +299,42 @@ private extension SettingsViewModel {
                            footerHeight: CGFloat.leastNonzeroMagnitude)
         }()
 
+        // Close account
+        let closeAccountSection: Section? = {
+            // Do not show the Close Account CTA when authenticated with application password
+            guard stores.isAuthenticatedWithoutWPCom == false else {
+                return nil
+            }
+            guard appleIDCredentialChecker.hasAppleUserID()
+                    || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+                    || featureFlagService.isFeatureFlagEnabled(.storeCreationM2) else {
+                return nil
+            }
+            return Section(title: nil,
+                           rows: [.closeAccount],
+                           footerHeight: CGFloat.leastNonzeroMagnitude)
+        }()
+
         // Logout
         let logoutSection = Section(title: nil,
                                     rows: [.logout],
                                     footerHeight: CGFloat.leastNonzeroMagnitude)
 
         sections = [
-            selectedStoreSection,
+            configureSection,
             pluginsSection,
             storeSettingsSection,
             helpAndFeedbackSection,
             appSettingsSection,
             aboutTheAppSection,
             otherSection,
+            closeAccountSection,
             logoutSection
         ]
         .compactMap { $0 }
     }
 
-    /// Ask the PaymentGatewayAccountStore to loadAccounts from the network and update storage
+    /// Ask the CardPresentPaymentStore to loadAccounts from the network and update storage
     ///
     func loadPaymentGatewayAccounts() {
         guard let siteID = stores.sessionManager.defaultSite?.siteID else {
@@ -276,7 +343,7 @@ private extension SettingsViewModel {
 
         /// No need for a completion here. We will be notified of storage changes in `onDidChangeContent`
         ///
-        let action = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) {_ in}
+        let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) {_ in}
         stores.dispatch(action)
     }
 
@@ -324,10 +391,9 @@ private extension SettingsViewModel {
 //
 private extension SettingsViewModel {
     enum Localization {
-        static let selectedStoreTitle = NSLocalizedString(
-            "Selected Store",
-            comment: "My Store > Settings > Selected Store information section. " +
-                "This is the heading listed above the information row that displays the store website and their username."
+        static let configureTitle = NSLocalizedString(
+            "Configure",
+            comment: "My Store > Settings > Configure section title"
         ).uppercased()
 
         static let pluginsTitle = NSLocalizedString(

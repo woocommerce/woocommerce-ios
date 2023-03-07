@@ -1,4 +1,5 @@
 import Foundation
+import UniformTypeIdentifiers
 import MobileCoreServices
 
 /// Available options for an image export.
@@ -75,7 +76,7 @@ final class MediaImageExporter: MediaExporter {
                              typeHint: String?,
                              onCompletion: @escaping MediaExportCompletion) {
         do {
-            let hint = typeHint ?? kUTTypeJPEG as String
+            let hint = typeHint ?? UTType.jpeg.identifier
             let sourceOptions: [String: Any] = [kCGImageSourceTypeIdentifierHint as String: hint as CFString]
             guard let source = CGImageSourceCreateWithData(data as CFData, sourceOptions as CFDictionary) else {
                 throw ImageExportError.imageSourceCreationWithDataFailed

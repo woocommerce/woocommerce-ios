@@ -6,14 +6,19 @@ import Foundation
 //
 extension UserDefaults {
     enum Key: String {
+        case defaultCredentialsType
         case defaultAccountID
         case defaultUsername
         case defaultSiteAddress
         case defaultStoreID
+        case defaultStoreName
+        case defaultStoreCurrencySettings
         case defaultAnonymousID
         case defaultRoles
         case deviceID
         case deviceToken
+        case errorLoginSiteAddress
+        case hasFinishedOnboarding
         case userOptedInAnalytics
         case userOptedInCrashLogging = "userOptedInCrashlytics"
         case versionOfLastRun
@@ -21,6 +26,12 @@ extension UserDefaults {
         case notificationsLastSeenTime
         case notificationsMarkAsReadCount
     }
+}
+
+extension UserDefaults {
+    /// User defaults instance ready to be shared between extensions of the same group.
+    ///
+    static let group = UserDefaults(suiteName: WooConstants.sharedUserDefaultsSuiteName)
 }
 
 

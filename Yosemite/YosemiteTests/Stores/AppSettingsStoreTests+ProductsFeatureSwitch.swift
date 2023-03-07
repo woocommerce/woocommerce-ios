@@ -17,6 +17,10 @@ final class AppSettingsStoreTests_ProductsFeatureSwitch: XCTestCase {
     ///
     private var fileStorage: MockInMemoryStorage!
 
+    /// Mock General Settings Storage: Load data in memory
+    ///
+    private var generalAppSettings: GeneralAppSettingsStorage!
+
     /// Test subject
     ///
     private var subject: AppSettingsStore!
@@ -38,13 +42,15 @@ final class AppSettingsStoreTests_ProductsFeatureSwitch: XCTestCase {
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         fileStorage = MockInMemoryStorage()
-        subject = AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage)
+        generalAppSettings = GeneralAppSettingsStorage(fileStorage: fileStorage)
+        subject = AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage, generalAppSettings: generalAppSettings)
     }
 
     override func tearDown() {
         dispatcher = nil
         storageManager = nil
         fileStorage = nil
+        generalAppSettings = nil
         subject = nil
         super.tearDown()
     }

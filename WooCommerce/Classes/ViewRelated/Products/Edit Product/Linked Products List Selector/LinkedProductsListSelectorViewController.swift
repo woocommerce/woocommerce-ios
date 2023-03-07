@@ -1,7 +1,7 @@
+import Combine
 import UIKit
 import WordPressUI
 import Yosemite
-import Observables
 
 /// Displays a paginated list of products given product IDs, with a CTA to add more products.
 final class LinkedProductsListSelectorViewController: UIViewController {
@@ -29,7 +29,7 @@ final class LinkedProductsListSelectorViewController: UIViewController {
             return PaginatedListSelectorViewController(viewProperties: viewProperties, dataSource: dataSource, onDismiss: { _ in })
     }()
 
-    private var cancellable: ObservationToken?
+    private var productIDsSubscription: AnyCancellable?
 
     // Completion callback
     //
@@ -76,16 +76,18 @@ private extension LinkedProductsListSelectorViewController {
         ServiceLocator.analytics.track(.connectedProductsList, withProperties: ["action": "add_tapped", "context": viewConfiguration.trackingContext])
 
         let excludedProductIDs = dataSource.linkedProductIDs + [productID]
-        let listSelector = ProductListSelectorViewController(excludedProductIDs: excludedProductIDs,
-                                                             siteID: siteID) { [weak self] selectedProductIDs in
-                                                                if selectedProductIDs.isNotEmpty,
-                                                                   let context = self?.viewConfiguration.trackingContext {
-                                                                    ServiceLocator.analytics.track(.connectedProductsList,
-                                                                                                   withProperties: ["action": "added", "context": context])
-                                                                }
-                                                                self?.dataSource.addProducts(selectedProductIDs)
-                                                                self?.navigationController?.popViewController(animated: true)
+        let selectorCompletion: (_ selectedProductIDs: [Int64]) -> Void = { [weak self] selectedProductIDs in
+            if selectedProductIDs.isNotEmpty,
+               let context = self?.viewConfiguration.trackingContext {
+                ServiceLocator.analytics.track(.connectedProductsList,
+                                               withProperties: ["action": "added", "context": context])
+            }
+            self?.dataSource.addProducts(selectedProductIDs)
+            self?.navigationController?.popViewController(animated: true)
         }
+        let listSelector: UIViewController = {
+            return ProductListSelectorViewController(excludedProductIDs: excludedProductIDs, siteID: siteID, onCompletion: selectorCompletion)
+        }()
         show(listSelector, sender: self)
     }
 
@@ -168,7 +170,7 @@ private extension LinkedProductsListSelectorViewController {
     }
 
     func observeLinkedProductIDs() {
-        cancellable = dataSource.productIDs.subscribe { [weak self] productIDs in
+        productIDsSubscription = dataSource.productIDs.sink { [weak self] productIDs in
             self?.paginatedListSelector.updateResultsController()
             self?.updateNavigationRightBarButtonItem()
         }

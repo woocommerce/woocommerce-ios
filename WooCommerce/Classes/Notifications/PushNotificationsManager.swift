@@ -1,9 +1,9 @@
+import Combine
 import Experiments
 import Foundation
 import UserNotifications
 import AutomatticTracks
 import Yosemite
-import Observables
 
 
 
@@ -18,22 +18,51 @@ final class PushNotificationsManager: PushNotesManager {
     /// An observable that emits values when the Remote Notifications are received while the app is
     /// in the foreground.
     ///
-    var foregroundNotifications: Observable<PushNotification> {
-        foregroundNotificationsSubject
+    var foregroundNotifications: AnyPublisher<PushNotification, Never> {
+        foregroundNotificationsSubject.eraseToAnyPublisher()
     }
 
     /// Mutable reference to `foregroundNotifications`.
-    private let foregroundNotificationsSubject = PublishSubject<PushNotification>()
+    private let foregroundNotificationsSubject = PassthroughSubject<PushNotification, Never>()
+
+    /// An observable that emits values when the user taps to view the in-app notification while the app is
+    /// in the foreground.
+    ///
+    var foregroundNotificationsToView: AnyPublisher<PushNotification, Never> {
+        foregroundNotificationsToViewSubject.eraseToAnyPublisher()
+    }
+
+    /// Mutable reference to `foregroundNotificationsToView`.
+    private let foregroundNotificationsToViewSubject = PassthroughSubject<PushNotification, Never>()
 
     /// An observable that emits values when a Remote Notification is received while the app is
     /// in inactive.
     ///
-    var inactiveNotifications: Observable<PushNotification> {
-        inactiveNotificationsSubject
+    var inactiveNotifications: AnyPublisher<PushNotification, Never> {
+        inactiveNotificationsSubject.eraseToAnyPublisher()
     }
 
     /// Mutable reference to `inactiveNotifications`
-    private let inactiveNotificationsSubject = PublishSubject<PushNotification>()
+    private let inactiveNotificationsSubject = PassthroughSubject<PushNotification, Never>()
+
+    /// An observable that emits values when a Remote Notification is received while the app is
+    /// in the background.
+    ///
+    var backgroundNotifications: AnyPublisher<PushNotification, Never> {
+        backgroundNotificationsSubject.eraseToAnyPublisher()
+    }
+
+    /// Mutable reference to `backgroundNotifications`
+    private let backgroundNotificationsSubject = PassthroughSubject<PushNotification, Never>()
+
+    /// An observable that emits values when a local notification is received.
+    ///
+    var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> {
+        localNotificationResponsesSubject.eraseToAnyPublisher()
+    }
+
+    /// Mutable reference to `localNotificationResponses`.
+    private let localNotificationResponsesSubject = PassthroughSubject<UNNotificationResponse, Never>()
 
     /// Returns the current Application's State
     ///
@@ -71,16 +100,12 @@ final class PushNotificationsManager: PushNotesManager {
         configuration.storesManager
     }
 
-    private let featureFlagService: FeatureFlagService
-
     /// Initializes the PushNotificationsManager.
     ///
     /// - Parameter configuration: PushNotificationsConfiguration Instance that should be used.
-    /// - Parameter featureFlagService: called for multi-store push notifications feature.
     ///
-    init(configuration: PushNotificationsConfiguration = .default, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(configuration: PushNotificationsConfiguration = .default) {
         self.configuration = configuration
-        self.featureFlagService = featureFlagService
     }
 }
 
@@ -89,20 +114,20 @@ final class PushNotificationsManager: PushNotesManager {
 //
 extension PushNotificationsManager {
 
-    /// Requests Authorization to receive Push Notifications, *only* when the current Status is not determined.
+    /// Requests Authorization to receive Push Notifications, *only* when the current Status is not determined or provisional.
     ///
     /// - Parameter onCompletion: Closure to be executed on completion. Receives a Boolean indicating if we've got Push Permission.
     ///
-    func ensureAuthorizationIsRequested(onCompletion: ((Bool) -> Void)? = nil) {
+    func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool = false, onCompletion: ((Bool) -> Void)? = nil) {
         let nc = configuration.userNotificationsCenter
 
         nc.loadAuthorizationStatus(queue: .main) { status in
-            guard status == .notDetermined else {
+            guard status == .notDetermined || status == .provisional else {
                 onCompletion?(status == .authorized)
                 return
             }
 
-            nc.requestAuthorization(queue: .main) { allowed in
+            nc.requestAuthorization(queue: .main, includesProvisionalAuth: includesProvisionalAuth) { allowed in
                 let stat: WooAnalyticsStat = allowed ? .pushNotificationOSAlertAllowed : .pushNotificationOSAlertDenied
                 ServiceLocator.analytics.track(stat)
 
@@ -149,7 +174,7 @@ extension PushNotificationsManager {
             return
         }
         let action = NotificationCountAction.reset(siteID: siteID, type: type) { [weak self] in
-            self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
+            self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: false)
         }
         stores.dispatch(action)
     }
@@ -168,7 +193,7 @@ extension PushNotificationsManager {
         guard let siteID = siteID else {
             return
         }
-        loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: nil)
+        loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: nil, postNotifications: true)
     }
 
     /// Registers the Device Token agains WordPress.com backend, if there's a default account.
@@ -188,7 +213,7 @@ extension PushNotificationsManager {
 
         deviceToken = newToken
 
-        // Register in Support's Infrasturcture
+        // Register in Support's Infrastructure
         registerSupportDevice(with: newToken)
 
         // Register in the Dotcom's Infrastructure
@@ -214,46 +239,128 @@ extension PushNotificationsManager {
         unregisterForRemoteNotifications()
     }
 
-
-    /// Handles a Remote Push Notification Payload. On completion the `completionHandler` will be executed.
+    /// Handles a Notification while in Foreground Mode. Currently, only remote notifications are handled in the foreground.
     ///
-    func handleNotification(_ userInfo: [AnyHashable: Any],
-                            onBadgeUpdateCompletion: @escaping () -> Void,
-                            completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        DDLogVerbose("📱 Push Notification Received: \n\(userInfo)\n")
+    /// - Parameters:
+    ///     - userInfo: The Notification's Payload
+    ///     - completionHandler: A callback, to be executed on completion
+    ///
+    /// - Returns: True when handled. False otherwise
+    ///
+    @MainActor
+    func handleNotificationInTheForeground(_ notification: UNNotification) async -> UNNotificationPresentationOptions {
+        let content = notification.request.content
+        guard applicationState == .active, content.isRemoteNotification else {
+            // Local notifications are currently not handled when the app is in the foreground.
+            return UNNotificationPresentationOptions(rawValue: 0)
+        }
 
-        // Badge: Update
-        if let typeString = userInfo.string(forKey: APNSKey.type),
-            let type = Note.Kind(rawValue: typeString),
-            let siteID = siteID,
-            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
-            incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
-                self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
-                onBadgeUpdateCompletion()
+        handleRemoteNotificationInAllAppStates(content.userInfo)
+
+        if let foregroundNotification = PushNotification.from(userInfo: content.userInfo) {
+            configuration.application
+                .presentInAppNotification(title: foregroundNotification.title,
+                                          subtitle: foregroundNotification.subtitle,
+                                          message: foregroundNotification.message,
+                                          actionTitle: Localization.viewInAppNotification) { [weak self] in
+                    guard let self = self else { return }
+                    self.presentDetails(for: foregroundNotification)
+                    self.foregroundNotificationsToViewSubject.send(foregroundNotification)
+                    ServiceLocator.analytics.track(.viewInAppPushNotificationPressed,
+                                                   withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
+                }
+
+            foregroundNotificationsSubject.send(foregroundNotification)
+        }
+
+        _ = await synchronizeNotifications()
+        return UNNotificationPresentationOptions(rawValue: 0)
+    }
+
+    @MainActor
+    func handleUserResponseToNotification(_ response: UNNotificationResponse) async {
+        // Remote notification response is handled separately.
+        if let notification = PushNotification.from(userInfo: response.notification.request.content.userInfo) {
+            handleRemoteNotificationInAllAppStates(response.notification.request.content.userInfo)
+            await handleInactiveRemoteNotification(notification: notification)
+        } else {
+            localNotificationResponsesSubject.send(response)
+        }
+    }
+
+    /// Handles a remote notification while the app is in the background.
+    ///
+    /// - Parameter userInfo: The notification's payload.
+    /// - Returns: Whether there is any data fetched in the background.
+    @MainActor
+    func handleRemoteNotificationInTheBackground(userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
+        guard applicationState == .background, // Proceeds only if the app is in background.
+              let _ = userInfo[APNSKey.identifier] // Ensures that we are only processing a remote notification.
+        else {
+            return .noData
+        }
+
+        handleRemoteNotificationInAllAppStates(userInfo)
+
+        if let notification = PushNotification.from(userInfo: userInfo) {
+            backgroundNotificationsSubject.send(notification)
+        }
+
+        return await synchronizeNotifications()
+    }
+
+    func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) {
+        Task {
+            // TODO: 7318 - tech debt - replace `UNUserNotificationCenter.current()` with
+            // `configuration.userNotificationsCenter` for unit testing
+            let center = UNUserNotificationCenter.current()
+            let settings = await center.notificationSettings()
+            guard settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional else {
+                DDLogError("⛔️ Unable to request a local notification due to invalid authorization status: \(settings.authorizationStatus)")
+                return
+            }
+
+            let content = UNMutableNotificationContent()
+            content.title = notification.title
+            content.body = notification.body
+
+            if let categoryAndActions = notification.actions {
+                let categoryIdentifier = categoryAndActions.category.rawValue
+                let actions = categoryAndActions.actions.map {
+                    UNNotificationAction(identifier: $0.rawValue,
+                                         title: $0.title,
+                                         options: .foreground)
+                }
+                let category = UNNotificationCategory(identifier: categoryIdentifier,
+                                                      actions: actions,
+                                                      intentIdentifiers: [],
+                                                      hiddenPreviewsBodyPlaceholder: nil,
+                                                      categorySummaryFormat: nil,
+                                                      // `customDismissAction` option is required for the dismiss action callback in
+                                                      // `UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:)`
+                                                      // with action identifier `UNNotificationDismissActionIdentifier`.
+                                                      options: .customDismissAction)
+                center.setNotificationCategories([category])
+                content.categoryIdentifier = categoryIdentifier
+            }
+
+            let request = UNNotificationRequest(identifier: notification.scenario.rawValue,
+                                                content: content,
+                                                trigger: trigger)
+            do {
+                try await center.add(request)
+                ServiceLocator.analytics.track(.loginLocalNotificationScheduled, withProperties: [
+                    "type": notification.scenario.rawValue
+                ])
+            } catch {
+                DDLogError("⛔️ Unable to request a local notification: \(error)")
             }
         }
+    }
 
-        // Badge: Reset
-        guard userInfo.string(forKey: APNSKey.type) != PushType.badgeReset else {
-            return
-        }
-
-        // Analytics
-        trackNotification(with: userInfo)
-
-        // Handling!
-        let handlers = [
-            handleSupportNotification,
-            handleForegroundNotification,
-            handleInactiveNotification,
-            handleBackgroundNotification
-        ]
-
-        for handler in handlers {
-            if handler(userInfo, completionHandler) {
-                break
-            }
-        }
+    func cancelLocalNotification(scenarios: [LocalNotification.Scenario]) {
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: scenarios.map { $0.rawValue })
     }
 }
 
@@ -265,9 +372,11 @@ private extension PushNotificationsManager {
         stores.dispatch(action)
     }
 
-    func loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: Int64, type: Note.Kind?) {
+    func loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: Int64, type: Note.Kind?, postNotifications: Bool) {
         loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID)
-        postBadgeReloadNotifications(type: type)
+        if postNotifications {
+            postBadgeReloadNotifications(type: type)
+        }
     }
 
     func loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: Int64) {
@@ -317,107 +426,89 @@ private extension PushNotificationsManager {
     ///
     /// - Returns: True when handled. False otherwise
     ///
-    func handleSupportNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
-
+    func handleSupportNotification(_ userInfo: [AnyHashable: Any]) -> Bool {
         guard userInfo.string(forKey: APNSKey.type) == PushType.zendesk else {
-                return false
+            return false
         }
 
-        self.configuration.supportManager.pushNotificationReceived()
+        configuration.supportManager.pushNotificationReceived()
 
         trackNotification(with: userInfo)
 
         if applicationState == .inactive {
-            self.configuration.supportManager.displaySupportRequest(using: userInfo)
+            configuration.supportManager.displaySupportRequest(using: userInfo)
         }
-
-        completionHandler(.newData)
-
         return true
     }
 
-
-    /// Handles a Notification while in Foreground Mode
+    /// Handles a Remote Push Notification Payload regardless of the application state.
     ///
-    /// - Parameters:
-    ///     - userInfo: The Notification's Payload
-    ///     - completionHandler: A callback, to be executed on completion
-    ///
-    /// - Returns: True when handled. False otherwise
-    ///
-    func handleForegroundNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
-        guard applicationState == .active, let _ = userInfo[APNSKey.identifier] else {
-            return false
-        }
+    func handleRemoteNotificationInAllAppStates(_ userInfo: [AnyHashable: Any]) {
+        DDLogVerbose("📱 Push Notification Received: \n\(userInfo)\n")
 
-        let pushNotificationsForAllStoresEnabled = featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores)
-        if let foregroundNotification = PushNotification.from(userInfo: userInfo,
-                                                              pushNotificationsForAllStoresEnabled: pushNotificationsForAllStoresEnabled) {
-            configuration.application
-                .presentInAppNotification(title: foregroundNotification.title,
-                                          subtitle: foregroundNotification.subtitle,
-                                          message: foregroundNotification.message)
-
-            foregroundNotificationsSubject.send(foregroundNotification)
-        }
-
-        synchronizeNotifications(completionHandler: completionHandler)
-
-        return true
-    }
-
-
-    /// Handles a Notification while in Inactive Mode
-    ///
-    /// - Parameters:
-    ///     - userInfo: The Notification's Payload
-    ///     - completionHandler: A callback, to be executed on completion
-    ///
-    /// - Returns: True when handled. False otherwise
-    ///
-    func handleInactiveNotification(_ userInfo: [AnyHashable: Any], completionHandler: (UIBackgroundFetchResult) -> Void) -> Bool {
-        guard applicationState == .inactive else {
-            return false
-        }
-
-        DDLogVerbose("📱 Handling Notification in Inactive State")
-
-        let pushNotificationsForAllStoresEnabled = featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores)
-        if let notification = PushNotification.from(userInfo: userInfo,
-                                                    pushNotificationsForAllStoresEnabled: pushNotificationsForAllStoresEnabled) {
-
-            // Handling the product review notifications (`.comment`) has been moved to
-            // `ReviewsCoordinator`. All other push notification handling should be in a coordinator
-            // in the future too.
-            if notification.kind != .comment {
-                configuration.application.presentNotificationDetails(for: Int64(notification.noteID))
+        if let typeString = userInfo.string(forKey: APNSKey.type),
+           let type = Note.Kind(rawValue: typeString),
+           let siteID = siteID,
+           let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
+            // Badge: Update
+            incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
+                self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: true)
             }
 
-            inactiveNotificationsSubject.send(notification)
+            // Update related product when review notification is received
+            if type == .comment, let productID = userInfo[APNSKey.postID] as? Int64 {
+                updateProduct(productID, siteID: notificationSiteID)
+            }
         }
 
-        completionHandler(.newData)
+        // Badge: Reset
+        guard userInfo.string(forKey: APNSKey.type) != PushType.badgeReset else {
+            return
+        }
 
-        return true
+        // Analytics
+        trackNotification(with: userInfo)
+
+        // Handles support notification in different app states.
+        // Note: support notifications are currently not working - https://github.com/woocommerce/woocommerce-ios/issues/3776
+        _ = handleSupportNotification(userInfo)
     }
 
-
-    /// Handles a Notification while in Background Mode
+    /// Handles a remote notification while the app is inactive.
     ///
-    /// - Parameters:
-    ///     - userInfo: The Notification's Payload
-    ///     - completionHandler: A callback, to be executed on completion
-    ///
-    /// - Returns: True when handled. False otherwise
-    ///
-    func handleBackgroundNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
-        guard applicationState == .background, let _ = userInfo[APNSKey.identifier] else {
-            return false
+    /// - Parameter notification: Push notification content from a remote notification.
+    @MainActor
+    func handleInactiveRemoteNotification(notification: PushNotification) async {
+        guard applicationState == .inactive else {
+            return
         }
 
-        synchronizeNotifications(completionHandler: completionHandler)
+        DDLogVerbose("📱 Handling Remote Notification in Inactive State")
 
-        return true
+        presentDetails(for: notification)
+
+        inactiveNotificationsSubject.send(notification)
+    }
+
+    /// Reload related product when review notification is received
+    ///
+    func updateProduct(_ productID: Int64, siteID: Int64) {
+        let action = ProductAction.retrieveProduct(siteID: siteID,
+                                                   productID: productID) { _ in
+            // ResultsController<StorageProduct> will reload the Product List (ProductsViewController)
+        }
+        stores.dispatch(action)
+    }
+}
+
+private extension PushNotificationsManager {
+    func presentDetails(for notification: PushNotification) {
+        // Handling the product review notifications (`.comment`) has been moved to
+        // `ReviewsCoordinator`. All other push notification handling should be in a coordinator
+        // in the future too.
+        if notification.kind != .comment {
+            configuration.application.presentNotificationDetails(for: Int64(notification.noteID))
+        }
     }
 }
 
@@ -430,12 +521,10 @@ private extension PushNotificationsManager {
     ///
     func registerDotcomDevice(with deviceToken: String, defaultStoreID: Int64, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
         let device = APNSDevice(deviceToken: deviceToken)
-        let pushNotificationsForAllStoresEnabled = featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores)
         let action = NotificationAction.registerDevice(device: device,
                                                        applicationId: WooConstants.pushApplicationID,
                                                        applicationVersion: Bundle.main.version,
                                                        defaultStoreID: defaultStoreID,
-                                                       pushNotificationsForAllStoresEnabled: pushNotificationsForAllStoresEnabled,
                                                        onCompletion: onCompletion)
         stores.dispatch(action)
     }
@@ -503,8 +592,13 @@ private extension PushNotificationsManager {
             properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
         }
 
-        let event: WooAnalyticsStat = (applicationState == .background) ? .pushNotificationReceived : .pushNotificationAlertPressed
-        ServiceLocator.analytics.track(event, withProperties: properties)
+        switch applicationState {
+        case .inactive:
+            ServiceLocator.analytics.track(.pushNotificationAlertPressed, withProperties: properties)
+        default:
+            properties[AnalyticKey.appState] = applicationState.rawValue
+            ServiceLocator.analytics.track(.pushNotificationReceived, withProperties: properties)
+        }
     }
 }
 
@@ -515,43 +609,45 @@ private extension PushNotificationsManager {
 
     /// Synchronizes all of the Notifications. On success this method will always signal `.newData`, and `.noData` on error.
     ///
-    func synchronizeNotifications(completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        let action = NotificationAction.synchronizeNotifications { error in
-            DDLogInfo("📱 Finished Synchronizing Notifications!")
+    @MainActor
+    func synchronizeNotifications() async -> UIBackgroundFetchResult {
+        await withCheckedContinuation { continuation in
+            let action = NotificationAction.synchronizeNotifications { error in
+                DDLogInfo("📱 Finished Synchronizing Notifications!")
 
-            let result = (error == nil) ? UIBackgroundFetchResult.newData : .noData
-            completionHandler(result)
+                let result = (error == nil) ? UIBackgroundFetchResult.newData : .noData
+                continuation.resume(returning: result)
+            }
+
+            DDLogInfo("📱 Synchronizing Notifications in \(applicationState.description) State...")
+            configuration.storesManager.dispatch(action)
         }
-
-        DDLogInfo("📱 Synchronizing Notifications in \(applicationState.description) State...")
-        configuration.storesManager.dispatch(action)
     }
 }
 
 // MARK: - PushNotification Extension
 
 private extension PushNotification {
-    static func from(userInfo: [AnyHashable: Any], pushNotificationsForAllStoresEnabled: Bool) -> PushNotification? {
-        if pushNotificationsForAllStoresEnabled {
-            guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
-                  let alert = userInfo.dictionary(forKey: APNSKey.aps)?.dictionary(forKey: APNSKey.alert),
-                  let title = alert.string(forKey: APNSKey.alertTitle),
-                  let type = userInfo.string(forKey: APNSKey.type),
-                  let noteKind = Note.Kind(rawValue: type) else {
-                return nil
-            }
-            let subtitle = alert.string(forKey: APNSKey.alertSubtitle)
-            let message = alert.string(forKey: APNSKey.alertMessage)
-            return PushNotification(noteID: noteID, kind: noteKind, title: title, subtitle: subtitle, message: message)
-        } else {
-            guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
-                  let title = userInfo.dictionary(forKey: APNSKey.aps)?.string(forKey: APNSKey.alert),
-                  let type = userInfo.string(forKey: APNSKey.type),
-                  let noteKind = Note.Kind(rawValue: type) else {
-                return nil
-            }
-            return PushNotification(noteID: noteID, kind: noteKind, title: title, subtitle: nil, message: nil)
-        }
+    static func from(userInfo: [AnyHashable: Any]) -> PushNotification? {
+        guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
+              let siteID = userInfo.integer(forKey: APNSKey.siteID),
+              let alert = userInfo.dictionary(forKey: APNSKey.aps)?.dictionary(forKey: APNSKey.alert),
+              let title = alert.string(forKey: APNSKey.alertTitle),
+              let type = userInfo.string(forKey: APNSKey.type),
+              let noteKind = Note.Kind(rawValue: type) else {
+                  return nil
+              }
+        let subtitle = alert.string(forKey: APNSKey.alertSubtitle)
+        let message = alert.string(forKey: APNSKey.alertMessage)
+        return PushNotification(noteID: noteID, siteID: siteID, kind: noteKind, title: title, subtitle: subtitle, message: message)
+    }
+}
+
+// MARK: - UNNotificationContent Extension
+
+private extension UNNotificationContent {
+    var isRemoteNotification: Bool {
+        userInfo[APNSKey.identifier] != nil
     }
 }
 
@@ -577,6 +673,7 @@ private enum APNSKey {
     static let identifier = "note_id"
     static let type = "type"
     static let siteID = "blog"
+    static let postID = "post_id"
 }
 
 private enum AnalyticKey {
@@ -584,9 +681,16 @@ private enum AnalyticKey {
     static let type = "push_notification_type"
     static let token = "push_notification_token"
     static let fromSelectedSite = "is_from_selected_site"
+    static let appState = "app_state"
 }
 
 private enum PushType {
     static let badgeReset = "badge-reset"
     static let zendesk = "zendesk"
+}
+
+private extension PushNotificationsManager {
+    enum Localization {
+        static let viewInAppNotification = NSLocalizedString("View", comment: "Action title in an in-app notification to view more details.")
+    }
 }

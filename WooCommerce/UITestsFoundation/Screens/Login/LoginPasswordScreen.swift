@@ -1,52 +1,53 @@
+import ScreenObject
 import XCTest
 import XCUITestHelpers
 
-private struct ElementStringIDs {
-    static let passwordTextField = "Password"
-    static let loginButton = "Password Next Button"
-    static let errorLabel = "pswdErrorLabel"
-}
+public final class LoginPasswordScreen: ScreenObject {
 
-final class LoginPasswordScreen: BaseScreen {
-    private let passwordTextField: XCUIElement
-    private let loginButton: XCUIElement
-
-    init() {
-        passwordTextField = XCUIApplication().secureTextFields[ElementStringIDs.passwordTextField]
-        loginButton = XCUIApplication().buttons[ElementStringIDs.loginButton]
-        super.init(element: passwordTextField)
-
-        XCTAssert(passwordTextField.waitForExistence(timeout: 3))
+    private let passwordFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.secureTextFields["Password"]
     }
 
-    func proceedWith(password: String) -> LoginEpilogueScreen {
+    private let nextButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Password Next Button"]
+    }
+
+    private let passwordErrorLabel: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["pswdErrorLabel"]
+    }
+
+    private var passwordField: XCUIElement { passwordFieldGetter(app) }
+    private var nextButton: XCUIElement { nextButtonGetter(app) }
+    private var errorLabel: XCUIElement {passwordErrorLabel(app) }
+
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                passwordFieldGetter,
+                nextButtonGetter
+            ],
+            app: app
+        )
+    }
+
+    func proceedWith(password: String) throws -> LoginEpilogueScreen {
         _ = tryProceed(password: password)
 
-        return LoginEpilogueScreen()
+        return try LoginEpilogueScreen()
     }
 
     func tryProceed(password: String) -> LoginPasswordScreen {
-        XCTAssert(passwordTextField.waitForIsHittable(timeout: 3))
+        XCTAssert(passwordField.waitForIsHittable(timeout: 3))
+        passwordField.paste(text: password)
 
-        passwordTextField.paste(text: password)
-
-        XCTAssert(loginButton.waitForExistence(timeout: 3))
-        XCTAssert(loginButton.waitForIsHittable(timeout: 3))
-
-        loginButton.tap()
+        XCTAssert(nextButton.waitForIsHittable(timeout: 3))
+        nextButton.tap()
 
         return self
     }
 
     func verifyLoginError() -> LoginPasswordScreen {
-        let errorLabel = app.staticTexts[ElementStringIDs.errorLabel]
-        _ = errorLabel.waitForExistence(timeout: 2)
-
         XCTAssert(errorLabel.waitForExistence(timeout: 3))
         return self
-    }
-
-    static func isLoaded() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.loginButton].exists
     }
 }

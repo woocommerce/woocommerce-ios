@@ -5,7 +5,7 @@ import Foundation
 import Yosemite
 
 
-extension AggregateOrderItem {
+extension WooCommerce.AggregateOrderItem {
     func copy(
         productID: CopiableProp<Int64> = .copy,
         variationID: CopiableProp<Int64> = .copy,
@@ -16,7 +16,7 @@ extension AggregateOrderItem {
         total: NullableCopiableProp<NSDecimalNumber> = .copy,
         imageURL: NullableCopiableProp<URL> = .copy,
         attributes: CopiableProp<[OrderItemAttribute]> = .copy
-    ) -> AggregateOrderItem {
+    ) -> WooCommerce.AggregateOrderItem {
         let productID = productID ?? self.productID
         let variationID = variationID ?? self.variationID
         let name = name ?? self.name
@@ -27,7 +27,7 @@ extension AggregateOrderItem {
         let imageURL = imageURL ?? self.imageURL
         let attributes = attributes ?? self.attributes
 
-        return AggregateOrderItem(
+        return WooCommerce.AggregateOrderItem(
             productID: productID,
             variationID: variationID,
             name: name,
@@ -41,19 +41,19 @@ extension AggregateOrderItem {
     }
 }
 
-extension ShippingLabelSelectedRate {
+extension WooCommerce.ShippingLabelSelectedRate {
     func copy(
         packageID: CopiableProp<String> = .copy,
         rate: CopiableProp<ShippingLabelCarrierRate> = .copy,
         signatureRate: NullableCopiableProp<ShippingLabelCarrierRate> = .copy,
         adultSignatureRate: NullableCopiableProp<ShippingLabelCarrierRate> = .copy
-    ) -> ShippingLabelSelectedRate {
+    ) -> WooCommerce.ShippingLabelSelectedRate {
         let packageID = packageID ?? self.packageID
         let rate = rate ?? self.rate
         let signatureRate = signatureRate ?? self.signatureRate
         let adultSignatureRate = adultSignatureRate ?? self.adultSignatureRate
 
-        return ShippingLabelSelectedRate(
+        return WooCommerce.ShippingLabelSelectedRate(
             packageID: packageID,
             rate: rate,
             signatureRate: signatureRate,

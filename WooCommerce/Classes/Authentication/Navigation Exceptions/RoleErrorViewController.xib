@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -26,34 +27,34 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nK8-aP-YaK">
-                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                    <rect key="frame" x="0.0" y="48" width="414" height="814"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PjD-Kw-iD1" userLabel="Content View">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="818"/>
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="814"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pa8-3V-OTe" userLabel="Top Spacer View">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="169"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="160.5"/>
                                     <constraints>
                                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="8" id="lgm-jS-xft"/>
                                     </constraints>
                                 </view>
                                 <view contentMode="scaleToFill" verticalHuggingPriority="249" verticalCompressionResistancePriority="752" translatesAutoresizingMaskIntoConstraints="NO" id="U2J-WF-pcf" userLabel="Role Error View">
-                                    <rect key="frame" x="0.0" y="169" width="414" height="354.5"/>
+                                    <rect key="frame" x="0.0" y="160.5" width="414" height="367"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="xZF-VZ-vTL" userLabel="Content Stack View">
-                                            <rect key="frame" x="41" y="0.0" width="332" height="302.5"/>
+                                            <rect key="frame" x="41" y="0.0" width="332" height="311"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="LtB-cQ-hsK" userLabel="Top Label Stack View">
-                                                    <rect key="frame" x="0.0" y="0.0" width="332" height="31.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="332" height="36.5"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qti-dQ-ryI" userLabel="Name Label">
-                                                            <rect key="frame" x="0.0" y="0.0" width="332" height="17"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="332" height="20.5"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9kP-iV-kxf" userLabel="Role Label">
-                                                            <rect key="frame" x="0.0" y="17" width="332" height="14.5"/>
+                                                            <rect key="frame" x="0.0" y="20.5" width="332" height="16"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -61,10 +62,10 @@
                                                     </subviews>
                                                 </stackView>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" image="woo-incorrect-role-error" translatesAutoresizingMaskIntoConstraints="NO" id="w7Q-ul-F52" userLabel="Error Image View">
-                                                    <rect key="frame" x="0.0" y="55.5" width="332" height="206"/>
+                                                    <rect key="frame" x="0.0" y="60.5" width="332" height="206"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nPH-Hd-nTV" userLabel="Description Label">
-                                                    <rect key="frame" x="0.0" y="285.5" width="332" height="17"/>
+                                                    <rect key="frame" x="0.0" y="290.5" width="332" height="20.5"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -72,7 +73,7 @@
                                             </subviews>
                                         </stackView>
                                         <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="UjK-5a-gOc">
-                                            <rect key="frame" x="165.5" y="326.5" width="83" height="28"/>
+                                            <rect key="frame" x="157.5" y="335" width="99" height="32"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                             <state key="normal" title="Action Button"/>
                                         </button>
@@ -90,12 +91,12 @@
                                     </constraints>
                                 </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b0t-AG-PAs" userLabel="Bottom Spacer View">
-                                    <rect key="frame" x="0.0" y="523.5" width="414" height="168.5"/>
+                                    <rect key="frame" x="0.0" y="527.5" width="414" height="160.5"/>
                                 </view>
                                 <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="251" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="k2k-VX-DIG" userLabel="Action Stack View">
-                                    <rect key="frame" x="16" y="692" width="382" height="116"/>
+                                    <rect key="frame" x="16" y="688" width="382" height="116"/>
                                     <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="12a-pO-tKA" userLabel="Primary Action Button">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="12a-pO-tKA" userLabel="Primary Action Button" customClass="ButtonActivityIndicator" customModule="WooCommerce" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="382" height="50"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="VSp-UD-zdS"/>

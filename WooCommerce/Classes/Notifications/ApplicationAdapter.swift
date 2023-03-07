@@ -20,7 +20,7 @@ protocol ApplicationAdapter: AnyObject {
 
     /// Presents a given title and optional subtitle and message with an "In App" notification
     ///
-    func presentInAppNotification(title: String, subtitle: String?, message: String?)
+    func presentInAppNotification(title: String, subtitle: String?, message: String?, actionTitle: String, actionHandler: @escaping () -> Void)
 
     /// Presents the Details for the specified Notification.
     ///
@@ -40,8 +40,13 @@ extension UIApplication: ApplicationAdapter {
 
     /// Presents a given Message with an "In App" notification
     ///
-    func presentInAppNotification(title: String, subtitle: String?, message: String?) {
-        let notice = Notice(title: title, subtitle: subtitle, message: message, feedbackType: .success)
+    func presentInAppNotification(title: String, subtitle: String?, message: String?, actionTitle: String, actionHandler: @escaping () -> Void) {
+        let notice = Notice(title: title,
+                            subtitle: subtitle,
+                            message: message,
+                            feedbackType: .success,
+                            actionTitle: actionTitle,
+                            actionHandler: actionHandler)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

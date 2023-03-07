@@ -14,6 +14,7 @@ extension Storage.PaymentGateway: ReadOnlyConvertible {
         gatewayDescription = paymentGateway.description
         enabled = paymentGateway.enabled
         features = paymentGateway.features.map { $0.rawValue }
+        instructions = paymentGateway.instructions
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -24,6 +25,7 @@ extension Storage.PaymentGateway: ReadOnlyConvertible {
                        title: title,
                        description: gatewayDescription,
                        enabled: enabled,
-                       features: features.compactMap { PaymentGateway.Feature(rawValue: $0) })
+                       features: features.compactMap { PaymentGateway.Feature(rawValue: $0) },
+                       instructions: instructions)
     }
 }

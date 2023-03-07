@@ -60,9 +60,9 @@ final class ProductVariationStoreTests: XCTestCase {
         let action = ProductVariationAction.synchronizeProductVariations(siteID: sampleSiteID,
                                                                          productID: sampleProductID,
                                                                          pageNumber: defaultPageNumber,
-                                                                         pageSize: defaultPageSize) { error in
+                                                                         pageSize: defaultPageSize) { result in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 8)
-            XCTAssertNil(error)
+            XCTAssertTrue(result.isSuccess)
 
             let sampleProductVariationID: Int64 = 1275
             let storedProductVariation = self.viewStorage.loadProductVariation(siteID: self.sampleSiteID, productVariationID: sampleProductVariationID)
@@ -90,8 +90,8 @@ final class ProductVariationStoreTests: XCTestCase {
         let action = ProductVariationAction.synchronizeProductVariations(siteID: sampleSiteID,
                                                                          productID: sampleProductID,
                                                                          pageNumber: defaultPageNumber,
-                                                                         pageSize: defaultPageSize) { error in
-            XCTAssertNil(error)
+                                                                         pageSize: defaultPageSize) { result in
+            XCTAssertTrue(result.isSuccess)
 
             let storedProductVariations = self.viewStorage.loadProductVariations(siteID: self.sampleSiteID, productID: self.sampleProductID)
             XCTAssertEqual(storedProductVariations?.count, 8)
@@ -103,8 +103,8 @@ final class ProductVariationStoreTests: XCTestCase {
             let action = ProductVariationAction.synchronizeProductVariations(siteID: self.sampleSiteID,
                                                                              productID: self.sampleProductID,
                                                                              pageNumber: self.defaultPageNumber,
-                                                                             pageSize: self.defaultPageSize) { error in
-                XCTAssertNil(error)
+                                                                             pageSize: self.defaultPageSize) { result in
+                XCTAssertTrue(result.isSuccess)
 
                 let storedProductVariations = self.viewStorage.loadProductVariations(siteID: self.sampleSiteID, productID: self.sampleProductID)
                 XCTAssertEqual(storedProductVariations?.count, 8)
@@ -192,8 +192,8 @@ final class ProductVariationStoreTests: XCTestCase {
         let action = ProductVariationAction.synchronizeProductVariations(siteID: siteID1,
                                                                          productID: productID,
                                                                          pageNumber: Store.Default.firstPageNumber,
-                                                                         pageSize: defaultPageSize) { error in
-            XCTAssertNil(error)
+                                                                         pageSize: defaultPageSize) { result in
+            XCTAssertTrue(result.isSuccess)
 
             // The previously upserted ProductVariation for siteID1 should be deleted.
             let storedVariationForSite1 = self.viewStorage.loadProductVariation(siteID: siteID1, productVariationID: variationID)
@@ -234,8 +234,8 @@ final class ProductVariationStoreTests: XCTestCase {
         let action = ProductVariationAction.synchronizeProductVariations(siteID: siteID,
                                                                          productID: productID,
                                                                          pageNumber: 3,
-                                                                         pageSize: defaultPageSize) { error in
-            XCTAssertNil(error)
+                                                                         pageSize: defaultPageSize) { result in
+            XCTAssertTrue(result.isSuccess)
 
             // The previously upserted ProductVariation's should stay in storage.
             let storedVariation = self.viewStorage.loadProductVariation(siteID: siteID, productVariationID: variationID)
@@ -288,6 +288,24 @@ final class ProductVariationStoreTests: XCTestCase {
 
         store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_sync_product_variations_indicates_when_there_are_more_variations_to_fetch() {
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+        let pageSize = 8 // "product-variations-load-all" currently has 8 variations
+
+
+        let hasMoreVariationsToFetch: Bool = waitFor { promise in
+            let action = ProductVariationAction.synchronizeProductVariations(siteID: self.sampleSiteID,
+                                                                             productID: self.sampleProductID,
+                                                                             pageNumber: self.defaultPageNumber,
+                                                                             pageSize: pageSize) { result in
+                promise((try? result.get()) ?? false)
+            }
+            store.onAction(action)
+        }
+        XCTAssertTrue(hasMoreVariationsToFetch)
     }
 
     // MARK: - ProductVariationAction.retrieveProductVariation
@@ -451,6 +469,31 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertEqual(readOnlyStoredProductVariation, expectedProductVariation)
     }
 
+    func test_creating_product_variations_properly_stores_them_locally() {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/batch", filename: "product-variations-bulk-create")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+
+        let createdProductVariation = CreateProductVariation(regularPrice: "", attributes: sampleProductVariationAttributes())
+
+        // When
+        let result = waitFor { promise in
+            let action = ProductVariationAction.createProductVariations(siteID: self.sampleSiteID,
+                                                                        productID: self.sampleProductID,
+                                                                        productVariations: [createdProductVariation]) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertTrue(result.isSuccess)
+    }
+
     /// Verifies that `ProductVariationAction.createProductVariation` returns an error whenever there is an error response from the backend.
     ///
     func test_createProductVariation_returns_error_upon_response_error() throws {
@@ -557,6 +600,85 @@ final class ProductVariationStoreTests: XCTestCase {
 
         // The existing ProductVariation should not be deleted.
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+    }
+
+    // MARK: - ProductVariationAction.updateProductVariationImage
+
+    /// Verifies that `ProductVariationAction.updateProductVariationImage` effectively persists the returned product variation.
+    ///
+    func test_updateProductVariationImage_with_success_persists_returned_variation() throws {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let productVariationID: Int64 = 17
+        let expectedProductVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                                    productID: sampleProductID,
+                                                                    productVariationID: productVariationID,
+                                                                    image: ProductImage.fake(),
+                                                                    // `stockQuantity` is set to non-nil in storage.
+                                                                    stockQuantity: 0)
+        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            productVariationID: productVariationID)
+        remote.whenUpdatingProductVariationImage(siteID: sampleSiteID,
+                                                 productID: sampleProductID,
+                                                 productVariationID: productVariationID,
+                                                 thenReturn: .success(expectedProductVariation))
+
+        // Saves an existing ProductVariation into storage.
+        // Note: at least one field of `ProductVariation` before and after the update should be different.
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 1)
+
+        // When
+        let result: Result<Yosemite.ProductVariation, ProductUpdateError> = waitFor { promise in
+            let action = ProductVariationAction.updateProductVariationImage(siteID: self.sampleSiteID,
+                                                                            productID: self.sampleProductID,
+                                                                            variationID: productVariationID,
+                                                                            image: .fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let updatedProductVariation = try XCTUnwrap(result.get())
+        assertEqual(expectedProductVariation, updatedProductVariation)
+
+        let storedProductVariation = viewStorage.loadProductVariation(siteID: sampleSiteID, productVariationID: productVariationID)
+        assertEqual(expectedProductVariation, storedProductVariation?.toReadOnly())
+    }
+
+    func test_updateProductImages_with_failure_returns_error() {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let productVariationID: Int64 = 17
+        let networkError = NSError(domain: "", code: 400, userInfo: nil)
+        remote.whenUpdatingProductVariationImage(siteID: sampleSiteID,
+                                                 productID: sampleProductID,
+                                                 productVariationID: productVariationID,
+                                                 thenReturn: .failure(networkError))
+        // Saves an existing ProductVariation into storage.
+        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID, productID: sampleProductID, productVariationID: productVariationID)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 1)
+
+        // When
+        let result: Result<Yosemite.ProductVariation, ProductUpdateError> = waitFor { promise in
+            let action = ProductVariationAction.updateProductVariationImage(siteID: self.sampleSiteID,
+                                                                            productID: self.sampleProductID,
+                                                                            variationID: productVariationID,
+                                                                            image: .fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure, .init(error: networkError))
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 1)
     }
 
     // MARK: `requestMissingVariations`
@@ -729,6 +851,91 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
     }
+
+    /// Verifies that `ProductVariationAction.updateProductVariations` returns the expected `ProductVariations`.
+    ///
+    func test_updateProductVariations_is_correctly_updating_productVariation() throws {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let variationIDs: [Int64] = [17, 42]
+        let variationA = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: variationIDs[0])
+        let variationB = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: variationIDs[1])
+
+        let expectedVariations = [variationA.copy(dateCreated: Date.distantFuture),
+                                  variationB.copy(dateCreated: Date.distantPast)]
+
+
+        let variations = expectedVariations.map({ $0.copy(regularPrice: "1") })
+
+        remote.whenUpdatingProductVariations(siteID: sampleSiteID,
+                                             productID: sampleProductID,
+                                             productVariationIDs: variationIDs,
+                                             thenReturn: .success(expectedVariations))
+
+        // Saves an existing ProductVariations into storage
+        // The regular price is expected to be updated
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: variations[0])
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: variations[1])
+        assertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 2)
+
+        // When
+        var result: Result<[Yosemite.ProductVariation], ProductUpdateError>?
+        waitForExpectation { expectation in
+            let action = ProductVariationAction.updateProductVariations(siteID: sampleSiteID,
+                                                                        productID: sampleProductID,
+                                                                        productVariations: variations) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let updatedVariations = try? result?.get()
+        assertEqual(updatedVariations, expectedVariations)
+
+        let storedVariations = viewStorage.loadProductVariations(siteID: sampleSiteID, productID: sampleProductID)
+        let readOnlyVariations = try XCTUnwrap(storedVariations?.map({ $0.toReadOnly() }))
+        assertEqual(readOnlyVariations, expectedVariations)
+    }
+
+    /// Verifies that `ProductVariationAction.updateProductVariations` returns an error whenever there is an error response from the backend.
+    ///
+    func test_updateProductVariations_returns_error_upon_response_error() {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let variationIDs: [Int64] = [17, 42]
+        remote.whenUpdatingProductVariations(siteID: sampleSiteID,
+                                             productID: sampleProductID,
+                                             productVariationIDs: variationIDs,
+                                             thenReturn: .failure(NSError(domain: "", code: 400, userInfo: nil)))
+        // Saves an existing ProductVariations into storage.
+        let productVariations = [MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: variationIDs[0]),
+                                 MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: variationIDs[1])]
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariations[0])
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariations[1])
+        assertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 2)
+
+        // When
+        var result: Result<[Yosemite.ProductVariation], ProductUpdateError>?
+        waitForExpectation { expectation in
+            let action = ProductVariationAction.updateProductVariations(siteID: sampleSiteID,
+                                                                        productID: sampleProductID,
+                                                                        productVariations: productVariations) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isFailure)
+
+        // The existing ProductVariations should not be deleted.
+        assertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 2)
+    }
 }
 
 
@@ -756,17 +963,17 @@ private extension ProductVariationStoreTests {
                                 productVariationID: id,
                                 attributes: sampleProductVariationAttributes(),
                                 image: ProductImage(imageID: 1063,
-                                                    dateCreated: dateFromGMT("2019-11-01T04:12:05"),
-                                                    dateModified: dateFromGMT("2019-11-01T04:12:05"),
+                                                    dateCreated: DateFormatter.dateFromString(with: "2019-11-01T04:12:05"),
+                                                    dateModified: DateFormatter.dateFromString(with: "2019-11-01T04:12:05"),
                                                     src: imageSource,
                                                     name: "DSC_0010",
                                                     alt: ""),
                                 permalink: "https://chocolate.com/marble",
-                                dateCreated: dateFromGMT("2019-11-14T12:40:55"),
-                                dateModified: dateFromGMT("2019-11-14T13:06:42"),
-                                dateOnSaleStart: dateFromGMT("2019-10-15T21:30:00"),
-                                dateOnSaleEnd: dateFromGMT("2019-10-27T21:29:59"),
-                                status: .publish,
+                                dateCreated: DateFormatter.dateFromString(with: "2019-11-14T12:40:55"),
+                                dateModified: DateFormatter.dateFromString(with: "2019-11-14T13:06:42"),
+                                dateOnSaleStart: DateFormatter.dateFromString(with: "2019-10-15T21:30:00"),
+                                dateOnSaleEnd: DateFormatter.dateFromString(with: "2019-10-27T21:29:59"),
+                                status: .published,
                                 description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
                                 sku: "99%-nuts-marble",
                                 price: "12",
@@ -797,32 +1004,26 @@ private extension ProductVariationStoreTests {
     }
 
     func sampleOrder(items: [Yosemite.OrderItem]) -> Yosemite.Order {
-        .init(siteID: sampleSiteID,
-              orderID: 963,
-              parentID: 0,
-              customerID: 11,
-              number: "963",
-              status: .processing,
-              currency: "USD",
-              customerNote: "",
-              dateCreated: dateFromGMT("2018-04-03T23:05:12"),
-              dateModified: dateFromGMT("2018-04-03T23:05:14"),
-              datePaid: dateFromGMT("2018-04-03T23:05:14"),
-              discountTotal: "30.00",
-              discountTax: "1.20",
-              shippingTotal: "0.00",
-              shippingTax: "0.00",
-              total: "31.20",
-              totalTax: "1.20",
-              paymentMethodID: "stripe",
-              paymentMethodTitle: "Credit Card (Stripe)",
-              items: items,
-              billingAddress: nil,
-              shippingAddress: nil,
-              shippingLines: [],
-              coupons: [],
-              refunds: [],
-              fees: [])
+        Order.fake().copy(siteID: sampleSiteID,
+                          orderID: 963,
+                          customerID: 11,
+                          orderKey: "abc123",
+                          number: "963",
+                          status: .processing,
+                          currency: "USD",
+                          customerNote: "",
+                          dateCreated: DateFormatter.dateFromString(with: "2018-04-03T23:05:12"),
+                          dateModified: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
+                          datePaid: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
+                          discountTotal: "30.00",
+                          discountTax: "1.20",
+                          shippingTotal: "0.00",
+                          shippingTax: "0.00",
+                          total: "31.20",
+                          totalTax: "1.20",
+                          paymentMethodID: "stripe",
+                          paymentMethodTitle: "Credit Card (Stripe)",
+                          items: items)
     }
 
     func sampleOrderItem(productID: Int64, variationID: Int64) -> Yosemite.OrderItem {
@@ -840,10 +1041,5 @@ private extension ProductVariationStoreTests {
               total: "30.00",
               totalTax: "1.20",
               attributes: [])
-    }
-
-    func dateFromGMT(_ dateStringInGMT: String) -> Date {
-        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        return dateFormatter.date(from: dateStringInGMT)!
     }
 }

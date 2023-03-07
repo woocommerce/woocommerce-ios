@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+    "queryParameters": {
+      "path": {
+        "equalTo": "/wp/v2/users/me&_method=get"
+      },
+      "query": {
+        "matches": "(.*)\"fields\":\"id,username,id_wpcom,email,first_name,last_name,nickname,roles\"(.*)"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "data": {
+        "id": 1234,
+        "username": "john_apple",
+        "first_name": "Johnny",
+        "last_name": "Appleseed",
+        "email": "johnny@email.blog",
+        "nickname": "Johnny",
+        "roles": [
+          "administrator"
+        ]
+      }
+    }
+  }
+}

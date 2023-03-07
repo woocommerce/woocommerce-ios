@@ -1,5 +1,5 @@
+import Combine
 import Yosemite
-import Observables
 
 /// Provides data needed for inventory settings.
 ///
@@ -7,7 +7,7 @@ protocol ProductInventorySettingsViewModelOutput {
     typealias Section = ProductInventorySettingsViewController.Section
 
     /// Observable table view sections.
-    var sections: Observable<[Section]> { get }
+    var sections: AnyPublisher<[Section], Never> { get }
 
     /// Potential error from input changes.
     var error: ProductUpdateError? { get }
@@ -79,10 +79,10 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
 
     /// Table Sections to be rendered
     ///
-    var sections: Observable<[Section]> {
-        sectionsSubject
+    var sections: AnyPublisher<[Section], Never> {
+        $sectionsSubject.eraseToAnyPublisher()
     }
-    private let sectionsSubject: BehaviorSubject<[Section]> = BehaviorSubject<[Section]>([])
+    @Published private var sectionsSubject: [Section] = []
 
     private(set) var error: ProductUpdateError?
 
@@ -253,7 +253,7 @@ private extension ProductInventorySettingsViewModel {
                 createSKUSection()
             ]
         }
-        sectionsSubject.send(sections)
+        sectionsSubject = sections
     }
 
     func createSKUSection() -> Section {

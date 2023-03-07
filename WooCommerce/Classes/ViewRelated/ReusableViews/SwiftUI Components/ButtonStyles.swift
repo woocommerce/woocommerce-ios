@@ -12,14 +12,69 @@ struct PrimaryButtonStyle: ButtonStyle {
 }
 
 struct SecondaryButtonStyle: ButtonStyle {
+    /// Defines if the content should be hidden.
+    /// Useful for when we want to show an overlay on top of the bottom without hiding its decoration. Like showing a progress view.
+    ///
+    private(set) var hideContent = false
+
+    var labelFont: Font = .headline
     func makeBody(configuration: Configuration) -> some View {
-        SecondaryButton(configuration: configuration)
+        SecondaryButton(configuration: configuration, labelFont: labelFont, hideContent: hideContent)
+    }
+}
+
+/// Adds a secondary button style while showing a progress view on top of the button when required.
+///
+struct SecondaryLoadingButtonStyle: PrimitiveButtonStyle {
+
+    /// Set it to true to show a progress view within the button.
+    ///
+    let isLoading: Bool
+
+    /// Returns a `ProgressView` if the view is loading. Return nil otherwise
+    ///
+    private var progressViewOverlay: ProgressView<EmptyView, EmptyView>? {
+        isLoading ? ProgressView() : nil
+    }
+
+    func makeBody(configuration: Configuration) -> some View {
+        /// Only send trigger if the view is not loading.
+        ///
+        return Button(configuration)
+            .buttonStyle(SecondaryButtonStyle(hideContent: isLoading))
+            .onTapGesture { dispatchTrigger(configuration) }
+            .disabled(isLoading)
+            .overlay(progressViewOverlay)
+    }
+
+    /// Only dispatch events while the view is not loading.
+    ///
+    private func dispatchTrigger(_ configuration: Configuration) {
+        guard !isLoading else { return }
+        configuration.trigger()
+    }
+}
+
+/// A selectable button with border style similar to secondary button style with differences on the colors and a selected state.
+struct SelectableSecondaryButtonStyle: ButtonStyle {
+    /// Whether the button is selected.
+    let isSelected: Bool
+    let labelFont: Font = .headline
+    func makeBody(configuration: Configuration) -> some View {
+        SelectableSecondaryButton(isSelected: isSelected, configuration: configuration, labelFont: labelFont)
     }
 }
 
 struct LinkButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         LinkButton(configuration: configuration)
+    }
+}
+
+/// Button that looks like text without the default padding and size assumption.
+struct TextButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        TextButton(configuration: configuration)
     }
 }
 
@@ -136,11 +191,18 @@ private struct SecondaryButton: View {
     @Environment(\.isEnabled) var isEnabled
 
     let configuration: ButtonStyleConfiguration
+    let labelFont: Font
+
+    /// Defines if the content should be hidden.
+    /// Useful for when we want to show an overlay on top of the bottom without hiding its decoration. Like showing a progress view.
+    ///
+    private(set) var hideContent = false
 
     var body: some View {
         BaseButton(configuration: configuration)
+            .opacity(contentOpacity)
             .foregroundColor(Color(foregroundColor))
-            .font(.headline)
+            .font(labelFont)
             .background(
                 RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
                     .fill(Color(backgroundColor))
@@ -181,9 +243,68 @@ private struct SecondaryButton: View {
             return .buttonDisabledBorder
         }
     }
+
+    var contentOpacity: Double {
+        hideContent ? 0.0 : 1.0
+    }
+}
+
+private struct SelectableSecondaryButton: View {
+    @Environment(\.isEnabled) var isEnabled
+
+    let isSelected: Bool
+    let configuration: ButtonStyleConfiguration
+    let labelFont: Font
+
+    var body: some View {
+        BaseButton(configuration: configuration)
+            .foregroundColor(Color(.selectableSecondaryButtonTitle))
+            .font(labelFont)
+            .background(
+                RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
+                    .fill(Color(backgroundColor))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
+                    .strokeBorder(
+                        Color(borderColor),
+                        lineWidth: Style.defaultBorderWidth
+                    )
+            )
+    }
+
+    var foregroundColor: UIColor {
+        isEnabled ? .secondaryButtonTitle : .buttonDisabledTitle
+    }
+
+    var backgroundColor: UIColor {
+        if isEnabled {
+            if configuration.isPressed || isSelected {
+                return .selectableSecondaryButtonSelectedBackground
+            } else {
+                return .selectableSecondaryButtonBackground
+            }
+        } else {
+            return .buttonDisabledBackground
+        }
+    }
+
+    var borderColor: UIColor {
+        if isEnabled {
+            if configuration.isPressed || isSelected {
+                return .selectableSecondaryButtonSelectedBorder
+            } else {
+                return .selectableSecondaryButtonBorder
+            }
+        } else {
+            return .buttonDisabledBorder
+        }
+    }
 }
 
 private struct LinkButton: View {
+    @Environment(\.isEnabled) var isEnabled
+
     let configuration: ButtonStyleConfiguration
 
     var body: some View {
@@ -193,11 +314,38 @@ private struct LinkButton: View {
     }
 
     var foregroundColor: UIColor {
-        configuration.isPressed ? .accentDark : .accent
+        if isEnabled {
+            return configuration.isPressed ? .accentDark : .accent
+        } else {
+            return .buttonDisabledTitle
+        }
+    }
+}
+
+private struct TextButton: View {
+    @Environment(\.isEnabled) var isEnabled
+
+    let configuration: ButtonStyleConfiguration
+
+    var body: some View {
+        configuration.label
+            .contentShape(Rectangle())
+            .foregroundColor(Color(foregroundColor))
+            .background(Color(.clear))
+    }
+
+    var foregroundColor: UIColor {
+        if isEnabled {
+            return configuration.isPressed ? .accentDark : .accent
+        } else {
+            return .buttonDisabledTitle
+        }
     }
 }
 
 private struct PlusButton: View {
+    @Environment(\.isEnabled) var isEnabled
+
     let configuration: ButtonStyleConfiguration
 
     var body: some View {
@@ -207,15 +355,19 @@ private struct PlusButton: View {
             } icon: {
                 Image(uiImage: .plusImage)
             }
-            Spacer()
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
         .foregroundColor(Color(foregroundColor))
         .background(Color(.clear))
     }
 
     var foregroundColor: UIColor {
-        configuration.isPressed ? .accentDark : .accent
+        if isEnabled {
+            return configuration.isPressed ? .accentDark : .accent
+        } else {
+            return .buttonDisabledTitle
+        }
     }
 }
 
@@ -242,12 +394,84 @@ struct PrimaryButton_Previews: PreviewProvider {
                 .buttonStyle(SecondaryButtonStyle())
                 .disabled(true)
 
+            Button("Selectable secondary button (selected)") {}
+                .buttonStyle(SelectableSecondaryButtonStyle(isSelected: true))
+
+            Button("Selectable secondary button") {}
+                .buttonStyle(SelectableSecondaryButtonStyle(isSelected: false))
+
             Button("Link button") {}
                 .buttonStyle(LinkButtonStyle())
 
+            Button("Link button (Disabled)") {}
+            .buttonStyle(LinkButtonStyle())
+            .disabled(true)
+
             Button("Plus button") {}
                 .buttonStyle(PlusButtonStyle())
+
+            Button("Plus button (disabled)") {}
+            .buttonStyle(PlusButtonStyle())
+            .disabled(true)
         }
+        .preferredColorScheme(.light)
+        .padding()
+
+        VStack(spacing: 20) {
+            Group {
+                Button("Primary button") {}
+                    .buttonStyle(PrimaryButtonStyle())
+
+                Button("Primary button (disabled)") {}
+                    .buttonStyle(PrimaryButtonStyle())
+                    .disabled(true)
+            }
+
+            Group {
+                Button("Secondary button") {}
+                    .buttonStyle(SecondaryButtonStyle())
+
+                Button("Secondary button (disabled)") {}
+                    .buttonStyle(SecondaryButtonStyle())
+                    .disabled(true)
+            }
+
+            Group {
+                Button("Selectable secondary button (selected)") {}
+                    .buttonStyle(SelectableSecondaryButtonStyle(isSelected: true))
+
+                Button("Selectable secondary button") {}
+                    .buttonStyle(SelectableSecondaryButtonStyle(isSelected: false))
+            }
+
+            Group {
+                Button("Link button") {}
+                    .buttonStyle(LinkButtonStyle())
+
+                Button("Link button (Disabled)") {}
+                    .buttonStyle(LinkButtonStyle())
+                    .disabled(true)
+            }
+
+            Group {
+                Button("Text button") {}
+                    .buttonStyle(TextButtonStyle())
+
+                Button("Text button (disabled)") {}
+                    .buttonStyle(TextButtonStyle())
+                    .disabled(true)
+            }
+
+            Group {
+                Button("Plus button") {}
+                    .buttonStyle(PlusButtonStyle())
+
+                Button("Plus button (disabled)") {}
+                    .buttonStyle(PlusButtonStyle())
+                    .disabled(true)
+            }
+        }
+        .preferredColorScheme(.dark)
         .padding()
     }
 }

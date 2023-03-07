@@ -1,4 +1,5 @@
 import ScreenObject
+import XCTest
 
 // These are implemented as extensions on `ScreenObject` locally to this target to allow us to
 // finish the transition of the screens from `BaseScreen` to `ScreenObject` and from the different
@@ -20,5 +21,15 @@ public extension ScreenObject {
     func then(_ completion: (ScreenObject) -> Void) -> Self {
         completion(self)
         return self
+    }
+
+    @discardableResult
+    func waitFor(element: XCUIElement, predicate: String, timeout: Int? = nil) -> Bool {
+        let timeoutValue = timeout ?? 5
+
+        let elementPredicate = XCTNSPredicateExpectation(predicate: NSPredicate(format: predicate), object: element)
+        let result = XCTWaiter.wait(for: [elementPredicate], timeout: TimeInterval(timeoutValue))
+
+        return result == .completed
     }
 }

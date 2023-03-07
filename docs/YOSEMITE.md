@@ -38,7 +38,8 @@ At the moment, we provide the following subclasses of `Store`:
 * `AccountStore`. Registers `AccountAction` with the `Dispatcher`.  It implements the business logic necessary to manage an account (load an account, load a site, synchronise account information…)
 * `AppSettingsStore`. Registers and responds to actions declared in `AppSettingsAction`. It implements the logic to save and retrieve application settings.
 * `CommentStore`.  Registers and responds to actions declared in `CommentAction` It implements the business logic pertaining comments.
-* `CardPresentPaymentsStore`. Registers and responds to actions declared in `CardPresentPaymentsAction`. It imple ents the logic to collect payments with external card readers. 
+* `CardPresentPaymentsStore`. Registers and responds to actions declared in `CardPresentPaymentsAction`. It implements the logic to collect payments with external card readers.
+* `CustomerStore`. Implements support for operations related to Customers, like searching and retrieving customer details.
 * `NotificationStore`. Registers  and responds to`NotificationAction` 
 * `OrderStore`. Registers `OrderAction` with the `Dispatcher` and responds to the actions declared in it.
 * `OrderNoteStore`. Business logic pertaining order notes. Registers and responds to operation declared in `OrderNoteAction`
@@ -87,7 +88,7 @@ func syncTopPerformers(onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         onCompletion?(result)
     }
 
-    ServiceLocator.storesManager.dispatch(action)
+    ServiceLocator.stores.dispatch(action)
 }
 ```
 

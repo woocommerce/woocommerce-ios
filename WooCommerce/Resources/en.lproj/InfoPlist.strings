@@ -1,0 +1,14 @@
+/* A message that tells the user why the app is requesting access to the device’s camera. */
+NSCameraUsageDescription = "To take photos or videos to add to your Products, scan barcode for Product SKU, or support tickets.";
+
+/* A message that tells the user why the app is requesting access to the user’s photo library. */
+NSPhotoLibraryUsageDescription = "To save photos from camera for Product images, or to add photos or videos to your Products or support tickets.";
+
+/* A message that tells the user why the app is requesting access to the user’s location information while the app is running in the foreground. */
+NSLocationWhenInUseUsageDescription = "Location access is required in order to accept payments.";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+NSBluetoothPeripheralUsageDescription = "Bluetooth access is required in order to connect to supported card readers.";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+NSBluetoothAlwaysUsageDescription = "This app uses Bluetooth to connect to supported card readers.";

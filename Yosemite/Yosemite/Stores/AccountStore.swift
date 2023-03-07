@@ -2,12 +2,20 @@ import Combine
 import Foundation
 import Networking
 import Storage
+import WordPressKit
 
+/// For mocking `WordPressKit.AccountServiceRemoteREST`.
+protocol DotcomAccountRemoteProtocol {
+    func closeAccount(success: @escaping () -> Void, failure: @escaping (Error) -> Void)
+}
+
+extension AccountSettingsRemote: DotcomAccountRemoteProtocol {}
 
 // MARK: - AccountStore
 //
 public class AccountStore: Store {
     private let remote: AccountRemoteProtocol
+    private let dotcomRemote: DotcomAccountRemoteProtocol
     private var cancellables = Set<AnyCancellable>()
 
     /// Shared private StorageType for use during synchronizeSites and synchronizeSitePlan processes
@@ -16,13 +24,22 @@ public class AccountStore: Store {
         return storageManager.writerDerivedStorage
     }()
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.remote = AccountRemote(network: network)
-        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, dotcomAuthToken: String) {
+        let remote = AccountRemote(network: network)
+        let dotcomAPI = WordPressComRestApi(oAuthToken: dotcomAuthToken,
+                                            userAgent: UserAgent.defaultUserAgent,
+                                            baseUrlString: Settings.wordpressApiBaseURL)
+        let dotcomRemote = AccountSettingsRemote(wordPressComRestApi: dotcomAPI)
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, dotcomRemote: dotcomRemote)
     }
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: AccountRemoteProtocol) {
+    init(dispatcher: Dispatcher,
+         storageManager: StorageManagerType,
+         network: Network,
+         remote: AccountRemoteProtocol,
+         dotcomRemote: DotcomAccountRemoteProtocol) {
         self.remote = remote
+        self.dotcomRemote = dotcomRemote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -43,23 +60,23 @@ public class AccountStore: Store {
         switch action {
         case .loadAccount(let userID, let onCompletion):
             loadAccount(userID: userID, onCompletion: onCompletion)
-        case .loadAndSynchronizeSite(let siteID, let forcedUpdate, let isJetpackConnectionPackageSupported, let onCompletion):
+        case .loadAndSynchronizeSite(let siteID, let forcedUpdate, let onCompletion):
             loadAndSynchronizeSite(siteID: siteID,
                                    forcedUpdate: forcedUpdate,
-                                   isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported,
                                    onCompletion: onCompletion)
         case .synchronizeAccount(let onCompletion):
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeAccountSettings(let userID, let onCompletion):
             synchronizeAccountSettings(userID: userID, onCompletion: onCompletion)
-        case .synchronizeSites(let selectedSiteID, let isJetpackConnectionPackageSupported, let onCompletion):
+        case .synchronizeSites(let selectedSiteID, let onCompletion):
             synchronizeSites(selectedSiteID: selectedSiteID,
-                             isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported,
                              onCompletion: onCompletion)
         case .synchronizeSitePlan(let siteID, let onCompletion):
             synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         case .updateAccountSettings(let userID, let tracksOptOut, let onCompletion):
             updateAccountSettings(userID: userID, tracksOptOut: tracksOptOut, onCompletion: onCompletion)
+        case .closeAccount(let onCompletion):
+            closeAccount(onCompletion: onCompletion)
         }
     }
 }
@@ -100,12 +117,11 @@ private extension AccountStore {
     ///
     func loadAndSynchronizeSite(siteID: Int64,
                                 forcedUpdate: Bool,
-                                isJetpackConnectionPackageSupported: Bool,
                                 onCompletion: @escaping (Result<Site, Error>) -> Void) {
         if let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly(), !forcedUpdate {
             onCompletion(.success(site))
         } else {
-            synchronizeSites(selectedSiteID: siteID, isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { [weak self] result in
+            synchronizeSites(selectedSiteID: siteID) { [weak self] result in
                 guard let self = self else { return }
                 guard let site = self.storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
                     return onCompletion(.failure(SynchronizeSiteError.unknownSite))
@@ -117,7 +133,7 @@ private extension AccountStore {
 
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
-    func synchronizeSites(selectedSiteID: Int64?, isJetpackConnectionPackageSupported: Bool, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         remote.loadSites()
             .flatMap { result -> AnyPublisher<Result<[Site], Error>, Never> in
                 switch result {
@@ -133,19 +149,19 @@ private extension AccountStore {
                         // As a workaround, we need to make 2 other API requests (ref p91TBi-6lK-p2):
                         // - Check if WooCommerce plugin is active via `wc/v3/settings` endpoint
                         // - Fetch site metadata like the site name, description, and URL via `wp/v2/settings` endpoint
-                        if site.isJetpackCPConnected, isJetpackConnectionPackageSupported {
+                        if site.isJetpackCPConnected {
                             let wcAvailabilityPublisher = self.remote.checkIfWooCommerceIsActive(for: site.siteID)
                             let wpSiteSettingsPublisher = self.remote.fetchWordPressSiteSettings(for: site.siteID)
                             return Publishers.Zip3(sitePublisher, wcAvailabilityPublisher, wpSiteSettingsPublisher)
                                 .map {
                                     (site, isWooCommerceActiveResult, wpSiteSettingsResult) -> Site in
                                     var site = site
-                                    if case let .success(isWooCommerceActive) = isWooCommerceActiveResult {
-                                        site = site.copy(isWooCommerceActive: isWooCommerceActive)
-                                    }
-                                    if case let .success(wpSiteSettings) = wpSiteSettingsResult {
-                                        site = site.copy(name: wpSiteSettings.name, description: wpSiteSettings.description, url: wpSiteSettings.url)
-                                    }
+                                    guard case let .success(isWooCommerceActive) = isWooCommerceActiveResult,
+                                          case let .success(wpSiteSettings) = wpSiteSettingsResult else {
+                                              return site
+                                          }
+                                    site = site.copy(isWooCommerceActive: isWooCommerceActive)
+                                    site = site.copy(name: wpSiteSettings.name, description: wpSiteSettings.description, url: wpSiteSettings.url)
                                     return site
                                 }.eraseToAnyPublisher()
                         } else {
@@ -202,6 +218,15 @@ private extension AccountStore {
                 onCompletion(.failure(error))
             }
         }
+    }
+
+    func closeAccount(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        dotcomRemote
+            .closeAccount(success: {
+                onCompletion(.success(()))
+            }, failure: { error in
+                onCompletion(.failure(error))
+            })
     }
 }
 

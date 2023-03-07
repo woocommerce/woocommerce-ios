@@ -305,7 +305,7 @@ public class AppRatingManager {
         static let lastPromptToRateDate = "AppRatingLastPromptToRateDate"
     }
 
-    private enum Constants {
+    enum Constants {
         static let defaultAppReviewURL = URL(string: "https://itunes.apple.com/us/app/id1389130815?mt=8&action=write-review")!
     }
 }

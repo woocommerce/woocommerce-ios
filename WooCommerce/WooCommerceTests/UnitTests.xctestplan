@@ -16,6 +16,9 @@
         "enabled" : false
       }
     ],
+    "environmentVariableEntries" : [
+
+    ],
     "language" : "en",
     "region" : "US",
     "targetForVariableExpansion" : {
@@ -27,6 +30,8 @@
   "testTargets" : [
     {
       "skippedTests" : [
+        "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_false_when_not_entitled()",
+        "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_true_when_entitled()",
         "StripeCardReaderIntegrationTests"
       ],
       "target" : {
@@ -62,16 +67,23 @@
     },
     {
       "target" : {
-        "containerPath" : "container:..\/Observables",
-        "identifier" : "ObservablesTests",
-        "name" : "ObservablesTests"
+        "containerPath" : "container:..\/Hardware\/Hardware.xcodeproj",
+        "identifier" : "D88FDB0725DD216B00CB0DBD",
+        "name" : "HardwareTests"
       }
     },
     {
       "target" : {
-        "containerPath" : "container:..\/Hardware\/Hardware.xcodeproj",
-        "identifier" : "D88FDB0725DD216B00CB0DBD",
-        "name" : "HardwareTests"
+        "containerPath" : "container:..\/WooFoundation\/WooFoundation.xcodeproj",
+        "identifier" : "B9C9C63D283E703C001B879F",
+        "name" : "WooFoundationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Experiments\/Experiments.xcodeproj",
+        "identifier" : "0270C08927069A8900FC799F",
+        "name" : "ExperimentsTests"
       }
     }
   ],

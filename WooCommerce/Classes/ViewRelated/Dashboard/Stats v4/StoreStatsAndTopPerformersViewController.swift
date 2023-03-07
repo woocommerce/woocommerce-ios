@@ -1,11 +1,12 @@
+import Combine
 import UIKit
-import XLPagerTabStrip
 import Yosemite
+import class WidgetKit.WidgetCenter
 
 /// Top-level stats container view controller that consists of a button bar with 4 time ranges.
 /// Each time range tab is managed by a `StoreStatsAndTopPerformersPeriodViewController`.
 ///
-final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewController {
+final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     /// For navigation bar large title workaround.
     weak var scrollDelegate: DashboardUIScrollDelegate?
 
@@ -13,7 +14,7 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 
     var displaySyncingError: () -> Void = {}
 
-    var onPullToRefresh: () -> Void = {}
+    var onPullToRefresh: @MainActor () async -> Void = {}
 
     // MARK: - Subviews
 
@@ -24,20 +25,62 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     // MARK: - Calculated Properties
 
     private var visibleChildViewController: StoreStatsAndTopPerformersPeriodViewController {
-        return periodVCs[currentIndex]
+        return periodVCs[selection]
     }
 
     // MARK: - Private Properties
 
-    private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
+    private let periodVCs: [StoreStatsAndTopPerformersPeriodViewController]
     private let siteID: Int64
-    private var isSyncing = false
+    // A set of syncing time ranges is tracked instead of a single boolean so that the stats for each time range
+    // can be synced when swiping or tapping to change the time range tab before the syncing finishes for the previously selected tab.
+    private var syncingTimeRanges: Set<StatsTimeRangeV4> = []
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+    private let dashboardViewModel: DashboardViewModel
+    private let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
+
+    /// Because loading the last selected time range tab is async, the selected tab index is initially `nil` and set after the last selected value is loaded.
+    /// We need to make sure any call to the public `reloadData` is after the selected time range is set to avoid making unnecessary API requests
+    /// for the non-selected tab.
+    @Published private var selectedTimeRangeIndex: Int?
+    /// The index of the selected tab in the tab bar. `selectedTimeRangeIndex` is an observable version of this.
+    override var selection: Int {
+        didSet {
+            selectedTimeRangeIndex = selection
+        }
+    }
+    private var selectedTimeRangeIndexSubscription: AnyCancellable?
+    private var reloadDataAfterSelectedTimeRangeSubscriptions: Set<AnyCancellable> = []
+
+    private let pushNotificationsManager: PushNotesManager
+    private var localOrdersSubscription: AnyCancellable?
+    private var remoteOrdersSubscription: AnyCancellable?
 
     // MARK: - View Lifecycle
 
-    init(siteID: Int64) {
+    init(siteID: Int64,
+         dashboardViewModel: DashboardViewModel,
+         pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteID = siteID
-        super.init(nibName: nil, bundle: nil)
+        self.dashboardViewModel = dashboardViewModel
+        self.pushNotificationsManager = pushNotificationsManager
+
+        let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
+        self.usageTracksEventEmitter = usageTracksEventEmitter
+
+        let currentDate = Date()
+        let tabItems: [TabbedItem] = timeRanges.map { timeRange in
+            let viewController = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                                timeRange: timeRange,
+                                                                                currentDate: currentDate,
+                                                                                canDisplayInAppFeedbackCard: timeRange == .today,
+                                                                                usageTracksEventEmitter: usageTracksEventEmitter)
+            return .init(title: timeRange.tabTitle,
+                         viewController: viewController,
+                         accessibilityIdentifier: "period-data-" + timeRange.rawValue + "-tab")
+        }
+        periodVCs = tabItems.compactMap { $0.viewController as? StoreStatsAndTopPerformersPeriodViewController }
+        super.init(items: tabItems, tabSizingStyle: .fitting)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -45,12 +88,22 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     }
 
     override func viewDidLoad() {
-        configurePeriodViewControllers()
-        configureTabStrip()
-        // 👆 must be called before super.viewDidLoad()
-
         super.viewDidLoad()
+
         configureView()
+        configureTabBar()
+        configurePeriodViewControllers()
+        observeRemotelyCreatedOrdersToResetLastSyncTimestamp()
+        observeLocallyCreatedOrdersToResetLastSyncTimestamp()
+
+        Task { @MainActor in
+            let selectedTimeRange = await loadLastTimeRange() ?? .today
+            guard let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange) else {
+                return
+            }
+            selection = selectedTabIndex
+            observeSelectedTimeRangeIndex()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -58,30 +111,39 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
         ensureGhostContentIsAnimated()
     }
 
-    // MARK: - PagerTabStripDataSource
-
-    override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
-        return periodVCs
-    }
-
-    override func configureCell(_ cell: ButtonBarViewCell, indicatorInfo: IndicatorInfo) {
-        /// Hide the ImageView:
-        /// We don't use it, and if / when "Ghostified" produces a quite awful placeholder UI!
-        cell.imageView.isHidden = true
-        cell.accessibilityIdentifier = indicatorInfo.accessibilityIdentifier
-
-        /// Flip the cells back to their proper state for RTL languages.
-        if traitCollection.layoutDirection == .rightToLeft {
-            cell.transform = CGAffineTransform(scaleX: -1, y: 1)
-        }
+    func observeSelectedTimeRangeIndex() {
+        let timeRangeCount = timeRanges.count
+        selectedTimeRangeIndexSubscription = $selectedTimeRangeIndex
+            .compactMap { $0 }
+            // It's possible to reach an out-of-bound index by swipe gesture, thus checking the index range here.
+            .filter { $0 >= 0 && $0 < timeRangeCount }
+            .removeDuplicates()
+            // Tapping to change to a farther tab could result in `updateIndicator` callback to be triggered for the middle tabs.
+            // A short debounce workaround is applied here to avoid making API requests for the middle tabs.
+            .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
+            .sink { [weak self] timeRangeTabIndex in
+                guard let self else { return }
+                let periodViewController = self.periodVCs[timeRangeTabIndex]
+                self.saveLastTimeRange(periodViewController.timeRange)
+                self.syncStats(forced: false, viewControllerToSync: periodViewController)
+            }
     }
 }
 
 extension StoreStatsAndTopPerformersViewController: DashboardUI {
-    func reloadData(forced: Bool, completion: @escaping () -> Void) {
-        syncAllStats(forced: forced, onCompletion: { _ in
-            completion()
-        })
+    @MainActor
+    func reloadData(forced: Bool) async {
+        await withCheckedContinuation { continuation in
+            $selectedTimeRangeIndex
+                .compactMap { $0 }
+                .first()
+                .sink { [weak self] _ in
+                    self?.syncAllStats(forced: forced) { _ in
+                        continuation.resume(returning: ())
+                    }
+                }
+                .store(in: &reloadDataAfterSelectedTimeRangeSubscriptions)
+        }
     }
 
     func remindStatsUpgradeLater() {
@@ -93,24 +155,29 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
 //
 private extension StoreStatsAndTopPerformersViewController {
     func syncAllStats(forced: Bool, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        guard !isSyncing else {
+        syncStats(forced: forced, viewControllerToSync: visibleChildViewController, onCompletion: onCompletion)
+    }
+
+    func syncStats(forced: Bool, viewControllerToSync: StoreStatsAndTopPerformersPeriodViewController, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        let timeRange = viewControllerToSync.timeRange
+        guard !syncingTimeRanges.contains(timeRange) else {
+            onCompletion?(.success(()))
             return
         }
 
-        isSyncing = true
+        syncingTimeRanges.insert(timeRange)
 
         let group = DispatchGroup()
 
         var syncError: Error? = nil
 
-        ensureGhostContentIsDisplayed()
-        showSpinner(shouldShowSpinner: true)
+        ensureGhostContentIsDisplayed(for: viewControllerToSync)
+        showSpinner(for: viewControllerToSync, shouldShowSpinner: true)
 
         defer {
             group.notify(queue: .main) { [weak self] in
-                self?.isSyncing = false
-                self?.removeGhostContent()
-                self?.showSpinner(shouldShowSpinner: false)
+                self?.syncingTimeRanges.remove(timeRange)
+                self?.showSpinner(for: viewControllerToSync, shouldShowSpinner: false)
                 if let error = syncError {
                     DDLogError("⛔️ Error loading dashboard: \(error)")
                     self?.handleSyncError(error: error)
@@ -128,15 +195,22 @@ private extension StoreStatsAndTopPerformersViewController {
         let timezoneForStatsDates = TimeZone.siteTimezone
         let timezoneForSync = TimeZone.current
 
-        periodVCs.forEach { [weak self] (vc) in
+        [viewControllerToSync].forEach { [weak self] vc in
             guard let self = self else {
+                onCompletion?(.success(()))
                 return
             }
 
             if !forced, let lastFullSyncTimestamp = vc.lastFullSyncTimestamp, Date().timeIntervalSince(lastFullSyncTimestamp) < vc.minimalIntervalBetweenSync {
                 // data refresh is not required
+                onCompletion?(.success(()))
                 return
             }
+
+            // We want to make sure the latest data are fetched (force-refreshing the cache on the server side) when:
+            // - The `forced` parameter is `true` (e.g. when the user pulls to refresh)
+            // - The stats for the time range tab are being synced for the first time (`lastFullSyncTimestamp` is `nil`)
+            let forceRefresh = forced || vc.lastFullSyncTimestamp == nil
 
             // local var to catch sync error for period
             var periodSyncError: Error? = nil
@@ -150,69 +224,132 @@ private extension StoreStatsAndTopPerformersViewController {
             // For tasks dispatched for each time period.
             let periodGroup = DispatchGroup()
 
+            // For tasks dispatched for store stats (order and visitor stats) for each time period.
+            let periodStoreStatsGroup = DispatchGroup()
+
             group.enter()
             periodGroup.enter()
-            self.syncStats(for: siteID,
-                           siteTimezone: timezoneForSync,
-                           timeRange: vc.timeRange,
-                           latestDateToInclude: latestDateToInclude) { [weak self] result in
+            periodStoreStatsGroup.enter()
+            self.dashboardViewModel.syncStats(for: siteID,
+                                              siteTimezone: timezoneForSync,
+                                              timeRange: vc.timeRange,
+                                              latestDateToInclude: latestDateToInclude,
+                                              forceRefresh: forceRefresh) { [weak self] result in
                 switch result {
                 case .success:
-                    self?.trackStatsLoaded(for: vc.granularity)
+                    self?.trackStatsLoaded(for: vc.timeRange)
                 case .failure(let error):
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
                     periodSyncError = error
                 }
                 group.leave()
                 periodGroup.leave()
+                periodStoreStatsGroup.leave()
             }
 
             group.enter()
             periodGroup.enter()
-            self.syncSiteVisitStats(for: siteID,
-                                    siteTimezone: timezoneForSync,
-                                    timeRange: vc.timeRange,
-                                    latestDateToInclude: latestDateToInclude) { result in
+            periodStoreStatsGroup.enter()
+            self.dashboardViewModel.syncSiteVisitStats(for: siteID,
+                                                       siteTimezone: timezoneForSync,
+                                                       timeRange: vc.timeRange,
+                                                       latestDateToInclude: latestDateToInclude) { result in
                 if case let .failure(error) = result {
                     DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
                     periodSyncError = error
                 }
                 group.leave()
                 periodGroup.leave()
+                periodStoreStatsGroup.leave()
             }
 
             group.enter()
             periodGroup.enter()
-            self.syncTopEarnersStats(for: siteID,
-                                     siteTimezone: timezoneForSync,
-                                     timeRange: vc.timeRange,
-                                     latestDateToInclude: latestDateToInclude) { result in
+            periodStoreStatsGroup.enter()
+            self.dashboardViewModel.syncSiteSummaryStats(for: siteID,
+                                                         siteTimezone: timezoneForSync,
+                                                         timeRange: vc.timeRange,
+                                                         latestDateToInclude: latestDateToInclude) { result in
+                if case let .failure(error) = result {
+                    DDLogError("⛔️ Error synchronizing summary stats: \(error)")
+                    periodSyncError = error
+                }
+                group.leave()
+                periodGroup.leave()
+                periodStoreStatsGroup.leave()
+            }
+
+            group.enter()
+            periodGroup.enter()
+            self.dashboardViewModel.syncTopEarnersStats(for: siteID,
+                                                        siteTimezone: timezoneForSync,
+                                                        timeRange: vc.timeRange,
+                                                        latestDateToInclude: latestDateToInclude,
+                                                        forceRefresh: forceRefresh) { result in
                 if case let .failure(error) = result {
                     DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
                     periodSyncError = error
                 }
                 group.leave()
                 periodGroup.leave()
+
+                vc.removeTopPerformersGhostContent()
             }
 
             periodGroup.notify(queue: .main) {
                 // Update last successful data sync timestamp
                 if periodSyncError == nil {
                     vc.lastFullSyncTimestamp = Date()
+
+                    // Reload the Store Info Widget after syncing the today's stats.
+                    if vc.timeRange == .today {
+                        WidgetCenter.shared.reloadTimelines(ofKind: WooConstants.storeInfoWidgetKind)
+                    }
                 } else {
                     syncError = periodSyncError
                 }
             }
+
+            periodStoreStatsGroup.notify(queue: .main) {
+                vc.removeStoreStatsGhostContent()
+            }
         }
     }
 
-    func showSpinner(shouldShowSpinner: Bool) {
-        periodVCs.forEach { (vc) in
-            if shouldShowSpinner {
-                vc.refreshControl.beginRefreshing()
-            } else {
-                vc.refreshControl.endRefreshing()
+    func showSpinner(for periodViewController: StoreStatsAndTopPerformersPeriodViewController, shouldShowSpinner: Bool) {
+        if shouldShowSpinner {
+            periodViewController.refreshControl.beginRefreshing()
+        } else {
+            periodViewController.refreshControl.endRefreshing()
+        }
+    }
+
+    func observeRemotelyCreatedOrdersToResetLastSyncTimestamp() {
+        let siteID = self.siteID
+        remoteOrdersSubscription = Publishers
+            .Merge(pushNotificationsManager.backgroundNotifications, pushNotificationsManager.foregroundNotifications)
+            .filter { $0.kind == .storeOrder && $0.siteID == siteID }
+            .sink { [weak self] _ in
+                self?.resetLastSyncTimestamp()
             }
+    }
+
+    func observeLocallyCreatedOrdersToResetLastSyncTimestamp() {
+        let action = OrderAction.observeInsertedOrders(siteID: siteID) { [weak self] observableInsertedOrders in
+            guard let self = self else { return }
+            self.localOrdersSubscription = observableInsertedOrders
+                .filter { $0.isNotEmpty }
+                .sink { [weak self] _ in
+                    guard let self = self else { return }
+                    self.resetLastSyncTimestamp()
+                }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func resetLastSyncTimestamp() {
+        periodVCs.forEach { periodVC in
+            periodVC.lastFullSyncTimestamp = nil
         }
     }
 }
@@ -223,28 +360,11 @@ private extension StoreStatsAndTopPerformersViewController {
 
     /// Displays the Ghost Placeholder whenever there is no visible data.
     ///
-    func ensureGhostContentIsDisplayed() {
-        guard visibleChildViewController.shouldDisplayStoreStatsGhostContent else {
+    func ensureGhostContentIsDisplayed(for periodViewController: StoreStatsAndTopPerformersPeriodViewController) {
+        guard periodViewController.shouldDisplayStoreStatsGhostContent else {
             return
         }
-
-        displayGhostContent()
-    }
-
-    /// Locks UI Interaction and displays Ghost Placeholder animations.
-    ///
-    func displayGhostContent() {
-        view.isUserInteractionEnabled = false
-        buttonBarView.startGhostAnimation(style: .wooDefaultGhostStyle)
-        visibleChildViewController.displayGhostContent()
-    }
-
-    /// Unlocks the and removes the Placeholder Content
-    ///
-    func removeGhostContent() {
-        view.isUserInteractionEnabled = true
-        buttonBarView.stopGhostAnimation()
-        visibleChildViewController.removeGhostContent()
+        periodViewController.displayGhostContent()
     }
 
     /// If the Ghost Content was previously onscreen, this method will restart the animations.
@@ -268,153 +388,36 @@ private extension StoreStatsAndTopPerformersViewController {
         return view
     }
 
-    func configureButtonBarBottomBorder() {
-        view.addSubview(buttonBarBottomBorder)
-        NSLayoutConstraint.activate([
-            buttonBarBottomBorder.topAnchor.constraint(equalTo: buttonBarView.bottomAnchor),
-            buttonBarBottomBorder.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            buttonBarBottomBorder.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-            ])
-    }
-
     func configureView() {
-        view.backgroundColor = .listBackground
-        configureButtonBarBottomBorder()
-
-        // Disables any content inset adjustment since `XLPagerTabStrip` doesn't seem to support safe area insets.
-        containerView.contentInsetAdjustmentBehavior = .never
-
-        /// ButtonBarView is a collection view, and it should flip to support
-        /// RTL languages automatically. And yet it doesn't.
-        /// So, for RTL languages, we flip it. This also flips the cells
-        if traitCollection.layoutDirection == .rightToLeft {
-            buttonBarView.transform = CGAffineTransform(scaleX: -1, y: 1)
-        }
+        view.backgroundColor = Constants.backgroundColor
     }
 
     func configurePeriodViewControllers() {
-        let currentDate = Date()
-        let dayVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                   timeRange: .today,
-                                                                   currentDate: currentDate,
-                                                                   canDisplayInAppFeedbackCard: true)
-        let weekVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                    timeRange: .thisWeek,
-                                                                    currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false)
-        let monthVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                     timeRange: .thisMonth,
-                                                                     currentDate: currentDate,
-                                                                     canDisplayInAppFeedbackCard: false)
-        let yearVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                    timeRange: .thisYear,
-                                                                    currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false)
-
-        periodVCs.append(dayVC)
-        periodVCs.append(weekVC)
-        periodVCs.append(monthVC)
-        periodVCs.append(yearVC)
-
         periodVCs.forEach { (vc) in
             vc.scrollDelegate = scrollDelegate
             vc.onPullToRefresh = { [weak self] in
-                self?.onPullToRefresh()
+                await self?.onPullToRefresh()
             }
         }
     }
 
-    func configureTabStrip() {
-        settings.style.buttonBarBackgroundColor = .systemColor(.secondarySystemGroupedBackground)
-        settings.style.buttonBarItemBackgroundColor = .systemColor(.secondarySystemGroupedBackground)
-        settings.style.selectedBarBackgroundColor = .primary
-        settings.style.buttonBarItemFont = StyleManager.subheadlineFont
-        settings.style.selectedBarHeight = TabStrip.selectedBarHeight
-        settings.style.buttonBarItemTitleColor = .textSubtle
-        settings.style.buttonBarItemsShouldFillAvailableWidth = false
-        settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
-
-        changeCurrentIndexProgressive = {
-            (oldCell: ButtonBarViewCell?,
-            newCell: ButtonBarViewCell?,
-            progressPercentage: CGFloat,
-            changeCurrentIndex: Bool,
-            animated: Bool) -> Void in
-
-            guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = .textSubtle
-            newCell?.label.textColor = .primary
+    func loadLastTimeRange() async -> StatsTimeRangeV4? {
+        await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadLastSelectedStatsTimeRange(siteID: siteID) { timeRange in
+                continuation.resume(returning: timeRange)
+            }
+            ServiceLocator.stores.dispatch(action)
         }
     }
-}
 
-// MARK: - Sync'ing Helpers
-//
-private extension StoreStatsAndTopPerformersViewController {
-    func syncStats(for siteID: Int64,
-                   siteTimezone: TimeZone,
-                   timeRange: StatsTimeRangeV4,
-                   latestDateToInclude: Date,
-                   onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
-        let action = StatsActionV4.retrieveStats(siteID: siteID,
-                                                 timeRange: timeRange,
-                                                 earliestDateToInclude: earliestDateToInclude,
-                                                 latestDateToInclude: latestDateToInclude,
-                                                 quantity: timeRange.maxNumberOfIntervals,
-                                                 onCompletion: { result in
-                                                    if case let .failure(error) = result {
-                                                        DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats v4: \(error)")
-                                                    }
-                                                    onCompletion?(result)
-        })
-
+    func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
+        let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
         ServiceLocator.stores.dispatch(action)
     }
 
-    func syncSiteVisitStats(for siteID: Int64,
-                            siteTimezone: TimeZone,
-                            timeRange: StatsTimeRangeV4,
-                            latestDateToInclude: Date,
-                            onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        let action = StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
-                                                          siteTimezone: siteTimezone,
-                                                          timeRange: timeRange,
-                                                          latestDateToInclude: latestDateToInclude,
-                                                          onCompletion: { result in
-                                                            if case let .failure(error) = result {
-                                                                DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-                                                            }
-                                                            onCompletion?(result)
-        })
-
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    func syncTopEarnersStats(for siteID: Int64,
-                             siteTimezone: TimeZone,
-                             timeRange: StatsTimeRangeV4,
-                             latestDateToInclude: Date,
-                             onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
-        let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
-                                                          timeRange: timeRange,
-                                                          earliestDateToInclude: earliestDateToInclude,
-                                                          latestDateToInclude: latestDateToInclude,
-                                                          onCompletion: { result in
-                                                            switch result {
-                                                            case .success:
-                                                                ServiceLocator.analytics.track(.dashboardTopPerformersLoaded,
-                                                                                               withProperties: [
-                                                                                                "granularity": timeRange.topEarnerStatsGranularity.rawValue
-                                                                                               ])
-                                                            case .failure(let error):
-                                                                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
-                                                            }
-                                                            onCompletion?(result)
-        })
-
-        ServiceLocator.stores.dispatch(action)
+    func configureTabBar() {
+        tabBar.equalWidthFill = .equalSpacing
+        tabBar.equalWidthSpacing = TabBar.tabSpacing
     }
 }
 
@@ -425,14 +428,13 @@ private extension StoreStatsAndTopPerformersViewController {
         }
     }
 
-    func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
+    func handleSiteStatsStoreError(error: SiteStatsStoreError) {
         switch error {
         case .noPermission:
             updateSiteVisitors(mode: .hidden)
         case .statsModuleDisabled:
             let defaultSite = ServiceLocator.stores.sessionManager.defaultSite
-            let jcpFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
-            if defaultSite?.isJetpackCPConnected == true, jcpFeatureFlagEnabled {
+            if defaultSite?.isJetpackCPConnected == true {
                 updateSiteVisitors(mode: .redactedDueToJetpack)
             } else {
                 updateSiteVisitors(mode: .hidden)
@@ -444,8 +446,8 @@ private extension StoreStatsAndTopPerformersViewController {
 
     private func handleSyncError(error: Error) {
         switch error {
-        case let siteVisitStatsStoreError as SiteVisitStatsStoreError:
-            handleSiteVisitStatsStoreError(error: siteVisitStatsStoreError)
+        case let siteStatsStoreError as SiteStatsStoreError:
+            handleSiteStatsStoreError(error: siteStatsStoreError)
         default:
             displaySyncingError()
         }
@@ -455,20 +457,25 @@ private extension StoreStatsAndTopPerformersViewController {
 // MARK: - Private Helpers
 //
 private extension StoreStatsAndTopPerformersViewController {
-    func trackStatsLoaded(for granularity: StatsGranularityV4) {
+    func trackStatsLoaded(for timeRange: StatsTimeRangeV4) {
         guard ServiceLocator.stores.isAuthenticated else {
             return
         }
 
-        ServiceLocator.analytics.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
+        ServiceLocator.analytics.track(event: .Dashboard.dashboardMainStatsLoaded(timeRange: timeRange))
     }
 }
 
 // MARK: - Constants!
 //
 private extension StoreStatsAndTopPerformersViewController {
-    enum TabStrip {
-        static let buttonLeftRightMargin: CGFloat   = 14.0
-        static let selectedBarHeight: CGFloat       = 3.0
+    enum TabBar {
+        /// With `equalSpacing` distribution, there is a default spacing ~16px even if `stackView.spacing = 0`.
+        /// Setting a negative spacing offsets the default spacing to match the design more.
+        static let tabSpacing: CGFloat = -8.0
+    }
+
+    enum Constants {
+        static let backgroundColor: UIColor = .systemBackground
     }
 }

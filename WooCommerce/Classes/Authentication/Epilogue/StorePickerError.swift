@@ -10,12 +10,16 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
     static func createWithActions(presenting: UIViewController) -> StorePickerErrorHostingController {
         let viewController = StorePickerErrorHostingController()
         viewController.setActions(troubleshootingAction: {
-            let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-            viewController.present(safariViewController, animated: true)
+            WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: viewController)
         },
         contactSupportAction: {
             presenting.dismiss(animated: true) {
-                ZendeskManager.shared.showNewRequestIfPossible(from: presenting)
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+                    let supportForm = SupportFormHostingController(viewModel: .init())
+                    supportForm.show(from: presenting)
+                } else {
+                    ZendeskProvider.shared.showNewRequestIfPossible(from: presenting)
+                }
             }
         },
         dismissAction: {
@@ -82,12 +86,12 @@ struct StorePickerError: View {
 
                 VStack(spacing: Layout.buttonsSpacing) {
                     // Primary Button
-                    Button(Localization.troubleshoot, action: troubleshootingAction)
+                    Button(Localization.troubleshoot.localizedCapitalized, action: troubleshootingAction)
                         .buttonStyle(PrimaryButtonStyle())
                         .fixedSize(horizontal: false, vertical: true)
 
                     // Secondary button
-                    Button(Localization.contact, action: contactSupportAction)
+                    Button(Localization.contact.localizedCapitalized, action: contactSupportAction)
                         .buttonStyle(SecondaryButtonStyle())
                         .fixedSize(horizontal: false, vertical: true)
 
@@ -120,7 +124,7 @@ private extension StorePickerError {
                                                     comment: "Text for the button to navigate to troubleshooting tips from the store picker error screen")
         static let contact = NSLocalizedString("Contact Support",
                                                comment: "Text for the button to contact support from the store picker error screen")
-        static let back = NSLocalizedString("Back to Sites",
+        static let back = NSLocalizedString("Back to sites",
                                             comment: "Text for the button to dismiss the store picker error screen")
     }
 

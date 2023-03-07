@@ -2,8 +2,12 @@
     "data":              {
         "id": 963,
         "parent_id": 0,
+        "is_editable": true,
+        "needs_payment": true,
+        "needs_processing": true,
         "number": "963",
         "status": "processing",
+        "order_key": "abc123",
         "currency": "USD",
         "date_created_gmt": "2018-04-03T23:05:12",
         "date_modified_gmt": "2018-04-03T23:05:14",
@@ -84,8 +88,22 @@
                 "meta_data": []
             }
         ],
+        "tax_lines": [
+            {
+                "id": 1330,
+                "rate_code": "US-NY-STATE-2",
+                "rate_id": 6,
+                "label": "State",
+                "compound": true,
+                "tax_total": "7.71",
+                "shipping_tax_total": "0.00",
+                "rate_percent": 4.5,
+                "meta_data": []
+            }
+        ],
         "payment_method": "stripe",
         "payment_method_title": "Credit Card (Stripe)",
+        "payment_url": "http://www.automattic.com",
         "date_paid_gmt": "2018-04-03T23:05:14",
         "date_completed_gmt": null,
         "line_items": [

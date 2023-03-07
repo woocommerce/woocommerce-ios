@@ -1,6 +1,7 @@
 import Storage
 import Networking
 import Hardware
+import WooFoundation
 
 
 // MARK: - ReceiptStore
@@ -13,14 +14,8 @@ public class ReceiptStore: Store {
         storageManager.writerDerivedStorage
     }()
 
-    private lazy var receiptNumberFormatter: NumberFormatter = {
-        // We should use CurrencyFormatter instead for consistency
-        let formatter = NumberFormatter()
-
-        let fractionDigits = 2 // TODO - support non cent currencies like JPY - see #3948
-        formatter.minimumFractionDigits = fractionDigits
-        formatter.maximumFractionDigits = fractionDigits
-        return formatter
+    private lazy var currencyFormatter: CurrencyFormatter = {
+        CurrencyFormatter(currencySettings: CurrencySettings())
     }()
 
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, receiptPrinterService: PrinterService, fileStorage: FileStorage) {
@@ -70,7 +65,7 @@ private extension ReceiptStore {
     }
 
     func generateReceiptContent(order: Order, parameters: CardPresentReceiptParameters, removingHtml: Bool = false) -> ReceiptContent {
-        let lineItems = generateLineItems(order: order)
+        let lineItems = generateLineItems(order: order, currency: parameters.currency)
         let cartTotals = generateCartTotals(order: order, parameters: parameters)
         let note = receiptOrderNote(order: order, removingHtml: removingHtml)
 
@@ -92,12 +87,12 @@ private extension ReceiptStore {
         }
     }
 
-    func generateLineItems(order: Order) -> [ReceiptLineItem] {
+    func generateLineItems(order: Order, currency: String) -> [ReceiptLineItem] {
         order.items.map {item in
             ReceiptLineItem(
                 title: item.name,
                 quantity: item.quantity.description,
-                amount: item.subtotal,
+                amount: currencyFormatter.formatAmount(item.subtotal, with: currency) ?? "",
                 attributes: item.attributes.map { ReceiptLineAttribute(name: $0.name, value: $0.value) }
             )
         }
@@ -105,11 +100,12 @@ private extension ReceiptStore {
 
     func generateCartTotals(order: Order, parameters: CardPresentReceiptParameters) -> [ReceiptTotalLine] {
         let subtotalLines = [
-            productTotalLine(order: order),
+            productTotalLine(order: order, currency: parameters.currency),
             discountLine(order: order),
-            lineIfNonZero(description: ReceiptContent.Localization.feesLineDescription, amount: feesLineAmount(fees: order.fees)),
-            lineIfNonZero(description: ReceiptContent.Localization.shippingLineDescription, amount: order.shippingTotal),
-            lineIfNonZero(description: ReceiptContent.Localization.totalTaxLineDescription, amount: order.totalTax)
+            lineIfNonZero(description: ReceiptContent.Localization.feesLineDescription,
+                          amount: feesLineAmount(fees: order.fees), currency: parameters.currency),
+            lineIfNonZero(description: ReceiptContent.Localization.shippingLineDescription, amount: order.shippingTotal, currency: parameters.currency),
+            lineIfNonZero(description: ReceiptContent.Localization.totalTaxLineDescription, amount: order.totalTax, currency: parameters.currency)
         ].compactMap { $0 }
         let totalLine = [ReceiptTotalLine(description: ReceiptContent.Localization.amountPaidLineDescription,
                                          amount: parameters.formattedAmount)]
@@ -117,12 +113,12 @@ private extension ReceiptStore {
         return subtotalLines + totalLine
     }
 
-    func productTotalLine(order: Order) -> ReceiptTotalLine {
+    func productTotalLine(order: Order, currency: String) -> ReceiptTotalLine {
         let lineItemsTotal = order.items.reduce(into: Decimal(0)) { result, item in
             result += NSDecimalNumber(apiAmount: item.subtotal).decimalValue
         }
         return ReceiptTotalLine(description: ReceiptContent.Localization.productTotalLineDescription,
-                                amount: receiptNumberFormatter.string(from: lineItemsTotal as NSNumber) ?? "")
+                                amount: currencyFormatter.formatAmount(lineItemsTotal, with: currency) ?? "")
     }
 
     func discountLine(order: Order) -> ReceiptTotalLine? {
@@ -158,14 +154,15 @@ private extension ReceiptStore {
         let feeTotal = fees.reduce(into: Decimal(0)) { result, fee in
             result += NSDecimalNumber(apiAmount: fee.total).decimalValue
         }
-        return receiptNumberFormatter.string(from: feeTotal as NSNumber) ?? ""
+        return currencyFormatter.localize(feeTotal) ?? ""
     }
 
-    func lineIfNonZero(description: String, amount: String) -> ReceiptTotalLine? {
-        guard NSDecimalNumber(apiAmount: amount).decimalValue != 0 else {
+    func lineIfNonZero(description: String, amount: String, currency: String) -> ReceiptTotalLine? {
+        guard NSDecimalNumber(apiAmount: amount).decimalValue != 0,
+              let formattedAmount = currencyFormatter.formatAmount(amount, with: currency) else {
             return nil
         }
-        return ReceiptTotalLine(description: description, amount: amount)
+        return ReceiptTotalLine(description: description, amount: formattedAmount)
     }
 
     func loadReceipt(order: Order, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {

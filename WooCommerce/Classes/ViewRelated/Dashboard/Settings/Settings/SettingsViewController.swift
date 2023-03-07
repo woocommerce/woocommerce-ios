@@ -2,6 +2,9 @@ import UIKit
 import MessageUI
 import Gridicons
 import SafariServices
+import AutomatticAbout
+import Yosemite
+import SwiftUI
 
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()
@@ -14,6 +17,10 @@ final class SettingsViewController: UIViewController {
 
     private let viewModel: ViewModel
 
+    private lazy var woocommercePluginViewModel: PluginDetailsViewModel = PluginDetailsViewModel(
+        siteID: stores.sessionManager.defaultStoreID ?? 0,
+        pluginName: "WooCommerce")
+
     /// Main TableView
     ///
     @IBOutlet private weak var tableView: UITableView!
@@ -22,8 +29,23 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    init(viewModel: ViewModel = SettingsViewModel()) {
+    private var domainSettingsCoordinator: DomainSettingsCoordinator?
+
+    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    CloseAccountCoordinator(sourceViewController: self) { [weak self] in
+        guard let self = self else { throw CloseAccountError.presenterDeallocated }
+        try await self.closeAccount()
+    } onRemoveSuccess: { [weak self] in
+        self?.logOutUser()
+    }
+
+    private let stores: StoresManager
+
+    private var jetpackSetupCoordinator: JetpackSetupCoordinator?
+
+    init(viewModel: ViewModel = SettingsViewModel(), stores: StoresManager = ServiceLocator.stores) {
         self.viewModel = viewModel
+        self.stores = stores
         super.init(nibName: nil, bundle: nil)
         self.viewModel.presenter = self
     }
@@ -43,6 +65,12 @@ final class SettingsViewController: UIViewController {
         configureTableViewFooter()
         registerTableViewCells()
         viewModel.onViewDidLoad()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        viewModel.reloadSettings()
     }
 
     override func viewDidLayoutSubviews() {
@@ -83,6 +111,8 @@ private extension SettingsViewController {
         footerView.iconColor = .primary
         footerView.footnote.textAlignment = .center
         footerView.footnote.delegate = self
+        footerView.icon.addGestureRecognizer(crashDebugMenuGestureRecognizer)
+        footerView.icon.isUserInteractionEnabled = true
 
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
@@ -92,7 +122,7 @@ private extension SettingsViewController {
 
     func registerTableViewCells() {
         for row in Row.allCases {
-            tableView.registerNib(for: row.type)
+            row.registerWithNib ? tableView.registerNib(for: row.type) : tableView.register(row.type)
         }
     }
 
@@ -106,8 +136,10 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
-        case let cell as BasicTableViewCell where row == .inPersonPayments:
-            configureInPersonPayments(cell: cell)
+        case let cell as HostingTableViewCell<PluginDetailsRowView> where row == .woocommerceDetails:
+            configureWooCommmerceDetails(cell: cell)
+        case let cell as BasicTableViewCell where row == .domain:
+            configureDomain(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
@@ -122,12 +154,12 @@ private extension SettingsViewController {
             configureAbout(cell: cell)
         case let cell as BasicTableViewCell where row == .whatsNew:
             configureWhatsNew(cell: cell)
-        case let cell as BasicTableViewCell where row == .licenses:
-            configureLicenses(cell: cell)
         case let cell as BasicTableViewCell where row == .deviceSettings:
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
             configureWormholy(cell: cell)
+        case let cell as BasicTableViewCell where row == .closeAccount:
+            configureCloseAccount(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
         default:
@@ -151,16 +183,22 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.plugins
     }
 
+    func configureWooCommmerceDetails(cell: HostingTableViewCell<PluginDetailsRowView>) {
+        let view = PluginDetailsRowView.init(viewModel: woocommercePluginViewModel)
+        cell.host(view, parent: self)
+        cell.selectionStyle = .none
+    }
+
     func configureSupport(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.helpAndSupport
     }
 
-    func configureInPersonPayments(cell: BasicTableViewCell) {
+    func configureDomain(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.inPersonPayments
+        cell.textLabel?.text = Localization.domain
     }
 
     func configureInstallJetpack(cell: BasicTableViewCell) {
@@ -194,12 +232,6 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.wooCommerce
     }
 
-    func configureLicenses(cell: BasicTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.thirdPartyLicenses
-    }
-
     func configureAppSettings(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -218,8 +250,17 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.whatsNew
     }
 
+    func configureCloseAccount(cell: BasicTableViewCell) {
+        cell.accessoryType = .none
+        cell.selectionStyle = .default
+        cell.textLabel?.textAlignment = .center
+        cell.textLabel?.textColor = .error
+        cell.textLabel?.text = Localization.closeAccount
+    }
+
     func configureLogout(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
+        cell.accessoryType = .none
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = .error
         cell.textLabel?.text = Localization.logout
@@ -241,10 +282,29 @@ private extension SettingsViewController {
 // MARK: - Actions
 //
 private extension SettingsViewController {
+    func closeAccountWasPressed() {
+        ServiceLocator.analytics.track(event: .closeAccountTapped(source: .settings))
+        closeAccountCoordinator.start()
+    }
+
+    func closeAccount() async throws {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            let action = AccountAction.closeAccount { result in
+                continuation.resume(with: result)
+            }
+            self.stores.dispatch(action)
+        }
+    }
 
     func logoutWasPressed() {
         ServiceLocator.analytics.track(.settingsLogoutTapped)
-        let messageFormatted = String(format: Localization.LogoutAlert.alertMessage, viewModel.accountName)
+        let messageFormatted: String = {
+            guard viewModel.accountName.isNotEmpty else {
+                return Localization.LogoutAlert.alertMessageWithoutDisplayName
+            }
+            return String(format: Localization.LogoutAlert.alertMessage, viewModel.accountName)
+        }()
         let alertController = UIAlertController(title: "", message: messageFormatted, preferredStyle: .alert)
 
         alertController.addActionWithTitle(Localization.LogoutAlert.cancelButtonTitle, style: .cancel) { _ in
@@ -291,10 +351,16 @@ private extension SettingsViewController {
         show(viewController, sender: self)
     }
 
-    func inPersonPaymentsWasPressed() {
-        let viewModel = InPersonPaymentsViewModel()
-        let viewController = InPersonPaymentsViewController(viewModel: viewModel)
-        show(viewController, sender: self)
+    func domainWasPressed() {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite, let navigationController else {
+            return
+        }
+
+        ServiceLocator.analytics.track(.settingsDomainsTapped)
+
+        let coordinator = DomainSettingsCoordinator(source: .settings, site: site, navigationController: navigationController)
+        domainSettingsCoordinator = coordinator
+        coordinator.start()
     }
 
     func installJetpackWasPressed() {
@@ -304,9 +370,17 @@ private extension SettingsViewController {
 
         ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .settings))
 
-        let installJetpackController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url)
+        if site.isNonJetpackSite, let navigationController {
+            let coordinator = JetpackSetupCoordinator(site: site,
+                                                      rootViewController: navigationController)
+            self.jetpackSetupCoordinator = coordinator
+            return coordinator.showBenefitModal()
+        }
+        let installJetpackController = JCPJetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
+
         installJetpackController.setDismissAction { [weak self] in
             self?.dismiss(animated: true, completion: nil)
+            self?.viewModel.onJetpackInstallDismiss()
         }
         present(installJetpackController, animated: true, completion: nil)
     }
@@ -321,23 +395,19 @@ private extension SettingsViewController {
 
     func aboutWasPressed() {
         ServiceLocator.analytics.track(.settingsAboutLinkTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: AboutViewController.self) else {
-            fatalError("Cannot instantiate `AboutViewController` from Dashboard storyboard")
-        }
-        show(viewController, sender: self)
-    }
 
-    func licensesWasPressed() {
-        ServiceLocator.analytics.track(.settingsLicensesLinkTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: LicensesViewController.self) else {
-            fatalError("Cannot instantiate `LicensesViewController` from Dashboard storyboard")
+        let configuration = WooAboutScreenConfiguration()
+        let controller = AutomatticAboutScreen.controller(appInfo: WooAboutScreenConfiguration.appInfo,
+                                                          configuration: configuration,
+                                                          fonts: WooAboutScreenConfiguration.headerFonts)
+        present(controller, animated: true) { [weak self] in
+            self?.tableView.deselectSelectedRowWithAnimation(true)
         }
-        show(viewController, sender: self)
     }
 
     func betaFeaturesWasPressed() {
         ServiceLocator.analytics.track(.settingsBetaFeaturesButtonTapped)
-        let betaFeaturesViewController = BetaFeaturesViewController()
+        let betaFeaturesViewController = BetaFeaturesConfigurationViewController()
         navigationController?.pushViewController(betaFeaturesViewController, animated: true)
     }
 
@@ -380,7 +450,37 @@ private extension SettingsViewController {
 }
 
 
-// MARK: - UITextViewDeletgate Conformance
+// MARK: - Crash Debug Menu
+//
+private extension SettingsViewController {
+
+    var crashDebugMenuGestureRecognizer: UITapGestureRecognizer {
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didInvokeCrashDebugMenu))
+        gestureRecognizer.numberOfTapsRequired = 4
+        return gestureRecognizer
+    }
+
+    @objc func didInvokeCrashDebugMenu(_ sender: UITapGestureRecognizer? = nil) {
+        let crashDebugMenu = UIAlertController(title: Localization.CrashDebugMenu.title, message: nil, preferredStyle: .actionSheet)
+        crashDebugMenu.addAction(crashDebugMenuCrashAction)
+        crashDebugMenu.addAction(crashDebugMenuCancelAction)
+
+        present(crashDebugMenu, animated: true, completion: nil)
+    }
+
+    var crashDebugMenuCrashAction: UIAlertAction {
+        return UIAlertAction(title: Localization.CrashDebugMenu.crashImmediately, style: .destructive) { _ in
+            ServiceLocator.crashLogging.crash()
+        }
+    }
+
+    var crashDebugMenuCancelAction: UIAlertAction {
+        return UIAlertAction(title: Localization.CrashDebugMenu.cancel, style: .cancel, handler: nil)
+    }
+}
+
+
+// MARK: - UITextViewDelegate Conformance
 //
 extension SettingsViewController: UITextViewDelegate {
 
@@ -453,8 +553,8 @@ extension SettingsViewController: UITableViewDelegate {
             sitePluginsWasPressed()
         case .support:
             supportWasPressed()
-        case .inPersonPayments:
-            inPersonPaymentsWasPressed()
+        case .domain:
+            domainWasPressed()
         case .installJetpack:
             installJetpackWasPressed()
         case .privacy:
@@ -465,14 +565,14 @@ extension SettingsViewController: UITableViewDelegate {
             presentSurveyForFeedback()
         case .about:
             aboutWasPressed()
-        case .licenses:
-            licensesWasPressed()
         case .deviceSettings:
             deviceSettingsWasPressed()
         case .wormholy:
             wormholyWasPressed()
         case .whatsNew:
             whatsNewWasPressed()
+        case .closeAccount:
+            closeAccountWasPressed()
         case .logout:
             logoutWasPressed()
         default:
@@ -527,9 +627,10 @@ extension SettingsViewController {
 
         // Plugins
         case plugins
+        case woocommerceDetails
 
         // Store settings
-        case inPersonPayments
+        case domain
         case installJetpack
 
         // Help & Feedback
@@ -543,15 +644,25 @@ extension SettingsViewController {
         // About the App
         case about
         case whatsNew
-        case licenses
 
         // Other
         case deviceSettings
         case wormholy
 
+        // Account deletion
+        case closeAccount
+
         // Logout
         case logout
 
+        fileprivate var registerWithNib: Bool {
+            switch self {
+            case .woocommerceDetails:
+                return false
+            default:
+                return true
+            }
+        }
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
@@ -561,13 +672,15 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .plugins:
                 return BasicTableViewCell.self
+            case .woocommerceDetails:
+                return HostingTableViewCell<PluginDetailsRowView>.self
             case .support:
                 return BasicTableViewCell.self
-            case .inPersonPayments:
+            case .domain:
                 return BasicTableViewCell.self
             case .installJetpack:
                 return BasicTableViewCell.self
-            case .logout:
+            case .logout, .closeAccount:
                 return BasicTableViewCell.self
             case .privacy:
                 return BasicTableViewCell.self
@@ -576,8 +689,6 @@ extension SettingsViewController {
             case .sendFeedback:
                 return BasicTableViewCell.self
             case .about:
-                return BasicTableViewCell.self
-            case .licenses:
                 return BasicTableViewCell.self
             case .deviceSettings:
                 return BasicTableViewCell.self
@@ -632,6 +743,11 @@ private extension SettingsViewController {
             comment: "Navigates to In-Person Payments screen"
         )
 
+        static let domain = NSLocalizedString(
+            "Domains",
+            comment: "Navigates to domain settings screen."
+        )
+
         static let installJetpack = NSLocalizedString(
             "Install Jetpack",
             comment: "Navigates to Install Jetpack screen."
@@ -657,11 +773,6 @@ private extension SettingsViewController {
             comment: "Navigates to about WooCommerce app screen"
         )
 
-        static let thirdPartyLicenses = NSLocalizedString(
-            "Third Party Licenses",
-            comment: "Navigates to screen with third party software licenses"
-        )
-
         static let openDeviceSettings = NSLocalizedString(
             "Open Device Settings",
             comment: "Opens iOS's Device Settings for the app"
@@ -677,6 +788,11 @@ private extension SettingsViewController {
             comment: "Navigates to screen containing the latest WooCommerce Features"
         )
 
+        static let closeAccount = NSLocalizedString(
+            "Close Account",
+            comment: "Close Account button title to close the user's WordPress.com account"
+        )
+
         static let logout = NSLocalizedString(
             "Log Out",
             comment: "Log out button title"
@@ -687,9 +803,30 @@ private extension SettingsViewController {
             comment: "It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>`"
         )
 
+        enum CrashDebugMenu {
+            static let title = NSLocalizedString(
+                "Crash Debug Menu",
+                comment: "The title for a menu that helps debug crashes in production builds"
+            )
+
+            static let crashImmediately = NSLocalizedString(
+                "Crash Immediately",
+                comment: "The title for a button that causes the app to deliberately crash for debugging purposes"
+            )
+
+            static let cancel = NSLocalizedString(
+                "Cancel",
+                comment: "The title for a button that dismisses the crash debug menu"
+            )
+        }
+
         enum LogoutAlert {
             static let alertMessage = NSLocalizedString(
                 "Are you sure you want to log out of the account %@?",
+                comment: "Alert message to confirm a user meant to log out."
+            )
+            static let alertMessageWithoutDisplayName = NSLocalizedString(
+                "Are you sure you want to log out of your account?",
                 comment: "Alert message to confirm a user meant to log out."
             )
             static let cancelButtonTitle = NSLocalizedString(

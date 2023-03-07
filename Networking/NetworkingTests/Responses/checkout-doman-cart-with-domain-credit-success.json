@@ -1,0 +1,49 @@
+{
+    "receipt_id": 76588039,
+    "purchases": {
+        "16": [
+            {
+                "is_gift_purchase": false,
+                "will_auto_renew": false,
+                "expiry": "2024-01-30",
+                "user_email": "",
+                "product_id": 76,
+                "product_slug": "dotblog_domain",
+                "product_name": ".blog Domain Registration",
+                "product_name_short": null,
+                "product_type": "domain_reg",
+                "free_trial": false,
+                "is_domain_registration": true,
+                "meta": "testing.blog",
+                "ownership_id": 36,
+                "is_renewal": false
+            },
+            {
+                "is_gift_purchase": false,
+                "will_auto_renew": false,
+                "expiry": "2024-01-30",
+                "user_email": "",
+                "product_id": 5,
+                "product_slug": "domain_map",
+                "product_name": "Domain Connection",
+                "product_name_short": null,
+                "product_type": "domain_map",
+                "free_trial": false,
+                "is_domain_registration": false,
+                "meta": "testing.blog",
+                "ownership_id": 36,
+                "is_renewal": false
+            }
+        ]
+    },
+    "display_price": "US$0.00",
+    "price_integer": 0,
+    "price_float": 0,
+    "currency": "USD",
+    "is_gift_purchase": false,
+    "success": true,
+    "error_code": "",
+    "error_message": "",
+    "order_id": "",
+    "failed_purchases": []
+}

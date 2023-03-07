@@ -33,9 +33,12 @@ struct IconListItem: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: Layout.contentSpacing) {
-            icon?.getImage()
-                .frame(width: Layout.iconSize.width, height: Layout.iconSize.height)
-                .accessibility(hidden: true)
+            VStack {
+                icon?.getImage()
+                    .frame(width: Layout.iconSize.width, height: Layout.iconSize.height)
+                    .accessibility(hidden: true)
+                Spacer()
+            }
             VStack(alignment: .leading, spacing: Layout.innerSpacing) {
                 Text(title)
                     .headlineStyle()

@@ -1,18 +1,35 @@
 import SwiftUI
+import Yosemite
 
 final class InPersonPaymentsViewController: UIHostingController<InPersonPaymentsView> {
-    init(viewModel: InPersonPaymentsViewModel) {
+    private let onWillDisappear: (() -> ())?
+
+    init(viewModel: InPersonPaymentsViewModel,
+         onWillDisappear: (() -> ())? = nil) {
+        self.onWillDisappear = onWillDisappear
         super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
-        rootView.showSupport = {
-            ZendeskManager.shared.showNewWCPayRequestIfPossible(from: self)
+        rootView.showSupport = { [weak self] in
+            guard let self = self else { return }
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
+                let supportForm = SupportFormHostingController(viewModel: .init())
+                supportForm.show(from: self)
+            } else {
+                ZendeskProvider.shared.showNewWCPayRequestIfPossible(from: self)
+            }
         }
-        rootView.showURL = { url in
+        rootView.showURL = { [weak self] url in
+            guard let self = self else { return }
             WebviewHelper.launch(url, with: self)
         }
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        onWillDisappear?()
+        super.viewWillDisappear(animated)
     }
 }
 
@@ -21,64 +38,86 @@ struct InPersonPaymentsView: View {
 
     var showSupport: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
+    var shouldShowMenuOnCompletion: Bool = true
 
     var body: some View {
         Group {
             switch viewModel.state {
             case .loading:
                 InPersonPaymentsLoading()
+            case let .selectPlugin(pluginSelectionWasCleared):
+                // Preselect WCPay only if there was no selection done before
+                InPersonPaymentsSelectPluginView(selectedPlugin: pluginSelectionWasCleared == true ? nil : .wcPay) { plugin in
+                    viewModel.selectPlugin(plugin)
+                    ServiceLocator.analytics.track(.cardPresentPaymentGatewaySelected, withProperties: ["payment_gateway": plugin.pluginName])
+                }
             case .countryNotSupported(let countryCode):
-                InPersonPaymentsCountryNotSupported(countryCode: countryCode)
-            case .wcpayNotInstalled:
-                InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
-            case .wcpayUnsupportedVersion:
-                InPersonPaymentsPluginNotSupportedVersion(onRefresh: viewModel.refresh)
-            case .wcpayNotActivated:
-                InPersonPaymentsPluginNotActivated(onRefresh: viewModel.refresh)
-            case .wcpayInTestModeWithLiveStripeAccount:
-                InPersonPaymentsLiveSiteInTestMode(onRefresh:
+                InPersonPaymentsCountryNotSupported(countryCode: countryCode, analyticReason: viewModel.state.reasonForAnalytics)
+            case .countryNotSupportedStripe(_, let countryCode):
+                InPersonPaymentsCountryNotSupportedStripe(countryCode: countryCode, analyticReason: viewModel.state.reasonForAnalytics)
+            case .pluginNotInstalled:
+                InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
+            case .pluginUnsupportedVersion(let plugin):
+                InPersonPaymentsPluginNotSupportedVersion(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
+            case .pluginNotActivated(let plugin):
+                InPersonPaymentsPluginNotActivated(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
+            case .pluginInTestModeWithLiveStripeAccount(let plugin):
+                InPersonPaymentsLiveSiteInTestMode(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh:
                     viewModel.refresh)
-            case .wcpaySetupNotCompleted:
-                InPersonPaymentsWCPayNotSetup(onRefresh: viewModel.refresh)
+            case .pluginSetupNotCompleted(let plugin):
+                InPersonPaymentsPluginNotSetup(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
             case .stripeAccountOverdueRequirement:
-                InPersonPaymentsStripeAccountOverdue()
-            case .stripeAccountPendingRequirement(let deadline):
-                InPersonPaymentsStripeAccountPending(deadline: deadline)
+                InPersonPaymentsStripeAccountOverdue(analyticReason: viewModel.state.reasonForAnalytics)
+            case .stripeAccountPendingRequirement(_, let deadline):
+                InPersonPaymentsStripeAccountPending(
+                    deadline: deadline,
+                    analyticReason: viewModel.state.reasonForAnalytics,
+                    onSkip: viewModel.skipPendingRequirements)
             case .stripeAccountUnderReview:
-                InPersonPaymentsStripeAcountReview()
+                InPersonPaymentsStripeAccountReview(analyticReason: viewModel.state.reasonForAnalytics)
             case .stripeAccountRejected:
-                InPersonPaymentsStripeRejected()
+                InPersonPaymentsStripeRejected(analyticReason: viewModel.state.reasonForAnalytics)
+            case .codPaymentGatewayNotSetUp(let plugin):
+                InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView(
+                    viewModel: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
+                        plugin: plugin,
+                        analyticReason: viewModel.state.reasonForAnalytics,
+                        completion: viewModel.refresh))
             case .completed:
-                InPersonPaymentsMenu()
+                InPersonPaymentsCompleted()
             case .noConnectionError:
-                InPersonPaymentsNoConnection(onRefresh: viewModel.refresh)
+                InPersonPaymentsNoConnection(analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
             default:
-                InPersonPaymentsUnavailable()
+                InPersonPaymentsUnavailable(analyticReason: viewModel.state.reasonForAnalytics)
             }
         }
         .customOpenURL(action: { url in
             switch url {
             case InPersonPaymentsSupportLink.supportURL:
                 showSupport?()
+            case LearnMoreViewModel.learnMoreURL:
+                if let url = viewModel.learnMoreURL {
+                    showURL?(url)
+                }
             default:
                 showURL?(url)
             }
         })
         .navigationTitle(Localization.title)
     }
-}
 
-private enum Localization {
-    static let title = NSLocalizedString(
-        "In-Person Payments",
-        comment: "Title for the In-Person Payments settings screen"
-    )
+    enum Localization {
+        static let title = NSLocalizedString(
+            "Payments",
+            comment: "Title for the Payments settings screen"
+        )
+    }
 }
 
 struct InPersonPaymentsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(fixedState: .genericError))
+            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(fixedState: .completed(plugin: .stripeOnly)))
         }
     }
 }

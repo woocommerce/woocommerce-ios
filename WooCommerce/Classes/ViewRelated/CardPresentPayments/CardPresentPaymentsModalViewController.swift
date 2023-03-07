@@ -1,10 +1,11 @@
 import UIKit
+import SwiftUI
 import WordPressAuthenticator
 import SafariServices
 
 
-/// UI containing modals preented in the Card Present Payments flows.
-final class CardPresentPaymentsModalViewController: UIViewController {
+/// UI containing modals presented in the Card Present Payments flows.
+final class CardPresentPaymentsModalViewController: UIViewController, CardReaderModalFlowViewControllerProtocol {
     /// The view model providing configuration for this view controller
     /// and support for user actions
     private var viewModel: CardPresentPaymentsModalViewModel
@@ -32,7 +33,7 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     @IBOutlet weak var heightConstraint: NSLayoutConstraint!
     @IBOutlet weak var widthConstraint: NSLayoutConstraint!
 
-
+    private var loadingView: UIView?
 
     init(viewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = viewModel
@@ -46,6 +47,7 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        createViews()
         initializeContent()
         setBackgroundColor()
         setButtonsActions()
@@ -69,22 +71,40 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     private func resetHeightAndWidth() {
         if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
             primaryActionButtonsStackView.axis = .horizontal
-            imageView.isHidden = true
+            primaryActionButtonsStackView.distribution = .fillProportionally
 
             mainStackView.distribution = .fillProportionally
             heightConstraint.constant = Constants.modalWidth
             widthConstraint.constant = Constants.modalHeight
         } else {
             primaryActionButtonsStackView.axis = .vertical
-            imageView.isHidden = false
+            primaryActionButtonsStackView.distribution = .fill
+
             mainStackView.distribution = .fill
             heightConstraint.constant = Constants.modalHeight
             widthConstraint.constant = Constants.modalWidth
         }
 
+        updateImageAndLoadingVisibility()
+
         heightConstraint.priority = .required
         widthConstraint.priority = .required
         configureSpacer()
+    }
+
+    private func updateImageAndLoadingVisibility() {
+        if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
+            imageView.isHidden = true
+            loadingView?.isHidden = true
+        } else {
+            if viewModel.showLoadingIndicator {
+                imageView.isHidden = true
+                loadingView?.isHidden = false
+            } else {
+                imageView.isHidden = false
+                loadingView?.isHidden = true
+            }
+        }
     }
 }
 
@@ -93,6 +113,24 @@ final class CardPresentPaymentsModalViewController: UIViewController {
 private extension CardPresentPaymentsModalViewController {
     func setBackgroundColor() {
         containerView.backgroundColor = .tertiarySystemBackground
+    }
+
+    func createViews() {
+        createLoadingIndicator()
+    }
+
+    func createLoadingIndicator() {
+        let loadingIndicator = ProgressView()
+            .progressViewStyle(IndefiniteCircularProgressViewStyle(size: 96.0))
+        let host = ConstraintsUpdatingHostingController(rootView: loadingIndicator)
+        host.view.backgroundColor = .tertiarySystemBackground
+        add(host)
+
+        guard let index = mainStackView.arrangedSubviews.firstIndex(of: imageView) else {
+            return
+        }
+        mainStackView.insertArrangedSubview(host.view, at: index)
+        loadingView = host.view
     }
 
     func styleContent() {
@@ -158,9 +196,11 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleAuxiliaryButton() {
-        auxiliaryButton.applyLinkButtonStyle()
-        auxiliaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        if viewModel.actionsMode != .secondaryActionAndAuxiliaryButton {
+            auxiliaryButton.applyLinkButtonStyle()
+        }
         auxiliaryButton.titleLabel?.minimumScaleFactor = 0.5
+        auxiliaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
     }
 
     func initializeContent() {
@@ -190,10 +230,13 @@ private extension CardPresentPaymentsModalViewController {
         if shouldShowBottomLabels() {
             configureBottomLabels()
         }
+
+        resetHeightAndWidth()
     }
 
     func configureTopTitle() {
         topTitleLabel.text = viewModel.topTitle
+        topTitleLabel.accessibilityIdentifier = Accessibility.topTitleLabel
     }
 
     func configureTopSubtitle() {
@@ -261,6 +304,7 @@ private extension CardPresentPaymentsModalViewController {
 
         primaryButton.isHidden = false
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
+        primaryButton.accessibilityIdentifier = Accessibility.primaryButton
     }
 
     func configureSecondaryButton() {
@@ -271,16 +315,28 @@ private extension CardPresentPaymentsModalViewController {
 
         secondaryButton.isHidden = false
         secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
+        secondaryButton.accessibilityIdentifier = Accessibility.secondaryButton
     }
 
     func configureAuxiliaryButton() {
+
         guard shouldShowAuxiliaryButton() else {
             auxiliaryButton.isHidden = true
             return
         }
 
         auxiliaryButton.isHidden = false
-        auxiliaryButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
+        auxiliaryButton.accessibilityIdentifier = Accessibility.auxiliaryButton
+        // Prevents UI flicker when loading different content
+        UIView.performWithoutAnimation {
+            auxiliaryButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
+            auxiliaryButton.setAttributedTitle(viewModel.auxiliaryAttributedButtonTitle, for: .normal)
+            var config = UIButton.Configuration.plain()
+            config.contentInsets = Constants.auxiliaryButtonInsets
+            config.titleAlignment = .leading
+            auxiliaryButton.configuration = config
+            view.layoutIfNeeded()
+        }
     }
 
     func configureSpacer() {
@@ -334,12 +390,12 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func shouldShowBottomActionButton() -> Bool {
-        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary]
+        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary, .secondaryActionAndAuxiliaryButton]
             .contains(viewModel.actionsMode)
     }
 
     func shouldShowAuxiliaryButton() -> Bool {
-        viewModel.actionsMode == .twoActionAndAuxiliary
+        [.twoActionAndAuxiliary, .secondaryActionAndAuxiliaryButton].contains(viewModel.actionsMode)
     }
 }
 
@@ -373,6 +429,7 @@ private extension CardPresentPaymentsModalViewController {
         static let extraInfoCustomInsets = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10)
         static let modalHeight: CGFloat = 382
         static let modalWidth: CGFloat = 280
+        static let auxiliaryButtonInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
     }
 }
 
@@ -404,5 +461,14 @@ extension CardPresentPaymentsModalViewController {
 
     func getSecondaryActionButton() -> UIButton {
         return secondaryButton
+    }
+}
+
+private extension CardPresentPaymentsModalViewController {
+    enum Accessibility {
+        static let topTitleLabel = "card-present-payments-modal-title-label"
+        static let primaryButton = "card-present-payments-modal-primary-button"
+        static let secondaryButton = "card-present-payments-modal-secondary-button"
+        static let auxiliaryButton = "card-present-payments-modal-auxiliary-button"
     }
 }

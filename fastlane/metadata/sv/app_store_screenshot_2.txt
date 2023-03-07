@@ -1,2 +1,2 @@
-Visa och hantera
-ordrar på språng
+Skapa beställningar
+när du är på språng

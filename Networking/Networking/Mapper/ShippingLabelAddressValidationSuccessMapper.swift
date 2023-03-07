@@ -8,10 +8,14 @@ struct ShippingLabelAddressValidationSuccessMapper: Mapper {
     ///
     func map(response: Data) throws -> ShippingLabelAddressValidationSuccess {
         let decoder = JSONDecoder()
-        return try decoder.decode(ShippingLabelAddressValidationResponseEnvelope.self, from: response)
-            .data
-            .result
-            .get()
+        let data: ShippingLabelAddressValidationResponse = try {
+            do {
+                return try decoder.decode(ShippingLabelAddressValidationResponseEnvelope.self, from: response).data
+            } catch {
+                return try decoder.decode(ShippingLabelAddressValidationResponse.self, from: response)
+            }
+        }()
+        return try data.result.get()
     }
 }
 

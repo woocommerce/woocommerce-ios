@@ -43,6 +43,10 @@ public enum WooAPIVersion: String {
     ///
     case wcTelemetry = "wc-telemetry"
 
+    /// WooCommerce Admin.
+    ///
+    case wcAdmin = "wc-admin"
+
     /// Returns the path for the current API Version
     ///
     var path: String {

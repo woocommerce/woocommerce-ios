@@ -14,7 +14,7 @@ final class CardPresentModalConnectingFailedUpdatePostalCode: CardPresentPayment
 
     var topSubtitle: String? = nil
 
-    let image: UIImage = .paymentErrorImage
+    let image: UIImage
 
     let primaryButtonTitle: String? = Localization.retry
 
@@ -30,7 +30,10 @@ final class CardPresentModalConnectingFailedUpdatePostalCode: CardPresentPayment
         return topTitle
     }
 
-    init(retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+    init(image: UIImage = .paymentErrorImage,
+         retrySearch: @escaping () -> Void,
+         cancelSearch: @escaping () -> Void) {
+        self.image = image
         self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
     }

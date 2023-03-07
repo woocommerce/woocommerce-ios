@@ -85,6 +85,38 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     public let addOns: [ProductAddOn]
 
+    // MARK: Product Bundle properties
+
+    /// Single-product details page layout. Applicable for bundle-type products only.
+    public let bundleLayout: ProductBundleLayout?
+
+    /// Controls the form location of the product in the single-product page. Applicable to bundle-type products.
+    public let bundleFormLocation: ProductBundleFormLocation?
+
+    /// Controls the display of bundle container/child items in cart/order templates. Applicable for bundle-type products only.
+    public let bundleItemGrouping: ProductBundleItemGrouping?
+
+    /// Min bundle size. Applicable for bundle-type products only.
+    public let bundleMinSize: Int64?
+
+    /// Max bundle size. Applicable for bundle-type products only.
+    public let bundleMaxSize: Int64?
+
+    /// Controls whether the configuration of this product can be modified from the cart page. Applicable to bundle-type products.
+    public let bundleEditableInCart: Bool?
+
+    /// Sold Individually option context. Applicable to bundle-type products.
+    public let bundleSoldIndividuallyContext: ProductBundleSoldIndividuallyContext?
+
+    /// Stock status of this bundle, taking bundled product quantity requirements and limitations into account. Applicable for bundle-type products only.
+    public let bundleStockStatus: ProductStockStatus?
+
+    /// Quantity of bundles left in stock, taking bundled product quantity requirements into account. Applicable for bundle-type products only.
+    public let bundleStockQuantity: Int64?
+
+    /// List of bundled item data contained in this product.
+    public let bundledItems: [ProductBundleItem]
+
     /// Computed Properties
     ///
     public var productStatus: ProductStatus {
@@ -199,7 +231,17 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 variations: [Int64],
                 groupedProducts: [Int64],
                 menuOrder: Int,
-                addOns: [ProductAddOn]) {
+                addOns: [ProductAddOn],
+                bundleLayout: ProductBundleLayout?,
+                bundleFormLocation: ProductBundleFormLocation?,
+                bundleItemGrouping: ProductBundleItemGrouping?,
+                bundleMinSize: Int64?,
+                bundleMaxSize: Int64?,
+                bundleEditableInCart: Bool?,
+                bundleSoldIndividuallyContext: ProductBundleSoldIndividuallyContext?,
+                bundleStockStatus: ProductStockStatus?,
+                bundleStockQuantity: Int64?,
+                bundledItems: [ProductBundleItem]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -263,6 +305,16 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.groupedProducts = groupedProducts
         self.menuOrder = menuOrder
         self.addOns = addOns
+        self.bundleLayout = bundleLayout
+        self.bundleFormLocation = bundleFormLocation
+        self.bundleItemGrouping = bundleItemGrouping
+        self.bundleMinSize = bundleMinSize
+        self.bundleMaxSize = bundleMaxSize
+        self.bundleEditableInCart = bundleEditableInCart
+        self.bundleStockStatus = bundleStockStatus
+        self.bundleStockQuantity = bundleStockQuantity
+        self.bundleSoldIndividuallyContext = bundleSoldIndividuallyContext
+        self.bundledItems = bundledItems
     }
 
     /// The public initializer for Product.
@@ -319,7 +371,12 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                                                             .decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
             ?? ""
 
-        let purchasable = try container.decode(Bool.self, forKey: .purchasable)
+        // Even though WooCommerce Core returns Bool values,
+        // some plugins alter the field value from Bool to Int (1 or 0)
+        let purchasable = container.failsafeDecodeIfPresent(targetType: Bool.self, forKey: .purchasable,
+                                                            alternativeTypes: [
+                                                                .integer(transform: { ($0 as NSNumber).boolValue })])
+        ?? true
         let totalSales = container.failsafeDecodeIfPresent(Int.self, forKey: .totalSales) ?? 0
         let virtual = try container.decode(Bool.self, forKey: .virtual)
 
@@ -380,7 +437,14 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         let attributes = try container.decode([ProductAttribute].self, forKey: .attributes)
         let defaultAttributes = try container.decode([ProductDefaultAttribute].self, forKey: .defaultAttributes)
-        let variations = try container.decode([Int64].self, forKey: .variations)
+        let variations: [Int64] = {
+            do {
+                return try container.decode([Int64].self, forKey: .variations)
+            } catch {
+                DDLogError("⛔️ Error parsing `variations` for Product ID \(productID): \(error)")
+                return []
+            }
+        }()
         let groupedProducts = try container.decode([Int64].self, forKey: .groupedProducts)
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
@@ -389,6 +453,20 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         // Since add-ons are optional, `try?` will be used to prevent the whole decoding to stop.
         // https://github.com/woocommerce/woocommerce-ios/issues/4205
         let addOns = (try? container.decodeIfPresent(ProductAddOnEnvelope.self, forKey: .metadata)?.revolve()) ?? []
+
+        // Product Bundle properties
+        // Uses failsafe decoding because non-bundle product types can return unexpected value types.
+        let bundleLayout = container.failsafeDecodeIfPresent(ProductBundleLayout.self, forKey: .bundleLayout)
+        let bundleFormLocation = container.failsafeDecodeIfPresent(ProductBundleFormLocation.self, forKey: .bundleFormLocation)
+        let bundleItemGrouping = container.failsafeDecodeIfPresent(ProductBundleItemGrouping.self, forKey: .bundleItemGrouping)
+        let bundleEditableInCart = container.failsafeDecodeIfPresent(Bool.self, forKey: .bundleEditableInCart)
+        let bundleSoldIndividuallyContext = container.failsafeDecodeIfPresent(ProductBundleSoldIndividuallyContext.self, forKey: .bundleSoldIndividuallyContext)
+        let bundleStockStatus = container.failsafeDecodeIfPresent(ProductStockStatus.self, forKey: .bundleStockStatus)
+        // When the bundle min size, max size, or stock quantity is not set for a product bundle, the API returns an empty string and the value will be `nil`.
+        let bundleMinSize = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleMinSize)
+        let bundleMaxSize = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleMaxSize)
+        let bundleStockQuantity = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleStockQuantity)
+        let bundledItems = try container.decodeIfPresent([ProductBundleItem].self, forKey: .bundledItems) ?? []
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -452,11 +530,23 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   variations: variations,
                   groupedProducts: groupedProducts,
                   menuOrder: menuOrder,
-                  addOns: addOns)
+                  addOns: addOns,
+                  bundleLayout: bundleLayout,
+                  bundleFormLocation: bundleFormLocation,
+                  bundleItemGrouping: bundleItemGrouping,
+                  bundleMinSize: bundleMinSize,
+                  bundleMaxSize: bundleMaxSize,
+                  bundleEditableInCart: bundleEditableInCart,
+                  bundleSoldIndividuallyContext: bundleSoldIndividuallyContext,
+                  bundleStockStatus: bundleStockStatus,
+                  bundleStockQuantity: bundleStockQuantity,
+                  bundledItems: bundledItems)
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(productID, forKey: .productID)
 
         try container.encode(images, forKey: .images)
 
@@ -636,6 +726,17 @@ private extension Product {
         case groupedProducts    = "grouped_products"
         case menuOrder          = "menu_order"
         case metadata           = "meta_data"
+
+        case bundleLayout                   = "bundle_layout"
+        case bundleFormLocation             = "bundle_add_to_cart_form_location"
+        case bundleItemGrouping             = "bundle_item_grouping"
+        case bundleMinSize                  = "bundle_min_size"
+        case bundleMaxSize                  = "bundle_max_size"
+        case bundleEditableInCart           = "bundle_editable_in_cart"
+        case bundleSoldIndividuallyContext  = "bundle_sold_individually_context"
+        case bundleStockStatus              = "bundle_stock_status"
+        case bundleStockQuantity            = "bundle_stock_quantity"
+        case bundledItems                   = "bundled_items"
     }
 }
 
@@ -654,4 +755,13 @@ private extension Product {
 //
 enum ProductDecodingError: Error {
     case missingSiteID
+}
+
+// MARK: - Hashable Conformance
+//
+extension Product: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(siteID)
+        hasher.combine(productID)
+    }
 }

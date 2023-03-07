@@ -46,20 +46,26 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
 
     func test_readonly_simple_product_with_decimal_stock_quantities_has_readonly_inventory_settings() {
         // Arrange
-        let product = Product().copy(productTypeKey: ProductType.simple.rawValue, stockQuantity: 1.5)
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, stockQuantity: 1.5)
         let model = EditableProductModel(product: product)
 
         // Action
         let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
-                                                                       .reviews,
-                                                                       .shippingSettings(editable: true),
-                                                                       .inventorySettings(editable: false),
-                                                                       .linkedProducts(editable: true),
-                                                                       .productType(editable: true)]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+        XCTAssert(factory.settingsSectionActions().contains(.inventorySettings(editable: false)))
+    }
+
+    func test_read_only_simple_product_does_not_contain_add_options_row() {
+        // Given
+        let product = Fixtures.simpleProduct
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .readonly, isAddOptionsButtonEnabled: true)
+
+        // Then
+        XCTAssertFalse(factory.optionsCTASectionActions().contains(.addOptions))
     }
 
     // MARK: - Affiliate products
@@ -200,20 +206,14 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
 
     func test_readonly_variable_product_with_decimal_stock_quantities_has_readonly_inventory_settings() {
         // Arrange
-        let product = Product().copy(productTypeKey: ProductType.variable.rawValue, stockQuantity: 1.5)
+        let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue, stockQuantity: 1.5)
         let model = EditableProductModel(product: product)
 
         // Action
         let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations(hideSeparator: false),
-                                                                       .reviews,
-                                                                       .shippingSettings(editable: true),
-                                                                       .inventorySettings(editable: false),
-                                                                       .linkedProducts(editable: true),
-                                                                       .productType(editable: true)]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+        XCTAssert(factory.settingsSectionActions().contains(.inventorySettings(editable: false)))
     }
 }
 

@@ -3,8 +3,12 @@
              {
              "id": 963,
              "parent_id": 0,
+             "is_editable": true,
+             "needs_payment": true,
+             "needs_processing": true,
              "number": "963",
              "status": "processing",
+             "order_key": "abc123",
              "currency": "USD",
              "date_created_gmt": "2018-04-03T23:05:12",
              "date_modified_gmt": "2018-04-03T23:05:14",
@@ -85,8 +89,22 @@
                      "meta_data": []
                  }
              ],
+             "tax_lines": [
+                 {
+                     "id": 1330,
+                     "rate_code": "US-NY-STATE-2",
+                     "rate_id": 6,
+                     "label": "State",
+                     "compound": true,
+                     "tax_total": "7.71",
+                     "shipping_tax_total": "0.00",
+                     "rate_percent": 4.5,
+                     "meta_data": []
+                 }
+             ],
              "payment_method": "stripe",
              "payment_method_title": "Credit Card (Stripe)",
+             "payment_url": "http://www.automattic.com",
              "date_paid_gmt": "2018-04-03T23:05:14",
              "date_completed_gmt": null,
              "line_items": [
@@ -193,6 +211,7 @@
              "parent_id": 0,
              "number": "961",
              "status": "processing",
+             "order_key": "abc123",
              "currency": "USD",
              "date_created_gmt": "2018-04-03T20:54:21",
              "date_modified_gmt": "2018-04-03T20:54:23",
@@ -231,6 +250,7 @@
              },
              "payment_method": "stripe",
              "payment_method_title": "Credit Card (Stripe)",
+             "payment_url": "http://www.automattic.com",
              "date_paid_gmt": "2018-04-03T20:54:23",
              "date_completed_gmt": null,
              "line_items": [
@@ -252,13 +272,15 @@
                             }
                             ],
              "coupon_lines": [],
-             "fee_lines": []
+             "fee_lines": [],
+             "tax_lines": []
              },
              {
              "id": 960,
              "parent_id": 0,
              "number": "960",
              "status": "processing",
+             "order_key": "abc123",
              "currency": "USD",
              "date_created_gmt": "2018-04-03T20:52:38",
              "date_modified_gmt": "2018-04-03T20:52:41",
@@ -297,6 +319,7 @@
              },
              "payment_method": "stripe",
              "payment_method_title": "Credit Card (Stripe)",
+             "payment_url": "http://www.automattic.com",
              "date_paid_gmt": "2018-04-03T20:52:41",
              "date_completed_gmt": null,
              "line_items": [
@@ -324,7 +347,8 @@
                             }
                             ],
              "coupon_lines": [],
-             "fee_lines": []
+             "fee_lines": [],
+             "tax_lines": []
              },
              {
                  "id": 560,
@@ -377,6 +401,7 @@
                  },
                  "payment_method": "stripe",
                  "payment_method_title": "Credit Card (Stripe)",
+                 "payment_url": "http://www.automattic.com",
                  "transaction_id": "ch_1FOr46J71fgCH5kvqxjdQyqZ",
                  "date_paid": "2019-10-01T19:31:19",
                  "date_paid_gmt": "2019-10-01T19:31:19",
@@ -1269,6 +1294,7 @@
                      }
                  ],
                  "fee_lines": [],
+                 "tax_lines": [],
                  "coupon_lines": [],                 
                  "refunds": [
                      {

@@ -8,6 +8,7 @@ protocol ShipmentProviderListDelegate: AnyObject {
 final class ShipmentProvidersViewController: UIViewController {
     private let viewModel: ShippingProvidersViewModel
     private weak var delegate: ShipmentProviderListDelegate?
+    private weak var emptyStateView: EmptyListMessageWithActionView?
 
     @IBOutlet weak var table: UITableView!
 
@@ -280,33 +281,47 @@ private extension ShipmentProvidersViewController {
 
     func presentEmptyStateIfNecessary(term: String = "") {
         guard viewModel.isListEmpty else {
-            removeEmptyState()
+            removeEmptyStateView()
             return
         }
 
-        let emptyState: EmptyListMessageWithActionView = EmptyListMessageWithActionView.instantiateFromNib()
+        guard emptyStateView == nil else {
+            // When we search for terms without results sequentially the empty state view is already there.
+            // We do not have to add it again, we just have to update that view with the new term
+            updateEmptyStateView(with: term)
+            return
+        }
+
+        configureAndAddEmptyStateView(with: term)
+    }
+
+    func removeEmptyStateView() {
+        emptyStateView?.removeFromSuperview()
+        emptyStateView = nil
+    }
+
+    func configureAndAddEmptyStateView(with term: String = "") {
+        emptyStateView = EmptyListMessageWithActionView.instantiateFromNib()
+        updateEmptyStateView(with: term)
+        emptyStateView?.actionText = NSLocalizedString("Custom Carrier",
+                                                  comment: "Title of button to add a custom tracking carrier if filtering the list yields no results."
+        )
+
+        emptyStateView?.onAction = { [weak self] in
+            self?.addCustomProvider()
+        }
+
+        emptyStateView?.attach(to: view)
+    }
+
+    func updateEmptyStateView(with term: String) {
         let messageFormat = NSLocalizedString(
             "No results found for %1$@\nAdd a custom carrier",
             comment: "Empty state for the list of shipment carriers. "
                 + "It reads: 'No results for DHL. Add a custom carrier'. "
                 + "Parameters: %1$@ - carrier name"
         )
-        emptyState.messageText = String.localizedStringWithFormat(messageFormat, term)
-        emptyState.actionText = NSLocalizedString("Custom Carrier",
-                                                  comment: "Title of button to add a custom tracking carrier if filtering the list yields no results."
-        )
-
-        emptyState.onAction = { [weak self] in
-            self?.addCustomProvider()
-        }
-
-        emptyState.attach(to: view)
-    }
-
-    func removeEmptyState() {
-        for subview in view.subviews where subview is EmptyListMessageWithActionView {
-            subview.removeFromSuperview()
-        }
+        emptyStateView?.messageText = String.localizedStringWithFormat(messageFormat, term)
     }
 
     func addCustomProvider() {

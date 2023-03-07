@@ -7,7 +7,7 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
     private let cancelAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
-    let actionsMode: PaymentsModalActionsMode = .secondaryOnlyAction
+    let actionsMode: PaymentsModalActionsMode = .secondaryActionAndAuxiliaryButton
 
     let topTitle: String = Localization.title
 
@@ -40,26 +40,38 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
         cancelAction()
-        viewController?.dismiss(animated: true, completion: nil)
     }
 
-    func didTapAuxiliaryButton(in viewController: UIViewController?) {}
+    func didTapAuxiliaryButton(in viewController: UIViewController?) {
+        ServiceLocator.analytics.track(.cardPresentOnboardingLearnMoreTapped)
+        guard let viewController = viewController else {
+            return
+        }
+        WebviewHelper.launch(Constants.learnMoreURL.asURL(), with: viewController)
+    }
 }
 
 private extension CardPresentModalScanningForReader {
+    enum Constants {
+        static let learnMoreURL = WooConstants.URLs.inPersonPaymentsLearnMoreWCPay
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
-            "Scanning for reader",
+            "cardPresent.modalScanningForReader.title",
+            value: "Scanning for reader",
             comment: "Title label for modal dialog that appears when searching for a card reader"
         )
 
         static let instruction = NSLocalizedString(
-            "To turn on your card reader, briefly press its power button.",
+            "cardPresent.modalScanningForReader.instruction",
+            value: "To turn on your card reader, briefly press its power button.",
             comment: "Label within the modal dialog that appears when searching for a card reader"
         )
 
         static let cancel = NSLocalizedString(
-            "Cancel",
+            "cardPresent.modalScanningForReader.cancelButton",
+            value: "Cancel",
             comment: "Label for a cancel button"
         )
     }

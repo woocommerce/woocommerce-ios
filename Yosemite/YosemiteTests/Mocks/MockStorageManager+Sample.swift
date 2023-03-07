@@ -40,6 +40,16 @@ extension MockStorageManager {
         return newAccount
     }
 
+    /// Inserts a new (Sample) Payment Gateway into the specified context.
+    ///
+    @discardableResult
+    func insertSamplePaymentGateway(readOnlyGateway: PaymentGateway) -> StoragePaymentGateway {
+        let newGateway = viewStorage.insertNewObject(ofType: StoragePaymentGateway.self)
+        newGateway.update(with: readOnlyGateway)
+
+        return newGateway
+    }
+
     /// Inserts a new (Sample) Product into the specified context.
     ///
     @discardableResult
@@ -131,6 +141,16 @@ extension MockStorageManager {
         return newOrder
     }
 
+    /// Inserts a new (Sample) Coupon into the specified context.
+    ///
+    @discardableResult
+    func insertSampleCoupon(readOnlyCoupon: Coupon) -> StorageCoupon {
+        let newCoupon = viewStorage.insertNewObject(ofType: StorageCoupon.self)
+        newCoupon.update(with: readOnlyCoupon)
+
+        return newCoupon
+    }
+
     /// Inserts a new (Sample) site into the specified context.
     ///
     @discardableResult
@@ -189,5 +209,15 @@ extension MockStorageManager {
             return newCountry
         }
         return storedCountries
+    }
+
+    /// Inserts a new sample InboxNote into the specified context.
+    ///
+    @discardableResult
+    func insertSampleInboxNote(readOnlyInboxNote: InboxNote) -> StorageInboxNote {
+        let newInboxNote = viewStorage.insertNewObject(ofType: StorageInboxNote.self)
+        newInboxNote.update(with: readOnlyInboxNote)
+
+        return newInboxNote
     }
 }

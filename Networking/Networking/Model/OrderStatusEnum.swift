@@ -3,17 +3,20 @@ import Codegen
 
 /// Represents all of the possible Order Statuses in enum form
 ///
-public enum OrderStatusEnum: Codable, Hashable, GeneratedFakeable {
+/// The order of the statuses declaration is according to the Order's lifecycle
+/// and it is used to determine the user facing display order
+///
+public enum OrderStatusEnum: Codable, Hashable, Comparable, GeneratedFakeable {
+    case autoDraft
     case pending
     case processing
     case onHold
-    case failed
-    case cancelled
     case completed
+    case cancelled
     case refunded
+    case failed
     case custom(String)
 }
-
 
 /// RawRepresentable Conformance
 ///
@@ -23,6 +26,8 @@ extension OrderStatusEnum: RawRepresentable {
     ///
     public init(rawValue: String) {
         switch rawValue {
+        case Keys.autoDraft:
+            self = .autoDraft
         case Keys.pending:
             self = .pending
         case Keys.processing:
@@ -46,6 +51,7 @@ extension OrderStatusEnum: RawRepresentable {
     ///
     public var rawValue: String {
         switch self {
+        case .autoDraft:            return Keys.autoDraft
         case .pending:              return Keys.pending
         case .processing:           return Keys.processing
         case .onHold:               return Keys.onHold
@@ -62,6 +68,7 @@ extension OrderStatusEnum: RawRepresentable {
 /// Enum containing the 'Known' OrderStatus Keys
 ///
 private enum Keys {
+    static let autoDraft    = "auto-draft"
     static let pending      = "pending"
     static let processing   = "processing"
     static let onHold       = "on-hold"

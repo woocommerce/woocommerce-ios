@@ -20,7 +20,7 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
 
     let primaryButtonTitle: String? = Localization.printReceipt
 
-    let secondaryButtonTitle: String? = Localization.noThanks
+    let secondaryButtonTitle: String? = Localization.saveReceiptAndContinue
 
     let auxiliaryButtonTitle: String? = nil
 
@@ -32,7 +32,8 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
         return Localization.paymentSuccessful
     }
 
-    init(printReceipt: @escaping () -> Void, noReceiptAction: @escaping () -> Void) {
+    init(printReceipt: @escaping () -> Void,
+         noReceiptAction: @escaping () -> Void) {
         self.printReceiptAction = printReceipt
         self.noReceiptAction = noReceiptAction
     }
@@ -64,9 +65,9 @@ private extension CardPresentModalSuccessWithoutEmail {
             comment: "Button to print receipts. Presented to users after a payment has been successfully collected"
         )
 
-        static let noThanks = NSLocalizedString(
-            "Back to Order",
-            comment: "Button to dismiss modal overlay. Presented to users after a payment has been successfully collected"
+        static let saveReceiptAndContinue = NSLocalizedString(
+            "Save receipt and continue",
+            comment: "Button when the user does not want to print the receipt. Presented to users after a payment has been successfully collected"
         )
     }
 }

@@ -121,6 +121,36 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(tax2.toReadOnly(), taxes[1])
     }
 
+    func test_it_persists_order_tax_line_in_storage() throws {
+        // Given
+        let taxLine = OrderTaxLine.fake().copy(taxID: 1)
+        let order = makeOrder().copy(siteID: 3, taxes: [taxLine])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let storageTaxLine = try XCTUnwrap(viewStorage.loadOrderTaxLine(siteID: 3, taxID: 1))
+        XCTAssertEqual(storageTaxLine.toReadOnly(), taxLine)
+    }
+
+    func test_it_replaces_existing_order_tax_line_in_storage() throws {
+        // Given
+        let originalTaxLine = OrderTaxLine.fake().copy(taxID: 1, ratePercent: 0.0)
+        let order = makeOrder().copy(siteID: 3, taxes: [originalTaxLine])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        let taxLine = OrderTaxLine.fake().copy(taxID: 1, ratePercent: 5.0)
+        useCase.upsert([order.copy(taxes: [taxLine])])
+
+        // Then
+        let storageTaxLine = try XCTUnwrap(viewStorage.loadOrderTaxLine(siteID: 3, taxID: 1))
+        XCTAssertEqual(storageTaxLine.toReadOnly(), taxLine)
+    }
+
     func test_it_persists_order_item_attributes_in_storage() throws {
         // Given
         let attributes = [
@@ -159,6 +189,36 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         let storageOrderItem = try XCTUnwrap(viewStorage.loadOrderItem(siteID: 3, orderID: 98, itemID: 76))
         XCTAssertEqual(storageOrderItem.toReadOnly(), orderItem)
     }
+
+    func test_it_persists_order_custom_field_in_storage() throws {
+        // Given
+        let customField = OrderMetaData(metadataID: 1, key: "Key", value: "Value")
+        let order = makeOrder().copy(siteID: 3, customFields: [customField])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let storageCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, metadataID: 1))
+        XCTAssertEqual(storageCustomField.toReadOnly(), customField)
+    }
+
+    func test_it_replaces_existing_order_custom_field_in_storage() throws {
+        // Given
+        let originalCustomField = OrderMetaData(metadataID: 1, key: "Key", value: "Value")
+        let order = makeOrder().copy(siteID: 3, customFields: [originalCustomField])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        let customField = OrderMetaData(metadataID: 1, key: "Key", value: "New Value")
+        useCase.upsert([order.copy(customFields: [customField])])
+
+        // Then
+        let storageCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, metadataID: 1))
+        XCTAssertEqual(storageCustomField.toReadOnly(), customField)
+    }
 }
 
 private extension OrdersUpsertUseCaseTests {
@@ -181,32 +241,7 @@ private extension OrdersUpsertUseCaseTests {
     }
 
     func makeOrder() -> Networking.Order {
-        Order(siteID: defaultSiteID,
-              orderID: 0,
-              parentID: 0,
-              customerID: 0,
-              number: "",
-              status: .custom(""),
-              currency: "",
-              customerNote: nil,
-              dateCreated: Date(),
-              dateModified: Date(),
-              datePaid: nil,
-              discountTotal: "",
-              discountTax: "",
-              shippingTotal: "",
-              shippingTax: "",
-              total: "",
-              totalTax: "",
-              paymentMethodID: "",
-              paymentMethodTitle: "",
-              items: [],
-              billingAddress: nil,
-              shippingAddress: nil,
-              shippingLines: [],
-              coupons: [],
-              refunds: [],
-              fees: [])
+        Order.fake().copy(siteID: defaultSiteID, customerNote: "", items: [])
     }
 
     func makeOrderItem(itemID: Int64 = 76, attributes: [Networking.OrderItemAttribute] = []) -> Networking.OrderItem {

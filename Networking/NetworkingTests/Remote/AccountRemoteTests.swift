@@ -1,5 +1,6 @@
 import Combine
 import XCTest
+import TestKit
 @testable import Networking
 
 
@@ -141,5 +142,95 @@ final class AccountRemoteTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         let siteSettings = try XCTUnwrap(result.get())
         XCTAssertEqual(siteSettings.name, "Zucchini recipes")
+    }
+
+    // MARK: - `loadUsernameSuggestions`
+
+    func test_loadUsernameSuggestions_returns_suggestions_on_success() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "username/suggestions", filename: "account-username-suggestions")
+
+        // When
+        let suggestions = try await remote.loadUsernameSuggestions(from: "woo")
+
+        // Then
+        XCTAssertEqual(suggestions, ["woowriter", "woowoowoo", "woodaily"])
+    }
+
+    func test_loadUsernameSuggestions_returns_empty_suggestions_on_empty_response() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+
+        await assertThrowsError({  _ = try await remote.loadUsernameSuggestions(from: "woo")}, errorAssert: { ($0 as? NetworkError) == .notFound })
+    }
+
+    // MARK: - `createAccount`
+
+    func test_createAccount_returns_auth_token_on_success() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-success")
+
+        // When
+        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+
+        // Then
+        let data = try XCTUnwrap(result.get())
+        XCTAssertEqual(data.authToken, "🐻")
+        XCTAssertEqual(data.username, "wootest")
+    }
+
+    func test_createAccount_returns_emailExists_error_on_email_exists_error() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-error-email-exists")
+
+        // When
+        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error, .emailExists)
+    }
+
+    func test_createAccount_returns_invalidEmail_error_on_invalid_email_error() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-error-invalid-email")
+
+        // When
+        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error, .invalidEmail)
+    }
+
+    func test_createAccount_returns_password_error_on_invalid_password_error() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-error-password")
+
+        // When
+        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error, .invalidPassword(message:
+                                                "Your password is too short. Please pick a password that has at least 6 characters."))
+    }
+
+    func test_createAccount_returns_invalidUsername_error_on_invalid_username_error() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-error-username")
+
+        // When
+        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error, .invalidUsername)
     }
 }

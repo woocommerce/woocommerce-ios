@@ -1,2 +1,2 @@
-View and manage
-orders on the go
+Create orders
+on the fly

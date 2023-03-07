@@ -1,0 +1,26 @@
+{
+    "active_plugins":[
+        {
+            "plugin":"woocommerce\/woocommerce.php",
+            "name":"WooCommerce",
+            "version":"5.8.0",
+            "version_latest":"5.8.0",
+            "url":"https:\/\/woocommerce.com\/",
+            "author_name":"Automattic",
+            "author_url":"https:\/\/woocommerce.com",
+            "network_activated":false
+        }
+    ],
+    "inactive_plugins":[
+        {
+            "plugin":"akismet\/akismet.php",
+            "name":"Akismet Anti-Spam",
+            "version":"4.2.1",
+            "version_latest":"4.2.1",
+            "url":"https:\/\/akismet.com\/",
+            "author_name":"Automattic",
+            "author_url":"https:\/\/automattic.com\/wordpress-plugins\/",
+            "network_activated":false
+        }
+    ]
+}

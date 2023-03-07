@@ -22,6 +22,19 @@ final class TaxClassListMapperTest: XCTestCase {
         XCTAssertEqual(firstTaxClass.slug, "standard")
         XCTAssertEqual(firstTaxClass.name, "Standard Rate")
     }
+
+    /// Verifies that all of the Tax Class Fields are parsed correctly.
+    ///
+    func test_TaxClass_fields_are_properly_parsed_when_response_has_no_data_envelope() {
+        let taxClasses = mapLoadAllTaxClassResponseWithoutDataEnvelope()
+        XCTAssertEqual(taxClasses.count, 3)
+
+
+        let firstTaxClass = taxClasses[0]
+        XCTAssertEqual(firstTaxClass.siteID, sampleSiteID)
+        XCTAssertEqual(firstTaxClass.slug, "standard")
+        XCTAssertEqual(firstTaxClass.name, "Standard Rate")
+    }
 }
 
 
@@ -43,5 +56,11 @@ private extension TaxClassListMapperTest {
     ///
     func mapLoadAllTaxClassResponse() -> [TaxClass] {
         return mapTaxClasses(from: "taxes-classes")
+    }
+
+    /// Returns the TaxClassListMapper output upon receiving `taxes-classes-without-data`
+    ///
+    func mapLoadAllTaxClassResponseWithoutDataEnvelope() -> [TaxClass] {
+        return mapTaxClasses(from: "taxes-classes-without-data")
     }
 }

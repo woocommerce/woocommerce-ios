@@ -1,20 +1,23 @@
 import SwiftUI
 
 struct InPersonPaymentsPluginNotInstalled: View {
+    let analyticReason: String
     let onRefresh: () -> Void
 
     var body: some View {
         InPersonPaymentsOnboardingError(
             title: Localization.title,
             message: Localization.message,
-            image: InPersonPaymentsOnboardingError.ImageInfo(
-                image: .paymentsPlugin,
+            image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
+                image: .wcPayPlugin,
                 height: 126.0
             ),
             supportLink: false,
             learnMore: true,
-            button: InPersonPaymentsOnboardingError.ButtonInfo(
+            analyticReason: analyticReason,
+            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.primaryButton,
+                analyticReason: analyticReason,
                 action: onRefresh
             )
         )
@@ -40,6 +43,6 @@ private enum Localization {
 
 struct InPersonPaymentsPluginNotInstalled_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotInstalled(onRefresh: {})
+        InPersonPaymentsPluginNotInstalled(analyticReason: "", onRefresh: {})
     }
 }

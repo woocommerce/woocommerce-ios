@@ -10,12 +10,55 @@ final class OrdersTests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
         app.launch()
-        try LoginFlow.logInWithWPcom()
+        try LoginFlow.login()
     }
 
-    // TODO: Write real test, this is a placeholder for now
-    func testGotoOrdersScreen() throws {
-        try TabNavComponent().gotoOrdersScreen()
-        XCTAssert(try OrdersScreen().isLoaded)
+    func test_load_orders_screen() throws {
+        let orders = try GetMocks.readOrdersData()
+
+        try TabNavComponent().goToOrdersScreen()
+            .verifyOrdersScreenLoaded()
+            .verifyOrdersList(orders: orders)
+            .selectOrder(byOrderNumber: orders[0].number)
+            .verifySingleOrder(order: orders[0])
+            .goBackToOrdersScreen()
+            .verifyOrdersScreenLoaded()
+    }
+
+    func test_create_new_order() throws {
+        let products = try GetMocks.readProductsData()
+        let order = try GetMocks.readNewOrderData()
+
+        try TabNavComponent().goToOrdersScreen()
+            .startOrderCreation()
+            .editOrderStatus()
+            .addProducts(numberOfProductsToAdd: 1)
+            .addCustomerDetails(name: order.billing.first_name)
+            .addShipping(amount: order.shipping_lines[0].total, name: order.shipping_lines[0].method_title)
+            .addFee(amount: order.fee_lines[0].amount)
+            .addCustomerNote(order.customer_note)
+            .createOrder()
+            .verifySingleOrderScreenLoaded()
+            .goBackToOrdersScreen()
+            .verifyOrdersScreenLoaded()
+    }
+
+    func test_load_existing_order() throws {
+        let orders = try GetMocks.readOrdersData()
+
+        try TabNavComponent().goToOrdersScreen()
+            .selectOrder(byOrderNumber: orders[0].number)
+            .tapEditOrderButton()
+            .checkForExistingOrderTitle(byOrderNumber: orders[0].number)
+            .checkForExistingProducts(byName: orders[0].line_items.map { $0.name })
+            .closeEditingFlow()
+            .verifySingleOrderScreenLoaded()
+    }
+
+    func test_cancel_order_creation() throws {
+        try TabNavComponent().goToOrdersScreen()
+            .startOrderCreation()
+            .cancelOrderCreation()
+            .verifyOrdersScreenLoaded()
     }
 }

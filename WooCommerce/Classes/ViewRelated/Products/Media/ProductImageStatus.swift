@@ -3,7 +3,7 @@ import Yosemite
 
 /// The status of a Product image.
 ///
-enum ProductImageStatus {
+enum ProductImageStatus: Equatable {
     /// A `PHAsset` is being uploaded.
     ///
     case uploading(asset: PHAsset)
@@ -50,6 +50,18 @@ extension ProductImageStatus {
             return InProgressProductImageCollectionViewCell.self
         case .remote:
             return ProductImageCollectionViewCell.self
+        }
+    }
+
+    /// A string that uniquely identifies a `ProductImageStatus` during
+    /// dragging.
+    ///
+    var dragItemIdentifier: String {
+        switch self {
+        case .uploading(let asset):
+            return asset.identifier()
+        case .remote(let image):
+            return "\(image.imageID)"
         }
     }
 }

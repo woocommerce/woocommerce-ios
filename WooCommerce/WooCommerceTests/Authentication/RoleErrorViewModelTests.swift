@@ -200,9 +200,14 @@ private class FakeRoleErrorOutput: RoleErrorOutput {
     var displayNoticeCallCount = 0
     var lastDisplayedURL: URL? = nil
     var lastNoticeMessage: String? = nil
+    private(set) var isPrimaryButtonLoading: Bool = false
 
     func refreshTitleLabels() {
         refreshTitleLabelsCallCount += 1
+    }
+
+    func updatePrimaryButtonState(loading: Bool) {
+        isPrimaryButtonLoading = loading
     }
 
     func displayWebContent(for url: URL) {

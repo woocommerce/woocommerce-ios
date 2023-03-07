@@ -2,19 +2,22 @@ import UIKit
 import Yosemite
 import WordPressUI
 import Gridicons
+import WooFoundation
 
-class ProductTableViewCell: UITableViewCell {
+final class ProductTableViewCell: UITableViewCell {
 
     // MARK: - Properties
 
     @IBOutlet private weak var productImage: UIImageView!
     @IBOutlet private var nameLabel: UILabel!
     @IBOutlet private var detailLabel: UILabel!
-    @IBOutlet private var priceLabel: UILabel!
+    @IBOutlet private var accessoryLabel: UILabel!
+    @IBOutlet private var dataStackView: UIStackView!
 
-    /// We use a custom view isntead of the default separator as it's width varies depending on the image size, which varies depending on the screen size.
+    /// We use a custom view instead of the default separator as it's width varies depending on the image size, which varies depending on the screen size.
     @IBOutlet private var bottomBorderView: UIView!
 
+    /// Shows the name of the product.
     var nameText: String? {
         get {
             return nameLabel.text
@@ -24,6 +27,7 @@ class ProductTableViewCell: UITableViewCell {
         }
     }
 
+    /// Text displayed under the product name.
     var detailText: String? {
         get {
             return detailLabel.text
@@ -33,15 +37,17 @@ class ProductTableViewCell: UITableViewCell {
         }
     }
 
-    var priceText: String? {
+    /// Text displayed at the trailing edge of the cell.
+    var accessoryText: String? {
         get {
-            return priceLabel.text
+            return accessoryLabel.text
         }
         set {
-            priceLabel.text = newValue
+            accessoryLabel.text = newValue
         }
     }
 
+    /// Whether to hide the bottom border.
     var hidesBottomBorder: Bool = false {
         didSet {
             bottomBorderView.isHidden = hidesBottomBorder
@@ -51,12 +57,13 @@ class ProductTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         nameLabel.applyBodyStyle()
-        priceLabel.applyBodyStyle()
+        accessoryLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
         applyProductImageStyle()
-        backgroundColor = .listForeground
+        backgroundColor = Constants.backgroundColor
         bottomBorderView.backgroundColor = .systemColor(.separator)
         selectionStyle = .default
+        adjustStackViewAxis()
     }
 
     private func applyProductImageStyle() {
@@ -66,25 +73,41 @@ class ProductTableViewCell: UITableViewCell {
         productImage.layer.borderColor = ProductImage.borderColor.cgColor
         productImage.clipsToBounds = true
     }
+
+    /// Adjusts the data stack view axis depending on the current trait collection content size category.
+    ///
+    private func adjustStackViewAxis() {
+        dataStackView.axis = traitCollection.preferredContentSizeCategory > .accessibilityMedium ? .vertical : .horizontal
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        adjustStackViewAxis()
+    }
 }
 
 // MARK: - Public Methods
 //
 extension ProductTableViewCell {
-    func configure(_ statsItem: TopEarnerStatsItem?, imageService: ImageService) {
-        nameText = statsItem?.productName
-        detailText = String.localizedStringWithFormat(
-            NSLocalizedString("Total orders: %ld",
-                              comment: "Top performers — label for the total number of products ordered"),
-            statsItem?.quantity ?? 0
-        )
-        priceText = statsItem?.formattedTotalString
+    struct ViewModel {
+        let nameText: String?
+        let detailText: String?
+        let accessoryText: String?
+        let imageURL: String?
+        let backgroundColor: UIColor
+    }
+
+    func configure(viewModel: ViewModel, imageService: ImageService) {
+        nameText = viewModel.nameText
+        detailText = viewModel.detailText
+        accessoryText = viewModel.accessoryText
+        backgroundColor = viewModel.backgroundColor
 
         /// Set `center` contentMode to not distort the placeholder aspect ratio.
-        /// After a sucessfull image download set the contentMode to `scaleAspectFill`
+        /// After a successful image download set the contentMode to `scaleAspectFill`
         productImage.contentMode = .center
         imageService.downloadAndCacheImageForImageView(productImage,
-                                                       with: statsItem?.imageUrl,
+                                                       with: viewModel.imageURL,
                                                        placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),
                                                        progressBlock: nil) { [weak productImage] (image, _) in
                                                         guard image != nil else {
@@ -95,6 +118,22 @@ extension ProductTableViewCell {
     }
 }
 
+extension ProductTableViewCell.ViewModel {
+    init(statsItem: TopEarnerStatsItem?,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+        nameText = statsItem?.productName
+        imageURL = statsItem?.imageUrl
+
+        detailText = String.localizedStringWithFormat(
+            NSLocalizedString("Net sales: %@",
+                              comment: "Top performers — label for the total sales of a product"),
+            statsItem?.totalString ?? ""
+        )
+        accessoryText = "\(statsItem?.quantity ?? 0)"
+        backgroundColor = ProductTableViewCell.Constants.backgroundColor
+    }
+}
+
 /// Style Constants
 ///
 private extension ProductTableViewCell {
@@ -102,6 +141,10 @@ private extension ProductTableViewCell {
         static let cornerRadius = CGFloat(2.0)
         static let borderWidth = CGFloat(0.5)
         static let borderColor = UIColor.border
-        static let backgroundColor = UIColor.listForeground
+        static let backgroundColor = UIColor.listForeground(modal: false)
+    }
+
+    enum Constants {
+        static let backgroundColor: UIColor = .systemBackground
     }
 }

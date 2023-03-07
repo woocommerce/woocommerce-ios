@@ -6,10 +6,8 @@ import UIKit
 final class WooTabNavigationController: WooNavigationController {
     init() {
         super.init(nibName: nil, bundle: nil)
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
-            navigationBar.prefersLargeTitles = true
-            delegate = self
-        }
+        navigationBar.prefersLargeTitles = true
+        delegate = self
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -17,7 +15,7 @@ final class WooTabNavigationController: WooNavigationController {
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) ? .default : StyleManager.statusBarLight
+        .default
     }
 
     private func updateNavigationBarAppearance(largeTitleDisplayMode: UINavigationItem.LargeTitleDisplayMode) {

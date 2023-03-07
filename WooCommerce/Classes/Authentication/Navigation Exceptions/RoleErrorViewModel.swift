@@ -58,8 +58,10 @@ final class RoleErrorViewModel {
     /// If the request is successful, the stored error info will be cleared and `onSuccess` will be called.
     /// Otherwise, the view will be refreshed and a notice will be shown.
     func didTapPrimaryButton() {
+        output?.updatePrimaryButtonState(loading: true)
         roleEligibilityUseCase.checkEligibility(for: siteID) { [weak self] result in
             guard let self = self else { return }
+            self.output?.updatePrimaryButtonState(loading: false)
 
             switch result {
             case .success:

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--Warning: Auto-generated file, do not edit.-->
+<plist version="1.0">
+  <dict>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Bu uygulama, desteklenen kart okuyuculara bağlanmak için Bluetooth kullanır.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>Desteklenen kart okuyuculara bağlanmak için Bluetooth erişimi gereklidir.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Ürünlerinize eklemek üzere fotoğraf veya video çekmek, Ürün SKU'su barkodunu veya destek biletlerini taramak için.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Ödemeleri kabul etmek için konum erişimi gereklidir.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Ürün görselleri için kameradan fotoğraf kaydetmek veya Ürünlerinize ya da destek biletlerinize fotoğraf veya video eklemek için.</string>
+  </dict>
+</plist>

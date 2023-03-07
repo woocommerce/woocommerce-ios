@@ -2,6 +2,7 @@ import Combine
 import UIKit
 import SwiftUI
 import Yosemite
+import WooFoundation
 
 /// View model for `ShippingLabelSinglePackage`.
 ///

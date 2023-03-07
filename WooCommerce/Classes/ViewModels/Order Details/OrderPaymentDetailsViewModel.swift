@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 final class OrderPaymentDetailsViewModel {
     private let order: Order
@@ -29,7 +30,7 @@ final class OrderPaymentDetailsViewModel {
     }
 
     var discountValue: String? {
-        guard let discount = currencyFormatter.convertToDecimal(from: order.discountTotal), discount.isZero() == false else {
+        guard let discount = currencyFormatter.convertToDecimal(order.discountTotal), discount.isZero() == false else {
             return nil
         }
 
@@ -57,15 +58,11 @@ final class OrderPaymentDetailsViewModel {
     }
 
     var totalValue: String {
-        return currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
+        order.totalValue
     }
 
     var paymentTotal: String {
-        if order.datePaid == nil {
-            return currencyFormatter.formatAmount("0.00", with: order.currency) ?? String()
-        }
-
-        return totalValue
+        order.paymentTotal
     }
 
     private var feesTotal: Decimal {
@@ -91,19 +88,17 @@ final class OrderPaymentDetailsViewModel {
     /// - returns: A full sentence summary of how much (if any) was paid, when, and using what method.
     ///
     /// It reads: `Awaiting payment via Credit Card (Stripe)`
-    /// or: `Nov 19, 2019 via Credit Card (Stripe)`
-    /// or is left blank by returning nil.
+    /// or: `Payment on Nov 19, 2019 via Credit Card (Stripe)`
+    /// or is left blank if is paid, but has no payment method title associated.
     ///
     var paymentSummary: String? {
-        if order.paymentMethodTitle.isEmpty {
-            return nil
-        }
 
         guard let datePaid = order.datePaid else {
-            return String.localizedStringWithFormat(
-                NSLocalizedString("Awaiting payment via %@",
-                                  comment: "Awaiting payment via (payment method title)"),
-                order.paymentMethodTitle)
+            return awaitingPaymentTitle
+        }
+
+        if order.paymentMethodTitle.isEmpty {
+            return nil
         }
 
         let styleDate = datePaid.toString(dateStyle: .medium, timeStyle: .none)
@@ -112,6 +107,21 @@ final class OrderPaymentDetailsViewModel {
             comment: "Payment on <date> received via (payment method title)")
 
         return String.localizedStringWithFormat(template, styleDate, order.paymentMethodTitle)
+    }
+
+    /// Awaiting payment
+    ///
+    private var awaitingPaymentTitle: String? {
+        if order.paymentMethodTitle.isEmpty {
+            return String.localizedStringWithFormat(
+                NSLocalizedString("Awaiting payment", comment: "The title on the payment row of the Order Details screen when the payment is still pending"))
+        }
+        return String.localizedStringWithFormat(
+            NSLocalizedString("Awaiting payment via %@",
+                              comment: "The title on the payment row of the Order Details screen" +
+                              "when the payment for a specific payment method is still pending." +
+                              "Reads like: Awaiting payment via Stripe."),
+            order.paymentMethodTitle)
     }
 
     /// Refund Summary
@@ -137,7 +147,9 @@ final class OrderPaymentDetailsViewModel {
         )
 
         let template = NSLocalizedString("%@ via %@",
-                                         comment: "It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link.")
+                                         comment: "Label for a refund on an order, which reads \"<date> via <refund method type>\", " +
+                                         "e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". " +
+                                         "Shown in a cell with a title \"Refunded\" for context")
         let refundText = String.localizedStringWithFormat(template, dateCreated, refundType)
 
         return refundText
@@ -159,24 +171,8 @@ final class OrderPaymentDetailsViewModel {
         return currencyFormatter.formatAmount(condensedRefund.normalizedTotalAsNegative, with: order.currency)
     }
 
-    /// Format the net amount with the correct currency
-    ///
-    var netAmount: String? {
-        guard let netDecimal = calculateNetAmount() else {
-            return nil
-        }
-
-        return currencyFormatter.formatAmount(netDecimal, with: order.currency)
-    }
-
     var couponLines: [OrderCouponLine] {
         return order.coupons
-    }
-
-    /// Signals whether the net amount for the order matches the total order amount
-    ///
-    var hasBeenPartiallyCharged: Bool {
-        return totalValue != netAmount
     }
 
     init(order: Order, refund: Refund? = nil, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
@@ -200,19 +196,6 @@ final class OrderPaymentDetailsViewModel {
         }
 
         return NSLocalizedString("Discount", comment: "Discount label for payment view") + " (" + output + ")"
-    }
-
-    /// Calculate the net amount after refunds
-    ///
-    private func calculateNetAmount() -> NSDecimalNumber? {
-        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
-            return .zero
-        }
-
-        let totalRefundedUseCase = TotalRefundedCalculationUseCase(order: order, currencyFormatter: currencyFormatter)
-        let refundTotal = totalRefundedUseCase.totalRefunded()
-
-        return orderTotal.adding(refundTotal)
     }
 }
 

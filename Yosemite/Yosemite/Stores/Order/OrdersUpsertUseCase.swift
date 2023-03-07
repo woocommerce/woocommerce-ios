@@ -57,6 +57,8 @@ struct OrdersUpsertUseCase {
         handleOrderFees(readOnlyOrder, storageOrder, storage)
         handleOrderShippingLines(readOnlyOrder, storageOrder, storage)
         handleOrderRefundsCondensed(readOnlyOrder, storageOrder, storage)
+        handleOrderTaxes(readOnlyOrder, storageOrder, storage)
+        handleOrderCustomFields(readOnlyOrder, storageOrder, storage)
 
         return storageOrder
     }
@@ -89,7 +91,7 @@ struct OrdersUpsertUseCase {
         }
 
         // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
-        storageOrder.items?.forEach { storageItem in
+        storageOrder.orderItemsArray.forEach { storageItem in
             if readOnlyOrder.items.first(where: { $0.itemID == storageItem.itemID } ) == nil {
                 storageOrder.removeFromItems(storageItem)
                 storage.deleteObject(storageItem)
@@ -255,6 +257,52 @@ struct OrdersUpsertUseCase {
             if readOnlyItem.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
                 storageItem.removeFromTaxes(storageTax)
                 storage.deleteObject(storageTax)
+            }
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided `storageOrder`'s taxes using the provided `readOnlyOrder`'s taxes
+    ///
+    private func handleOrderTaxes(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        // Upsert the `taxes` from the `readOnlyOrder`
+        readOnlyOrder.taxes.forEach { readOnlyTax in
+            if let existingStorageTax = storage.loadOrderTaxLine(siteID: readOnlyOrder.siteID, taxID: readOnlyTax.taxID) {
+                existingStorageTax.update(with: readOnlyTax)
+            } else {
+                let newStorageTax = storage.insertNewObject(ofType: Storage.OrderTaxLine.self)
+                newStorageTax.update(with: readOnlyTax)
+                storageOrder.addToTaxes(newStorageTax)
+            }
+        }
+
+        // Now, remove any objects that exist in `storageOrder.taxes` but not in `readOnlyOrder.taxes`
+        storageOrder.taxes?.forEach { storageTax in
+            if readOnlyOrder.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
+                storageOrder.removeFromTaxes(storageTax)
+                storage.deleteObject(storageTax)
+            }
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided `storageOrder`'s custom fields using the provided `readOnlyOrder`'s custom fields
+    ///
+    private func handleOrderCustomFields(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        // Upsert the `customFields` from the `readOnlyOrder`
+        readOnlyOrder.customFields.forEach { readOnlyCustomField in
+            if let existingStorageMetaData = storage.loadOrderMetaData(siteID: readOnlyOrder.siteID, metadataID: readOnlyCustomField.metadataID) {
+                existingStorageMetaData.update(with: readOnlyCustomField)
+            } else {
+                let newStorageMetaData = storage.insertNewObject(ofType: Storage.OrderMetaData.self)
+                newStorageMetaData.update(with: readOnlyCustomField)
+                storageOrder.addToCustomFields(newStorageMetaData)
+            }
+        }
+
+        // Now, remove any objects that exist in `storageOrder.customFields` but not in `readOnlyOrder.customFields`
+        storageOrder.customFields?.forEach { storageCustomField in
+            if readOnlyOrder.customFields.first(where: { $0.metadataID == storageCustomField.metadataID } ) == nil {
+                storageOrder.removeFromCustomFields(storageCustomField)
+                storage.deleteObject(storageCustomField)
             }
         }
     }

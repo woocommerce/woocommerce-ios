@@ -24,8 +24,7 @@ final class SurveyViewControllerTests: XCTestCase {
 
     func test_it_loads_the_correct_product_feedback_survey() throws {
         // Given
-        let viewController = SurveyViewController(survey: .productsVariationsFeedback, onCompletion: {})
-
+        let viewController = SurveyViewController(survey: .productsFeedback, onCompletion: {})
         // When
         _ = try XCTUnwrap(viewController.view)
         let mirror = try self.mirror(of: viewController)
@@ -51,6 +50,22 @@ final class SurveyViewControllerTests: XCTestCase {
                         .asURL()
                         .tagPlatform("ios")
                         .tagShippingLabelsMilestone("3")
+                        .tagAppVersion(Bundle.main.bundleVersion()))
+    }
+
+    func test_it_loads_the_correct_store_setup_survey() throws {
+        // Given
+        let viewController = SurveyViewController(survey: .storeSetup, onCompletion: {})
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let mirror = try self.mirror(of: viewController)
+
+        // Then
+        XCTAssertTrue(mirror.webView.isLoading)
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.storeSetupFeedback
+                        .asURL()
+                        .tagPlatform("ios")
                         .tagAppVersion(Bundle.main.bundleVersion()))
     }
 

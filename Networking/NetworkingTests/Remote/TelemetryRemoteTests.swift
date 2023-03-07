@@ -4,7 +4,7 @@ import XCTest
 
 /// TelemetryRemote Unit Tests
 ///
-class TelemetryRemoteTests: XCTestCase {
+final class TelemetryRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
@@ -44,6 +44,24 @@ class TelemetryRemoteTests: XCTestCase {
         // Given
         let remote = TelemetryRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "tracker", filename: "generic_success_data")
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2") { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    /// Verifies that sendTelemetry properly accepts non-null response without data envelope.
+    ///
+    func test_sendTelemetry_properly_accepts_non_null_response_without_data_envelope() throws {
+        // Given
+        let remote = TelemetryRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "tracker", filename: "generic_success")
 
         // When
         let result: Result<Void, Error> = waitFor { promise in

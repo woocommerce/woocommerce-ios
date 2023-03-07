@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 /// In memory, volatile cache
@@ -26,3 +27,4 @@ final class StripeCardReaderDiscoveryCache {
         }.first
     }
 }
+#endif

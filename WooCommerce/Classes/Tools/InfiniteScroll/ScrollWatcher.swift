@@ -1,15 +1,15 @@
+import Combine
 import UIKit
-import Observables
 
 /// Watches for scroll content offset changes and notifies its subscribers if the scroll position is over a threshold.
 ///
 final class ScrollWatcher {
     /// Emits a stream of scroll position percentages from 0.0 (the beginning) to 1.0 (the end) if over a given threshold whenever the user scrolls a
     /// `UIScrollView` or subclass.
-    var trigger: Observable<Double> {
-        triggerSubject
+    var trigger: AnyPublisher<Double, Never> {
+        triggerSubject.eraseToAnyPublisher()
     }
-    private let triggerSubject: PublishSubject<Double> = PublishSubject<Double>()
+    private let triggerSubject: PassthroughSubject<Double, Never> = .init()
     private let positionThreshold: Double
 
     private var lastPosition: Double = 0.0

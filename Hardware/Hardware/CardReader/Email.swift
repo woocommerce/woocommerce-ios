@@ -5,7 +5,6 @@
 /// The reason to do this is add an extra layer of validation before passing
 /// an instance of PaymentIntentParameters to the Stripe Terminal SDK
 /// https://emailregex.com
-
 @propertyWrapper
 public struct Email<Value: StringProtocol> {
     var value: Value?

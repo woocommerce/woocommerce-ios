@@ -1,34 +1,35 @@
+import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let passwordOption = "Use Password"
-    static let linkButton = "Send Link Button"
-}
+public final class LinkOrPasswordScreen: ScreenObject {
 
-final class LinkOrPasswordScreen: BaseScreen {
-    private let passwordOption: XCUIElement
-    private let linkButton: XCUIElement
-
-    init() {
-        passwordOption = XCUIApplication().buttons[ElementStringIDs.passwordOption]
-        linkButton = XCUIApplication().buttons[ElementStringIDs.linkButton]
-
-        super.init(element: passwordOption)
+    private let passwordButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Use Password"]
     }
 
-    func proceedWithPassword() -> LoginPasswordScreen {
-        passwordOption.tap()
-
-        return LoginPasswordScreen()
+    private let sendLinkButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Send Link Button"]
     }
 
-    func proceedWithLink() -> LoginCheckMagicLinkScreen {
-        linkButton.tap()
+    private var passwordButton: XCUIElement { passwordButtonGetter(app) }
 
-        return LoginCheckMagicLinkScreen()
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                passwordButtonGetter,
+                sendLinkButtonGetter
+            ],
+            app: app
+        )
     }
 
-    static func isLoaded() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.passwordOption].exists
+    func proceedWithPassword() throws -> LoginPasswordScreen {
+        passwordButton.tap()
+        return try LoginPasswordScreen()
+    }
+
+    func proceedWithLink() throws -> LoginCheckMagicLinkScreen {
+        passwordButton.tap()
+        return try LoginCheckMagicLinkScreen()
     }
 }

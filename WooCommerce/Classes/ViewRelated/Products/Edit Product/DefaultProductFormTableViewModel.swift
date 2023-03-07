@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import WooFoundation
 
 /// The Product form contains 2 sections: primary fields, and details.
 struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
@@ -8,16 +9,30 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
 
+    // Localizes weight and package dimensions
+    //
+    private let shippingValueLocalizer: ShippingValueLocalizer
+
+    private let dimensionUnit: String?
+    private let weightUnit: String?
+
+
     // Timezone of the website
     //
-    var siteTimezone: TimeZone = TimeZone.siteTimezone
+    private let siteTimezone: TimeZone = TimeZone.siteTimezone
 
     init(product: ProductFormDataModel,
          actionsFactory: ProductFormActionsFactoryProtocol,
          currency: String,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer(),
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
+         dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
+        self.shippingValueLocalizer = shippingValueLocalizer
+        self.weightUnit = weightUnit
+        self.dimensionUnit = dimensionUnit
         configureSections(product: product, actionsFactory: actionsFactory)
     }
 }
@@ -25,7 +40,8 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
 private extension DefaultProductFormTableViewModel {
     mutating func configureSections(product: ProductFormDataModel, actionsFactory: ProductFormActionsFactoryProtocol) {
         sections = [.primaryFields(rows: primaryFieldRows(product: product, actions: actionsFactory.primarySectionActions())),
-                    .settings(rows: settingsRows(productModel: product, actions: actionsFactory.settingsSectionActions()))]
+                    .settings(rows: settingsRows(productModel: product, actions: actionsFactory.settingsSectionActions())),
+                    .optionsCTA(rows: optionsCTARows(product: product, actions: actionsFactory.optionsCTASectionActions()))]
             .filter { $0.isNotEmpty }
     }
 
@@ -33,7 +49,9 @@ private extension DefaultProductFormTableViewModel {
         return actions.map { action in
             switch action {
             case .images(let editable):
-                return .images(isEditable: editable, allowsMultiple: product.allowsMultipleImages())
+                return .images(isEditable: editable, allowsMultiple: product.allowsMultipleImages(), isVariation: product is EditableProductVariationModel)
+            case .linkedProductsPromo(let viewModel):
+                return .linkedProductsPromo(viewModel: viewModel)
             case .name(let editable):
                 return .name(name: product.name, isEditable: editable, productStatus: product.status)
             case .variationName:
@@ -94,6 +112,8 @@ private extension DefaultProductFormTableViewModel {
                 return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: true))
             case .attributes(let editable):
                 return .attributes(viewModel: productVariationsAttributesRow(product: product.product, isEditable: editable), isEditable: editable)
+            case .bundledProducts:
+                return .bundledProducts(viewModel: bundledProductsRow(product: product))
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -120,6 +140,17 @@ private extension DefaultProductFormTableViewModel {
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
+            }
+        }
+    }
+
+    func optionsCTARows(product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.OptionsCTARow] {
+        return actions.map { action in
+            switch action {
+            case .addOptions:
+                return .addOptions
+            default:
+                fatalError("Unexpected action in the options CTA section: \(action)")
             }
         }
     }
@@ -232,14 +263,15 @@ private extension DefaultProductFormTableViewModel {
         let title = Localization.productTypeTitle
 
         let details: String
+        let hideDownloadableProductType = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
         switch product.productType {
         case .simple:
-            switch (product.downloadable, product.virtual) {
-            case (true, _):
+            switch (product.downloadable, product.virtual, hideDownloadableProductType) {
+            case (true, _, false):
                 details = Localization.downloadableProductType
-            case (false, true):
+            case (_, true, _):
                 details = Localization.virtualProductType
-            case (false, false):
+            case (_, false, _):
                 details = Localization.physicalProductType
             }
         case .custom(let customProductType):
@@ -262,17 +294,21 @@ private extension DefaultProductFormTableViewModel {
         var shippingDetails = [String]()
 
         // Weight[unit]
-        if let weight = product.weight, let weightUnit = ServiceLocator.shippingSettingsService.weightUnit, !weight.isEmpty {
+        if let weight = product.weight, let weightUnit = weightUnit, !weight.isEmpty {
+            let localizedWeight = shippingValueLocalizer.localized(shippingValue: weight) ?? weight
             shippingDetails.append(String.localizedStringWithFormat(Localization.weightFormat,
-                                                                    weight, weightUnit))
+                                                                    localizedWeight, weightUnit))
         }
 
         // L x W x H[unit]
         let length = product.dimensions.length
         let width = product.dimensions.width
         let height = product.dimensions.height
-        let dimensions = [length, width, height].filter({ !$0.isEmpty })
-        if let dimensionUnit = ServiceLocator.shippingSettingsService.dimensionUnit,
+        let dimensions = [length, width, height]
+            .map({ shippingValueLocalizer.localized(shippingValue: $0) ?? $0 })
+            .filter({ !$0.isEmpty })
+
+        if let dimensionUnit = dimensionUnit,
             !dimensions.isEmpty {
             switch dimensions.count {
             case 1:
@@ -473,6 +509,19 @@ private extension DefaultProductFormTableViewModel {
                                                         details: details,
                                                         isActionable: isEditable)
     }
+
+    // MARK: Bundle products only
+
+    func bundledProductsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.widgetsImage
+        let title = Localization.bundledProductsTitle
+
+        let details = "3 products" // TODO-8954: Display actual bundled product count (localized)
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details)
+    }
 }
 
 private extension DefaultProductFormTableViewModel {
@@ -557,7 +606,7 @@ private extension DefaultProductFormTableViewModel {
                                                                    comment: "Placeholder of the Product Short Description row on Product main screen")
 
         // Categories
-        static let categoriesPlaceholder = NSLocalizedString("Uncategorized",
+        static let categoriesPlaceholder = NSLocalizedString("No category selected",
                                                              comment: "Placeholder of the Product Categories row on Product main screen")
         // Tags
         static let tagsPlaceholder = NSLocalizedString("No tags",
@@ -618,7 +667,7 @@ private extension DefaultProductFormTableViewModel {
 
         // No price warning row
         static let noPriceWarningTitle =
-            NSLocalizedString("Add price to your variations to make them visible on your store",
+            NSLocalizedString("Add a price to your variation to make it visible on your store",
                               comment: "Title of the no price warning row on Product Variation main screen when a variation is enabled without a price")
 
         // Downloadable files
@@ -665,5 +714,8 @@ private extension DefaultProductFormTableViewModel {
 
         // Add-ons
         static let addOnsTitle = NSLocalizedString("Product Add-ons", comment: "Title for Add-ons row in the product form screen.")
+
+        // Bundled products
+        static let bundledProductsTitle = NSLocalizedString("Bundled products", comment: "Title for Bundled Products row in the product form screen.")
     }
 }

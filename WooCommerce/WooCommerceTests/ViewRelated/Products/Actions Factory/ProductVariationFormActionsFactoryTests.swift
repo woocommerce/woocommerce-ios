@@ -175,7 +175,7 @@ private extension ProductVariationFormActionsFactoryTests {
             .copy(image: nil, sku: "uks", regularPrice: "1", virtual: false, downloadable: true)
         // downloadable: false, virtual: false, status is enabled and has no price
         static let physicalProductVariationEnabledAndMissingPrice = MockProductVariation().productVariation()
-            .copy(image: nil, status: .publish, sku: "uks", regularPrice: nil, virtual: false, downloadable: false,
+            .copy(image: nil, status: .published, sku: "uks", regularPrice: nil, virtual: false, downloadable: false,
                   weight: "2", dimensions: ProductDimensions(length: "", width: "", height: ""))
     }
 }

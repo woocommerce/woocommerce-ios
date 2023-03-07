@@ -1,5 +1,6 @@
 import Foundation
 import Storage
+import Hardware
 
 public protocol MockObjectGraph {
     var userCredentials: Credentials { get }
@@ -8,13 +9,17 @@ public protocol MockObjectGraph {
     var defaultSiteAPI: SiteAPI { get }
 
     var sites: [Site] { get }
+    var siteSettings: [SiteSetting] { get }
+    var systemPlugins: [SystemPlugin] { get }
+    var paymentGatewayAccounts: [PaymentGatewayAccount] { get }
+    var cardReaders: [CardReader] { get }
     var orders: [Order] { get }
     var products: [Product] { get }
     var reviews: [ProductReview] { get }
 
-    var thisYearOrderStats: OrderStatsV4 { get }
-    var thisYearVisitStats: SiteVisitStats { get }
-    var thisYearTopProducts: TopEarnerStats { get }
+    var thisMonthOrderStats: OrderStatsV4 { get }
+    var thisMonthVisitStats: SiteVisitStats { get }
+    var thisMonthTopProducts: TopEarnerStats { get }
 
     func accountWithId(id: Int64) -> Account
     func accountSettingsWithUserId(userId: Int64) -> AccountSettings
@@ -28,6 +33,27 @@ public protocol MockObjectGraph {
 }
 
 let mockResourceUrlHost = "http://localhost:\(UserDefaults.standard.integer(forKey: "mocks-port"))/"
+
+// MARK: SiteSetting Accessors
+extension MockObjectGraph {
+    func siteSettings(for siteID: Int64) -> [SiteSetting] {
+        return siteSettings.filter { $0.siteID == siteID }
+    }
+}
+
+// MARK: SystemPlugin Accessors
+extension MockObjectGraph {
+    func systemPlugins(for siteID: Int64) -> [SystemPlugin] {
+        return systemPlugins.filter { $0.siteID == siteID }
+    }
+}
+
+// MARK: PaymentGateWayAccount Accessor
+extension MockObjectGraph {
+    func paymentGatewayAccounts(for siteID: Int64) -> [PaymentGatewayAccount] {
+        return paymentGatewayAccounts.filter { $0.siteID == siteID }
+    }
+}
 
 // MARK: Product Accessors
 extension MockObjectGraph {
@@ -74,6 +100,94 @@ extension MockObjectGraph {
 
     func reviews(forSiteId siteId: Int64) -> [ProductReview] {
         reviews.filter { $0.siteID == siteId }
+    }
+}
+
+// MARK: SiteSetting Creation Helper
+extension MockObjectGraph {
+    static func createSiteSetting(siteID: Int64 = 1,
+                                  settingID: String,
+                                  label: String,
+                                  settingDescription: String,
+                                  value: String,
+                                  settingGroupKey: String) -> SiteSetting {
+        SiteSetting(siteID: siteID,
+                    settingID: settingID,
+                    label: label,
+                    settingDescription: settingDescription,
+                    value: value,
+                    settingGroupKey: settingGroupKey)
+    }
+}
+
+// MARK: SystemPlugin Creation Helper
+extension MockObjectGraph {
+    static func createSystemPlugin(siteID: Int64 = 1,
+                                   plugin: String,
+                                   name: String,
+                                   version: String,
+                                   versionLatest: String = "",
+                                   url: String = "",
+                                   authorName: String = "",
+                                   authorUrl: String = "",
+                                   networkActivated: Bool = true,
+                                   active: Bool = true) -> SystemPlugin {
+        SystemPlugin(siteID: siteID,
+                     plugin: plugin,
+                     name: name,
+                     version: version,
+                     versionLatest: versionLatest,
+                     url: url,
+                     authorName: authorName,
+                     authorUrl: authorUrl,
+                     networkActivated: networkActivated,
+                     active: active)
+    }
+}
+
+// MARK: PaymentGatewayAccount Creation Helper
+extension MockObjectGraph {
+    static func createPaymentGatewayAccount(gatewayID: String = WCPayAccount.gatewayID,
+                                            status: WCPayAccountStatusEnum = .complete,
+                                            hasPendingRequirements: Bool = false,
+                                            hasOverdueRequirements: Bool = false,
+                                            currentDeadline: Date? = nil,
+                                            statementDescriptor: String = "",
+                                            defaultCurrency: String = "USD",
+                                            supportedCurrencies: [String] = ["US", "CA"],
+                                            country: String = "US",
+                                            isCardPresentEligible: Bool = true,
+                                            isLive: Bool = false,
+                                            isInTestMode: Bool = false) -> PaymentGatewayAccount {
+        PaymentGatewayAccount(
+            siteID: 1,
+            gatewayID: WCPayAccount.gatewayID,
+            status: status.rawValue,
+            hasPendingRequirements: hasPendingRequirements,
+            hasOverdueRequirements: hasOverdueRequirements,
+            currentDeadline: currentDeadline,
+            statementDescriptor: statementDescriptor,
+            defaultCurrency: defaultCurrency,
+            supportedCurrencies: supportedCurrencies,
+            country: country,
+            isCardPresentEligible: isCardPresentEligible,
+            isLive: isLive,
+            isInTestMode: isInTestMode
+        )
+    }
+}
+
+// MARK: CardReader Creation Helper
+extension MockObjectGraph {
+    static func createCardReader() -> CardReader {
+        CardReader(serial: "WPE-SIMULATOR-1",
+                   vendorIdentifier: "SIMULATOR",
+                   name: "Simulated POS E",
+                   status: .init(connected: true, remembered: true),
+                   softwareVersion: "1.00.03.34-SZZZ_Generic_v45-300001",
+                   batteryLevel: 0.5,
+                   readerType: .chipper,
+                   locationId: "st_simulated")
     }
 }
 
@@ -193,7 +307,17 @@ extension MockObjectGraph {
             variations: [],
             groupedProducts: [],
             menuOrder: 0,
-            addOns: []
+            addOns: [],
+            bundleLayout: nil,
+            bundleFormLocation: nil,
+            bundleItemGrouping: nil,
+            bundleMinSize: nil,
+            bundleMaxSize: nil,
+            bundleEditableInCart: nil,
+            bundleSoldIndividuallyContext: nil,
+            bundleStockStatus: nil,
+            bundleStockQuantity: nil,
+            bundledItems: []
         )
     }
 }
@@ -206,6 +330,7 @@ extension MockObjectGraph {
         status: OrderStatusEnum,
         daysOld: Int = 0,
         total: Decimal,
+        needsPayment: Bool = false,
         items: [OrderItem] = []
     ) -> Order {
 
@@ -214,6 +339,10 @@ extension MockObjectGraph {
             orderID: number,
             parentID: 0,
             customerID: 1,
+            orderKey: "",
+            isEditable: false,
+            needsPayment: needsPayment,
+            needsProcessing: false,
             number: "\(number)",
             status: status,
             currency: "USD",
@@ -229,13 +358,17 @@ extension MockObjectGraph {
             totalTax: "0",
             paymentMethodID: "0",
             paymentMethodTitle: "MasterCard",
+            paymentURL: nil,
+            chargeID: nil,
             items: items,
             billingAddress: customer.billingAddress,
             shippingAddress: customer.billingAddress,
             shippingLines: [],
             coupons: [],
             refunds: [],
-            fees: []
+            fees: [],
+            taxes: [],
+            customFields: []
         )
     }
 }
@@ -270,33 +403,25 @@ extension MockObjectGraph {
 // MARK: Stats Creation Helpers
 extension MockObjectGraph {
 
-    static func createInterval(
-        monthsAgo: Int,
+    static func createMonthlyInterval(
+        date: Date,
         orderCount: Int,
         revenue: Decimal
     ) -> OrderStatsV4Interval {
-
-        let startDate = Date().subtractingMonths(monthsAgo).monthStart
-
-        return OrderStatsV4Interval(
-            interval: String(startDate.month),
-            dateStart: startDate.asOrderStatsString,
-            dateEnd: startDate.monthEnd.asOrderStatsString,
+        OrderStatsV4Interval(
+            interval: String(date.day),
+            dateStart: date.asOrderStatsString,
+            dateEnd: date.monthEnd.asOrderStatsString,
             subtotals: createTotal(orderCount: orderCount, revenue: revenue)
         )
     }
 
-    static func createVisitStatsItem(granularity: StatGranularity, ago count: Int, visitors: Int) -> SiteVisitStatsItem {
+    static func createVisitStatsItem(granularity: StatGranularity, periodDate: Date, visitors: Int, views: Int) -> SiteVisitStatsItem {
         switch granularity {
-            case .month:
-                let period = Date().subtractingMonths(count).monthStart
-                return SiteVisitStatsItem(period: period.asVisitStatsMonthString, visitors: visitors)
-            case .year:
-                let period = Date().subtracingYears(count).yearStart
-                let item = SiteVisitStatsItem(period: period.asVisitStatsMonthString, visitors: visitors)
-                return item
-            default:
-                fatalError("Not implemented yet")
+        case .day:
+            return SiteVisitStatsItem(period: periodDate.asVisitStatsMonthString, visitors: visitors, views: views)
+        default:
+            fatalError("Not implemented yet")
         }
     }
 
@@ -311,7 +436,8 @@ extension MockObjectGraph {
             taxes: 0,
             shipping: 0,
             netRevenue: 0,
-            totalProducts: 0
+            totalProducts: 0,
+            averageOrderValue: 0
         )
     }
 
@@ -333,21 +459,21 @@ extension MockObjectGraph {
         switch granularity {
             case .day: preconditionFailure("Not implemented")
             case .week: preconditionFailure("Not implemented")
-            case .month: preconditionFailure("Not implemented")
-            case .year:
-                return SiteVisitStats(
-                    siteID: siteID,
-                    date: Date().asVisitStatsYearString,
-                    granularity: .month,
-                    items: items
-                )
+            case .month:
+            return SiteVisitStats(
+                siteID: siteID,
+                date: Date().asVisitStatsMonthString,
+                granularity: .day,
+                items: items
+            )
+            case .year: preconditionFailure("Not implemented")
         }
     }
 
     static func createStats(siteID: Int64, granularity: StatGranularity, items: [TopEarnerStatsItem]) -> TopEarnerStats {
         TopEarnerStats(
             siteID: siteID,
-            date: String(Date().year),
+            date: StatsStoreV4.buildDateString(from: Date(), with: granularity),
             granularity: granularity,
             limit: "",
             items: items
@@ -386,7 +512,8 @@ private extension Array where Element == OrderStatsV4Interval {
             taxes: 0,
             shipping: 0,
             netRevenue: 0,
-            totalProducts: 0
+            totalProducts: 0,
+            averageOrderValue: 0
         )
     }
 }
@@ -425,6 +552,11 @@ private extension Array where Element == OrderStatsV4Interval {
     var month: Int {
         let components = Calendar.current.dateComponents(in: .current, from: self)
         return components.month ?? 0
+    }
+
+    var day: Int {
+        let components = Calendar.current.dateComponents(in: .current, from: self)
+        return components.day ?? 0
     }
 
     var yearStart: Date {

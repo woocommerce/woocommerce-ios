@@ -13,6 +13,10 @@ extension Storage.Order: ReadOnlyConvertible {
         orderID = order.orderID
         parentID = order.parentID
         customerID = order.customerID
+        orderKey = order.orderKey
+        isEditable = order.isEditable
+        needsPayment = order.needsPayment
+        needsProcessing = order.needsProcessing
         number = order.number
         statusKey = order.status.rawValue
         currency = order.currency
@@ -31,6 +35,8 @@ extension Storage.Order: ReadOnlyConvertible {
         totalTax = order.totalTax
         paymentMethodID = order.paymentMethodID
         paymentMethodTitle = order.paymentMethodTitle
+        paymentURL = order.paymentURL as NSURL?
+        chargeID = order.chargeID
 
         if let billingAddress = order.billingAddress {
             billingFirstName = billingAddress.firstName
@@ -64,16 +70,22 @@ extension Storage.Order: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.Order {
-        let orderItems = items?.map { $0.toReadOnly() } ?? [Yosemite.OrderItem]()
+        let orderItems = orderItemsArray.map { $0.toReadOnly() }
         let orderCoupons = coupons?.map { $0.toReadOnly() } ?? [Yosemite.OrderCouponLine]()
         let orderRefunds = refunds?.map { $0.toReadOnly() } ?? [Yosemite.OrderRefundCondensed]()
         let orderShippingLines = shippingLines?.map { $0.toReadOnly() } ?? [Yosemite.ShippingLine]()
         let orderFeeLines = fees?.map { $0.toReadOnly() } ?? [Yosemite.OrderFeeLine]()
+        let orderTaxLines = taxes?.map { $0.toReadOnly() } ?? [Yosemite.OrderTaxLine]()
+        let orderCustomFields = customFields?.map { $0.toReadOnly() } ?? [Yosemite.OrderMetaData]()
 
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: parentID,
                      customerID: customerID,
+                     orderKey: orderKey,
+                     isEditable: isEditable,
+                     needsPayment: needsPayment,
+                     needsProcessing: needsPayment,
                      number: number ?? "",
                      status: OrderStatusEnum(rawValue: statusKey),
                      currency: currency ?? "",
@@ -89,13 +101,18 @@ extension Storage.Order: ReadOnlyConvertible {
                      totalTax: totalTax ?? "",
                      paymentMethodID: paymentMethodID ?? "",
                      paymentMethodTitle: paymentMethodTitle ?? "",
+                     paymentURL: paymentURL as URL?,
+                     chargeID: chargeID,
                      items: orderItems,
                      billingAddress: createReadOnlyBillingAddress(),
                      shippingAddress: createReadOnlyShippingAddress(),
                      shippingLines: orderShippingLines,
                      coupons: orderCoupons,
                      refunds: orderRefunds,
-                     fees: orderFeeLines)
+                     fees: orderFeeLines,
+                     taxes: orderTaxLines,
+                     customFields: orderCustomFields)
+
     }
 
 
@@ -137,3 +154,9 @@ extension Storage.Order: ReadOnlyConvertible {
                        email: shippingEmail)
     }
 }
+
+extension Storage.Order {
+     var orderItemsArray: [Storage.OrderItem] {
+         return items?.toArray() ?? []
+     }
+ }

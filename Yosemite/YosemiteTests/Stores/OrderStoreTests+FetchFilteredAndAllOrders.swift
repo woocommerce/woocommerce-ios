@@ -166,17 +166,14 @@ private enum Fixtures {
 
     static let siteID: Int64 = 1_987
 
-    static let order = Networking.Order(
+    static let order = Networking.Order.fake().copy(
         siteID: siteID,
         orderID: 8_963,
-        parentID: 0,
         customerID: 11,
         number: "8963",
         status: .processing,
         currency: "USD",
         customerNote: "",
-        dateCreated: Date(),
-        dateModified: Date(),
         datePaid: Date(),
         discountTotal: "30.00",
         discountTax: "1.20",
@@ -186,12 +183,6 @@ private enum Fixtures {
         totalTax: "1.20",
         paymentMethodID: "stripe",
         paymentMethodTitle: "Credit Card (Stripe)",
-        items: [],
-        billingAddress: nil,
-        shippingAddress: nil,
-        shippingLines: [],
-        coupons: [],
-        refunds: [],
-        fees: []
+        items: []
     )
 }

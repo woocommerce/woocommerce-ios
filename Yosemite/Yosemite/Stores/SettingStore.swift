@@ -40,6 +40,14 @@ public class SettingStore: Store {
             synchronizeProductSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .retrieveSiteAPI(let siteID, let onCompletion):
             retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
+        case let .retrieveCouponSetting(siteID, onCompletion):
+            retrieveCouponSetting(siteID: siteID, onCompletion: onCompletion)
+        case let .enableCouponSetting(siteID, onCompletion):
+            enableCouponSetting(siteID: siteID, onCompletion: onCompletion)
+        case let .retrieveAnalyticsSetting(siteID, onCompletion):
+            retrieveAnalyticsSetting(siteID: siteID, onCompletion: onCompletion)
+        case let .enableAnalyticsSetting(siteID, onCompletion):
+            enableAnalyticsSetting(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -85,6 +93,75 @@ private extension SettingStore {
     func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void) {
         siteAPIRemote.loadAPIInformation(for: siteID, completion: onCompletion)
     }
+
+    /// Retrieves the setting for whether coupons are enabled for the specified store
+    ///
+    func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let setting):
+                self.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                    let isEnabled = setting.value == SettingValue.yes
+                    onCompletion(.success(isEnabled))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Enables coupons for the specified store
+    ///
+    func enableCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        siteSettingsRemote.updateSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons, value: SettingValue.yes) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let setting):
+                self.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                    onCompletion(.success(Void()))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Retrieves the setting for whether WC Analytics are enabled for the specified store
+    ///
+    func retrieveAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .advanced, settingID: SettingKeys.analytics) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let setting):
+                self.upsertStoredAdvancedSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                    let isEnabled = setting.value == SettingValue.yes
+                    onCompletion(.success(isEnabled))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Enables WC Analytics for the specified store
+    ///
+    func enableAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        siteSettingsRemote.updateSetting(for: siteID,
+                                            settingGroup: .advanced,
+                                            settingID: SettingKeys.analytics,
+                                            value: SettingValue.yes) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let setting):
+                self.upsertStoredAdvancedSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                    onCompletion(.success(Void()))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
 }
 
 
@@ -113,6 +190,20 @@ private extension SettingStore {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             self.upsertSettings(readOnlySiteSettings, in: derivedStorage, siteID: siteID, settingGroup: SiteSettingGroup.product)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates (OR Inserts) the specified **advanced** ReadOnly `SiteSetting` entities **in a background thread**. `onCompletion` will be called
+    /// on the main thread!
+    ///
+    func upsertStoredAdvancedSettingsInBackground(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertSettings(readOnlySiteSettings, in: derivedStorage, siteID: siteID, settingGroup: SiteSettingGroup.advanced)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
@@ -157,5 +248,19 @@ extension SettingStore {
     ///
     func upsertStoredProductSiteSettings(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
         upsertSettings(readOnlySiteSettings, in: storage, siteID: siteID, settingGroup: SiteSettingGroup.product)
+    }
+}
+
+// MARK: Definitions
+extension SettingStore {
+    /// Settings keys.
+    ///
+    private enum SettingKeys {
+        static let coupons = "woocommerce_enable_coupons"
+        static let analytics = "woocommerce_analytics_enabled"
+    }
+
+    private enum SettingValue {
+        static let yes = "yes"
     }
 }

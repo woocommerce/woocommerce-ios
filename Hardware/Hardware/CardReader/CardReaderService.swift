@@ -18,19 +18,28 @@ public protocol CardReaderService {
 
     // MARK: - Commands
 
+    /// Checks for support of a given reader type and discovery method combination. Does not start discovery.
+    ///
+    func checkSupport(for cardReaderType: CardReaderType,
+                      configProvider: CardReaderConfigProvider,
+                      discoveryMethod: CardReaderDiscoveryMethod) -> Bool
+
     /// Starts the service.
     /// That could imply, for example, that the reader discovery process starts
-    func start(_ configProvider: CardReaderConfigProvider) throws
+    func start(_ configProvider: CardReaderConfigProvider, discoveryMethod: CardReaderDiscoveryMethod) throws
 
     /// Cancels the discovery process.
-    func cancelDiscovery() -> Future <Void, Error>
+    func cancelDiscovery() -> Future<Void, Error>
 
     /// Connects to a card reader
     /// - Parameter reader: The card reader we want to connect to.
-    func connect(_ reader: CardReader) -> AnyPublisher <CardReader, Error>
+    func connect(_ reader: CardReader) -> AnyPublisher<CardReader, Error>
 
     /// Disconnects from the currently connected reader
     func disconnect() -> Future <Void, Error>
+
+    /// Waits for the inserted card to be removed as a requirement after client-side processing.
+    func waitForInsertedCardToBeRemoved() -> Future<Void, Never>
 
     /// Clears and resets internal state.
     /// We need to call this method when switching accounts or stores
@@ -42,6 +51,12 @@ public protocol CardReaderService {
 
     /// Cancels a PaymentIntent
     func cancelPaymentIntent() -> Future<Void, Error>
+
+    /// Refunds a payment
+    func refundPayment(parameters: RefundParameters) -> AnyPublisher<String, Error>
+
+    /// Cancels an in-flight refund
+    func cancelRefund() -> AnyPublisher<Void, Error>
 
     /// Triggers a software update.
     ///

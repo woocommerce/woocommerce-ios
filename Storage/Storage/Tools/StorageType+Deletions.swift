@@ -110,6 +110,25 @@ public extension StorageType {
         }
     }
 
+    // MARK: - Coupons
+
+    /// Deletes all of the stored Coupons for the provided siteID.
+    ///
+    func deleteCoupons(siteID: Int64) {
+        let coupons = loadAllCoupons(siteID: siteID)
+        for coupon in coupons {
+            deleteObject(coupon)
+        }
+    }
+
+    /// Deletes the stored Coupon with the given couponID for the provided siteID.
+    ///
+    func deleteCoupon(siteID: Int64, couponID: Int64) {
+        if let coupon = loadCoupon(siteID: siteID, couponID: couponID) {
+            deleteObject(coupon)
+        }
+    }
+
     /// Deletes all of the stored `AddOnGroups` for a `siteID` that are not included in the provided `activeGroupIDs` array.
     ///
     func deleteStaleAddOnGroups(siteID: Int64, activeGroupIDs: [Int64]) {
@@ -138,6 +157,25 @@ public extension StorageType {
         }
         systemPlugins.forEach {
             deleteObject($0)
+        }
+    }
+
+    // MARK: - InboxNotes
+
+    /// Deletes all of the stored Inbox Notes for the provided siteID.
+    ///
+    func deleteInboxNotes(siteID: Int64) {
+        let inboxNotes = loadAllInboxNotes(siteID: siteID)
+        for inboxNote in inboxNotes {
+            deleteObject(inboxNote)
+        }
+    }
+
+    /// Deletes the stored InboxNote with the given id for the provided siteID.
+    ///
+    func deleteInboxNote(siteID: Int64, id: Int64) {
+        if let inboxNote = loadInboxNote(siteID: siteID, id: id) {
+            deleteObject(inboxNote)
         }
     }
 }

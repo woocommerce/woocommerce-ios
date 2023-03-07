@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 import Combine
-
+import WooFoundation
 @testable import WooCommerce
 @testable import Yosemite
 
@@ -22,7 +22,23 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "12"
 
         // Then
-        XCTAssertEqual(viewModel.amount, "$12")
+        XCTAssertEqual(viewModel.formattedAmount, "$12")
+    }
+
+    func test_view_model_formats_amount_with_custom_currency_settings() {
+        // Given
+        let customSettings = CurrencySettings(currencyCode: .GBP,
+                                              currencyPosition: .rightSpace,
+                                              thousandSeparator: ",",
+                                              decimalSeparator: ".",
+                                              numberOfDecimals: 3)
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, locale: usLocale, storeCurrencySettings: customSettings)
+
+        // When
+        viewModel.amount = "12.203"
+
+        // Then
+        XCTAssertEqual(viewModel.formattedAmount, "12.203 £")
     }
 
     func test_view_model_removes_non_digit_characters() {
@@ -33,7 +49,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "hi:11.30-"
 
         // Then
-        XCTAssertEqual(viewModel.amount, "$11.30")
+        XCTAssertEqual(viewModel.formattedAmount, "$11.30")
     }
 
     func test_view_model_trims_more_than_two_decimal_numbers() {
@@ -44,7 +60,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "$67.321432432"
 
         // Then
-        XCTAssertEqual(viewModel.amount, "$67.32")
+        XCTAssertEqual(viewModel.formattedAmount, "$67.32")
     }
 
     func test_view_model_removes_duplicated_decimal_separators() {
@@ -55,7 +71,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "$6.7.3"
 
         // Then
-        XCTAssertEqual(viewModel.amount, "$6.7")
+        XCTAssertEqual(viewModel.formattedAmount, "$6.7")
     }
 
     func test_view_model_removes_consecutive_decimal_separators() {
@@ -66,7 +82,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "$6..."
 
         // Then
-        XCTAssertEqual(viewModel.amount, "$6.")
+        XCTAssertEqual(viewModel.formattedAmount, "$6.")
     }
 
     func test_view_model_disables_next_button_when_there_is_no_amount() {
@@ -122,7 +138,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "10,25"
 
         // Then
-        XCTAssertEqual(viewModel.amount, "$10.25")
+        XCTAssertEqual(viewModel.formattedAmount, "$10.25")
     }
 
     func test_view_model_uses_the_store_currency_symbol() {
@@ -134,7 +150,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "10.25"
 
         // Then
-        XCTAssertEqual(viewModel.amount, "€10.25")
+        XCTAssertEqual(viewModel.formattedAmount, "€10.25")
     }
 
     func test_amount_placeholder_is_formatted_with_store_currency_settings() {
@@ -143,7 +159,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, locale: usLocale, storeCurrencySettings: storeSettings)
 
         // When & Then
-        XCTAssertEqual(viewModel.amountPlaceholder, "€0,00")
+        XCTAssertEqual(viewModel.formattedAmount, "€0,00")
     }
 
     func test_view_model_enables_loading_state_while_performing_network_operations() {
@@ -180,7 +196,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         let taxable: Bool = waitFor { promise in
             testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .createSimplePaymentsOrder(_, _, taxable, _):
+                case let .createSimplePaymentsOrder(_, _, _, taxable, _):
                     promise(taxable)
                 default:
                     XCTFail("Received unsupported action: \(action)")
@@ -193,6 +209,62 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         XCTAssertTrue(taxable)
     }
 
+    func test_order_is_created_with_pending_status() {
+        // Given
+        let testingStore = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore)
+        viewModel.amount = "$12.30"
+
+        // When
+        let status: OrderStatusEnum = waitFor { promise in
+            testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createSimplePaymentsOrder(_, status, _, _, _):
+                    promise(status)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            viewModel.createSimplePaymentsOrder()
+        }
+
+        // Then
+        XCTAssertEqual(status, .pending)
+    }
+
+    func test_order_is_created_with_draft_status() {
+        // Given
+        let testingStore = MockStoresManager(sessionManager: .testingInstance)
+        testingStore.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, _, onCompletion):
+                let plugin = SystemPlugin.fake().copy(version: "6.3.0")
+                onCompletion(plugin)
+            default:
+                XCTFail("Unexpected action received: \(action)")
+            }
+        }
+
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore)
+        viewModel.amount = "$12.30"
+
+        // When
+        let status: OrderStatusEnum = waitFor { promise in
+            testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createSimplePaymentsOrder(_, status, _, _, _):
+                    promise(status)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            viewModel.createSimplePaymentsOrder()
+        }
+
+        // Then
+        XCTAssertEqual(status, .autoDraft)
+    }
+
     func test_summaryViewModel_is_created_after_an_order_is_created() {
         // Given
         let testingStore = MockStoresManager(sessionManager: .testingInstance)
@@ -202,7 +274,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         waitForExpectation { exp in
             testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .createSimplePaymentsOrder(_, _, _, onCompletion):
+                case let .createSimplePaymentsOrder(_, _, _, _, onCompletion):
                     onCompletion(.success(.fake()))
                     exp.fulfill()
                 default:
@@ -225,7 +297,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         waitForExpectation { exp in
             testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .createSimplePaymentsOrder(_, _, _, onCompletion):
+                case let .createSimplePaymentsOrder(_, _, _, _, onCompletion):
                     onCompletion(.success(.fake()))
                     exp.fulfill()
                 default:
@@ -250,7 +322,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, presentNoticeSubject: noticeSubject)
         testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createSimplePaymentsOrder(_, _, _, onCompletion):
+            case let .createSimplePaymentsOrder(_, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -263,7 +335,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
                 switch intent {
                 case .error:
                     promise(true)
-                case .completed:
+                case .completed, .created:
                     promise(false)
                 }
             }
@@ -280,7 +352,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         let testingStore = MockStoresManager(sessionManager: .testingInstance)
         testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createSimplePaymentsOrder(_, _, _, onCompletion):
+            case let .createSimplePaymentsOrder(_, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -294,8 +366,9 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.createSimplePaymentsOrder()
 
         // Then
-        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowFailed.rawValue])
+        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.paymentsFlowFailed.rawValue])
         assertEqual(analytics.receivedProperties.first?["source"] as? String, "amount")
+        assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
     }
 
     func test_view_model_disable_cancel_button_while_creating_payment_order() {

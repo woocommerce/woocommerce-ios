@@ -77,23 +77,22 @@ private extension ProductReviewStore {
     /// Synchronizes the product reviews associated with a given Site ID (if any!).
     ///
     func synchronizeProductReviews(siteID: Int64, pageNumber: Int, pageSize: Int, products: [Int64]? = nil, status: ProductReviewStatus? = nil,
-                                   onCompletion: @escaping (Error?) -> Void) {
+                                   onCompletion: @escaping (Result<[ProductReview], Error>) -> Void) {
         remote.loadAllProductReviews(for: siteID,
                                      pageNumber: pageNumber,
                                      pageSize: pageSize,
                                      products: products,
-                                     status: status) { [weak self] (productReviews, error) in
-            guard let productReviews = productReviews else {
-                onCompletion(error)
-                return
-            }
-
-            if pageNumber == Default.firstPageNumber {
-                self?.deleteStoredProductReviews(siteID: siteID)
-            }
-
-            self?.upsertStoredProductReviewsInBackground(readOnlyProductReviews: productReviews, siteID: siteID) {
-                onCompletion(nil)
+                                     status: status) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let productReviews):
+                let shouldClearCache = pageNumber == Default.firstPageNumber
+                self?.upsertStoredProductReviewsInBackground(readOnlyProductReviews: productReviews,
+                                                             siteID: siteID,
+                                                             shouldDeleteAllStoredProductReviews: shouldClearCache) {
+                    onCompletion(.success(productReviews))
+                }
             }
         }
     }
@@ -157,14 +156,6 @@ private extension ProductReviewStore {
 //
 private extension ProductReviewStore {
 
-    /// Deletes any Storage.ProductReview with the specified `siteID`
-    ///
-    func deleteStoredProductReviews(siteID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteProductReviews(siteID: siteID)
-        storage.saveIfNeeded()
-    }
-
     /// Deletes any Storage.ProductReview with the specified `siteID` and `reviewID`
     ///
     func deleteStoredProductReview(siteID: Int64, reviewID: Int64) {
@@ -180,9 +171,15 @@ private extension ProductReviewStore {
     /// Updates (OR Inserts) the specified ReadOnly ProductReview Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
     ///
-    func upsertStoredProductReviewsInBackground(readOnlyProductReviews: [Networking.ProductReview], siteID: Int64, onCompletion: @escaping () -> Void) {
+    func upsertStoredProductReviewsInBackground(readOnlyProductReviews: [Networking.ProductReview],
+                                                siteID: Int64,
+                                                shouldDeleteAllStoredProductReviews: Bool = false,
+                                                onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
+            if shouldDeleteAllStoredProductReviews {
+                derivedStorage.deleteProductReviews(siteID: siteID)
+            }
             self.upsertStoredProductReviews(readOnlyProductReviews: readOnlyProductReviews, in: derivedStorage, siteID: siteID)
         }
 

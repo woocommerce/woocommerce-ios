@@ -36,13 +36,14 @@ public final class PaymentGatewayStore: Store {
         switch action {
         case let .synchronizePaymentGateways(siteID, onCompletion):
             synchronizePaymentGateways(siteID: siteID, onCompletion: onCompletion)
+        case let .updatePaymentGateway(paymentGateway, onCompletion):
+            updatePaymentGateway(paymentGateway, onCompletion: onCompletion)
         }
     }
 }
 
-// MARK: Storage Methods
+// MARK: Payment Gateway store services
 private extension PaymentGatewayStore {
-
     /// Loads and stores all payment gateways for the provided `siteID`
     func synchronizePaymentGateways(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.loadAllPaymentGateways(siteID: siteID) { [weak self] result in
@@ -59,6 +60,31 @@ private extension PaymentGatewayStore {
         }
     }
 
+    /// Updates a paymentGateway given its details.
+    /// After the API request succeeds, the stored paymentGateway should be updated accordingly.
+    /// - Parameters:
+    ///   - paymentGateway: The paymentGateway to be updated
+    ///   - onCompletion: Closure to call after update is complete. Called on the main thread.
+    ///
+    func updatePaymentGateway(_ paymentGateway: PaymentGateway,
+                      siteTimezone: TimeZone? = nil,
+                      onCompletion: @escaping (Result<PaymentGateway, Error>) -> Void) {
+        remote.updatePaymentGateway(paymentGateway) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let paymentGateway):
+                self.upsertPaymentGatewaysInBackground(siteID: paymentGateway.siteID, paymentGateways: [paymentGateway]) {
+                    onCompletion(.success(paymentGateway))
+                }
+            }
+        }
+    }
+}
+
+// MARK: Storage Methods
+private extension PaymentGatewayStore {
     /// Updates (OR Inserts) the specified ReadOnly Payment Gateways Entities
     /// *in a background thread*. `onCompletion` will be called on the main thread!
     ///

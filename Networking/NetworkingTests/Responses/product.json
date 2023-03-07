@@ -331,6 +331,18 @@
                     ]
                 },
             ],
+            "bundled_by": [],
+            "bundle_stock_status": "instock",
+            "bundle_stock_quantity": null,
+            "bundle_virtual": false,
+            "bundle_layout": "",
+            "bundle_add_to_cart_form_location": "",
+            "bundle_editable_in_cart": false,
+            "bundle_sold_individually_context": "",
+            "bundle_item_grouping": "",
+            "bundle_min_size": "",
+            "bundle_max_size": "",
+            "bundled_items": [],
             "jetpack_publicize_connections": [],
             "_links": {
                 "self": [

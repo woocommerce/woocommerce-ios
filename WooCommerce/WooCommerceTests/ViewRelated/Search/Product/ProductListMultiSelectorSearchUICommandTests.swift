@@ -19,12 +19,12 @@ final class ProductListMultiSelectorSearchUICommandTests: XCTestCase {
         // Arrange
         let excludedProductIDs: [Int64] = [17, 630]
         excludedProductIDs.forEach { productID in
-            insert(Product().copy(siteID: sampleSiteID, productID: productID))
+            insert(Product.fake().copy(siteID: sampleSiteID, productID: productID))
         }
 
         let otherProductIDs: [Int64] = [22, 671, 5]
         otherProductIDs.forEach { productID in
-            insert(Product().copy(siteID: sampleSiteID, productID: productID))
+            insert(Product.fake().copy(siteID: sampleSiteID, productID: productID))
         }
 
         let command = ProductListMultiSelectorSearchUICommand(siteID: sampleSiteID,
@@ -45,7 +45,7 @@ final class ProductListMultiSelectorSearchUICommandTests: XCTestCase {
                                                               excludedProductIDs: []) { _ in }
 
         // Action
-        let product = Product().copy(siteID: sampleSiteID, productID: 17)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 17)
         command.didSelectSearchResult(model: product, from: UIViewController(), reloadData: {}, updateActionButton: {})
         command.didSelectSearchResult(model: product, from: UIViewController(), reloadData: {}, updateActionButton: {})
         let button = UIButton(type: .custom)
@@ -62,7 +62,7 @@ final class ProductListMultiSelectorSearchUICommandTests: XCTestCase {
                                                               excludedProductIDs: []) { _ in }
 
         // Action
-        let product = Product().copy(siteID: sampleSiteID, productID: 17)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 17)
         command.didSelectSearchResult(model: product, from: UIViewController(), reloadData: {}, updateActionButton: {})
         let button = UIButton(type: .custom)
         command.configureActionButton(button, onDismiss: {})

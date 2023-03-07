@@ -1,5 +1,7 @@
+import Codegen
+
 /// The possible statuses for a charge
-public enum ChargeStatus {
+public enum ChargeStatus: Equatable, GeneratedFakeable {
     /// The charge succeeded.
     case succeeded
 

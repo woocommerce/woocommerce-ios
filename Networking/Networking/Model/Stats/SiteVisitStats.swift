@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents site visit stats over a specific period.
 ///
-public struct SiteVisitStats: Decodable, GeneratedFakeable {
+public struct SiteVisitStats: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let siteID: Int64
     public let date: String
     public let granularity: StatGranularity
@@ -25,7 +25,8 @@ public struct SiteVisitStats: Decodable, GeneratedFakeable {
         let rawData: [[AnyCodable]] = try container.decode([[AnyCodable]].self, forKey: .data)
         let rawDataContainers = rawData.map({ MIContainer(data: $0.map({ $0.value }), fieldNames: fieldNames) })
         let items = rawDataContainers.map({ SiteVisitStatsItem(period: $0.fetchStringValue(for: ItemFieldNames.period),
-                                                               visitors: $0.fetchIntValue(for: ItemFieldNames.visitors)) })
+                                                               visitors: $0.fetchIntValue(for: ItemFieldNames.visitors),
+                                                               views: $0.fetchIntValue(for: ItemFieldNames.views)) })
 
         self.init(siteID: siteID, date: date, granularity: granularity, items: items)
     }
@@ -38,12 +39,6 @@ public struct SiteVisitStats: Decodable, GeneratedFakeable {
         self.date = date
         self.granularity = granularity
         self.items = items
-    }
-
-    // MARK: Computed Properties
-
-    public var totalVisitors: Int {
-        return items?.map({ $0.visitors }).reduce(0, +) ?? 0
     }
 }
 
@@ -79,11 +74,12 @@ extension SiteVisitStats: Equatable {
 //
 private extension SiteVisitStats {
 
-    /// Defines all of the possbile fields for a SiteVisitStatsItem.
+    /// Defines all of the possible fields for a SiteVisitStatsItem.
     ///
     enum ItemFieldNames: String {
-        case period = "period"
-        case visitors = "visitors"
+        case period
+        case visitors
+        case views
     }
 }
 

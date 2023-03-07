@@ -9,6 +9,7 @@ enum LoginProloguePageType: CaseIterable {
     case orderManagement
     case products
     case reviews
+    case getStarted
 
     var title: String {
         switch self {
@@ -16,7 +17,7 @@ enum LoginProloguePageType: CaseIterable {
             return NSLocalizedString("Track sales and high performing products",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
         case .orderManagement:
-            return NSLocalizedString("Manage your store orders on the go ",
+            return NSLocalizedString("Manage and edit orders on the go",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
         case .products:
             return NSLocalizedString("Edit and add new products from anywhere",
@@ -24,6 +25,25 @@ enum LoginProloguePageType: CaseIterable {
         case .reviews:
             return NSLocalizedString("Monitor and approve your product reviews",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
+        case .getStarted:
+            return NSLocalizedString("WooCommerce is a customizable, open-source eCommerce platform built on WordPress.",
+                                     comment: "Caption displayed in the simplified prologue screen")
+        }
+    }
+
+    var subtitle: String? {
+        switch self {
+        case .stats:
+            return NSLocalizedString("We know it’s essential to your business.",
+                                     comment: "Subtitle displayed in promotional screens shown during the login flow.")
+        case .orderManagement:
+            return NSLocalizedString("You can manage quickly and easily.",
+                                     comment: "Subtitle displayed in promotional screens shown during the login flow.")
+        case .products:
+            return NSLocalizedString("We enable you to process them effortlessly.",
+                                     comment: "Subtitle displayed in promotional screens shown during the login flow.")
+        default:
+            return nil
         }
     }
 
@@ -37,6 +57,8 @@ enum LoginProloguePageType: CaseIterable {
             return UIImage.prologueProductsImage
         case .reviews:
             return UIImage.prologueReviewsImage
+        case .getStarted:
+            return UIImage.prologueWooMobileImage
         }
     }
 }
@@ -45,15 +67,18 @@ enum LoginProloguePageType: CaseIterable {
 
 /// Simple container for each page of the login prologue carousel.
 ///
-class LoginProloguePageTypeViewController: UIViewController {
+final class LoginProloguePageTypeViewController: UIViewController {
     private let stackView = UIStackView()
     private let titleLabel = UILabel()
+    private let subtitleLabel = UILabel()
     private let imageView = UIImageView()
 
-    private var pageType: LoginProloguePageType
+    private let pageType: LoginProloguePageType
+    private let showsSubtitle: Bool
 
-    init(pageType: LoginProloguePageType) {
+    init(pageType: LoginProloguePageType, showsSubtitle: Bool) {
         self.pageType = pageType
+        self.showsSubtitle = showsSubtitle
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -69,9 +94,14 @@ class LoginProloguePageTypeViewController: UIViewController {
         configureStackView()
         configureImage()
         configureTitle()
+        if showsSubtitle {
+            configureSubtitle()
+        }
     }
+}
 
-    private func configureStackView() {
+private extension LoginProloguePageTypeViewController {
+    func configureStackView() {
         view.addSubview(stackView)
 
         // Stack view layout
@@ -93,7 +123,7 @@ class LoginProloguePageTypeViewController: UIViewController {
         ])
     }
 
-    private func configureImage() {
+    func configureImage() {
         stackView.addArrangedSubview(imageView)
 
         // Image style & layout
@@ -108,11 +138,19 @@ class LoginProloguePageTypeViewController: UIViewController {
         imageView.image = pageType.image
     }
 
-    private func configureTitle() {
+    func configureTitle() {
         stackView.addArrangedSubview(titleLabel)
 
         // Label style & layout
-        titleLabel.font = .body
+        titleLabel.font = {
+            if pageType == .getStarted {
+                return .headline
+            } else if showsSubtitle {
+                return .font(forStyle: .title2, weight: .semibold)
+            } else {
+                return .body
+            }
+        }()
         titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.textColor = .text
         titleLabel.textAlignment = .center
@@ -121,18 +159,40 @@ class LoginProloguePageTypeViewController: UIViewController {
         titleLabel.setContentHuggingPriority(.required, for: .vertical)
         titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         NSLayoutConstraint.activate([
-            titleLabel.widthAnchor.constraint(equalToConstant: Constants.labelWidth)
+            titleLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.labelLeadingMargin)
         ])
 
         // Label contents
         titleLabel.text = pageType.title
+        titleLabel.accessibilityIdentifier = "prologue-title-label"
     }
 
-    private enum Constants {
+    func configureSubtitle() {
+        stackView.addArrangedSubview(subtitleLabel)
+
+        // Label style & layout
+        subtitleLabel.font = .body
+        subtitleLabel.adjustsFontForContentSizeCategory = true
+        subtitleLabel.textColor = .textSubtle
+        subtitleLabel.textAlignment = .center
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        subtitleLabel.setContentHuggingPriority(.required, for: .vertical)
+        subtitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        NSLayoutConstraint.activate([
+            subtitleLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.labelLeadingMargin)
+        ])
+
+        subtitleLabel.text = pageType.subtitle
+    }
+}
+
+private extension LoginProloguePageTypeViewController {
+    enum Constants {
         static let stackSpacing: CGFloat = 40 // Space between image and text
         static let stackVerticalOffset: CGFloat = 103
         static let stackBottomMargin: CGFloat = -57 // Minimum margin between stack view and login buttons, including space required for UIPageControl
         static let imageHeightMultiplier: CGFloat = 0.35
-        static let labelWidth: CGFloat = 216
+        static let labelLeadingMargin: CGFloat = 48
     }
 }

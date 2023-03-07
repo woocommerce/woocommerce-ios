@@ -2,6 +2,103 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 80 (Release 11.7.0.0)
+- @rachelmcr 2022-12-15
+    - Added `SiteSummaryStats` entity.
+
+## Model 79 (Release 11.7.0.0)
+- @rachelmcr 2022-12-12
+    - Added `views` attribute to `SiteVisitStatsItem` entity.
+
+## Model 78 (Release 11.4.0.0)
+- @rachelmcr 2022-11-18
+    - Added `averageOrderValue` attribute to `OrderStatsV4Totals` entity.
+
+## Model 77 (Release 11.2.0.0)
+- @ealeksandrov 2022-11-07
+    - Added `frameNonce` attribute to `Site` entity.
+
+## Model 76 (Release 11.0.0.0)
+- @ealeksandrov 2022-10-26
+    - Added `loginURL` attribute to `Site` entity.
+
+## Model 75 (Release 10.9.0.0)
+- @iamgabrielma 2022-10-17
+    - Added `siteID` attribute to `Customer` entity.
+    - Added `siteID` attribute to `CustomerSearchResult` entity.
+    - Added `keyword` attribute to `CustomerSearchResult` entity.
+    - Removed `customerID` attribute from `CustomerSearchResult` entity.
+    - Added `WooCommerceModelV74toV75` mapping model.
+
+## Model 74 (Release 10.8.0.0)
+- @iamgabrielma 2022-10-12
+    - Added `Customer` entity.
+    - Added `CustomerSearchResult` entity.
+
+## Model 73 (Release 10.6.0.0)
+- @jaclync 2022-09-14
+    - Added `filterKey` attribute to `ProductSearchResults` entity.
+
+## Model 72 (Release 9.6.0.0)
+- @joshheald 2022-08-19
+    - Added `instructions` attribute to `PaymentGateway` entity.
+
+## Model 71 (Release 9.6.0.0)
+- @rachelmcr 2022-07-07
+    - Added `OrderMetaData` entity.
+    - Added `customFields` to-many relationship from `Order` to `OrderMetaData`.
+
+## Model 70 (Release 9.5.0.0)
+- @toupper 2022-06-22
+    - Update `OrderItemRefund` entity to include the `refundedItemID` property.
+
+## Model 69 (Release 9.4.0.0)
+- @ecarrion 2022-06-08
+    - Update `Order` entity to include the `needsProcessing`, `needsPayment`, and `isEditable` properties.
+
+## Model 68 (Release 9.2.0.0)
+- @pmusolino 2022-05-05
+    - Update `Coupon` entity and make `usageLimit`, `usageLimitPerUser` and `limitUsageToXItems` properties as optional with default value equal to `null`.
+
+## Model 67 (Release 8.9.0.0)
+- @ecarrion 2022-04-06
+    - Update `Order` entity to include the `paymentURL` property.
+
+## Model 66 (Release 8.8.0.0)
+- @pmusolino 2022-03-09
+    - Update `Order`'s `items` relationship to be ordered.
+
+## Model 65 (Release 8.6.0.0)
+- @joshheald 2022-02-14
+    - Added `WCPayCharge` entity.
+    - Added `WCPayCardPresentPaymentDetails` entity.
+    - Added `WCPayCardPaymentDetails` entity.
+    - Added `WCPayCardPresentReceiptDetails` entity.
+
+## Model 64 (Release 8.6.0.0)
+- @pmusolino 2022-02-09
+    - Added `InboxNote` entity.
+    - Added `InboxAction` entity.
+    - Added `actions` relationship from `InboxNote` to `[InboxAction]`.
+
+## Model 63 (Release 8.5.0.0)
+- @joshheald 2022-01-31
+    - Added `chargeID` attribute to `Order` entity.
+
+## Model 62 (Release 8.5.0.0)
+- @itsmeichigo 2022-01-25
+    - Added `CouponSearchResult` entity.
+    - Added `searchResults` relationship from `Coupon` to `CouponSearchResult`.
+
+## Model 61 (Release 8.4.0.0)
+- @selanthiraiyan 2022-01-13
+    - Added `OrderTaxLine` entity.
+    - Added `taxes` relationship from `Order` to `OrderTaxLine`.
+
+## Model 60 (Release 8.3.0.0)
+- @ecarrion 2021-12-22
+    - Added `OrderKey` attribute to `Order` entity.
+
 ## Model 59 (Release 8.2.0.0)
 - @jaclync 2021-11-30
     - Added `jetpackConnectionActivePlugins` attribute to `Site` entity.

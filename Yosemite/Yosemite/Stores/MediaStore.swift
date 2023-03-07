@@ -55,6 +55,11 @@ public final class MediaStore: Store {
             retrieveMediaLibrary(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .uploadMedia(let siteID, let productID, let mediaAsset, let onCompletion):
             uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, onCompletion: onCompletion)
+        case .updateProductID(let siteID,
+                            let productID,
+                             let mediaID,
+                             let onCompletion):
+            updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, onCompletion: onCompletion)
         }
     }
 }
@@ -64,8 +69,7 @@ private extension MediaStore {
                               pageNumber: Int,
                               pageSize: Int,
                               onCompletion: @escaping (Result<[Media], Error>) -> Void) {
-        let storage = storageManager.viewStorage
-        if let site = storage.loadSite(siteID: siteID)?.toReadOnly(), site.isJetpackCPConnected {
+        if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
             remote.loadMediaLibraryFromWordPressSite(siteID: siteID,
                                                      pageNumber: pageNumber,
                                                      pageSize: pageSize) { result in
@@ -105,8 +109,7 @@ private extension MediaStore {
                      productID: Int64,
                      uploadableMedia media: UploadableMedia,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        let storage = storageManager.viewStorage
-        if let site = storage.loadSite(siteID: siteID)?.toReadOnly(), site.isJetpackCPConnected {
+        if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
             remote.uploadMediaToWordPressSite(siteID: siteID,
                                               productID: productID,
                                               mediaItems: [media]) { result in
@@ -150,6 +153,35 @@ private extension MediaStore {
                 }
             }
         }
+    }
+
+    func updateProductID(siteID: Int64,
+                         productID: Int64,
+                         mediaID: Int64,
+                         onCompletion: @escaping (Result<Media, Error>) -> Void) {
+        if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
+            remote.updateProductIDToWordPressSite(siteID: siteID, productID: productID, mediaID: mediaID) { result in
+                onCompletion(result.map { $0.toMedia() })
+            }
+        } else {
+            remote.updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, completion: onCompletion)
+        }
+    }
+}
+
+// MARK: Helpers
+//
+private extension MediaStore {
+    func isLoggedInWithoutWPCOMCredentials(_ siteID: Int64) -> Bool {
+        // We check the site ID and assume that we don't have WPCOM creds if the site ID is `-1`
+        siteID == WooConstants.placeholderSiteID
+    }
+
+    func isSiteJetpackJCPConnected(_ siteID: Int64) -> Bool {
+        guard let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
+            return false
+        }
+        return site.isJetpackCPConnected
     }
 }
 

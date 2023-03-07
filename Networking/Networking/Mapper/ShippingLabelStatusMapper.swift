@@ -25,7 +25,11 @@ struct ShippingLabelStatusMapper: Mapper {
             .orderID: orderID
         ]
 
-        return try decoder.decode(ShippingLabelStatusResponse.self, from: response).data.labels
+        do {
+            return try decoder.decode(ShippingLabelStatusResponse.self, from: response).data.labels
+        } catch {
+            return try decoder.decode(ShippingLabelStatusEnvelope.self, from: response).labels
+        }
     }
 }
 

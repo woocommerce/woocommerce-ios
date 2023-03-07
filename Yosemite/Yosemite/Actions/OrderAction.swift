@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Networking
 
@@ -65,9 +66,13 @@ public enum OrderAction: Action {
     ///
     case updateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
 
+    /// Updates the specified fields from an order **optimistically**.
+    ///
+    case updateOrderOptimistically(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
+
     /// Creates a simple payments order with a specific amount value and  tax status.
     ///
-    case createSimplePaymentsOrder(siteID: Int64, amount: String, taxable: Bool, onCompletion: (Result<Order, Error>) -> Void)
+    case createSimplePaymentsOrder(siteID: Int64, status: OrderStatusEnum, amount: String, taxable: Bool, onCompletion: (Result<Order, Error>) -> Void)
 
     /// Creates a manual order with the provided order details.
     ///
@@ -78,9 +83,24 @@ public enum OrderAction: Action {
     case updateSimplePaymentsOrder(siteID: Int64,
                                    orderID: Int64,
                                    feeID: Int64,
+                                   status: OrderStatusEnum,
                                    amount: String,
                                    taxable: Bool,
                                    orderNote: String?,
                                    email: String?,
                                    onCompletion: (Result<Order, Error>) -> Void)
+
+    /// Updates an order to be considered as paid locally, for use cases where the payment is captured in the
+    /// app to prevent from multiple charging for the same order after subsequent failures (e.g. Interac in Canada).
+    /// Internally, the order is marked with a paid date and the order status is changed to processing.
+    ///
+    case markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: (Result<Order, Error>) -> Void)
+
+    /// Deletes a given order.
+    ///
+    case deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: (Result<Order, Error>) -> Void)
+
+    /// Returns a publisher that emits inserted orders on the view storage context.
+    ///
+    case observeInsertedOrders(siteID: Int64, completion: (AnyPublisher<[Order], Never>) -> Void)
 }

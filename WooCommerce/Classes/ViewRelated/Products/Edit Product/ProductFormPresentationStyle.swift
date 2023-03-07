@@ -6,7 +6,8 @@ enum ProductFormPresentationStyle {
     case navigationStack
 
     /// Contained in another view controller in a navigation stack.
-    case contained(containerViewController: UIViewController)
+    /// `containerViewController` is a closure that returns an optional view controller so that the container is not retained to result in a retain cycle.
+    case contained(containerViewController: () -> UIViewController?)
 }
 
 extension ProductFormPresentationStyle {

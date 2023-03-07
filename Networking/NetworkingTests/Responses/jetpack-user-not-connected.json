@@ -1,0 +1,27 @@
+{
+    "currentUser": {
+        "isConnected": false,
+        "isMaster": false,
+        "username": "test",
+        "id": 2,
+        "wpcomUser": {
+            "avatar": false
+        },
+        "gravatar": "https://secure.gravatar.com/avatar/a7839e14",
+        "permissions": {
+            "connect": false,
+            "connect_user": true,
+            "disconnect": false,
+            "admin_page": true,
+            "manage_modules": false,
+            "network_admin": false,
+            "network_sites_page": false,
+            "edit_posts": true,
+            "publish_posts": true,
+            "manage_options": false,
+            "view_stats": false,
+            "manage_plugins": false
+        }
+    },
+    "connectionOwner": "demo"
+}

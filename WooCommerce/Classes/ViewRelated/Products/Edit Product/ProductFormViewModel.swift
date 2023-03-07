@@ -1,5 +1,5 @@
+import Combine
 import Yosemite
-import Observables
 
 import protocol Storage.StorageManagerType
 
@@ -11,23 +11,23 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     var productionVariationID: Int64? = nil
 
     /// Emits product on change, except when the product name is the only change (`productName` is emitted for this case).
-    var observableProduct: Observable<EditableProductModel> {
-        productSubject
+    var observableProduct: AnyPublisher<EditableProductModel, Never> {
+        productSubject.eraseToAnyPublisher()
     }
 
     /// Emits product name on change.
-    var productName: Observable<String>? {
-        productNameSubject
+    var productName: AnyPublisher<String, Never>? {
+        productNameSubject.eraseToAnyPublisher()
     }
 
     /// Emits a boolean of whether the product has unsaved changes for remote update.
-    var isUpdateEnabled: Observable<Bool> {
-        isUpdateEnabledSubject
+    var isUpdateEnabled: AnyPublisher<Bool, Never> {
+        isUpdateEnabledSubject.eraseToAnyPublisher()
     }
 
     /// Emits a void value informing when there is a new variation price state available
-    var newVariationsPrice: Observable<Void> {
-        newVariationsPriceSubject
+    var newVariationsPrice: AnyPublisher<Void, Never> {
+        newVariationsPriceSubject.eraseToAnyPublisher()
     }
 
     /// The latest product value.
@@ -46,10 +46,10 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     /// Creates actions available on the bottom sheet.
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
 
-    private let productSubject: PublishSubject<EditableProductModel> = PublishSubject<EditableProductModel>()
-    private let productNameSubject: PublishSubject<String> = PublishSubject<String>()
-    private let isUpdateEnabledSubject: PublishSubject<Bool>
-    private let newVariationsPriceSubject = PublishSubject<Void>()
+    private let productSubject: PassthroughSubject<EditableProductModel, Never> = PassthroughSubject<EditableProductModel, Never>()
+    private let productNameSubject: PassthroughSubject<String, Never> = PassthroughSubject<String, Never>()
+    private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never> = PassthroughSubject<Bool, Never>()
+    private let newVariationsPriceSubject = PassthroughSubject<Void, Never>()
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
@@ -57,6 +57,15 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     /// Assigning this value will recreate the `actionsFactory` property.
     ///
     private var isAddOnsFeatureEnabled: Bool = false {
+        didSet {
+            updateActionsFactory()
+        }
+    }
+
+    /// Returns `true` if the `linkedProductsPromo` banner should be displayed. `False` otherwise.
+    /// Assigning this value will recreate the `actionsFactory` property.
+    ///
+    var isLinkedProductsPromoEnabled: Bool = false {
         didSet {
             updateActionsFactory()
         }
@@ -115,32 +124,53 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     var actionButtons: [ActionButtonType] {
         // Figure out main action button first
         var buttons: [ActionButtonType] = {
-            switch (formType, originalProductModel.status, productModel.status, originalProduct.product.existsRemotely, hasUnsavedChanges()) {
-            case (.add, .publish, .publish, false, _): // New product with publish status
-                return [.publish]
-
-            case (.add, .publish, _, false, _): // New product with a different status
-                return [.save] // And publish in more
-
-            case (.edit, .publish, _, true, true): // Existing published product with changes
+            switch (formType,
+                    originalProductModel.status,
+                    productModel.status,
+                    originalProduct.product.existsRemotely,
+                    hasUnsavedChanges(),
+                    simplifiedProductEditingEnabled) {
+            case (.add, _, _, _, _, true): // New product with simplified editing enabled
                 return [.save]
 
-            case (.edit, .publish, _, true, false): // Existing published product with no changes
-                return []
-
-            case (.edit, _, _, true, true): // Any other existing product with changes
-                return [.save] // And publish in more
-
-            case (.edit, _, _, true, false): // Any other existing product with no changes
+            case (.add, .published, .published, false, _, _): // New product with publish status
                 return [.publish]
 
-            case (.readonly, _, _, _, _): // Any product on readonly mode
+            case (.add, .published, _, false, _, _): // New product with a different status
+                return [.save] // And publish in more
+
+            case (.edit, .published, _, true, true, _): // Existing published product with changes
+                return [.save]
+
+            case (.edit, .published, _, true, false, _): // Existing published product with no changes
+                return []
+
+            case (.edit, _, _, true, true, _): // Any other existing product with changes
+                return [.save] // And publish in more
+
+            case (.edit, _, _, true, false, _): // Any other existing product with no changes
+                return [.publish]
+
+            case (.readonly, _, _, _, _, _): // Any product on readonly mode
                  return []
 
             default: // Impossible cases
                 return []
             }
         }()
+
+        // When simplified editing is enabled, only show the "Save" button on the new product form
+        if simplifiedProductEditingEnabled, formType == .add {
+            return buttons
+        }
+
+        // The `frame_nonce` value must be stored for the preview to be displayed
+        if let site = stores.sessionManager.defaultSite,
+           site.frameNonce.isNotEmpty,
+            // Preview existing drafts or new products that can be saved as a draft
+           (canSaveAsDraft() || originalProductModel.status == .draft) {
+            buttons.insert(.preview, at: 0)
+        }
 
         // Add more button if needed
         if shouldShowMoreOptionsMenu() {
@@ -151,31 +181,44 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     }
 
     private let productImageActionHandler: ProductImageActionHandler
+    private let productImagesUploader: ProductImageUploaderProtocol
 
-    private var cancellable: ObservationToken?
+    private var cancellable: AnyCancellable?
 
     private let stores: StoresManager
 
     private let storageManager: StorageManagerType
 
+    private let analytics: Analytics
+
+    private let simplifiedProductEditingEnabled: Bool
+
+    /// Assign this closure to be notified when a new product is saved remotely
+    ///
+    var onProductCreated: (Product) -> Void = { _ in }
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         analytics: Analytics = ServiceLocator.analytics,
+         simplifiedProductEditingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
         self.product = product
         self.actionsFactory = ProductFormActionsFactory(product: product, formType: formType)
-        self.isUpdateEnabledSubject = PublishSubject<Bool>()
         self.stores = stores
         self.storageManager = storageManager
+        self.productImagesUploader = productImagesUploader
+        self.analytics = analytics
+        self.simplifiedProductEditingEnabled = simplifiedProductEditingEnabled
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
-            if allStatuses.productImageStatuses.hasPendingUpload {
-                self?.isUpdateEnabledSubject.send(true)
-            }
+            guard let self = self else { return }
+            self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }
 
         queryAddOnsFeatureState()
@@ -187,7 +230,13 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     }
 
     func hasUnsavedChanges() -> Bool {
-        return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload || password != originalPassword
+        let hasProductChangesExcludingImages = product.product.copy(images: []) != originalProduct.product.copy(images: [])
+        let hasImageChanges = productImagesUploader
+            .hasUnsavedChangesOnImages(key: .init(siteID: product.siteID,
+                                                  productOrVariationID: .product(id: product.productID),
+                                                  isLocalID: !product.existsRemotely),
+                                       originalImages: originalProduct.images)
+        return hasProductChangesExcludingImages || hasImageChanges || password != originalPassword || isNewTemplateProduct()
     }
 }
 
@@ -199,7 +248,7 @@ extension ProductFormViewModel {
     ///
     func canShowPublishOption() -> Bool {
         let newProduct = formType == .add && !originalProduct.product.existsRemotely
-        let existingUnpublishedProduct = formType == .edit && originalProduct.product.existsRemotely && originalProduct.status != .publish
+        let existingUnpublishedProduct = formType == .edit && originalProduct.product.existsRemotely && originalProduct.status != .published
 
         let productCanBePublished = newProduct || existingUnpublishedProduct
         let publishIsNotAlreadyVisible = !actionButtons.contains(.publish)
@@ -216,7 +265,7 @@ extension ProductFormViewModel {
     }
 
     func canViewProductInStore() -> Bool {
-        originalProduct.product.productStatus == .publish && formType != .add
+        originalProduct.product.productStatus == .published && formType != .add
     }
 
     func canShareProduct() -> Bool {
@@ -224,6 +273,10 @@ extension ProductFormViewModel {
     }
 
     func canDeleteProduct() -> Bool {
+        formType == .edit
+    }
+
+    func canDuplicateProduct() -> Bool {
         formType == .edit
     }
 }
@@ -313,12 +366,23 @@ extension ProductFormViewModel {
     }
 
     func updateProductSettings(_ settings: ProductSettings) {
+        /// The property `manageStock` is set to `false` if the new `productType` is `affiliate`
+        /// because it seems there is a small bug in APIs that doesn't allow us to change type from a product with
+        /// manage stock enabled to external product type. More info: PR-2665
+        ///
+        var manageStock = product.product.manageStock
+        if settings.productType == .affiliate {
+            manageStock = false
+        }
+
         product = EditableProductModel(product: product.product.copy(slug: settings.slug,
+                                                                     productTypeKey: settings.productType.rawValue,
                                                                      statusKey: settings.status.rawValue,
                                                                      featured: settings.featured,
                                                                      catalogVisibilityKey: settings.catalogVisibility.rawValue,
                                                                      virtual: settings.virtual,
                                                                      downloadable: settings.downloadable,
+                                                                     manageStock: manageStock,
                                                                      reviewsAllowed: settings.reviewsAllowed,
                                                                      purchaseNote: settings.purchaseNote,
                                                                      menuOrder: settings.menuOrder))
@@ -334,9 +398,16 @@ extension ProductFormViewModel {
     }
 
     func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64) {
-        product = EditableProductModel(product: product.product.copy(downloads: downloadableFiles,
-                                                                     downloadLimit: downloadLimit,
-                                                                     downloadExpiry: downloadExpiry))
+        if simplifiedProductEditingEnabled {
+            product = EditableProductModel(product: product.product.copy(downloadable: downloadableFiles.isNotEmpty,
+                                                                         downloads: downloadableFiles,
+                                                                         downloadLimit: downloadLimit,
+                                                                         downloadExpiry: downloadExpiry))
+        } else {
+            product = EditableProductModel(product: product.product.copy(downloads: downloadableFiles,
+                                                                         downloadLimit: downloadLimit,
+                                                                         downloadExpiry: downloadExpiry))
+        }
     }
 
     func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64]) {
@@ -395,9 +466,10 @@ extension ProductFormViewModel {
             let productWithStatusUpdated = product.product.copy(statusKey: status.rawValue)
             return EditableProductModel(product: productWithStatusUpdated)
         }()
-        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+        let remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
         switch formType {
         case .add:
+            let productIDBeforeSave = productModel.productID
             remoteActionUseCase.addProduct(product: productModelToSave, password: password) { [weak self] result in
                 switch result {
                 case .failure(let error):
@@ -408,6 +480,9 @@ extension ProductFormViewModel {
                     }
                     self.resetProduct(data.product)
                     self.resetPassword(data.password)
+                    self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
+                    self.saveProductImagesWhenNoneIsPendingUploadAnymore()
+                    self.onProductCreated(data.product.product)
                     onCompletion(.success(data.product))
                 }
             }
@@ -424,12 +499,29 @@ extension ProductFormViewModel {
                                                     self.resetProduct(data.product)
                                                     self.resetPassword(data.password)
                                                     onCompletion(.success(data.product))
+                                                    self.saveProductImagesWhenNoneIsPendingUploadAnymore()
                                                 case .failure(let error):
                                                     onCompletion(.failure(error))
                                                 }
             }
         case .readonly:
             assertionFailure("Trying to save a product remotely in readonly mode")
+        }
+    }
+
+    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
+        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+        remoteActionUseCase.duplicateProduct(originalProduct: product,
+                                             password: password) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let data):
+                self.resetProduct(data.product)
+                self.resetPassword(data.password)
+                onCompletion(.success(data.product))
+            }
         }
     }
 
@@ -446,6 +538,41 @@ extension ProductFormViewModel {
     }
 }
 
+// MARK: Background image upload
+//
+private extension ProductFormViewModel {
+    func replaceProductID(productIDBeforeSave: Int64) {
+        productImagesUploader.replaceLocalID(siteID: product.siteID,
+                                             localID: .product(id: productIDBeforeSave),
+                                             remoteID: product.productID)
+    }
+
+    func saveProductImagesWhenNoneIsPendingUploadAnymore() {
+        productImagesUploader
+            .saveProductImagesWhenNoneIsPendingUploadAnymore(key: .init(siteID: product.siteID,
+                                                                        productOrVariationID: .product(id: product.productID),
+                                                                        isLocalID: !product.existsRemotely)) { [weak self] result in
+                guard let self = self else { return }
+            switch result {
+            case .success(let images):
+                let currentProduct = self.product
+                self.resetProduct(.init(product: self.originalProduct.product.copy(images: images)))
+                // Because `resetProduct` also internally updates the latest `product`, the `product` is set with the value before `resetProduct` to
+                // retain any local changes.
+                self.product = .init(product: currentProduct.product)
+            case .failure:
+                // If the product images update request fails, the update CTA visibility is refreshed again so that the merchant can save the
+                // product images again along with any other potential local changes.
+                self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
+            }
+        }
+        // Updates the update CTA visibility after scheduling a save request when no images are pending upload anymore, so that the update CTA
+        // isn't shown right after the save request from pending image upload.
+        // The save request keeps track of the latest image statuses at the time of the call and their upload progress over time.
+        isUpdateEnabledSubject.send(hasUnsavedChanges())
+    }
+}
+
 // MARK: Reset actions
 //
 extension ProductFormViewModel {
@@ -456,6 +583,15 @@ extension ProductFormViewModel {
     func resetPassword(_ password: String?) {
         originalPassword = password
         isUpdateEnabledSubject.send(hasUnsavedChanges())
+    }
+}
+
+// MARK: Tracking
+//
+extension ProductFormViewModel {
+    func trackProductFormLoaded() {
+        let hasLinkedProducts = product.upsellIDs.isNotEmpty || product.crossSellIDs.isNotEmpty
+        analytics.track(event: WooAnalyticsEvent.ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts))
     }
 }
 
@@ -518,6 +654,15 @@ private extension ProductFormViewModel {
 
         return controller
     }
+
+    /// Helper to determine if the added/editted product comes as a new template product.
+    /// We assume that a new template product is a product that:
+    ///  - Doesn't have an `id` - has not been saved remotely
+    ///  - Is not empty.
+    ///
+    private func isNewTemplateProduct() -> Bool {
+        originalProduct.productID == .zero && !originalProduct.isEmpty()
+    }
 }
 
 // MARK: Beta feature handling
@@ -541,6 +686,7 @@ private extension ProductFormViewModel {
         actionsFactory = ProductFormActionsFactory(product: product,
                                                    formType: formType,
                                                    addOnsFeatureEnabled: isAddOnsFeatureEnabled,
+                                                   isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                                    variationsPrice: calculateVariationPriceState())
     }
 }

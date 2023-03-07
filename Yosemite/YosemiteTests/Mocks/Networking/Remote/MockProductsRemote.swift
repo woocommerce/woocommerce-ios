@@ -7,6 +7,12 @@ import XCTest
 /// Mock for `ProductsRemote`.
 ///
 final class MockProductsRemote {
+    private(set) var searchProductTriggered: Bool = false
+    private(set) var searchProductWithStockStatus: ProductStockStatus?
+    private(set) var searchProductWithProductStatus: ProductStatus?
+    private(set) var searchProductWithProductType: ProductType?
+    private(set) var searchProductWithProductCategory: ProductCategory?
+
     private struct ResultKey: Hashable {
         let siteID: Int64
         let productIDs: [Int64]
@@ -23,6 +29,9 @@ final class MockProductsRemote {
 
     /// The results to return based on the given site ID in `deleteProduct`
     private var deleteProductResultsBySiteID = [Int64: Result<Product, Error>]()
+
+    /// The results to return based on the given site ID in `updateProductImages`
+    private var updateProductImagesResultsBySiteID = [ResultKey: Result<Product, Error>]()
 
     /// The number of times that `loadProduct()` was invoked.
     private(set) var invocationCountOfLoadProduct: Int = 0
@@ -51,6 +60,13 @@ final class MockProductsRemote {
     func whenLoadingProducts(siteID: Int64, productIDs: [Int64], thenReturn result: Result<[Product], Error>) {
         let key = ResultKey(siteID: siteID, productIDs: productIDs)
         productsLoadingResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `updateProductImages()` is called.
+    ///
+    func whenUpdatingProductImages(siteID: Int64, productID: Int64, thenReturn result: Result<Product, Error>) {
+        let key = ResultKey(siteID: siteID, productIDs: [productID])
+        updateProductImagesResultsBySiteID[key] = result
     }
 }
 
@@ -138,8 +154,24 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                         keyword: String,
                         pageNumber: Int,
                         pageSize: Int,
+                        stockStatus: ProductStockStatus?,
+                        productStatus: ProductStatus?,
+                        productType: ProductType?,
+                        productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
                         completion: @escaping (Result<[Product], Error>) -> Void) {
+        searchProductTriggered = true
+        searchProductWithStockStatus = stockStatus
+        searchProductWithProductType = productType
+        searchProductWithProductStatus = productStatus
+        searchProductWithProductCategory = productCategory
+    }
+
+    func searchProductsBySKU(for siteID: Int64,
+                             keyword: String,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             completion: @escaping (Result<[Product], Error>) -> Void) {
         // no-op
     }
 
@@ -148,6 +180,31 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     }
 
     func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
+        // no-op
+    }
+
+    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID, productIDs: [productID])
+            if let result = self.updateProductImagesResultsBySiteID[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func updateProducts(siteID: Int64, products: [Product], completion: @escaping (Result<[Product], Error>) -> Void) {
+        // no-op
+    }
+
+    func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Int64], Error>) -> Void) {
+        // no-op
+    }
+
+    func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void) {
         // no-op
     }
 }

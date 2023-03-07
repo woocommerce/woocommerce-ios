@@ -11,21 +11,11 @@ final class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     @Published private(set) var navigationTrailingItem: EditCustomerNoteNavigationItem = .done(enabled: false)
 
-    /// Not used.
-    ///
-    @Published var presentNotice: EditCustomerNoteNotice? = nil
-
-    /// Not used.
-    ///
-    var presentNoticePublisher: Published<EditCustomerNoteNotice?>.Publisher {
-        $presentNotice
-    }
-
     /// Commit the original note.
     ///
-    func updateNote(onFinish: @escaping (Bool) -> Void) {
+    func updateNote(onCompletion: @escaping (Bool) -> Void) {
         originalNote = newNote
-        onFinish(true)
+        onCompletion(true)
 
         analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowNoteAdded())
     }
@@ -37,9 +27,8 @@ final class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
     }
 
     /// Stores the original note content.
-    /// Temporarily empty.
     ///
-    private var originalNote: String
+    @Published private var originalNote: String
 
     /// Analytics engine.
     ///
@@ -55,9 +44,9 @@ final class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
     /// Assigns the correct navigation trailing item as the new note content changes.
     ///
     private func bindNoteChanges() {
-        $newNote
-            .map { editedContent -> EditCustomerNoteNavigationItem in
-                .done(enabled: editedContent != self.originalNote)
+        Publishers.CombineLatest($newNote, $originalNote)
+            .map { editedContent, originalNote -> EditCustomerNoteNavigationItem in
+                .done(enabled: editedContent != originalNote)
             }
             .assign(to: &$navigationTrailingItem)
     }

@@ -1,6 +1,7 @@
 import XCTest
 
 @testable import Storage
+@testable import WooFoundation
 
 /// Test cases for the `ProductVariation` model.
 final class ProductVariationTests: XCTestCase {

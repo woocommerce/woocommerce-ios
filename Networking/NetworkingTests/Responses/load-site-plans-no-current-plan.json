@@ -1,0 +1,29 @@
+{
+    "1": {
+        "formatted_original_price": "US$0",
+        "raw_price": 0,
+        "formatted_price": "US$0",
+        "raw_discount": 0,
+        "formatted_discount": "US$0",
+        "product_slug": "free_plan",
+        "product_name": "WordPress.com Free",
+        "discount_reason": null,
+        "is_domain_upgrade": null,
+        "currency_code": "USD",
+        "interval": -1
+    },
+    "1009": {
+        "formatted_original_price": "US$0",
+        "raw_price": 48,
+        "formatted_price": "US$48",
+        "raw_discount": 0,
+        "formatted_discount": "US$0",
+        "product_slug": "personal-bundle",
+        "product_name": "WordPress.com Personal",
+        "discount_reason": null,
+        "is_domain_upgrade": null,
+        "currency_code": "USD",
+        "can_start_trial": false,
+        "interval": 365
+    }
+}

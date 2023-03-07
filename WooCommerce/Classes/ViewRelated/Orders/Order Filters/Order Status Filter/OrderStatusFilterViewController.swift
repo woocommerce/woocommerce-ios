@@ -18,11 +18,15 @@ final class OrderStatusFilterViewController: UIViewController {
 
     private var selected: [OrderStatusEnum]
 
+    private let allowedStatuses: [OrderStatus]
+
     /// Init
     ///
     init(selected: [OrderStatusEnum],
+         allowedStatuses: [OrderStatus],
          completion: @escaping Completion) {
         self.selected = selected
+        self.allowedStatuses = allowedStatuses
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -58,16 +62,36 @@ private extension OrderStatusFilterViewController {
 
         /// Registers all of the available TableViewCells
         ///
-        for row in Row.allCases {
-            tableView.registerNib(for: row.type)
-        }
+        tableView.registerNib(for: BasicTableViewCell.self)
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
     }
 
     func configureRows() {
-        rows = [.any, .pending, .processing, .onHold, .failed, .cancelled, .completed, .refunded]
+        rows = [.any]
+        for status in allowedStatuses {
+            switch status.status {
+            case .pending:
+                rows.append(.pending)
+            case .processing:
+                rows.append(.processing)
+            case .onHold:
+                rows.append(.onHold)
+            case .failed:
+                rows.append(.failed)
+            case .cancelled:
+                rows.append(.cancelled)
+            case .completed:
+                rows.append(.completed)
+            case .refunded:
+                rows.append(.refunded)
+            case .custom:
+                rows.append(Row.custom(status))
+            default:
+                break
+            }
+        }
     }
 
     func selectOrDelesectRow(_ row: Row) {
@@ -124,15 +148,19 @@ extension OrderStatusFilterViewController: UITableViewDelegate {
 // MARK: - Cell configuration
 //
 private extension OrderStatusFilterViewController {
-    enum Row: CaseIterable {
+    enum Row {
+
+        // The order of the statuses declaration is according to the Order's lifecycle
+        // and it is used to determine the user facing display order using the synthesized allCases
         case any
         case pending
         case processing
         case onHold
-        case failed
-        case cancelled
         case completed
+        case cancelled
         case refunded
+        case failed
+        case custom(OrderStatus)
 
         var status: OrderStatusEnum? {
             switch self {
@@ -152,6 +180,17 @@ private extension OrderStatusFilterViewController {
                 return .completed
             case .refunded:
                 return .refunded
+            case .custom(let value):
+                return value.status
+            }
+        }
+
+        var description: String? {
+            switch self {
+            case .custom(let status):
+                return status.name ?? status.slug
+            default:
+                return status?.description
             }
         }
 
@@ -181,7 +220,7 @@ private extension OrderStatusFilterViewController {
             cell.textLabel?.text = Localization.anyStatusCase
             cell.accessoryType = selected.isEmpty ? .checkmark : .none
         default:
-            cell.textLabel?.text = row.status.description
+            cell.textLabel?.text = row.description
             if selected.contains(where: { $0 == row.status }) {
                 cell.accessoryType = .checkmark
             }

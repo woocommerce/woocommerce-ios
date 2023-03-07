@@ -11,9 +11,43 @@ public class PaymentGatewayRemote: Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllPaymentGateways(siteID: Int64, completion: @escaping (Result<[PaymentGateway], Error>) -> Void) {
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Constants.path)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Constants.path,
+                                     availableAsRESTRequest: true)
         let mapper = PaymentGatewayListMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    // MARK: - Update Payment Gateway
+
+    /// Updates a `PaymentGateway`.
+    ///
+    /// - Parameters:
+    ///     - paymentGateway: The Payment Gateway to be updated remotely.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updatePaymentGateway(_ paymentGateway: PaymentGateway,
+                             completion: @escaping (Result<PaymentGateway, Error>) -> Void) {
+        do {
+            let parameters = try paymentGateway.toDictionary(keyEncodingStrategy: .convertToSnakeCase)
+            let siteID = paymentGateway.siteID
+            let path = Constants.path + "/\(paymentGateway.gatewayID)"
+
+            let request = JetpackRequest(wooApiVersion: .mark3,
+                                         method: .put,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
+
+            let mapper = PaymentGatewayMapper(siteID: siteID)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 }
 

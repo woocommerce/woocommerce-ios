@@ -1,0 +1,3 @@
+Vous souhaitiez pouvoir créer des codes promo dans l’application. Nous sommes heureux de vous annoncer le lancement d’une fonctionnalité en version d’essai que vous pouvez nous aider à tester. Pour cela, accédez aux réglages de l’application et activez la version bêta de la fonctionnalité Codes promo.
+
+Nous avons également apporté plusieurs améliorations au chargement des images de produits et aux paiements en personne. De plus, vous avez désormais la possibilité, pour toutes les commandes impayées, d’encaisser les paiements en espèces, par carte ou via un lien de paiement. Continuez à nous envoyer vos commentaires, votre avis nous intéresse !

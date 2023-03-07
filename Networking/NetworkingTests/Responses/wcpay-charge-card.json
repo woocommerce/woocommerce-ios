@@ -1,0 +1,150 @@
+{
+    "data": {
+        "id": "ch_3KMuym2EdyGr1FMV0uQZeFqm",
+        "object": "charge",
+        "amount": 3330,
+        "amount_captured": 3330,
+        "amount_refunded": 0,
+        "application": "ca_Ex84e31yMTLaNU5ozQvi5woLclpIDVpX",
+        "application_fee": "fee_1KMuyn2EdyGr1FMV5W6801lV",
+        "application_fee_amount": 127,
+        "balance_transaction": {
+            "id": "txn_3KMuym2EdyGr1FMV0hKR6Aoy",
+            "object": "balance_transaction",
+            "amount": 3330,
+            "available_on": 1643932800,
+            "created": 1643378348,
+            "currency": "usd",
+            "description": "Online Payment for Order #211 for taxbugcheck.mystagingwebsite.com blog_id 197448330",
+            "exchange_rate": null,
+            "fee": 127,
+            "fee_details": [
+                {
+                    "amount": 127,
+                    "application": "ca_Ex84e31yMTLaNU5ozQvi5woLclpIDVpX",
+                    "currency": "usd",
+                    "description": "WooCommerce Payments application fee",
+                    "type": "application_fee"
+                }
+            ],
+            "net": 3203,
+            "reporting_category": "charge",
+            "source": "ch_3KMuym2EdyGr1FMV0uQZeFqm",
+            "status": "pending",
+            "type": "charge"
+        },
+        "billing_details": {
+            "address": {
+                "city": "Granger",
+                "country": "US",
+                "line1": "11403 Goldenview Dr",
+                "line2": null,
+                "postal_code": "46530",
+                "state": "AZ"
+            },
+            "email": "2177025@example.net",
+            "name": "Marcus Fisher",
+            "phone": "(574) 217-7025",
+            "formatted_address": "11403 Goldenview Dr<br\/>Granger, AZ 46530"
+        },
+        "calculated_statement_descriptor": "TAXBUGCHECK.MYSTAGINGW",
+        "captured": true,
+        "created": 1643378348,
+        "currency": "usd",
+        "customer": "cus_L310Dh3E03COvd",
+        "description": "Online Payment for Order #211 for taxbugcheck.mystagingwebsite.com blog_id 197448330",
+        "destination": null,
+        "dispute": null,
+        "disputed": false,
+        "failure_code": null,
+        "failure_message": null,
+        "fraud_details": [],
+        "invoice": null,
+        "level3": {
+            "customer_reference": "211",
+            "line_items": [
+                {
+                    "discount_amount": 0,
+                    "product_code": "16",
+                    "product_description": "Beanie",
+                    "quantity": 1,
+                    "tax_amount": 35,
+                    "unit_cost": 1765
+                }
+            ],
+            "merchant_reference": "211",
+            "shipping_address_zip": "46530",
+            "shipping_amount": 1530,
+            "shipping_from_zip": "85120"
+        },
+        "livemode": false,
+        "metadata": {
+            "customer_name": "Marcus Fisher",
+            "customer_email": "2177025@example.net",
+            "site_url": "https:\/\/taxbugcheck.mystagingwebsite.com",
+            "order_id": "211",
+            "order_key": "wc_order_m4YZzJXESzFBl",
+            "payment_type": "single"
+        },
+        "on_behalf_of": null,
+        "order": {
+            "number": "211",
+            "url": "https:\/\/taxbugcheck.mystagingwebsite.com\/wp-admin\/post.php?post=211&action=edit",
+            "customer_url": "admin.php?page=wc-admin&path=\/customers&filter=single_customer&customers=0",
+            "subscriptions": []
+        },
+        "outcome": {
+            "network_status": "approved_by_network",
+            "reason": null,
+            "risk_level": "normal",
+            "risk_score": 61,
+            "seller_message": "Payment complete.",
+            "type": "authorized"
+        },
+        "paid": true,
+        "payment_intent": "pi_3KMuym2EdyGr1FMV0TtJrfac",
+        "payment_method": "pm_1KMuyk2EdyGr1FMVYAz48aiQ",
+        "payment_method_details": {
+            "card": {
+                "brand": "amex",
+                "checks": {
+                    "address_line1_check": "pass",
+                    "address_postal_code_check": "pass",
+                    "cvc_check": "pass"
+                },
+                "country": "US",
+                "exp_month": 2,
+                "exp_year": 2023,
+                "fingerprint": "0SEufZLr8JkcLcfi",
+                "funding": "credit",
+                "installments": null,
+                "last4": "1111",
+                "mandate": null,
+                "network": "amex",
+                "three_d_secure": null,
+                "wallet": null
+            },
+            "type": "card"
+        },
+        "receipt_email": null,
+        "receipt_number": null,
+        "receipt_url": "https:\/\/pay.stripe.com\/receipts\/acct_1Jaefx2EdyGr1FMV\/ch_3KMuym2EdyGr1FMV0uQZeFqm\/rcpt_L310RJgOAJYhqUJJZzVPYVGgAXXWhNs",
+        "refunded": false,
+        "refunds": {
+            "object": "list",
+            "data": [],
+            "has_more": false,
+            "total_count": 0,
+            "url": "\/v1\/charges\/ch_3KMuym2EdyGr1FMV0uQZeFqm\/refunds"
+        },
+        "review": null,
+        "shipping": null,
+        "source": null,
+        "source_transfer": null,
+        "statement_descriptor": null,
+        "statement_descriptor_suffix": null,
+        "status": "succeeded",
+        "transfer_data": null,
+        "transfer_group": null
+    }
+}

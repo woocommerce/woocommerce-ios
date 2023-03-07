@@ -3,12 +3,21 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		028C39E028255CFE0007BA25 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */; };
+		02B5147A28254ED300750B71 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 02B5147928254ED300750B71 /* Codegen */; };
 		030338102705F7D400764131 /* ReceiptTotalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0303380F2705F7D400764131 /* ReceiptTotalLine.swift */; };
+		035DBA3929251ED6003E5125 /* CardReaderInputOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */; };
+		035DBA41292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */; };
+		039D948B2760C0660044EF38 /* NoOpCardReaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948A2760C0660044EF38 /* NoOpCardReaderService.swift */; };
 		03B440AA2754DFC400759429 /* UnderlyingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B440A92754DFC400759429 /* UnderlyingError.swift */; };
+		03CF78D327C6710C00523706 /* interac.svg in Resources */ = {isa = PBXBuildFile; fileRef = 03CF78D227C6710B00523706 /* interac.svg */; };
+		03CF78D527C92FF900523706 /* ReaderDisplayMessage+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF78D427C92FF900523706 /* ReaderDisplayMessage+Localization.swift */; };
+		03CF78D727DF9BE600523706 /* RefundParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF78D627DF9BE500523706 /* RefundParameters.swift */; };
+		03CF78D927DF9D0500523706 /* RefundParameters+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF78D827DF9D0500523706 /* RefundParameters+Stripe.swift */; };
 		311889EB2653286B0080AEA2 /* PaymentIntentMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */; };
 		317975C0274EB1F9004357B1 /* DeclineReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975BF274EB1F9004357B1 /* DeclineReason.swift */; };
 		317975C2274EBC1F004357B1 /* DeclineReason+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975C1274EBC1F004357B1 /* DeclineReason+Stripe.swift */; };
@@ -16,9 +25,11 @@
 		55CD4BB4273E617C007686D3 /* ReceiptRendererTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55CD4BB3273E617C007686D3 /* ReceiptRendererTest.swift */; };
 		5A747BE9FA06EC8752A35752 /* Pods_HardwareTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */; };
 		8FFAA245E257B9EB98E2FCBD /* Pods_SampleReceiptPrinter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */; };
-		C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */; };
+		B96B536D281A8D6900F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536C281A8D6900F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminer.swift */; };
+		B96B536F281AE0FA00F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536E281AE0FA00F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminerTests.swift */; };
+		B9C4AB2327FDE133007008B8 /* Email.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C4AB2227FDE133007008B8 /* Email.swift */; };
+		C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */; platformFilter = ios; };
 		D80409A625FBE42B006F9BDA /* PaymentIntentParameters+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80409A525FBE42B006F9BDA /* PaymentIntentParameters+Stripe.swift */; };
-		D80B464E260E18930092EDC0 /* Email.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B464D260E18930092EDC0 /* Email.swift */; };
 		D80B4652260E19590092EDC0 /* PaymentIntentParametersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B4651260E19590092EDC0 /* PaymentIntentParametersTests.swift */; };
 		D80B4656260E1B290092EDC0 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B4655260E1B290092EDC0 /* CurrencyCode.swift */; };
 		D80B465A260E1E160092EDC0 /* StatementDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B4659260E1E160092EDC0 /* StatementDescriptor.swift */; };
@@ -117,6 +128,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		02B5147C28254ED300750B71 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E1CFC1712643EBCB0089F86F /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -132,8 +153,16 @@
 
 /* Begin PBXFileReference section */
 		02351FF56149ADCD11338B19 /* Pods-SampleReceiptPrinter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.release.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.release.xcconfig"; sourceTree = "<group>"; };
+		028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
 		0303380F2705F7D400764131 /* ReceiptTotalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptTotalLine.swift; sourceTree = "<group>"; };
+		035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderInputOptions.swift; sourceTree = "<group>"; };
+		035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderDiscoveryMethod.swift; sourceTree = "<group>"; };
+		039D948A2760C0660044EF38 /* NoOpCardReaderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoOpCardReaderService.swift; sourceTree = "<group>"; };
 		03B440A92754DFC400759429 /* UnderlyingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlyingError.swift; sourceTree = "<group>"; };
+		03CF78D227C6710B00523706 /* interac.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interac.svg; sourceTree = "<group>"; };
+		03CF78D427C92FF900523706 /* ReaderDisplayMessage+Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReaderDisplayMessage+Localization.swift"; sourceTree = "<group>"; };
+		03CF78D627DF9BE500523706 /* RefundParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundParameters.swift; sourceTree = "<group>"; };
+		03CF78D827DF9D0500523706 /* RefundParameters+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RefundParameters+Stripe.swift"; sourceTree = "<group>"; };
 		0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release-alpha.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.debug.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleReceiptPrinter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,10 +176,12 @@
 		9726331F55A9621F2F887E13 /* Pods-Hardware.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release.xcconfig"; sourceTree = "<group>"; };
 		AE60F16D43C20AD4523A61A5 /* Pods-SampleReceiptPrinter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.debug.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.debug.xcconfig"; sourceTree = "<group>"; };
 		B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HardwareTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B96B536C281A8D6900F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShouldRetryStripeRefundAfterFailureDeterminer.swift; sourceTree = "<group>"; };
+		B96B536E281AE0FA00F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShouldRetryStripeRefundAfterFailureDeterminerTests.swift; sourceTree = "<group>"; };
+		B9C4AB2227FDE133007008B8 /* Email.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
 		C61D1642BE09D1A1AD6AA9FA /* Pods-HardwareTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.release.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.release.xcconfig"; sourceTree = "<group>"; };
 		C810BBAD03E7D4ECFD29D7AC /* Pods-SampleReceiptPrinter.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.release-alpha.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		D80409A525FBE42B006F9BDA /* PaymentIntentParameters+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaymentIntentParameters+Stripe.swift"; sourceTree = "<group>"; };
-		D80B464D260E18930092EDC0 /* Email.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
 		D80B4651260E19590092EDC0 /* PaymentIntentParametersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentIntentParametersTests.swift; sourceTree = "<group>"; };
 		D80B4655260E1B290092EDC0 /* CurrencyCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyCode.swift; sourceTree = "<group>"; };
 		D80B4659260E1E160092EDC0 /* StatementDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementDescriptor.swift; sourceTree = "<group>"; };
@@ -243,6 +274,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				02B5147A28254ED300750B71 /* Codegen in Frameworks */,
 				C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -268,6 +300,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		028C39DD28255C9F0007BA25 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				028C39DE28255CE10007BA25 /* Copiable */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		028C39DE28255CE10007BA25 /* Copiable */ = {
+			isa = PBXGroup;
+			children = (
+				028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */,
+			);
+			path = Copiable;
+			sourceTree = "<group>";
+		};
 		55CD4BB2273E6159007686D3 /* AirPrintReceipt */ = {
 			isa = PBXGroup;
 			children = (
@@ -357,6 +405,7 @@
 		D88FDB0125DD216B00CB0DBD /* Hardware */ = {
 			isa = PBXGroup;
 			children = (
+				028C39DD28255C9F0007BA25 /* Model */,
 				E140F61A2668CDBB00FDB5FF /* Internal */,
 				D845BE4E262ED7AE00A3E40F /* Printer */,
 				D88FDB1D25DD218800CB0DBD /* CardReader */,
@@ -383,6 +432,7 @@
 				D845BDFE262DDA6A00A3E40F /* ReceiptDetailsTests.swift */,
 				D845BE02262DDBF500A3E40F /* CardBrandTests.swift */,
 				317975C3274ED591004357B1 /* DeclineReasonTests.swift */,
+				B96B536E281AE0FA00F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminerTests.swift */,
 			);
 			path = HardwareTests;
 			sourceTree = "<group>";
@@ -393,6 +443,7 @@
 				D88FDB3625DD21BE00CB0DBD /* StripeCardReader */,
 				D88FDB2725DD21B000CB0DBD /* CardReader.swift */,
 				D88FDB2425DD21B000CB0DBD /* CardReaderEvent.swift */,
+				035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */,
 				D88FDB2625DD21B000CB0DBD /* CardReaderService.swift */,
 				D88FDB1F25DD21AF00CB0DBD /* CardReaderServiceDiscoveryStatus.swift */,
 				D88FDB2125DD21AF00CB0DBD /* CardReaderServiceStatus.swift */,
@@ -404,12 +455,12 @@
 				E1E125AD26EB66B30068A9B0 /* FallibleCancelable.swift */,
 				D89B8F0125DDC7500001C726 /* PaymentIntentStatus.swift */,
 				D88FDB2325DD21B000CB0DBD /* PaymentIntentParameters.swift */,
+				03CF78D627DF9BE500523706 /* RefundParameters.swift */,
 				D88FDB2025DD21AF00CB0DBD /* PaymentStatus.swift */,
 				D845BDBB262D980C00A3E40F /* CardPresentTransactionDetails.swift */,
 				D81AE86325E6B77F00D9CFD3 /* CardReaderServiceError.swift */,
 				03B440A92754DFC400759429 /* UnderlyingError.swift */,
 				D8EDFE2925EED21D003D2213 /* CardReaderConfigProvider.swift */,
-				D80B464D260E18930092EDC0 /* Email.swift */,
 				D80B4655260E1B290092EDC0 /* CurrencyCode.swift */,
 				D845BDB7262D97B300A3E40F /* ReceiptDetails.swift */,
 				D80B4659260E1E160092EDC0 /* StatementDescriptor.swift */,
@@ -418,6 +469,7 @@
 				D845BDC1262D98C400A3E40F /* CardBrand.swift */,
 				D845BDD9262DAADB00A3E40F /* PaymentMethod.swift */,
 				317975BF274EB1F9004357B1 /* DeclineReason.swift */,
+				B9C4AB2227FDE133007008B8 /* Email.swift */,
 			);
 			path = CardReader;
 			sourceTree = "<group>";
@@ -428,6 +480,7 @@
 				D845BDCB262D9B7700A3E40F /* CardBrand+Stripe.swift */,
 				D845BDC5262D9A4200A3E40F /* CardPresentDetails+Stripe.swift */,
 				D8DF5F4925DD9F7A008AFE25 /* CardReader+Stripe.swift */,
+				035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */,
 				D865C61D261CE001006717B8 /* CardReaderEvent+Stripe.swift */,
 				D8DF5F4D25DD9F91008AFE25 /* CardReaderType+Stripe.swift */,
 				D89B8F1125DDCBCD0001C726 /* Charge+Stripe.swift */,
@@ -436,6 +489,7 @@
 				D80409A525FBE42B006F9BDA /* PaymentIntentParameters+Stripe.swift */,
 				D89B8F2325DDCD800001C726 /* PaymentIntentStatus+Stripe.swift */,
 				D88FDB3725DD21D200CB0DBD /* StripeCardReaderService.swift */,
+				039D948A2760C0660044EF38 /* NoOpCardReaderService.swift */,
 				D88FDB3825DD21D300CB0DBD /* DefaultConnectionTokenProvider.swift */,
 				D81AE85925E6A62800D9CFD3 /* StripeCardReaderDiscoveryCache.swift */,
 				D854FC21260A34B000A219CD /* UnderlyingError+Stripe.swift */,
@@ -444,6 +498,9 @@
 				D845BDDD262DAB8300A3E40F /* PaymentMethod+Stripe.swift */,
 				E1E125AF26EB66EA0068A9B0 /* Cancelable+Stripe.swift */,
 				317975C1274EBC1F004357B1 /* DeclineReason+Stripe.swift */,
+				03CF78D427C92FF900523706 /* ReaderDisplayMessage+Localization.swift */,
+				03CF78D827DF9D0500523706 /* RefundParameters+Stripe.swift */,
+				B96B536C281A8D6900F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminer.swift */,
 			);
 			path = StripeCardReader;
 			sourceTree = "<group>";
@@ -467,6 +524,7 @@
 		E1B6854E264908360077F8BF /* Card Icons */ = {
 			isa = PBXGroup;
 			children = (
+				03CF78D227C6710B00523706 /* interac.svg */,
 				E1B6855526490E3D0077F8BF /* amex.svg */,
 				E1B6855426490E3D0077F8BF /* diners.svg */,
 				E1B6855226490E3C0077F8BF /* discover.svg */,
@@ -523,12 +581,16 @@
 				D88FDAFB25DD216B00CB0DBD /* Sources */,
 				D88FDAFC25DD216B00CB0DBD /* Frameworks */,
 				D88FDAFD25DD216B00CB0DBD /* Resources */,
+				02B5147C28254ED300750B71 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = Hardware;
+			packageProductDependencies = (
+				02B5147928254ED300750B71 /* Codegen */,
+			);
 			productName = Hardware;
 			productReference = D88FDAFF25DD216B00CB0DBD /* Hardware.framework */;
 			productType = "com.apple.product-type.framework";
@@ -628,6 +690,7 @@
 				E1B6855926490E3D0077F8BF /* discover.svg in Resources */,
 				E1B6855A26490E3D0077F8BF /* mastercard.svg in Resources */,
 				E1B6855C26490E3D0077F8BF /* amex.svg in Resources */,
+				03CF78D327C6710C00523706 /* interac.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -755,10 +818,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9C4AB2327FDE133007008B8 /* Email.swift in Sources */,
 				D845BE59262ED84000A3E40F /* AirPrintReceiptPrinterService.swift in Sources */,
 				317975C2274EBC1F004357B1 /* DeclineReason+Stripe.swift in Sources */,
 				D845BDB8262D97B300A3E40F /* ReceiptDetails.swift in Sources */,
 				D88FDB2D25DD21B000CB0DBD /* PaymentIntentParameters.swift in Sources */,
+				028C39E028255CFE0007BA25 /* Models+Copiable.generated.swift in Sources */,
 				D89B8F0825DDC8F60001C726 /* Charge.swift in Sources */,
 				D845BDCC262D9B7700A3E40F /* CardBrand+Stripe.swift in Sources */,
 				D88FDB2E25DD21B000CB0DBD /* CardReaderEvent.swift in Sources */,
@@ -767,16 +832,21 @@
 				D845BE54262ED7CC00A3E40F /* PrinterService.swift in Sources */,
 				D845BDDE262DAB8300A3E40F /* PaymentMethod+Stripe.swift in Sources */,
 				D89B8F0C25DDC9D30001C726 /* ChargeStatus.swift in Sources */,
+				035DBA3929251ED6003E5125 /* CardReaderInputOptions.swift in Sources */,
 				E140F61C2668CDC900FDB5FF /* Logging.swift in Sources */,
+				035DBA41292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift in Sources */,
+				03CF78D727DF9BE600523706 /* RefundParameters.swift in Sources */,
 				03B440AA2754DFC400759429 /* UnderlyingError.swift in Sources */,
 				E1E125AC26EB582B0068A9B0 /* CardReaderSoftwareUpdateState.swift in Sources */,
 				D88FDB3125DD21B000CB0DBD /* CardReader.swift in Sources */,
+				039D948B2760C0660044EF38 /* NoOpCardReaderService.swift in Sources */,
 				D845BDDA262DAADB00A3E40F /* PaymentMethod.swift in Sources */,
 				D81AE85A25E6A62800D9CFD3 /* StripeCardReaderDiscoveryCache.swift in Sources */,
 				D865C61E261CE001006717B8 /* CardReaderEvent+Stripe.swift in Sources */,
 				E1E125B026EB66EA0068A9B0 /* Cancelable+Stripe.swift in Sources */,
 				D80B4656260E1B290092EDC0 /* CurrencyCode.swift in Sources */,
 				D81AE86425E6B77F00D9CFD3 /* CardReaderServiceError.swift in Sources */,
+				03CF78D527C92FF900523706 /* ReaderDisplayMessage+Localization.swift in Sources */,
 				317975C0274EB1F9004357B1 /* DeclineReason.swift in Sources */,
 				D8DF5F4E25DD9F91008AFE25 /* CardReaderType+Stripe.swift in Sources */,
 				D89B8F1225DDCBCD0001C726 /* Charge+Stripe.swift in Sources */,
@@ -784,11 +854,11 @@
 				D80B465A260E1E160092EDC0 /* StatementDescriptor.swift in Sources */,
 				D8DF5F4A25DD9F7A008AFE25 /* CardReader+Stripe.swift in Sources */,
 				D88FDB2A25DD21B000CB0DBD /* PaymentStatus.swift in Sources */,
+				B96B536D281A8D6900F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminer.swift in Sources */,
 				D8652CBB262F390F00350F37 /* ReceiptContent.swift in Sources */,
 				D854FC22260A34B000A219CD /* UnderlyingError+Stripe.swift in Sources */,
 				D8652CB7262F389800350F37 /* ReceiptLineItem.swift in Sources */,
 				D88FDB2B25DD21B000CB0DBD /* CardReaderServiceStatus.swift in Sources */,
-				D80B464E260E18930092EDC0 /* Email.swift in Sources */,
 				D89B8F0225DDC7500001C726 /* PaymentIntentStatus.swift in Sources */,
 				D8652E2A2630520300350F37 /* CardPresentReceiptParameters.swift in Sources */,
 				D89B8F1E25DDCD3D0001C726 /* PaymentIntent+Stripe.swift in Sources */,
@@ -798,6 +868,7 @@
 				D845BDBC262D980C00A3E40F /* CardPresentTransactionDetails.swift in Sources */,
 				D88ECCE3262095A10094398A /* UpdateTimeEstimate.swift in Sources */,
 				D88ECCE7262096BD0094398A /* UpdateTimeEstimate+Stripe.swift in Sources */,
+				03CF78D927DF9D0500523706 /* RefundParameters+Stripe.swift in Sources */,
 				D88FDB2925DD21B000CB0DBD /* CardReaderServiceDiscoveryStatus.swift in Sources */,
 				D88FDB3925DD21D300CB0DBD /* StripeCardReaderService.swift in Sources */,
 				D845BE60262EDCFD00A3E40F /* ReceiptRenderer.swift in Sources */,
@@ -830,6 +901,7 @@
 				D845BE03262DDBF500A3E40F /* CardBrandTests.swift in Sources */,
 				311889EB2653286B0080AEA2 /* PaymentIntentMetadataTests.swift in Sources */,
 				317975C4274ED591004357B1 /* DeclineReasonTests.swift in Sources */,
+				B96B536F281AE0FA00F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminerTests.swift in Sources */,
 				D845BDFB262DD97E00A3E40F /* MockStripeReceiptDetails.swift in Sources */,
 				D845BDF5262DD67E00A3E40F /* MockStripeCardPresentDetails.swift in Sources */,
 				D88303D125E44B2500C877F9 /* ChargeTests.swift in Sources */,
@@ -916,7 +988,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -975,7 +1047,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -1002,6 +1074,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Hardware/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1010,6 +1083,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Hardware;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1030,6 +1104,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Hardware/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1038,6 +1113,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Hardware;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1053,6 +1129,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = HardwareTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1076,6 +1153,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = HardwareTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1134,7 +1212,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -1161,6 +1239,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Hardware/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1169,6 +1248,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Hardware;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALPHA;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1184,6 +1265,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = HardwareTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1205,7 +1287,7 @@
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SampleReceiptPrinter/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1226,7 +1308,7 @@
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SampleReceiptPrinter/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1247,7 +1329,7 @@
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SampleReceiptPrinter/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1303,6 +1385,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		02B5147928254ED300750B71 /* Codegen */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Codegen;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D88FDAF625DD216B00CB0DBD /* Project object */;
 }

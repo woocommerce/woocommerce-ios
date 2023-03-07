@@ -91,7 +91,7 @@ extension UIAlertController {
 
     open override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        if let window = UIApplication.shared.currentKeyWindow {
+        if let window = view.window {
             popoverPresentationController?.sourceRect = CGRect(x: window.bounds.midX, y: window.bounds.midY, width: 0, height: 0)
         }
     }

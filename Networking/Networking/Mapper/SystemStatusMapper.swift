@@ -17,8 +17,11 @@ struct SystemStatusMapper: Mapper {
             .siteID: siteID
         ]
 
-        let systemStatus = try decoder.decode(SystemStatusEnvelope.self, from: response).systemStatus
-        return systemStatus
+        do {
+            return try decoder.decode(SystemStatusEnvelope.self, from: response).systemStatus
+        } catch {
+            return try decoder.decode(SystemStatus.self, from: response)
+        }
     }
 }
 

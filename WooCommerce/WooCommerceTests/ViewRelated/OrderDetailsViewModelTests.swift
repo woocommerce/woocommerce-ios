@@ -1,3 +1,4 @@
+import WooFoundation
 import XCTest
 import Yosemite
 
@@ -8,13 +9,15 @@ final class OrderDetailsViewModelTests: XCTestCase {
     private var viewModel: OrderDetailsViewModel!
 
     private var storesManager: MockStoresManager!
+    private var storageManager: MockStorageManager!
 
     override func setUp() {
         storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        storageManager = MockStorageManager()
 
         order = MockOrders().sampleOrder()
 
-        viewModel = OrderDetailsViewModel(order: order, stores: storesManager)
+        viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
 
         let analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
         ServiceLocator.setAnalytics(analytics)
@@ -50,10 +53,11 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_markComplete_dispatches_updateOrder_action() throws {
         // Given
+        storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When
-        _ = viewModel.markCompleted()
+        _ = viewModel.markCompleted(flow: .editing)
 
         // Then
         XCTAssertEqual(storesManager.receivedActions.count, 1)
@@ -69,39 +73,39 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(status, .completed)
     }
 
-    // MARK: Shipping Labels feature flags
-
-    func test_checkShippingLabelCreationEligibility_returns_ineligible_when_shippingLabelsM2M3_is_disabled() throws {
+    func test_checkShippingLabelCreationEligibility_dispatches_correctly() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: false)
-        ServiceLocator.setFeatureFlagService(featureFlagService)
 
-        // When
-        viewModel.checkShippingLabelCreationEligibility()
+        // Make sure the are plugins synced
+        let plugin = SystemPlugin.fake().copy(siteID: order.siteID, name: SitePlugin.SupportedPlugin.WCShip, active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
 
-        // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 0)
-        XCTAssertFalse(viewModel.dataSource.isEligibleForShippingLabelCreation)
-    }
-
-    func test_checkShippingLabelCreationEligibility_dispatches_eligibility_check_without_client_features_when_only_shippingLabelsM2M3_is_enabled() throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true)
-        ServiceLocator.setFeatureFlagService(featureFlagService)
+        storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When
-        viewModel.checkShippingLabelCreationEligibility()
+        waitForExpectation { exp in
+
+            // Return the active WCShip plugin.
+            storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                switch action {
+                case .fetchSystemPlugin(_, _, let onCompletion):
+                    onCompletion(plugin)
+                    exp.fulfill()
+                default:
+                    break
+                }
+            }
+
+            viewModel.checkShippingLabelCreationEligibility()
+        }
 
         // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        XCTAssertEqual(storesManager.receivedActions.count, 2)
 
-        let action = try XCTUnwrap(storesManager.receivedActions.first as? ShippingLabelAction)
+        let action = try XCTUnwrap(storesManager.receivedActions.last as? ShippingLabelAction)
         guard case let ShippingLabelAction.checkCreationEligibility(siteID: siteID,
                                                                     orderID: orderID,
-                                                                    canCreatePaymentMethod: canCreatePaymentMethod,
-                                                                    canCreateCustomsForm: canCreateCustomsForm,
-                                                                    canCreatePackage: canCreatePackage,
                                                                     onCompletion: _) = action else {
             XCTFail("Expected \(action) to be \(ShippingLabelAction.self)")
             return
@@ -109,103 +113,28 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         XCTAssertEqual(siteID, order.siteID)
         XCTAssertEqual(orderID, order.orderID)
-        XCTAssertFalse(canCreatePaymentMethod)
-        XCTAssertFalse(canCreateCustomsForm)
-        XCTAssertFalse(canCreatePackage)
     }
 
-    func test_checkShippingLabelCreationEligibility_dispatches_correct_check_when_M2M3_and_international_flags_are_enabled() throws {
+    func test_there_should_not_be_edit_order_action_if_order_is_not_synced() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true, isInternationalShippingLabelsOn: true)
-        ServiceLocator.setFeatureFlagService(featureFlagService)
-        XCTAssertEqual(storesManager.receivedActions.count, 0)
+        let order = Order.fake().copy(total: "10.0")
 
         // When
-        viewModel.checkShippingLabelCreationEligibility()
+        let viewModel = OrderDetailsViewModel(order: order)
 
         // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
-
-        let action = try XCTUnwrap(storesManager.receivedActions.first as? ShippingLabelAction)
-        guard case let ShippingLabelAction.checkCreationEligibility(siteID: siteID,
-                                                                    orderID: orderID,
-                                                                    canCreatePaymentMethod: canCreatePaymentMethod,
-                                                                    canCreateCustomsForm: canCreateCustomsForm,
-                                                                    canCreatePackage: canCreatePackage,
-                                                                    onCompletion: _) = action else {
-            XCTFail("Expected \(action) to be \(ShippingLabelAction.self)")
-            return
-        }
-
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(orderID, order.orderID)
-        XCTAssertFalse(canCreatePaymentMethod)
-        XCTAssertTrue(canCreateCustomsForm)
-        XCTAssertFalse(canCreatePackage)
+        XCTAssertFalse(viewModel.editButtonIsEnabled)
     }
 
-    func test_checkShippingLabelCreationEligibility_dispatches_correct_check_when_M2M3_international_and_addPaymentMethod_flags_are_enabled() throws {
+    func test_paymentMethodsViewModel_title_contains_formatted_order_amount() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true,
-                                                        isInternationalShippingLabelsOn: true,
-                                                        isShippingLabelsPaymentMethodCreationOn: true)
-        ServiceLocator.setFeatureFlagService(featureFlagService)
-        XCTAssertEqual(storesManager.receivedActions.count, 0)
+        let order = Order.fake().copy(currency: "EUR", total: "10.0")
 
         // When
-        viewModel.checkShippingLabelCreationEligibility()
+        let currencyFormatter = CurrencyFormatter(currencySettings: .init())
+        let title = OrderDetailsViewModel(order: order, currencyFormatter: currencyFormatter).paymentMethodsViewModel.title
 
         // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
-
-        let action = try XCTUnwrap(storesManager.receivedActions.first as? ShippingLabelAction)
-        guard case let ShippingLabelAction.checkCreationEligibility(siteID: siteID,
-                                                                    orderID: orderID,
-                                                                    canCreatePaymentMethod: canCreatePaymentMethod,
-                                                                    canCreateCustomsForm: canCreateCustomsForm,
-                                                                    canCreatePackage: canCreatePackage,
-                                                                    onCompletion: _) = action else {
-            XCTFail("Expected \(action) to be \(ShippingLabelAction.self)")
-            return
-        }
-
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(orderID, order.orderID)
-        XCTAssertTrue(canCreatePaymentMethod)
-        XCTAssertTrue(canCreateCustomsForm)
-        XCTAssertFalse(canCreatePackage)
-    }
-
-    func test_checkShippingLabelCreationEligibility_dispatches_correct_check_when_M2M3_and_M4_flags_are_enabled() throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true,
-                                                        isInternationalShippingLabelsOn: true,
-                                                        isShippingLabelsPaymentMethodCreationOn: true,
-                                                        isShippingLabelsPackageCreationOn: true)
-        ServiceLocator.setFeatureFlagService(featureFlagService)
-        XCTAssertEqual(storesManager.receivedActions.count, 0)
-
-        // When
-        viewModel.checkShippingLabelCreationEligibility()
-
-        // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
-
-        let action = try XCTUnwrap(storesManager.receivedActions.first as? ShippingLabelAction)
-        guard case let ShippingLabelAction.checkCreationEligibility(siteID: siteID,
-                                                                    orderID: orderID,
-                                                                    canCreatePaymentMethod: canCreatePaymentMethod,
-                                                                    canCreateCustomsForm: canCreateCustomsForm,
-                                                                    canCreatePackage: canCreatePackage,
-                                                                    onCompletion: _) = action else {
-            XCTFail("Expected \(action) to be \(ShippingLabelAction.self)")
-            return
-        }
-
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(orderID, order.orderID)
-        XCTAssertTrue(canCreatePaymentMethod)
-        XCTAssertTrue(canCreateCustomsForm)
-        XCTAssertTrue(canCreatePackage)
+        XCTAssertTrue(title.contains("\u{20AC}10.0"))
     }
 }

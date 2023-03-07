@@ -4,4 +4,4 @@ about: "Suggest a new feature \U0001F389 We'll consider building it if it receiv
 
 ---
 
-Please submit all feature requests to the ideas board located at http://ideas.woocommerce.com/forums/133476-woocommerce?category_id=84283.
+Please submit all feature requests via the app, using the "Send Feedback" section in settings.

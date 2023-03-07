@@ -5,7 +5,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         // The NUX buttons require WordPressAuthenticator to be initialized
-        AuthenticationManager().initialize()
+        AuthenticationManager().initialize(loggedOutAppSettings: MockLoggedOutAppSettings())
     }
 
     func test_viewcontroller_presents_top_title_provided_by_viewmodel() throws {

@@ -183,7 +183,7 @@ let specsToGenerate: [CopiableSpec] = matchingTypes.map { type in
     }
 
     return CopiableSpec(
-        name: type.name,
+        name: type.globalName,
         accessLevelWithSpacePostfix: type.accessLevel == "internal" ? "" : "\(type.accessLevel) ",
         properties: propSpecs
     )

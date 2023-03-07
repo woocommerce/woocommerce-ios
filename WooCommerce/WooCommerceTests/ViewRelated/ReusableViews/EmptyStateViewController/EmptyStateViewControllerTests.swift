@@ -158,7 +158,97 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertEqual(mirror.actionButton.titleLabel?.text, "Contact You!")
     }
 
-    func test_given_a_supportRequest_config_when_tapping_on_button_then_the_contact_us_page_is_presented() throws {
+    // MARK: - Pull to refresh
+
+    func test_given_a_simple_config_with_pull_to_refresh_handler_when_pulled_to_refresh_fires_callback() throws {
+        // Given
+        let viewController = EmptyStateViewController()
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        let exp = expectation(description: "Pull to refresh callback executed.")
+        let completionHandler: ((UIRefreshControl) -> Void) = { _ in
+            exp.fulfill()
+        }
+        // When
+        viewController.configure(.simple(message: NSAttributedString(string: "Ola"),
+                                         image: .infoImage,
+                                         onPullToRefresh: completionHandler))
+
+        // Then
+        XCTAssertNotNil(mirror.scrollView.refreshControl)
+
+        // When
+        mirror.scrollView.refreshControl?.sendActions(for: .valueChanged)
+
+        // Then
+        waitForExpectations(timeout: Constants.expectationTimeout)
+    }
+
+    func test_given_a_link_config_with_pull_to_refresh_handler_when_pulled_to_refresh_fires_callback() throws {
+        // Given
+        let viewController = EmptyStateViewController()
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        let exp = expectation(description: "Pull to refresh callback executed.")
+        let completionHandler: ((UIRefreshControl) -> Void) = { _ in
+            exp.fulfill()
+        }
+
+        // When
+        viewController.configure(.withLink(
+            message: NSAttributedString(string: "Ola"),
+            image: .infoImage,
+            details: "Dolores eum",
+            linkTitle: "Bakero!",
+            linkURL: WooConstants.URLs.blog.asURL(),
+            onPullToRefresh: completionHandler
+        ))
+
+        // Then
+        XCTAssertNotNil(mirror.scrollView.refreshControl)
+
+        // When
+        mirror.scrollView.refreshControl?.sendActions(for: .valueChanged)
+
+        // Then
+        waitForExpectations(timeout: Constants.expectationTimeout)
+    }
+
+    func test_given_a_withButton_config_with_pull_to_refresh_handler_when_pulled_to_refresh_fires_callback() throws {
+        // Given
+        let viewController = EmptyStateViewController()
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        let exp = expectation(description: "Pull to refresh callback executed.")
+        let completionHandler: ((UIRefreshControl) -> Void) = { _ in
+            exp.fulfill()
+        }
+
+        // When
+        viewController.configure(.withButton(message: NSAttributedString(string: "Ola"),
+                                             image: .infoImage,
+                                             details: "Dolores eum",
+                                             buttonTitle: "Bakero!",
+                                             onTap: { _ in },
+                                             onPullToRefresh: completionHandler))
+
+        // Then
+        XCTAssertNotNil(mirror.scrollView.refreshControl)
+
+        // When
+        mirror.scrollView.refreshControl?.sendActions(for: .valueChanged)
+
+        // Then
+        waitForExpectations(timeout: Constants.expectationTimeout)
+    }
+
+    func test_given_a_supportRequest_config_with_pull_to_refresh_handler_when_pulled_to_refresh_fires_callback() throws {
         // Given
         let zendeskManager = MockZendeskManager()
         let viewController = EmptyStateViewController(style: .basic, zendeskManager: zendeskManager)
@@ -166,24 +256,51 @@ final class EmptyStateViewControllerTests: XCTestCase {
 
         let mirror = try self.mirror(of: viewController)
 
+        let exp = expectation(description: "Pull to refresh callback executed.")
+        let completionHandler: ((UIRefreshControl) -> Void) = { _ in
+            exp.fulfill()
+        }
+
+        // When
         viewController.configure(.withSupportRequest(
             message: NSAttributedString(string: ""),
             image: .infoImage,
             details: "",
-            buttonTitle: "Dolores"
+            buttonTitle: "Dolores",
+            onPullToRefresh: completionHandler
         ))
 
-        assertEmpty(zendeskManager.newRequestIfPossibleInvocations)
+        // Then
+        XCTAssertNotNil(mirror.scrollView.refreshControl)
 
         // When
-        mirror.actionButton.sendActions(for: .touchUpInside)
+        mirror.scrollView.refreshControl?.sendActions(for: .valueChanged)
 
         // Then
-        XCTAssertEqual(zendeskManager.newRequestIfPossibleInvocations.count, 1)
+        waitForExpectations(timeout: Constants.expectationTimeout)
+    }
 
-        let invocation = try XCTUnwrap(zendeskManager.newRequestIfPossibleInvocations.first)
-        XCTAssertEqual(invocation.controller, viewController)
-        XCTAssertNil(invocation.sourceTag)
+    func test_pull_to_refresh_control_is_removed_when_reconfigured_using_nil_onPullToRefresh_value() throws {
+        // Given
+        let viewController = EmptyStateViewController()
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        // When
+        viewController.configure(.simple(message: NSAttributedString(string: "Ola"),
+                                         image: .infoImage,
+                                         onPullToRefresh: { _ in }))
+
+        // Then
+        XCTAssertNotNil(mirror.scrollView.refreshControl)
+
+        // When
+        viewController.configure(.simple(message: NSAttributedString(string: "Ola"),
+                                         image: .infoImage))
+
+        // Then
+        XCTAssertNil(mirror.scrollView.refreshControl)
     }
 }
 
@@ -195,6 +312,7 @@ private extension EmptyStateViewControllerTests {
         let imageView: UIImageView
         let detailsLabel: UILabel
         let actionButton: UIButton
+        let scrollView: UIScrollView
     }
 
     func mirror(of viewController: EmptyStateViewController) throws -> EmptyStateViewControllerMirror {
@@ -204,7 +322,8 @@ private extension EmptyStateViewControllerTests {
             messageLabel: try XCTUnwrap(mirror.descendant("messageLabel") as? UILabel),
             imageView: try XCTUnwrap(mirror.descendant("imageView") as? UIImageView),
             detailsLabel: try XCTUnwrap(mirror.descendant("detailsLabel") as? UILabel),
-            actionButton: try XCTUnwrap(mirror.descendant("actionButton") as? UIButton)
+            actionButton: try XCTUnwrap(mirror.descendant("actionButton") as? UIButton),
+            scrollView: try XCTUnwrap(mirror.descendant("scrollView") as? UIScrollView)
         )
     }
 }

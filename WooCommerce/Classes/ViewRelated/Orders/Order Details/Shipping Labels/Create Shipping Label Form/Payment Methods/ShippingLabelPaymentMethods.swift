@@ -86,7 +86,7 @@ struct ShippingLabelPaymentMethods: View {
                     Spacer()
 
                     // Add credit card button
-                    if viewModel.canEditPaymentMethod && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddPaymentMethods) {
+                    if viewModel.canEditPaymentMethod {
 
                         let buttonText = viewModel.paymentMethods.isEmpty ? Localization.addCreditCardButton : Localization.addAnotherCreditCardButton
 

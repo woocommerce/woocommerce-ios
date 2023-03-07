@@ -7,7 +7,7 @@ final class AnnouncementListMapperTests: XCTestCase {
     func test_announcements_are_properly_parsed() {
         let announcements = mapLoadAnnouncementListResponse()
 
-        assertEqual(2, announcements.count)
+        assertEqual(1, announcements.count)
         let firstItem = announcements[0]
         assertEqual("10.7", firstItem.appVersionName)
         assertEqual("10.7", firstItem.minimumAppVersion)

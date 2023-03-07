@@ -3,7 +3,7 @@ import Codegen
 
 /// Feature announcement for the Woo mobile app
 ///
-public struct Announcement: Codable, GeneratedCopiable, GeneratedFakeable {
+public struct Announcement: Decodable, GeneratedCopiable, GeneratedFakeable {
     /// Version name for the app
     public let appVersionName: String
 
@@ -30,11 +30,24 @@ public struct Announcement: Codable, GeneratedCopiable, GeneratedFakeable {
 
     /// Feature list in the announcement
     public let features: [Feature]
+
+    /// Public initializer
+    public init(appVersionName: String, minimumAppVersion: String, maximumAppVersion: String, appVersionTargets: [String], detailsUrl: String, announcementVersion: String, isLocalized: Bool, responseLocale: String, features: [Feature]) {
+        self.appVersionName = appVersionName
+        self.minimumAppVersion = minimumAppVersion
+        self.maximumAppVersion = maximumAppVersion
+        self.appVersionTargets = appVersionTargets
+        self.detailsUrl = detailsUrl
+        self.announcementVersion = announcementVersion
+        self.isLocalized = isLocalized
+        self.responseLocale = responseLocale
+        self.features = features
+    }
 }
 
 /// A feature in an app announcement
 ///
-public struct Feature: Codable, GeneratedCopiable, GeneratedFakeable {
+public struct Feature: Decodable, GeneratedCopiable, GeneratedFakeable {
     /// Title of the feature
     public let title: String
 
@@ -49,11 +62,20 @@ public struct Feature: Codable, GeneratedCopiable, GeneratedFakeable {
 
     /// Base 64 data for the icon of the feature
     public let iconBase64: String?
+
+    /// Public initializer
+    public init(title: String, subtitle: String, icons: [FeatureIcon]? = nil, iconUrl: String, iconBase64: String? = nil) {
+        self.title = title
+        self.subtitle = subtitle
+        self.icons = icons
+        self.iconUrl = iconUrl
+        self.iconBase64 = iconBase64
+    }
 }
 
 /// An icon for a feature announcement
 ///
-public struct FeatureIcon: Codable, GeneratedCopiable, GeneratedFakeable {
+public struct FeatureIcon: Decodable, GeneratedCopiable, GeneratedFakeable {
     /// URL of the icon
     public let iconUrl: String
 
@@ -62,4 +84,11 @@ public struct FeatureIcon: Codable, GeneratedCopiable, GeneratedFakeable {
 
     // Type of the icon
     public let iconType: String
+
+    /// Public initializr
+    public init(iconUrl: String, iconBase64: String, iconType: String) {
+        self.iconUrl = iconUrl
+        self.iconBase64 = iconBase64
+        self.iconType = iconType
+    }
 }

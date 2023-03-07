@@ -568,7 +568,7 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
-    /// Updates the neccesary dependencies for the widget to function correctly.
+    /// Updates the necessary dependencies for the widget to function correctly.
     /// Reloads widgets timelines.
     ///
     func updateAndReloadWidgetInformation(with siteID: Int64?) {

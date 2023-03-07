@@ -12,26 +12,26 @@
                     "subtitle": "Want to show customers that you're listening to their feedback? Use the new Reply button to respond to product reviews that need your attention.",
                     "icons": [
                         {
-                            "iconUrl": "",
-                            "iconBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAACXBIWXMAABYlAAAWJQFJUi",
+                            "iconUrl": "https://example.com/",
+                            "iconBase64": "",
                             "iconType": ""
                         }
                     ],
-                    "iconUrl": "",
-                    "iconBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAY"
+                    "iconUrl": "https://example.com/",
+                    "iconBase64": ""
                 },
                 {
                     "title": "Bulk Editing for Product Variations",
                     "subtitle": "You can now edit the price for all of a product's variations at once! Tap the ellipsis menu on the list of variations to get started.",
                     "icons": [
                         {
-                            "iconUrl": "",
-                            "iconBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAY",
+                            "iconUrl": "https://example.com/",
+                            "iconBase64": "",
                             "iconType": ""
                         }
                     ],
-                    "iconUrl": "",
-                    "iconBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYA"
+                    "iconUrl": "https://example.com/",
+                    "iconBase64": ""
                 }
             ],
             "announcementVersion": "246",

@@ -721,6 +721,7 @@
 		DE4D23B829B5F909003A4B5D /* Announcement.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23B729B5F909003A4B5D /* Announcement.swift */; };
 		DE4D23BA29B5FB3E003A4B5D /* AnnouncementsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23B929B5FB3E003A4B5D /* AnnouncementsRemote.swift */; };
 		DE4D23BC29B5FC0D003A4B5D /* AnnouncementListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23BB29B5FC0D003A4B5D /* AnnouncementListMapper.swift */; };
+		DE4D23BE29B6E10F003A4B5D /* announcements.json in Resources */ = {isa = PBXBuildFile; fileRef = DE4D23BD29B6E10F003A4B5D /* announcements.json */; };
 		DE4F2A3F29750EF400B0701C /* inbox-note-list-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE4F2A3D29750EF400B0701C /* inbox-note-list-without-data.json */; };
 		DE4F2A4029750EF400B0701C /* inbox-note-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE4F2A3E29750EF400B0701C /* inbox-note-without-data.json */; };
 		DE4F2A4229751EAE00B0701C /* setting-coupon-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE4F2A4129751EAE00B0701C /* setting-coupon-without-data.json */; };
@@ -1619,6 +1620,7 @@
 		DE4D23B729B5F909003A4B5D /* Announcement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Announcement.swift; sourceTree = "<group>"; };
 		DE4D23B929B5FB3E003A4B5D /* AnnouncementsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsRemote.swift; sourceTree = "<group>"; };
 		DE4D23BB29B5FC0D003A4B5D /* AnnouncementListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementListMapper.swift; sourceTree = "<group>"; };
+		DE4D23BD29B6E10F003A4B5D /* announcements.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = announcements.json; sourceTree = "<group>"; };
 		DE4F2A3D29750EF400B0701C /* inbox-note-list-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "inbox-note-list-without-data.json"; sourceTree = "<group>"; };
 		DE4F2A3E29750EF400B0701C /* inbox-note-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "inbox-note-without-data.json"; sourceTree = "<group>"; };
 		DE4F2A4129751EAE00B0701C /* setting-coupon-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "setting-coupon-without-data.json"; sourceTree = "<group>"; };
@@ -2310,6 +2312,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DE4D23BD29B6E10F003A4B5D /* announcements.json */,
 				021D741B2987B1550035687E /* checkout-doman-cart-with-domain-credit-success.json */,
 				DEC2B092297AA60D003923FB /* category-without-data.json */,
 				DEC2B090297AA5A6003923FB /* categories-all-without-data.json */,
@@ -3498,6 +3501,7 @@
 				028CB717290223CB00331C09 /* create-account-error-password.json in Resources */,
 				D800DA0E25EFEC21001E13CE /* wcpay-connection-token.json in Resources */,
 				74159628224D63CE003C21CF /* settings-product-alt.json in Resources */,
+				DE4D23BE29B6E10F003A4B5D /* announcements.json in Resources */,
 				02616F8F2921336C0095BC00 /* site-creation-domain-error.json in Resources */,
 				45AB8B2024AB3E1F00B5B36E /* product-tags-empty.json in Resources */,
 				0359EA2127AAE58C0048DE2D /* wcpay-charge-card-present.json in Resources */,

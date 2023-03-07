@@ -20,7 +20,8 @@ final class AnnouncementListMapperTests: XCTestCase {
         XCTAssertTrue(firstItem.isLocalized)
         let firstFeature = firstItem.features[0]
         assertEqual("Reply to Product Reviews", firstFeature.title)
-        assertEqual("Want to show customers that you're listening to their feedback? Use the new Reply button to respond to product reviews that need your attention.", firstFeature.subtitle)
+        assertEqual("Want to show customers that you're listening to their feedback? " +
+                    "Use the new Reply button to respond to product reviews that need your attention.", firstFeature.subtitle)
         assertEqual("https://example.com/", firstFeature.iconUrl)
         assertEqual("https://example.com/", firstFeature.icons?.first?.iconUrl)
     }

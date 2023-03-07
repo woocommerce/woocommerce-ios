@@ -32,7 +32,15 @@ public struct Announcement: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let features: [Feature]
 
     /// Public initializer
-    public init(appVersionName: String, minimumAppVersion: String, maximumAppVersion: String, appVersionTargets: [String], detailsUrl: String, announcementVersion: String, isLocalized: Bool, responseLocale: String, features: [Feature]) {
+    public init(appVersionName: String,
+                minimumAppVersion: String,
+                maximumAppVersion: String,
+                appVersionTargets: [String],
+                detailsUrl: String,
+                announcementVersion: String,
+                isLocalized: Bool,
+                responseLocale: String,
+                features: [Feature]) {
         self.appVersionName = appVersionName
         self.minimumAppVersion = minimumAppVersion
         self.maximumAppVersion = maximumAppVersion

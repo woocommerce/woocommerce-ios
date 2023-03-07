@@ -44,6 +44,7 @@ extension Product {
                                   unitPosition: .afterInput,
                                   keyboardType: .numberPad,
                                   inputFormatter: IntegerInputFormatter(),
+                                  style: .primary,
                                   onInputChange: onInputChange)
     }
 }

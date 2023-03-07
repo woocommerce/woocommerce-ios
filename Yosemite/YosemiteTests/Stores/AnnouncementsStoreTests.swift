@@ -1,5 +1,4 @@
 import XCTest
-import WordPressKit
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -40,7 +39,6 @@ final class AnnouncementsStoreTests: XCTestCase {
         subject = AnnouncementsStore(dispatcher: dispatcher,
                                      storageManager: storageManager,
                                      network: network,
-                                     remote: remote,
                                      fileStorage: fileStorage)
     }
 
@@ -50,7 +48,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success([announcement]))
 
         // Act
-        let fetchedAnnouncement: WordPressKit.Announcement? = waitFor { [weak self] promise in
+        let fetchedAnnouncement: Yosemite.Announcement? = waitFor { [weak self] promise in
             let action = AnnouncementsAction.synchronizeAnnouncements { result in
                 promise(try? result.get())
             }
@@ -63,7 +61,6 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertEqual(fetchedAnnouncement?.features.first?.title, "foo")
         XCTAssertEqual(fetchedAnnouncement?.features.first?.subtitle, "bar")
         XCTAssertEqual(fetchedAnnouncement?.features.first?.iconUrl, "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
-        XCTAssertEqual(remote.requestedAppId, "4")
     }
 
     func test_synchronize_announcements_with_empty_response_error_gets_an_error() {
@@ -117,7 +114,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         try fileStorage?.write(makeStorageAnnouncement(), to: try XCTUnwrap(expectedFeatureAnnouncementsFileURL))
 
         // Act
-        let (announcement, isDisplayed): (WordPressKit.Announcement, Bool) = waitFor { [weak self] promise in
+        let (announcement, isDisplayed): (Yosemite.Announcement, Bool) = waitFor { [weak self] promise in
             let action = AnnouncementsAction.loadSavedAnnouncement { result in
                 promise(try! result.get())
             }
@@ -134,7 +131,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         try fileStorage?.write(makeStorageAnnouncement(displayed: true), to: try XCTUnwrap(expectedFeatureAnnouncementsFileURL))
 
         // Act
-        let (announcement, isDisplayed): (WordPressKit.Announcement, Bool) = waitFor { [weak self] promise in
+        let (announcement, isDisplayed): (Yosemite.Announcement, Bool) = waitFor { [weak self] promise in
             let action = AnnouncementsAction.loadSavedAnnouncement { result in
                 promise(try! result.get())
             }
@@ -158,7 +155,7 @@ final class AnnouncementsStoreTests: XCTestCase {
             self?.subject?.onAction(action)
         }
 
-        let (announcement, isDisplayed): (WordPressKit.Announcement, Bool) = waitFor { [weak self] promise in
+        let (announcement, isDisplayed): (Yosemite.Announcement, Bool) = waitFor { [weak self] promise in
             let action = AnnouncementsAction.loadSavedAnnouncement { result in
                 promise(try! result.get())
             }
@@ -179,7 +176,7 @@ private extension AnnouncementsStoreTests {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("feature-announcements.plist")
     }
 
-    func makeWordPressAnnouncement() throws -> WordPressKit.Announcement {
+    func makeWordPressAnnouncement() throws -> Yosemite.Announcement {
         let jsonData = try JSONSerialization.data(withJSONObject: [
             "appVersionName": "1",
             "minimumAppVersion": "",

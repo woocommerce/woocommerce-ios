@@ -103,7 +103,7 @@ private extension AnnouncementsStore {
 
 // MARK: - Helper functions
 private extension AnnouncementsStore {
-    /// Map `WordPressKit.Announcement` to `StorageAnnouncement` model
+    /// Map `Announcement` to `StorageAnnouncement` model
     func mapAnnouncementToStorageModel(_ announcement: Announcement) -> StorageAnnouncement {
         let mappedFeatures: [StorageFeature] = announcement.features.map {
             let mappedIcons = $0.icons?.map {
@@ -131,7 +131,7 @@ private extension AnnouncementsStore {
                                    displayed: false)
     }
 
-    /// Map `StorageAnnouncement` to `WordPressKit.Announcement` model
+    /// Map `StorageAnnouncement` to `Announcement` model
     func mapStoredAnnouncement(_ storedAnnouncement: StorageAnnouncement) throws -> Announcement {
         do {
             let encodedObject = try JSONEncoder().encode(storedAnnouncement)

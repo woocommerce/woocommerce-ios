@@ -1,4 +1,5 @@
 import SwiftUI
+import QuickLook
 
 @available(macCatalyst 16.0, *)
 struct AugmentedRealityCreateUSDZ: View {
@@ -21,12 +22,60 @@ struct AugmentedRealityCreateUSDZ: View {
                 .disabled(viewModel.selectedFolderURL == nil)
                 .buttonStyle(.borderedProminent)
             ProgressView("Generating: ", value: viewModel.progress)
+            Button(action: viewModel.showPreviewTapped) { Text("Preview 3D model") }
+                .disabled(viewModel.generatedFileURL == nil)
+                .buttonStyle(.borderedProminent)
         }
         .padding()
         .fileImporter(isPresented: $viewModel.showDocumentPicker,
                       allowedContentTypes: [.folder],
                       allowsMultipleSelection: false,
                       onCompletion: viewModel.foldersSelected(_:))
+        .sheet(isPresented: $viewModel.previewShowing) {
+            if let url = viewModel.generatedFileURL {
+                PreviewController(url: url)
+            } else {
+                EmptyView()
+            }
+        }
+    }
+}
+
+struct PreviewController: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeUIViewController(context: Context) -> WooNavigationController {
+        let controller = QLPreviewController()
+        controller.dataSource = context.coordinator
+        controller.delegate = context.coordinator
+        let navigationController = WooNavigationController(rootViewController: controller)
+        navigationController.addCloseNavigationBarButton()
+        return navigationController
+    }
+
+    func updateUIViewController(_ uiViewController: WooNavigationController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        return Coordinator(parent: self)
+    }
+
+    class Coordinator: NSObject, QLPreviewControllerDelegate, QLPreviewControllerDataSource {
+        let parent: PreviewController
+        init(parent: PreviewController) {
+            self.parent = parent
+        }
+
+        func numberOfPreviewItems(in controller: QLPreviewController) -> Int {
+            return 1
+        }
+
+        func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
+            return parent.url as NSURL
+        }
+
+        func previewController(_ controller: QLPreviewController, editingModeFor previewItem: QLPreviewItem) -> QLPreviewItemEditingMode {
+            return .updateContents
+        }
     }
 }
 
@@ -79,6 +128,7 @@ class AugmentedRealityCreateUSDZViewModel: ObservableObject {
     @MainActor @Published var showDocumentPicker: Bool = false
     @MainActor @Published var selectedFolderURL: URL? = nil
     @MainActor @Published var generatedFileURL: URL? = nil
+    @MainActor @Published var previewShowing: Bool = false
     @MainActor @Published var progress: Double = 0
     @MainActor var quality: QualityOptions = .high
 
@@ -189,11 +239,19 @@ class AugmentedRealityCreateUSDZViewModel: ObservableObject {
         }
     }
 
+    func showPreviewTapped() {
+        Task {
+            await MainActor.run {
+                previewShowing.toggle()
+            }
+        }
+    }
 
     @MainActor
     private func reset() {
         generatedFileURL = nil
         progress = 0
+        previewShowing = false
 
     }
 }

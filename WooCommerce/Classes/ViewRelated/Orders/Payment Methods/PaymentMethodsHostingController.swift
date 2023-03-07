@@ -1,12 +1,15 @@
 import SwiftUI
 
 final class PaymentMethodsHostingController: UIHostingController<HostedPaymentMethodsView> {
+    weak var parentController: UIViewController?
+
     init(viewModel: PaymentMethodsViewModel) {
         super.init(rootView: HostedPaymentMethodsView(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
             self?.dismiss(animated: true, completion: nil)
+            self?.parentController?.dismiss(animated: true, completion: nil)
         }
     }
 

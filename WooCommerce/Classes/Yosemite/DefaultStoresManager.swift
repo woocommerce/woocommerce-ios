@@ -578,9 +578,10 @@ private extension DefaultStoresManager {
         switch sessionManager.defaultCredentials {
         case let .wpcom(_, authToken, _):
             keychain.currentAuthToken = authToken
-        case let .wporg(username, password, _):
+        case let .wporg(username, password, siteAddress):
             keychain.siteCredentialPassword = password
             UserDefaults.group?[.defaultUsername] = username
+            UserDefaults.group?[.defaultSiteAddress] = siteAddress
         default:
             break
         }
@@ -588,7 +589,6 @@ private extension DefaultStoresManager {
         // Non-critical store info
         UserDefaults.group?[.defaultStoreID] = siteID
         UserDefaults.group?[.defaultStoreName] = sessionManager.defaultSite?.name
-        UserDefaults.group?[.defaultSiteAddress] = sessionManager.defaultStoreURL
 
         // Currency Settings are stored in `SelectedSiteSettings.defaultStoreCurrencySettings`
 

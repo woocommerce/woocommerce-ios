@@ -39,12 +39,13 @@ final class AnnouncementsStoreTests: XCTestCase {
         subject = AnnouncementsStore(dispatcher: dispatcher,
                                      storageManager: storageManager,
                                      network: network,
+                                     remote: remote,
                                      fileStorage: fileStorage)
     }
 
-    func test_synchronize_announcements_effectively_retrieves_latest_announcement() throws {
+    func test_synchronize_announcements_effectively_retrieves_latest_announcement() {
         // Arrange
-        let announcement = try XCTUnwrap(self.makeWordPressAnnouncement())
+        let announcement = makeWordPressAnnouncement()
         remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success([announcement]))
 
         // Act
@@ -176,30 +177,17 @@ private extension AnnouncementsStoreTests {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("feature-announcements.plist")
     }
 
-    func makeWordPressAnnouncement() throws -> Yosemite.Announcement {
-        let jsonData = try JSONSerialization.data(withJSONObject: [
-            "appVersionName": "1",
-            "minimumAppVersion": "",
-            "maximumAppVersion": "",
-            "appVersionTargets": [],
-            "detailsUrl": "http://wordpress.org",
-            "features": [[
-                "title": "foo",
-                "subtitle": "bar",
-                "icons": [[
-                    "iconUrl": "https://s0.wordpress.com/i/store/mobile/plans-premium.png",
-                    "iconBase64": "",
-                    "iconType": ""
-                ]],
-                "iconBase64": "",
-                "iconUrl": "https://s0.wordpress.com/i/store/mobile/plans-premium.png"
-            ]],
-            "announcementVersion": "2",
-            "isLocalized": true,
-            "responseLocale": "en_US"
-        ])
-
-        return try JSONDecoder().decode(Announcement.self, from: jsonData)
+    func makeWordPressAnnouncement() -> Yosemite.Announcement {
+        Announcement.fake().copy(appVersionName: "1",
+                                 detailsUrl: "http://wordpress.org",
+                                 announcementVersion: "2",
+                                 isLocalized: true,
+                                 responseLocale: "en_US",
+                                 features: [
+                                    Feature.fake().copy(title: "foo",
+                                                        subtitle: "bar",
+                                                        icons: [FeatureIcon.fake().copy(iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")],
+                                                        iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")])
     }
 
     func makeStorageAnnouncement(displayed: Bool = false) -> StorageAnnouncement {

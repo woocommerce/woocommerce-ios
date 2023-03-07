@@ -234,12 +234,7 @@ private extension ProductInventoryScannerViewController {
                                         comment: "Message of the in-progress UI while updating the Product inventory settings remotely")
         let viewProperties = InProgressViewProperties(title: title, message: message)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-
-        // Before iOS 13, a modal with transparent background requires certain
-        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
-        if #available(iOS 13.0, *) {} else {
-            inProgressViewController.modalPresentationStyle = .overCurrentContext
-        }
+        inProgressViewController.modalPresentationStyle = .overCurrentContext
 
         navigationController?.present(inProgressViewController, animated: true, completion: nil)
 

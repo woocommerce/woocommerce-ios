@@ -4772,6 +4772,16 @@
 			path = Filters;
 			sourceTree = "<group>";
 		};
+		0249D7CA29B7332D006B2F30 /* Inventory Scanner */ = {
+			isa = PBXGroup;
+			children = (
+				02A6853E2418A94200B7E79E /* ProductInventoryScannerViewController.swift */,
+				02A6853F2418A94200B7E79E /* ProductInventoryScannerViewController.xib */,
+				02A685462418C77C00B7E79E /* PresenceThresholdFilter.swift */,
+			);
+			path = "Inventory Scanner";
+			sourceTree = "<group>";
+		};
 		024A543222BA6DD500F4F38E /* Developer */ = {
 			isa = PBXGroup;
 			children = (
@@ -7037,6 +7047,7 @@
 				0235595724496D31004BE2B8 /* BottomSheetListSelector */,
 				7E7C5F7B2719A91600315B61 /* Categories */,
 				02C8876A24501F5000E4470F /* Filters */,
+				0249D7CA29B7332D006B2F30 /* Inventory Scanner */,
 				0286B27523C704FC003D784B /* Media */,
 				026CF637237E9AA5009563D4 /* Variations */,
 				021627232379637E000208D2 /* Edit Product */,
@@ -7048,9 +7059,6 @@
 				0260F40023224E8100EDA10A /* ProductsViewController.swift */,
 				AE2E5F6529685CF8009262D3 /* ProductsListViewModel.swift */,
 				020DD49023239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift */,
-				02A6853E2418A94200B7E79E /* ProductInventoryScannerViewController.swift */,
-				02A6853F2418A94200B7E79E /* ProductInventoryScannerViewController.xib */,
-				02A685462418C77C00B7E79E /* PresenceThresholdFilter.swift */,
 				02564A89246CDF6100D6DB2A /* ProductsTopBannerFactory.swift */,
 				0279F0D9252DB4BE0098D7DE /* ProductVariationDetailsFactory.swift */,
 				AEFF77A32978389400667F7A /* PriceInputViewController.swift */,

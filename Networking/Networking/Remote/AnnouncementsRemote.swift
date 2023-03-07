@@ -1,14 +1,22 @@
 import Foundation
 
+/// Protocol used to mock the remote.
+///
+public protocol AnnouncementsRemoteProtocol {
+    func loadAnnouncements(appVersion: String,
+                           locale: String,
+                           onCompletion: @escaping (Result<[Announcement], Error>) -> Void)
+}
+
 /// `Announcement` remote endpoints.
 ///
-public final class AnnouncementsRemote: Remote {
+public final class AnnouncementsRemote: Remote, AnnouncementsRemoteProtocol {
 
     /// Retrieves all the `Announcement` available for a given `siteID`
     ///
     public func loadAnnouncements(appVersion: String,
                                   locale: String,
-                                  onCompletion: @escaping (Result<[Announcement], Error>) -> ()) {
+                                  onCompletion: @escaping (Result<[Announcement], Error>) -> Void) {
         let parameters: [String: Any] = [
             Key.appID: Constants.WooCommerceAppId,
             Key.appVersion: appVersion,
@@ -37,6 +45,7 @@ private extension AnnouncementsRemote {
     }
 
     enum Constants {
+        /// The requested appId. WooCommerce appID can be found here: PCYsg-sx0-p2
         static let WooCommerceAppId = "4"
     }
 }

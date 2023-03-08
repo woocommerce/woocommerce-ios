@@ -7,7 +7,7 @@ extension DashboardViewController: SearchableActivityConvertable {
     }
 
     var activityTitle: String {
-        return NSLocalizedString("My Store", comment: "Title of the 'Dashboard' tab - used for spotlight indexing on iOS.")
+        return NSLocalizedString("My Store", comment: "Title of the 'My Store' tab - used for spotlight indexing on iOS.")
     }
 
     var activityDescription: String? {

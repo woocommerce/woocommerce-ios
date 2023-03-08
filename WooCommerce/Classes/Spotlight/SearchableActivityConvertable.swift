@@ -14,20 +14,19 @@ enum WooActivityType: String {
 @objc protocol SearchableActivityConvertable {
     /// Type name used to uniquly indentify this activity.
     ///
-    @objc var activityType: String {get}
+    @objc var activityType: String { get }
 
     /// Activity title to be displayed in spotlight search.
     ///
-    @objc var activityTitle: String {get}
+    @objc var activityTitle: String { get }
 
-    // MARK: Optional Vars
     /// A set of localized keywords that can help users find the activity in search results.
     ///
-    @objc optional var activityKeywords: Set<String>? {get}
+    @objc optional var activityKeywords: Set<String>? { get }
 
     /// Activity description
     ///
-    @objc optional var activityDescription: String? {get}
+    @objc optional var activityDescription: String? { get }
 }
 
 extension SearchableActivityConvertable where Self: UIViewController {

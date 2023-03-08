@@ -114,16 +114,20 @@ private extension ProductInventoryScannerViewController {
             }
         }
 
-        if let listSelectorViewController = listSelectorViewController {
+        if let listSelectorViewController {
             listSelectorViewController.update(command: command)
-            return
+        } else {
+            let listSelectorViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
+                                                                                   command: command) { [weak self] selectedSortOrder in
+                self?.dismiss(animated: true, completion: nil)
+            }
+            self.listSelectorViewController = listSelectorViewController
         }
 
-        let listSelectorViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
-                                                                               command: command) { [weak self] selectedSortOrder in
-            self?.dismiss(animated: true, completion: nil)
+        // Only presents the bottom sheet if it hasn't been presented.
+        guard let listSelectorViewController, listSelectorViewController.presentingViewController == nil else {
+            return
         }
-        self.listSelectorViewController = listSelectorViewController
 
         configureBottomSheetPresentation(for: listSelectorViewController)
         listSelectorViewController.isModalInPresentation = true

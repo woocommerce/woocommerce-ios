@@ -111,19 +111,36 @@ extension ProductsTabProductTableViewCell {
         accessoryView = deleteButton
     }
 
-    func configureForInventoryScannerResult(product: ProductFormDataModel, initialQuantity: Decimal, imageService: ImageService) {
+    func configureForInventoryScannerResult(_ result: ProductSKUScannerResult, imageService: ImageService) {
         productImageView.contentMode = .center
         configureProductImageViewForBigImages()
+
+        switch result {
+        case .matched(let product, let initialStockQuantity):
+            configureForInventoryScannerSuccess(product: product, initialQuantity: initialStockQuantity, imageService: imageService)
+        case .noMatch(let sku):
+            configureForInventoryScannerFailure(sku: sku)
+        }
+    }
+
+    func configureForInventoryScannerFailure(sku: String) {
+        productImageView.image = .productsTabProductCellPlaceholderImage
+        nameLabel.text = String(format: Localization.InventoryScanner.noMatchingSKUFormat, sku)
+        detailsLabel.text = Localization.InventoryScanner.noMatchingSKUDetail
+        detailsLabel.textColor = .text
+    }
+
+    func configureForInventoryScannerSuccess(product: ProductFormDataModel, initialQuantity: Decimal, imageService: ImageService) {
         productImageView.image = .productsTabProductCellPlaceholderImage
         if let productURLString = product.images.first?.src {
             imageService.downloadAndCacheImageForImageView(productImageView,
                                                            with: productURLString,
                                                            placeholder: .productsTabProductCellPlaceholderImage,
                                                            progressBlock: nil) { [weak self] (image, error) in
-                                                            let success = image != nil && error == nil
-                                                            if success {
-                                                                self?.productImageView.contentMode = .scaleAspectFill
-                                                            }
+                let success = image != nil && error == nil
+                if success {
+                    self?.productImageView.contentMode = .scaleAspectFill
+                }
             }
         }
 
@@ -292,6 +309,15 @@ private extension ProductsTabProductTableViewCell {
             static let stockQuantityFormat = NSLocalizedString(
                 "Quantity: %1$@",
                 comment: "Detail text in product scanner result row when the stock quantity remains the same.")
+            static let noMatchingSKUFormat = NSLocalizedString(
+                "%1$@ not found",
+                comment: "Main text in product scanner result row when the scanned barcode does not match a product SKU. " +
+                "%1$@ shows the scanned barcode."
+            )
+            static let noMatchingSKUDetail = NSLocalizedString(
+                "The barcode isn’t associated with a product",
+                comment: "Detail text in product scanner result row when the scanned barcode does not match a product SKU."
+            )
         }
     }
 }

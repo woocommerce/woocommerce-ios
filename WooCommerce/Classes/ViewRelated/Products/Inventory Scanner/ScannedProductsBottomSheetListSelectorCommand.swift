@@ -23,13 +23,7 @@ struct ScannedProductsBottomSheetListSelectorCommand: BottomSheetListSelectorCom
         cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator
 
-        // TODO-jc: stock quantity tracking
-        switch model {
-        case .matched(let product, let initialStockQuantity):
-            cell.configureForInventoryScannerResult(product: product, initialQuantity: initialStockQuantity, imageService: imageService)
-        default:
-            break
-        }
+        cell.configureForInventoryScannerResult(model, imageService: imageService)
     }
 
     func handleSelectedChange(selected: ProductSKUScannerResult) {

@@ -335,6 +335,8 @@
 		028E1F722833E954001F8829 /* DashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028E1F712833E954001F8829 /* DashboardViewModelTests.swift */; };
 		028FA466257E021100F88A48 /* RefundShippingLabelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028FA465257E021100F88A48 /* RefundShippingLabelViewModel.swift */; };
 		028FA46C257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028FA46B257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift */; };
+		029099D929B81E8300607074 /* ProductSKUScannerResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029099D829B81E8300607074 /* ProductSKUScannerResult.swift */; };
+		029099DB29B81EB900607074 /* ScannedProductsBottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029099DA29B81EB900607074 /* ScannedProductsBottomSheetListSelectorCommand.swift */; };
 		0290E26F238E3CE400B5C466 /* ListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */; };
 		0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */; };
 		0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */; };
@@ -2480,6 +2482,8 @@
 		028E1F712833E954001F8829 /* DashboardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModelTests.swift; sourceTree = "<group>"; };
 		028FA465257E021100F88A48 /* RefundShippingLabelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingLabelViewModel.swift; sourceTree = "<group>"; };
 		028FA46B257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainTextSectionHeaderView.swift; sourceTree = "<group>"; };
+		029099D829B81E8300607074 /* ProductSKUScannerResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSKUScannerResult.swift; sourceTree = "<group>"; };
+		029099DA29B81EB900607074 /* ScannedProductsBottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannedProductsBottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
 		0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommandTests.swift; sourceTree = "<group>"; };
@@ -4778,6 +4782,8 @@
 				02A6853E2418A94200B7E79E /* ProductInventoryScannerViewController.swift */,
 				02A6853F2418A94200B7E79E /* ProductInventoryScannerViewController.xib */,
 				02A685462418C77C00B7E79E /* PresenceThresholdFilter.swift */,
+				029099D829B81E8300607074 /* ProductSKUScannerResult.swift */,
+				029099DA29B81EB900607074 /* ScannedProductsBottomSheetListSelectorCommand.swift */,
 			);
 			path = "Inventory Scanner";
 			sourceTree = "<group>";
@@ -11602,6 +11608,7 @@
 				451C77712404518600413F73 /* ProductSettingsRows.swift in Sources */,
 				CC200BB127847DE300EC5884 /* OrderPaymentSection.swift in Sources */,
 				743E272021AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift in Sources */,
+				029099DB29B81EB900607074 /* ScannedProductsBottomSheetListSelectorCommand.swift in Sources */,
 				CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */,
 				023053492374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift in Sources */,
 				0282DD98233CA093006A5FDB /* OrderSearchUICommand.swift in Sources */,
@@ -11656,6 +11663,7 @@
 				CCFC50592743E021001E505F /* EditableOrderViewModel.swift in Sources */,
 				B96D6C0729081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift in Sources */,
 				6856DB2E741639716E149967 /* KeyboardStateProvider.swift in Sources */,
+				029099D929B81E8300607074 /* ProductSKUScannerResult.swift in Sources */,
 				ABC35F18E744C5576B986CB3 /* InPersonPaymentsUnavailableView.swift in Sources */,
 				ABC35528D2D6BE6F516E5CEF /* InPersonPaymentsOnboardingError.swift in Sources */,
 				3F1FA84C28B60126009E246C /* StoreWidgets.intentdefinition in Sources */,

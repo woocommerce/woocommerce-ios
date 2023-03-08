@@ -253,7 +253,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
 
         // Then
         XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == sampleProductID }), "Product rows do not contain expected product")
@@ -274,10 +274,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
 
         // When
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
         viewModel.productRows[0].incrementQuantity()
         // And when another product is added to the order (to confirm the first product's quantity change is retained)
-        viewModel.handleProductsViewModel.selectProduct(anotherProduct.productID)
+        viewModel.productSelectorViewModel.selectProduct(anotherProduct.productID)
 
         // Then
         XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
@@ -299,10 +299,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
 
         // When
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
         viewModel.productRows[0].incrementQuantity()
         // And when another product is added to the order (to confirm the first product's quantity change is retained)
-        viewModel.handleProductsViewModel.selectProduct(anotherProduct.productID)
+        viewModel.productSelectorViewModel.selectProduct(anotherProduct.productID)
 
         // Then
         XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
@@ -317,7 +317,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Product quantity is 1
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
         XCTAssertEqual(viewModel.productRows[0].quantity, 1)
 
         // When
@@ -333,7 +333,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
 
         // When
         let expectedRow = viewModel.productRows[0]
@@ -353,8 +353,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Given products are added to order
-        viewModel.handleProductsViewModel.selectProduct(product0.productID)
-        viewModel.handleProductsViewModel.selectProduct(product1.productID)
+        viewModel.productSelectorViewModel.selectProduct(product0.productID)
+        viewModel.productSelectorViewModel.selectProduct(product1.productID)
 
         // When
         let expectedRemainingRow = viewModel.productRows[1]
@@ -517,7 +517,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
         // When & Then
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
 
@@ -536,7 +536,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
         // When
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
         let testShippingLine = ShippingLine(shippingID: 0,
                                             methodTitle: "Flat Rate",
                                             methodID: "other",
@@ -572,7 +572,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
         // When
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
         let testFeeLine = OrderFeeLine(feeID: 0,
                                        name: "Fee",
                                        taxClass: "",
@@ -610,7 +610,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
         // When
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
         let testShippingLine = ShippingLine(shippingID: 0,
                                             methodTitle: "Flat Rate",
                                             methodID: "other",
@@ -646,7 +646,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
         // When
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
         let testFeeLine = OrderFeeLine(feeID: 0,
                                        name: "Fee",
                                        taxClass: "",
@@ -684,7 +684,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
         // When
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
 
         let testShippingLine = ShippingLine(shippingID: 0,
                                             methodTitle: "Flat Rate",
@@ -822,7 +822,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
 
         // Then
         XCTAssertTrue(viewModel.hasChanges)
@@ -904,7 +904,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderProductAdd.rawValue])
@@ -925,7 +925,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
         viewModel.productRows[0].incrementQuantity()
 
         // Then
@@ -944,7 +944,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // Given products are added to order
-        viewModel.handleProductsViewModel.selectProduct(product0.productID)
+        viewModel.productSelectorViewModel.selectProduct(product0.productID)
 
         // When
         let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
@@ -1392,7 +1392,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
 
         // Then
         XCTAssertEqual(viewModel.selectedProductsAndVariationsIDs.count, 1)
@@ -1411,7 +1411,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
         // We cannot test selecting a Product Variation directly from the view model,
         // so we'll just test if selectedProductsAndVariationsIDs returns the correct count
         // when we have both Products and Product Variations
@@ -1429,7 +1429,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Given a Product added to the Order, needed to generate a ProductRow
-        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
         let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
 
         // Confidence check

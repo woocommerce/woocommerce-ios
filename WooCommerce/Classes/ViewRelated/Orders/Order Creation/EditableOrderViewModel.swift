@@ -167,7 +167,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the product list
     ///
-    var handleProductsViewModel: ProductSelectorViewModel {
+    var productSelectorViewModel: ProductSelectorViewModel {
         ProductSelectorViewModel(
             siteID: siteID,
             selectedItemIDs: selectedProductsAndVariationsIDs,

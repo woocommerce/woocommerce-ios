@@ -189,7 +189,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
             handleWebActivity(userActivity)
         }
-
+        
+        spotlightManager.handleUserActivity(userActivity)
         trackWidgetTappedIfNeeded(userActivity: userActivity)
 
         return true

@@ -1474,6 +1474,8 @@
 		B92FF9AE27FC7217005C34E3 /* OrderListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B92FF9AD27FC7217005C34E3 /* OrderListViewController.xib */; };
 		B92FF9B027FC7821005C34E3 /* ProductsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B92FF9AF27FC7821005C34E3 /* ProductsViewController.xib */; };
 		B94403C9289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94403C8289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift */; };
+		B946880C29B626A1000646B0 /* SpotlightManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946880B29B626A1000646B0 /* SpotlightManager.swift */; };
+		B946880E29B627EB000646B0 /* SearchableActivityConvertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946880D29B627EB000646B0 /* SearchableActivityConvertable.swift */; };
 		B95112DA28BF79CA00D9578D /* PaymentsRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95112D928BF79CA00D9578D /* PaymentsRoute.swift */; };
 		B958A7C728B3D44A00823EEF /* UniversalLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */; };
 		B958A7C928B3D47B00823EEF /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C828B3D47B00823EEF /* Route.swift */; };
@@ -3614,6 +3616,8 @@
 		B92FF9AD27FC7217005C34E3 /* OrderListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderListViewController.xib; sourceTree = "<group>"; };
 		B92FF9AF27FC7821005C34E3 /* ProductsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductsViewController.xib; sourceTree = "<group>"; };
 		B94403C8289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsAmountFlowOpener.swift; sourceTree = "<group>"; };
+		B946880B29B626A1000646B0 /* SpotlightManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightManager.swift; sourceTree = "<group>"; };
+		B946880D29B627EB000646B0 /* SearchableActivityConvertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchableActivityConvertable.swift; sourceTree = "<group>"; };
 		B95112D928BF79CA00D9578D /* PaymentsRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRoute.swift; sourceTree = "<group>"; };
 		B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalLinkRouter.swift; sourceTree = "<group>"; };
 		B958A7C828B3D47B00823EEF /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
@@ -7565,6 +7569,7 @@
 		B56DB3F12049C0B800D4AA8E /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				B946880A29B6268D000646B0 /* Spotlight */,
 				B912603F2940B2C400CACD4B /* JustInTimeMessages */,
 				B958A7C528B3D42000823EEF /* Universal Links */,
 				B57B67882107545B00AF8905 /* Model */,
@@ -7927,6 +7932,15 @@
 				B92639FE293E2D4C00A257E0 /* JustInTimeMessagesProvider.swift */,
 			);
 			path = JustInTimeMessages;
+			sourceTree = "<group>";
+		};
+		B946880A29B6268D000646B0 /* Spotlight */ = {
+			isa = PBXGroup;
+			children = (
+				B946880B29B626A1000646B0 /* SpotlightManager.swift */,
+				B946880D29B627EB000646B0 /* SearchableActivityConvertable.swift */,
+			);
+			path = Spotlight;
 			sourceTree = "<group>";
 		};
 		B958A7C528B3D42000823EEF /* Universal Links */ = {
@@ -10760,6 +10774,7 @@
 				03A6C18628B8CC7F00AADF23 /* InPersonPaymentsOnboardingErrorButtonViewModel.swift in Sources */,
 				024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */,
 				BAE4F8432734325C00871344 /* SettingsViewModel.swift in Sources */,
+				B946880C29B626A1000646B0 /* SpotlightManager.swift in Sources */,
 				0212276324498CDC0042161F /* ProductFormBottomSheetAction.swift in Sources */,
 				DEF8CF1629A8C2EB00800A60 /* AdminRoleRequiredView.swift in Sources */,
 				DE69C54D27BB719A000BB888 /* CouponRestrictions.swift in Sources */,
@@ -11205,6 +11220,7 @@
 				31B0551E264B3C7A00134D87 /* CardPresentModalFoundReader.swift in Sources */,
 				4520A15E2722BA3E001FA573 /* OrderDateRangeFilter+Utils.swift in Sources */,
 				DEF8CF0F29A890E900800A60 /* JetpackBenefitsViewModel.swift in Sources */,
+				B946880E29B627EB000646B0 /* SearchableActivityConvertable.swift in Sources */,
 				DEE183F1292E0ED0008818AB /* JetpackSetupInterruptedView.swift in Sources */,
 				028A465329597A91001CF6CE /* StoreCreationSellingPlatformsQuestionViewModel.swift in Sources */,
 				027CB045295D7B8B00F98F7C /* StoreCreationCountryQuestionViewModel.swift in Sources */,

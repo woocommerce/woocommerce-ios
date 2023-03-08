@@ -84,4 +84,14 @@ extension String {
         let (bQuote, eQuote) = String.quotes
         return bQuote + self + eQuote
     }
+
+    /// Given an string made of tags separated by commas, returns an array with these tags
+    ///
+    func arrayOfTags() -> [String] {
+            guard !self.isEmpty else {
+                return [String()]
+            }
+
+            return self.components(separatedBy: ",").map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
+        }
 }

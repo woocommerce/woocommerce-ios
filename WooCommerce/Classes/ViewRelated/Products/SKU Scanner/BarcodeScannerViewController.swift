@@ -149,7 +149,9 @@ private extension BarcodeScannerViewController {
         previewLayer.frame = videoOutputImageView.bounds
         videoOutputImageView.layer.addSublayer(previewLayer)
 
-        session.startRunning()
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            self?.session.startRunning()
+        }
     }
 }
 

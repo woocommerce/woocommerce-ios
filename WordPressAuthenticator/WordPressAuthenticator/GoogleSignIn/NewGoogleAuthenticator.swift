@@ -81,7 +81,11 @@ public class NewGoogleAuthenticator: NSObject {
             // the app.
             session.prefersEphemeralWebBrowserSession = false
 
-            // FIXME: Need this to avoid TSAN error in demo app. Can we move the call elsewhere?
+            // It feels inappropriate to force a dispatch on the main queue deep within the library.
+            // However, this is required to ensure `session` accesses the view it needs for the presentation on the right thread.
+            //
+            // See tradeoffs consideration at:
+            // https://github.com/wordpress-mobile/WordPressAuthenticator-iOS/pull/743#discussion_r1109325159
             DispatchQueue.main.async {
                 session.start()
             }

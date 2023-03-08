@@ -8,26 +8,7 @@ enum WooActivityType: String {
     case dashboard               = "com.automattic.woocommerce.dashboard"
     case orders                  = "com.automattic.woocommerce.orders"
     case products                = "com.automattic.woocommerce.products"
-    case hubMenu                 = "com.automattic.woocommerce.hubMenu"
     case payments                = "com.automattic.woocommerce.payments"
-}
-
-extension WooActivityType {
-    var suggestedInvocationPhrase: String {
-        switch self {
-        case .dashboard:
-            return NSLocalizedString("My Store in Woo", comment: "Siri Suggestion to open Dasboard")
-        case .orders:
-            return NSLocalizedString("Orders in Woo", comment: "Siri Suggestion to open Orders")
-        case .products:
-            return NSLocalizedString("Products in Woo", comment: "Siri Suggestion to open Products")
-        case .hubMenu:
-            return NSLocalizedString("Menu in Woo", comment: "Siri Suggestion to open the Menu")
-        case .payments:
-            return NSLocalizedString("Payments in Woo", comment: "Siri Suggestion to open the Menu")
-
-        }
-    }
 }
 
 @objc protocol SearchableActivityConvertable {
@@ -70,10 +51,6 @@ extension SearchableActivityConvertable where Self: UIViewController {
         activity.isEligibleForHandoff = false
 
         activity.isEligibleForPrediction = true
-
-        if let wooActivityType = WooActivityType(rawValue: activityType) {
-            activity.suggestedInvocationPhrase = wooActivityType.suggestedInvocationPhrase
-        }
 
         // Set the UIViewController's userActivity property, which is defined in UIResponder. Doing this allows
         // UIKit to automagically manage this user activity (e.g. making it current when needed)

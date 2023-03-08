@@ -178,11 +178,11 @@ final class EditableOrderViewModel: ObservableObject {
             toggleAllVariationsOnSelection: false,
             onProductSelected: { [weak self] product in
                 guard let self = self else { return }
-                self.handleProduct(product)
+                self.addOrRemoveProductFromOrder(product)
             },
             onVariationSelected: { [weak self] variation, parentProduct in
                 guard let self = self else { return }
-                self.handleProductVariation(variation, parent: parentProduct)
+                self.addOrRemoveProductVariationFromOrder(variation, parent: parentProduct)
         })
     }
 
@@ -724,9 +724,9 @@ private extension EditableOrderViewModel {
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
     }
 
-    /// Handles a product by adding it to the Order if selected, or removing it from the Order if unselected
+    /// Adds a Product  to the Order if selected, or removes it from the Order if unselected
     ///
-    func handleProduct(_ product: Product) {
+    func addOrRemoveProductFromOrder(_ product: Product) {
         if !selectedProducts.contains(product) {
             selectedProducts.append(product)
             addProductToOrder(product)
@@ -736,9 +736,9 @@ private extension EditableOrderViewModel {
         }
     }
 
-    /// Handles a product variation by adding it to the Order if selected, or removing it from the Order if unselected
+    /// Adds a Product Variation to the Order if selected, or removes it from the Order if unselected
     ///
-    func handleProductVariation(_ variation: ProductVariation, parent product: Product) {
+    func addOrRemoveProductVariationFromOrder(_ variation: ProductVariation, parent product: Product) {
         if !selectedProductVariations.contains(variation) {
             selectedProductVariations.append(variation)
             addProductVariationToOrder(variation)

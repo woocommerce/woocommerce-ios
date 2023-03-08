@@ -23,6 +23,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 0)
     }
 
+    func test_edition_view_model_product_list_is_initialized_with_correct_values() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertFalse(viewModel.addProductViewModel.isClearSelectionEnabled)
+        XCTAssertFalse(viewModel.addProductViewModel.toggleAllVariationsOnSelection)
+        // TODO: Add the rest of properties
+    }
+
     func test_edition_view_model_inits_with_expected_values() {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)

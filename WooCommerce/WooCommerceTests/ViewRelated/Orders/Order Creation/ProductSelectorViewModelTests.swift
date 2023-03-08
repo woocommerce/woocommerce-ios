@@ -24,6 +24,16 @@ final class ProductSelectorViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_view_model_is_initialized_with_default_values() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertTrue(viewModel.isClearSelectionEnabled)
+        XCTAssertTrue(viewModel.toggleAllVariationsOnSelection)
+        // TODO: Add the rest of properties
+    }
+
     func test_view_model_adds_product_rows_with_unchangeable_quantity() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)

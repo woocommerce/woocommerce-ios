@@ -23,7 +23,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 0)
         XCTAssertEqual(viewModel.selectedProducts.count, 0)
         XCTAssertEqual(viewModel.selectedProductVariations.count, 0)
-        XCTAssertEqual(viewModel.allSelectedItemIDs.count, 0)
+        XCTAssertEqual(viewModel.selectedProductsAndVariationsIDs.count, 0)
     }
 
     func test_edition_view_model_inits_with_expected_values() {
@@ -1395,7 +1395,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.handleProductsViewModel.selectProduct(product.productID)
 
         // Then
-        XCTAssertEqual(viewModel.allSelectedItemIDs.count, 1)
+        XCTAssertEqual(viewModel.selectedProductsAndVariationsIDs.count, 1)
     }
 
     func test_allSelectedItemIDs_when_selectedProductVariations_has_Products_and_ProductVariation_then_allSelectedItemIDs_contains_the_itemIDs() {
@@ -1413,12 +1413,12 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         viewModel.handleProductsViewModel.selectProduct(product.productID)
         // We cannot test selecting a Product Variation directly from the view model,
-        // so we'll just test if allSelectedItemIDs returns the correct count when
-        // we have both Products and Product Variations
+        // so we'll just test if selectedProductsAndVariationsIDs returns the correct count
+        // when we have both Products and Product Variations
         viewModel.selectedProductVariations.append(productVariation)
 
         // Then
-        XCTAssertEqual(viewModel.allSelectedItemIDs.count, 2)
+        XCTAssertEqual(viewModel.selectedProductsAndVariationsIDs.count, 2)
     }
 }
 

@@ -262,6 +262,19 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 2)
     }
 
+    func test_searchTerm_and_filters_are_clear_on_init() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(viewModel.searchTerm, "")
+        XCTAssertNil(viewModel.filters.stockStatus)
+        XCTAssertNil(viewModel.filters.productCategory)
+        XCTAssertNil(viewModel.filters.productType)
+        XCTAssertNil(viewModel.filters.productCategory)
+        XCTAssertEqual(viewModel.filters.numberOfActiveFilters, 0)
+    }
+
     func test_view_model_fires_error_notice_when_product_sync_fails() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, stores: stores)

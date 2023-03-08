@@ -1420,6 +1420,27 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.selectedProductsAndVariationsIDs.count, 2)
     }
+
+    func test_selectedProducts_when_removeItemFromOrder_then_selectedProducts_count_is_updated() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertProducts([product])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Given a Product added to the Order, needed to generate a ProductRow
+        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
+
+        // Confidence check
+        XCTAssertEqual(viewModel.selectedProducts.count, 1)
+
+        // When
+        viewModel.removeItemFromOrder(itemToRemove)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedProducts.count, 0)
+    }
 }
 
 private extension MockStorageManager {

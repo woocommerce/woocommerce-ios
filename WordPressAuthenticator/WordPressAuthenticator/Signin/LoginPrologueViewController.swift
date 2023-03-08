@@ -1,4 +1,3 @@
-import AuthenticationServices
 import UIKit
 import WordPressShared
 import WordPressUI
@@ -713,10 +712,4 @@ private extension LoginPrologueViewController {
         static let ipadLandscape: CGFloat = 0.25
     }
 
-}
-
-extension LoginPrologueViewController: ASWebAuthenticationPresentationContextProviding {
-    public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return view.window!
-    }
 }

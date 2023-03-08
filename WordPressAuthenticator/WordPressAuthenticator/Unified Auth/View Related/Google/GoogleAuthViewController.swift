@@ -1,5 +1,3 @@
-import AuthenticationServices
-
 /// View controller that handles the google authentication flow
 ///
 class GoogleAuthViewController: LoginViewController {
@@ -161,10 +159,4 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
         // Here for protocol compliance.
     }
 
-}
-
-extension GoogleAuthViewController: ASWebAuthenticationPresentationContextProviding {
-    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return view.window!
-    }
 }

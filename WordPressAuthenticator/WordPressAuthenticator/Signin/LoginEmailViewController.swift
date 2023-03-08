@@ -1,4 +1,3 @@
-import AuthenticationServices
 import UIKit
 import WordPressShared
 import WordPressKit

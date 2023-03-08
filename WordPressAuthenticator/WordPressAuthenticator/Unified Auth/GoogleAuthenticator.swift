@@ -1,5 +1,4 @@
 import Foundation
-import AuthenticationServices
 import GoogleSignIn
 import WordPressKit
 import SVProgressHUD

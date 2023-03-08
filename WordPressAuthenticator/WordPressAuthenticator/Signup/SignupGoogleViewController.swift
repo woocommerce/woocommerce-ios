@@ -1,5 +1,3 @@
-import AuthenticationServices
-
 /// View controller that handles the google signup flow
 ///
 class SignupGoogleViewController: LoginViewController {

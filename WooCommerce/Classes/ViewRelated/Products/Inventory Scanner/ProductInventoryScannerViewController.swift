@@ -69,64 +69,65 @@ final class ProductInventoryScannerViewController: UIViewController {
 //
 private extension ProductInventoryScannerViewController {
     func searchProductBySKU(barcode: String) {
-        DispatchQueue.main.async {
-            self.statusLabel.applyStyle(for: .refunded)
-            self.statusLabel.text = NSLocalizedString("Scanning barcode", comment: "")
-            self.showStatusLabel()
+        showStatusLabel(text: Localization.searchingProductStatus, status: .refunded)
 
-            let action = ProductAction.findProductBySKU(siteID: self.siteID, sku: barcode) { [weak self] result in
-                guard let self = self else {
-                    return
-                }
-                switch result {
-                case .success(let product):
-                    let generator = UINotificationFeedbackGenerator()
-                    generator.notificationOccurred(.success)
-
-                    self.statusLabel.applyStyle(for: .processing)
-                    self.statusLabel.text = NSLocalizedString("Product Found!", comment: "")
-                    self.showStatusLabel()
-
-                    let scannedProduct = EditableProductModel(product: product)
-                    self.updateResults(result: .matched(product: scannedProduct))
-                case .failure(let error):
-                    let generator = UINotificationFeedbackGenerator()
-                    generator.notificationOccurred(.error)
-
-                    self.statusLabel.applyStyle(for: .failed)
-                    self.statusLabel.text = NSLocalizedString("Product not found", comment: "")
-                    self.showStatusLabel()
-                    print("No product matched: \(error)")
-
-                    self.updateResults(result: .noMatch(sku: barcode))
-                }
-            }
-            ServiceLocator.stores.dispatch(action)
+        Task { @MainActor in
+            let result = await viewModel.searchProductBySKU(barcode: barcode)
+            handleProductSearch(result: result, barcode: barcode)
         }
     }
 
+    @MainActor
+    func handleProductSearch(result: Result<Product, Error>, barcode: String) {
+        switch result {
+        case .success(let product):
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.success)
+
+            showStatusLabel(text: Localization.productFoundStatus, status: .processing)
+
+            let scannedProduct = EditableProductModel(product: product)
+            updateResults(result: .matched(product: scannedProduct))
+        case .failure(let error):
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.error)
+
+            showStatusLabel(text: Localization.productNotFoundStatus, status: .failed)
+
+            print("No product matched: \(error)")
+
+            updateResults(result: .noMatch(sku: barcode))
+        }
+    }
+
+    @MainActor
     func updateResults(result: ProductSKUScannerResult) {
         if results.contains(result) == false {
             results.append(result)
         }
-        presentSearchResults()
+        presentSearchResults(results)
     }
 
-    func presentSearchResults() {
+    @MainActor
+    func presentSearchResults(_ results: [ProductSKUScannerResult]) {
         // TODO-JC: Singular or plural
         let title = NSLocalizedString("Scanned products",
                                       comment: "Title of the bottom sheet that shows a list of scanned products via the barcode scanner.")
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let command = ScannedProductsBottomSheetListSelectorCommand(results: results) { [weak self] result in
             self?.dismiss(animated: true) { [weak self] in
+                guard let self else { return }
                 switch result {
                 case .matched(let product):
-                    self?.editInventorySettings(for: product)
+//                    if command.selected == result {
+//                        self.updateResults(result: result)
+//                    }
+                    self.editInventorySettings(for: product)
                 case .noMatch(let sku):
                     // TODO-JC: navigate to let the user select a product for the SKU
                     print("TODO: \(sku)")
                 }
-            })
+            }
         }
 
         if let listSelectorViewController = listSelectorViewController {
@@ -160,48 +161,49 @@ private extension ProductInventoryScannerViewController {
         navigationController?.pushViewController(inventorySettingsViewController, animated: true)
     }
 
-    func updateProductInventorySettings(_ product: ProductFormDataModel, inventoryData: ProductInventoryEditableData) {
-        // TODO-jc: analytics
-//        ServiceLocator.analytics.track(.productDetailUpdateButtonTapped)
+    func presentProductInventoryUpdateInProgressUI() {
         let viewProperties = InProgressViewProperties(title: Localization.productInventoryUpdateInProgressTitle,
                                                       message: Localization.productInventoryUpdateInProgressMessage)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
         inProgressViewController.modalPresentationStyle = .overCurrentContext
 
-        navigationController?.present(inProgressViewController, animated: true, completion: nil)
+        present(inProgressViewController, animated: true)
+    }
 
-        // TODO-jc: view model
-//        let productWithUpdatedInventory = product
-//
-//
-//            .inventorySettingsUpdated(sku: inventoryData.sku,
-//                                                                           manageStock: inventoryData.manageStock,
-//                                                                           soldIndividually: inventoryData.soldIndividually,
-//                                                                           stockQuantity: inventoryData.stockQuantity,
-//                                                                           backordersSetting: inventoryData.backordersSetting,
-//                                                                           stockStatus: inventoryData.stockStatus)
-//        let updateProductAction = ProductAction.updateProduct(product: productWithUpdatedInventory) { [weak self] updateResult in
-//            guard let self = self else {
-//                return
-//            }
-//
-//            switch updateResult {
-//            case .success(let product):
-//                // TODO-jc: analytics
-//                print("Updated \(product.name)!")
-////                ServiceLocator.analytics.track(.productDetailUpdateSuccess)
-//            case .failure(let error):
-//                let errorDescription = error.localizedDescription
-//                DDLogError("⛔️ Error updating Product: \(errorDescription)")
-//                // TODO-jc: display error
-//                // TODO-jc: analytics
-////                ServiceLocator.analytics.track(.productDetailUpdateError)
-//                // Dismisses the in-progress UI then presents the error alert.
-//            }
-//            self.navigationController?.popToViewController(self, animated: true)
-//            self.navigationController?.dismiss(animated: true, completion: nil)
-//        }
-//        ServiceLocator.stores.dispatch(updateProductAction)
+    func updateProductInventorySettings(_ product: ProductFormDataModel, inventoryData: ProductInventoryEditableData) {
+        // TODO-jc: analytics
+//        ServiceLocator.analytics.track(.productDetailUpdateButtonTapped)
+        presentProductInventoryUpdateInProgressUI()
+
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let result = await self.viewModel.updateInventory(for: product, inventory: inventoryData)
+            // Navigates back to the scanner screen.
+            self.navigationController?.popToViewController(self, animated: true)
+            // Dismisses the in-progress UI then handles the result.
+            self.dismiss(animated: true) { [weak self] in
+                guard let self else { return }
+                self.handleProductWithUpdatedInventorySettings(result: result)
+            }
+        }
+    }
+
+    func handleProductWithUpdatedInventorySettings(result: Result<Product, Error>) {
+        switch result {
+        case .success(let product):
+            updateResults(result: .matched(product: EditableProductModel(product: product)))
+
+            // TODO-jc: analytics
+            print("Updated \(product.name)!")
+//                ServiceLocator.analytics.track(.productDetailUpdateSuccess)
+        case .failure(let error):
+            let errorDescription = error.localizedDescription
+            DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                // TODO-jc: display error
+                // TODO-jc: analytics
+//                ServiceLocator.analytics.track(.productDetailUpdateError)
+                // Dismisses the in-progress UI then presents the error alert.
+        }
     }
 }
 
@@ -244,7 +246,9 @@ private extension ProductInventoryScannerViewController {
 // MARK: Status UI
 //
 private extension ProductInventoryScannerViewController {
-    func showStatusLabel() {
+    func showStatusLabel(text: String, status: OrderStatusEnum) {
+        statusLabel.applyStyle(for: status)
+        statusLabel.text = text
         statusLabel.isHidden = false
         Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { [weak self] _ in
             self?.hideStatusLabel()
@@ -281,7 +285,8 @@ private extension ProductInventoryScannerViewController {
         static let productFoundStatus = NSLocalizedString("Product Found!", comment: "Status text when a product is found from a barcode in inventory scanner.")
         static let productNotFoundStatus = NSLocalizedString("Product not found",
                 comment: "Status text when a product is not found from a bar in inventory scanner.")
-        static let searchingProductStatus = NSLocalizedString("Scanning barcode", comment: "Status text when searching a product from a bar in inventory scanner.")
+        static let searchingProductStatus = NSLocalizedString("Scanning barcode",
+                                                              comment: "Status text when searching a product from a bar in inventory scanner.")
         static let productInventoryUpdateInProgressTitle = NSLocalizedString(
                 "Updating inventory",
                 comment: "Title of the in-progress UI while updating the Product inventory settings remotely"

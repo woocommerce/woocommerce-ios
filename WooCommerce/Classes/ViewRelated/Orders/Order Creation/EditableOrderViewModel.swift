@@ -173,7 +173,7 @@ final class EditableOrderViewModel: ObservableObject {
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
-            supportsMultipleSelection: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
+            supportsMultipleSelection: featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
             isClearSelectionEnabled: false,
             toggleAllVariationsOnSelection: false,
             onProductSelected: { [weak self] product in

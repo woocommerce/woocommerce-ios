@@ -5,7 +5,7 @@ import WordPressUI
 ///
 final class BottomSheetListSelectorViewController<Command: BottomSheetListSelectorCommand, Model, Cell>:
 UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model == Model, Command.Cell == Cell {
-    private let viewProperties: BottomSheetListSelectorViewProperties
+    private var viewProperties: BottomSheetListSelectorViewProperties
     private var command: Command
     private let onDismiss: ((_ selected: Model?) -> Void)?
 
@@ -54,8 +54,11 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
         super.viewWillDisappear(animated)
     }
 
-    func update(command: Command) {
+    func update(command: Command, viewProperties: BottomSheetListSelectorViewProperties? = nil) {
         self.command = command
+        if let viewProperties {
+            self.viewProperties = viewProperties
+        }
         tableView.reloadData()
     }
 

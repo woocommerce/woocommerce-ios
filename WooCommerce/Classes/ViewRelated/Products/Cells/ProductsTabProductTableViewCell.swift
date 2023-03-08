@@ -155,7 +155,6 @@ extension ProductsTabProductTableViewCell {
         let productQuantity: Decimal = product.stockQuantity ?? 0
         if productQuantity != initialQuantity {
             #warning("TODO: 2407 - attributed string")
-            // TODO-JC: loc
             detailsLabel.text = String(format: Localization.InventoryScanner.stockQuantityChangedFormat,
                                        NSDecimalNumber(decimal: initialQuantity),
                                        NSDecimalNumber(decimal: productQuantity))

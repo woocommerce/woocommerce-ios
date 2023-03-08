@@ -71,7 +71,7 @@ private extension ProductInventoryScannerViewController {
         showStatusLabel(text: Localization.searchingProductStatus, status: .refunded)
 
         Task { @MainActor in
-            let result = await viewModel.searchProductBySKU(barcode: barcode)
+            let result = await Result { try await viewModel.searchProductBySKU(barcode: barcode) }
             handleProductSearch(result: result, barcode: barcode)
         }
     }
@@ -84,13 +84,11 @@ private extension ProductInventoryScannerViewController {
             generator.notificationOccurred(.success)
 
             showStatusLabel(text: Localization.productFoundStatus, status: .processing)
-        case .failure(let error):
+        case .failure:
             let generator = UINotificationFeedbackGenerator()
             generator.notificationOccurred(.error)
 
             showStatusLabel(text: Localization.productNotFoundStatus, status: .failed)
-
-            print("No product matched: \(error)")
         }
     }
 
@@ -115,7 +113,7 @@ private extension ProductInventoryScannerViewController {
         }
 
         if let listSelectorViewController {
-            listSelectorViewController.update(command: command)
+            listSelectorViewController.update(command: command, viewProperties: viewProperties)
         } else {
             let listSelectorViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
                                                                                    command: command) { [weak self] selectedSortOrder in

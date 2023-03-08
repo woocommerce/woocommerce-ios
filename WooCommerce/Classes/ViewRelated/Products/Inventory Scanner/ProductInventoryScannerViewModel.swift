@@ -14,7 +14,7 @@ final class ProductInventoryScannerViewModel {
     }
 
     @MainActor
-    func searchProductBySKU(barcode: String) async -> Result<Void, Error> {
+    func searchProductBySKU(barcode: String) async throws {
         // Searches in the previously scanned products first.
         for result in results {
             guard case let .matched(existingProduct, initialQuantity) = result, existingProduct.sku == barcode else {
@@ -22,24 +22,25 @@ final class ProductInventoryScannerViewModel {
             }
             let product = productWithIncrementedStockQuantity(for: existingProduct)
             updateResults(result: .matched(product: product, initialStockQuantity: initialQuantity))
-            return .success(())
+            return
         }
 
         // If there is no match in the previously scanned products, searches remotely.
-        return await withCheckedContinuation { continuation in
+        return try await withCheckedThrowingContinuation { continuation in
             // TODO: 2407 - support product variations
             stores.dispatch(ProductAction.findProductBySKU(siteID: siteID, sku: barcode) { [weak self] result in
                 guard let self else {
-                    return continuation.resume(returning: .failure(ProductInventoryScannerError.selfDeallocated))
+                    continuation.resume(throwing: ProductInventoryScannerError.selfDeallocated)
+                    return
                 }
                 switch result {
                 case .success(let product):
                     let productModel = self.productWithIncrementedStockQuantity(for: EditableProductModel(product: product))
                     self.updateResults(result: .matched(product: productModel, initialStockQuantity: product.stockQuantity ?? 0))
-                    continuation.resume(returning: .success(()))
+                    continuation.resume(returning: ())
                 case .failure(let error):
                     self.updateResults(result: .noMatch(sku: barcode))
-                    continuation.resume(returning: .failure(error))
+                    continuation.resume(throwing: error)
                 }
             })
         }

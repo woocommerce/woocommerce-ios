@@ -1476,6 +1476,10 @@
 		B94403C9289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94403C8289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift */; };
 		B946880C29B626A1000646B0 /* SpotlightManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946880B29B626A1000646B0 /* SpotlightManager.swift */; };
 		B946880E29B627EB000646B0 /* SearchableActivityConvertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946880D29B627EB000646B0 /* SearchableActivityConvertable.swift */; };
+		B946881029B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946880F29B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift */; };
+		B946881229B8DD41000646B0 /* DashboardViewController+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881129B8DD41000646B0 /* DashboardViewController+Activity.swift */; };
+		B946881429B8DD6A000646B0 /* OrderListViewController+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881329B8DD6A000646B0 /* OrderListViewController+Activity.swift */; };
+		B946881829B8DDC2000646B0 /* ProductsViewController+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881729B8DDC2000646B0 /* ProductsViewController+Activity.swift */; };
 		B95112DA28BF79CA00D9578D /* PaymentsRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95112D928BF79CA00D9578D /* PaymentsRoute.swift */; };
 		B958A7C728B3D44A00823EEF /* UniversalLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */; };
 		B958A7C928B3D47B00823EEF /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C828B3D47B00823EEF /* Route.swift */; };
@@ -3618,6 +3622,10 @@
 		B94403C8289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsAmountFlowOpener.swift; sourceTree = "<group>"; };
 		B946880B29B626A1000646B0 /* SpotlightManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightManager.swift; sourceTree = "<group>"; };
 		B946880D29B627EB000646B0 /* SearchableActivityConvertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchableActivityConvertable.swift; sourceTree = "<group>"; };
+		B946880F29B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InPersonPaymentsMenuViewController+Activity.swift"; sourceTree = "<group>"; };
+		B946881129B8DD41000646B0 /* DashboardViewController+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DashboardViewController+Activity.swift"; sourceTree = "<group>"; };
+		B946881329B8DD6A000646B0 /* OrderListViewController+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderListViewController+Activity.swift"; sourceTree = "<group>"; };
+		B946881729B8DDC2000646B0 /* ProductsViewController+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsViewController+Activity.swift"; sourceTree = "<group>"; };
 		B95112D928BF79CA00D9578D /* PaymentsRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRoute.swift; sourceTree = "<group>"; };
 		B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalLinkRouter.swift; sourceTree = "<group>"; };
 		B958A7C828B3D47B00823EEF /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
@@ -7039,6 +7047,7 @@
 				0279F0D9252DB4BE0098D7DE /* ProductVariationDetailsFactory.swift */,
 				AEFF77A32978389400667F7A /* PriceInputViewController.swift */,
 				AEFF77A529783CA600667F7A /* PriceInputViewModel.swift */,
+				B946881729B8DDC2000646B0 /* ProductsViewController+Activity.swift */,
 			);
 			path = Products;
 			sourceTree = "<group>";
@@ -8389,6 +8398,7 @@
 				DE6906E427D7439B00735E3B /* OrdersSplitViewWrapperController.swift */,
 				4546E095271F08CD003836F3 /* Order Filters */,
 				CC666F2527F359590045AF1E /* OrdersTopBannerFactory.swift */,
+				B946881329B8DD6A000646B0 /* OrderListViewController+Activity.swift */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -8679,6 +8689,7 @@
 				B509112D2049E27A007D25DC /* DashboardViewController.swift */,
 				028E1F6F2833DD0A001F8829 /* DashboardViewModel.swift */,
 				029D444822F13F8A00DEFA8A /* DashboardUI.swift */,
+				B946881129B8DD41000646B0 /* DashboardViewController+Activity.swift */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -9499,6 +9510,7 @@
 				68E952D12875A44B0095A23D /* CardReaderType+Manual.swift */,
 				03EF24FB28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift */,
 				03EF24FD28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift */,
+				B946880F29B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift */,
 			);
 			path = "In-Person Payments";
 			sourceTree = "<group>";
@@ -10624,6 +10636,7 @@
 				DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */,
 				450C2CB624D1ABB200D570DD /* ProductImagesGalleryViewController.swift in Sources */,
 				B9EF083F2886CE3300D96C58 /* HostingTableViewCell.swift in Sources */,
+				B946881429B8DD6A000646B0 /* OrderListViewController+Activity.swift in Sources */,
 				7435E58E21C0151B00216F0F /* OrderNote+Woo.swift in Sources */,
 				451A04F42386F7C900E368C9 /* AddProductImageCollectionViewCell.swift in Sources */,
 				D843D5CB22437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift in Sources */,
@@ -11098,6 +11111,7 @@
 				B626C71B287659D60083820C /* OrderCustomFieldsDetails.swift in Sources */,
 				025E32BC251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift in Sources */,
 				02ECD1E624FFB4E900735BE5 /* ProductFactory.swift in Sources */,
+				B946881229B8DD41000646B0 /* DashboardViewController+Activity.swift in Sources */,
 				579CDEFF274D7E7900E8903D /* StoreStatsUsageTracksEventEmitter.swift in Sources */,
 				74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */,
 				314DC4BD268D158F00444C9E /* CardReaderSettingsKnownReadersProvider.swift in Sources */,
@@ -11319,6 +11333,7 @@
 				57CDABB9252E9BEB00BED88C /* ButtonTableFooterView.swift in Sources */,
 				021940E8291FDBF90090354E /* StoreCreationSummaryView.swift in Sources */,
 				0201E4292945B8B600C793C7 /* StoreCreationCategoryQuestionView.swift in Sources */,
+				B946881829B8DDC2000646B0 /* ProductsViewController+Activity.swift in Sources */,
 				B63D9009293E56E300BB5C9D /* AnalyticsHubQuarterToDateRangeData.swift in Sources */,
 				027CB047295D7EF400F98F7C /* RequiredStoreCreationProfilerQuestionView.swift in Sources */,
 				02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */,
@@ -11400,6 +11415,7 @@
 				26E0AE1926335AA900A5EB3B /* Survey.swift in Sources */,
 				0371C3682875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift in Sources */,
 				03EF24FA28BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */,
+				B946881029B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift in Sources */,
 				09EA565527C8ACEE00407D40 /* BulkUpdateViewController.swift in Sources */,
 				2602A64627BDBEBA00B347F1 /* ProductInputTransformer.swift in Sources */,
 				02BBD6E929A3024400243BE2 /* StoreOnboardingTaskView.swift in Sources */,

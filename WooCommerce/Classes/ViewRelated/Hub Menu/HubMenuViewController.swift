@@ -16,12 +16,6 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        registerUserActivity()
-    }
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -55,34 +49,6 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         if #available(iOS 16.0, *) {
             self.navigationController?.setNavigationBarHidden(false, animated: animated)
         }
-    }
-}
-
-// MARK: - SearchableActivity Conformance
-extension HubMenuViewController: SearchableActivityConvertable {
-    var activityType: String {
-        return WooActivityType.hubMenu.rawValue
-    }
-
-    var activityTitle: String {
-        return NSLocalizedString("Menu", comment: "Title of the 'Menu' tab - used for spotlight indexing on iOS.")
-    }
-
-    var activityDescription: String? {
-        return NSLocalizedString("Payments, messages, reviews and more", comment: "Description of the 'Payments' screen - used for spotlight indexing on iOS.")
-    }
-
-    var activityKeywords: Set<String>? {
-        let keyWordString = NSLocalizedString("menu, woocommerce, woo, settings, admin, switch store, payments, woocommerce admin" +
-                                              "admin, view store, inbox, reviews",
-                                              comment: "This is a comma separated list of keywords used for spotlight indexing of the 'Menu' tab.")
-        let keywordArray = keyWordString.arrayOfTags()
-
-        guard !keywordArray.isEmpty else {
-            return nil
-        }
-
-        return Set(keywordArray)
     }
 }
 

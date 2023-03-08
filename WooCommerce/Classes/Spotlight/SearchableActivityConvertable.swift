@@ -16,7 +16,7 @@ extension WooActivityType {
     var suggestedInvocationPhrase: String {
         switch self {
         case .dashboard:
-            return NSLocalizedString("Dashboard in Woo", comment: "Siri Suggestion to open Dasboard")
+            return NSLocalizedString("My Store in Woo", comment: "Siri Suggestion to open Dasboard")
         case .orders:
             return NSLocalizedString("Orders in Woo", comment: "Siri Suggestion to open Orders")
         case .products:
@@ -28,12 +28,6 @@ extension WooActivityType {
 
         }
     }
-}
-
-/// NSUserActivity userInfo keys
-///
-enum WooActivityUserInfoKeys: String {
-    case siteId = "siteid"
 }
 
 @objc protocol SearchableActivityConvertable {
@@ -50,15 +44,6 @@ enum WooActivityUserInfoKeys: String {
     ///
     @objc optional var activityKeywords: Set<String>? {get}
 
-    /// The date after which the activity is no longer eligible for indexing. If not set,
-    /// the expiration date will default to one week from the current date.
-    ///
-    @objc optional var activityExpirationDate: Date? {get}
-
-    /// A dictionary containing state information related to this indexed activity.
-    ///
-    @objc optional var activityUserInfo: [String: String]? {get}
-
     /// Activity description
     ///
     @objc optional var activityDescription: String? {get}
@@ -73,20 +58,8 @@ extension SearchableActivityConvertable where Self: UIViewController {
             activity.keywords = keywords
         }
 
-        if let expirationDate = activityExpirationDate {
-            activity.expirationDate = expirationDate
-        } else {
-            let oneWeekFromNow = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: Date())
-            activity.expirationDate = oneWeekFromNow
-        }
-
-        if let activityUserInfo = activityUserInfo {
-            activity.userInfo = activityUserInfo
-            activity.requiredUserInfoKeys = Set([WooActivityUserInfoKeys.siteId.rawValue])
-        }
-
         if let activityDescription = activityDescription {
-            let contentAttributeSet = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
+            let contentAttributeSet = CSSearchableItemAttributeSet(contentType: UTType.text)
             contentAttributeSet.contentDescription = activityDescription
             contentAttributeSet.contentCreationDate = nil // Set this to nil so it doesn't display in spotlight
             activity.contentAttributeSet = contentAttributeSet

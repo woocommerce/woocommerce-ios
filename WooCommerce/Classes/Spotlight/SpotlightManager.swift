@@ -2,7 +2,7 @@ import CoreSpotlight
 import Foundation
 
 struct SpotlightManager {
-    func handleUserActivity(_ userActivity: NSUserActivity) {
+    static func handleUserActivity(_ userActivity: NSUserActivity) {
         switch userActivity.activityType {
         case WooActivityType.dashboard.rawValue:
             MainTabBarController.switchToMyStoreTab()

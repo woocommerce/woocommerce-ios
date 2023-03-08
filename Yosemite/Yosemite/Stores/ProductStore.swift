@@ -188,10 +188,11 @@ private extension ProductStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let products):
+                guard let self else { return }
                 guard let product = products.first(where: { $0.sku == sku }) else {
-                    return
+                    return onCompletion(.failure(ProductLoadError.notFound))
                 }
-                self?.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID) {
+                self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID) {
                     onCompletion(.success(product))
                 }
             }

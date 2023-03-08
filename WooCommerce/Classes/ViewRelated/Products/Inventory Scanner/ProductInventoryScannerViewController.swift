@@ -6,8 +6,6 @@ import Yosemite
 final class ProductInventoryScannerViewController: UIViewController {
     private lazy var barcodeScannerChildViewController = BarcodeScannerViewController(instructionText: Localization.instructionText)
 
-    private var results: [ProductSKUScannerResult] = []
-
     private var listSelectorViewController: BottomSheetListSelectorViewController
     <ScannedProductsBottomSheetListSelectorCommand, ProductSKUScannerResult, ProductsTabProductTableViewCell>?
 
@@ -19,7 +17,7 @@ final class ProductInventoryScannerViewController: UIViewController {
 
     private let viewModel: ProductInventoryScannerViewModel
 
-    private var cancellables: Set<AnyCancellable> = []
+    private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         viewModel = ProductInventoryScannerViewModel(siteID: siteID, stores: stores)
@@ -37,6 +35,7 @@ final class ProductInventoryScannerViewController: UIViewController {
         configureNavigation()
         configureBarcodeScannerChildViewController()
         configureStatusLabel()
+        observeResults()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -78,16 +77,13 @@ private extension ProductInventoryScannerViewController {
     }
 
     @MainActor
-    func handleProductSearch(result: Result<Product, Error>, barcode: String) {
+    func handleProductSearch(result: Result<Void, Error>, barcode: String) {
         switch result {
-        case .success(let product):
+        case .success:
             let generator = UINotificationFeedbackGenerator()
             generator.notificationOccurred(.success)
 
             showStatusLabel(text: Localization.productFoundStatus, status: .processing)
-
-            let scannedProduct = EditableProductModel(product: product)
-            updateResults(result: .matched(product: scannedProduct))
         case .failure(let error):
             let generator = UINotificationFeedbackGenerator()
             generator.notificationOccurred(.error)
@@ -95,36 +91,24 @@ private extension ProductInventoryScannerViewController {
             showStatusLabel(text: Localization.productNotFoundStatus, status: .failed)
 
             print("No product matched: \(error)")
-
-            updateResults(result: .noMatch(sku: barcode))
         }
-    }
-
-    @MainActor
-    func updateResults(result: ProductSKUScannerResult) {
-        if results.contains(result) == false {
-            results.append(result)
-        }
-        presentSearchResults(results)
     }
 
     @MainActor
     func presentSearchResults(_ results: [ProductSKUScannerResult]) {
-        // TODO-JC: Singular or plural
-        let title = NSLocalizedString("Scanned products",
-                                      comment: "Title of the bottom sheet that shows a list of scanned products via the barcode scanner.")
+        guard results.isNotEmpty else {
+            return
+        }
+        let title = results.count > 1 ? Localization.scannedProductsHeader: Localization.scannedProductHeader
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let command = ScannedProductsBottomSheetListSelectorCommand(results: results) { [weak self] result in
             self?.dismiss(animated: true) { [weak self] in
                 guard let self else { return }
                 switch result {
                 case .matched(let product):
-//                    if command.selected == result {
-//                        self.updateResults(result: result)
-//                    }
                     self.editInventorySettings(for: product)
                 case .noMatch(let sku):
-                    // TODO-JC: navigate to let the user select a product for the SKU
+                    // TODO: 2407 - navigate to let the user add the SKU to a product
                     print("TODO: \(sku)")
                 }
             }
@@ -137,7 +121,7 @@ private extension ProductInventoryScannerViewController {
 
         let listSelectorViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
                                                                                command: command) { [weak self] selectedSortOrder in
-                                                                                self?.dismiss(animated: true, completion: nil)
+            self?.dismiss(animated: true, completion: nil)
         }
         self.listSelectorViewController = listSelectorViewController
 
@@ -171,39 +155,9 @@ private extension ProductInventoryScannerViewController {
     }
 
     func updateProductInventorySettings(_ product: ProductFormDataModel, inventoryData: ProductInventoryEditableData) {
-        // TODO-jc: analytics
-//        ServiceLocator.analytics.track(.productDetailUpdateButtonTapped)
-        presentProductInventoryUpdateInProgressUI()
-
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            let result = await self.viewModel.updateInventory(for: product, inventory: inventoryData)
-            // Navigates back to the scanner screen.
-            self.navigationController?.popToViewController(self, animated: true)
-            // Dismisses the in-progress UI then handles the result.
-            self.dismiss(animated: true) { [weak self] in
-                guard let self else { return }
-                self.handleProductWithUpdatedInventorySettings(result: result)
-            }
-        }
-    }
-
-    func handleProductWithUpdatedInventorySettings(result: Result<Product, Error>) {
-        switch result {
-        case .success(let product):
-            updateResults(result: .matched(product: EditableProductModel(product: product)))
-
-            // TODO-jc: analytics
-            print("Updated \(product.name)!")
-//                ServiceLocator.analytics.track(.productDetailUpdateSuccess)
-        case .failure(let error):
-            let errorDescription = error.localizedDescription
-            DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                // TODO-jc: display error
-                // TODO-jc: analytics
-//                ServiceLocator.analytics.track(.productDetailUpdateError)
-                // Dismisses the in-progress UI then presents the error alert.
-        }
+        viewModel.updateInventory(for: product, inventory: inventoryData)
+        // Navigates back to the scanner screen.
+        navigationController?.popToViewController(self, animated: true)
     }
 }
 
@@ -228,7 +182,7 @@ private extension ProductInventoryScannerViewController {
                 guard let self = self else { return }
                 barcodes.forEach { self.searchProductBySKU(barcode: $0) }
             }
-            .store(in: &cancellables)
+            .store(in: &subscriptions)
     }
 
     func configureStatusLabel() {
@@ -240,6 +194,13 @@ private extension ProductInventoryScannerViewController {
         ])
 
         hideStatusLabel()
+    }
+
+    func observeResults() {
+        viewModel.$results.sink { [weak self] results in
+            guard let self else { return }
+            self.presentSearchResults(results)
+        }.store(in: &subscriptions)
     }
 }
 
@@ -289,11 +250,15 @@ private extension ProductInventoryScannerViewController {
                                                               comment: "Status text when searching a product from a bar in inventory scanner.")
         static let productInventoryUpdateInProgressTitle = NSLocalizedString(
                 "Updating inventory",
-                comment: "Title of the in-progress UI while updating the Product inventory settings remotely"
+                comment: "Title of the in-progress UI while updating the Product inventory settings remotely."
         )
         static let productInventoryUpdateInProgressMessage = NSLocalizedString(
                 "Please wait while we update inventory for your products",
                 comment: "Message of the in-progress UI while updating the Product inventory settings remotely"
         )
+        static let scannedProductHeader = NSLocalizedString("Scanned product",
+                                                            comment: "Bottom sheet header for a one scanned product in inventory scanner.")
+        static let scannedProductsHeader = NSLocalizedString("Scanned products",
+                                                            comment: "Bottom sheet header for a list of scanned products in inventory scanner.")
     }
 }

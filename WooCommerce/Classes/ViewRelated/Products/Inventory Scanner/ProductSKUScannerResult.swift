@@ -10,9 +10,9 @@ extension ProductSKUScannerResult: Equatable {
         switch (lhs, rhs) {
         case (let .matched(product1), let .matched(product2)):
             if let product1 = product1 as? EditableProductModel, let product2 = product2 as? EditableProductModel {
-                return product1 == product2
+                return product1.productID == product2.productID
             } else if let product1 = product1 as? EditableProductVariationModel, let product2 = product2 as? EditableProductVariationModel {
-                return product1 == product2
+                return product1.productVariation.productVariationID == product2.productVariation.productVariationID
             } else {
                 return false
             }

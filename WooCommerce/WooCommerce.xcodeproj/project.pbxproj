@@ -338,6 +338,7 @@
 		028FA46C257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028FA46B257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift */; };
 		029099D929B81E8300607074 /* ProductSKUScannerResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029099D829B81E8300607074 /* ProductSKUScannerResult.swift */; };
 		029099DB29B81EB900607074 /* ScannedProductsBottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029099DA29B81EB900607074 /* ScannedProductsBottomSheetListSelectorCommand.swift */; };
+		029099DE29B8523B00607074 /* ProductInventoryScannerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029099DD29B8523B00607074 /* ProductInventoryScannerViewModelTests.swift */; };
 		0290E26F238E3CE400B5C466 /* ListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */; };
 		0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */; };
 		0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */; };
@@ -2486,6 +2487,7 @@
 		028FA46B257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainTextSectionHeaderView.swift; sourceTree = "<group>"; };
 		029099D829B81E8300607074 /* ProductSKUScannerResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSKUScannerResult.swift; sourceTree = "<group>"; };
 		029099DA29B81EB900607074 /* ScannedProductsBottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannedProductsBottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
+		029099DD29B8523B00607074 /* ProductInventoryScannerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventoryScannerViewModelTests.swift; sourceTree = "<group>"; };
 		0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommandTests.swift; sourceTree = "<group>"; };
@@ -4941,6 +4943,7 @@
 				02A9A494244D848F00757B99 /* BottomSheetListSelector */,
 				7E7C5F892719AEAF00315B61 /* Categories */,
 				0248B3522457CF1500A271A4 /* Filters */,
+				029099DC29B8521000607074 /* Inventory Scanner */,
 				027B8BBB23FE0DCD0040944E /* Media */,
 				0279F0E0252DC4A30098D7DE /* Product Loader */,
 				CCD2E68725DD528000BD975D /* Variations */,
@@ -5178,6 +5181,14 @@
 				020624EF27951113000D024C /* StoreStatsDataOrRedactedView.swift */,
 			);
 			path = "Stats v4";
+			sourceTree = "<group>";
+		};
+		029099DC29B8521000607074 /* Inventory Scanner */ = {
+			isa = PBXGroup;
+			children = (
+				029099DD29B8523B00607074 /* ProductInventoryScannerViewModelTests.swift */,
+			);
+			path = "Inventory Scanner";
 			sourceTree = "<group>";
 		};
 		0290E27C238E5B4A00B5C466 /* ListSelector */ = {
@@ -11936,6 +11947,7 @@
 				028E19BA28053443001C36E0 /* MockOrderDetailsPaymentAlerts.swift in Sources */,
 				02CEBB8424C99A10002EDF35 /* Product+ShippingTests.swift in Sources */,
 				2667BFED25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift in Sources */,
+				029099DE29B8523B00607074 /* ProductInventoryScannerViewModelTests.swift in Sources */,
 				D83F5939225B424B00626E75 /* AddManualTrackingViewModelTests.swift in Sources */,
 				0257285C230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift in Sources */,
 				FEED57FA2686544D00E47FD9 /* RoleErrorViewModelTests.swift in Sources */,

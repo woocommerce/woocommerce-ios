@@ -1134,6 +1134,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 1)
 
         let action = ProductAction.updateProduct(product: product) { result in
+            guard case let .success(product) = result else {
                 XCTFail("Unexpected result: \(result)")
                 return
             }

@@ -130,7 +130,8 @@ struct PaymentMethodsView: View {
             ShareSheet(activityItems: [viewModel.paymentLink].compactMap { $0 } ) { _, completed, _, _ in
                 if completed {
                     dismiss()
-                    viewModel.performLinkSharedTasks()                }
+                    viewModel.performLinkSharedTasks()
+                }
             }
         }
     }

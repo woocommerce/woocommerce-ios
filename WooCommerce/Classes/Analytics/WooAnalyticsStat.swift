@@ -341,6 +341,7 @@ public enum WooAnalyticsStat: String {
     case ordersListFilter = "orders_list_filter"
     case ordersListSearch = "orders_list_search"
     case ordersListLoaded = "orders_list_loaded"
+    case ordersListLoadError = "orders_list_load_error"
     case orderProductAdd = "order_product_add"
     case orderProductQuantityChange = "order_product_quantity_change"
     case orderProductRemove = "order_product_remove"

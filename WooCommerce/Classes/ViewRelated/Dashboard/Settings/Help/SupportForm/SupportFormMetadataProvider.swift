@@ -9,13 +9,25 @@ struct SupportFormMetadataProvider {
     private let sessionManager: SessionManager
     private let connectivityObserver: ConnectivityObserver
 
+
+    func systemFields() -> [Int64: String] {
+        [
+            ZendeskFieldsIDs.appVersion: Bundle.main.version,
+            ZendeskFieldsIDs.deviceFreeSpace: getDeviceFreeSpace(),
+            ZendeskFieldsIDs.networkInformation: getNetworkInformation(),
+            ZendeskFieldsIDs.logs: getLogFile(),
+            //ZendeskFieldsIDs.legacyLogs: systemStatusReport, // TODO: Migrate SSR
+            ZendeskFieldsIDs.currentSite: getCurrentSiteDescription(),
+            ZendeskFieldsIDs.sourcePlatform: Constants.sourcePlatform,
+            ZendeskFieldsIDs.appLanguage: Locale.preferredLanguage,
+        ]
+    }
 }
 
 
 // MARK: Helpers
 //
 private extension SupportFormMetadataProvider {
-
     /// Get the device free space: EG `56.34 GB`
     ///
     func getDeviceFreeSpace() -> String {
@@ -99,6 +111,26 @@ private extension SupportFormMetadataProvider {
 // MARK: Definitions
 //
 private extension SupportFormMetadataProvider {
+
+    enum ZendeskFieldsIDs {
+//        static let form: Int64 = 360000010286
+//        static let paymentsForm: Int64 = 189946
+//        static let paymentsGroup: Int64 = 27709263
+        static let appVersion: Int64 = 360000086866
+//        static let allBlogs: Int64 = 360000087183
+        static let deviceFreeSpace: Int64 = 360000089123
+        static let networkInformation: Int64 = 360000086966
+        static let legacyLogs: Int64 = 22871957
+        static let logs: Int64 = 10901699622036
+        static let currentSite: Int64 = 360000103103
+        static let sourcePlatform: Int64 = 360009311651
+        static let appLanguage: Int64 = 360008583691
+//        static let category: Int64 = 25176003
+//        static let subcategory: Int64 = 25176023
+//        static let product: Int64 = 25254766
+//        static let productArea: Int64 = 360025069951
+    }
+
     enum Constants {
         static let unknownValue = "unknown"
 //        static let noValue = "none"
@@ -125,7 +157,7 @@ private extension SupportFormMetadataProvider {
 //        static let profileNameKey = "name"
 //        static let unreadNotificationsKey = "wc_zendesk_unread_notifications"
 //        static let nameFieldCharacterLimit = 50
-//        static let sourcePlatform = "mobile_-_woo_ios"
+        static let sourcePlatform = "mobile_-_woo_ios"
 //        static let subcategory = "WooCommerce Mobile Apps"
 //        static let paymentsCategory = "support"
 //        static let paymentsSubcategory = "payment"

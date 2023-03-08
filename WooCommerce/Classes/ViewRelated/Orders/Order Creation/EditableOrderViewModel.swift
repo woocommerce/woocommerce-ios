@@ -170,7 +170,7 @@ final class EditableOrderViewModel: ObservableObject {
     var handleProductsViewModel: ProductSelectorViewModel {
         ProductSelectorViewModel(
             siteID: siteID,
-            selectedItemIDs: selectedItems,
+            selectedItemIDs: allSelectedItemIDs,
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
@@ -205,7 +205,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Keeps track of the total of selected Products and Product Variations, if any
     ///
-    var selectedItems: [Int64] {
+    var allSelectedItemIDs: [Int64] {
         selectedProducts.compactMap { $0?.productID } + selectedProductVariations.compactMap { $0?.productID }
     }
 

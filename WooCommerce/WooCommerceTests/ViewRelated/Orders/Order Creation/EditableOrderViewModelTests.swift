@@ -23,6 +23,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 0)
         XCTAssertEqual(viewModel.selectedProducts.count, 0)
         XCTAssertEqual(viewModel.selectedProductVariations.count, 0)
+        XCTAssertEqual(viewModel.allSelectedItemIDs.count, 0)
     }
 
     func test_edition_view_model_inits_with_expected_values() {
@@ -1381,6 +1382,43 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(viewModel.multipleLinesMessage)
+    }
+
+    func test_allSelectedItemIDs_when_selectedProduct_has_a_Product_then_allSelectedItemIDs_contains_the_itemID() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        viewModel.handleProductsViewModel.selectProduct(product.productID)
+
+        // Then
+        XCTAssertEqual(viewModel.allSelectedItemIDs.count, 1)
+    }
+
+    func test_allSelectedItemIDs_when_selectedProductVariations_has_Products_and_ProductVariation_then_allSelectedItemIDs_contains_the_itemIDs() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, productTypeKey: "variable", purchasable: true, variations: [20])
+        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            productVariationID: 20,
+                                                            sku: "product-variation", purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation, on: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        viewModel.handleProductsViewModel.selectProduct(product.productID)
+        // We cannot test selecting a Product Variation directly from the view model,
+        // so we'll just test if allSelectedItemIDs returns the correct count when
+        // we have both Products and Product Variations
+        viewModel.selectedProductVariations.append(productVariation)
+
+        // Then
+        XCTAssertEqual(viewModel.allSelectedItemIDs.count, 2)
     }
 }
 

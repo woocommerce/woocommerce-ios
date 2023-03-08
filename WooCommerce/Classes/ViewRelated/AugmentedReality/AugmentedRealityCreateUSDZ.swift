@@ -81,6 +81,7 @@ struct PreviewController: UIViewControllerRepresentable {
 
 import RealityKit
 
+@available(macCatalyst 16.0, *)
 enum QualityOptions: CaseIterable, Identifiable {
     case maximum
     case high
@@ -107,6 +108,7 @@ enum QualityOptions: CaseIterable, Identifiable {
         }
     }
 
+    #if targetEnvironment(macCatalyst)
     var photogrammetryDetail: PhotogrammetrySession.Request.Detail {
         switch self {
         case .maximum:
@@ -121,6 +123,7 @@ enum QualityOptions: CaseIterable, Identifiable {
             return .preview
         }
     }
+    #endif
 }
 
 @available(macCatalyst 16.0, *)
@@ -159,6 +162,7 @@ class AugmentedRealityCreateUSDZViewModel: ObservableObject {
     }
 
     func goTapped() {
+        #if targetEnvironment(macCatalyst)
         Task {
             await MainActor.run {
                 generatedFileURL = nil
@@ -171,8 +175,10 @@ class AugmentedRealityCreateUSDZViewModel: ObservableObject {
                 createUSDZ()
             }
         }
+        #endif
     }
 
+    #if targetEnvironment(macCatalyst)
     @MainActor
     private func createUSDZ() {
         let currentTime = Date().ISO8601Format()
@@ -239,6 +245,7 @@ class AugmentedRealityCreateUSDZViewModel: ObservableObject {
             print("🥽 Error processing session = \(String(describing: error))")
         }
     }
+    #endif
 
     func showPreviewTapped() {
         Task {

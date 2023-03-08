@@ -25,8 +25,8 @@ struct ScannedProductsBottomSheetListSelectorCommand: BottomSheetListSelectorCom
 
         // TODO-jc: stock quantity tracking
         switch model {
-        case .matched(let product):
-            cell.configureForInventoryScannerResult(product: product, updatedQuantity: product.stockQuantity, imageService: imageService)
+        case .matched(let product, let initialStockQuantity):
+            cell.configureForInventoryScannerResult(product: product, initialQuantity: initialStockQuantity, imageService: imageService)
         default:
             break
         }

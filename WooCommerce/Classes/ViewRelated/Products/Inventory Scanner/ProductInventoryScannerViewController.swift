@@ -105,8 +105,8 @@ private extension ProductInventoryScannerViewController {
             self?.dismiss(animated: true) { [weak self] in
                 guard let self else { return }
                 switch result {
-                case .matched(let product):
-                    self.editInventorySettings(for: product)
+                case .matched(let product, let initialQuantity):
+                    self.editInventorySettings(for: product, initialQuantity: initialQuantity)
                 case .noMatch(let sku):
                     // TODO: 2407 - navigate to let the user add the SKU to a product
                     print("TODO: \(sku)")
@@ -138,9 +138,9 @@ private extension ProductInventoryScannerViewController {
         // TODO-jc
     }
 
-    func editInventorySettings(for product: ProductFormDataModel) {
+    func editInventorySettings(for product: ProductFormDataModel, initialQuantity: Decimal) {
         let inventorySettingsViewController = ProductInventorySettingsViewController(product: product) { [weak self] data in
-            self?.updateProductInventorySettings(product, inventoryData: data)
+            self?.updateProductInventorySettings(product, inventoryData: data, initialQuantity: initialQuantity)
         }
         navigationController?.pushViewController(inventorySettingsViewController, animated: true)
     }
@@ -154,8 +154,8 @@ private extension ProductInventoryScannerViewController {
         present(inProgressViewController, animated: true)
     }
 
-    func updateProductInventorySettings(_ product: ProductFormDataModel, inventoryData: ProductInventoryEditableData) {
-        viewModel.updateInventory(for: product, inventory: inventoryData)
+    func updateProductInventorySettings(_ product: ProductFormDataModel, inventoryData: ProductInventoryEditableData, initialQuantity: Decimal) {
+        viewModel.updateInventory(for: product, inventory: inventoryData, initialQuantity: initialQuantity)
         // Navigates back to the scanner screen.
         navigationController?.popToViewController(self, animated: true)
     }

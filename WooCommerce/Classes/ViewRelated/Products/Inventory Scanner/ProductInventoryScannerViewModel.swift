@@ -16,14 +16,12 @@ final class ProductInventoryScannerViewModel {
     @MainActor
     func searchProductBySKU(barcode: String) async -> Result<Void, Error> {
         // Searches in the previously scanned products first.
-        if let existingProduct = results.compactMap({ result -> ProductFormDataModel? in
-            guard case let .matched(product) = result else {
-                return nil
+        for result in results {
+            guard case let .matched(existingProduct, initialQuantity) = result, existingProduct.sku == barcode else {
+                continue
             }
-            return product
-        }).first(where: { $0.sku == barcode }) {
             let product = productWithIncrementedStockQuantity(for: existingProduct)
-            updateResults(result: .matched(product: product))
+            updateResults(result: .matched(product: product, initialStockQuantity: initialQuantity))
             return .success(())
         }
 
@@ -37,7 +35,7 @@ final class ProductInventoryScannerViewModel {
                 switch result {
                 case .success(let product):
                     let productModel = self.productWithIncrementedStockQuantity(for: EditableProductModel(product: product))
-                    self.updateResults(result: .matched(product: productModel))
+                    self.updateResults(result: .matched(product: productModel, initialStockQuantity: product.stockQuantity ?? 0))
                     continuation.resume(returning: .success(()))
                 case .failure(let error):
                     self.updateResults(result: .noMatch(sku: barcode))
@@ -48,9 +46,9 @@ final class ProductInventoryScannerViewModel {
     }
 
     @MainActor
-    func updateInventory(for product: ProductFormDataModel, inventory: ProductInventoryEditableData) {
+    func updateInventory(for product: ProductFormDataModel, inventory: ProductInventoryEditableData, initialQuantity: Decimal) {
         let updatedProduct = productWithUpdatedInventory(product: product, inventory: inventory)
-        updateResults(result: .matched(product: updatedProduct))
+        updateResults(result: .matched(product: updatedProduct, initialStockQuantity: initialQuantity))
     }
 }
 
@@ -71,7 +69,6 @@ private extension ProductInventoryScannerViewModel {
     @MainActor
     func updateResults(result: ProductSKUScannerResult) {
         if let existingResultIndex = results.firstIndex(of: result) {
-            let existingResult = results[existingResultIndex]
             results.remove(at: existingResultIndex)
         }
         results.insert(result, at: 0)

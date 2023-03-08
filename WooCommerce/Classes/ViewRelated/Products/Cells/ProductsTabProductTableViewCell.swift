@@ -111,7 +111,7 @@ extension ProductsTabProductTableViewCell {
         accessoryView = deleteButton
     }
 
-    func configureForInventoryScannerResult(product: ProductFormDataModel, updatedQuantity: Decimal?, imageService: ImageService) {
+    func configureForInventoryScannerResult(product: ProductFormDataModel, initialQuantity: Decimal, imageService: ImageService) {
         productImageView.contentMode = .center
         configureProductImageViewForBigImages()
         productImageView.image = .productsTabProductCellPlaceholderImage
@@ -130,22 +130,24 @@ extension ProductsTabProductTableViewCell {
         nameLabel.text = product.name
 
         guard product.manageStock else {
-            detailsLabel.text = NSLocalizedString("Quantity not tracked", comment: "")
+            detailsLabel.text = Localization.InventoryScanner.stockManagementDisabled
             detailsLabel.textColor = .withColorStudio(.red, shade: .shade50)
             return
         }
 
-        let originalQuantity = product.stockQuantity ?? 0
-        if let updatedQuantity = updatedQuantity, updatedQuantity != originalQuantity {
-            // TODO-jc: attributed string
-            detailsLabel.text = "Initial Quantity: \(originalQuantity)・New: \(updatedQuantity)"
+        let productQuantity: Decimal = product.stockQuantity ?? 0
+        if productQuantity != initialQuantity {
+            #warning("TODO: 2407 - attributed string")
+            // TODO-JC: loc
+            detailsLabel.text = String(format: Localization.InventoryScanner.stockQuantityChangedFormat,
+                                       NSDecimalNumber(decimal: initialQuantity),
+                                       NSDecimalNumber(decimal: productQuantity))
             detailsLabel.textColor = .green
         } else {
-            detailsLabel.text = "Quantity: \(originalQuantity)"
+            detailsLabel.text = String(format: Localization.InventoryScanner.stockQuantityFormat, NSDecimalNumber(decimal: productQuantity))
             detailsLabel.textColor = .text
         }
     }
-
 }
 
 private extension ProductsTabProductTableViewCell {
@@ -276,6 +278,21 @@ private extension ProductsTabProductTableViewCell {
         static let imageBorderColor = UIColor.border
         static let imagePlaceholderTintColor = UIColor.systemColor(.systemGray2)
         static let imageBackgroundColor = UIColor.listForeground(modal: false)
+    }
+
+    enum Localization {
+        enum InventoryScanner {
+            static let stockManagementDisabled = NSLocalizedString(
+                "Quantity not tracked",
+                comment: "Detail text in product scanner result row when stock management is disabled."
+            )
+            static let stockQuantityChangedFormat = NSLocalizedString(
+                "Initial Quantity: %1$@・New: %2$@",
+                comment: "Detail text in product scanner result row when the stock quantity changes after scanning.")
+            static let stockQuantityFormat = NSLocalizedString(
+                "Quantity: %1$@",
+                comment: "Detail text in product scanner result row when the stock quantity remains the same.")
+        }
     }
 }
 

@@ -7,17 +7,26 @@ public typealias IsDisplayed = Bool
 //
 public class AnnouncementsStore: Store {
 
-    private let remote: AnnouncementsRemote
+    private let remote: AnnouncementsRemoteProtocol
     private let fileStorage: FileStorage
     private let appVersion = UserAgent.bundleShortVersion
 
     public init(dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
                 network: Network,
+                remote: AnnouncementsRemoteProtocol,
                 fileStorage: FileStorage) {
-        self.remote = AnnouncementsRemote(network: network)
+        self.remote = remote
         self.fileStorage = fileStorage
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
+
+    public convenience init(dispatcher: Dispatcher,
+                            storageManager: StorageManagerType,
+                            network: Network,
+                            fileStorage: FileStorage) {
+        let remote = AnnouncementsRemote(network: network)
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, fileStorage: fileStorage)
     }
 
     private lazy var featureAnnouncementsFileURL: URL? = {

@@ -12,7 +12,7 @@ public protocol AnnouncementsRemoteProtocol {
 ///
 public final class AnnouncementsRemote: Remote, AnnouncementsRemoteProtocol {
 
-    /// Retrieves all the `Announcement` available for a given `siteID`
+    /// Retrieves all the `Announcement` available for a given `appVersion` and `locale`
     ///
     public func loadAnnouncements(appVersion: String,
                                   locale: String,

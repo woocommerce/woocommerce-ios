@@ -39,7 +39,7 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (5.6.0-beta.1):
+  - WordPressAuthenticator (5.5.0):
     - GoogleSignIn (~> 6.0.1)
     - Gridicons (~> 1.0)
     - "NSURL+IDN (= 0.4)"
@@ -84,7 +84,7 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.14)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `7f01b7d0fd2996bb07baad3dee5dd6744ff4cf38`)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `trunk`)
   - WordPressShared (~> 2.0)
   - WordPressUI (~> 1.12.5)
   - Wormholy (~> 1.6.5)
@@ -132,12 +132,12 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   WordPressAuthenticator:
-    :commit: 7f01b7d0fd2996bb07baad3dee5dd6744ff4cf38
+    :branch: trunk
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 CHECKOUT OPTIONS:
   WordPressAuthenticator:
-    :commit: 7f01b7d0fd2996bb07baad3dee5dd6744ff4cf38
+    :commit: 55ed24569e54ca3971e49cb232b083dd214437da
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
@@ -161,7 +161,7 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: f33af270ba9045ea18b31d9aab88e42a0082ea67
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 739137178c682b4cc10190401d3d09d62d659ce6
+  WordPressAuthenticator: fb233ed409d2cf86edf01ce5616dd15d4e9c9ca4
   WordPressKit: c44a1186285cf9bbd61c8e2c8ab323912d7de989
   WordPressShared: 35d41bdf0927e714af1fc85fa9cb692f934473be
   WordPressUI: c5be816f6c7b3392224ac21de9e521e89fa108ac
@@ -177,6 +177,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: eac4d14587623a49b4d01a086c65ce3562ec4975
+PODFILE CHECKSUM: b78dc60127e4703e6b169b62370d67dce5444c21
 
 COCOAPODS: 1.11.3

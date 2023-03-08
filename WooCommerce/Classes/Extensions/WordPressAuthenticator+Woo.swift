@@ -122,6 +122,5 @@ extension WordPressAuthenticator {
                                           unifiedStyle: unifiedStyle,
                                           displayImages: displayImages,
                                           displayStrings: displayStrings)
-        WordPressAuthenticator.shared.setWordPressKitLogger(logger: ServiceLocator.wordPressLibraryLogger)
     }
 }

@@ -54,7 +54,7 @@ struct SupportFormMetadataProvider {
             ZendeskFieldsIDs.deviceFreeSpace: getDeviceFreeSpace(),
             ZendeskFieldsIDs.networkInformation: getNetworkInformation(),
             ZendeskFieldsIDs.logs: getLogFile(),
-            //ZendeskFieldsIDs.legacyLogs: systemStatusReport, // TODO: Migrate SSR. We need it to be async so it needs a further refactor
+            ZendeskFieldsIDs.legacyLogs: "", //systemStatusReport, TODO: Migrate SSR. We need it to be async so it needs a further refactor
             ZendeskFieldsIDs.currentSite: getCurrentSiteDescription(),
             ZendeskFieldsIDs.sourcePlatform: Constants.sourcePlatform,
             ZendeskFieldsIDs.appLanguage: Locale.preferredLanguage,

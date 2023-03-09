@@ -296,10 +296,10 @@ extension MainTabBarController {
     }
 
     /// Switches to the Products tab and pops to the root view controller
-        ///
-        static func switchToProductsTab(completion: (() -> Void)? = nil) {
-            navigateTo(.products, completion: completion)
-        }
+    ///
+    static func switchToProductsTab(completion: (() -> Void)? = nil) {
+        navigateTo(.products, completion: completion)
+    }
 
     /// Switches to the Hub Menu tab and pops to the root view controller
     ///

@@ -368,6 +368,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                 }
 
                 if let error = error {
+                    ServiceLocator.analytics.track(event: .ordersListLoadError(error))
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
                     self.viewModel.hasErrorLoadingData = true
                 } else {

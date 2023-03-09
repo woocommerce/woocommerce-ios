@@ -152,6 +152,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        registerUserActivity()
+
         registerTableViewHeadersAndCells()
         configureTableView()
 

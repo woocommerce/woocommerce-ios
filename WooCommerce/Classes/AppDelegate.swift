@@ -190,6 +190,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             handleWebActivity(userActivity)
         }
 
+        SpotlightManager.handleUserActivity(userActivity)
         trackWidgetTappedIfNeeded(userActivity: userActivity)
 
         return true

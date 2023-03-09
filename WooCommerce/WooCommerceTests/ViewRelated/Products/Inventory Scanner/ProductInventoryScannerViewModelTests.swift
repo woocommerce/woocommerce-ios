@@ -1,4 +1,5 @@
 import Combine
+import TestKit
 import XCTest
 import Yosemite
 @testable import WooCommerce
@@ -35,7 +36,7 @@ final class ProductInventoryScannerViewModelTests: XCTestCase {
                                            .matched(product: EditableProductModel(product: matchedProduct), initialStockQuantity: 12.6)])
 
         // When
-        let _ = await viewModel.searchProductBySKU(barcode: "122")
+        try await viewModel.searchProductBySKU(barcode: "122")
 
         // Then
         XCTAssertEqual(viewModel.results, [.matched(product: EditableProductModel(product: matchedProduct), initialStockQuantity: 13.6),
@@ -47,7 +48,7 @@ final class ProductInventoryScannerViewModelTests: XCTestCase {
         XCTAssertEqual(productFromResult.stockQuantity, 13.6)
     }
 
-    func test_no_matched_product_from_searchProductBySKU_is_inserted_to_results() async throws {
+    func test_noMatch_result_from_searchProductBySKU_is_inserted_to_results() async throws {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             guard case let .findProductBySKU(_, _, completion) = action else {
@@ -61,10 +62,71 @@ final class ProductInventoryScannerViewModelTests: XCTestCase {
                                                          stores: stores)
         XCTAssertEqual(viewModel.results, [.matched(product: EditableProductModel(product: .fake()), initialStockQuantity: 0)])
 
-        // When
-        let _ = await viewModel.searchProductBySKU(barcode: "122")
+        await assertThrowsError({
+            // When
+            try await viewModel.searchProductBySKU(barcode: "122")
+        }) { error in
+            // Then
+            (error as? ProductInventoryScannerError) == .selfDeallocated
+        }
 
         // Then
         XCTAssertEqual(viewModel.results, [.noMatch(sku: "122"), .matched(product: EditableProductModel(product: .fake()), initialStockQuantity: 0)])
+    }
+
+    // MARK: - `saveResults`
+
+    func test_saveResults_without_products_does_not_dispatch_ProductAction() async throws {
+        // Given
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            XCTFail("Unexpected action dispatched: \(action)")
+        }
+        let viewModel = ProductInventoryScannerViewModel(siteID: siteID,
+                                                         results: [.noMatch(sku: "566")],
+                                                         stores: stores)
+
+        // When
+        try await viewModel.saveResults()
+
+        // Then the `XCTFail` should not be triggered
+    }
+
+    func test_saveResults_with_products_returns_success_from_ProductAction_updateProducts() async throws {
+        // Given
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .updateProducts(_, _, completion) = action else {
+                return XCTFail("Unexpected action dispatched: \(action)")
+            }
+            completion(.success([]))
+        }
+        let viewModel = ProductInventoryScannerViewModel(siteID: siteID,
+                                                         results: [.matched(product: EditableProductModel(product: .fake()), initialStockQuantity: 0)],
+                                                         stores: stores)
+
+        // When
+        try await viewModel.saveResults()
+
+        // Then the `XCTFail` should not be triggered
+    }
+
+    func test_saveResults_with_products_returns_error_from_ProductAction_updateProducts() async throws {
+        // Given
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .updateProducts(_, _, completion) = action else {
+                return XCTFail("Unexpected action dispatched: \(action)")
+            }
+            completion(.failure(.unexpected))
+        }
+        let viewModel = ProductInventoryScannerViewModel(siteID: siteID,
+                                                         results: [.matched(product: EditableProductModel(product: .fake()), initialStockQuantity: 0)],
+                                                         stores: stores)
+
+        await assertThrowsError({
+            // When
+            try await viewModel.saveResults()
+        }) { error in
+            // Then
+            (error as? ProductUpdateError) == .unexpected
+        }
     }
 }

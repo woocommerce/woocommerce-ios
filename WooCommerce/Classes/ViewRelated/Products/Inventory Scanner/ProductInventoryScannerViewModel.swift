@@ -60,6 +60,9 @@ final class ProductInventoryScannerViewModel {
             }
             return product
         }
+        guard products.isNotEmpty else {
+            return
+        }
         try await saveProducts(products)
     }
 }

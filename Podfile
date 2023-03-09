@@ -136,7 +136,6 @@ def yosemite_pods
   alamofire
   stripe_terminal
   cocoa_lumberjack
-  wordpress_kit
   networking_pods
 
   aztec

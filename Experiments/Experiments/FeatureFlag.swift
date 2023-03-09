@@ -50,14 +50,6 @@ public enum FeatureFlag: Int {
     ///
     case loginErrorNotifications
 
-    /// Whether to prefer magic link to password in the login flow
-    ///
-    case loginMagicLinkEmphasis
-
-    /// Whether to show the magic link as a secondary button instead of a table view cell on the password screen
-    ///
-    case loginMagicLinkEmphasisM2
-
     /// Product multi-selection milestone 1: Enables selecting multiple products in the Order creation flow
     ///
     case productMultiSelectionM1

@@ -6,6 +6,8 @@ import struct Networking.Settings
 extension WordPressAuthenticator {
     static func initializeWithCustomConfigs(dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
                                             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        let isWPComMagicLinkPreferredToPassword = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
+        let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let isStoreCreationMVPEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
@@ -25,6 +27,9 @@ extension WordPressAuthenticator {
                                                                 continueWithSiteAddressFirst: false,
                                                                 enableSiteCredentialsLoginForSelfHostedSites: true,
                                                                 isWPComLoginRequiredForSiteCredentialsLogin: false,
+                                                                isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
+                                                                isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
+                                                                    isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen,
                                                                 enableWPComLoginOnlyInPrologue: false,
                                                                 enableSiteCreation: isStoreCreationMVPEnabled,
                                                                 enableSocialLogin: true,

@@ -29,6 +29,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .loginErrorNotifications:
             return true
+        case .loginMagicLinkEmphasis:
+            return false
+        case .loginMagicLinkEmphasisM2:
+            return true
         case .productMultiSelectionM1:
             return false
         case .promptToEnableCodInIppOnboarding:

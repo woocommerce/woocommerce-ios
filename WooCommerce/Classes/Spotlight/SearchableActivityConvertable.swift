@@ -41,7 +41,6 @@ extension SearchableActivityConvertable where Self: UIViewController {
         if let activityDescription = activityDescription {
             let contentAttributeSet = CSSearchableItemAttributeSet(contentType: UTType.text)
             contentAttributeSet.contentDescription = activityDescription
-            contentAttributeSet.contentCreationDate = nil // Set this to nil so it doesn't display in spotlight
             activity.contentAttributeSet = contentAttributeSet
         }
 

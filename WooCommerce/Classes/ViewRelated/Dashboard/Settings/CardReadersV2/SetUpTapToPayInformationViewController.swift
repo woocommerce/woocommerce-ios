@@ -38,6 +38,9 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
             WebviewHelper.launch(url, with: self)
         }
         rootView.learnMoreUrl = viewModel.learnMoreURL
+        rootView.dismiss = { [weak self] in
+            self?.dismiss(animated: true)
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -56,7 +59,8 @@ private extension SetUpTapToPayInformationViewController {
     func searchAndConnect() {
         connectionController.searchAndConnect { _ in
             /// No need for logic here. Once connected, the connected reader will publish
-            /// through the `cardReaderAvailableSubscription`
+            /// through the `cardReaderAvailableSubscription`, so we can just
+            /// dismiss the connection flow alerts.
             self.alertsPresenter.dismiss()
         }
     }
@@ -66,14 +70,13 @@ struct SetUpTapToPayInformationView: View {
     var setUpButtonAction: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
     var learnMoreUrl: URL? = nil
+    var dismiss: (() -> Void)? = nil
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.sizeCategory) private var sizeCategory
 
     var isCompact: Bool {
-        get {
-            verticalSizeClass == .compact
-        }
+        verticalSizeClass == .compact
     }
 
     var isSizeCategoryLargerThanExtraLarge: Bool {
@@ -82,29 +85,45 @@ struct SetUpTapToPayInformationView: View {
 
     var body: some View {
         VStack {
+            HStack {
+                Button("Cancel", action: {
+                    dismiss?()
+                })
+                Spacer()
+            }
+            .padding(.top)
+
             Spacer()
 
             Text(Localization.setUpTapToPayOnIPhoneTitle)
                 .font(.title.weight(.semibold))
-                .padding(32)
                 .multilineTextAlignment(.center)
+                .padding([.leading, .trailing])
+                .fixedSize(horizontal: false, vertical: true)
             Image(uiImage: .setUpBuiltInReader)
                 .resizable()
                 .scaledToFit()
                 .frame(height: isCompact ? 80 : 206)
-                .padding(.bottom, isCompact ? 16 : 32)
+                .padding()
 
-            PaymentSettingsFlowHint(title: Localization.hintOneTitle, text: Localization.hintOne)
-            PaymentSettingsFlowHint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
-            PaymentSettingsFlowHint(title: Localization.hintThreeTitle, text: Localization.hintThree)
+            VStack(spacing: 16) {
+                PaymentSettingsFlowHint(title: Localization.hintOneTitle, text: Localization.hintOne)
+                PaymentSettingsFlowHint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
+                PaymentSettingsFlowHint(title: Localization.hintThreeTitle, text: Localization.hintThree)
+            }
+            .fixedSize(horizontal: false, vertical: true)
+            .layoutPriority(1)
+            .padding([.top, .bottom])
 
             Spacer()
 
-            Button(Localization.setUpButton, action: setUpButtonAction!)
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.bottom, 8)
+            Button(Localization.setUpButton, action: {
+                setUpButtonAction?()
+            })
+            .buttonStyle(PrimaryButtonStyle())
 
-            InPersonPaymentsLearnMore()
+            InPersonPaymentsLearnMore(
+                viewModel: LearnMoreViewModel(formatText: Localization.learnMore))
                 .customOpenURL(action: { url in
                     switch url {
                     case LearnMoreViewModel.learnMoreURL:
@@ -116,16 +135,16 @@ struct SetUpTapToPayInformationView: View {
                     }
                 })
         }
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity
-            )
-            .padding()
-            .if(isCompact || isSizeCategoryLargerThanExtraLarge) { content in
-                ScrollView(.vertical) {
-                    content
-                }
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity
+        )
+        .padding()
+        .if(isCompact || isSizeCategoryLargerThanExtraLarge) { content in
+            ScrollView(.vertical) {
+                content
             }
+        }
     }
 }
 
@@ -154,7 +173,7 @@ private enum Localization {
     )
 
     static let hintTwo = NSLocalizedString(
-        "Accept the Terms of Service during set up",
+        "Accept the Terms of Service during set up.",
         comment: "Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the " +
         "Terms of Service from Apple"
     )
@@ -177,8 +196,12 @@ private enum Localization {
     )
 
     static let learnMore = NSLocalizedString(
-        "Tap to learn more about accepting payments with Tap to Pay on iPhone",
-        comment: "A label prompting users to learn more about Tap to Pay on iPhone"
+        "%1$@ about accepting payments with Tap to Pay on iPhone.",
+        comment: """
+                 A label prompting users to learn more about Tap to Pay on iPhone"
+                 %1$@ is a placeholder that always replaced with \"Learn more\" string,
+                 which should be translated separately and considered part of this sentence.
+                 """
     )
 }
 

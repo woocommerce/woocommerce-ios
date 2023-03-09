@@ -32,30 +32,12 @@ struct ProductAddOnsList: View {
                 ForEach(viewModel.addOns) { addOn in
                     ProductAddOn(viewModel: addOn)
                 }
-                AddOnListNotice(updateText: viewModel.infoNotice)
+                FooterNotice(infoText: viewModel.infoNotice)
             }
         }
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
         )
-    }
-}
-
-/// Renders a info notice with an icon
-///
-private struct AddOnListNotice: View {
-
-    /// Content to be rendered next to the info icon.
-    ///
-    let updateText: String
-
-    var body: some View {
-        HStack {
-            Image(uiImage: .infoOutlineImage)
-            Text(updateText)
-        }
-        .footnoteStyle()
-        .padding([.leading, .trailing]).padding(.top, 4)
     }
 }
 

@@ -4,7 +4,7 @@ import Foundation
 ///
 struct MobileAppSupportDataSource: SupportFormMetaDataSource {
     var formID: Int64 {
-        ZendeskProvider.shared.formID()
+        ZendeskForms.IDs.mobileForm
     }
 
     var tags: [String] {
@@ -22,7 +22,7 @@ struct MobileAppSupportDataSource: SupportFormMetaDataSource {
 ///
 struct IPPSupportDataSource: SupportFormMetaDataSource {
     var formID: Int64 {
-        ZendeskProvider.shared.formID()
+        ZendeskForms.IDs.mobileForm
     }
 
     var tags: [String] {
@@ -40,7 +40,7 @@ struct IPPSupportDataSource: SupportFormMetaDataSource {
 ///
 struct WCPluginsSupportDataSource: SupportFormMetaDataSource {
     var formID: Int64 {
-        ZendeskProvider.shared.wcPayFormID()
+        ZendeskForms.IDs.wooForm
     }
 
     var tags: [String] {
@@ -58,7 +58,7 @@ struct WCPluginsSupportDataSource: SupportFormMetaDataSource {
 ///
 struct WCPaySupportDataSource: SupportFormMetaDataSource {
     var formID: Int64 {
-        ZendeskProvider.shared.wcPayFormID()
+        ZendeskForms.IDs.wooForm
     }
 
     var tags: [String] {
@@ -74,7 +74,7 @@ struct WCPaySupportDataSource: SupportFormMetaDataSource {
 ///
 struct OtherPluginsSupportDataSource: SupportFormMetaDataSource {
     var formID: Int64 {
-        ZendeskProvider.shared.wcPayFormID()
+        ZendeskForms.IDs.wooForm
     }
 
     var tags: [String] {
@@ -98,6 +98,8 @@ private enum ZendeskForms {
     /// Custom Field IDs
     ///
     enum IDs {
+        static let mobileForm: Int64 = 360000010286
+        static let wooForm: Int64 = 189946
         static let category: Int64 = 25176003
         static let subCategory: Int64 = 25176023
     }

@@ -5,7 +5,7 @@ import protocol Storage.StorageManagerType
 
 /// Helper that provides general device & site zendesk metadata.
 ///
-struct SupportFormMetadataProvider {
+class SupportFormMetadataProvider {
 
     /// Dependencies
     private let fileLogger: Logs
@@ -18,6 +18,10 @@ struct SupportFormMetadataProvider {
     ///
     private let pluginResultsController: ResultsController<StorageSitePlugin>
 
+    /// ViewModel to fetch and access the SSR report.
+    ///
+    private let systemStatusReportViewModel: SystemStatusReportViewModel
+
     internal init(fileLogger: Logs = ServiceLocator.fileLogger,
                   stores: StoresManager = ServiceLocator.stores,
                   sessionManager: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
@@ -29,6 +33,7 @@ struct SupportFormMetadataProvider {
         self.storageManager = storageManager
         self.connectivityObserver = connectivityObserver
         self.pluginResultsController = Self.createPluginResultsController(sessionManager: sessionManager, storageManager: storageManager)
+        self.systemStatusReportViewModel = Self.createSSRViewModel(sessionManager: sessionManager)
     }
 
     /// Common system & site  tags. Used in Zendesk Forms.
@@ -54,7 +59,7 @@ struct SupportFormMetadataProvider {
             ZendeskFieldsIDs.deviceFreeSpace: getDeviceFreeSpace(),
             ZendeskFieldsIDs.networkInformation: getNetworkInformation(),
             ZendeskFieldsIDs.logs: getLogFile(),
-            ZendeskFieldsIDs.legacyLogs: "", //systemStatusReport, TODO: Migrate SSR. We need it to be async so it needs a further refactor
+            ZendeskFieldsIDs.legacyLogs: systemStatusReportViewModel.statusReport,
             ZendeskFieldsIDs.currentSite: getCurrentSiteDescription(),
             ZendeskFieldsIDs.sourcePlatform: Constants.sourcePlatform,
             ZendeskFieldsIDs.appLanguage: Locale.preferredLanguage,
@@ -89,6 +94,14 @@ private extension SupportFormMetadataProvider {
         }
 
         return resultsController
+    }
+
+    /// Creates an `SystemStatusReportViewModel` instances and starts fetching the SSR report to access it when needed.
+    ///
+    private static func createSSRViewModel(sessionManager: SessionManagerProtocol) -> SystemStatusReportViewModel {
+        let viewModel = SystemStatusReportViewModel(siteID: sessionManager.defaultSite?.siteID ?? 0)
+        viewModel.fetchReport()
+        return viewModel
     }
 
     /// List of tags that reflect Stripe and WCPay plugin statuses.

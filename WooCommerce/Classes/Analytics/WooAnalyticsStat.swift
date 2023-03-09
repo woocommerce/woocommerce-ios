@@ -818,6 +818,9 @@ public enum WooAnalyticsStat: String {
     case universalLinkOpened = "universal_link_opened"
     case universalLinkFailed = "universal_link_failed"
 
+    // MARK: Spotlight
+    case spotlightActivityOpened = "spotlight_activity_opened"
+
     // MARK: Login Jetpack Connection
     case loginJetpackConnectionErrorShown = "login_jetpack_connection_error_shown"
     case loginJetpackConnectButtonTapped = "login_jetpack_connect_button_tapped"

@@ -12,7 +12,7 @@ enum WooActivityType: String {
 }
 
 @objc protocol SearchableActivityConvertable {
-    /// Type name used to uniquly indentify this activity.
+    /// Type name used to uniquely identify this activity.
     ///
     @objc var activityType: String { get }
 

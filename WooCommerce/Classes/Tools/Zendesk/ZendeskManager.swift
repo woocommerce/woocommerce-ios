@@ -33,6 +33,7 @@ protocol ZendeskManagerProtocol {
 
     var zendeskEnabled: Bool { get }
     func userSupportEmail() -> String?
+    func showHelpCenter(from controller: UIViewController)
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion)
     func initialize()
     func reset()
@@ -56,6 +57,10 @@ struct NoZendeskManager: ZendeskManagerProtocol {
 
     func userSupportEmail() -> String? {
         return nil
+    }
+
+    func showHelpCenter(from controller: UIViewController) {
+        // no-op
     }
 
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion) {
@@ -129,6 +134,17 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     ///
     func reset() {
         removeUserProfile()
+    }
+
+    // MARK: - Show Zendesk Views
+    //
+    // -TODO: in the future this should show the Zendesk Help Center.
+    /// For now, link to the online help documentation
+    ///
+    func showHelpCenter(from controller: UIViewController) {
+        WebviewHelper.launch(WooConstants.URLs.helpCenter.asURL(), with: controller)
+
+        ServiceLocator.analytics.track(.supportHelpCenterViewed)
     }
 
     /// Creates a Zendesk Identity to be able to submit support request tickets.

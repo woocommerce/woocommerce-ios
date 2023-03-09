@@ -71,8 +71,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper
         case .domainSettings:
             return true
-        case .supportRequests:
-            return true
         case .simplifyProductEditing:
             // Enabled for the A/B experiment treatment group only
             // Disabled for the control group and UI testing

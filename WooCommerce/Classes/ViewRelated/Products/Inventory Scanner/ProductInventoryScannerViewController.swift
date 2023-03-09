@@ -41,10 +41,7 @@ final class ProductInventoryScannerViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if let listSelectorViewController, listSelectorViewController.presentingViewController == nil {
-            configureBottomSheetPresentation(for: listSelectorViewController)
-            present(listSelectorViewController, animated: true)
-        }
+        presentBottomSheetListSelectorIfNotPresented()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -165,6 +162,13 @@ private extension ProductInventoryScannerViewController {
         viewModel.updateInventory(for: product, inventory: inventoryData, initialQuantity: initialQuantity)
         // Navigates back to the scanner screen.
         navigationController?.popToViewController(self, animated: true)
+    }
+
+    func presentBottomSheetListSelectorIfNotPresented() {
+        if let listSelectorViewController, listSelectorViewController.presentingViewController == nil {
+            configureBottomSheetPresentation(for: listSelectorViewController)
+            present(listSelectorViewController, animated: true)
+        }
     }
 
     func dismissBottomSheetListSelectorIfPresented() {

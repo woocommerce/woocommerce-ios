@@ -18,8 +18,8 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         let authenticator = CookieNonceAuthenticator(configuration: config)
 
 
-        let generatedBodyAsData = authenticator.authenticatedRequest().urlRequest!.httpBody!
-        let generatedBodyAsString = String(data: generatedBodyAsData, encoding: .utf8)
+        let generatedBodyAsData = try XCTUnwrap(authenticator.authenticatedRequest().urlRequest?.httpBody)
+        let generatedBodyAsString = try XCTUnwrap(String(data: generatedBodyAsData, encoding: .utf8))
         let generatedBodyParameters = generatedBodyAsString!.split(separator: Character("&"))
 
         // When

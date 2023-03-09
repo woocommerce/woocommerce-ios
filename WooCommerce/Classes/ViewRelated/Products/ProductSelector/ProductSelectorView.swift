@@ -123,8 +123,10 @@ struct ProductSelectorView: View {
             .navigationBarTitleDisplayMode(configuration.prefersLargeTitle ? .large : .inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(configuration.cancelButtonTitle) {
-                        isPresented.toggle()
+                    if let cancelButtonTitle = configuration.cancelButtonTitle {
+                        Button(cancelButtonTitle) {
+                            isPresented.toggle()
+                        }
                     }
                 }
             }

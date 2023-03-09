@@ -162,7 +162,11 @@ private extension CookieNonceAuthenticator {
         parameters.append(URLQueryItem(name: "rememberme", value: "true"))
         var components = URLComponents()
         components.queryItems = parameters
-        request.httpBody = components.percentEncodedQuery?.data(using: .utf8)
+
+        /// `percentEncodedQuery` creates a validly escaped URL query component, but
+        /// doesn't encode the '+'. Percent encodes '+' to avoid this ambiguity.
+        let characterSett = CharacterSet(charactersIn: "+").inverted
+        request.httpBody = components.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: characterSett)?.data(using: .utf8)
         return request
     }
 

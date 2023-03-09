@@ -3,6 +3,7 @@
 12.7
 -----
 - [Internal] Shipping Label: add condition checks before showing contact options [https://github.com/woocommerce/woocommerce-ios/pull/8982]
+- [*] Main screens are accessible through the Home Screen Spotlight Search [https://github.com/woocommerce/woocommerce-ios/pull/9082]
 
 12.6
 -----

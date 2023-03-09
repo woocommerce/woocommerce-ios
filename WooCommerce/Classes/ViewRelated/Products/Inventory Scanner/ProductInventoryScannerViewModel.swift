@@ -1,16 +1,22 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 final class ProductInventoryScannerViewModel {
     @Published private(set) var results: [ProductSKUScannerResult]
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let storage: StorageManagerType
 
-    init(siteID: Int64, results: [ProductSKUScannerResult] = [], stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         results: [ProductSKUScannerResult] = [],
+         stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.results = results
         self.stores = stores
+        self.storage = storage
     }
 
     @MainActor
@@ -65,6 +71,45 @@ final class ProductInventoryScannerViewModel {
         }
         try await saveProducts(products)
     }
+
+    // MARK: - Add SKU to product
+
+    func productSelectorViewModel(for sku: String,
+                                  skuUpdateCompletion: @escaping (Result<ProductFormDataModel, Error>) -> Void) -> ProductSelectorViewModel {
+        ProductSelectorViewModel(siteID: siteID,
+                                 purchasableItemsOnly: false,
+                                 storageManager: storage,
+                                 stores: stores,
+                                 supportsMultipleSelection: false,
+                                 toggleAllVariationsOnSelection: false) { [weak self] product in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                let result = await Result { try await self.addSKUToProduct(sku: sku, product: product) }
+                skuUpdateCompletion(result)
+            }
+        } onVariationSelected: { variation, product in
+            // TODO: 2407 - support product variations
+        }
+    }
+
+    // TODO: move to private
+    @MainActor
+    func addSKUToProduct(sku: String, product: Product) async throws -> ProductFormDataModel {
+        try await withCheckedThrowingContinuation { continuation in
+            let productWithUpdatedSKU = product.copy(sku: sku)
+            stores.dispatch(ProductAction.updateProduct(product: productWithUpdatedSKU) { result in
+                switch result {
+                case .success(let product):
+                    let productModel = self.productWithIncrementedStockQuantity(for: EditableProductModel(product: product))
+                    self.replaceNoMatchResultWithMatchedResult(.matched(product: productModel, initialStockQuantity: product.stockQuantity ?? 0),
+                                                               sku: sku)
+                    continuation.resume(returning: productModel)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            })
+        }
+    }
 }
 
 private extension ProductInventoryScannerViewModel {
@@ -89,8 +134,16 @@ private extension ProductInventoryScannerViewModel {
         results.insert(result, at: 0)
     }
 
+    @MainActor
+    func replaceNoMatchResultWithMatchedResult(_ result: ProductSKUScannerResult, sku: String) {
+        if let existingResultIndex = results.firstIndex(of: .noMatch(sku: sku)) {
+            results.remove(at: existingResultIndex)
+        }
+        results.insert(result, at: 0)
+    }
+
     func productWithUpdatedInventory(product: ProductFormDataModel, inventory: ProductInventoryEditableData) -> ProductFormDataModel {
-        #warning("TODO: 2407 - support product variations")
+        // TODO: 2407 - support product variations
         guard let productDataModel = product as? EditableProductModel else {
             return product
         }
@@ -101,25 +154,6 @@ private extension ProductInventoryScannerViewModel {
                                                                         backordersKey: inventory.backordersSetting?.rawValue,
                                                                         soldIndividually: inventory.soldIndividually)
         return EditableProductModel(product: productWithUpdatedInventory)
-    }
-
-    @MainActor
-    func updateInventoryRemotely(for product: ProductFormDataModel, inventory: ProductInventoryEditableData) async -> Result<Product, Error> {
-        await withCheckedContinuation { continuation in
-            // TODO: 2407 - support product variations
-            guard let productDataModel = product as? EditableProductModel else {
-                return continuation.resume(returning: .failure(ProductInventoryScannerError.inventoryUpdateFailed))
-            }
-            let productWithUpdatedInventory = productDataModel.product.copy(sku: inventory.sku,
-                                                                            manageStock: inventory.manageStock,
-                                                                            stockQuantity: inventory.stockQuantity,
-                                                                            stockStatusKey: inventory.stockStatus?.rawValue,
-                                                                            backordersKey: inventory.backordersSetting?.rawValue,
-                                                                            soldIndividually: inventory.soldIndividually)
-            stores.dispatch(ProductAction.updateProduct(product: productWithUpdatedInventory) { result in
-                continuation.resume(returning: result.mapError { $0 })
-            })
-        }
     }
 
     @MainActor

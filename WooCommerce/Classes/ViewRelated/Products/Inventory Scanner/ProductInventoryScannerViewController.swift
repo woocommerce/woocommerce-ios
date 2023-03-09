@@ -98,10 +98,9 @@ private extension ProductInventoryScannerViewController {
                 guard let self else { return }
                 switch result {
                 case .matched(let product, let initialQuantity):
-                    self.editInventorySettings(for: product, initialQuantity: initialQuantity)
+                    self.showInventorySettings(for: product, initialQuantity: initialQuantity)
                 case .noMatch(let sku):
-                    // TODO: 2407 - navigate to let the user add the SKU to a product
-                    print("TODO: \(sku)")
+                    self.showProductSelector(for: sku)
                 }
             }
         }
@@ -125,6 +124,17 @@ private extension ProductInventoryScannerViewController {
         listSelectorViewController.isModalInPresentation = true
         present(listSelectorViewController, animated: true)
     }
+
+    @MainActor
+    func handleSKUAddedToProduct(result: Result<ProductFormDataModel, Error>) {
+        navigationController?.popToViewController(self, animated: true)
+        switch result {
+        case .success:
+            showStatusLabel(text: NSLocalizedString("Barcode saved!", comment: ""), status: .processing)
+        case .failure(let error):
+            showStatusLabel(text: error.localizedDescription, status: .failed)
+        }
+    }
 }
 
 // MARK: Navigation
@@ -142,11 +152,19 @@ private extension ProductInventoryScannerViewController {
         }
     }
 
-    func editInventorySettings(for product: ProductFormDataModel, initialQuantity: Decimal) {
+    func showInventorySettings(for product: ProductFormDataModel, initialQuantity: Decimal) {
         let inventorySettingsViewController = ProductInventorySettingsViewController(product: product) { [weak self] data in
             self?.updateProductInventorySettings(product, inventoryData: data, initialQuantity: initialQuantity)
         }
         navigationController?.pushViewController(inventorySettingsViewController, animated: true)
+    }
+
+    func showProductSelector(for sku: String) {
+        let productSelectorViewModel = viewModel.productSelectorViewModel(for: sku) { [weak self] result in
+            self?.handleSKUAddedToProduct(result: result)
+        }
+        let productSelector = ProductSelectorHostingController(configuration: .inventoryScanner, viewModel: productSelectorViewModel)
+        navigationController?.pushViewController(productSelector, animated: true)
     }
 
     func presentProductInventoryUpdateInProgressUI() {
@@ -282,5 +300,37 @@ private extension ProductInventoryScannerViewController {
                                                             comment: "Bottom sheet header for a one scanned product in inventory scanner.")
         static let scannedProductsHeader = NSLocalizedString("Scanned products",
                                                             comment: "Bottom sheet header for a list of scanned products in inventory scanner.")
+    }
+}
+
+private extension ProductSelectorView.Configuration {
+    static let inventoryScanner: Self =
+        .init(showsFilters: true,
+              multipleSelectionsEnabled: false,
+              prefersLargeTitle: false,
+              title: Localization.title,
+              cancelButtonTitle: nil,
+              productRowAccessibilityHint: Localization.productRowAccessibilityHint,
+              variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
+
+    enum Localization {
+        static let title = NSLocalizedString("Products", comment: "Title for the screen to select a product for a scanned SKU.")
+        static let productRowAccessibilityHint = NSLocalizedString(
+            "Selection of a product for a scanned SKU in inventory scanner.",
+            comment: "Accessibility hint for selecting a product for a scanned SKU in inventory scanner."
+        )
+        static let variableProductRowAccessibilityHint = NSLocalizedString(
+            "Opens list of product variations.",
+            comment: "Accessibility hint for selecting a variable product in the Select Products screen"
+        )
+        static let doneButtonSingular = NSLocalizedString(
+            "Select 1 Product",
+            comment: "Title of the action button at the bottom of the Select Products screen when one product is selected"
+        )
+        static let doneButtonPlural = NSLocalizedString(
+            "Select %1$d Products",
+            comment: "Title of the action button at the bottom of the Select Products screen " +
+            "when more than 1 item is selected, reads like: Select 5 Products"
+        )
     }
 }

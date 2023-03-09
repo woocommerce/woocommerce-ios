@@ -1,15 +1,52 @@
 import Foundation
 import CoreTelephony
+import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Helper that provides general device & site zendesk metadata.
 ///
 struct SupportFormMetadataProvider {
 
     private let fileLogger: Logs
-    private let sessionManager: SessionManager
+    private let stores: StoresManager
+    private let sessionManager: SessionManagerProtocol
+    private let storageManager: StorageManagerType
     private let connectivityObserver: ConnectivityObserver
 
+    /// Controller for fetching site plugins from Storage
+    ///
+    private let pluginResultsController: ResultsController<StorageSitePlugin>
 
+    internal init(fileLogger: Logs = ServiceLocator.fileLogger,
+                  stores: StoresManager = ServiceLocator.stores,
+                  sessionManager: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
+                  storageManager: StorageManagerType = ServiceLocator.storageManager,
+                  connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
+        self.fileLogger = fileLogger
+        self.stores = stores
+        self.sessionManager = sessionManager
+        self.storageManager = storageManager
+        self.connectivityObserver = connectivityObserver
+        self.pluginResultsController = Self.createPluginResultsController(sessionManager: sessionManager, storageManager: storageManager)
+    }
+
+    /// Common system & site  tags. Used in Zendesk Forms.
+    ///
+    func systemTags() -> [String] {
+        guard let site = sessionManager.defaultSite else {
+            return [Constants.platformTag] + getIPPTags()
+        }
+
+        return [
+            Constants.platformTag,
+            site.isWordPressComStore ? Constants.wpComTag : nil,
+            site.plan.isNotEmpty ? site.plan : nil,
+            stores.isAuthenticatedWithoutWPCom ? Constants.authenticatedWithApplicationPasswordTag : nil
+        ].compactMap { $0 } + getIPPTags()
+    }
+
+    /// Common system & site custom fields. Used in Zendesk Forms.
+    ///
     func systemFields() -> [Int64: String] {
         [
             ZendeskFieldsIDs.appVersion: Bundle.main.version,
@@ -28,6 +65,57 @@ struct SupportFormMetadataProvider {
 // MARK: Helpers
 //
 private extension SupportFormMetadataProvider {
+
+    /// Returns a `pluginResultsController` using the latest selected site ID for predicate.
+    /// It performs the initial fetch to make it ready to use.
+    ///
+    private static func createPluginResultsController(sessionManager: SessionManagerProtocol,
+                                                      storageManager: StorageManagerType) -> ResultsController<StorageSitePlugin> {
+        var sitePredicate: NSPredicate? = nil
+        if let siteID = sessionManager.defaultSite?.siteID {
+            sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
+        } else {
+            DDLogError("ZendeskManager: No siteID found when attempting to initialize Plugins Results predicate.")
+        }
+
+        let pluginStatusDescriptor = [NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)]
+        let resultsController = ResultsController<StorageSitePlugin>(storageManager: storageManager, matching: sitePredicate, sortedBy: pluginStatusDescriptor)
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("SupportFormMetadataProvider: Unable to update plugin results")
+        }
+
+        return resultsController
+    }
+
+    /// List of tags that reflect Stripe and WCPay plugin statuses.
+    ///
+    private func getIPPTags() -> [String] {
+        var ippTags = [PluginStatus]()
+        if let stripe = pluginResultsController.fetchedObjects.first(where: { $0.plugin == PluginSlug.stripe }) {
+            if stripe.status == .active {
+                ippTags.append(.stripeInstalledAndActivated)
+            } else if stripe.status == .inactive {
+                ippTags.append(.stripeInstalledButNotActivated)
+            }
+        } else {
+            ippTags.append(.stripeNotInstalled)
+        }
+        if let wcpay = pluginResultsController.fetchedObjects.first(where: { $0.plugin == PluginSlug.wcpay }) {
+            if wcpay.status == .active {
+                ippTags.append(.wcpayInstalledAndActivated)
+            } else if wcpay.status == .inactive {
+                ippTags.append(.wcpayInstalledButNotActivated)
+            }
+        }
+        else {
+            ippTags.append(.wcpayNotInstalled)
+        }
+        return ippTags.map { $0.rawValue }
+    }
+
     /// Get the device free space: EG `56.34 GB`
     ///
     func getDeviceFreeSpace() -> String {
@@ -136,7 +224,7 @@ private extension SupportFormMetadataProvider {
 //        static let noValue = "none"
 //        static let mobileCategoryID: UInt64 = 360000041586
 //        static let articleLabel = "iOS"
-//        static let platformTag = "iOS"
+        static let platformTag = "iOS"
 //        static let sdkTag = "woo-mobile-sdk"
 //        static let ticketSubject = NSLocalizedString(
 //            "WooCommerce for iOS Support",
@@ -144,8 +232,8 @@ private extension SupportFormMetadataProvider {
 //        )
 //        static let blogSeperator = "\n----------\n"
 //        static let jetpackTag = "jetpack"
-//        static let wpComTag = "wpcom"
-//        static let authenticatedWithApplicationPasswordTag = "application_password_authenticated"
+        static let wpComTag = "wpcom"
+        static let authenticatedWithApplicationPasswordTag = "application_password_authenticated"
         static let logFieldCharacterLimit = 64000
         static let networkWiFi = "WiFi"
         static let networkWWAN = "Mobile"
@@ -163,5 +251,18 @@ private extension SupportFormMetadataProvider {
 //        static let paymentsSubcategory = "payment"
 //        static let paymentsProduct = "woocommerce_payments"
 //        static let paymentsProductArea = "product_area_woo_payment_gateway"
+    }
+
+    enum PluginSlug {
+        static let stripe = "woocommerce-gateway-stripe/woocommerce-gateway-stripe"
+        static let wcpay = "woocommerce-payments/woocommerce-payments"
+    }
+    enum PluginStatus: String {
+        case stripeNotInstalled = "woo_mobile_stripe_not_installed"
+        case stripeInstalledAndActivated = "woo_mobile_stripe_installed_and_activated"
+        case stripeInstalledButNotActivated = "woo_mobile_stripe_installed_and_not_activated"
+        case wcpayNotInstalled = "woo_mobile_wcpay_not_installed"
+        case wcpayInstalledAndActivated = "woo_mobile_wcpay_installed_and_activated"
+        case wcpayInstalledButNotActivated = "woo_mobile_wcpay_installed_and_not_activated"
     }
 }

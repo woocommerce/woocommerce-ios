@@ -150,6 +150,17 @@ private extension CookieNonceAuthenticator {
         requestsToRetry.removeAll()
     }
 
+    func readNonceFromAjaxAction(html: String) -> String? {
+        html.isEmpty ? nil : html
+    }
+
+    func buildNonceRequestURL(base: URL) -> URL? {
+        URL(string: "admin-ajax.php?action=rest-nonce", relativeTo: base)
+    }
+}
+
+// MARK: Public helpers
+extension CookieNonceAuthenticator {
     func authenticatedRequest() -> URLRequest {
         var request = URLRequest(url: loginURL)
 
@@ -168,13 +179,5 @@ private extension CookieNonceAuthenticator {
         let characterSett = CharacterSet(charactersIn: "+").inverted
         request.httpBody = components.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: characterSett)?.data(using: .utf8)
         return request
-    }
-
-    func readNonceFromAjaxAction(html: String) -> String? {
-        html.isEmpty ? nil : html
-    }
-
-    func buildNonceRequestURL(base: URL) -> URL? {
-        URL(string: "admin-ajax.php?action=rest-nonce", relativeTo: base)
     }
 }

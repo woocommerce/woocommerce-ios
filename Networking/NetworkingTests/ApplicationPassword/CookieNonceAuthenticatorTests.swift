@@ -1,5 +1,5 @@
 @testable import Networking
 
-class CookieNonceAuthenticatorTests: XCTest {
+class CookieNonceAuthenticatorTests: XCTestCase {
 
 }

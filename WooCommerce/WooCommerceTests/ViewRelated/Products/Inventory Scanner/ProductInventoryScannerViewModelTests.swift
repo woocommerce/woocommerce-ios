@@ -91,6 +91,50 @@ final class ProductInventoryScannerViewModelTests: XCTestCase {
         // Then the `XCTFail` should not be triggered
     }
 
+    // MARK: - `updateInventory`
+
+    func test_updateInventory_moves_existing_result_to_the_first_with_updated_inventory() async throws {
+        // Given
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            XCTFail("Unexpected action dispatched: \(action)")
+        }
+        let product = EditableProductModel(product: .fake().copy(sku: "",
+                                                                 manageStock: false,
+                                                                 stockQuantity: 12,
+                                                                 stockStatusKey: ProductStockStatus.outOfStock.rawValue,
+                                                                 backordersKey: ProductBackordersSetting.notAllowed.rawValue,
+                                                                 soldIndividually: false))
+        let viewModel = ProductInventoryScannerViewModel(siteID: siteID,
+                                                         results: [.noMatch(sku: "color-pencil"),
+                                                                   .matched(product: product, initialStockQuantity: 0)],
+                                                         stores: stores)
+
+        // When
+        viewModel.updateInventory(for: product, inventory: .init(sku: "test",
+                                                                 manageStock: true,
+                                                                 soldIndividually: true,
+                                                                 stockQuantity: 62,
+                                                                 backordersSetting: .allowed,
+                                                                 stockStatus: .insufficientStock),
+                                  initialQuantity: 0)
+
+        // Then
+        XCTAssertEqual(viewModel.results, [.matched(product: product, initialStockQuantity: 0),
+                                           .noMatch(sku: "color-pencil")])
+        guard let result = viewModel.results.first,
+              case let .matched(productFromResult, _) = result else {
+            return XCTFail("The first scanner result is not a success case.")
+        }
+        XCTAssertEqual(productFromResult.sku, "test")
+        XCTAssertEqual(productFromResult.manageStock, true)
+        XCTAssertEqual(productFromResult.soldIndividually, true)
+        XCTAssertEqual(productFromResult.stockQuantity, 62)
+        XCTAssertEqual(productFromResult.backordersSetting, .allowed)
+        XCTAssertEqual(productFromResult.stockStatus, .insufficientStock)
+    }
+
+    // MARK: - `saveResults`
+
     func test_saveResults_with_products_returns_success_from_ProductAction_updateProducts() async throws {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in

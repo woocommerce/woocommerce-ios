@@ -75,28 +75,27 @@ final class ProductInventoryScannerViewModel {
     // MARK: - Add SKU to product
 
     func productSelectorViewModel(for sku: String,
-                                  skuUpdateCompletion: @escaping (Result<ProductFormDataModel, Error>) -> Void) -> ProductSelectorViewModel {
+                                  productSelection: @escaping (ProductFormDataModel) -> Void) -> ProductSelectorViewModel {
         ProductSelectorViewModel(siteID: siteID,
                                  purchasableItemsOnly: false,
                                  storageManager: storage,
                                  stores: stores,
                                  supportsMultipleSelection: false,
-                                 toggleAllVariationsOnSelection: false) { [weak self] product in
-            Task { @MainActor [weak self] in
-                guard let self else { return }
-                let result = await Result { try await self.addSKUToProduct(sku: sku, product: product) }
-                skuUpdateCompletion(result)
-            }
+                                 toggleAllVariationsOnSelection: false) { product in
+            productSelection(EditableProductModel(product: product))
         } onVariationSelected: { variation, product in
             // TODO: 2407 - support product variations
         }
     }
 
-    // TODO: move to private
+    // TODO: 2407 - unit tests
     @MainActor
-    func addSKUToProduct(sku: String, product: Product) async throws -> ProductFormDataModel {
-        try await withCheckedThrowingContinuation { continuation in
-            let productWithUpdatedSKU = product.copy(sku: sku)
+    func addSKUToProduct(sku: String, product: ProductFormDataModel) async throws -> ProductFormDataModel {
+        guard let product = product as? EditableProductModel else {
+            return product
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            let productWithUpdatedSKU = product.product.copy(sku: sku, manageStock: true)
             stores.dispatch(ProductAction.updateProduct(product: productWithUpdatedSKU) { result in
                 switch result {
                 case .success(let product):

@@ -139,6 +139,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         return stateCoordinator
     }()
 
+    private var inventoryScannerCoordinator: ProductInventoryScannerCoordinator?
+
     private let imageService: ImageService = ServiceLocator.imageService
 
     private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
@@ -258,10 +260,12 @@ private extension ProductsViewController {
     }
 
     @objc func scanProducts() {
-        let viewController = ProductInventoryScannerViewController(siteID: siteID)
-        // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
-        viewController.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(viewController, animated: true)
+        guard let navigationController else {
+            return
+        }
+        let coordinator = ProductInventoryScannerCoordinator(navigationController: navigationController, siteID: siteID)
+        self.inventoryScannerCoordinator = coordinator
+        coordinator.start()
     }
 
     @objc func addProduct(_ sender: UIBarButtonItem) {

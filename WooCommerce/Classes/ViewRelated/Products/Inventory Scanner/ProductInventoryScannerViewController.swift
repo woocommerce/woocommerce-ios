@@ -4,6 +4,13 @@ import WordPressUI
 import Yosemite
 
 final class ProductInventoryScannerViewController: UIViewController {
+    // MARK: - Navigation actions that are set externally (e.g. by a coordinator)
+    var showInventorySettings: ((_ product: ProductFormDataModel) async -> ProductInventoryEditableData?)?
+    var showProductSelector: ((_ sku: String, _ viewModel: ProductSelectorViewModel) -> Void)?
+    var showInProgressUIAddingSKUToProduct: ((_ task: @escaping () async throws -> Void) -> Void)?
+    var confirmAddingSKUToProductWithStockManagementEnabled: ((_ product: ProductFormDataModel) async -> ProductFormDataModel?)?
+    var onSave: ((_ task: @escaping () async throws -> Void) -> Void)?
+
     private lazy var barcodeScannerChildViewController = BarcodeScannerViewController(instructionText: Localization.instructionText)
 
     private var listSelectorViewController: BottomSheetListSelectorViewController
@@ -48,7 +55,6 @@ final class ProductInventoryScannerViewController: UIViewController {
         super.viewDidAppear(animated)
 
         // TODO-jc: remove. this is just for testing
-        searchProductBySKU(barcode: "9789863210887")
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -127,7 +133,6 @@ private extension ProductInventoryScannerViewController {
 
     @MainActor
     func handleSKUAddedToProduct(result: Result<ProductFormDataModel, Error>) {
-        navigationController?.popToViewController(self, animated: true)
         switch result {
         case .success:
             showStatusLabel(text: NSLocalizedString("Barcode saved!", comment: ""), status: .processing)
@@ -141,45 +146,49 @@ private extension ProductInventoryScannerViewController {
 //
 private extension ProductInventoryScannerViewController {
     @objc func saveButtonTapped() {
+        guard let onSave else {
+            return
+        }
         dismissBottomSheetListSelectorIfPresented()
-        presentProductInventoryUpdateInProgressUI()
-        Task { @MainActor [weak self] in
-            guard let self else { return }
+        onSave {
             try await self.viewModel.saveResults()
-            self.dismiss(animated: true) { [weak self] in
-                self?.navigationController?.popViewController(animated: true)
-            }
         }
     }
 
     func showInventorySettings(for product: ProductFormDataModel, initialQuantity: Decimal) {
-        let inventorySettingsViewController = ProductInventorySettingsViewController(product: product) { [weak self] data in
-            self?.updateProductInventorySettings(product, inventoryData: data, initialQuantity: initialQuantity)
+        Task { @MainActor [weak self] in
+            guard let self, let showInventorySettings = self.showInventorySettings else { return }
+            guard let data = await showInventorySettings(product) else {
+                return
+            }
+            self.updateProductInventorySettings(product, inventoryData: data, initialQuantity: initialQuantity)
         }
-        navigationController?.pushViewController(inventorySettingsViewController, animated: true)
     }
 
     func showProductSelector(for sku: String) {
-        let productSelectorViewModel = viewModel.productSelectorViewModel(for: sku) { [weak self] result in
-            self?.handleSKUAddedToProduct(result: result)
+        guard let showProductSelector else {
+            return
         }
-        let productSelector = ProductSelectorHostingController(configuration: .inventoryScanner, viewModel: productSelectorViewModel)
-        navigationController?.pushViewController(productSelector, animated: true)
-    }
-
-    func presentProductInventoryUpdateInProgressUI() {
-        let viewProperties = InProgressViewProperties(title: Localization.productInventoryUpdateInProgressTitle,
-                                                      message: Localization.productInventoryUpdateInProgressMessage)
-        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-        inProgressViewController.modalPresentationStyle = .overCurrentContext
-
-        present(inProgressViewController, animated: true)
+        let productSelectorViewModel = viewModel.productSelectorViewModel(for: sku) { [weak self] selectedProduct in
+            guard let self,
+                  let confirmAddingSKUToProductWithStockManagementEnabled = self.confirmAddingSKUToProductWithStockManagementEnabled,
+                  let showInProgressUIAddingSKUToProduct = self.showInProgressUIAddingSKUToProduct else { return }
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                guard let confirmedProduct = await confirmAddingSKUToProductWithStockManagementEnabled(selectedProduct) else {
+                    return
+                }
+                showInProgressUIAddingSKUToProduct {
+                    let result = await Result { try await self.viewModel.addSKUToProduct(sku: sku, product: confirmedProduct) }
+                    self.handleSKUAddedToProduct(result: result)
+                }
+            }
+        }
+        showProductSelector(sku, productSelectorViewModel)
     }
 
     func updateProductInventorySettings(_ product: ProductFormDataModel, inventoryData: ProductInventoryEditableData, initialQuantity: Decimal) {
         viewModel.updateInventory(for: product, inventory: inventoryData, initialQuantity: initialQuantity)
-        // Navigates back to the scanner screen.
-        navigationController?.popToViewController(self, animated: true)
     }
 
     func presentBottomSheetListSelectorIfNotPresented() {
@@ -219,8 +228,7 @@ private extension ProductInventoryScannerViewController {
             .sink { [weak self] barcodes in
                 guard let self = self else { return }
                 barcodes.forEach { self.searchProductBySKU(barcode: $0) }
-            }
-            .store(in: &subscriptions)
+            }.store(in: &subscriptions)
     }
 
     func configureStatusLabel() {
@@ -288,49 +296,9 @@ private extension ProductInventoryScannerViewController {
                 comment: "Status text when a product is not found from a bar in inventory scanner.")
         static let searchingProductStatus = NSLocalizedString("Scanning barcode",
                                                               comment: "Status text when searching a product from a bar in inventory scanner.")
-        static let productInventoryUpdateInProgressTitle = NSLocalizedString(
-                "Updating inventory",
-                comment: "Title of the in-progress UI while updating the Product inventory settings remotely."
-        )
-        static let productInventoryUpdateInProgressMessage = NSLocalizedString(
-                "Please wait while we update inventory for your products",
-                comment: "Message of the in-progress UI while updating the Product inventory settings remotely"
-        )
         static let scannedProductHeader = NSLocalizedString("Scanned product",
                                                             comment: "Bottom sheet header for a one scanned product in inventory scanner.")
         static let scannedProductsHeader = NSLocalizedString("Scanned products",
                                                             comment: "Bottom sheet header for a list of scanned products in inventory scanner.")
-    }
-}
-
-private extension ProductSelectorView.Configuration {
-    static let inventoryScanner: Self =
-        .init(showsFilters: true,
-              multipleSelectionsEnabled: false,
-              prefersLargeTitle: false,
-              title: Localization.title,
-              cancelButtonTitle: nil,
-              productRowAccessibilityHint: Localization.productRowAccessibilityHint,
-              variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
-
-    enum Localization {
-        static let title = NSLocalizedString("Products", comment: "Title for the screen to select a product for a scanned SKU.")
-        static let productRowAccessibilityHint = NSLocalizedString(
-            "Selection of a product for a scanned SKU in inventory scanner.",
-            comment: "Accessibility hint for selecting a product for a scanned SKU in inventory scanner."
-        )
-        static let variableProductRowAccessibilityHint = NSLocalizedString(
-            "Opens list of product variations.",
-            comment: "Accessibility hint for selecting a variable product in the Select Products screen"
-        )
-        static let doneButtonSingular = NSLocalizedString(
-            "Select 1 Product",
-            comment: "Title of the action button at the bottom of the Select Products screen when one product is selected"
-        )
-        static let doneButtonPlural = NSLocalizedString(
-            "Select %1$d Products",
-            comment: "Title of the action button at the bottom of the Select Products screen " +
-            "when more than 1 item is selected, reads like: Select 5 Products"
-        )
     }
 }

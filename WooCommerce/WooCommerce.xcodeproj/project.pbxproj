@@ -132,6 +132,7 @@
 		022C7D792979778E0036568D /* DomainSettingsDomainCreditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022C7D782979778E0036568D /* DomainSettingsDomainCreditView.swift */; };
 		022CE91429B9740C00F210E0 /* ProductSelectorHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022CE91329B9740C00F210E0 /* ProductSelectorHostingController.swift */; };
 		022CE91629B9A3A900F210E0 /* ProductSelectorNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022CE91529B9A3A900F210E0 /* ProductSelectorNavigationView.swift */; };
+		022CE91829B9CAFE00F210E0 /* ProductInventoryScannerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022CE91729B9CAFE00F210E0 /* ProductInventoryScannerCoordinator.swift */; };
 		022F2FA6295E77F4003A0A46 /* StoreCreationCountrySectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022F2FA5295E77F4003A0A46 /* StoreCreationCountrySectionView.swift */; };
 		022F2FA8295E7A14003A0A46 /* StoreCreationCountryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022F2FA7295E7A14003A0A46 /* StoreCreationCountryButton.swift */; };
 		022F2FAA295E8241003A0A46 /* StoreCreationCountryQuestionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022F2FA9295E8241003A0A46 /* StoreCreationCountryQuestionViewModelTests.swift */; };
@@ -2281,6 +2282,7 @@
 		022C7D782979778E0036568D /* DomainSettingsDomainCreditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSettingsDomainCreditView.swift; sourceTree = "<group>"; };
 		022CE91329B9740C00F210E0 /* ProductSelectorHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSelectorHostingController.swift; sourceTree = "<group>"; };
 		022CE91529B9A3A900F210E0 /* ProductSelectorNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSelectorNavigationView.swift; sourceTree = "<group>"; };
+		022CE91729B9CAFE00F210E0 /* ProductInventoryScannerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventoryScannerCoordinator.swift; sourceTree = "<group>"; };
 		022F2FA5295E77F4003A0A46 /* StoreCreationCountrySectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationCountrySectionView.swift; sourceTree = "<group>"; };
 		022F2FA7295E7A14003A0A46 /* StoreCreationCountryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationCountryButton.swift; sourceTree = "<group>"; };
 		022F2FA9295E8241003A0A46 /* StoreCreationCountryQuestionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationCountryQuestionViewModelTests.swift; sourceTree = "<group>"; };
@@ -4790,6 +4792,7 @@
 				0249D7CB29B73359006B2F30 /* ProductInventoryScannerViewModel.swift */,
 				029099D829B81E8300607074 /* ProductSKUScannerResult.swift */,
 				029099DA29B81EB900607074 /* ScannedProductsBottomSheetListSelectorCommand.swift */,
+				022CE91729B9CAFE00F210E0 /* ProductInventoryScannerCoordinator.swift */,
 			);
 			path = "Inventory Scanner";
 			sourceTree = "<group>";
@@ -10950,6 +10953,7 @@
 				CCCFFC5A2934EF5E006130AF /* StatsIntervalDataParser.swift in Sources */,
 				AEA3F90F27BE8EB400B9F555 /* ShippingLineDetailsViewModel.swift in Sources */,
 				26771A14256FFA8700EE030E /* IssueRefundCoordinatingController.swift in Sources */,
+				022CE91829B9CAFE00F210E0 /* ProductInventoryScannerCoordinator.swift in Sources */,
 				027A2E162513356100DA6ACB /* AppleIDCredentialChecker.swift in Sources */,
 				26B98758273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift in Sources */,
 				4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift in Sources */,

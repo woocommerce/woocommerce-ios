@@ -12,7 +12,7 @@ struct MobileAppSupportDataSource: SupportFormMetaDataSource {
     }
 
     var customFields: [Int64: String] {
-        var generalFields = ZendeskProvider.shared.generalCustomFields()
+        var generalFields = SupportFormMetadataProvider().systemFields()
         generalFields[ZendeskForms.IDs.subCategory] = ZendeskForms.Fields.wooMobileApps
         return generalFields
     }
@@ -30,7 +30,7 @@ struct IPPSupportDataSource: SupportFormMetaDataSource {
     }
 
     var customFields: [Int64: String] {
-        var generalFields = ZendeskProvider.shared.generalCustomFields()
+        var generalFields = SupportFormMetadataProvider().systemFields()
         generalFields[ZendeskForms.IDs.subCategory] = ZendeskForms.Fields.wooMobileApps
         return generalFields
     }
@@ -48,7 +48,7 @@ struct WCPluginsSupportDataSource: SupportFormMetaDataSource {
     }
 
     var customFields: [Int64: String] {
-        var generalFields = ZendeskProvider.shared.generalCustomFields()
+        var generalFields = SupportFormMetadataProvider().systemFields()
         generalFields[ZendeskForms.IDs.category] = ZendeskForms.Fields.support
         return generalFields
     }
@@ -70,7 +70,10 @@ struct WCPaySupportDataSource: SupportFormMetaDataSource {
     }
 
     var customFields: [Int64: String] {
-        ZendeskProvider.shared.wcPayCustomFields()
+        var generalFields = SupportFormMetadataProvider().systemFields()
+        generalFields[ZendeskForms.IDs.category] = ZendeskForms.Fields.support
+        generalFields[ZendeskForms.IDs.subCategory] = ZendeskForms.Fields.payment
+        return generalFields
     }
 }
 
@@ -89,7 +92,7 @@ struct OtherPluginsSupportDataSource: SupportFormMetaDataSource {
     }
 
     var customFields: [Int64: String] {
-        var generalFields = ZendeskProvider.shared.generalCustomFields()
+        var generalFields = SupportFormMetadataProvider().systemFields()
         generalFields[ZendeskForms.IDs.category] = ZendeskForms.Fields.support
         generalFields[ZendeskForms.IDs.subCategory] = ZendeskForms.Fields.store
         return generalFields
@@ -114,6 +117,7 @@ private enum ZendeskForms {
         static let wooMobileApps = "WooCommerce Mobile Apps"
         static let support = "support"
         static let store = "store"
+        static let payment = "payment"
     }
 
     /// Common Tags
@@ -121,8 +125,8 @@ private enum ZendeskForms {
     enum Tags {
         static let support = Fields.support
         static let store = Fields.store
+        static let payment = Fields.payment
         static let jetpack = "jetpack"
-        static let payment = "payment"
         static let wcCore = "woocommerce_core"
         static let wcPayments = "woocommerce_payments"
         static let appTransfer = "mobile_app_woo_transfer"

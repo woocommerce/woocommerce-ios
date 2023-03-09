@@ -59,7 +59,9 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
         if let viewProperties {
             self.viewProperties = viewProperties
         }
-        tableView.reloadData()
+        if let tableView {
+            tableView.reloadData()
+        }
     }
 
     // MARK: UITableViewDataSource

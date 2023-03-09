@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - SearchableActivity Conformance
-extension InPersonPaymentsMenuViewController: SearchableActivityConvertable {
+extension InPersonPaymentsMenuViewController: SearchableActivityConvertible {
     var activityType: String {
         return WooActivityType.payments.rawValue
     }
@@ -19,12 +19,7 @@ extension InPersonPaymentsMenuViewController: SearchableActivityConvertable {
         let keyWordString = NSLocalizedString("payments, tap to pay, woocommerce, woo, in-person payments, in person payments" +
                                               "collect payment, payments, reader, card reader, order card reader",
                                               comment: "This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen.")
-        let keywordArray = keyWordString.arrayOfTags()
 
-        guard !keywordArray.isEmpty else {
-            return nil
-        }
-
-        return Set(keywordArray)
+        return keyWordString.setOfTags()
     }
 }

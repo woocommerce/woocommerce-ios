@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - SearchableActivity Conformance
-extension ProductsViewController: SearchableActivityConvertable {
+extension ProductsViewController: SearchableActivityConvertible {
     var activityType: String {
         return WooActivityType.products.rawValue
     }
@@ -18,12 +18,6 @@ extension ProductsViewController: SearchableActivityConvertable {
     var activityKeywords: Set<String>? {
         let keyWordString = NSLocalizedString("woocommerce, woo, products, categories, new product, search products",
                                               comment: "This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab.")
-        let keywordArray = keyWordString.arrayOfTags()
-
-        guard !keywordArray.isEmpty else {
-            return nil
-        }
-
-        return Set(keywordArray)
+        return keyWordString.setOfTags()
     }
 }

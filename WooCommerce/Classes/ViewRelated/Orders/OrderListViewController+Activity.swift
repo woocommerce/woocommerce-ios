@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - SearchableActivity Conformance
-extension OrderListViewController: SearchableActivityConvertable {
+extension OrderListViewController: SearchableActivityConvertible {
     var activityType: String {
         return WooActivityType.orders.rawValue
     }
@@ -18,12 +18,6 @@ extension OrderListViewController: SearchableActivityConvertable {
     var activityKeywords: Set<String>? {
         let keyWordString = NSLocalizedString("woocommerce, orders, all orders, new order",
                                               comment: "This is a comma separated list of keywords used for spotlight indexing of the 'Orders' tab.")
-        let keywordArray = keyWordString.arrayOfTags()
-
-        guard !keywordArray.isEmpty else {
-            return nil
-        }
-
-        return Set(keywordArray)
+        return keyWordString.setOfTags()
     }
 }

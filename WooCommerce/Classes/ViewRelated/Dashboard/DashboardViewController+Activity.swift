@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - SearchableActivity Conformance
-extension DashboardViewController: SearchableActivityConvertable {
+extension DashboardViewController: SearchableActivityConvertible {
     var activityType: String {
         return WooActivityType.dashboard.rawValue
     }
@@ -19,12 +19,6 @@ extension DashboardViewController: SearchableActivityConvertable {
         let keyWordString = NSLocalizedString("woocommerce, my store, today, this week, this month, this year," +
                                               "orders, visitors, conversion, top conversion, items sold",
                                               comment: "This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab.")
-        let keywordArray = keyWordString.arrayOfTags()
-
-        guard !keywordArray.isEmpty else {
-            return nil
-        }
-
-        return Set(keywordArray)
+        return keyWordString.setOfTags()
     }
 }

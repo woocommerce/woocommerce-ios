@@ -11,7 +11,7 @@ enum WooActivityType: String {
     case payments                = "com.automattic.woocommerce.payments"
 }
 
-@objc protocol SearchableActivityConvertable {
+@objc protocol SearchableActivityConvertible {
     /// Type name used to uniquely identify this activity.
     ///
     @objc var activityType: String { get }
@@ -29,7 +29,7 @@ enum WooActivityType: String {
     @objc optional var activityDescription: String? { get }
 }
 
-extension SearchableActivityConvertable where Self: UIViewController {
+extension SearchableActivityConvertible where Self: UIViewController {
     internal func registerUserActivity() {
         let activity = NSUserActivity(activityType: activityType)
         activity.title = activityTitle

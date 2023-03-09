@@ -29,6 +29,10 @@ enum WooConstants {
     ///
     static let authToken = "authToken"
 
+    /// Keychain Access's Key for the current site credential password
+    ///
+    static let siteCredentialPassword = "siteCredentialPassword"
+
     /// Shared UsersDefaults Suite Name
     ///
     static let sharedUserDefaultsSuiteName = "group.com.automattic.woocommerce"
@@ -231,9 +235,13 @@ extension WooConstants {
         ///
         case addPaymentMethodWCShip = "https://wordpress.com/me/purchases/add-payment-method"
 
-        /// URL for WCPay IPP documentation
+        /// URLs for WCPay IPP documentation
         ///
-        case inPersonPaymentsLearnMoreWCPay = "https://docs.woocommerce.com/document/getting-started-with-in-person-payments-with-woocommerce-payments/"
+        case inPersonPaymentsLearnMoreWCPay =
+                "https://woocommerce.com/document/woocommerce-payments/in-person-payments/getting-started-with-in-person-payments/"
+
+        // swiftlint:disable:next line_length
+        case inPersonPaymentsLearnMoreWCPayTapToPay = "https://woocommerce.com/document/woocommerce-payments/in-person-payments/woocommerce-in-person-payments-tap-to-pay-on-iphone-quick-start-guide/"
 
         /// URL for Stripe IPP documentation
         ///

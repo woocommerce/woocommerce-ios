@@ -2,20 +2,11 @@ import Combine
 import Foundation
 import Networking
 import Storage
-import WordPressKit
-
-/// For mocking `WordPressKit.AccountServiceRemoteREST`.
-protocol DotcomAccountRemoteProtocol {
-    func closeAccount(success: @escaping () -> Void, failure: @escaping (Error) -> Void)
-}
-
-extension AccountSettingsRemote: DotcomAccountRemoteProtocol {}
 
 // MARK: - AccountStore
 //
 public class AccountStore: Store {
     private let remote: AccountRemoteProtocol
-    private let dotcomRemote: DotcomAccountRemoteProtocol
     private var cancellables = Set<AnyCancellable>()
 
     /// Shared private StorageType for use during synchronizeSites and synchronizeSitePlan processes
@@ -24,22 +15,16 @@ public class AccountStore: Store {
         return storageManager.writerDerivedStorage
     }()
 
-    public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, dotcomAuthToken: String) {
+    public convenience override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = AccountRemote(network: network)
-        let dotcomAPI = WordPressComRestApi(oAuthToken: dotcomAuthToken,
-                                            userAgent: UserAgent.defaultUserAgent,
-                                            baseUrlString: Settings.wordpressApiBaseURL)
-        let dotcomRemote = AccountSettingsRemote(wordPressComRestApi: dotcomAPI)
-        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, dotcomRemote: dotcomRemote)
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
-         remote: AccountRemoteProtocol,
-         dotcomRemote: DotcomAccountRemoteProtocol) {
+         remote: AccountRemoteProtocol) {
         self.remote = remote
-        self.dotcomRemote = dotcomRemote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -221,12 +206,14 @@ private extension AccountStore {
     }
 
     func closeAccount(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        dotcomRemote
-            .closeAccount(success: {
+        Task {
+            do {
+                try await remote.closeAccount()
                 onCompletion(.success(()))
-            }, failure: { error in
+            } catch {
                 onCompletion(.failure(error))
-            })
+            }
+        }
     }
 }
 

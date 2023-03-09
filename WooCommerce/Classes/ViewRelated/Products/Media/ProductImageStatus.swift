@@ -8,6 +8,8 @@ enum ProductImageStatus: Equatable {
     ///
     case uploading(asset: PHAsset)
 
+    case uploadingFile(url: URL)
+
     /// The Product image exists remotely.
     ///
     case remote(image: ProductImage)
@@ -30,7 +32,7 @@ extension Collection where Element == ProductImageStatus {
     var hasPendingUpload: Bool {
         return contains(where: {
             switch $0 {
-            case .uploading:
+            case .uploading, .uploadingFile:
                 return true
             default:
                 return false
@@ -46,7 +48,7 @@ extension ProductImageStatus {
 
     private var cellClass: UICollectionViewCell.Type {
         switch self {
-        case .uploading:
+        case .uploading, .uploadingFile:
             return InProgressProductImageCollectionViewCell.self
         case .remote:
             return ProductImageCollectionViewCell.self
@@ -60,6 +62,8 @@ extension ProductImageStatus {
         switch self {
         case .uploading(let asset):
             return asset.identifier()
+        case .uploadingFile(let url):
+            return url.absoluteString
         case .remote(let image):
             return "\(image.imageID)"
         }

@@ -80,6 +80,8 @@ private extension ProductImagesCollectionViewController {
             configureRemoteImageCell(cell, productImage: image)
         case .uploading(let asset):
             configureUploadingImageCell(cell, asset: asset)
+        case .uploadingFile(let url):
+            configureUploadingImageCell(cell, fileURL: url)
         }
     }
 
@@ -110,6 +112,15 @@ private extension ProductImagesCollectionViewController {
             cell?.imageView.contentMode = .scaleAspectFit
             cell?.imageView.image = image
         }
+    }
+
+    func configureUploadingImageCell(_ cell: UICollectionViewCell, fileURL: URL) {
+        guard let cell = cell as? InProgressProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .center
+        cell.imageView.image = UIImage(systemName: "doc")
     }
 }
 

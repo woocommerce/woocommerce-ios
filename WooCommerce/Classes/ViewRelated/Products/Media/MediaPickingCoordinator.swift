@@ -1,8 +1,9 @@
 import UIKit
+import UniformTypeIdentifiers
 
 /// Prepares the alert controller that will be presented when trying to add media to a site.
 ///
-final class MediaPickingCoordinator {
+final class MediaPickingCoordinator: NSObject {
     private lazy var cameraCapture: CameraCaptureCoordinator = {
         return CameraCaptureCoordinator(onCompletion: onCameraCaptureCompletion)
     }()
@@ -11,22 +12,34 @@ final class MediaPickingCoordinator {
         return DeviceMediaLibraryPicker(allowsMultipleImages: allowsMultipleImages, onCompletion: onDeviceMediaLibraryPickerCompletion)
     }()
 
+    private lazy var filesPicker: UIDocumentPickerViewController = {
+        let types = UTType.types(tag: "usdz",
+                                 tagClass: UTTagClass.filenameExtension,
+                                 conformingTo: nil)
+        let documentPickerController = UIDocumentPickerViewController(forOpeningContentTypes: types, asCopy: true)
+        documentPickerController.delegate = self
+        return documentPickerController
+    }()
+
     private let siteID: Int64
     private let allowsMultipleImages: Bool
     private let onCameraCaptureCompletion: CameraCaptureCoordinator.Completion
     private let onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion
     private let onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion
+    private let onFilesPickerCompletion: (URL) -> Void
 
     init(siteID: Int64,
          allowsMultipleImages: Bool,
          onCameraCaptureCompletion: @escaping CameraCaptureCoordinator.Completion,
          onDeviceMediaLibraryPickerCompletion: @escaping DeviceMediaLibraryPicker.Completion,
-         onWPMediaPickerCompletion: @escaping WordPressMediaLibraryImagePickerViewController.Completion) {
+         onWPMediaPickerCompletion: @escaping WordPressMediaLibraryImagePickerViewController.Completion,
+         onFilesPickerCompletion: @escaping (URL) -> Void) {
         self.siteID = siteID
         self.allowsMultipleImages = allowsMultipleImages
         self.onCameraCaptureCompletion = onCameraCaptureCompletion
         self.onDeviceMediaLibraryPickerCompletion = onDeviceMediaLibraryPickerCompletion
         self.onWPMediaPickerCompletion = onWPMediaPickerCompletion
+        self.onFilesPickerCompletion = onFilesPickerCompletion
     }
 
     func present(context: MediaPickingContext) {
@@ -43,6 +56,7 @@ final class MediaPickingCoordinator {
         }
 
         menuAlert.addAction(siteMediaLibraryAction(origin: origin))
+        menuAlert.addAction(filesPickerAction(origin: origin))
         menuAlert.addAction(cancelAction())
 
         menuAlert.popoverPresentationController?.sourceView = fromView
@@ -82,6 +96,15 @@ private extension MediaPickingCoordinator {
         }
     }
 
+    func filesPickerAction(origin: UIViewController) -> UIAlertAction {
+        let title = NSLocalizedString("Choose a file",
+                                      comment: "Menu option for choosing a file from the device's Files app.")
+        return UIAlertAction(title: title, style: .default) { [weak self] action in
+            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "files"])
+            self?.showFilesPicker(origin: origin)
+        }
+    }
+
     func cancelAction() -> UIAlertAction {
         return UIAlertAction(title: NSLocalizedString("Dismiss", comment: "Dismiss the media picking action sheet"), style: .cancel, handler: nil)
     }
@@ -103,5 +126,28 @@ private extension MediaPickingCoordinator {
                                                                                                 allowsMultipleImages: allowsMultipleImages,
                                                                                                 onCompletion: onWPMediaPickerCompletion)
         origin.present(wordPressMediaPickerViewController, animated: true)
+    }
+
+    func showFilesPicker(origin: UIViewController) {
+        origin.present(filesPicker, animated: true, completion: nil)
+    }
+}
+
+extension MediaPickingCoordinator: UIDocumentPickerDelegate {
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        guard let url = urls.first else { return }
+
+        // Create file URL to temp copy of file we will create:
+        var destinationURL = URL(fileURLWithPath: NSTemporaryDirectory())
+        destinationURL.appendPathComponent(url.lastPathComponent)
+        print("Will attempt to copy file to tempURL = \(destinationURL)")
+
+        do {
+            try FileManager.default.copyItem(at: url, to: destinationURL)
+        } catch {
+            DDLogError("Could not copy selected file to temporary location")
+        }
+
+        onFilesPickerCompletion(destinationURL)
     }
 }

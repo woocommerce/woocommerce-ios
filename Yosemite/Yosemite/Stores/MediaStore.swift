@@ -60,6 +60,8 @@ public final class MediaStore: Store {
                              let mediaID,
                              let onCompletion):
             updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, onCompletion: onCompletion)
+        case .uploadFile(siteID: let siteID, productID: let productID, fileURL: let fileURL, onCompletion: let onCompletion):
+            uploadFile(siteID: siteID, productID: productID, fileURL: fileURL, onCompletion: onCompletion)
         }
     }
 }
@@ -82,6 +84,23 @@ private extension MediaStore {
                                        context: nil,
                                        completion: onCompletion)
         }
+    }
+
+    func uploadFile(siteID: Int64,
+                    productID: Int64,
+                    fileURL: URL,
+                    onCompletion: @escaping (Result<Media, Error>) -> Void) {
+        guard fileURL.isFileURL else {
+            return onCompletion(.failure(MediaActionError.unknown))
+        }
+
+        let uploadableMedia = UploadableMedia(localURL: fileURL,
+                                              filename: fileURL.lastPathComponent,
+                                              mimeType: fileURL.mimeTypeForPathExtension)
+        uploadMedia(siteID: siteID,
+                    productID: productID,
+                    uploadableMedia: uploadableMedia,
+                    onCompletion: onCompletion)
     }
 
     /// Uploads an exportable media asset to the site's WP Media Library with 2 steps:

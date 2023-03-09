@@ -64,7 +64,9 @@ final class ProductImagesViewController: UIViewController {
                 self?.onDeviceMediaLibraryPickerCompletion(assets: assets)
             }, onWPMediaPickerCompletion: { [weak self] mediaItems in
                 self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
-        })
+            }, onFilesPickerCompletion: { [weak self] url in
+                self?.onFilesPickerCompletion(url: url)
+            })
     }()
 
     private var hasDeletedAnyImages: Bool = false
@@ -327,6 +329,12 @@ private extension ProductImagesViewController {
             self.productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
             self.commitAndDismiss(true)
         }
+    }
+}
+
+private extension ProductImagesViewController {
+    func onFilesPickerCompletion(url: URL) {
+        productImageActionHandler.uploadFileToSiteMediaLibrary(fileURL: url)
     }
 }
 

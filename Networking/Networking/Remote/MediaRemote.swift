@@ -115,12 +115,13 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
                             context: String? = Default.context,
                             mediaItems: [UploadableMedia],
                             completion: @escaping (Result<[Media], Error>) -> Void) {
-        let parameters = [
+        let parameters: [String: String] = [
             ParameterKey.contextKey: context ?? Default.context,
         ]
 
         let formParameters: [String: String] = [Int](0..<mediaItems.count).reduce(into: [:]) { (parentIDsByKey, index) in
-            parentIDsByKey["attrs[\(index)][parent_id]"] = "\(productID)"
+            guard productID > 0 else { return }
+            return parentIDsByKey["attrs[\(index)][parent_id]"] = "\(productID)"
         }
 
         let path = "sites/\(siteID)/media/new"

@@ -21,6 +21,8 @@ protocol ProductImageActionHandlerProtocol {
 
     func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset)
 
+    func uploadFileToSiteMediaLibrary(fileURL: URL)
+
     func updateProductID(_ remoteProductID: ProductOrVariationID)
 
     func deleteProductImage(_ productImage: ProductImage)
@@ -217,6 +219,51 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
         }
     }
 
+    func uploadFileToSiteMediaLibrary(fileURL: URL) {
+        queue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            let imageStatuses = [.uploadingFile(url: fileURL)] + self.allStatuses.productImageStatuses
+            self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
+
+            self.uploadFileToSiteMediaLibrary(fileURL: fileURL) { [weak self] result in
+                                                self?.queue.async { [weak self] in
+                                                    guard let self = self else {
+                                                        return
+                                                    }
+
+                                                    guard let index = self.index(of: fileURL) else {
+                                                        return
+                                                    }
+
+                                                    switch result {
+                                                    case .success(let media):
+                                                        let productImage = ProductImage(imageID: media.mediaID,
+                                                                                        dateCreated: media.date,
+                                                                                        dateModified: media.date,
+                                                                                        src: media.src,
+                                                                                        name: media.name,
+                                                                                        alt: media.alt)
+                                                        self.updateProductImageStatus(at: index, productImage: productImage)
+                                                    case .failure(let error):
+                                                        ServiceLocator.analytics.track(.productImageUploadFailed, withError: error)
+                                                        self.updateProductImageStatus(at: index, error: error)
+                                                    }
+                                                }
+            }
+        }
+    }
+
+    private func uploadFileToSiteMediaLibrary(fileURL: URL, onCompletion: @escaping (Result<Media, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            let action = MediaAction.uploadFile(siteID: self.siteID, fileURL: fileURL, onCompletion: onCompletion)
+            self.stores.dispatch(action)
+        }
+    }
+
     /// Updates the `productID` with the provided `remoteProductID`
     ///
     /// Used for updating the product ID during create product flow. i.e. To replace the local product ID with the remote product ID.
@@ -273,6 +320,17 @@ private extension ProductImageActionHandler {
             switch status {
             case .uploading(let uploadingAsset):
                 return uploadingAsset == asset
+            default:
+                return false
+            }
+        })
+    }
+
+    func index(of fileURL: URL) -> Int? {
+        return allStatuses.productImageStatuses.firstIndex(where: { status -> Bool in
+            switch status {
+            case .uploadingFile(let uploadingURL):
+                return uploadingURL == fileURL
             default:
                 return false
             }

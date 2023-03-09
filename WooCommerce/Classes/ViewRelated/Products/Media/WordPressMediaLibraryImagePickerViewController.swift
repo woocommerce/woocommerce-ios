@@ -12,11 +12,11 @@ final class WordPressMediaLibraryImagePickerViewController: UIViewController {
     private lazy var mediaPickerOptions: WPMediaPickerOptions = {
         let options = WPMediaPickerOptions()
         options.showMostRecentFirst = true
-        options.filter = [.image]
+        options.filter = [.all]
         options.allowCaptureOfMedia = false
         options.showSearchBar = false
         options.showActionBar = false
-        options.badgedUTTypes = [UTType.gif.identifier]
+        options.badgedUTTypes = [UTType.gif.identifier, UTType.usdz.identifier]
         options.allowMultipleSelection = allowsMultipleImages
         return options
     }()

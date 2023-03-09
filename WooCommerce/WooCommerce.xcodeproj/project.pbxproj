@@ -368,7 +368,6 @@
 		02A652FF246A908D00755A01 /* BottomSheetListSelectorPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A652FE246A908D00755A01 /* BottomSheetListSelectorPresenter.swift */; };
 		02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A65300246AA63600755A01 /* ProductDetailsFactory.swift */; };
 		02A685402418A94200B7E79E /* ProductInventoryScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A6853E2418A94200B7E79E /* ProductInventoryScannerViewController.swift */; };
-		02A685412418A94200B7E79E /* ProductInventoryScannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02A6853F2418A94200B7E79E /* ProductInventoryScannerViewController.xib */; };
 		02A685472418C77C00B7E79E /* PresenceThresholdFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A685462418C77C00B7E79E /* PresenceThresholdFilter.swift */; };
 		02A9A496244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A9A495244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift */; };
 		02A9BCD42737DE0D00159C79 /* JetpackBenefitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A9BCD32737DE0D00159C79 /* JetpackBenefitsView.swift */; };
@@ -2517,7 +2516,6 @@
 		02A652FE246A908D00755A01 /* BottomSheetListSelectorPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorPresenter.swift; sourceTree = "<group>"; };
 		02A65300246AA63600755A01 /* ProductDetailsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsFactory.swift; sourceTree = "<group>"; };
 		02A6853E2418A94200B7E79E /* ProductInventoryScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventoryScannerViewController.swift; sourceTree = "<group>"; };
-		02A6853F2418A94200B7E79E /* ProductInventoryScannerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductInventoryScannerViewController.xib; sourceTree = "<group>"; };
 		02A685462418C77C00B7E79E /* PresenceThresholdFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenceThresholdFilter.swift; sourceTree = "<group>"; };
 		02A9A495244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsSortOrderBottomSheetListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		02A9BCD32737DE0D00159C79 /* JetpackBenefitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackBenefitsView.swift; sourceTree = "<group>"; };
@@ -4784,7 +4782,6 @@
 			isa = PBXGroup;
 			children = (
 				02A6853E2418A94200B7E79E /* ProductInventoryScannerViewController.swift */,
-				02A6853F2418A94200B7E79E /* ProductInventoryScannerViewController.xib */,
 				02A685462418C77C00B7E79E /* PresenceThresholdFilter.swift */,
 				0249D7CB29B73359006B2F30 /* ProductInventoryScannerViewModel.swift */,
 				029099D829B81E8300607074 /* ProductSKUScannerResult.swift */,
@@ -10025,7 +10022,6 @@
 				B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */,
 				45CDAFAF2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib in Resources */,
 				CE1D5A56228A0AD200DF3715 /* TwoColumnTableViewCell.xib in Resources */,
-				02A685412418A94200B7E79E /* ProductInventoryScannerViewController.xib in Resources */,
 				3F50FE4128C8319A00C89201 /* Entitlements in Resources */,
 				03FBDAA3263AED2F00ACE257 /* CouponListViewController.xib in Resources */,
 				B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */,

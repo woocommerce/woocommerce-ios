@@ -51,6 +51,17 @@ final class ProductInventoryScannerViewModel {
         let updatedProduct = productWithUpdatedInventory(product: product, inventory: inventory)
         updateResults(result: .matched(product: updatedProduct, initialStockQuantity: initialQuantity))
     }
+
+    @MainActor
+    func saveResults() async throws {
+        let products: [ProductFormDataModel] = results.compactMap { result in
+            guard case let .matched(product, _) = result else {
+                return nil
+            }
+            return product
+        }
+        try await saveProducts(products)
+    }
 }
 
 private extension ProductInventoryScannerViewModel {
@@ -104,6 +115,18 @@ private extension ProductInventoryScannerViewModel {
                                                                             soldIndividually: inventory.soldIndividually)
             stores.dispatch(ProductAction.updateProduct(product: productWithUpdatedInventory) { result in
                 continuation.resume(returning: result.mapError { $0 })
+            })
+        }
+    }
+
+    @MainActor
+    func saveProducts(_ products: [ProductFormDataModel]) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            let products = products.compactMap { $0 as? EditableProductModel }.map { $0.product }
+
+            // TODO: 2407 - support product variations
+            stores.dispatch(ProductAction.updateProducts(siteID: siteID, products: products) { result in
+                continuation.resume(with: result.map { _ in () })
             })
         }
     }

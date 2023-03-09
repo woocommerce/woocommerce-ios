@@ -31,7 +31,7 @@ final class ProductInventoryScannerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .basicBackground
+        configureView()
         configureNavigation()
         configureBarcodeScannerChildViewController()
         configureStatusLabel()
@@ -41,7 +41,7 @@ final class ProductInventoryScannerViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if let listSelectorViewController, listSelectorViewController.isBeingPresented == false {
+        if let listSelectorViewController, listSelectorViewController.presentingViewController == nil {
             configureBottomSheetPresentation(for: listSelectorViewController)
             present(listSelectorViewController, animated: true)
         }
@@ -55,10 +55,7 @@ final class ProductInventoryScannerViewController: UIViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        // Dismisses the bottom sheet if it is presented.
-        if let listSelectorViewController {
-            listSelectorViewController.dismiss(animated: true)
-        }
+        dismissBottomSheetListSelectorIfPresented()
 
         super.viewWillDisappear(animated)
     }
@@ -136,8 +133,16 @@ private extension ProductInventoryScannerViewController {
 // MARK: Navigation
 //
 private extension ProductInventoryScannerViewController {
-    @objc func doneButtonTapped() {
-        // TODO-jc
+    @objc func saveButtonTapped() {
+        dismissBottomSheetListSelectorIfPresented()
+        presentProductInventoryUpdateInProgressUI()
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            try await self.viewModel.saveResults()
+            self.dismiss(animated: true) { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }
     }
 
     func editInventorySettings(for product: ProductFormDataModel, initialQuantity: Decimal) {
@@ -161,13 +166,22 @@ private extension ProductInventoryScannerViewController {
         // Navigates back to the scanner screen.
         navigationController?.popToViewController(self, animated: true)
     }
+
+    func dismissBottomSheetListSelectorIfPresented() {
+        if let listSelectorViewController, listSelectorViewController.presentingViewController != nil {
+            listSelectorViewController.dismiss(animated: true)
+        }
+    }
 }
 
 private extension ProductInventoryScannerViewController {
+    func configureView() {
+        view.backgroundColor = .basicBackground
+    }
+
     func configureNavigation() {
         title = Localization.title
-
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveButtonTapped))
     }
 
     func configureBarcodeScannerChildViewController() {
@@ -223,6 +237,8 @@ private extension ProductInventoryScannerViewController {
     }
 }
 
+// MARK: - Bottom sheet
+//
 private extension ProductInventoryScannerViewController {
     func configureBottomSheetPresentation(for listSelectorViewController: UIViewController) {
         if let sheet = listSelectorViewController.sheetPresentationController {

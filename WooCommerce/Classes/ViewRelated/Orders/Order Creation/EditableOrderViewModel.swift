@@ -246,6 +246,19 @@ final class EditableOrderViewModel: ObservableObject {
         }
     }
 
+    /// Saves a coupon.
+    ///
+    /// - Parameter couponLine: Optional coupon line object to save. `nil` will remove existing coupon.
+    func saveCouponLine(_ couponLine: OrderCouponLine?) {
+        orderSynchronizer.setCoupon.send(couponLine)
+
+        if couponLine != nil {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCouponAdd(flow: flow.analyticsFlow))
+        } else {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCouponRemove(flow: flow.analyticsFlow))
+        }
+    }
+
     // MARK: -
 
     /// Defines the current order status.
@@ -536,6 +549,12 @@ extension EditableOrderViewModel {
 
         let taxesTotal: String
 
+        // We only support one (the first) coupon line
+        let couponSummary: String?
+        let couponCode: String
+        let discountTotal: String
+        let shouldShowCoupon: Bool
+
         /// Whether payment data is being reloaded (during remote sync)
         ///
         let isLoading: Bool
@@ -544,6 +563,7 @@ extension EditableOrderViewModel {
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
         let feeLineViewModel: FeeLineDetailsViewModel
+        let couponLineViewModel: CouponLineDetailsViewModel
 
         init(itemsTotal: String = "0",
              shouldShowShippingTotal: Bool = false,
@@ -556,10 +576,15 @@ extension EditableOrderViewModel {
              feeLineTotal: String = "0",
              taxesTotal: String = "0",
              orderTotal: String = "0",
+             shouldShowCoupon: Bool = false,
+             couponSummary: String? = nil,
+             couponCode: String = "",
+             discountTotal: String = "",
              isLoading: Bool = false,
              showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
+             saveCouponLineClosure: @escaping (OrderCouponLine?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
             self.shouldShowShippingTotal = shouldShowShippingTotal
@@ -574,6 +599,10 @@ extension EditableOrderViewModel {
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? "0.00"
             self.isLoading = isLoading
             self.showNonEditableIndicators = showNonEditableIndicators
+            self.shouldShowCoupon = shouldShowCoupon
+            self.couponSummary = couponSummary
+            self.couponCode = couponCode
+            self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
             self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: shippingMethodTotal,
@@ -582,6 +611,9 @@ extension EditableOrderViewModel {
                                                             baseAmountForPercentage: feesBaseAmountForPercentage,
                                                             feesTotal: feeLineTotal,
                                                             didSelectSave: saveFeeLineClosure)
+            self.couponLineViewModel = CouponLineDetailsViewModel(isExistingCouponLine: shouldShowCoupon,
+                                                                  code: couponCode,
+                                                                  didSelectSave: saveCouponLineClosure)
         }
     }
 
@@ -764,10 +796,15 @@ private extension EditableOrderViewModel {
                                             feeLineTotal: order.fees.first?.total ?? "0",
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
+                                            shouldShowCoupon: order.coupons.first?.code.isNotEmpty ?? false,
+                                            couponSummary: self.summarizeCoupons(from: order.coupons),
+                                            couponCode: order.coupons.first?.code ?? "",
+                                            discountTotal: order.discountTotal,
                                             isLoading: isDataSyncing && !showNonEditableIndicators,
                                             showNonEditableIndicators: showNonEditableIndicators,
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,
+                                            saveCouponLineClosure: self.saveCouponLine,
                                             currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)
@@ -969,6 +1006,26 @@ private extension EditableOrderViewModel {
             DDLogError("⛔️ Error fetching product variations for order: \(error)")
         }
     }
+
+    /// Summary of coupon lines
+    /// - Parameter couponLines: order's coupon lines
+    /// - Returns: Coupon codes comma separated to display as a summary
+    func summarizeCoupons(from couponLines: [OrderCouponLine]) -> String? {
+        guard couponLines.isNotEmpty else {
+            return nil
+        }
+
+        let output = couponLines.reduce("") { (output, line) in
+            let prefix = output.isEmpty ? "" : ","
+            return output + prefix + line.code
+        }
+
+        if couponLines.count == 1 {
+            return String.localizedStringWithFormat(Localization.CouponSummary.singular, output)
+        } else {
+            return String.localizedStringWithFormat(Localization.CouponSummary.plural, output)
+        }
+    }
 }
 
 // MARK: Constants
@@ -1048,5 +1105,12 @@ private extension EditableOrderViewModel {
         static let multipleFeesAndShippingLines = NSLocalizedString("Fees & Shipping details are incomplete.\n" +
                                                                     "To edit all the details, view the order in your WooCommerce store admin.",
                                                                     comment: "Info message shown when the order contains multiple fees and shipping lines")
+
+        enum CouponSummary {
+            static let singular = NSLocalizedString("Coupon (%1$@)",
+                                                   comment: "The singular coupon summary. Reads like: Coupon (code1)")
+            static let plural = NSLocalizedString("Coupons (%1$@)",
+                                                   comment: "The plural coupon summary. Reads like: Coupon (code1, code2)")
+        }
     }
 }

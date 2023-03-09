@@ -176,8 +176,8 @@ extension CookieNonceAuthenticator {
 
         /// `percentEncodedQuery` creates a validly escaped URL query component, but
         /// doesn't encode the '+'. Percent encodes '+' to avoid this ambiguity.
-        let characterSett = CharacterSet(charactersIn: "+").inverted
-        request.httpBody = components.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: characterSett)?.data(using: .utf8)
+        let characterSet = CharacterSet(charactersIn: "+").inverted
+        request.httpBody = components.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: characterSet)?.data(using: .utf8)
         return request
     }
 }

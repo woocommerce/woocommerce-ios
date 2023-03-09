@@ -1,4 +1,4 @@
-enum OAuthError: LocalizedError {
+public enum OAuthError: LocalizedError {
 
     // ASWebAuthenticationSession
     case inconsistentWebAuthenticationSessionCompletion
@@ -9,7 +9,7 @@ enum OAuthError: LocalizedError {
     case urlDidNotContainCodeParameter(url: URL)
     case tokenResponseDidNotIncludeIdToken
 
-    var errorDescription: String {
+    public var errorDescription: String {
         switch self {
         case .inconsistentWebAuthenticationSessionCompletion:
             return "ASWebAuthenticationSession authentication finished with neither a callback URL nor error"

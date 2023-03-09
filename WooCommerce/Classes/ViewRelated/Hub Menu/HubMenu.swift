@@ -91,7 +91,7 @@ struct HubMenu: View {
             .sheet(isPresented: $showingWooCommerceAdmin, onDismiss: enableMenuItemTaps) {
                 WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.woocommerceAdminURL,
                                                               navigationTitle: HubMenuViewModel.Localization.woocommerceAdmin,
-                                                              authenticated: true)) {
+                                                              authenticated: viewModel.shouldAuthenticateAdminPage)) {
                     showingWooCommerceAdmin = false
                 }
             }

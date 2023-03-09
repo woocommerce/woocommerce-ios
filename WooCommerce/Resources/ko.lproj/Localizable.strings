@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-02-28 15:54:05+0000 */
+/* Translation-Revision-Date: 2023-03-06 02:10:09+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -1184,6 +1184,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
    Button to cancel the creation of an order on the New Order screen
+   Button to dismiss an error alert in the Jetpack setup flow
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
@@ -1193,6 +1194,8 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
    Button to dismiss the alert presented while the reader is being prepared.
+   Button to dismiss the error modal when a user without admin role tries to install Jetpack
+   Button to dismiss the new product form
    Button to dismiss the site credential login screen
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
@@ -1217,6 +1220,7 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
    Label for a cancel button
+   Navigation bar button on the domain settings screen to leave the flow.
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Text for the cancel button in the edit customer provided note screen
@@ -1373,7 +1377,8 @@ which should be translated separately and considered part of this sentence. */
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "입력한 URL이 올바른지 확인합니다.";
 
-/* The title text on the magic link requested screen. */
+/* Message on the magic link screen of the WPCom login flow during Jetpack setup
+   The title text on the magic link requested screen. */
 "Check your email on this device!" = "이 기기에서 이메일을 확인하세요!";
 
 /* Instruction text after a login Magic Link was requested. */
@@ -1592,6 +1597,8 @@ which should be translated separately and considered part of this sentence. */
    Button on the Jetpack setup interrupted screen to continue the setup
    Button title on the site credential login screen
    Button to authorize Jetpack connection from the Jetpack setup required screen
+   Title for the WPCom email login screen when Jetpack is not connected yet
+   Title for the WPCom magic link screen when Jetpack is not connected yet
    Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "젯팩 연결";
 
@@ -1692,6 +1699,7 @@ which should be translated separately and considered part of this sentence. */
 "Content Type" = "내용물 유형";
 
 /* Button on the Store Picker screen to select a store
+   Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button inside every cell inside Create Shipping Label form
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
@@ -2069,7 +2077,8 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Debt Reduction Services" = "채무 탕감 서비스";
 
-/* Description of the default paragraph formatting style in the editor. */
+/* Description of the default paragraph formatting style in the editor.
+   Display label for the product bundle's default form location */
 "Default" = "기본";
 
 /* Button title Delete in Downloadable File Options Action Sheet
@@ -2322,7 +2331,8 @@ which should be translated separately and considered part of this sentence. */
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "다운로드 가능한 제품";
 
-/* Title of the Downloadable Files row on Product main screen */
+/* Title of the Downloadable Files row on Product main screen
+   Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "다운로드 가능한 파일";
 
 /* Display label for auto-draft order status.
@@ -2429,6 +2439,7 @@ which should be translated separately and considered part of this sentence. */
 "Email" = "이메일";
 
 /* Accessibility label for the email address text field.
+   Label for the email field on the WPCom email login screen of the Jetpack setup flow.
    Placeholder for a textfield. The user may enter their email address.
    Placeholder for the email address textfield.
    Placeholder of the email field on the account creation form. */
@@ -2560,7 +2571,8 @@ which should be translated separately and considered part of this sentence. */
 "Enter number (Optional)" = "번호 입력(선택 사항)";
 
 /* Enter password placeholder in Product Visibility
-   Placeholder for the password field on the site credential login screen */
+   Placeholder for the password field on the site credential login screen
+   Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter password" = "비밀번호 입력";
 
 /* Sign in instructions for logging in with a URL. */
@@ -3100,7 +3112,8 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Grocery Stores" = "식료품점";
 
-/* Display label for grouped product type. */
+/* Display label for grouped product type.
+   Display label for the product bundle's item grouping */
 "Grouped" = "그룹";
 
 /* Navigation bar title for editing linked products for a grouped product */
@@ -3430,6 +3443,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the site credential login screen
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
+   Title for the WPCom email login screen when Jetpack is not installed yet
+   Title for the WPCom magic link screen when Jetpack is not installed yet
    Title of install action in the Jetpack benefits view.
    Title of the Install Jetpack intro view
    Title of the Install Jetpack view */
@@ -3578,7 +3593,8 @@ which should be translated separately and considered part of this sentence. */
 "Item weight must be larger than 0" = "아이템 무게는 0 이상이어야 합니다.";
 
 /* Description for Top Performers right column header
-   Title for the items sold column on the products card on the analytics hub screen. */
+   Title for the items sold column on the products card on the analytics hub screen.
+   Title for the products card at the top of the top performers section in dashboard stats. */
 "Items Sold" = "판매된 아이템";
 
 /* Country option for a site address. */
@@ -3712,7 +3728,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "모바일 장치로 레이블 만들기에 대해 자세히 알아보기";
 
-/* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
+/* Link on the error modal when a user without admin role tries to install Jetpack
+   Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "역할 및 권한에 대해 더 알아보기";
 
 /* Country option for a site address. */
@@ -4380,6 +4397,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
+   Display label for the product bundle's item grouping
    Display label for the product's tax status setting option
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
@@ -4492,6 +4510,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Open Device Settings" = "기기 설정 열기";
 
 /* The button title text for opening the user's preferred email app.
+   Title for the CTA on the magic link screen of the WPCom login flow during Jetpack setup
    Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "메일 열기";
 
@@ -5040,6 +5059,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message of in-progress modal when preparing for printing customs invoice
    Message of in-progress modal when requesting shipping label document for printing
    Message of the in-progress UI while purchasing a shipping label
+   Message on the loading view displayed when the magic link authentication for Jetpack setup is in progress
    Message when checking if WooCommerce Payments is supported
    Text on the loading view of the survey screen indicating the user to wait
    VoiceOver Accessibility label for the instruction */
@@ -5292,6 +5312,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description for Top Performers left column header
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
    Title of the Products tab — plural form of Product
    Title text of the section that shows the Products when creating or editing an order
@@ -5615,6 +5636,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Reset password" = "비밀번호 재설정";
 
 /* Button to reset password on the site credential login screen
+   Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "비밀번호 재설정하기";
 
@@ -5645,6 +5667,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
+   Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry when there was a network error checking In-Person Payments requirements
    Retry Action
    Retry action for an error notice
@@ -6039,7 +6062,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "결제 링크 공유";
 
-/* Title of the feedback action button on the In-Person Payments feedback banner */
+/* Title of the feedback action button on the In-Person Payments feedback banner
+   Title of the feedback button in the action sheet. */
 "Share feedback" = "피드백 공유";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -6416,6 +6440,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Sri Lanka" = "스리랑카";
 
+/* Display label for the product bundle's layout */
+"Standard" = "기본";
+
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "표준 요율";
 
@@ -6638,8 +6665,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "환불할 카드 누르기 또는 삽입";
 
-/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader
-   The button title on the reader type alert, for the user to choose the built-in reader. */
+/* The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "iPhone에서 눌러서 결제";
 
 /* Error message shown when the built-in reader cannot be used because there is a call in progress */
@@ -6769,17 +6795,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@에 대한 정보를 알려주세요...";
 
-/* Message info on the support screen. */
-"Tell us much as you can about the problem, and we will be in touch soon." = "문제를 최대한 자세히 설명해 주시면 곧 연락드리겠습니다.";
-
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "서비스 약관";
-
-/* Cell description on beta features screen to enable in-app purchases */
-"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 16 or above, for US-based stores." = "시작할 준비가 되면 스마트폰에 내장된 카드 리더를 사용하여 직접 결제를 테스트해 보세요. 미국 기반 스토어의 경우 iOS 16 이상이 실행되는 iPhone XS 이상 기종에서 지원됩니다.";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "시작할 준비가 되었으니 앱 내 구매를 테스트해 보세요.";
@@ -7395,6 +7415,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
    Button to refetch application password for the current site
+   Button to retry a failed action in the Jetpack setup flow
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
    Button to try again. Presented to users after a failure occurs
@@ -7611,7 +7632,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Refresh Action Failed */
 "Unable to refresh list" = "목록을 새로 고칠 수 없음";
 
-/* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
+/* An error message shown when failing to retrieve information about user roles
+   An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
 "Unable to retrieve user roles." = "사용자 역할을 검색할 수 없습니다.";
 
 /* Unable to retrieve variations for bulk update screen */
@@ -7649,9 +7671,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Unapproves a comment. Spoken Hint. */
 "Unapproves the comment" = "댓글 승인 취소";
-
-/* Placeholder of the Product Categories row on Product main screen */
-"Uncategorized" = "미분류";
 
 /* Accessibility label for underline button on formatting toolbar. */
 "Underline" = "밑줄";

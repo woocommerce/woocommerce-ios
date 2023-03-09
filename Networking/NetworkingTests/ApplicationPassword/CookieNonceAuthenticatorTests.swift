@@ -9,7 +9,7 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
     private let sampleUser = "user123"
     private let samplePassword = "password *+/$&=2+é"
 
-    func test_cookie_nonce_authenticator_encode_parameters_correctly() {
+    func test_cookie_nonce_authenticator_encode_parameters_correctly() throws {
         // Given
         let config = CookieNonceAuthenticatorConfiguration(username: sampleUser,
                                                            password: samplePassword,
@@ -20,7 +20,7 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
 
         let generatedBodyAsData = try XCTUnwrap(authenticator.authenticatedRequest().urlRequest?.httpBody)
         let generatedBodyAsString = try XCTUnwrap(String(data: generatedBodyAsData, encoding: .utf8))
-        let generatedBodyParameters = generatedBodyAsString!.split(separator: Character("&"))
+        let generatedBodyParameters = generatedBodyAsString.split(separator: Character("&"))
 
         // When
         /// Expected parameters with encoded data

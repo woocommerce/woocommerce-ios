@@ -8,7 +8,7 @@ struct MobileAppSupportDataSource: SupportFormMetaDataSource {
     }
 
     var tags: [String] {
-        ZendeskProvider.shared.generalTags() + [ZendeskForms.Tags.wcMobileApps, ZendeskForms.Tags.jetpack]
+        SupportFormMetadataProvider().systemTags() + [ZendeskForms.Tags.wcMobileApps, ZendeskForms.Tags.jetpack]
     }
 
     var customFields: [Int64: String] {
@@ -26,7 +26,7 @@ struct IPPSupportDataSource: SupportFormMetaDataSource {
     }
 
     var tags: [String] {
-        ZendeskProvider.shared.generalTags() + [ZendeskForms.Tags.wcMobileApps, ZendeskForms.Tags.productAreaIPP, ZendeskForms.Tags.wcPayments]
+        SupportFormMetadataProvider().systemTags() + [ZendeskForms.Tags.wcMobileApps, ZendeskForms.Tags.productAreaIPP, ZendeskForms.Tags.wcPayments]
     }
 
     var customFields: [Int64: String] {
@@ -44,7 +44,7 @@ struct WCPluginsSupportDataSource: SupportFormMetaDataSource {
     }
 
     var tags: [String] {
-        ZendeskProvider.shared.generalTags() + [ZendeskForms.Tags.wcCore, ZendeskForms.Tags.appTransfer, ZendeskForms.Tags.support]
+        SupportFormMetadataProvider().systemTags() + [ZendeskForms.Tags.wcCore, ZendeskForms.Tags.appTransfer, ZendeskForms.Tags.support]
     }
 
     var customFields: [Int64: String] {
@@ -62,7 +62,11 @@ struct WCPaySupportDataSource: SupportFormMetaDataSource {
     }
 
     var tags: [String] {
-        ZendeskProvider.shared.wcPayTags() + [ZendeskForms.Tags.appTransfer]
+        SupportFormMetadataProvider().systemTags() + [ZendeskForms.Tags.appTransfer,
+                                                      ZendeskForms.Tags.wcPayments,
+                                                      ZendeskForms.Tags.payment,
+                                                      ZendeskForms.Tags.support,
+                                                      ZendeskForms.Tags.productAreaWCPayments]
     }
 
     var customFields: [Int64: String] {
@@ -78,10 +82,10 @@ struct OtherPluginsSupportDataSource: SupportFormMetaDataSource {
     }
 
     var tags: [String] {
-        ZendeskProvider.shared.generalTags() + [ZendeskForms.Tags.productAreaWooExtensions,
-                                                ZendeskForms.Tags.appTransfer,
-                                                ZendeskForms.Tags.support,
-                                                ZendeskForms.Tags.store]
+        SupportFormMetadataProvider().systemTags() + [ZendeskForms.Tags.productAreaWooExtensions,
+                                                      ZendeskForms.Tags.appTransfer,
+                                                      ZendeskForms.Tags.support,
+                                                      ZendeskForms.Tags.store]
     }
 
     var customFields: [Int64: String] {
@@ -118,11 +122,13 @@ private enum ZendeskForms {
         static let support = Fields.support
         static let store = Fields.store
         static let jetpack = "jetpack"
+        static let payment = "payment"
         static let wcCore = "woocommerce_core"
         static let wcPayments = "woocommerce_payments"
         static let appTransfer = "mobile_app_woo_transfer"
         static let wcMobileApps = "woocommerce_mobile_apps"
         static let productAreaIPP = "product_area_apps_in_person_payments"
         static let productAreaWooExtensions = "product_area_woo_extensions"
+        static let productAreaWCPayments = "product_area_woo_payment_gateway"
     }
 }

@@ -3,16 +3,18 @@ import Foundation
 /// Provides Mobile App Zendesk metadata.
 ///
 struct MobileAppSupportDataSource: SupportFormMetaDataSource {
+    let metadataProvider: SupportFormMetadataProvider
+
     var formID: Int64 {
         ZendeskForms.IDs.mobileForm
     }
 
     var tags: [String] {
-        SupportFormMetadataProvider().systemTags() + [ZendeskForms.Tags.wcMobileApps, ZendeskForms.Tags.jetpack]
+        metadataProvider.systemTags() + [ZendeskForms.Tags.wcMobileApps, ZendeskForms.Tags.jetpack]
     }
 
     var customFields: [Int64: String] {
-        var generalFields = SupportFormMetadataProvider().systemFields()
+        var generalFields = metadataProvider.systemFields()
         generalFields[ZendeskForms.IDs.subCategory] = ZendeskForms.Fields.wooMobileApps
         return generalFields
     }
@@ -21,16 +23,18 @@ struct MobileAppSupportDataSource: SupportFormMetaDataSource {
 /// Provides IPP Zendesk metadata.
 ///
 struct IPPSupportDataSource: SupportFormMetaDataSource {
+    let metadataProvider: SupportFormMetadataProvider
+
     var formID: Int64 {
         ZendeskForms.IDs.mobileForm
     }
 
     var tags: [String] {
-        SupportFormMetadataProvider().systemTags() + [ZendeskForms.Tags.wcMobileApps, ZendeskForms.Tags.productAreaIPP, ZendeskForms.Tags.wcPayments]
+        metadataProvider.systemTags() + [ZendeskForms.Tags.wcMobileApps, ZendeskForms.Tags.productAreaIPP, ZendeskForms.Tags.wcPayments]
     }
 
     var customFields: [Int64: String] {
-        var generalFields = SupportFormMetadataProvider().systemFields()
+        var generalFields = metadataProvider.systemFields()
         generalFields[ZendeskForms.IDs.subCategory] = ZendeskForms.Fields.wooMobileApps
         return generalFields
     }
@@ -39,16 +43,18 @@ struct IPPSupportDataSource: SupportFormMetaDataSource {
 /// Provides WC Plugins Zendesk metadata.
 ///
 struct WCPluginsSupportDataSource: SupportFormMetaDataSource {
+    let metadataProvider: SupportFormMetadataProvider
+
     var formID: Int64 {
         ZendeskForms.IDs.wooForm
     }
 
     var tags: [String] {
-        SupportFormMetadataProvider().systemTags() + [ZendeskForms.Tags.wcCore, ZendeskForms.Tags.appTransfer, ZendeskForms.Tags.support]
+        metadataProvider.systemTags() + [ZendeskForms.Tags.wcCore, ZendeskForms.Tags.appTransfer, ZendeskForms.Tags.support]
     }
 
     var customFields: [Int64: String] {
-        var generalFields = SupportFormMetadataProvider().systemFields()
+        var generalFields = metadataProvider.systemFields()
         generalFields[ZendeskForms.IDs.category] = ZendeskForms.Fields.support
         return generalFields
     }
@@ -57,12 +63,14 @@ struct WCPluginsSupportDataSource: SupportFormMetaDataSource {
 /// Provides WC Payments Zendesk metadata.
 ///
 struct WCPaySupportDataSource: SupportFormMetaDataSource {
+    let metadataProvider: SupportFormMetadataProvider
+
     var formID: Int64 {
         ZendeskForms.IDs.wooForm
     }
 
     var tags: [String] {
-        SupportFormMetadataProvider().systemTags() + [ZendeskForms.Tags.appTransfer,
+        metadataProvider.systemTags() + [ZendeskForms.Tags.appTransfer,
                                                       ZendeskForms.Tags.wcPayments,
                                                       ZendeskForms.Tags.payment,
                                                       ZendeskForms.Tags.support,
@@ -70,7 +78,7 @@ struct WCPaySupportDataSource: SupportFormMetaDataSource {
     }
 
     var customFields: [Int64: String] {
-        var generalFields = SupportFormMetadataProvider().systemFields()
+        var generalFields = metadataProvider.systemFields()
         generalFields[ZendeskForms.IDs.category] = ZendeskForms.Fields.support
         generalFields[ZendeskForms.IDs.subCategory] = ZendeskForms.Fields.payment
         return generalFields
@@ -80,19 +88,21 @@ struct WCPaySupportDataSource: SupportFormMetaDataSource {
 /// Provides Other Plugins Zendesk metadata.
 ///
 struct OtherPluginsSupportDataSource: SupportFormMetaDataSource {
+    let metadataProvider: SupportFormMetadataProvider
+
     var formID: Int64 {
         ZendeskForms.IDs.wooForm
     }
 
     var tags: [String] {
-        SupportFormMetadataProvider().systemTags() + [ZendeskForms.Tags.productAreaWooExtensions,
+        metadataProvider.systemTags() + [ZendeskForms.Tags.productAreaWooExtensions,
                                                       ZendeskForms.Tags.appTransfer,
                                                       ZendeskForms.Tags.support,
                                                       ZendeskForms.Tags.store]
     }
 
     var customFields: [Int64: String] {
-        var generalFields = SupportFormMetadataProvider().systemFields()
+        var generalFields = metadataProvider.systemFields()
         generalFields[ZendeskForms.IDs.category] = ZendeskForms.Fields.support
         generalFields[ZendeskForms.IDs.subCategory] = ZendeskForms.Fields.store
         return generalFields

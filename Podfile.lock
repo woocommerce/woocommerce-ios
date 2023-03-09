@@ -25,7 +25,7 @@ PODS:
     - GTMSessionFetcher/Core (< 3.0, >= 1.5)
   - GTMSessionFetcher/Core (1.7.2)
   - KeychainAccess (4.2.2)
-  - Kingfisher (7.2.2)
+  - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
   - "NSURL+IDN (0.4)"
   - Sentry (7.31.5):
@@ -55,7 +55,7 @@ PODS:
     - wpxmlrpc (~> 0.10)
   - WordPressShared (2.0.0)
   - WordPressUI (1.12.5)
-  - Wormholy (1.6.5)
+  - Wormholy (1.6.6)
   - WPMediaPicker (1.8.1)
   - wpxmlrpc (0.10.0)
   - XLPagerTabStrip (9.0.0)
@@ -80,7 +80,7 @@ DEPENDENCIES:
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 4.2.2)
-  - Kingfisher (~> 7.2.2)
+  - Kingfisher (~> 7.6.2)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.14)
   - WordPress-Editor-iOS (~> 1.11.0)
@@ -88,7 +88,7 @@ DEPENDENCIES:
   - WordPressKit (~> 6.0)
   - WordPressShared (~> 2.0)
   - WordPressUI (~> 1.12.5)
-  - Wormholy (~> 1.6.5)
+  - Wormholy (~> 1.6.6)
   - WPMediaPicker (~> 1.8.1)
   - XLPagerTabStrip (~> 9.0)
   - ZendeskSupportSDK (~> 6.0)
@@ -151,7 +151,7 @@ SPEC CHECKSUMS:
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
-  Kingfisher: 184d4d1a8c36666e663caf8e08abe87898595c53
+  Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
   Sentry: 4c9babff9034785067c896fd580b1f7de44da020
@@ -166,7 +166,7 @@ SPEC CHECKSUMS:
   WordPressKit: 159e2ae8f5eb2c768d3cc04bdea0dedef81301a3
   WordPressShared: 35d41bdf0927e714af1fc85fa9cb692f934473be
   WordPressUI: c5be816f6c7b3392224ac21de9e521e89fa108ac
-  Wormholy: 3252bc3e55a1847ef9a0976c1377bd77bf3635fa
+  Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
   WPMediaPicker: 9011a0ec1f468c039af7485c244576b4c9889a0f
   wpxmlrpc: 68db063041e85d186db21f674adf08d9c70627fd
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
@@ -178,6 +178,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 069fec0d7db5d08f2248504260b92ab63bc898da
+PODFILE CHECKSUM: 5f61a65b165e130c4ca73a1746072edcb7735018
 
 COCOAPODS: 1.11.3

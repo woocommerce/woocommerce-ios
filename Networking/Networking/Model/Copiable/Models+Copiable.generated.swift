@@ -70,6 +70,42 @@ extension Networking.Address {
     }
 }
 
+extension Networking.Announcement {
+    public func copy(
+        appVersionName: CopiableProp<String> = .copy,
+        minimumAppVersion: CopiableProp<String> = .copy,
+        maximumAppVersion: CopiableProp<String> = .copy,
+        appVersionTargets: CopiableProp<[String]> = .copy,
+        detailsUrl: CopiableProp<String> = .copy,
+        announcementVersion: CopiableProp<String> = .copy,
+        isLocalized: CopiableProp<Bool> = .copy,
+        responseLocale: CopiableProp<String> = .copy,
+        features: CopiableProp<[Feature]> = .copy
+    ) -> Networking.Announcement {
+        let appVersionName = appVersionName ?? self.appVersionName
+        let minimumAppVersion = minimumAppVersion ?? self.minimumAppVersion
+        let maximumAppVersion = maximumAppVersion ?? self.maximumAppVersion
+        let appVersionTargets = appVersionTargets ?? self.appVersionTargets
+        let detailsUrl = detailsUrl ?? self.detailsUrl
+        let announcementVersion = announcementVersion ?? self.announcementVersion
+        let isLocalized = isLocalized ?? self.isLocalized
+        let responseLocale = responseLocale ?? self.responseLocale
+        let features = features ?? self.features
+
+        return Networking.Announcement(
+            appVersionName: appVersionName,
+            minimumAppVersion: minimumAppVersion,
+            maximumAppVersion: maximumAppVersion,
+            appVersionTargets: appVersionTargets,
+            detailsUrl: detailsUrl,
+            announcementVersion: announcementVersion,
+            isLocalized: isLocalized,
+            responseLocale: responseLocale,
+            features: features
+        )
+    }
+}
+
 extension Networking.Coupon {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -219,6 +255,48 @@ extension Networking.DotcomUser {
             email: email,
             displayName: displayName,
             avatar: avatar
+        )
+    }
+}
+
+extension Networking.Feature {
+    public func copy(
+        title: CopiableProp<String> = .copy,
+        subtitle: CopiableProp<String> = .copy,
+        icons: NullableCopiableProp<[FeatureIcon]> = .copy,
+        iconUrl: CopiableProp<String> = .copy,
+        iconBase64: NullableCopiableProp<String> = .copy
+    ) -> Networking.Feature {
+        let title = title ?? self.title
+        let subtitle = subtitle ?? self.subtitle
+        let icons = icons ?? self.icons
+        let iconUrl = iconUrl ?? self.iconUrl
+        let iconBase64 = iconBase64 ?? self.iconBase64
+
+        return Networking.Feature(
+            title: title,
+            subtitle: subtitle,
+            icons: icons,
+            iconUrl: iconUrl,
+            iconBase64: iconBase64
+        )
+    }
+}
+
+extension Networking.FeatureIcon {
+    public func copy(
+        iconUrl: CopiableProp<String> = .copy,
+        iconBase64: CopiableProp<String> = .copy,
+        iconType: CopiableProp<String> = .copy
+    ) -> Networking.FeatureIcon {
+        let iconUrl = iconUrl ?? self.iconUrl
+        let iconBase64 = iconBase64 ?? self.iconBase64
+        let iconType = iconType ?? self.iconType
+
+        return Networking.FeatureIcon(
+            iconUrl: iconUrl,
+            iconBase64: iconBase64,
+            iconType: iconType
         )
     }
 }

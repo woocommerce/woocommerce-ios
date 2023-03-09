@@ -528,6 +528,7 @@ private extension DefaultStoresManager {
             switch result {
             case .success(let site):
                 self.sessionManager.defaultSite = site
+                self.updateAndReloadWidgetInformation(with: site.siteID)
                 /// Trigger the `v1.1/connect/site-info` API to get information about
                 /// the site's Jetpack status and whether it's a WPCom site.
                 WordPressAuthenticator.fetchSiteInfo(for: url) { [weak self] result in
@@ -538,6 +539,7 @@ private extension DefaultStoresManager {
                                                     isJetpackConnected: info.isJetpackConnected,
                                                     isWordPressComStore: info.isWPCom)
                         self.sessionManager.defaultSite = updatedSite
+                        self.updateAndReloadWidgetInformation(with: site.siteID)
                     case .failure(let error):
                         DDLogError("⛔️ Cannot fetch generic site info: \(error)")
                     }
@@ -566,13 +568,22 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
-    /// Updates the necesary dependencies for the widget to function correctly.
+    /// Updates the necessary dependencies for the widget to function correctly.
     /// Reloads widgets timelines.
     ///
     func updateAndReloadWidgetInformation(with siteID: Int64?) {
-        // Token to fire network requests
-        if case let .wpcom(_, authToken, _) = sessionManager.defaultCredentials {
+        // Token/password to fire network requests
+        keychain.currentAuthToken = nil
+        keychain.siteCredentialPassword = nil
+        switch sessionManager.defaultCredentials {
+        case let .wpcom(_, authToken, _):
             keychain.currentAuthToken = authToken
+        case let .wporg(username, password, siteAddress):
+            keychain.siteCredentialPassword = password
+            UserDefaults.group?[.defaultUsername] = username
+            UserDefaults.group?[.defaultSiteAddress] = siteAddress
+        default:
+            break
         }
 
         // Non-critical store info

@@ -171,4 +171,8 @@ public enum FeatureFlag: Int {
     ///Ability to add coupon to order
     ///
     case addCouponToOrder
+
+    /// Whether to enable product bundle settings in product details
+    ///
+    case productBundles
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-07 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-03-08 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -3803,7 +3803,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Let us know what you think" = "Dinos lo que piensas";
 
 /* Message info on the support screen. */
-"Let us know your site address (URL) and tell us as much as you can about the problem," = "Indícanos la dirección de tu sitio (URL) y detalla el problema todo lo que puedas.";
+"Let us know your site address (URL) and tell us as much as you can about the problem," = "Indícanos la dirección de tu sitio (URL) y danos toda la información que puedas sobre el problema.";
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Carta (8,5\" x 11\")";
@@ -6104,7 +6104,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Set up Jetpack" = "Configurar Jetpack";
 
 /* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
-"Set up Tap to Pay on iPhone" = "Configura la función \"Toca para pagar en el iPhone\"";
+"Set up Tap to Pay on iPhone" = "Configura la función \"Tap to Pay on iPhone\"";
 
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */

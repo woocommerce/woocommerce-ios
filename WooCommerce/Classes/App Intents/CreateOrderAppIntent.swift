@@ -4,9 +4,9 @@ import Foundation
 
 
 @available(iOS 16, *)
-struct CollectPaymentAppIntent: AppIntent {
+struct CreateOrderAppIntent: AppIntent {
     // looks up in our Localizable.string to localize
-    static var title: LocalizedStringResource = "Collect payment"
+    static var title: LocalizedStringResource = "Create order"
     static var openAppWhenRun = true
 
     @MainActor
@@ -18,10 +18,10 @@ struct CollectPaymentAppIntent: AppIntent {
 }
 
 @available(iOS 16, *)
-extension CollectPaymentAppIntent {
+extension CreateOrderAppIntent {
     enum Localization {
-        // Here to be added to Localizable.strings so it can be looked up by `theLocalizedStringResource` above
-        static let title = NSLocalizedString("Collect payment", comment: "Title for the Collect Payment iOS Shortcut")
+        // Here to be added to Localizable.strings so it can be looked up by the `LocalizedStringResource` above
+        static let title = NSLocalizedString("Create order", comment: "Title for the Create Order iOS Shortcut")
 
     }
 }

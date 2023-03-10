@@ -59,7 +59,12 @@ public final class WordPressOrgNetwork: Network {
                     continuation.resume(returning: responseObject)
                 case .failure(let error):
                     DDLogWarn("⚠️ Error requesting \(request.urlRequest?.url?.absoluteString ?? ""): \(error.localizedDescription)")
-                    continuation.resume(throwing: error)
+                    do {
+                        try self.validateResponse(response.data)
+                        continuation.resume(throwing: error)
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
                 }
 
             })
@@ -79,7 +84,12 @@ public final class WordPressOrgNetwork: Network {
         sessionManager.request(request)
             .validate()
             .responseData { response in
-                completion(response.value, response.networkingError)
+                do {
+                    try self.validateResponse(response.data)
+                    completion(response.value, response.networkingError)
+                } catch {
+                    completion(nil, error)
+                }
             }
     }
 
@@ -96,7 +106,12 @@ public final class WordPressOrgNetwork: Network {
         sessionManager.request(request)
             .validate()
             .responseData { response in
-                completion(response.result.toSwiftResult())
+                do {
+                    try self.validateResponse(response.data)
+                    completion(response.result.toSwiftResult())
+                } catch {
+                    completion(.failure(error))
+                }
             }
     }
 
@@ -112,8 +127,13 @@ public final class WordPressOrgNetwork: Network {
         return Future() { [weak self] promise in
             guard let self = self else { return }
             self.sessionManager.request(request).validate().responseData { response in
-                let result = response.result.toSwiftResult()
-                promise(Swift.Result.success(result))
+                do {
+                    try self.validateResponse(response.data)
+                    let result = response.result.toSwiftResult()
+                    promise(Swift.Result.success(result))
+                } catch {
+                    promise(Swift.Result.success(.failure(error)))
+                }
             }
         }.eraseToAnyPublisher()
     }
@@ -125,7 +145,12 @@ public final class WordPressOrgNetwork: Network {
             switch encodingResult {
             case .success(let upload, _, _):
                 upload.responseData { response in
-                    completion(response.value, response.error)
+                    do {
+                        try self.validateResponse(response.data)
+                        completion(response.value, response.error)
+                    } catch {
+                        completion(nil, error)
+                    }
                 }
             case .failure(let error):
                 completion(nil, error)
@@ -149,5 +174,26 @@ private extension WordPressOrgNetwork {
         sessionManager.adapter = authenticator
         sessionManager.retrier = authenticator
         return sessionManager
+    }
+
+    /// Validates whether the REST API request failed with an invalid cookie nonce.
+    ///
+    func validateResponse(_ data: Data?) throws {
+        if let data,
+           let error = try? JSONDecoder().decode(ErrorResponse.self, from: data),
+           error.code == "rest_cookie_invalid_nonce" {
+            throw NetworkError.invalidCookieNonce
+        }
+    }
+}
+
+private extension WordPressOrgNetwork {
+    /// Error response for REST API requests.
+    struct ErrorResponse: Decodable {
+        /// Error code
+        let code: String
+        
+        /// Error message
+        let message: String
     }
 }

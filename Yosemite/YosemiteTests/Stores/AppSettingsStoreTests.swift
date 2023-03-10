@@ -1044,7 +1044,7 @@ private extension AppSettingsStoreTests {
             isCouponManagementSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
             isTapToPayOnIPhoneSwitchEnabled: false,
-            isProductMultiSelectionEnabled: false,
+            isProductMultiSelectionSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:]
         )
@@ -1060,7 +1060,7 @@ private extension AppSettingsStoreTests {
             isCouponManagementSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
             isTapToPayOnIPhoneSwitchEnabled: false,
-            isProductMultiSelectionEnabled: false,
+            isProductMultiSelectionSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings
         )

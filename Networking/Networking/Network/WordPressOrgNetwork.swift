@@ -192,7 +192,7 @@ private extension WordPressOrgNetwork {
     struct ErrorResponse: Decodable {
         /// Error code
         let code: String
-        
+
         /// Error message
         let message: String
     }

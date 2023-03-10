@@ -33,10 +33,8 @@ def tracks
   # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
 end
 
-def wordpress_kit
-  # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressKit', '~> 6.0'
-  # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
+def wordpress_shared
+  pod 'WordPressShared', '~> 2.0'
 end
 
 def keychain
@@ -61,6 +59,7 @@ def networking_pods
   cocoa_lumberjack
 
   pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
+  wordpress_shared
 
   # Used for HTML parsing
   aztec
@@ -68,7 +67,6 @@ def networking_pods
   # Used for storing application password
   keychain
 
-  wordpress_kit
 end
 
 # Main Target!
@@ -91,7 +89,7 @@ target 'WooCommerce' do
    pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'trunk'
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
-  pod 'WordPressShared', '~> 2.0'
+  wordpress_shared
 
   pod 'WordPressUI', '~> 1.12.5'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''

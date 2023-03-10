@@ -150,6 +150,17 @@ private extension CookieNonceAuthenticator {
         requestsToRetry.removeAll()
     }
 
+    func readNonceFromAjaxAction(html: String) -> String? {
+        html.isEmpty ? nil : html
+    }
+
+    func buildNonceRequestURL(base: URL) -> URL? {
+        URL(string: "admin-ajax.php?action=rest-nonce", relativeTo: base)
+    }
+}
+
+// MARK: Public helpers
+extension CookieNonceAuthenticator {
     func authenticatedRequest() -> URLRequest {
         var request = URLRequest(url: loginURL)
 
@@ -162,15 +173,11 @@ private extension CookieNonceAuthenticator {
         parameters.append(URLQueryItem(name: "rememberme", value: "true"))
         var components = URLComponents()
         components.queryItems = parameters
-        request.httpBody = components.percentEncodedQuery?.data(using: .utf8)
+
+        /// `percentEncodedQuery` creates a validly escaped URL query component, but
+        /// doesn't encode the '+'. Percent encodes '+' to avoid this ambiguity.
+        let characterSet = CharacterSet(charactersIn: "+").inverted
+        request.httpBody = components.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: characterSet)?.data(using: .utf8)
         return request
-    }
-
-    func readNonceFromAjaxAction(html: String) -> String? {
-        html.isEmpty ? nil : html
-    }
-
-    func buildNonceRequestURL(base: URL) -> URL? {
-        URL(string: "admin-ajax.php?action=rest-nonce", relativeTo: base)
     }
 }

@@ -341,6 +341,7 @@ public enum WooAnalyticsStat: String {
     case ordersListFilter = "orders_list_filter"
     case ordersListSearch = "orders_list_search"
     case ordersListLoaded = "orders_list_loaded"
+    case ordersListLoadError = "orders_list_load_error"
     case orderProductAdd = "order_product_add"
     case orderProductQuantityChange = "order_product_quantity_change"
     case orderProductRemove = "order_product_remove"
@@ -816,6 +817,9 @@ public enum WooAnalyticsStat: String {
     // MARK: Universal Links
     case universalLinkOpened = "universal_link_opened"
     case universalLinkFailed = "universal_link_failed"
+
+    // MARK: Spotlight
+    case spotlightActivityOpened = "spotlight_activity_opened"
 
     // MARK: Login Jetpack Connection
     case loginJetpackConnectionErrorShown = "login_jetpack_connection_error_shown"

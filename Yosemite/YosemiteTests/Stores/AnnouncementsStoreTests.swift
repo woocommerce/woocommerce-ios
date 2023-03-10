@@ -45,7 +45,7 @@ final class AnnouncementsStoreTests: XCTestCase {
 
     func test_synchronize_announcements_effectively_retrieves_latest_announcement() {
         // Arrange
-        let announcement = makeWordPressAnnouncement()
+        let announcement = makeAnnouncement()
         remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success([announcement]))
 
         // Act
@@ -177,7 +177,7 @@ private extension AnnouncementsStoreTests {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("feature-announcements.plist")
     }
 
-    func makeWordPressAnnouncement() -> Yosemite.Announcement {
+    func makeAnnouncement() -> Yosemite.Announcement {
         Announcement.fake().copy(appVersionName: "1",
                                  detailsUrl: "http://wordpress.org",
                                  announcementVersion: "2",

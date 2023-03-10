@@ -11,7 +11,8 @@ struct CollectPaymentAppIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        MainTabBarController.presentOrderCreationFlow()
+        MainTabBarController.presentCollectPayment()
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.AppIntents.shortcutWasOpened(with: .collectPayment))
 
         return .result()
     }

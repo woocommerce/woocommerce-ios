@@ -34,7 +34,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .loginMagicLinkEmphasisM2:
             return true
         case .productMultiSelectionM1:
-            return false
+            return buildConfig == .localDeveloper  || buildConfig == .alpha
         case .promptToEnableCodInIppOnboarding:
             return true
         case .searchProductsBySKU:

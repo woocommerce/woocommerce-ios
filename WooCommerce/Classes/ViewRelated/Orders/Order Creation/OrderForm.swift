@@ -352,7 +352,7 @@ struct OrderForm_Previews: PreviewProvider {
 
 private extension ProductSelectorView.Configuration {
     static let addProductToOrder: Self =
-        .init(multipleSelectionsEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
+        .init(multipleSelectionsEnabled: ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection),
               clearSelectionEnabled: false,
               searchHeaderBackgroundColor: .listBackground,
               prefersLargeTitle: false,

@@ -71,6 +71,10 @@ final class EditableOrderViewModel: ObservableObject {
         }
     }
 
+    private var isProductMultiSelectionBetaFeatureEnabled: Bool {
+        ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection) ? true : false
+    }
+
     /// Active navigation bar trailing item.
     /// Defaults to create button.
     ///
@@ -173,7 +177,7 @@ final class EditableOrderViewModel: ObservableObject {
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
-            supportsMultipleSelection: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
+            supportsMultipleSelection: isProductMultiSelectionBetaFeatureEnabled,
             toggleAllVariationsOnSelection: false,
             onProductSelected: { [weak self] product in
                 guard let self = self else { return }

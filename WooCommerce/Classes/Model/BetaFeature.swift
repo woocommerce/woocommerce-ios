@@ -20,7 +20,7 @@ extension BetaFeature {
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementTitle
         case .productMultiSelection:
-            return ""
+            return Localization.productMultiSelectionTitle
         }
     }
 
@@ -35,7 +35,7 @@ extension BetaFeature {
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementDescription
         case .productMultiSelection:
-            return ""
+            return Localization.productSKUScannerDescription
         }
     }
 
@@ -146,5 +146,12 @@ private extension BetaFeature {
         static let inAppPurchasesManagementDescription = NSLocalizedString(
             "Test out in-app purchases as we get ready to launch",
             comment: "Cell description on beta features screen to enable in-app purchases")
+
+        static let productMultiSelectionTitle = NSLocalizedString(
+            "Product Multi-Selection",
+            comment: "Cell title on beta features screen to enable Product Multi-Selection")
+        static let productMultiSelectionDescription = NSLocalizedString(
+            "Test out Product Multi-Selection as we get ready to launch",
+            comment: "Cell description on beta features screen to enable Product Multi-Selection")
     }
 }

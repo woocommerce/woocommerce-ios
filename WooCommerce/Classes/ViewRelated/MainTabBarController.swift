@@ -417,14 +417,23 @@ extension MainTabBarController {
         }
     }
 
-    static func presentPayments() {
+    @discardableResult
+    static func presentPayments() -> InPersonPaymentsMenuViewController? {
         switchToHubMenuTab()
 
         guard let hubMenuViewController: HubMenuViewController = childViewController() else {
-            return
+            return nil
         }
 
-        hubMenuViewController.showPaymentsMenu()
+        return hubMenuViewController.showPaymentsMenu()
+    }
+
+    static func presentCollectPayment() {
+        let viewController = presentPayments()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            viewController?.openSimplePaymentsAmountFlow()
+        }
     }
 }
 

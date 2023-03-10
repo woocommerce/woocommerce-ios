@@ -10,33 +10,69 @@ struct AugmentedRealityCreateUSDZ: View {
     }
 
     var body: some View {
-        VStack(spacing: 32.0) {
-            Button(action: viewModel.importFilesTapped) { Text("Select images") }
-                .buttonStyle(.borderedProminent)
-            Picker("Quality", selection: $viewModel.quality) {
-                ForEach(QualityOptions.allCases) { level in
-                    Text(level.name)
+        VStack {
+            Form {
+                Section {
+                    Button(action: viewModel.importFilesTapped) {
+                        Text("Select image folder")
+                    }
+                    if let folderName = viewModel.selectedFolderURL?.lastPathComponent {
+                        HStack {
+                            Image(systemName: "folder")
+                            Text(folderName)
+                        }
+                    }
+                }
+
+                Section {
+                    Picker("Quality", selection: $viewModel.quality) {
+                        ForEach(QualityOptions.allCases) { level in
+                            Text(level.name).tag(level)
+                        }
+                    }
+                    Button(action: viewModel.goTapped) { Text("Go") }
+                        .disabled(viewModel.selectedFolderURL == nil)
+                    if viewModel.progress > 0 {
+                        ProgressView("Generating: ", value: viewModel.progress)
+                            .padding([.trailing, .leading], 32)
+                    }
+                }
+                Section {
+                    Button(action: viewModel.showPreviewTapped) { Text("Preview 3D model") }
+                        .disabled(viewModel.generatedFileURL == nil)
+                    Button(action: viewModel.saveToICloudTapped) { Text("Save to iCloud") }
+                        .disabled(viewModel.generatedFileURL == nil)
                 }
             }
-            Button(action: viewModel.goTapped) { Text("Go") }
-                .disabled(viewModel.selectedFolderURL == nil)
-                .buttonStyle(.borderedProminent)
-            ProgressView("Generating: ", value: viewModel.progress)
-            Button(action: viewModel.showPreviewTapped) { Text("Preview 3D model") }
-                .disabled(viewModel.generatedFileURL == nil)
-                .buttonStyle(.borderedProminent)
+            if viewModel.previewShowing,
+               let url = viewModel.generatedFileURL {
+                PreviewController(url: url)
+            } else {
+                EmptyView()
+            }
         }
         .padding()
         .fileImporter(isPresented: $viewModel.showDocumentPicker,
                       allowedContentTypes: [.folder],
                       allowsMultipleSelection: false,
                       onCompletion: viewModel.foldersSelected(_:))
-        .sheet(isPresented: $viewModel.previewShowing) {
-            if let url = viewModel.generatedFileURL {
-                PreviewController(url: url)
-            } else {
-                EmptyView()
+        .fileMover(isPresented: $viewModel.showExportPicker, file: viewModel.generatedFileURL, onCompletion: { result in
+            switch result {
+            case .failure(let error):
+                DDLogError("🥽 Error exporting file \(error)")
+            case .success:
+                DDLogInfo("🥽 Exported file")
             }
+        })
+    }
+}
+
+struct Previews_AugmentedRealityCreateUSDZ_Previews: PreviewProvider {
+    static var previews: some View {
+        if #available(macCatalyst 16.0, *) {
+            AugmentedRealityCreateUSDZ()
+        } else {
+            EmptyView()
         }
     }
 }
@@ -82,7 +118,7 @@ struct PreviewController: UIViewControllerRepresentable {
 import RealityKit
 
 @available(macCatalyst 16.0, *)
-enum QualityOptions: CaseIterable, Identifiable {
+enum QualityOptions: String, CaseIterable, Identifiable {
     case maximum
     case high
     case medium
@@ -129,6 +165,7 @@ enum QualityOptions: CaseIterable, Identifiable {
 @available(macCatalyst 16.0, *)
 class AugmentedRealityCreateUSDZViewModel: ObservableObject {
     @MainActor @Published var showDocumentPicker: Bool = false
+    @MainActor @Published var showExportPicker: Bool = false
     @MainActor @Published var selectedFolderURL: URL? = nil
     @MainActor @Published var generatedFileURL: URL? = nil
     @MainActor @Published var previewShowing: Bool = false
@@ -251,6 +288,14 @@ class AugmentedRealityCreateUSDZViewModel: ObservableObject {
         Task {
             await MainActor.run {
                 previewShowing.toggle()
+            }
+        }
+    }
+
+    func saveToICloudTapped() {
+        Task {
+            await MainActor.run {
+                showExportPicker = true
             }
         }
     }

@@ -45,6 +45,7 @@ struct AugmentedRealityMenu: View {
                         .padding(16)
                 }
             }
+            .frame(maxWidth: 400)
             .padding(16)
 
             VStack {
@@ -56,7 +57,7 @@ struct AugmentedRealityMenu: View {
                         .background(Color(UIColor.wooCommercePurple(.shade40)))
                         .clipShape(Circle())
                     Spacer()
-                    HubMenuElement(image: .init(systemName: "move.3d")!,
+                    HubMenuElement(image: .init(systemName: "wand.and.stars")!,
                                    imageColor: .systemOrange,
                                    text: "Generate model",
                                    badge: .number(number: 0),
@@ -72,6 +73,7 @@ struct AugmentedRealityMenu: View {
                         .padding(4)
                 }
             }
+            .frame(maxWidth: 400)
             .padding(16)
 
             VStack {
@@ -83,7 +85,7 @@ struct AugmentedRealityMenu: View {
                         .background(Color(UIColor.wooCommercePurple(.shade40)))
                         .clipShape(Circle())
                     Spacer()
-                    HubMenuElement(image: .init(systemName: "iphone.badge.play")!,
+                    HubMenuElement(image: .init(systemName: "move.3d")!,
                                    imageColor: .wooBlue,
                                    text: "Preview model",
                                    badge: .number(number: 0),
@@ -100,14 +102,19 @@ struct AugmentedRealityMenu: View {
                         .padding(16)
                 }
             }
+            .frame(maxWidth: 400)
             .padding(16)
 
-            NavigationLink(destination:
-                            AugmentedRealityCreateUSDZ()
-                            .navigationTitle("Create USDZ files"),
-                           isActive: $showingCreateUSDz) {
+            if #available(macCatalyst 16.0, *) {
+                NavigationLink(destination:
+                                AugmentedRealityCreateUSDZ()
+                    .navigationTitle("Create USDZ files"),
+                               isActive: $showingCreateUSDz) {
+                    EmptyView()
+                }.hidden()
+            } else {
                 EmptyView()
-            }.hidden()
+            }
         }
         .padding(Constants.padding)
         .background(Color(.listBackground))
@@ -126,14 +133,9 @@ struct AugmentedRealityMenu: View {
             showingPreview = true
             showDocumentPicker = false
         })
-//        .sheet(isPresented: $showingPreview) {
-//            if let url = selectedPreviewFileURL {
-//                PreviewController(url: url)
-//            } else {
-//                EmptyView()
-//            }
-//        }
+        #if !targetEnvironment(macCatalyst)
         .quickLookPreview($selectedPreviewFileURL)
+        #endif
     }
 }
 

@@ -822,7 +822,7 @@ public enum WooAnalyticsStat: String {
     case spotlightActivityOpened = "spotlight_activity_opened"
 
     // MARK: App Intents
-    case appIntentShortcutOpened = "shorcut_opened"
+    case appIntentShortcutOpened = "shortcut_opened"
 
     // MARK: Login Jetpack Connection
     case loginJetpackConnectionErrorShown = "login_jetpack_connection_error_shown"

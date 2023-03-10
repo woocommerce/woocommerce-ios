@@ -7,6 +7,7 @@
 - [*] Main screens are now accessible through the Home Screen Spotlight Search [https://github.com/woocommerce/woocommerce-ios/pull/9082]
 - [*] Stats: Fixed a crash when order stats use a date and time matching the start of Daylight Saving Time. [https://github.com/woocommerce/woocommerce-ios/pull/9083]
 - [*] Fix: Dismiss Take Payment popup after sharing the payment link to another app. [https://github.com/woocommerce/woocommerce-ios/pull/9042]
+- [*] Site credential login: Catch invalid cookie nonce [https://github.com/woocommerce/woocommerce-ios/pull/9102]
 
 12.6
 -----

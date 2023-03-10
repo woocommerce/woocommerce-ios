@@ -70,6 +70,16 @@ class BetaFeaturesTests: XCTestCase {
         XCTAssertEqual(enabled, true)
     }
 
+    func test_productMultiSelection_defaults_to_false() {
+        let enabled = appSettings.betaFeatureEnabled(.productMultiSelection)
+        XCTAssertEqual(enabled, false)
+    }
+
+    func test_productMultiSelection_defaults_saves_value() throws {
+        try appSettings.setBetaFeatureEnabled(.productMultiSelection, enabled: true)
+        let enabled = appSettings.betaFeatureEnabled(.productMultiSelection)
+        XCTAssertEqual(enabled, true)
+    }
 }
 
 private final class MockInMemoryStorage: FileStorage {

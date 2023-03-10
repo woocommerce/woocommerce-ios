@@ -5,6 +5,7 @@ enum BetaFeature: String, CaseIterable {
     case productSKUScanner
     case couponManagement
     case inAppPurchases
+    case productMultiSelection
 }
 
 extension BetaFeature {
@@ -18,6 +19,8 @@ extension BetaFeature {
             return Localization.couponManagementTitle
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementTitle
+        case .productMultiSelection:
+            return ""
         }
     }
 
@@ -31,6 +34,8 @@ extension BetaFeature {
             return Localization.couponManagementDescription
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementDescription
+        case .productMultiSelection:
+            return ""
         }
     }
 
@@ -44,6 +49,8 @@ extension BetaFeature {
             return \.isCouponManagementSwitchEnabled
         case .inAppPurchases:
             return \.isInAppPurchasesSwitchEnabled
+        case .productMultiSelection:
+            return \.isProductMultiSelectionEnabled
         }
     }
 

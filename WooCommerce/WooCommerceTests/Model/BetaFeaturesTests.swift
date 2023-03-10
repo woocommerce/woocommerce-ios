@@ -80,6 +80,14 @@ class BetaFeaturesTests: XCTestCase {
         let enabled = appSettings.betaFeatureEnabled(.productMultiSelection)
         XCTAssertEqual(enabled, true)
     }
+
+    func test_productMultiSelection_binding_reads_and_writes_value() {
+        let enabledBinding = appSettings.betaFeatureEnabledBinding(.productMultiSelection)
+        XCTAssertFalse(enabledBinding.wrappedValue)
+        enabledBinding.wrappedValue = true
+        let enabled = appSettings.betaFeatureEnabled(.productMultiSelection)
+        XCTAssertTrue(enabled)
+    }
 }
 
 private final class MockInMemoryStorage: FileStorage {

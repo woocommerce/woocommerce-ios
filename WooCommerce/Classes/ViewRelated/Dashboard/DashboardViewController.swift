@@ -149,6 +149,7 @@ final class DashboardViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        registerUserActivity()
         configureNavigation()
         configureView()
         configureStackView()

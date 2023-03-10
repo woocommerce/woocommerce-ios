@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-02-21 14:54:04+0000 */
+/* Translation-Revision-Date: 2023-03-07 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -117,6 +117,9 @@ which should be translated separately and considered part of this sentence. */
 /* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
 "%1$d Products" = "%1$d produkter";
 
+/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products selected */
+"%1$d Products selected" = "%1$d produkter valda";
+
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
 "%1$d business day" = "%1$d arbetsdag";
 
@@ -132,6 +135,9 @@ which should be translated separately and considered part of this sentence. */
 /* Total number of items and packages in Shipping Label form. */
 "%1$d items in %2$d packages" = "%1$d varor i %2$d förpackningar";
 
+/* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in full-screen/expanded mode. */
+"%1$d of %2$d tasks completed" = "%1$d av %2$d uppgifter har slutförts";
+
 /* Number of rates selected in Shipping Labels > Carrier and Rates */
 "%1$d rates selected" = "%1$d avgifter valda";
 
@@ -140,6 +146,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural limit of time for each user to apply a coupon, reads like: 10 uses per user */
 "%1$d uses per user" = "%1$d användningar per användare";
+
+/* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in collapsed mode in the dashboard screen. */
+"%1$d\/%2$d completed" = "%1$d\/%2$d har slutförts";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */
@@ -229,6 +238,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "1 produkt vald";
 
+/* Title of the action button at the bottom of the Select Products screen when one product is selected */
+"1 Product selected" = "1 produkt vald";
+
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1 objekt har valts";
 
@@ -262,6 +274,9 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "Ett tullformulär måste skrivas ut och inkluderas i denna internationella försändelse";
 
+/* Description of the Action sheet option when the user wants to change the Product type to virtual product */
+"A digital product like services, downloadable books, music or videos" = "En digital produkt som tjänster, nedladdningsbara böcker, musik eller video";
+
 /* Message when attempting to pay for a test transaction with a live card. */
 "A live card was used on a site in test mode. Use a test card instead." = "Ett live-kort användes på en webbplats i testläge. Använd ett testkort istället.";
 
@@ -276,6 +291,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Det gick inte att upprätta en säker anslutning till webbplatsen. Se till att din webbplats har ett giltigt SSL-certifikat.";
+
+/* Description of the Action sheet option when the user wants to change the Product type to physical product */
+"A tangible item that gets delivered to customers" = "En materiell artikel som levereras till kunder";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "A unique digital product like services, downloadable books, music or videos" = "En unik digital produkt som tjänster, nedladdningsbara böcker, musik eller videor";
@@ -395,6 +413,9 @@ which should be translated separately and considered part of this sentence. */
    Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "Lägg till anteckning";
 
+/* Title of the CTA button at the bottom of the product form to add more product details. */
+"Add Options" = "Lägg till alternativ";
+
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
 "Add Pay in Person to your checkout" = "Lägg till Betala personligen i din kassa";
 
@@ -459,6 +480,9 @@ which should be translated separately and considered part of this sentence. */
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Lägg till en produktbild";
 
+/* Description of the Action sheet option when the user wants to create a product manually */
+"Add a product manually" = "Lägg till en produkt manuellt";
+
 /* Description for the option to create product manually */
 "Add a product manually." = "Lägg till en produkt manuellt.";
 
@@ -499,6 +523,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Lägg till produktlänk";
 
+/* Title of the product form bottom sheet action for switching to variable product type. */
+"Add product variations" = "Lägg till produktvarianter";
+
 /* Title for the Products onboarding banner */
 "Add products to sell" = "Lägg till produkter att sälja";
 
@@ -507,6 +534,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Lägg till produktinformation för nedladdningsbara filer på distans";
+
+/* Subtitle of the product form bottom sheet action for switching to variable product type. */
+"Add sizes, colors, or other options" = "Lägg till storlekar, färger eller andra alternativ";
 
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Lägg till beskrivningen för rabattkoden";
@@ -519,6 +549,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Lägg till vikt och dimensioner";
+
+/* Title of the store onboarding task to add the first product. */
+"Add your first product" = "Lägg till din första produkt";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "Lägg till din första butik";
@@ -954,6 +987,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Beauty Products" = "Skönhetsprodukter";
 
+/* Display label when a product bundle's add-to-cart form is displayed before the single-product tabs. */
+"Before Tabs" = "Före flikar";
+
 /* Country option for a site address. */
 "Belarus" = "Belarus";
 
@@ -991,6 +1027,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Billing Information view Title */
 "Billing Information" = "Faktureringsinformation";
+
+/* Action sheet option when the user wants to create a product manually */
+"Blank" = "Tom";
 
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Citatblock";
@@ -1068,6 +1107,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button that presents a menu with possible products bulk update options */
 "Bulk update" = "Massuppdatera";
 
+/* Display label for bundle product type. */
+"Bundle" = "Paket";
+
 /* Country option for a site address. */
 "Burkina Faso" = "Burkina Faso";
 
@@ -1098,6 +1140,9 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the label at the end of the Jetpack setup required screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com.
    Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
 "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "Genom att trycka på knappen Anslut Jetpack godkänner du våra %1$@ och samtycker till att %2$@ med WordPress.com.";
+
+/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
+"By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "Genom att trycka på knappen Installera Jetpack godkänner du våra %1$@ och samtycker till att %2$@ med WordPress.com.";
 
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "LÄNDER";
@@ -1154,6 +1199,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
    Button to cancel the creation of an order on the New Order screen
+   Button to dismiss an error alert in the Jetpack setup flow
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
@@ -1163,6 +1209,8 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
    Button to dismiss the alert presented while the reader is being prepared.
+   Button to dismiss the error modal when a user without admin role tries to install Jetpack
+   Button to dismiss the new product form
    Button to dismiss the site credential login screen
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
@@ -1187,6 +1235,7 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
    Label for a cancel button
+   Navigation bar button on the domain settings screen to leave the flow.
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Text for the cancel button in the edit customer provided note screen
@@ -1343,7 +1392,8 @@ which should be translated separately and considered part of this sentence. */
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Kontrollera att angiven URL är giltig";
 
-/* The title text on the magic link requested screen. */
+/* Message on the magic link screen of the WPCom login flow during Jetpack setup
+   The title text on the magic link requested screen. */
 "Check your email on this device!" = "Kontrollera din e-post på denna enhet!";
 
 /* Instruction text after a login Magic Link was requested. */
@@ -1390,6 +1440,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product */
 "Choose a template" = "Välj en mall";
+
+/* Message subtitle of bottom sheet for selecting a product type to create a product with a template */
+"Choose a template for your product" = "Välj en mall för din produkt";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Välj från enheten";
@@ -1559,6 +1612,8 @@ which should be translated separately and considered part of this sentence. */
    Button on the Jetpack setup interrupted screen to continue the setup
    Button title on the site credential login screen
    Button to authorize Jetpack connection from the Jetpack setup required screen
+   Title for the WPCom email login screen when Jetpack is not connected yet
+   Title for the WPCom magic link screen when Jetpack is not connected yet
    Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "Anslut Jetpack";
 
@@ -1659,6 +1714,7 @@ which should be translated separately and considered part of this sentence. */
 "Content Type" = "Innehållstyp";
 
 /* Button on the Store Picker screen to select a store
+   Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button inside every cell inside Create Shipping Label form
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
@@ -1984,6 +2040,9 @@ which should be translated separately and considered part of this sentence. */
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "Kunder behöver ange den här koden för att använda rabattkoden.";
 
+/* Title of the store onboarding task to customize the store domain. */
+"Customize your domain" = "Anpassa din domän";
+
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "Anpassade";
@@ -2033,7 +2092,8 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Debt Reduction Services" = "Skuldminskningstjänster";
 
-/* Description of the default paragraph formatting style in the editor. */
+/* Description of the default paragraph formatting style in the editor.
+   Display label for the product bundle's default form location */
 "Default" = "Standard";
 
 /* Button title Delete in Downloadable File Options Action Sheet
@@ -2286,7 +2346,8 @@ which should be translated separately and considered part of this sentence. */
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Nedladdningsbar produkt";
 
-/* Title of the Downloadable Files row on Product main screen */
+/* Title of the Downloadable Files row on Product main screen
+   Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "Nedladdningsbara filer";
 
 /* Display label for auto-draft order status.
@@ -2393,6 +2454,7 @@ which should be translated separately and considered part of this sentence. */
 "Email" = "E-post";
 
 /* Accessibility label for the email address text field.
+   Label for the email field on the WPCom email login screen of the Jetpack setup flow.
    Placeholder for a textfield. The user may enter their email address.
    Placeholder for the email address textfield.
    Placeholder of the email field on the account creation form. */
@@ -2517,6 +2579,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
 "Enter description" = "Ange beskrivning";
 
+/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
+"Enter email" = "Ange e-post";
+
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "Ange fil-URL";
 
@@ -2524,7 +2589,8 @@ which should be translated separately and considered part of this sentence. */
 "Enter number (Optional)" = "Ange nummer (valfritt)";
 
 /* Enter password placeholder in Product Visibility
-   Placeholder for the password field on the site credential login screen */
+   Placeholder for the password field on the site credential login screen
+   Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter password" = "Ange lösenord";
 
 /* Sign in instructions for logging in with a URL. */
@@ -2557,6 +2623,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder for the username field on the site credential login screen */
 "Enter username" = "Ditt användarnamn";
+
+/* Label for the password field on the WPCom password login screen of the Jetpack setup flow. */
+"Enter your WordPress.com password" = "Ange ditt WordPress.com-lösenord";
 
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "Ange din kontoinformation för %@.";
@@ -2601,6 +2670,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication */
 "Error checking for the WooCommerce plugin." = "Det gick inte att söka efter WooCommerce-tillägget.";
 
+/* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
+"Error checking the Jetpack connection on your site" = "Fel vid kontroll av Jetpack-anslutningen på din webbplats";
+
+/* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
+"Error checking the WordPress.com account associated with this email. Please try again." = "Det gick inte att kontrollera WordPress.com-kontot som är kopplat till den här e-postadressen. Försök igen.";
+
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "Felkod %1$d";
 
@@ -2630,6 +2705,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Ett fel uppstod vid köp av etiketten";
+
+/* Message shown on the error alert displayed when requesting authentication link for the Jetpack setup flow fails */
+"Error requesting authentication link for your account. Please try again." = "Det gick inte att begära en autentiseringslänk för ditt konto. Försök igen.";
 
 /* Title of the notice about an error saving images uploaded in the background to a product. */
 "Error saving product images" = "Det gick inte att spara produktbilder";
@@ -2862,6 +2940,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Fast produktrabatt";
 
+/* Display label for the product bundle's item grouping */
+"Flat" = "Fast";
+
 /* Industry option in the store creation category question. */
 "Flowers" = "Blommor";
 
@@ -2969,8 +3050,14 @@ which should be translated separately and considered part of this sentence. */
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
 "Get a login link by email" = "Få en inloggningslänk via e-post";
 
+/* Subtitle of multiple stores as part of Jetpack benefits. */
+"Get access to all of your WooCommerce stores." = "Få åtkomst till alla dina WooCommerce-butiker.";
+
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Få svar på frågor som du har";
+
+/* Title of the store onboarding task to get paid. */
+"Get paid" = "Få betalt";
 
 /* Subtitle of push notifications as part of Jetpack benefits. */
 "Get push notifications for new orders, reviews, etc. delivered to your device." = "Få push-notiser för nya beställningar, recensioner med mera levererade till din enhet.";
@@ -2997,7 +3084,8 @@ which should be translated separately and considered part of this sentence. */
 "Get the most out of your store" = "Få ut så mycket som möjligt av din butik";
 
 /* Message shown in the Reviews tab if the list is empty
-   Message shown on the Product Reviews screen if the list is empty */
+   Message shown on the Product Reviews screen if the list is empty
+   Subtitle of the product form bottom sheet action for reviews. */
 "Get your first reviews" = "Skaffa din första recension";
 
 /* Alerts the user that wpcom account information is being retrieved. */
@@ -3023,6 +3111,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Ge feedback";
+
+/* Subtitle of the store onboarding task to get paid. */
+"Give your customers an easy and convenient way to pay!" = "Ge dina kunder ett enkelt och bekvämt sätt att betala!";
 
 /* Message for the Linked Products announcement banner */
 "Give your customers helpful and relevant product recommendations by adding upsells and cross-sells." = "Ge dina kunder användbara och relevanta produktrekommendationer genom att lägga till merförsäljning och korsförsäljning.";
@@ -3054,10 +3145,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Grenada" = "Grenada";
 
+/* Display label for the product bundle's layout */
+"Grid" = "Rutnät";
+
 /* Industry option in the store creation category question. */
 "Grocery Stores" = "Mataffärer";
 
-/* Display label for grouped product type. */
+/* Display label for grouped product type.
+   Display label for the product bundle's item grouping */
 "Grouped" = "Grupperad";
 
 /* Navigation bar title for editing linked products for a grouped product */
@@ -3115,6 +3210,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Industry option in the store creation category question. */
 "Hardware Stores" = "Järnaffärer";
+
+/* Subtitle of the store onboarding task to customize the store domain. */
+"Have a custom URL to host your store." = "Få en anpassad URL för din butik.";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Ha autentiseringsuppgifterna för din butik redo.";
@@ -3330,6 +3428,9 @@ which should be translated separately and considered part of this sentence. */
 /* Toggle field in the view for adding or editing a coupon's free shipping support. */
 "Include Free Shipping?" = "Inkludera gratis frakt?";
 
+/* Subtitle of the product form bottom sheet action for editing downloadable files. */
+"Include downloadable files with purchases" = "Inkludera nedladdningsbara filer med köp";
+
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "Ingår i webbplatsen";
 
@@ -3384,6 +3485,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the site credential login screen
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
+   Title for the WPCom email login screen when Jetpack is not installed yet
+   Title for the WPCom magic link screen when Jetpack is not installed yet
    Title of install action in the Jetpack benefits view.
    Title of the Install Jetpack intro view
    Title of the Install Jetpack view */
@@ -3410,6 +3513,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of installing Jetpack plugin step
    Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "Installerar Jetpack";
+
+/* Display label for the product's inventory stock status */
+"Insufficient stock" = "Otillräckligt lager";
 
 /* Industry option in the store creation category question. */
 "Insurance" = "Försäkring";
@@ -3504,6 +3610,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "Det verkar som att du har inaktiverat analys.";
 
+/* Message on the error modal when a user without admin role tries to install Jetpack */
+"It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "Det verkar som att din användarroll inte tillåter dig att installera Jetpack.\nKontakta din administratör för hjälp.";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Du verkar ha skrivit fel lösenord. Vill du försöka en gång till?";
 
@@ -3532,7 +3641,8 @@ which should be translated separately and considered part of this sentence. */
 "Item weight must be larger than 0" = "Artikelvikten måste överstiga 0";
 
 /* Description for Top Performers right column header
-   Title for the items sold column on the products card on the analytics hub screen. */
+   Title for the items sold column on the products card on the analytics hub screen.
+   Title for the products card at the top of the top performers section in dashboard stats. */
 "Items Sold" = "Sålda artiklar";
 
 /* Country option for a site address. */
@@ -3634,6 +3744,9 @@ which should be translated separately and considered part of this sentence. */
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Starta Wormholy-felsökning";
 
+/* Title of the store onboarding task to launch the store. */
+"Launch your store" = "Lansera din butik";
+
 /* Industry option in the store creation category question. */
 "Laundry Or Cleaning Services" = "Tvätt- eller städtjänster";
 
@@ -3663,7 +3776,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "Läs mer om att skapa etiketter med din mobila enhet";
 
-/* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
+/* Link on the error modal when a user without admin role tries to install Jetpack
+   Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "Lär dig mer om roller och behörigheter";
 
 /* Country option for a site address. */
@@ -3687,6 +3801,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know what you think" = "Berätta vad du tycker";
+
+/* Message info on the support screen. */
+"Let us know your site address (URL) and tell us as much as you can about the problem," = "Låt oss veta din webbplatsadress (URL) och berätta så mycket du kan om problemet,";
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8,5 x 11 tum)";
@@ -3782,6 +3899,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "Logga in med ett annat konto";
 
+/* Button to start the WPCom login flow from the Jetpack benefits screen. */
+"Log In to Continue" = "Logga in för att fortsätta";
+
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
    Alert button title - confirms and logs out the user
    Log out button title */
@@ -3821,6 +3941,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Sign in instructions on the 'log in using email' screen.
    Sign in instructions on the 'log in using WordPress.com account' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Logga in med e-postadressen för ditt WordPress.com-konto för att hantera dina WooCommerce-butiker.";
+
+/* Subtitle for the WPCom email login screen when Jetpack is not connected yet */
+"Log in with your WordPress.com account to connect Jetpack" = "Logga in på ditt WordPress.com-konto för att ansluta Jetpack";
+
+/* Subtitle for the WPCom email login screen when Jetpack is not installed yet */
+"Log in with your WordPress.com account to install Jetpack" = "Logga in på ditt WordPress.com-konto för att installera Jetpack";
 
 /* Sign in instructions for logging in with a username and password. */
 "Log in with your WordPress.com account to manage your WooCommerce stores." = "Logga in med ditt WordPress.com-konto för att hantera dina WooCommerce-butiker.";
@@ -4105,6 +4231,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
 "Multiple Contactless Cards Detected" = "Flera kontaktlösa kort upptäckta";
 
+/* Title of multiple stores as part of Jetpack benefits. */
+"Multiple Stores" = "Flera butiker";
+
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Flera betalningsalternativ";
 
@@ -4246,6 +4375,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when a card reader was expected to already have been connected. */
 "No card reader is connected - connect a reader and try again" = "Ingen kortläsare är ansluten – anslut en läsare och försök igen";
 
+/* Placeholder of the Product Categories row on Product main screen */
+"No category selected" = "Ingen kategori vald";
+
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Ingen anslutning";
 
@@ -4331,6 +4463,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
+   Display label for the product bundle's item grouping
    Display label for the product's tax status setting option
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
@@ -4443,6 +4576,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Open Device Settings" = "Öppna enhetsinställningar";
 
 /* The button title text for opening the user's preferred email app.
+   Title for the CTA on the magic link screen of the WPCom login flow during Jetpack setup
    Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Öppna Mail";
 
@@ -4503,6 +4637,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "Eller";
+
+/* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
+"Or Continue using Magic Link" = "Eller Fortsätt med magisk länk";
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Eller logga in genom att _ange din webbplatsadress_.";
@@ -4821,6 +4958,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for simple physical product type. */
 "Physical" = "Fysisk";
 
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"Physical product" = "Fysisk produkt";
+
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Välj butik att ansluta";
 
@@ -4988,6 +5128,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message of in-progress modal when preparing for printing customs invoice
    Message of in-progress modal when requesting shipping label document for printing
    Message of the in-progress UI while purchasing a shipping label
+   Message on the loading view displayed when the magic link authentication for Jetpack setup is in progress
    Message when checking if WooCommerce Payments is supported
    Text on the loading view of the survey screen indicating the user to wait
    VoiceOver Accessibility label for the instruction */
@@ -5212,7 +5353,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Product Total label for payment view */
 "Product Total" = "Produktbelopp";
 
-/* Row title for filtering products by product type. */
+/* Product Type label in Product Settings
+   Row title for filtering products by product type. */
 "Product Type" = "Produkttyp";
 
 /* Title of the text field for editing the external URL for an external/affiliate product */
@@ -5221,8 +5363,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user has copied a product */
 "Product copied" = "Produkt kopierad";
 
+/* Title of the alert when a user is saving a product draft */
+"Product draft saved" = "Produktutkast sparat";
+
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Produktlänk";
+
+/* Title of the alert when a user is publishing a product */
+"Product published" = "Produkt publicerad";
 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Produkt sparad";
@@ -5233,6 +5381,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description for Top Performers left column header
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
    Title of the Products tab — plural form of Product
    Title text of the section that shows the Products when creating or editing an order
@@ -5269,6 +5418,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Inställningar för publicering";
+
+/* Subtitle of the store onboarding task to launch the store. */
+"Publish your site to the world anytime you want!" = "Publicera din webbplats till världen när du vill!";
 
 /* Display label for the product's published status */
 "Published" = "Publicerad";
@@ -5553,6 +5705,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Reset password" = "Återställ lösenord";
 
 /* Button to reset password on the site credential login screen
+   Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Återställ ditt lösenord";
 
@@ -5583,6 +5736,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
+   Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry when there was a network error checking In-Person Payments requirements
    Retry Action
    Retry action for an error notice
@@ -5618,6 +5772,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Review marked as %@" = "Recension markerad som %@";
 
 /* Title of one of the hub menu options
+   Title of the product form bottom sheet action for reviews.
    Title of the Reviews row on Product main screen
    Title of the Reviews tab — plural form of Review
    Title that appears on top of the main Reviews screen (plural form of the word Review).
@@ -5948,6 +6103,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Konfigurera Jetpack";
 
+/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+"Set up Tap to Pay on iPhone" = "Konfigurera Tryck för att betala på iPhone";
+
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Konfigurera paketet som du kommer att använda för att skicka dina produkter. Vi kommer att spara den för framtida beställningar.";
@@ -5976,7 +6134,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Dela betalningslänk";
 
-/* Title of the feedback action button on the In-Person Payments feedback banner */
+/* Title of the feedback action button on the In-Person Payments feedback banner
+   Title of the feedback button in the action sheet. */
 "Share feedback" = "Dela feedback";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -6353,6 +6512,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Sri Lanka" = "Sri Lanka";
 
+/* Display label for the product bundle's layout */
+"Standard" = "Standard";
+
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standardmoms";
 
@@ -6362,6 +6524,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
 "Start a Coupon creation by selecting a discount type in a bottom sheet" = "Börja skapa en rabattkod genom att välja en rabattyp i ett nedre blad";
+
+/* Subtitle of the store onboarding task to add the first product. */
+"Start selling by adding products or services to your store." = "Börja sälja genom att lägga till produkter eller tjänster i din butik.";
 
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Börja sälja idag genom att lägga till din första produkt i butiken.";
@@ -6420,6 +6585,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "Diagram över butiksintäkter: Y-axel";
+
+/* Title of the store setup progress view. */
+"Store setup" = "Konfigurera din butik";
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Genomstrykning";
@@ -6527,6 +6695,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "São Tomé och Príncipe";
 
+/* Display label for the product bundle's layout */
+"Tabular" = "Tabellformig";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
@@ -6569,8 +6740,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "Tryck på eller sätt i kort för att återbetala";
 
-/* Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the phone's built in reader
-   The button title on the reader type alert, for the user to choose the built-in reader. */
+/* The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "Tryck för att betala på iPhone";
 
 /* Error message shown when the built-in reader cannot be used because there is a call in progress */
@@ -6700,17 +6870,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Berätta mer om %1$@...";
 
-/* Message info on the support screen. */
-"Tell us much as you can about the problem, and we will be in touch soon." = "Beskriv problemet så utförligt som möjligt, så kommer vi att kontakta dig snart.";
-
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "Användarvillkor";
-
-/* Cell description on beta features screen to enable in-app purchases */
-"Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. Supported on iPhone XS and newer phones, running iOS 16 or above, for US-based stores." = "Medan vi gör oss redo för lansering, testa personliga betalningar med hjälp av din telefons inbyggda kortläsare. Stöds på iPhone XS och nyare telefoner som kör iOS 16 eller senare, för USA-baserade butiker.";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "Testa köp i appen medan vi gör oss redo för lansering";
@@ -7326,6 +7490,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
    Button to refetch application password for the current site
+   Button to retry a failed action in the Jetpack setup flow
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
    Button to try again. Presented to users after a failure occurs
@@ -7542,7 +7707,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Kunde inte uppdatera listan";
 
-/* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
+/* An error message shown when failing to retrieve information about user roles
+   An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
 "Unable to retrieve user roles." = "Det gick inte att hämta användarroller.";
 
 /* Unable to retrieve variations for bulk update screen */
@@ -7580,9 +7746,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Unapproves a comment. Spoken Hint. */
 "Unapproves the comment" = "Kommentaren godkänns inte";
-
-/* Placeholder of the Product Categories row on Product main screen */
-"Uncategorized" = "Okategoriserad";
 
 /* Accessibility label for underline button on formatting toolbar. */
 "Underline" = "Understrykning";
@@ -7896,6 +8059,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Visa tillägg från din enhet!";
 
+/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
+"View all (%1$d)" = "Visa alla (%1$d)";
+
 /* Title of the feedback banner on the coupon list screen */
 "View and edit coupons" = "Visa och redigera rabattkoder";
 
@@ -7928,6 +8094,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Virtual Product label in Product Settings */
 "Virtual Product" = "Virtuell produkt ";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"Virtual product" = "Virtuell produkt ";
 
 /* Product Visibility navigation title
    Visibility label in Product Settings */
@@ -8011,6 +8180,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The subtitle text on the magic link requested screen followed by the email address. */
 "We just sent a magic link to" = "Vi har precis skickat en magisk länk till";
+
+/* Instruction on the magic link screen of the WPCom login flow during Jetpack setup. %@ is a submitted email address. */
+"We just sent a magic link to %@" = "Vi skickade precis en magisk länk till %@";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "Vi vet att det är viktigt för ditt företag.";
@@ -8225,6 +8397,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "Du har inte behörighet att komma åt denna butik.";
+
+/* An error message shown after the user retried checking their roles but they still don't have enough permission to install Jetpack */
+"You are not authorized to install Jetpack" = "Du har inte behörighet att installera Jetpack";
 
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "Du kan välja flera stycken.";

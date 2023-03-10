@@ -268,6 +268,10 @@ extension UIImage {
         UIImage.gridicon(.domains)
     }
 
+    static var emailImage: UIImage {
+        UIImage(named: "email")!
+    }
+
     /// Domain search placeholder image.
     ///
     static var domainSearchPlaceholderImage: UIImage {
@@ -1209,6 +1213,10 @@ extension UIImage {
 
     static var builtInReaderError: UIImage {
         return UIImage(named: "built-in-reader-error")!
+    }
+
+    static var setUpBuiltInReader: UIImage {
+        return UIImage(named: "built-in-reader-set-up")!
     }
 }
 

@@ -1,1 +1,0 @@
-ABD, Tap to Pay on iPhone ile tanışıyor! Şu anda WooCommerce Payments'ı kullanan ABD'li satıcıların artık Tap to Pay özelliğini de kabul edebileceğini duyurmaktan heyecan duyuyoruz. Diğer sekmesi > Ayarlar > Deneysel Özellikler bölümünden etkinleştirerek bir göz atın. Hepsi bu değil! Artık uygulamayı Jetpack olmadan kullanmak da mümkün! Siz istediniz, biz de yaptık!

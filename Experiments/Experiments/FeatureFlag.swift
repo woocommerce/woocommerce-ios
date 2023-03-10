@@ -167,4 +167,8 @@ public enum FeatureFlag: Int {
     /// Whether to enable the onboarding checklist in the dashboard for WPCOM stores.
     ///
     case dashboardOnboarding
+
+    /// Whether to enable product bundle settings in product details
+    ///
+    case productBundles
 }

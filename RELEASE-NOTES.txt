@@ -1,5 +1,13 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.7
+-----
+- [*] Fix: unencoded special character in password causes login issues with store credentials (application passwords login).
+- [Internal] Shipping Label: add condition checks before showing contact options [https://github.com/woocommerce/woocommerce-ios/pull/8982]
+- [*] Main screens are now accessible through the Home Screen Spotlight Search [https://github.com/woocommerce/woocommerce-ios/pull/9082]
+- [*] Stats: Fixed a crash when order stats use a date and time matching the start of Daylight Saving Time. [https://github.com/woocommerce/woocommerce-ios/pull/9083]
+- [*] Fix: Dismiss Take Payment popup after sharing the payment link to another app. [https://github.com/woocommerce/woocommerce-ios/pull/9042]
+
 12.6
 -----
 - [*] Fix: When a product's details can be edited, they display a disclosure indicator (chevron). [https://github.com/woocommerce/woocommerce-ios/pull/8980]

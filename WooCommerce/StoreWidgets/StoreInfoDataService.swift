@@ -9,31 +9,49 @@ final class StoreInfoDataService {
     struct Stats {
         let revenue: Decimal
         let totalOrders: Int
-        let totalVisitors: Int
-        let conversion: Double
+        let totalVisitors: Int?
+        let conversion: Double?
     }
 
     /// Revenue & Orders remote source.
     ///
-    private var orderStatsRemoteV4: OrderStatsRemoteV4
+    private let orderStatsRemoteV4: OrderStatsRemoteV4
 
     /// Visitors remote source
     ///
-    private var siteStatsRemote: SiteStatsRemote
+    private let siteStatsRemote: SiteStatsRemote
 
     /// Network helper.
     ///
-    private var network: AlamofireNetwork
+    private let network: AlamofireNetwork
 
-    init(authToken: String) {
-        network = AlamofireNetwork(credentials: Credentials(authToken: authToken))
+    /// Whether the app is authenticated with site credentials
+    ///
+    private let isAuthenticatedWithoutWPCom: Bool
+
+    init(credentials: Credentials) {
+        network = AlamofireNetwork(credentials: credentials)
         orderStatsRemoteV4 = OrderStatsRemoteV4(network: network)
         siteStatsRemote = SiteStatsRemote(network: network)
+        if case .wporg = credentials {
+            isAuthenticatedWithoutWPCom = true
+        } else {
+            isAuthenticatedWithoutWPCom = false
+        }
     }
 
     /// Async function that fetches todays stats data.
     ///
     func fetchTodayStats(for storeID: Int64) async throws -> Stats {
+        /// If user is authenticated with site credentials only,
+        /// fetch revenue and orders and skip visitor stats as its endpoint is not available.
+        guard !isAuthenticatedWithoutWPCom else {
+            let revenueAndOrders = try await fetchTodaysRevenueAndOrders(for: storeID)
+            return Stats(revenue: revenueAndOrders.totals.grossRevenue,
+                         totalOrders: revenueAndOrders.totals.totalOrders,
+                         totalVisitors: nil,
+                         conversion: nil)
+        }
         // Prepare them to run in parallel
         async let revenueAndOrdersRequest = fetchTodaysRevenueAndOrders(for: storeID)
         async let siteStatsRequest = fetchTodaysVisitors(for: storeID)

@@ -110,6 +110,23 @@ extension Networking.Address {
         )
     }
 }
+extension Networking.Announcement {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.Announcement {
+        .init(
+            appVersionName: .fake(),
+            minimumAppVersion: .fake(),
+            maximumAppVersion: .fake(),
+            appVersionTargets: .fake(),
+            detailsUrl: .fake(),
+            announcementVersion: .fake(),
+            isLocalized: .fake(),
+            responseLocale: .fake(),
+            features: .fake()
+        )
+    }
+}
 extension Networking.Country {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -232,6 +249,30 @@ extension Networking.DotcomUser {
             email: .fake(),
             displayName: .fake(),
             avatar: .fake()
+        )
+    }
+}
+extension Networking.Feature {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.Feature {
+        .init(
+            title: .fake(),
+            subtitle: .fake(),
+            icons: .fake(),
+            iconUrl: .fake(),
+            iconBase64: .fake()
+        )
+    }
+}
+extension Networking.FeatureIcon {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.FeatureIcon {
+        .init(
+            iconUrl: .fake(),
+            iconBase64: .fake(),
+            iconType: .fake()
         )
     }
 }
@@ -787,7 +828,17 @@ extension Networking.Product {
             variations: .fake(),
             groupedProducts: .fake(),
             menuOrder: .fake(),
-            addOns: .fake()
+            addOns: .fake(),
+            bundleLayout: .fake(),
+            bundleFormLocation: .fake(),
+            bundleItemGrouping: .fake(),
+            bundleMinSize: .fake(),
+            bundleMaxSize: .fake(),
+            bundleEditableInCart: .fake(),
+            bundleSoldIndividuallyContext: .fake(),
+            bundleStockStatus: .fake(),
+            bundleStockQuantity: .fake(),
+            bundledItems: .fake()
         )
     }
 }
@@ -860,6 +911,82 @@ extension ProductBackordersSetting {
     ///
     public static func fake() -> ProductBackordersSetting {
         .allowed
+    }
+}
+extension ProductBundleFormLocation {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ProductBundleFormLocation {
+        .defaultLocation
+    }
+}
+extension Networking.ProductBundleItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductBundleItem {
+        .init(
+            bundledItemID: .fake(),
+            productID: .fake(),
+            menuOrder: .fake(),
+            quantityMin: .fake(),
+            quantityMax: .fake(),
+            quantityDefault: .fake(),
+            pricedIndividually: .fake(),
+            shippedIndividually: .fake(),
+            overrideTitle: .fake(),
+            title: .fake(),
+            overrideDescription: .fake(),
+            description: .fake(),
+            optional: .fake(),
+            hideThumbnail: .fake(),
+            discount: .fake(),
+            overrideVariations: .fake(),
+            allowedVariations: .fake(),
+            overrideDefaultVariationAttributes: .fake(),
+            defaultVariationAttributes: .fake(),
+            singleProductVisibility: .fake(),
+            cartVisibility: .fake(),
+            orderVisibility: .fake(),
+            singleProductPriceVisibility: .fake(),
+            cartPriceVisibility: .fake(),
+            orderPriceVisibility: .fake(),
+            stockStatus: .fake()
+        )
+    }
+}
+extension ProductBundleItemGrouping {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ProductBundleItemGrouping {
+        .parent
+    }
+}
+extension ProductBundleItemStockStatus {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ProductBundleItemStockStatus {
+        .inStock
+    }
+}
+extension ProductBundleItemVisibility {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ProductBundleItemVisibility {
+        .visible
+    }
+}
+extension ProductBundleLayout {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ProductBundleLayout {
+        .defaultLayout
+    }
+}
+extension ProductBundleSoldIndividuallyContext {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ProductBundleSoldIndividuallyContext {
+        .product
     }
 }
 extension ProductCatalogVisibility {

@@ -35,7 +35,7 @@ extension BetaFeature {
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementDescription
         case .productMultiSelection:
-            return Localization.productSKUScannerDescription
+            return Localization.productMultiSelectionDescription
         }
     }
 
@@ -50,7 +50,7 @@ extension BetaFeature {
         case .inAppPurchases:
             return \.isInAppPurchasesSwitchEnabled
         case .productMultiSelection:
-            return \.isProductMultiSelectionEnabled
+            return \.isProductMultiSelectionSwitchEnabled
         }
     }
 
@@ -69,6 +69,8 @@ extension BetaFeature {
         switch self {
         case .inAppPurchases:
             return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchases)
+        case .productMultiSelection:
+            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1)
         default:
             return true
         }

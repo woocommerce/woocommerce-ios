@@ -42,7 +42,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
 
     /// The state for the Product Multi-Selection feature switch.
     ///
-    public var isProductMultiSelectionEnabled: Bool
+    public var isProductMultiSelectionSwitchEnabled: Bool
 
     /// A list (possibly empty) of known card reader IDs - i.e. IDs of card readers that should be reconnected to automatically
     /// e.g. ["CHB204909005931"]
@@ -67,7 +67,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 isCouponManagementSwitchEnabled: Bool,
                 isInAppPurchasesSwitchEnabled: Bool,
                 isTapToPayOnIPhoneSwitchEnabled: Bool,
-                isProductMultiSelectionEnabled: Bool,
+                isProductMultiSelectionSwitchEnabled: Bool,
                 knownCardReaders: [String],
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                 lastJetpackBenefitsBannerDismissedTime: Date? = nil,
@@ -83,7 +83,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.featureAnnouncementCampaignSettings = featureAnnouncementCampaignSettings
         self.isInAppPurchasesSwitchEnabled = isInAppPurchasesSwitchEnabled
         self.isTapToPayOnIPhoneSwitchEnabled = isTapToPayOnIPhoneSwitchEnabled
-        self.isProductMultiSelectionEnabled = isProductMultiSelectionEnabled
+        self.isProductMultiSelectionSwitchEnabled = isProductMultiSelectionSwitchEnabled
     }
 
     public static var `default`: Self {
@@ -94,7 +94,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
               isCouponManagementSwitchEnabled: false,
               isInAppPurchasesSwitchEnabled: false,
               isTapToPayOnIPhoneSwitchEnabled: false,
-              isProductMultiSelectionEnabled: false,
+              isProductMultiSelectionSwitchEnabled: false,
               knownCardReaders: [],
               lastEligibilityErrorInfo: nil,
               featureAnnouncementCampaignSettings: [:])
@@ -125,7 +125,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
             isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
-            isProductMultiSelectionEnabled: isProductMultiSelectionEnabled,
+            isProductMultiSelectionSwitchEnabled: isProductMultiSelectionSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings
@@ -147,7 +147,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
             isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
-            isProductMultiSelectionEnabled: isProductMultiSelectionEnabled,
+            isProductMultiSelectionSwitchEnabled: isProductMultiSelectionSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             featureAnnouncementCampaignSettings: updatedSettings
@@ -169,7 +169,7 @@ extension GeneralAppSettings {
         self.isCouponManagementSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isCouponManagementSwitchEnabled) ?? false
         self.isInAppPurchasesSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isInAppPurchasesSwitchEnabled) ?? false
         self.isTapToPayOnIPhoneSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTapToPayOnIPhoneSwitchEnabled) ?? false
-        self.isProductMultiSelectionEnabled = try container.decodeIfPresent(Bool.self, forKey: .isProductMultiSelectionEnabled) ?? false
+        self.isProductMultiSelectionSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isProductMultiSelectionSwitchEnabled) ?? false
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
         self.lastJetpackBenefitsBannerDismissedTime = try container.decodeIfPresent(Date.self, forKey: .lastJetpackBenefitsBannerDismissedTime)

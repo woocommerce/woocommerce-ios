@@ -1,10 +1,16 @@
 import CoreSpotlight
 import Foundation
+import Storage
 
 struct SpotlightManager {
     static func handleUserActivity(_ userActivity: NSUserActivity) {
         var type: WooActivityType?
         switch userActivity.activityType {
+        case CSSearchableItemActionType:
+                    if let info = userActivity.userInfo,
+                      let objectIdentifier = info[CSSearchableItemActivityIdentifier] as? String {
+                        handleSearchableItemObjectIdentifier(objectIdentifier)
+                    }
         case WooActivityType.dashboard.rawValue:
             MainTabBarController.switchToMyStoreTab()
             type = WooActivityType.dashboard
@@ -22,6 +28,18 @@ struct SpotlightManager {
         }
 
         trackActivityBeingOpenedIfNecessary(with: type)
+    }
+
+    private static func handleSearchableItemObjectIdentifier(_ identifier: String) {
+        guard let objectURI = URL(string: identifier) else {
+            return
+        }
+
+        let object = ServiceLocator.storageManager.managedObjectWithURI(objectURI)
+
+        if let product = object as? Storage.Product {
+            MainTabBarController.presentProduct(product.toReadOnly())
+        }
     }
 
     private static func trackActivityBeingOpenedIfNecessary(with type: WooActivityType?) {

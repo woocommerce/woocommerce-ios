@@ -426,6 +426,18 @@ extension MainTabBarController {
 
         hubMenuViewController.showPaymentsMenu()
     }
+
+    static func presentProduct(_ product: Product) {
+            navigateTo(.products)
+
+            guard let productsViewController: ProductsViewController = childViewController() else {
+                return
+            }
+
+            ProductDetailsFactory.productDetails(product: product, presentationStyle: .navigationStack, forceReadOnly: false) { viewController in
+                productsViewController.navigationController?.pushViewController(viewController, animated: true)
+            }
+        }
 }
 
 // MARK: - Site ID observation for updating tab view controllers

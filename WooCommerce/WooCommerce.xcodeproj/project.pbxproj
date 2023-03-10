@@ -1481,6 +1481,7 @@
 		B946881429B8DD6A000646B0 /* OrderListViewController+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881329B8DD6A000646B0 /* OrderListViewController+Activity.swift */; };
 		B946881829B8DDC2000646B0 /* ProductsViewController+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881729B8DDC2000646B0 /* ProductsViewController+Activity.swift */; };
 		B946881A29BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881929BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift */; };
+		B946881C29BB3D9F000646B0 /* CoreDataSpotlightDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881B29BB3D9F000646B0 /* CoreDataSpotlightDelegate.swift */; };
 		B95112DA28BF79CA00D9578D /* PaymentsRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95112D928BF79CA00D9578D /* PaymentsRoute.swift */; };
 		B958A7C728B3D44A00823EEF /* UniversalLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */; };
 		B958A7C928B3D47B00823EEF /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C828B3D47B00823EEF /* Route.swift */; };
@@ -3631,6 +3632,7 @@
 		B946881329B8DD6A000646B0 /* OrderListViewController+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderListViewController+Activity.swift"; sourceTree = "<group>"; };
 		B946881729B8DDC2000646B0 /* ProductsViewController+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsViewController+Activity.swift"; sourceTree = "<group>"; };
 		B946881929BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Spotlight.swift"; sourceTree = "<group>"; };
+		B946881B29BB3D9F000646B0 /* CoreDataSpotlightDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataSpotlightDelegate.swift; sourceTree = "<group>"; };
 		B95112D928BF79CA00D9578D /* PaymentsRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRoute.swift; sourceTree = "<group>"; };
 		B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalLinkRouter.swift; sourceTree = "<group>"; };
 		B958A7C828B3D47B00823EEF /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
@@ -7959,6 +7961,7 @@
 			children = (
 				B946880B29B626A1000646B0 /* SpotlightManager.swift */,
 				B946880D29B627EB000646B0 /* SearchableActivityConvertable.swift */,
+				B946881B29BB3D9F000646B0 /* CoreDataSpotlightDelegate.swift */,
 			);
 			path = Spotlight;
 			sourceTree = "<group>";
@@ -10526,6 +10529,7 @@
 				0260F40123224E8100EDA10A /* ProductsViewController.swift in Sources */,
 				DE4D308928507B5B00E36ADD /* CouponCreationSuccess.swift in Sources */,
 				03BB9EA5292E2D0C00251E9E /* CardReaderConnectionController.swift in Sources */,
+				B946881C29BB3D9F000646B0 /* CoreDataSpotlightDelegate.swift in Sources */,
 				B95112DA28BF79CA00D9578D /* PaymentsRoute.swift in Sources */,
 				7E6A019F2725CD76001668D5 /* FilterProductCategoryListViewModel.swift in Sources */,
 				CC53FB3C2757EC7200C4CA4F /* ProductSelectorViewModel.swift in Sources */,

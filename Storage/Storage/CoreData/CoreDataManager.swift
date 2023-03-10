@@ -15,6 +15,8 @@ public final class CoreDataManager: StorageManagerType {
 
     private let modelsInventory: ManagedObjectModelsInventory
 
+    private var spotlightDelegate: NSCoreDataCoreSpotlightDelegate?
+
     /// Module-private designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
@@ -22,12 +24,14 @@ public final class CoreDataManager: StorageManagerType {
     /// - Parameter modelsInventory: The models to load when spinning up the Core Data stack.
     ///     This is automatically generated if `nil`. You would probably only specify this for
     ///     unit tests to test migration and/or recovery scenarios.
+    /// - Parameter spotlightDelegateType: Pass here your NSCoreDataCoreSpotlightDelegate subclass instance. As we need to initialize it here with the `storeDescription` and `persistentStoreCoordinator`, we cannot pass an instance of it.
     ///
     /// - Important: This should *match* with your actual Data Model file!.
     ///
     init(name: String,
          crashLogger: CrashLogger,
-         modelsInventory: ManagedObjectModelsInventory?) {
+         modelsInventory: ManagedObjectModelsInventory?,
+         spotlightDelegateType: NSCoreDataCoreSpotlightDelegate.Type? = nil) {
         self.name = name
         self.crashLogger = crashLogger
 
@@ -43,17 +47,23 @@ public final class CoreDataManager: StorageManagerType {
             let error = CoreDataManagerError.modelInventoryLoadingFailed(name, error)
             crashLogger.logFatalErrorAndExit(error, userInfo: nil)
         }
+
+        self.spotlightDelegate = spotlightDelegateType?.init(
+                        forStoreWith: storeDescription,
+                        coordinator: persistentContainer.persistentStoreCoordinator)
+        spotlightDelegate?.startSpotlightIndexing()
     }
 
     /// Public designated initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
     /// - Parameter crashLogger: allows logging a message of any severity level
+    /// - Parameter spotlightDelegateType: Pass here your NSCoreDataCoreSpotlightDelegate subclass instance. As we need to initialize it here with the `storeDescription` and `persistentStoreCoordinator`, we cannot pass an instance of it.
     ///
     /// - Important: This should *match* with your actual Data Model file!.
     ///
-    public convenience init(name: String, crashLogger: CrashLogger) {
-        self.init(name: name, crashLogger: crashLogger, modelsInventory: nil)
+    public convenience init(name: String, crashLogger: CrashLogger, spotlightDelegateType: NSCoreDataCoreSpotlightDelegate.Type? = nil) {
+        self.init(name: name, crashLogger: crashLogger, modelsInventory: nil, spotlightDelegateType: spotlightDelegateType)
     }
 
     /// Returns the Storage associated with the View Thread.
@@ -221,6 +231,7 @@ extension CoreDataManager {
     ///
     var storeDescription: NSPersistentStoreDescription {
         let description = NSPersistentStoreDescription(url: storeURL)
+        description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
         description.shouldAddStoreAsynchronously = false
         description.shouldMigrateStoreAutomatically = false
         return description
@@ -240,6 +251,19 @@ extension CoreDataManager {
 
         return url.appendingPathComponent(name + ".sqlite")
     }
+}
+
+public extension CoreDataManager {
+    func managedObjectWithURI<T: NSManagedObject>(_ uri: URL) -> T? {
+    guard let objectID =
+            persistentContainer.persistentStoreCoordinator
+      .managedObjectID(forURIRepresentation: uri)
+    else {
+      return nil
+    }
+
+      return persistentContainer.viewContext.object(with: objectID) as? T
+  }
 }
 
 // MARK: - Errors

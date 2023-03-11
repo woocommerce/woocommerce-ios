@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.8
+-----
+
+
 12.7
 -----
 - [*] Fix: unencoded special character in password causes login issues with store credentials (application passwords login).

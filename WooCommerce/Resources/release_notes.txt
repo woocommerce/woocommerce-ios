@@ -1,1 +1,7 @@
-Good news! Tap to Pay is now available to USA merchants using WooCommerce Payments. Quickly take an in-person credit card payment using your iPhone! We welcome your feedback on the app, especially the new features we’re working on and giving early access to.
+- [*] Fix: unencoded special character in password causes login issues with store credentials (application passwords login).
+- [Internal] Shipping Label: add condition checks before showing contact options [https://github.com/woocommerce/woocommerce-ios/pull/8982]
+- [*] Main screens are now accessible through the Home Screen Spotlight Search [https://github.com/woocommerce/woocommerce-ios/pull/9082]
+- [*] Stats: Fixed a crash when order stats use a date and time matching the start of Daylight Saving Time. [https://github.com/woocommerce/woocommerce-ios/pull/9083]
+- [*] Fix: Dismiss Take Payment popup after sharing the payment link to another app. [https://github.com/woocommerce/woocommerce-ios/pull/9042]
+- [*] Site credential login: Catch invalid cookie nonce [https://github.com/woocommerce/woocommerce-ios/pull/9102]
+

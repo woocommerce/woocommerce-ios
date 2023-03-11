@@ -23,4 +23,22 @@ final class OrderStatsV4Interval_DateTests: XCTestCase {
             XCTAssertEqual(dateComponents.second, 0)
         }
     }
+
+    func test_date_start_and_date_end_parsed_when_daylight_saving_time_begins() throws {
+        // Given
+        let dateString = "2023-03-26 01:00:00"
+        let timeZone = try XCTUnwrap(TimeZone(identifier: "Europe/London"))
+        let interval = OrderStatsV4Interval(interval: "hour",
+                                            dateStart: dateString,
+                                            dateEnd: dateString,
+                                            subtotals: mockIntervalSubtotals)
+
+        // When
+        let dateStart = interval.dateStart(timeZone: timeZone)
+        let dateEnd = interval.dateEnd(timeZone: timeZone)
+
+        // Then
+        XCTAssertNotNil(dateStart)
+        XCTAssertNotNil(dateEnd)
+    }
 }

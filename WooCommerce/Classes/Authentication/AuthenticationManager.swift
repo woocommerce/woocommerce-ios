@@ -1,7 +1,6 @@
 import Foundation
 import KeychainAccess
 import WordPressAuthenticator
-import WordPressKit
 import Yosemite
 import class Networking.UserAgent
 import enum Experiments.ABTest
@@ -763,16 +762,6 @@ private extension AuthenticationManager {
             let error = error as NSError
 
             switch error.code {
-            case WordPressComRestApiError.unknown.rawValue:
-                let restAPIErrorCode = error.userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
-                if restAPIErrorCode == "unknown_user" {
-                    return .emailDoesNotMatchWPAccount
-                } else {
-                    return .unknown
-                }
-            case WordPressOrgXMLRPCValidatorError.invalid.rawValue:
-                // We were able to connect to the site but it does not seem to be a WordPress site.
-                return .notWPSite
             case NSURLErrorCannotFindHost,
                  NSURLErrorCannotConnectToHost:
                 // The site cannot be found. This can mean that the domain is invalid.
@@ -781,6 +770,10 @@ private extension AuthenticationManager {
                 // The site does not have a valid SSL. It could be that it is only HTTP.
                 return .noSecureConnection
             default:
+                let restAPIErrorCode = error.userInfo["WordPressComRestApiErrorCodeKey"] as? String
+                if restAPIErrorCode == "unknown_user" {
+                    return .emailDoesNotMatchWPAccount
+                }
                 return .unknown
             }
         }

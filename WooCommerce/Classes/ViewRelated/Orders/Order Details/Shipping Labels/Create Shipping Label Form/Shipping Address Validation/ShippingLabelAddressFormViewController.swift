@@ -38,11 +38,18 @@ final class ShippingLabelAddressFormViewController: UIViewController {
             guard let self = self else { return }
             ServiceLocator.analytics.track(.shippingLabelEditAddressContactCustomerButtonTapped)
 
+            guard PhoneHelper.canCallPhoneNumber(phone: phone)
+                    || MFMailComposeViewController.canSendMail()
+                    || MFMessageComposeViewController.canSendText() else {
+                self.displayErrorNotice(title: Localization.contactActionError)
+                return
+            }
+
             let actionSheet = UIAlertController(title: nil, message: Localization.contactActionLabel, preferredStyle: .actionSheet)
             actionSheet.view.tintColor = .text
 
             actionSheet.addCancelActionWithTitle(Localization.contactActionCancel)
-            if let email = email, email.isNotEmpty {
+            if let email = email, email.isNotEmpty && MFMailComposeViewController.canSendMail() {
                 actionSheet.addDefaultActionWithTitle(Localization.contactActionEmail) { _ in
                     self.sendEmail(to: email)
                 }
@@ -53,8 +60,10 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                         self.displayErrorNotice(title: Localization.phoneNumberErrorNotice)
                     }
                 }
-                actionSheet.addDefaultActionWithTitle(Localization.contactActionMessage) { _ in
-                    ServiceLocator.messageComposerPresenter.presentIfPossible(from: self, recipient: phoneNumber)
+                if MFMessageComposeViewController.canSendText() {
+                    actionSheet.addDefaultActionWithTitle(Localization.contactActionMessage) { _ in
+                        ServiceLocator.messageComposerPresenter.presentIfPossible(from: self, recipient: phoneNumber)
+                    }
                 }
             }
 
@@ -619,5 +628,7 @@ private extension ShippingLabelAddressFormViewController {
         static let contactActionEmail = NSLocalizedString("Email", comment: "Email button title")
         static let contactActionCall = NSLocalizedString("Call", comment: "Call phone number button title")
         static let contactActionMessage = NSLocalizedString("Message", comment: "Message phone number button title")
+        static let contactActionError = NSLocalizedString("No supported contact method on this device.",
+                                                          comment: "Error in identifying supported contact methods in the Shipping Label Address Validation")
     }
 }

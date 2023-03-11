@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import Yosemite
 import Combine
-import WordPressKit
 
 // MARK: - BulkUpdatePriceViewController
 //

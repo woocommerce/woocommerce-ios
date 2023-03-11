@@ -614,6 +614,43 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
+    func test_loadProductMultiSelectionFeatureSwitchState_returns_isEnabled_false_on_new_generalAppSettings() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadProductMultiSelectionFeatureSwitchState(onCompletion: { actionResult in
+                promise(actionResult)
+            })
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_setProductMultiSelectionFeatureSwitchState_when_switch_state_isEnabled_then_returns_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let updateAction = AppSettingsAction.setProductMultiSelectionFeatureSwitchState(isEnabled: true) { _ in }
+        subject?.onAction(updateAction)
+
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadProductMultiSelectionFeatureSwitchState(onCompletion: { actionResult in
+                promise(actionResult)
+            })
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertTrue(isEnabled)
+    }
+
     // MARK: - General Store Settings
 
     func test_saving_isTelemetryAvailable_works_correctly() throws {

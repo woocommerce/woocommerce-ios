@@ -73,11 +73,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Latest state for Product Multi-Selection experimental feature
     ///
-    var isProductMultiSelectionBetaFeatureEnabled = ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection) {
-        didSet {
-            print("🍍 isProductMultiSelectionBetaFeatureEnabled switched")
-        }
-    }
+    @Published var isProductMultiSelectionBetaFeatureEnabled: Bool = ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection)
 
     /// Active navigation bar trailing item.
     /// Defaults to create button.
@@ -316,12 +312,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// Checks the current state of the Product Multi Selection feature toggle
     ///
     private func configureProductMultiSelectionIfNeeded() {
-        print("🍍 Configuring Product Selection screen")
         let action = AppSettingsAction.loadProductMultiSelectionFeatureSwitchState(onCompletion: { result in
             switch result {
             case .success(let isEnabled):
                 self.isProductMultiSelectionBetaFeatureEnabled = isEnabled
-                print("🍍 Enabled? \(isEnabled)")
             case .failure(let error):
                 DDLogError("Unable to load MultiSelection feature switch state. \(error)")
             }

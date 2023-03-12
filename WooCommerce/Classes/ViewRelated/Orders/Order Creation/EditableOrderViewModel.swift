@@ -71,9 +71,9 @@ final class EditableOrderViewModel: ObservableObject {
         }
     }
 
-    private var isProductMultiSelectionBetaFeatureEnabled: Bool {
-        ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection) ? true : false
-    }
+    /// Latest state for Product Multi-Selection experimental feature
+    ///
+    @Published var isProductMultiSelectionBetaFeatureEnabled: Bool = ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection)
 
     /// Active navigation bar trailing item.
     /// Defaults to create button.
@@ -171,7 +171,11 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the product list
     ///
-    lazy var addProductViewModel = {
+    // TODO: Remove comment
+    // As https://github.com/woocommerce/woocommerce-ios/pull/8943/
+    // we cannot keep this view model as lazy if we intend to pass a `supportsMultipleSelection` property
+    // that may change each time the view is loaded. So we either have to call it each time or make it computed.
+    var addProductViewModel: ProductSelectorViewModel {
         ProductSelectorViewModel(
             siteID: siteID,
             purchasableItemsOnly: true,
@@ -187,7 +191,7 @@ final class EditableOrderViewModel: ObservableObject {
                 guard let self = self else { return }
                 self.addProductVariationToOrder(variation, parent: parentProduct)
             })
-    }()
+    }
 
     /// View models for each product row in the order.
     ///
@@ -290,6 +294,8 @@ final class EditableOrderViewModel: ObservableObject {
         // Needs to be reset before the view model is used.
         self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
 
+        configureProductMultiSelectionIfNeeded()
+
         configureDisabledState()
         configureNavigationTrailingItem()
         configureSyncErrors()
@@ -301,6 +307,22 @@ final class EditableOrderViewModel: ObservableObject {
         configureNonEditableIndicators()
         configureMultipleLinesMessage()
         resetAddressForm()
+    }
+
+    /// Checks the current state of the Product Multi Selection feature toggle
+    ///
+    private func configureProductMultiSelectionIfNeeded() {
+        print("🍍 Configuring Product Selection screen")
+        let action = AppSettingsAction.loadProductMultiSelectionFeatureSwitchState(onCompletion: { result in
+            switch result {
+            case .success(let isEnabled):
+                self.isProductMultiSelectionBetaFeatureEnabled = isEnabled
+                print("🍍 Enabled? \(isEnabled)")
+            case .failure(let error):
+                DDLogError("Unable to load MultiSelection feature switch state. \(error)")
+            }
+        })
+        stores.dispatch(action)
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.

@@ -352,16 +352,17 @@ struct OrderForm_Previews: PreviewProvider {
 
 private extension ProductSelectorView.Configuration {
     static func addProductToOrder() -> ProductSelectorView.Configuration {
-        ProductSelectorView.Configuration(multipleSelectionsEnabled: ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection),
-                                          clearSelectionEnabled: false,
-                                          searchHeaderBackgroundColor: .listBackground,
-                                          prefersLargeTitle: false,
-                                          doneButtonTitleSingularFormat: Localization.doneButtonSingular,
-                                          doneButtonTitlePluralFormat: Localization.doneButtonPlural,
-                                          title: Localization.title,
-                                          cancelButtonTitle: Localization.close,
-                                          productRowAccessibilityHint: Localization.productRowAccessibilityHint,
-                                          variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
+        ProductSelectorView.Configuration(
+            multipleSelectionsEnabled: ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection),
+            clearSelectionEnabled: false,
+            searchHeaderBackgroundColor: .listBackground,
+            prefersLargeTitle: false,
+            doneButtonTitleSingularFormat: Localization.doneButtonSingular,
+            doneButtonTitlePluralFormat: Localization.doneButtonPlural,
+            title: Localization.title,
+            cancelButtonTitle: Localization.close,
+            productRowAccessibilityHint: Localization.productRowAccessibilityHint,
+            variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
     }
 
     enum Localization {

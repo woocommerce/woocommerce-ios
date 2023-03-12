@@ -171,11 +171,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the product list
     ///
-    // TODO: Remove comment
-    // As https://github.com/woocommerce/woocommerce-ios/pull/8943/
-    // we cannot keep this view model as lazy if we intend to pass a `supportsMultipleSelection` property
-    // that may change each time the view is loaded. So we either have to call it each time or make it computed.
-    var addProductViewModel: ProductSelectorViewModel {
+    lazy var addProductViewModel = {
         ProductSelectorViewModel(
             siteID: siteID,
             purchasableItemsOnly: true,
@@ -191,7 +187,7 @@ final class EditableOrderViewModel: ObservableObject {
                 guard let self = self else { return }
                 self.addProductVariationToOrder(variation, parent: parentProduct)
             })
-    }
+    }()
 
     /// View models for each product row in the order.
     ///

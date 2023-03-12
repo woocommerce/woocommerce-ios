@@ -73,7 +73,11 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Latest state for Product Multi-Selection experimental feature
     ///
-    @Published var isProductMultiSelectionBetaFeatureEnabled: Bool = ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection)
+    var isProductMultiSelectionBetaFeatureEnabled = ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection) {
+        didSet {
+            print("🍍 isProductMultiSelectionBetaFeatureEnabled switched")
+        }
+    }
 
     /// Active navigation bar trailing item.
     /// Defaults to create button.

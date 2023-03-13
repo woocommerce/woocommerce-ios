@@ -3,6 +3,9 @@ import SwiftUI
 /// View to add/edit a single coupon line in an order, with the option to remove it.
 ///
 struct CouponLineDetails: View {
+    private enum Field: Hashable {
+        case couponCode
+    }
 
     /// View model to drive the view content
     ///
@@ -11,6 +14,8 @@ struct CouponLineDetails: View {
     @Environment(\.presentationMode) var presentation
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
+    @FocusState private var focusedField: Field?
 
     init(viewModel: CouponLineDetailsViewModel) {
         self.viewModel = viewModel
@@ -24,16 +29,21 @@ struct CouponLineDetails: View {
                                          placeholder: Localization.couponCodePlaceholder,
                                          text: $viewModel.code,
                                          keyboardType: .numbersAndPunctuation)
+                    .focused($focusedField, equals: .couponCode)
                     .background(Color(.listForeground(modal: false)))
                     .padding(.horizontal, insets: safeAreaInsets)
                     .addingTopAndBottomDividers()
                     .background(Color(.listForeground(modal: false)))
+                    .onTapGesture {
+                        focusedField = .couponCode
+                    }
 
                     Spacer(minLength: Layout.sectionSpacing)
 
                     if viewModel.isExistingCouponLine {
                         Section {
                             Button(Localization.remove) {
+                                focusedField = nil
                                 viewModel.didSelectSave(nil)
                                 presentation.wrappedValue.dismiss()
                             }

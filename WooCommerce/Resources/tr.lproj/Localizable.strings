@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-06 02:10:09+0000 */
+/* Translation-Revision-Date: 2023-03-08 17:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -117,6 +117,9 @@ which should be translated separately and considered part of this sentence. */
 /* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
 "%1$d Products" = "%1$d Ürün";
 
+/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products selected */
+"%1$d Products selected" = "%1$d Ürün seçildi";
+
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
 "%1$d business day" = "%1$d iş günü";
 
@@ -234,6 +237,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "1 Ürün Seçildi";
+
+/* Title of the action button at the bottom of the Select Products screen when one product is selected */
+"1 Product selected" = "1 Ürün seçildi";
 
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1 öğe seçildi";
@@ -981,6 +987,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Beauty Products" = "Güzellik Ürünleri";
 
+/* Display label when a product bundle's add-to-cart form is displayed before the single-product tabs. */
+"Before Tabs" = "Sekmelerden Önce";
+
 /* Country option for a site address. */
 "Belarus" = "Beyaz Rusya";
 
@@ -1098,6 +1107,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button that presents a menu with possible products bulk update options */
 "Bulk update" = "Toplu güncelleme";
 
+/* Display label for bundle product type. */
+"Bundle" = "Paket";
+
 /* Country option for a site address. */
 "Burkina Faso" = "Burkina Faso";
 
@@ -1128,6 +1140,9 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the label at the end of the Jetpack setup required screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com.
    Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
 "By tapping the Connect Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "Jetpack'i Bağla düğmesine dokunarak, %1$@ ve WordPress.com ile %2$@ kabul etmiş olursunuz.";
+
+/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
+"By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "Jetpack'i Yükle düğmesine dokunarak, %1$@ ve WordPress.com ile %2$@ kabul etmiş olursunuz.";
 
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "ÜLKELER";
@@ -2564,6 +2579,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
 "Enter description" = "Açıklama gir";
 
+/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
+"Enter email" = "E-posta gir";
+
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "Dosya URL'si girin";
 
@@ -2605,6 +2623,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder for the username field on the site credential login screen */
 "Enter username" = "Kullanıcı adı girin";
+
+/* Label for the password field on the WPCom password login screen of the Jetpack setup flow. */
+"Enter your WordPress.com password" = "WordPress.com şifrenizi girin";
 
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "%@ ile igili hesap bilgilerinizi girin.";
@@ -2649,6 +2670,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when the WooCommerce plugin detail cannot be fetched after authentication */
 "Error checking for the WooCommerce plugin." = "WooCommerce eklentisi denetlenirken hata oluştu.";
 
+/* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
+"Error checking the Jetpack connection on your site" = "Sitenizdeki Jetpack bağlantısı kontrol edilirken hata oluştu";
+
+/* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
+"Error checking the WordPress.com account associated with this email. Please try again." = "Bu e-postayla ilişkili WordPress.com hesabı kontrol edilirken hata oluştu. Lütfen tekrar deneyin.";
+
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "Hata kodu %1$d";
 
@@ -2678,6 +2705,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Etiket satın alınırken hata oluştu";
+
+/* Message shown on the error alert displayed when requesting authentication link for the Jetpack setup flow fails */
+"Error requesting authentication link for your account. Please try again." = "Hesabınız için kimlik doğrulama bağlantısı istenirken hata oluştu. Lütfen tekrar deneyin.";
 
 /* Title of the notice about an error saving images uploaded in the background to a product. */
 "Error saving product images" = "Ürün görselleri kaydedilirken hata oluştu";
@@ -2910,6 +2940,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Sabit Ürün İndirimi";
 
+/* Display label for the product bundle's item grouping */
+"Flat" = "Düz";
+
 /* Industry option in the store creation category question. */
 "Flowers" = "Çiçek";
 
@@ -3017,6 +3050,9 @@ which should be translated separately and considered part of this sentence. */
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
 "Get a login link by email" = "E-posta ile bir giriş bağlantısı alın";
 
+/* Subtitle of multiple stores as part of Jetpack benefits. */
+"Get access to all of your WooCommerce stores." = "Tüm WooCommerce mağazalarınıza erişim elde edin.";
+
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Sorularınıza yanıt alın";
 
@@ -3108,6 +3144,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Grenada" = "Grenada";
+
+/* Display label for the product bundle's layout */
+"Grid" = "Izgara";
 
 /* Industry option in the store creation category question. */
 "Grocery Stores" = "Marketler";
@@ -3389,6 +3428,9 @@ which should be translated separately and considered part of this sentence. */
 /* Toggle field in the view for adding or editing a coupon's free shipping support. */
 "Include Free Shipping?" = "Ücretsiz Gönderim dahil mi?";
 
+/* Subtitle of the product form bottom sheet action for editing downloadable files. */
+"Include downloadable files with purchases" = "Satın alma işlemlerine indirilebilir dosyaları ekle";
+
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "Site ile beraber";
 
@@ -3471,6 +3513,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of installing Jetpack plugin step
    Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "Jetpack kuruluyor";
+
+/* Display label for the product's inventory stock status */
+"Insufficient stock" = "Yetersiz stok";
 
 /* Industry option in the store creation category question. */
 "Insurance" = "Sigorta";
@@ -3564,6 +3609,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "Analytics'i devre dışı bıraktığınız anlaşılıyor.";
+
+/* Message on the error modal when a user without admin role tries to install Jetpack */
+"It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "Görünüşe göre kullanıcı rolünüz Jetpack'i yüklemenize izin vermiyor.\nLütfen yardım için site yöneticinizle iletişime geçin.";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Yanış bir parola girmişsiniz gibi görünüyor. Yeniden denemek ister misiniz?";
@@ -3754,6 +3802,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know what you think" = "Ne düşündüğünüzü bize söyleyin";
 
+/* Message info on the support screen. */
+"Let us know your site address (URL) and tell us as much as you can about the problem," = "Bize site adresinizi (URL) bildirin ve sorunu olabildiğince anlatın,";
+
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8,5 x 11 inç)";
 
@@ -3848,6 +3899,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "Başka Bir Hesapla Oturum Açın";
 
+/* Button to start the WPCom login flow from the Jetpack benefits screen. */
+"Log In to Continue" = "Devam Etmek İçin Oturum Açın";
+
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
    Alert button title - confirms and logs out the user
    Log out button title */
@@ -3887,6 +3941,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Sign in instructions on the 'log in using email' screen.
    Sign in instructions on the 'log in using WordPress.com account' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "WooCommerce mağazalarınızı yönetmek için WordPress.com hesabınızın e-posta adresi ile oturum açın.";
+
+/* Subtitle for the WPCom email login screen when Jetpack is not connected yet */
+"Log in with your WordPress.com account to connect Jetpack" = "Jetpack'i bağlamak için WordPress.com hesabınızla oturum açın";
+
+/* Subtitle for the WPCom email login screen when Jetpack is not installed yet */
+"Log in with your WordPress.com account to install Jetpack" = "Jetpack'i yüklemek için WordPress.com hesabınızla oturum açın";
 
 /* Sign in instructions for logging in with a username and password. */
 "Log in with your WordPress.com account to manage your WooCommerce stores." = "WooCommerce mağazalarınızı yönetmek için WordPress.com hesabınızın e-posta adresi ile oturum açın.";
@@ -4171,6 +4231,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
 "Multiple Contactless Cards Detected" = "Birden Fazla Temassız Kart Algılandı";
 
+/* Title of multiple stores as part of Jetpack benefits. */
+"Multiple Stores" = "Birden Fazla Mağaza";
+
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Çoklu ödeme seçenekleri";
 
@@ -4311,6 +4374,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when a card reader was expected to already have been connected. */
 "No card reader is connected - connect a reader and try again" = "Bağlı kart okuyucu yok - bir okuyucu bağlayın ve tekrar deneyin";
+
+/* Placeholder of the Product Categories row on Product main screen */
+"No category selected" = "Kategori seçilmedi";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Bağlantı yok";
@@ -4571,6 +4637,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "Veya";
+
+/* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
+"Or Continue using Magic Link" = "Veya Sihirli Bağlantı'yı kullanmaya devam edin";
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Veya _site adresinizi girerek_ oturum açın.";
@@ -6034,6 +6103,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Jetpack'i yapılandır";
 
+/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+"Set up Tap to Pay on iPhone" = "Tap to Pay on iPhone'u kurun";
+
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Ürünlerinizi göndereceğiniz paket tipini ayarlayın. Gelecekte aldığınız siparişler için bu seçiminizi hatırlayacağız.";
@@ -6622,6 +6694,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "São Tomé ve Príncipe";
+
+/* Display label for the product bundle's layout */
+"Tabular" = "Tablo Halinde";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
@@ -8106,6 +8181,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The subtitle text on the magic link requested screen followed by the email address. */
 "We just sent a magic link to" = "Az önce size sihirli bir bağlantı gönderdik";
 
+/* Instruction on the magic link screen of the WPCom login flow during Jetpack setup. %@ is a submitted email address. */
+"We just sent a magic link to %@" = "Az önce %@ adresine sihirli bir bağlantı gönderdik";
+
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "İşiniz için gerekli olduğunu biliyoruz.";
 
@@ -8319,6 +8397,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "Bu mağazaya erişme yetkiniz yok.";
+
+/* An error message shown after the user retried checking their roles but they still don't have enough permission to install Jetpack */
+"You are not authorized to install Jetpack" = "Jetpack'i yükleme yetkiniz yok";
 
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "Birden çok seçebilirsiniz.";

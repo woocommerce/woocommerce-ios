@@ -20,7 +20,7 @@ struct CouponInputTransformer {
         }
 
         // If there is no existing coupon lines, we insert the input one.
-        guard order.coupons.count > 0 else {
+        guard order.coupons.isNotEmpty else {
             return order.copy(coupons: [input])
         }
 

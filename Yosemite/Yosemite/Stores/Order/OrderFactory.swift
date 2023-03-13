@@ -70,6 +70,15 @@ public enum OrderFactory {
                      attributes: [])
     }
 
+    /// Creates a coupon line suitable to be used within a new order.
+    ///
+    public static func newOrderCouponLine(code: String) -> OrderCouponLine {
+        .init(couponID: 0,
+              code: code,
+              discount: "",
+              discountTax: "")
+    }
+
     /// Creates a fee line suitable to delete a fee line already saved remotely in an order.
     ///
     public static func deletedFeeLine(_ feeLine: OrderFeeLine) -> OrderFeeLine {

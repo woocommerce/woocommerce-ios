@@ -148,6 +148,9 @@ public enum BottomSheetProductType: Hashable {
             // We need to be aware of subscriptions for Payments
             // but we don't handle them in the UI yet
             self = .custom("subscription")
+        case .bundle:
+            // We do not yet support product editing or creation for bundles
+            self = .custom("bundle")
         case .custom(let string):
             self = .custom(string)
         }

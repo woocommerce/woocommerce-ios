@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 12.7
+This release has several fixes and improvements that makes it easier for you to manage your store from the app. Please continue to send us feedback – we are listening!
+
 ## 12.6
 Good news! Tap to Pay is now available to USA merchants using WooCommerce Payments. Quickly take an in-person credit card payment using your iPhone! We welcome your feedback on the app, especially the new features we’re working on and giving early access to.
 

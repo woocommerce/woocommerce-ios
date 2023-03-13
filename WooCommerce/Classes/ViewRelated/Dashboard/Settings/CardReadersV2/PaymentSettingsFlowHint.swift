@@ -16,7 +16,7 @@ struct PaymentSettingsFlowHint: View {
                 .padding(.leading, 16)
             Spacer()
         }
-            .padding(.horizontal, 8)
+        .padding(.horizontal, 8)
     }
 }
 

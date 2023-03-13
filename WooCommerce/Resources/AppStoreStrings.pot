@@ -57,9 +57,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v12.5-whats-new"
+msgctxt "v12.6-whats-new"
 msgid ""
-"This release includes several bug fixes and improvements to make your experience smoother and more enjoyable. We're committed to continuously improving the WooCommerce app, and we have some exciting updates coming in the next few weeks. Stay tuned for more information!\n"
+"Good news! Tap to Pay is now available to USA merchants using WooCommerce Payments. Quickly take an in-person credit card payment using your iPhone! We welcome your feedback on the app, especially the new features we’re working on and giving early access to.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

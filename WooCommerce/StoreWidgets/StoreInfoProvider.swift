@@ -1,6 +1,7 @@
 import WidgetKit
 import WooFoundation
 import KeychainAccess
+import Networking
 
 /// Type that represents the all the possible Widget states.
 ///
@@ -86,7 +87,7 @@ final class StoreInfoProvider: TimelineProvider {
             return completion(Timeline<StoreInfoEntry>(entries: [StoreInfoEntry.notConnected], policy: .never))
         }
 
-        let strongService = StoreInfoDataService(authToken: dependencies.authToken)
+        let strongService = StoreInfoDataService(credentials: dependencies.credentials)
         networkService = strongService
         Task {
             do {
@@ -112,7 +113,7 @@ private extension StoreInfoProvider {
     /// Dependencies needed by the `StoreInfoProvider`
     ///
     struct Dependencies {
-        let authToken: String
+        let credentials: Credentials
         let storeID: Int64
         let storeName: String
         let storeCurrencySettings: CurrencySettings
@@ -122,14 +123,28 @@ private extension StoreInfoProvider {
     ///
     static func fetchDependencies() -> Dependencies? {
         let keychain = Keychain(service: WooConstants.keychainServiceName)
-        guard let authToken = keychain[WooConstants.authToken],
-              let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
+        guard let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
               let storeName = UserDefaults.group?[.defaultStoreName] as? String,
               let storeCurrencySettingsData = UserDefaults.group?[.defaultStoreCurrencySettings] as? Data,
               let storeCurrencySettings = try? JSONDecoder().decode(CurrencySettings.self, from: storeCurrencySettingsData) else {
+            print("⛔️ missing store info")
             return nil
         }
-        return Dependencies(authToken: authToken,
+        let credentials: Credentials? = {
+            if let authToken = keychain[WooConstants.authToken] {
+                return Credentials(authToken: authToken)
+            } else if let username = UserDefaults.group?[.defaultUsername] as? String,
+                      let password = keychain[WooConstants.siteCredentialPassword],
+                      let siteAddress = UserDefaults.group?[.defaultSiteAddress] as? String {
+                return .wporg(username: username, password: password, siteAddress: siteAddress)
+            }
+            return nil
+        }()
+        guard let credentials else {
+            print("⛔️ missing credentials")
+            return nil
+        }
+        return Dependencies(credentials: credentials,
                             storeID: storeID,
                             storeName: storeName,
                             storeCurrencySettings: storeCurrencySettings)
@@ -156,14 +171,26 @@ private extension StoreInfoProvider {
     /// Real data entry.
     ///
     static func dataEntry(for todayStats: StoreInfoDataService.Stats, with dependencies: Dependencies) -> StoreInfoEntry {
-        StoreInfoEntry.data(.init(range: Localization.today,
-                                  name: dependencies.storeName,
-                                  revenue: Self.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
-                                  revenueCompact: Self.formattedAmountCompactString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
-                                  visitors: "\(todayStats.totalVisitors)",
-                                  orders: "\(todayStats.totalOrders)",
-                                  conversion: Self.formattedConversionString(for: todayStats.conversion),
-                                  updatedTime: Self.currentFormattedTime()))
+        let visitors: String = {
+            if let visitors = todayStats.totalVisitors {
+                return "\(visitors)"
+            }
+            return Constants.valuePlaceholderText
+        }()
+        let conversion: String = {
+            if let conversion = todayStats.conversion {
+                return Self.formattedConversionString(for: conversion)
+            }
+            return Constants.valuePlaceholderText
+        }()
+        return StoreInfoEntry.data(.init(range: Localization.today,
+                                         name: dependencies.storeName,
+                                         revenue: Self.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
+                                         revenueCompact: Self.formattedAmountCompactString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
+                                         visitors: visitors,
+                                         orders: "\(todayStats.totalOrders)",
+                                         conversion: conversion,
+                                         updatedTime: Self.currentFormattedTime()))
     }
 
     static func formattedAmountString(for amountValue: Decimal, with currencySettings: CurrencySettings?) -> String {

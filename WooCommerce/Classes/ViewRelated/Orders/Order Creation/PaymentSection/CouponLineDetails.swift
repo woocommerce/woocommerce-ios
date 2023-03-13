@@ -38,7 +38,6 @@ struct CouponLineDetails: View {
                                 presentation.wrappedValue.dismiss()
                             }
                             .padding()
-                            .frame(maxWidth: .infinity, alignment: .center)
                             .foregroundColor(Color(.error))
                             .padding(.horizontal, insets: safeAreaInsets)
                             .addingTopAndBottomDividers()

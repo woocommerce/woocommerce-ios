@@ -86,6 +86,9 @@ extension WPCom2FALoginViewModel: LoginFacadeDelegate {
 extension WPCom2FALoginViewModel {
     enum Constants {
         // Following the implementation in WordPressAuthenticator
+        // swiftlint:disable line_length
+        // https://github.com/wordpress-mobile/WordPressAuthenticator-iOS/blob/c0d16065c5b5a8e54dbb54cc31c7b3cf28f584f9/WordPressAuthenticator/Signin/Login2FAViewController.swift#L218
+        // swiftlint:enable line_length
         static let maximumCodeLength = 8
     }
     enum Localization {

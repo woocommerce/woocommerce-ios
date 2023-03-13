@@ -803,7 +803,6 @@
 		268EC45F26CEA50C00716F5C /* EditCustomerNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268EC45E26CEA50C00716F5C /* EditCustomerNote.swift */; };
 		268EC46126D3F67800716F5C /* EditCustomerNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268EC46026D3F67800716F5C /* EditCustomerNoteViewModel.swift */; };
 		268EC46426D3F9C100716F5C /* EditCustomerNoteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268EC46326D3F9C100716F5C /* EditCustomerNoteViewModelTests.swift */; };
-		268FD44727580A81008FDF9B /* LegacyCollectOrderPaymentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268FD44627580A81008FDF9B /* LegacyCollectOrderPaymentUseCase.swift */; };
 		269098B427D2BBFC001FEB07 /* ShippingInputTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269098B327D2BBFC001FEB07 /* ShippingInputTransformer.swift */; };
 		269098B627D2C09D001FEB07 /* ShippingInputTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269098B527D2C09D001FEB07 /* ShippingInputTransformerTests.swift */; };
 		269098B827D68CCD001FEB07 /* FeesInputTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269098B727D68CCD001FEB07 /* FeesInputTransformer.swift */; };
@@ -3208,7 +3207,6 @@
 		268EC45E26CEA50C00716F5C /* EditCustomerNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNote.swift; sourceTree = "<group>"; };
 		268EC46026D3F67800716F5C /* EditCustomerNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNoteViewModel.swift; sourceTree = "<group>"; };
 		268EC46326D3F9C100716F5C /* EditCustomerNoteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNoteViewModelTests.swift; sourceTree = "<group>"; };
-		268FD44627580A81008FDF9B /* LegacyCollectOrderPaymentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyCollectOrderPaymentUseCase.swift; sourceTree = "<group>"; };
 		269098B327D2BBFC001FEB07 /* ShippingInputTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingInputTransformer.swift; sourceTree = "<group>"; };
 		269098B527D2C09D001FEB07 /* ShippingInputTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingInputTransformerTests.swift; sourceTree = "<group>"; };
 		269098B727D68CCD001FEB07 /* FeesInputTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeesInputTransformer.swift; sourceTree = "<group>"; };
@@ -6598,7 +6596,6 @@
 				035DBA44292D0163003E5125 /* CollectOrderPaymentUseCase.swift */,
 				03582BE1299A9CC8007B7AA3 /* CollectOrderPaymentAnalytics.swift */,
 				035DBA4A292E248C003E5125 /* CardPresentPaymentAlertsPresenter.swift */,
-				268FD44627580A81008FDF9B /* LegacyCollectOrderPaymentUseCase.swift */,
 				0375799A28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift */,
 				02C27BCD282CB52F0065471A /* CardPresentPaymentReceiptEmailCoordinator.swift */,
 			);
@@ -11927,7 +11924,6 @@
 				DEC51A9D274F8528009F3DF4 /* JCPJetpackInstallStepsViewModel.swift in Sources */,
 				455DC3A327393C7E00D4644C /* OrderDatesFilterViewController.swift in Sources */,
 				45B6F4EF27592A4000C18782 /* ReviewsView.swift in Sources */,
-				268FD44727580A81008FDF9B /* LegacyCollectOrderPaymentUseCase.swift in Sources */,
 				B6F37970293798ED00718561 /* AnalyticsHubTodayRangeData.swift in Sources */,
 				CCFBBCF629C4B9A30081B595 /* ComponentsListViewModel.swift in Sources */,
 				269098B427D2BBFC001FEB07 /* ShippingInputTransformer.swift in Sources */,

@@ -6,6 +6,11 @@ import Yosemite
 struct CouponInputTransformer {
 
     /// Adds, deletes, or updates a coupon line input into an existing order.
+    /// Only the first coupon line is updated.
+    ///
+    /// - If input is `nil`, then we remove the first existing coupon line.
+    /// - If there is no existing coupon lines, we insert the input one.
+    /// - If there are existing coupon lines replace the first coupon line
     ///
     static func update(input: OrderCouponLine?, on order: Order) -> Order {
         // If input is `nil`, then we remove the first existing coupon line.

@@ -967,6 +967,7 @@ final class OrderStoreTests: XCTestCase {
         let receivedKeys = Array(request.parameters.keys).sorted()
         let expectedKeys = [
             "billing",
+            "coupon_lines",
             "customer_note",
             "fee_lines",
             "line_items",

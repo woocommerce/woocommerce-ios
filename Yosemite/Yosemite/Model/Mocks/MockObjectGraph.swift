@@ -307,7 +307,17 @@ extension MockObjectGraph {
             variations: [],
             groupedProducts: [],
             menuOrder: 0,
-            addOns: []
+            addOns: [],
+            bundleLayout: nil,
+            bundleFormLocation: nil,
+            bundleItemGrouping: nil,
+            bundleMinSize: nil,
+            bundleMaxSize: nil,
+            bundleEditableInCart: nil,
+            bundleSoldIndividuallyContext: nil,
+            bundleStockStatus: nil,
+            bundleStockQuantity: nil,
+            bundledItems: []
         )
     }
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Necessary data for the account creation form field.
-struct AccountCreationFormFieldViewModel {
+/// Necessary data for the account creation / authentication form field.
+struct AuthenticationFormFieldViewModel {
     /// Title of the field.
     let header: String?
     /// Placeholder of the text field.
@@ -18,9 +18,10 @@ struct AccountCreationFormFieldViewModel {
     let isFocused: Bool
 }
 
-/// A field in the account creation form. Currently, there are two fields - email and password.
-struct AccountCreationFormFieldView: View {
-    private let viewModel: AccountCreationFormFieldViewModel
+/// A field in the account creation / authentication form.
+/// Currently, there are two fields - email and password.
+struct AuthenticationFormFieldView: View {
+    private let viewModel: AuthenticationFormFieldViewModel
 
     /// Whether the text field is *shown* as secure.
     /// When the field is secure, there is a button to show/hide the text field input.
@@ -29,7 +30,7 @@ struct AccountCreationFormFieldView: View {
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(viewModel: AccountCreationFormFieldViewModel) {
+    init(viewModel: AuthenticationFormFieldViewModel) {
         self.viewModel = viewModel
         self.showsSecureInput = viewModel.isSecure
     }
@@ -88,7 +89,7 @@ struct AccountCreationFormFieldView: View {
     }
 }
 
-private extension AccountCreationFormFieldView {
+private extension AuthenticationFormFieldView {
     enum Layout {
         static let verticalSpacing: CGFloat = 8
         static let secureFieldRevealButtonHorizontalPadding: CGFloat = 16
@@ -98,7 +99,7 @@ private extension AccountCreationFormFieldView {
 
 struct AccountCreationFormField_Previews: PreviewProvider {
     static var previews: some View {
-        AccountCreationFormFieldView(viewModel: .init(header: "Your email address",
+        AuthenticationFormFieldView(viewModel: .init(header: "Your email address",
                                                       placeholder: "Email address",
                                                       keyboardType: .emailAddress,
                                                       text: .constant(""),
@@ -106,7 +107,7 @@ struct AccountCreationFormField_Previews: PreviewProvider {
                                                       errorMessage: nil,
                                                       isFocused: true))
         VStack {
-            AccountCreationFormFieldView(viewModel: .init(header: "Choose a password",
+            AuthenticationFormFieldView(viewModel: .init(header: "Choose a password",
                                                           placeholder: "Password",
                                                           keyboardType: .default,
                                                           text: .constant("wwwwwwwwwwwwwwwwwwwwwwww"),
@@ -115,7 +116,7 @@ struct AccountCreationFormField_Previews: PreviewProvider {
                                                           isFocused: false))
             .environment(\.sizeCategory, .medium)
 
-            AccountCreationFormFieldView(viewModel: .init(header: "Choose a password",
+            AuthenticationFormFieldView(viewModel: .init(header: "Choose a password",
                                                           placeholder: "Password",
                                                           keyboardType: .default,
                                                           text: .constant("wwwwwwwwwwwwwwwwwwwwwwww"),

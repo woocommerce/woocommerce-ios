@@ -5,8 +5,8 @@ import WordPressAuthenticator
 final class WPCom2FALoginViewModelTests: XCTestCase {
 
     override func setUp() {
-        WordPressAuthenticator.initializeAuthenticator()
         super.setUp()
+        WordPressAuthenticator.initializeAuthenticator()
     }
 
     func test_title_string_is_correct_when_requiresConnectionOnly_is_false() {
@@ -48,7 +48,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         viewModel.verificationCode = "43 99 92"
 
         // Then
-        assertEqual("439992", "439992")
+        assertEqual("439992", viewModel.strippedCode)
     }
 
     func test_isValidCode_returns_false_when_verification_code_contains_non_digits() {
@@ -105,21 +105,6 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
         //  Then
         XCTAssertTrue(viewModel.isValidCode)
-    }
-
-    func test_handleLogin_updates_loginFields_correctly() {
-        // Given
-        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
-                                               requiresConnectionOnly: false,
-                                               onLoginFailure: { _ in },
-                                               onLoginSuccess: { _ in })
-
-        // When
-        viewModel.verificationCode = "113 567"
-        viewModel.handleLogin()
-
-        // Then
-        assertEqual(viewModel.strippedCode, viewModel.loginFields.multifactorCode)
     }
 
     func test_isLoggingIn_is_updated_correctly_and_onLoginFailure_is_triggered_when_login_fails() {

@@ -12,6 +12,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     let titleString: String
 
     /// In case the code is entered by pasting from the clipboard, we need to remove all white spaces.
+    /// kept non-private for testing purposes.
     var strippedCode: String {
         verificationCode.components(separatedBy: .whitespacesAndNewlines).joined()
     }
@@ -28,8 +29,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
         return false
     }
 
-    // set to non-private for testing purpose
-    let loginFields: LoginFields
+    private let loginFields: LoginFields
     private let loginFacade: LoginFacade
     private let onLoginFailure: (Error) -> Void
     private let onLoginSuccess: (String) -> Void
@@ -85,6 +85,9 @@ extension WPCom2FALoginViewModel: LoginFacadeDelegate {
 extension WPCom2FALoginViewModel {
     enum Constants {
         // Following the implementation in WordPressAuthenticator
+        // swiftlint:disable line_length
+        // https://github.com/wordpress-mobile/WordPressAuthenticator-iOS/blob/c0d16065c5b5a8e54dbb54cc31c7b3cf28f584f9/WordPressAuthenticator/Signin/Login2FAViewController.swift#L218
+        // swiftlint:enable line_length
         static let maximumCodeLength = 8
     }
     enum Localization {

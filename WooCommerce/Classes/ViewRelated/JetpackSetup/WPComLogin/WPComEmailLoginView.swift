@@ -61,7 +61,7 @@ struct WPComEmailLoginView: View {
                 }
 
                 // Email field
-                AccountCreationFormFieldView(viewModel: .init(
+                AuthenticationFormFieldView(viewModel: .init(
                     header: Localization.emailLabel,
                     placeholder: Localization.enterEmail,
                     keyboardType: .emailAddress,

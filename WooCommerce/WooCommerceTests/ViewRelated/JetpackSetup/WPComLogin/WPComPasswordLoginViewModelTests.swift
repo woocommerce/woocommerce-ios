@@ -5,8 +5,8 @@ import WordPressAuthenticator
 final class WPComPasswordLoginViewModelTests: XCTestCase {
 
     override func setUp() {
-        WordPressAuthenticator.initializeAuthenticator()
         super.setUp()
+        WordPressAuthenticator.initializeAuthenticator()
     }
 
     func test_title_string_is_correct_when_requiresConnectionOnly_is_false() {

@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a CouponLine Entity within an Order.
 ///
-public struct OrderCouponLine: Decodable, Equatable, GeneratedFakeable {
+public struct OrderCouponLine: Codable, Equatable, GeneratedFakeable {
     public let couponID: Int64
     public let code: String
     public let discount: String
@@ -19,6 +19,17 @@ public struct OrderCouponLine: Decodable, Equatable, GeneratedFakeable {
     }
 }
 
+// MARK: Codable
+extension OrderCouponLine {
+
+    /// Encodes OrderCouponLine writable fields.
+    ///
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(code, forKey: .code)
+    }
+}
 
 /// Defines all of the CouponLine's CodingKeys.
 ///

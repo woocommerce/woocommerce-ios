@@ -217,8 +217,10 @@ private extension JetpackSetupCoordinator {
             })
         let viewController = WPComPasswordLoginHostingController(
             viewModel: viewModel,
-            onMagicLinkRequest: emailLoginViewModel.requestAuthenticationLink(email:)
-        )
+            onMagicLinkRequest: { [weak self] email in
+            guard let self else { return }
+            await self.emailLoginViewModel.requestAuthenticationLink(email: email)
+        })
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 

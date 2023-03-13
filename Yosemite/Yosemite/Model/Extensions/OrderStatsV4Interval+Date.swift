@@ -22,6 +22,7 @@ extension OrderStatsV4Interval {
 private extension OrderStatsV4Interval {
     func createDateFormatter(timeZone: TimeZone) -> DateFormatter {
         let dateFormatter = DateFormatter.Stats.dateTimeFormatter
+        dateFormatter.calendar = Calendar(identifier: .iso8601)
         dateFormatter.timeZone = timeZone
         return dateFormatter
     }

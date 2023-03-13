@@ -100,7 +100,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote products.
     ///     - context: view or edit. Scope under which the request is made;
-    ///                determines fields present in response. Default is view.
+    ///                determines fields present in response. Default is `edit`.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of products to be retrieved per page.
     ///     - stockStatus: Optional stock status filtering. Default to nil (no filtering).
@@ -177,6 +177,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.include: stringOfProductIDs,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
+            ParameterKey.contextKey: Default.context
         ]
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
@@ -236,7 +237,8 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.search: keyword,
-            ParameterKey.exclude: stringOfExcludedProductIDs
+            ParameterKey.exclude: stringOfExcludedProductIDs,
+            ParameterKey.contextKey: Default.context
         ].merging(filterParameters, uniquingKeysWith: { (first, _) in first })
 
         let path = Path.products
@@ -262,7 +264,8 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.sku: keyword,
             ParameterKey.partialSKUSearch: keyword,
             ParameterKey.page: String(pageNumber),
-            ParameterKey.perPage: String(pageSize)
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.contextKey: Default.context
         ]
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
@@ -417,7 +420,7 @@ public extension ProductsRemote {
     enum Default {
         public static let pageSize: Int   = 25
         public static let pageNumber: Int = Remote.Default.firstPageNumber
-        public static let context: String = "view"
+        public static let context: String = "edit"
     }
 
     private enum Path {

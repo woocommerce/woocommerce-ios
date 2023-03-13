@@ -678,13 +678,6 @@ private extension Product {
         case menuOrder          = "menu_order"
         case metadata           = "meta_data"
 
-        case bundleLayout                   = "bundle_layout"
-        case bundleFormLocation             = "bundle_add_to_cart_form_location"
-        case bundleItemGrouping             = "bundle_item_grouping"
-        case bundleMinSize                  = "bundle_min_size"
-        case bundleMaxSize                  = "bundle_max_size"
-        case bundleEditableInCart           = "bundle_editable_in_cart"
-        case bundleSoldIndividuallyContext  = "bundle_sold_individually_context"
         case bundleStockStatus              = "bundle_stock_status"
         case bundleStockQuantity            = "bundle_stock_quantity"
         case bundledItems                   = "bundled_items"

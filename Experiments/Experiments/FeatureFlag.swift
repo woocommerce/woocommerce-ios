@@ -171,4 +171,8 @@ public enum FeatureFlag: Int {
     /// Whether to enable product bundle settings in product details
     ///
     case productBundles
+
+    /// Enables conditional behaviour when a site has a free trial plan.
+    ///
+    case freeTrial
 }

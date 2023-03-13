@@ -9,7 +9,7 @@ struct MockStripePaymentIntent {
     let status: StripeTerminal.PaymentIntentStatus
     let amount: UInt
     let currency: String
-    let metadata: [AnyHashable: Any]?
+    let metadata: [String: String]?
     let charges: [StripeTerminal.Charge]
 }
 

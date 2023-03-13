@@ -1,7 +1,5 @@
 import Foundation
 import Networking
-import WordPressKit
-import Storage
 import XCTest
 @testable import Yosemite
 
@@ -9,17 +7,13 @@ import XCTest
 ///
 final class MockAnnouncementsRemote {
 
-    /// The results to pass to the `completion` block if `getAnnouncement()` is called.
-    private var loadAnnouncementResults = [String: Result<[WordPressKit.Announcement], Error>]()
+    /// The results to pass to the `completion` block if `loadAnnouncements()` is called.
+    private var loadAnnouncementResults = [String: Result<[Announcement], Error>]()
 
     /// The amount of times that the `getAnnouncement` was invoked
     var numberOfTimesGetAnnouncementWasCalled = 0
 
-    /// The requested appId. WooCommerce appID can be found here:
-    /// https://fieldguide.automattic.com/mobile-feature-announcements/mobile-feature-announcement-endpoint/
-    var requestedAppId = ""
-
-    func whenLoadingAnnouncements(for appVersion: String, thenReturn result: Result<[WordPressKit.Announcement], Error>) {
+    func whenLoadingAnnouncements(for appVersion: String, thenReturn result: Result<[Announcement], Error>) {
         loadAnnouncementResults[appVersion] = result
     }
 }
@@ -28,14 +22,12 @@ final class MockAnnouncementsRemote {
 
 extension MockAnnouncementsRemote: AnnouncementsRemoteProtocol {
 
-    func getAnnouncements(appId: String,
-                          appVersion: String,
-                          locale: String,
-                          completion: @escaping (Result<[WordPressKit.Announcement], Error>) -> Void) {
+    func loadAnnouncements(appVersion: String,
+                           locale: String,
+                           onCompletion: @escaping (Result<[Announcement], Error>) -> Void) {
         numberOfTimesGetAnnouncementWasCalled += 1
-        requestedAppId = appId
         if let result = self.loadAnnouncementResults[appVersion] {
-            completion(result)
+            onCompletion(result)
         } else {
             XCTFail("\(String(describing: self)) Could not find Announcement for \(appVersion)")
         }

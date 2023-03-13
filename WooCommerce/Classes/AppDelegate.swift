@@ -8,7 +8,6 @@ import class WidgetKit.WidgetCenter
 import CocoaLumberjack
 import KeychainAccess
 import WordPressUI
-import WordPressKit
 import WordPressAuthenticator
 import AutomatticTracks
 
@@ -193,6 +192,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             handleWebActivity(userActivity)
         }
 
+        SpotlightManager.handleUserActivity(userActivity)
         trackWidgetTappedIfNeeded(userActivity: userActivity)
 
         return true
@@ -297,7 +297,6 @@ private extension AppDelegate {
         let logger = ServiceLocator.wordPressLibraryLogger
         WPSharedSetLoggingDelegate(logger)
         WPAuthenticatorSetLoggingDelegate(logger)
-        WPKitSetLoggingDelegate(logger)
     }
 
     /// Sets up the current Log Level.

@@ -25,6 +25,14 @@ final class MockAccountRemote {
     /// The results to return based on the given site ID in `createAccount`.
     private var createAccountResult: Result<CreateAccountResult, CreateAccountError>?
 
+    /// Returns the value when `closeAccount` is called.
+    private var closeAccountResult: Result<Void, Error> = .success(())
+
+    /// Returns the value as a publisher when `closeAccount` is called.
+    func whenClosingAccount(thenReturn result: Result<Void, Error>) {
+        closeAccountResult = result
+    }
+
     /// Returns the value as a publisher when `checkIfWooCommerceIsActive` is called.
     func whenCheckingIfWooCommerceIsActive(siteID: Int64, thenReturn result: Result<Bool, Error>) {
         checkIfWooCommerceIsActiveResultsBySiteID[siteID] = result
@@ -117,5 +125,14 @@ extension MockAccountRemote: AccountRemoteProtocol {
             return .failure(.unexpected(error: .empty))
         }
         return result
+    }
+
+    func closeAccount() async throws {
+        switch closeAccountResult {
+        case .success:
+            break
+        case .failure(let error):
+            throw error
+        }
     }
 }

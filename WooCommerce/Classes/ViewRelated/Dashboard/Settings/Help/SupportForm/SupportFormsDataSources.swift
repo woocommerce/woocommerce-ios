@@ -71,10 +71,10 @@ struct WCPaySupportDataSource: SupportFormMetaDataSource {
 
     var tags: [String] {
         metadataProvider.systemTags() + [ZendeskForms.Tags.appTransfer,
-                                                      ZendeskForms.Tags.wcPayments,
-                                                      ZendeskForms.Tags.payment,
-                                                      ZendeskForms.Tags.support,
-                                                      ZendeskForms.Tags.productAreaWCPayments]
+                                         ZendeskForms.Tags.wcPayments,
+                                         ZendeskForms.Tags.payment,
+                                         ZendeskForms.Tags.support,
+                                         ZendeskForms.Tags.productAreaWCPayments]
     }
 
     var customFields: [Int64: String] {
@@ -96,9 +96,9 @@ struct OtherPluginsSupportDataSource: SupportFormMetaDataSource {
 
     var tags: [String] {
         metadataProvider.systemTags() + [ZendeskForms.Tags.productAreaWooExtensions,
-                                                      ZendeskForms.Tags.appTransfer,
-                                                      ZendeskForms.Tags.support,
-                                                      ZendeskForms.Tags.store]
+                                         ZendeskForms.Tags.appTransfer,
+                                         ZendeskForms.Tags.support,
+                                         ZendeskForms.Tags.store]
     }
 
     var customFields: [Int64: String] {

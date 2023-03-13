@@ -155,6 +155,10 @@ extension WooAnalyticsEvent {
             "date_range": filters?.dateRange?.analyticsDescription ?? String()
         ])
     }
+
+    static func ordersListLoadError(_ error: Error) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .ordersListLoadError, properties: [:], error: error)
+    }
 }
 
 

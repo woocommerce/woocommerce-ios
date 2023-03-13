@@ -1,6 +1,5 @@
 @testable import WooCommerce
 import WordPressAuthenticator
-import WordPressKit
 
 final class MockAuthentication: Authentication {
     private(set) var presentSupportFromScreenInvoked = false

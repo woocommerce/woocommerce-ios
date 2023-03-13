@@ -71,6 +71,8 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        registerUserActivity()
+
         setupNavigationBar()
         configureSections()
         configureTableView()

@@ -30,7 +30,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .loginErrorNotifications:
             return true
         case .loginMagicLinkEmphasis:
-            return true
+            return false
         case .loginMagicLinkEmphasisM2:
             return true
         case .productMultiSelectionM1:

@@ -196,6 +196,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        registerUserActivity()
+
         configureNavigationBar()
         configureMainView()
         configureTableView()

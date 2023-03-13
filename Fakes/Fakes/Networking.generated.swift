@@ -829,13 +829,6 @@ extension Networking.Product {
             groupedProducts: .fake(),
             menuOrder: .fake(),
             addOns: .fake(),
-            bundleLayout: .fake(),
-            bundleFormLocation: .fake(),
-            bundleItemGrouping: .fake(),
-            bundleMinSize: .fake(),
-            bundleMaxSize: .fake(),
-            bundleEditableInCart: .fake(),
-            bundleSoldIndividuallyContext: .fake(),
             bundleStockStatus: .fake(),
             bundleStockQuantity: .fake(),
             bundledItems: .fake()

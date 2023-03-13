@@ -304,15 +304,9 @@ final class ProductMapperTests: XCTestCase {
 
         // Then
         XCTAssertEqual(product.productType, .bundle)
-        XCTAssertEqual(product.bundleLayout, .defaultLayout)
-        XCTAssertEqual(product.bundleFormLocation, .defaultLocation)
-        XCTAssertEqual(product.bundleItemGrouping, .parent)
-        XCTAssertEqual(product.bundleMinSize, 3)
-        XCTAssertNil(product.bundleMaxSize)
-        XCTAssertEqual(product.bundleEditableInCart, false)
-        XCTAssertEqual(product.bundleSoldIndividuallyContext, .configuration)
         XCTAssertEqual(product.bundleStockStatus, .insufficientStock)
         XCTAssertEqual(product.bundleStockQuantity, 0)
+        XCTAssertEqual(product.bundledItems.count, 3)
     }
 
     /// Test that products with bundled items product type are properly parsed.
@@ -323,7 +317,6 @@ final class ProductMapperTests: XCTestCase {
         let bundledItem = try XCTUnwrap(product.bundledItems.first)
 
         // Then
-        XCTAssertEqual(product.bundledItems.count, 3)
         XCTAssertEqual(bundledItem.bundledItemID, 6)
         XCTAssertEqual(bundledItem.productID, 36)
         XCTAssertEqual(bundledItem.menuOrder, 0)

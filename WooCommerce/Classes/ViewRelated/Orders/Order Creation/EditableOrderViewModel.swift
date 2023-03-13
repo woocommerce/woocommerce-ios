@@ -799,7 +799,7 @@ private extension EditableOrderViewModel {
                                             feeLineTotal: order.fees.first?.total ?? "0",
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
-                                            shouldShowCoupon: order.coupons.first?.code.isNotEmpty ?? false,
+                                            shouldShowCoupon: order.coupons.isNotEmpty,
                                             couponSummary: self.summarizeCoupons(from: order.coupons),
                                             couponCode: order.coupons.first?.code ?? "",
                                             discountTotal: order.discountTotal,

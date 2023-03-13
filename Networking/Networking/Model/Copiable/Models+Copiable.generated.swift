@@ -601,6 +601,27 @@ extension Networking.Order {
     }
 }
 
+extension Networking.OrderCouponLine {
+    public func copy(
+        couponID: CopiableProp<Int64> = .copy,
+        code: CopiableProp<String> = .copy,
+        discount: CopiableProp<String> = .copy,
+        discountTax: CopiableProp<String> = .copy
+    ) -> Networking.OrderCouponLine {
+        let couponID = couponID ?? self.couponID
+        let code = code ?? self.code
+        let discount = discount ?? self.discount
+        let discountTax = discountTax ?? self.discountTax
+
+        return Networking.OrderCouponLine(
+            couponID: couponID,
+            code: code,
+            discount: discount,
+            discountTax: discountTax
+        )
+    }
+}
+
 extension Networking.OrderFeeLine {
     public func copy(
         feeID: CopiableProp<Int64> = .copy,

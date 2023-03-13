@@ -91,7 +91,8 @@ class AuthenticatedState: StoresManagerState {
                                network: network,
                                fileStorage: PListFileStorage()),
             WordPressSiteStore(network: network, dispatcher: dispatcher),
-            JetpackConnectionStore(dispatcher: dispatcher)
+            JetpackConnectionStore(dispatcher: dispatcher),
+            StoreOnboardingTasksStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
 

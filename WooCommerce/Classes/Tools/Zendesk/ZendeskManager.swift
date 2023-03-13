@@ -220,8 +220,6 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     private let stores = ServiceLocator.stores
     private let storageManager = ServiceLocator.storageManager
 
-    private let isSSRFeatureFlagEnabled = DefaultFeatureFlagService().isFeatureFlagEnabled(.systemStatusReportInSupportRequest)
-
     /// Controller for fetching site plugins from Storage
     ///
     private lazy var pluginResultsController: ResultsController<StorageSitePlugin> = createPluginResultsController()
@@ -830,25 +828,14 @@ private extension ZendeskManager {
     /// Without it, the tickets won't appear in the correct view(s) in the web portal and they won't contain all the metadata needed to solve a ticket.
     ///
     func createRequest(supportSourceTag: String?) -> RequestUiConfiguration {
-
-        var logsFieldID: Int64 = TicketFieldIDs.legacyLogs
-        var systemStatusReportFieldID: Int64 = 0
-        if isSSRFeatureFlagEnabled {
-            /// If the feature flag is enabled, `legacyLogs` Field ID is used to send the SSR logs,
-            /// and `logs` Field ID is used to send the logs.
-            ///
-            logsFieldID = TicketFieldIDs.logs
-            systemStatusReportFieldID = TicketFieldIDs.legacyLogs
-        }
-
         // Only add the subcategory field when the SupportRequests feature is disabled to maintain the legacy behaviour.
         let isNewSupportRequestDisabled = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests)
         let ticketFields = [
             CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
             CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
             CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
-            CustomField(fieldId: logsFieldID, value: getLogFile()),
-            CustomField(fieldId: systemStatusReportFieldID, value: systemStatusReport),
+            CustomField(fieldId: TicketFieldIDs.logs, value: getLogFile()),
+            CustomField(fieldId: TicketFieldIDs.legacyLogs, value: systemStatusReport),
             CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
@@ -862,24 +849,13 @@ private extension ZendeskManager {
     }
 
     func createWCPayRequest(supportSourceTag: String?) -> RequestUiConfiguration {
-
-        var logsFieldID: Int64 = TicketFieldIDs.legacyLogs
-        var systemStatusReportFieldID: Int64 = 0
-        if isSSRFeatureFlagEnabled {
-            /// If the feature flag is enabled, `legacyLogs` Field ID is used to send the SSR logs,
-            /// and `logs` Field ID is used to send the logs.
-            ///
-            logsFieldID = TicketFieldIDs.logs
-            systemStatusReportFieldID = TicketFieldIDs.legacyLogs
-        }
-
         // Set form field values
         let ticketFields = [
             CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
             CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
             CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
-            CustomField(fieldId: logsFieldID, value: getLogFile()),
-            CustomField(fieldId: systemStatusReportFieldID, value: systemStatusReport),
+            CustomField(fieldId: TicketFieldIDs.logs, value: getLogFile()),
+            CustomField(fieldId: TicketFieldIDs.legacyLogs, value: systemStatusReport),
             CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),

@@ -51,8 +51,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .justInTimeMessagesOnDashboard:
             return true
-        case .systemStatusReportInSupportRequest:
-            return true
         case .IPPInAppFeedbackBanner:
             return true
         case .performanceMonitoring,

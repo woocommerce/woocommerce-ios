@@ -709,6 +709,9 @@ private extension DashboardViewController {
             group.addTask { [weak self] in
                 await self?.reloadDashboardUIStatsVersion(forced: true)
             }
+            group.addTask { [weak self] in
+                await self?.onboardingHostingController?.reloadTasks()
+            }
         }
     }
 }

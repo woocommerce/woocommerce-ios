@@ -168,6 +168,10 @@ public enum FeatureFlag: Int {
     ///
     case dashboardOnboarding
 
+    ///Ability to add coupon to order
+    ///
+    case addCouponToOrder
+
     /// Whether to enable product bundle settings in product details
     ///
     case productBundles

@@ -371,6 +371,8 @@
         <attribute name="backordersAllowed" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="backordersKey" attributeType="String"/>
         <attribute name="briefDescription" optional="YES" attributeType="String"/>
+        <attribute name="bundleStockQuantity" optional="YES" attributeType="Integer 64" usesScalarValueType="YES"/>
+        <attribute name="bundleStockStatus" optional="YES" attributeType="String"/>
         <attribute name="buttonText" attributeType="String" defaultValueString=""/>
         <attribute name="catalogVisibilityKey" attributeType="String"/>
         <attribute name="crossSellIDs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
@@ -422,6 +424,7 @@
         <attribute name="weight" optional="YES" attributeType="String"/>
         <relationship name="addOns" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ProductAddOn" inverseName="product" inverseEntity="ProductAddOn"/>
         <relationship name="attributes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductAttribute" inverseName="product" inverseEntity="ProductAttribute"/>
+        <relationship name="bundledItems" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ProductBundleItem" inverseName="product" inverseEntity="ProductBundleItem"/>
         <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductCategory" inverseName="products" inverseEntity="ProductCategory"/>
         <relationship name="defaultAttributes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductDefaultAttribute" inverseName="product" inverseEntity="ProductDefaultAttribute"/>
         <relationship name="dimensions" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductDimensions" inverseName="product" inverseEntity="ProductDimensions"/>
@@ -484,6 +487,7 @@
         <attribute name="productID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="stockStatus" attributeType="String" defaultValueString=""/>
         <attribute name="title" attributeType="String" defaultValueString=""/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="bundledItems" inverseEntity="Product"/>
     </entity>
     <entity name="ProductCategory" representedClassName="ProductCategory" syncable="YES">
         <attribute name="categoryID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

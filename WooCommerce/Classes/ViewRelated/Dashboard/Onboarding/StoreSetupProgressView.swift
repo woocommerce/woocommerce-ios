@@ -9,8 +9,6 @@ struct StoreSetupProgressView: View {
 
     let shareFeedbackAction: (() -> Void)?
 
-    @State private var showingActionSheet = false
-
     let isRedacted: Bool
 
     var body: some View {
@@ -43,19 +41,16 @@ struct StoreSetupProgressView: View {
                 .renderedIf(!isExpanded)
 
             // More button
-            Button {
-                showingActionSheet = true
+            Menu {
+                Button(Localization.shareFeedbackButton) {
+                    shareFeedbackAction?()
+                }
             } label: {
                 Image(uiImage: .ellipsisImage)
                     .flipsForRightToLeftLayoutDirection(true)
                     .foregroundColor(Color(.textTertiary))
             }
             .renderedIf(!isExpanded)
-        }
-        .confirmationDialog(Localization.title, isPresented: $showingActionSheet) {
-            Button(Localization.shareFeedbackButton) {
-                shareFeedbackAction?()
-            }
         }
     }
 }

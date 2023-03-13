@@ -126,7 +126,7 @@ private extension JetpackSetupCoordinator {
                 displayAdminRoleRequiredError()
                 requiresConnectionOnly = true
             default:
-                showAlert(message: error.prepareErrorMessage(fallback: Localization.errorCheckingJetpack))
+                showAlert(message: Localization.errorCheckingJetpack)
             }
         }
     }
@@ -209,7 +209,7 @@ private extension JetpackSetupCoordinator {
             },
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
-                let message = error.prepareErrorMessage(fallback: Localization.errorLoggingIn)
+                let message = error.localizedDescription
                 self.showAlert(message: message)
             },
             onLoginSuccess: { _ in
@@ -228,7 +228,7 @@ private extension JetpackSetupCoordinator {
             requiresConnectionOnly: requiresConnectionOnly,
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
-                let message = error.prepareErrorMessage(fallback: Localization.errorLoggingIn)
+                let message = error.localizedDescription
                 self.showAlert(message: message)
             },
             onLoginSuccess: { _ in
@@ -277,10 +277,6 @@ private extension JetpackSetupCoordinator {
         static let pleaseWait = NSLocalizedString(
             "Please wait",
             comment: "Message on the loading view displayed when the magic link authentication for Jetpack setup is in progress"
-        )
-        static let errorLoggingIn = NSLocalizedString(
-            "Login failed. Please try again.",
-            comment: "Generic message shown on the error alert displayed when the WPCom login for the Jetpack setup flow fails"
         )
     }
 }

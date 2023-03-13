@@ -74,7 +74,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
             }
             await startAuthentication(email: email, isPasswordlessAccount: passwordless)
         } catch {
-            onError(error.prepareErrorMessage(fallback: Localization.errorCheckingWPComAccount))
+            onError(error.localizedDescription)
         }
     }
 
@@ -99,7 +99,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
             }
             onMagicLinkUIRequest(email)
         } catch {
-            onError(error.prepareErrorMessage(fallback: Localization.errorRequestingAuthURL))
+            onError(error.localizedDescription)
         }
     }
 }
@@ -140,14 +140,6 @@ extension WPComEmailLoginViewModel {
         static let shareDetails = NSLocalizedString(
             "share details",
             comment: "The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen."
-        )
-        static let errorCheckingWPComAccount = NSLocalizedString(
-            "Error checking the WordPress.com account associated with this email. Please try again.",
-            comment: "Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow."
-        )
-        static let errorRequestingAuthURL = NSLocalizedString(
-            "Error requesting authentication link for your account. Please try again.",
-            comment: "Message shown on the error alert displayed when requesting authentication link for the Jetpack setup flow fails"
         )
     }
 }

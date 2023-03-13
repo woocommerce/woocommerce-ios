@@ -48,7 +48,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         viewModel.verificationCode = "43 99 92"
 
         // Then
-        assertEqual("439992", "439992")
+        assertEqual("439992", viewModel.strippedCode)
     }
 
     func test_isValidCode_returns_false_when_verification_code_contains_non_digits() {

@@ -12,6 +12,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     let titleString: String
 
     /// In case the code is entered by pasting from the clipboard, we need to remove all white spaces.
+    /// kept non-private for testing purposes.
     var strippedCode: String {
         verificationCode.components(separatedBy: .whitespacesAndNewlines).joined()
     }

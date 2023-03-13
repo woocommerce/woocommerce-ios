@@ -1317,7 +1317,6 @@
 		AEFF77AA29786DAA00667F7A /* PriceInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFF77A929786DAA00667F7A /* PriceInputViewModelTests.swift */; };
 		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
 		B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED021C041DF000076A9 /* Locale+Woo.swift */; };
-		B509FED321C05121000076A9 /* SupportManagerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED221C05121000076A9 /* SupportManagerAdapter.swift */; };
 		B509FED521C052D1000076A9 /* MockSupportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED421C052D1000076A9 /* MockSupportManager.swift */; };
 		B50BB4162141828F00AF0F3C /* FooterSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */; };
 		B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B511ED26218A660E005787DC /* StringDescriptor.swift */; };
@@ -1676,7 +1675,6 @@
 		CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */; };
 		CE4DA5C821DD759400074607 /* CurrencyFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DA5C721DD759400074607 /* CurrencyFormatterTests.swift */; };
 		CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */; };
-		CE50345A21B1F8F7007573C6 /* ZendeskManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345621B1F26C007573C6 /* ZendeskManagerTests.swift */; };
 		CE583A0421076C0100D73C1C /* NewNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0321076C0100D73C1C /* NewNoteViewController.swift */; };
 		CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A052107849F00D73C1C /* SwitchTableViewCell.swift */; };
 		CE583A082107849F00D73C1C /* SwitchTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE583A062107849F00D73C1C /* SwitchTableViewCell.xib */; };
@@ -3460,8 +3458,6 @@
 		AEFF77A929786DAA00667F7A /* PriceInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceInputViewModelTests.swift; sourceTree = "<group>"; };
 		B509112D2049E27A007D25DC /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		B509FED021C041DF000076A9 /* Locale+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locale+Woo.swift"; sourceTree = "<group>"; };
-		B509FED221C05121000076A9 /* SupportManagerAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportManagerAdapter.swift; sourceTree = "<group>"; };
-		B509FED421C052D1000076A9 /* MockSupportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSupportManager.swift; sourceTree = "<group>"; };
 		B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterSpinnerView.swift; sourceTree = "<group>"; };
 		B511ED26218A660E005787DC /* StringDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringDescriptor.swift; sourceTree = "<group>"; };
 		B517EA17218B232700730EC4 /* StringFormatter+Notes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringFormatter+Notes.swift"; sourceTree = "<group>"; };
@@ -3844,7 +3840,6 @@
 		CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContact+Helpers.swift"; sourceTree = "<group>"; };
 		CE4DA5C721DD759400074607 /* CurrencyFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyFormatterTests.swift; sourceTree = "<group>"; };
 		CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Helpers.swift"; sourceTree = "<group>"; };
-		CE50345621B1F26C007573C6 /* ZendeskManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZendeskManagerTests.swift; sourceTree = "<group>"; };
 		CE583A0321076C0100D73C1C /* NewNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNoteViewController.swift; sourceTree = "<group>"; };
 		CE583A052107849F00D73C1C /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
 		CE583A062107849F00D73C1C /* SwitchTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SwitchTableViewCell.xib; sourceTree = "<group>"; };
@@ -6987,7 +6982,6 @@
 				A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */,
 				B56C721321B5BBC000E5E85B /* MockStoresManager.swift */,
 				B53A569A21123E8E000776C9 /* MockTableView.swift */,
-				B509FED421C052D1000076A9 /* MockSupportManager.swift */,
 				B555531221B57E8800449E71 /* MockUserNotificationsCenterAdapter.swift */,
 				3198A1E72694DC7200597213 /* MockKnownReadersProvider.swift */,
 				027B8BBE23FE0F850040944E /* MockMediaStoresManager.swift */,
@@ -7387,7 +7381,6 @@
 				4569D3C825DC065B00CDC3E2 /* SiteAddressTests.swift */,
 				B517EA19218B2D2600730EC4 /* StringFormatterTests.swift */,
 				B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */,
-				CE50345621B1F26C007573C6 /* ZendeskManagerTests.swift */,
 				0277AEA4256CAA4200F45C4A /* MockShippingLabel.swift */,
 				DE26B5282775C76B00A2EA0A /* MockSyncingCoordinator.swift */,
 				CC0324A2263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift */,
@@ -7843,7 +7836,6 @@
 				B555530E21B57DE700449E71 /* ApplicationAdapter.swift */,
 				B56C721121B5B44000E5E85B /* PushNotificationsConfiguration.swift */,
 				B5BBD6DD21B1703600E3207E /* PushNotificationsManager.swift */,
-				B509FED221C05121000076A9 /* SupportManagerAdapter.swift */,
 				B555530C21B57DC300449E71 /* UserNotificationsCenterAdapter.swift */,
 				0221121D288973C20028F0AF /* LocalNotification.swift */,
 			);
@@ -11624,7 +11616,6 @@
 				D89C004725B467C7000E4683 /* ULAccountMismatchViewModel.swift in Sources */,
 				037D270D28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift in Sources */,
 				AEA3F90D27BE76B300B9F555 /* ShippingLineDetails.swift in Sources */,
-				B509FED321C05121000076A9 /* SupportManagerAdapter.swift in Sources */,
 				B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */,
 				B53B3F37219C75AC00DF1EB6 /* OrderLoaderViewController.swift in Sources */,
 				03E471BE29388787001A58AD /* BuiltInCardReaderConnectionController.swift in Sources */,
@@ -11890,7 +11881,6 @@
 				2611EE59243A473300A74490 /* ProductCategoryListViewModelTests.swift in Sources */,
 				0247AAA223A3C5A6007F967E /* DecimalInputFormatterTests.swift in Sources */,
 				5750BEE82764006F00388BE6 /* RefundFeesDetailsViewModelTests.swift in Sources */,
-				B509FED521C052D1000076A9 /* MockSupportManager.swift in Sources */,
 				02691782232605B9002AFC20 /* PaginatedListViewControllerStateCoordinatorTests.swift in Sources */,
 				02564A88246C047C00D6DB2A /* Optional+StringTests.swift in Sources */,
 				0269576D23726401001BA0BF /* KeyboardFrameObserverTests.swift in Sources */,
@@ -12064,7 +12054,6 @@
 				020BE77123B4A4C6007FE54C /* AztecHorizontalRulerFormatBarCommandTests.swift in Sources */,
 				B5C6CE612190D28E00515926 /* NSAttributedStringHelperTests.swift in Sources */,
 				CC07860526736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift in Sources */,
-				CE50345A21B1F8F7007573C6 /* ZendeskManagerTests.swift in Sources */,
 				02490D1E284F3226002096EF /* ProductImagesSaverTests.swift in Sources */,
 				02A9A496244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift in Sources */,
 				B9B6DEF1283F8EB100901FB7 /* SitePluginsURLTests.swift in Sources */,

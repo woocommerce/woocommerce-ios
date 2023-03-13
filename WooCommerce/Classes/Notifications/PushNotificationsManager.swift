@@ -152,8 +152,6 @@ extension PushNotificationsManager {
     func unregisterForRemoteNotifications() {
         DDLogInfo("📱 Unregistering For Remote Notifications...")
 
-        unregisterSupportDevice()
-
         unregisterDotcomDeviceIfPossible() { error in
             if let error = error {
                 DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
@@ -212,9 +210,6 @@ extension PushNotificationsManager {
         }
 
         deviceToken = newToken
-
-        // Register in Support's Infrastructure
-        registerSupportDevice(with: newToken)
 
         // Register in the Dotcom's Infrastructure
         registerDotcomDevice(with: newToken, defaultStoreID: defaultStoreID) { (device, error) in
@@ -431,13 +426,7 @@ private extension PushNotificationsManager {
             return false
         }
 
-        configuration.supportManager.pushNotificationReceived()
-
         trackNotification(with: userInfo)
-
-        if applicationState == .inactive {
-            configuration.supportManager.displaySupportRequest(using: userInfo)
-        }
         return true
     }
 
@@ -545,23 +534,6 @@ private extension PushNotificationsManager {
     func unregisterDotcomDevice(with deviceID: String, onCompletion: @escaping (Error?) -> Void) {
         let action = NotificationAction.unregisterDevice(deviceId: deviceID, onCompletion: onCompletion)
         configuration.storesManager.dispatch(action)
-    }
-}
-
-// MARK: - Support Relay
-//
-private extension PushNotificationsManager {
-
-    /// Registers the specified DeviceToken for Support Push Notifications.
-    ///
-    func registerSupportDevice(with deviceToken: String) {
-        configuration.supportManager.deviceTokenWasReceived(deviceToken: deviceToken)
-    }
-
-    /// Unregisters the specified DeviceToken for Support Push Notifications.
-    ///
-    func unregisterSupportDevice() {
-        configuration.supportManager.unregisterForRemoteNotifications()
     }
 }
 

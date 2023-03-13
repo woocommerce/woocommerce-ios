@@ -17,6 +17,6 @@ extension ProductBundleItem {
 
 }
 
-extension ProductBundleItem : Identifiable {
+extension ProductBundleItem: Identifiable {
 
 }

@@ -17,6 +17,7 @@ final class JetpackSetupCoordinator {
 
     private var benefitsController: JetpackBenefitsHostingController?
     private var loginNavigationController: LoginNavigationController?
+    private var setupStepsNavigationController: UINavigationController?
 
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: site.url,
@@ -102,11 +103,13 @@ private extension JetpackSetupCoordinator {
     }
 
     /// Checks the Jetpack connection status for non-Jetpack sites to infer the setup steps to be handled.
-    func checkJetpackStatus(_ result: Result<JetpackUser, Error>, skipsWPComLogin: Bool = false) {
+    func checkJetpackStatus(_ result: Result<JetpackUser, Error>, onSuccess: (() -> Void)? = nil) {
         switch result {
         case .success(let user):
             requiresConnectionOnly = !user.isConnected
-            if !skipsWPComLogin {
+            if let onSuccess {
+                onSuccess()
+            } else {
                 let connectedEmail = user.wpcomUser?.email
                 startAuthentication(with: connectedEmail)
             }
@@ -117,7 +120,9 @@ private extension JetpackSetupCoordinator {
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
                 /// 404 error means Jetpack is not installed or activated yet.
                 requiresConnectionOnly = false
-                if !skipsWPComLogin {
+                if let onSuccess {
+                    onSuccess()
+                } else {
                     checkAdminRoleAndStartLoginIfPossible()
                 }
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
@@ -174,11 +179,24 @@ private extension JetpackSetupCoordinator {
         let action = JetpackConnectionAction.fetchJetpackUser { [weak self] result in
             guard let self else { return }
             progressView.dismiss(animated: true)
-            self.checkJetpackStatus(result, skipsWPComLogin: true)
-            #warning("TODO: sync account with token and start Jetpack setup")
-            DDLogInfo("✅ Ready for Jetpack setup - connection only: \(self.requiresConnectionOnly)")
+            self.checkJetpackStatus(result, onSuccess: { [weak self] in
+                self?.showSetupSteps(authToken: authToken)
+            })
         }
         stores.dispatch(action)
+    }
+
+    func showSetupSteps(authToken: String) {
+        let setupUI = JetpackSetupHostingController(siteURL: site.url, connectionOnly: requiresConnectionOnly, onStoreNavigation: { _ in
+            // TODO-8921: Authenticate user with the logged in WPCom credentials
+            DDLogInfo("🎉 Jetpack setup completes!")
+        })
+        let navigationController = UINavigationController(rootViewController: setupUI)
+        self.setupStepsNavigationController = navigationController
+        loginNavigationController?.dismiss(animated: true, completion: {
+            self.rootViewController.topmostPresentedViewController.present(navigationController, animated: true)
+        })
+        loginNavigationController = nil
     }
 }
 
@@ -212,8 +230,8 @@ private extension JetpackSetupCoordinator {
                 let message = error.localizedDescription
                 self.showAlert(message: message)
             },
-            onLoginSuccess: { _ in
-                DDLogInfo("✅ Ready for Jetpack setup")
+            onLoginSuccess: { [weak self] authToken in
+                self?.showSetupSteps(authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(
             viewModel: viewModel,
@@ -233,8 +251,8 @@ private extension JetpackSetupCoordinator {
                 let message = error.localizedDescription
                 self.showAlert(message: message)
             },
-            onLoginSuccess: { _ in
-                DDLogInfo("✅ Ready for Jetpack setup")
+            onLoginSuccess: { [weak self] authToken in
+                self?.showSetupSteps(authToken: authToken)
             })
         let viewController = WPCom2FALoginHostingController(viewModel: viewModel)
         loginNavigationController?.pushViewController(viewController, animated: true)

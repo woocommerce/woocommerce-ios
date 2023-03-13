@@ -8,10 +8,6 @@ struct CouponLineDetails: View {
     ///
     @ObservedObject private var viewModel: CouponLineDetailsViewModel
 
-    /// Defines if the coupon code input text field should be focused. Defaults to `true`
-    ///
-    @State private var focusCouponCodeInput: Bool = true
-
     @Environment(\.presentationMode) var presentation
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
@@ -24,29 +20,14 @@ struct CouponLineDetails: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: .zero) {
-                    Section {
-                        AdaptiveStack(horizontalAlignment: .leading) {
-                            Text(Localization.couponCodeField)
-                                .bodyStyle()
-                                .fixedSize()
-
-                            HStack {
-                                Spacer()
-                                BindableTextfield(Localization.couponCodePlaceholder,
-                                                  text: $viewModel.code,
-                                                  focus: $focusCouponCodeInput)
-                                    .keyboardType(.numbersAndPunctuation)
-                                    .textAlignment(.right)
-                                    .onTapGesture {
-                                        focusCouponCodeInput = true
-                                    }
-                            }
-                        }
-                        .frame(minHeight: Layout.rowHeight)
-                        .padding([.leading, .trailing], Layout.rowPadding)
-                    }
+                    TitleAndTextFieldRow(title: Localization.couponCodeField,
+                                         placeholder: Localization.couponCodePlaceholder,
+                                         text: $viewModel.code,
+                                         keyboardType: .numbersAndPunctuation)
                     .background(Color(.listForeground(modal: false)))
+                    .padding(.horizontal, insets: safeAreaInsets)
                     .addingTopAndBottomDividers()
+                    .background(Color(.listForeground(modal: false)))
 
                     Spacer(minLength: Layout.sectionSpacing)
 
@@ -93,9 +74,6 @@ struct CouponLineDetails: View {
 private extension CouponLineDetails {
     enum Layout {
         static let sectionSpacing: CGFloat = 16.0
-        static let dividerPadding: CGFloat = 16.0
-        static let rowHeight: CGFloat = 44
-        static let rowPadding: CGFloat = 16
     }
 
     enum Localization {

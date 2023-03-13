@@ -1,4 +1,5 @@
 import SwiftUI
+import struct Yosemite.StoreOnboardingTask
 
 /// Hosting controller for `StoreOnboardingView`.
 ///
@@ -25,6 +26,19 @@ final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboa
         super.viewDidLoad()
 
         configureNavigationBarAppearance()
+        reloadTasks()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        reloadTasks()
+    }
+
+    private func reloadTasks() {
+        Task {
+            await viewModel.reloadTasks()
+        }
     }
 
     /// Shows a transparent navigation bar without a bottom border.
@@ -45,7 +59,8 @@ final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboa
 
 /// Shows a list of onboarding tasks for store setup with completion state.
 struct StoreOnboardingView: View {
-    private let viewModel: StoreOnboardingViewModel
+    @ObservedObject private var viewModel: StoreOnboardingViewModel
+
     private let taskTapped: (StoreOnboardingTask) -> Void
     private let viewAllTapped: (() -> Void)?
     private let shareFeedbackAction: (() -> Void)?
@@ -82,7 +97,8 @@ struct StoreOnboardingView: View {
                 StoreSetupProgressView(isExpanded: viewModel.isExpanded,
                                        totalNumberOfTasks: viewModel.taskViewModels.count,
                                        numberOfTasksCompleted: viewModel.numberOfTasksCompleted,
-                                       shareFeedbackAction: shareFeedbackAction)
+                                       shareFeedbackAction: shareFeedbackAction,
+                                       isRedacted: viewModel.isRedacted)
 
                 // Task list
                 VStack(alignment: .leading, spacing: Layout.verticalSpacingBetweenTasks) {
@@ -90,9 +106,11 @@ struct StoreOnboardingView: View {
                         let isLastTask = taskViewModel == viewModel.tasksForDisplay.last
 
                         StoreOnboardingTaskView(viewModel: taskViewModel,
-                                                showDivider: !isLastTask) { task in
+                                                showDivider: !isLastTask,
+                                                isRedacted: viewModel.isRedacted) { task in
                             taskTapped(task)
                         }
+                                                .shimmering(active: viewModel.isRedacted)
                     }
                 }
 
@@ -150,8 +168,8 @@ private extension StoreOnboardingView {
 
 struct StoreOnboardingCardView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingView(viewModel: .init(isExpanded: false), taskTapped: { _ in })
+        StoreOnboardingView(viewModel: .init(isExpanded: false, siteID: 0), taskTapped: { _ in })
 
-        StoreOnboardingView(viewModel: .init(isExpanded: true), taskTapped: { _ in })
+        StoreOnboardingView(viewModel: .init(isExpanded: true, siteID: 0), taskTapped: { _ in })
     }
 }

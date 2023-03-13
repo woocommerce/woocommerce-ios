@@ -26,7 +26,7 @@ final class StoreOnboardingCoordinatorTests: XCTestCase {
         let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: .fake())
 
         // When
-        coordinator.start(task: .customizeDomains)
+        coordinator.start(task: .init(isComplete: true, type: .customizeDomains))
         waitUntil {
             coordinator.navigationController.presentedViewController != nil
         }

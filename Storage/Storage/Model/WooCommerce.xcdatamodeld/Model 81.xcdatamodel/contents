@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="21G217" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22D68" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -477,6 +477,13 @@
         <attribute name="slug" attributeType="String"/>
         <attribute name="termID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="attribute" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductAttribute" inverseName="terms" inverseEntity="ProductAttribute"/>
+    </entity>
+    <entity name="ProductBundleItem" representedClassName="ProductBundleItem" syncable="YES">
+        <attribute name="bundledItemID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="menuOrder" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="productID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="stockStatus" attributeType="String" defaultValueString=""/>
+        <attribute name="title" attributeType="String" defaultValueString=""/>
     </entity>
     <entity name="ProductCategory" representedClassName="ProductCategory" syncable="YES">
         <attribute name="categoryID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

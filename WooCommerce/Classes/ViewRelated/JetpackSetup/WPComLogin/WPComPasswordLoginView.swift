@@ -63,7 +63,7 @@ struct WPComPasswordLoginView: View {
                 )
 
                 // Password field
-                AccountCreationFormFieldView(viewModel: .init(
+                AuthenticationFormFieldView(viewModel: .init(
                     header: Localization.passwordLabel,
                     placeholder: Localization.passwordPlaceholder,
                     keyboardType: .default,

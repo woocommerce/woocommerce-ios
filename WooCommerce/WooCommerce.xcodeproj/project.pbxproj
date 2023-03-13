@@ -455,7 +455,7 @@
 		02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */; };
 		02E3B62829026C8F007E0F13 /* AccountCreationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B62729026C8F007E0F13 /* AccountCreationForm.swift */; };
 		02E3B62D290631B3007E0F13 /* AccountCreationFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B62C290631B3007E0F13 /* AccountCreationFormViewModel.swift */; };
-		02E3B62F2906322B007E0F13 /* AccountCreationFormFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B62E2906322B007E0F13 /* AccountCreationFormFieldView.swift */; };
+		02E3B62F2906322B007E0F13 /* AuthenticationFormFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B62E2906322B007E0F13 /* AuthenticationFormFieldView.swift */; };
 		02E3B63129066858007E0F13 /* StoreCreationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B63029066858007E0F13 /* StoreCreationCoordinator.swift */; };
 		02E4908929AE49B9005942AE /* TopPerformersEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4908829AE49B9005942AE /* TopPerformersEmptyView.swift */; };
 		02E4908D29AF216E005942AE /* DashboardTopPerformersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4908C29AF216E005942AE /* DashboardTopPerformersView.swift */; };
@@ -2592,7 +2592,7 @@
 		02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommand.swift; sourceTree = "<group>"; };
 		02E3B62729026C8F007E0F13 /* AccountCreationForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationForm.swift; sourceTree = "<group>"; };
 		02E3B62C290631B3007E0F13 /* AccountCreationFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationFormViewModel.swift; sourceTree = "<group>"; };
-		02E3B62E2906322B007E0F13 /* AccountCreationFormFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationFormFieldView.swift; sourceTree = "<group>"; };
+		02E3B62E2906322B007E0F13 /* AuthenticationFormFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationFormFieldView.swift; sourceTree = "<group>"; };
 		02E3B63029066858007E0F13 /* StoreCreationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationCoordinator.swift; sourceTree = "<group>"; };
 		02E4908829AE49B9005942AE /* TopPerformersEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersEmptyView.swift; sourceTree = "<group>"; };
 		02E4908C29AF216E005942AE /* DashboardTopPerformersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardTopPerformersView.swift; sourceTree = "<group>"; };
@@ -5393,7 +5393,7 @@
 			isa = PBXGroup;
 			children = (
 				02E3B62729026C8F007E0F13 /* AccountCreationForm.swift */,
-				02E3B62E2906322B007E0F13 /* AccountCreationFormFieldView.swift */,
+				02E3B62E2906322B007E0F13 /* AuthenticationFormFieldView.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -11476,7 +11476,7 @@
 				03E471C8293A3076001A58AD /* CardPresentModalBuiltInConnectingToReader.swift in Sources */,
 				0365986529AF942700F297D3 /* PaymentSettingsFlowHint.swift in Sources */,
 				CE0F17CF22A8105800964A63 /* ReadMoreTableViewCell.swift in Sources */,
-				02E3B62F2906322B007E0F13 /* AccountCreationFormFieldView.swift in Sources */,
+				02E3B62F2906322B007E0F13 /* AuthenticationFormFieldView.swift in Sources */,
 				03EF24FE28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift in Sources */,
 				DEC2961F26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift in Sources */,
 				D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */,

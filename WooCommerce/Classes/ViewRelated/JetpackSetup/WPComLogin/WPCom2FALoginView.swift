@@ -42,7 +42,7 @@ struct WPCom2FALoginView: View {
                 }
 
                 // Verification field
-                AccountCreationFormFieldView(viewModel: .init(
+                AuthenticationFormFieldView(viewModel: .init(
                     header: nil,
                     placeholder: Localization.verificationCode,
                     keyboardType: .asciiCapableNumberPad,

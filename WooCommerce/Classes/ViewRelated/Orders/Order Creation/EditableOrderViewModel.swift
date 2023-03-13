@@ -1019,10 +1019,7 @@ private extension EditableOrderViewModel {
             return nil
         }
 
-        let output = couponLines.reduce("") { (output, line) in
-            let prefix = output.isEmpty ? "" : ","
-            return output + prefix + line.code
-        }
+        let output = String(couponLines.map { $0.code }.joined(by: ", "))
 
         if couponLines.count == 1 {
             return String.localizedStringWithFormat(Localization.CouponSummary.singular, output)

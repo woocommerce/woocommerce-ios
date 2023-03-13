@@ -10,6 +10,28 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
         .init(isComplete: true, type: .payments)
     ]
 
+    func test_it_returns_isComplete_based_on_the_passed_in_task() {
+        // Given
+        let task: StoreOnboardingTask = .init(isComplete: true, type: .addFirstProduct)
+
+        // When
+        let sut = StoreOnboardingTaskViewModel(task: task)
+
+        // Then
+        XCTAssertEqual(true, sut.isComplete)
+    }
+
+    func test_it_returns_the_passed_in_task() {
+        // Given
+        let task: StoreOnboardingTask = .init(isComplete: true, type: .addFirstProduct)
+
+        // When
+        let sut = StoreOnboardingTaskViewModel(task: task)
+
+        // Then
+        XCTAssertEqual(task, sut.task)
+    }
+
     func test_the_icon_is_correct_for_different_type_of_tasks() {
         for task in tasks {
             let sut = StoreOnboardingTaskViewModel(task: task)
@@ -46,7 +68,7 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
         }
     }
 
-    func test_the_subtitle_value_is_correct_for_different_type_of_tasks() {
+    func test_the_subtitle_is_correct_for_different_type_of_tasks() {
         for task in tasks {
             let sut = StoreOnboardingTaskViewModel(task: task)
             switch task.type {

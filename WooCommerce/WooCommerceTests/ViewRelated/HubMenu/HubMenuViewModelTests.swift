@@ -289,7 +289,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.switchStoreEnabled)
     }
 
-    func test_switchStoreEnabled_returns_false_when_logged_in_with_wpcom() {
+    func test_switchStoreEnabled_returns_false_when_logged_in_without_wpcom() {
         // Given
         let sampleStoreURL = "https://testshop.com"
         let sampleAdminURL = ""
@@ -304,6 +304,57 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.switchStoreEnabled)
+    }
+
+    func test_shouldAuthenticateAdminPage_returns_true_when_logged_in_with_wpcom_to_wpcom_site() {
+        // Given
+        let sampleStoreURL = "https://testshop.com"
+        let sampleAdminURL = ""
+        let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: true)
+        let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL, isWordPressComStore: true)
+        sessionManager.defaultSite = site
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         stores: stores)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldAuthenticateAdminPage)
+    }
+
+    func test_shouldAuthenticateAdminPage_returns_true_when_logged_in_without_wpcom_to_self_hosted_site() {
+        // Given
+        let sampleStoreURL = "https://testshop.com"
+        let sampleAdminURL = ""
+        let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: false)
+        let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL, isWordPressComStore: false)
+        sessionManager.defaultSite = site
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         stores: stores)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldAuthenticateAdminPage)
+    }
+
+    func test_shouldAuthenticateAdminPage_returns_false_when_logged_in_with_wpcom_to_self_hosted_site() {
+        // Given
+        let sampleStoreURL = "https://testshop.com"
+        let sampleAdminURL = ""
+        let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: true)
+        let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL, isWordPressComStore: false)
+        sessionManager.defaultSite = site
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         stores: stores)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldAuthenticateAdminPage)
     }
 }
 

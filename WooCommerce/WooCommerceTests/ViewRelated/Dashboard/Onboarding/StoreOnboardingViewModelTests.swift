@@ -53,6 +53,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(sut.tasksForDisplay.count, 3)
+
+        XCTAssertEqual(sut.tasksForDisplay[0].task.type, .addFirstProduct)
+        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
+        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .customizeDomains)
     }
 
     func test_tasksForDisplay_returns_all_tasks_when_isExpanded_is_true() async {
@@ -72,6 +76,54 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.tasksForDisplay.count, 4)
     }
+
+    // MARK: - Loading tasks
+
+    func test_it_loads_previously_loaded_data_when_loading_tasks_fails() async {
+        // Given
+        let initialTasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(initialTasks))
+        let sut = StoreOnboardingViewModel(isExpanded: true,
+                                           siteID: 0,
+                                           stores: stores)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), initialTasks)
+
+        // When
+        mockLoadOnboardingTasks(result: .failure(MockError()))
+
+        // Then
+        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), initialTasks)
+    }
+
+    func test_it_filters_out_unsupported_tasks_from_response() async {
+        // Given
+        let initialTasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]
+
+        let tasks = initialTasks + [(.init(isComplete: true, type: .unsupported("")))]
+        mockLoadOnboardingTasks(result: .success(tasks))
+        let sut = StoreOnboardingViewModel(isExpanded: true,
+                                           siteID: 0,
+                                           stores: stores)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), initialTasks)
+    }
 }
 
 private extension StoreOnboardingViewModelTests {
@@ -83,4 +135,6 @@ private extension StoreOnboardingViewModelTests {
             completion(result)
         }
     }
+
+    final class MockError: Error { }
 }

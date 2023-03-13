@@ -1,6 +1,4 @@
 import Foundation
-import WordPressShared
-import WordPressKit
 import enum Alamofire.AFError
 import KeychainAccess
 

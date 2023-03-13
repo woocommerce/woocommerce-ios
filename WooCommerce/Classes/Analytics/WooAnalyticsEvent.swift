@@ -155,6 +155,10 @@ extension WooAnalyticsEvent {
             "date_range": filters?.dateRange?.analyticsDescription ?? String()
         ])
     }
+
+    static func ordersListLoadError(_ error: Error) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .ordersListLoadError, properties: [:], error: error)
+    }
 }
 
 
@@ -482,6 +486,14 @@ extension WooAnalyticsEvent {
 
         static func orderFeeRemove(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderFeeRemove, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderCouponAdd(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCouponAdd, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderCouponRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCouponRemove, properties: [Keys.flow: flow.rawValue])
         }
 
         static func orderShippingMethodAdd(flow: Flow) -> WooAnalyticsEvent {

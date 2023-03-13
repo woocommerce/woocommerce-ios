@@ -4,16 +4,9 @@ import Kingfisher
 /// Hosting controller for `WPComPasswordLoginView`
 final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswordLoginView> {
 
-    init(siteURL: String,
-         email: String,
-         requiresConnectionOnly: Bool,
-         onSubmit: @escaping (String) async -> Void,
+    init(viewModel: WPComPasswordLoginViewModel,
          onMagicLinkRequest: @escaping (String) async -> Void) {
-        let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
-                                                    email: email,
-                                                    requiresConnectionOnly: requiresConnectionOnly)
         super.init(rootView: WPComPasswordLoginView(viewModel: viewModel,
-                                                    onSubmit: onSubmit,
                                                     onMagicLinkRequest: onMagicLinkRequest))
     }
 
@@ -31,19 +24,15 @@ final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswo
 /// Screen for entering the password for a WPCom account during the Jetpack setup flow
 /// This is presented for users authenticated with WPOrg credentials.
 struct WPComPasswordLoginView: View {
-    @State private var isPrimaryButtonLoading = false
     @State private var isSecondaryButtonLoading = false
     @FocusState private var isPasswordFieldFocused: Bool
     @ObservedObject private var viewModel: WPComPasswordLoginViewModel
 
-    private let onSubmit: (String) async -> Void
     private let onMagicLinkRequest: (String) async -> Void
 
     init(viewModel: WPComPasswordLoginViewModel,
-         onSubmit: @escaping (String) async -> Void,
          onMagicLinkRequest: @escaping (String) async -> Void) {
         self.viewModel = viewModel
-        self.onSubmit = onSubmit
         self.onMagicLinkRequest = onMagicLinkRequest
     }
 
@@ -74,7 +63,7 @@ struct WPComPasswordLoginView: View {
                 )
 
                 // Password field
-                AccountCreationFormFieldView(viewModel: .init(
+                AuthenticationFormFieldView(viewModel: .init(
                     header: Localization.passwordLabel,
                     placeholder: Localization.passwordPlaceholder,
                     keyboardType: .default,
@@ -102,13 +91,9 @@ struct WPComPasswordLoginView: View {
             VStack {
                 // Primary CTA
                 Button(Localization.primaryAction) {
-                    Task { @MainActor in
-                        isPrimaryButtonLoading = true
-                        await onSubmit(viewModel.password)
-                        isPrimaryButtonLoading = false
-                    }
+                    viewModel.handleLogin()
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPrimaryButtonLoading))
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoggingIn))
                 .disabled(viewModel.password.isEmpty)
 
                 // Secondary CTA
@@ -164,8 +149,10 @@ struct WPComPasswordLoginView_Previews: PreviewProvider {
     static var previews: some View {
         WPComPasswordLoginView(viewModel: .init(siteURL: "https://example.com",
                                                 email: "test@example.com",
-                                                requiresConnectionOnly: true),
-                               onSubmit: { _ in },
+                                                requiresConnectionOnly: true,
+                                                onMultifactorCodeRequest: { _ in },
+                                                onLoginFailure: { _ in },
+                                                onLoginSuccess: { _ in }),
                                onMagicLinkRequest: { _ in })
     }
 }

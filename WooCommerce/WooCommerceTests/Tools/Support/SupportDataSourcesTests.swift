@@ -48,7 +48,7 @@ final class SupportDataSourcesTests: XCTestCase {
         // Given
         let dataSource = IPPSupportDataSource()
         let tagsSet = Set(dataSource.tags)
-        let expectedSet = Set(["iOS", "jetpack", "woocommerce_mobile_apps", "product_area_apps_in_person_payments"])
+        let expectedSet = Set(["iOS", "woocommerce_payments", "woocommerce_mobile_apps", "product_area_apps_in_person_payments"])
 
         // When & Then
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))

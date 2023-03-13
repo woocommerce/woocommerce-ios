@@ -57,6 +57,7 @@ struct StoreOnboardingTaskView: View {
                         Image(uiImage: .chevronImage)
                             .flipsForRightToLeftLayoutDirection(true)
                             .foregroundColor(Color(.textTertiary))
+                            .renderedIf(!isRedacted)
                     }
 
                     Spacer().frame(height: Layout.spacerHeight)

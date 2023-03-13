@@ -30,7 +30,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .loginErrorNotifications:
             return true
         case .loginMagicLinkEmphasis:
-            return true
+            return false
         case .loginMagicLinkEmphasisM2:
             return true
         case .productMultiSelectionM1:
@@ -83,6 +83,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .dashboardOnboarding:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
+        case .addCouponToOrder:
+            return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
+        case .productBundles:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

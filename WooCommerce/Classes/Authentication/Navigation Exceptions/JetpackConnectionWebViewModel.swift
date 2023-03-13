@@ -64,7 +64,8 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
         if url.hasPrefix(Constants.plansPage) ||
             (url.hasPrefix(siteURL) &&
              !url.contains(Constants.jetpackSiteConnectionPage) &&
-             !url.hasSuffix(Constants.loginPage)) {
+             !url.hasSuffix(Constants.loginPage) &&
+             !url.hasSuffix(Constants.nonceRetrievalPage)) {
             // Running on the main thread is necessary if this method is triggered from `decidePolicy`.
             DispatchQueue.main.async { [weak self] in
                 self?.handleSetupCompletion()
@@ -80,6 +81,7 @@ private extension JetpackConnectionWebViewModel {
         static let plansPage = "https://wordpress.com/jetpack/connect/plans"
         static let jetpackSiteConnectionPage = "/wp-admin/admin.php?page=jetpack&action=register"
         static let loginPage = "/wp-login.php"
+        static let nonceRetrievalPage = "/wp-admin/admin-ajax.php?action=rest-nonce"
     }
 
     enum Localization {

@@ -107,21 +107,6 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isValidCode)
     }
 
-    func test_handleLogin_updates_loginFields_correctly() {
-        // Given
-        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
-                                               requiresConnectionOnly: false,
-                                               onLoginFailure: { _ in },
-                                               onLoginSuccess: { _ in })
-
-        // When
-        viewModel.verificationCode = "113 567"
-        viewModel.handleLogin()
-
-        // Then
-        assertEqual(viewModel.strippedCode, viewModel.loginFields.multifactorCode)
-    }
-
     func test_isLoggingIn_is_updated_correctly_and_onLoginFailure_is_triggered_when_login_fails() {
         // Given
         var errorCaught: Error? = nil

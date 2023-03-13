@@ -803,11 +803,11 @@ extension AppSettingsStore {
     }
 
     func markSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64) {
-        let newArray = generalAppSettings.settings.sitesWithAtLeastOneIPPTransactionFinished + [siteID]
-        try? generalAppSettings.setValue(newArray, for: \.sitesWithAtLeastOneIPPTransactionFinished)
+        var updatingSet = generalAppSettings.settings.sitesWithAtLeastOneIPPTransactionFinished
+        updatingSet.insert(siteID)
 
+        try? generalAppSettings.setValue(updatingSet, for: \.sitesWithAtLeastOneIPPTransactionFinished)
     }
-
 }
 
 private extension AppSettingsStore {

@@ -32,7 +32,7 @@ extension Storage.GeneralAppSettings {
         lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
         lastJetpackBenefitsBannerDismissedTime: NullableCopiableProp<Date> = .copy,
         featureAnnouncementCampaignSettings: CopiableProp<[FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]> = .copy,
-        sitesWithAtLeastOneIPPTransactionFinished: CopiableProp<[Int64]> = .copy
+        sitesWithAtLeastOneIPPTransactionFinished: CopiableProp<Set<Int64>> = .copy
     ) -> Storage.GeneralAppSettings {
         let installationDate = installationDate ?? self.installationDate
         let feedbacks = feedbacks ?? self.feedbacks

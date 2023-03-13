@@ -58,7 +58,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
 
     /// Whether the user finished an IPP transaction for the given site
     ///
-    public var sitesWithAtLeastOneIPPTransactionFinished: [Int64]
+    public var sitesWithAtLeastOneIPPTransactionFinished: Set<Int64>
 
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
@@ -71,7 +71,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                 lastJetpackBenefitsBannerDismissedTime: Date? = nil,
                 featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings],
-                sitesWithAtLeastOneIPPTransactionFinished: [Int64]) {
+                sitesWithAtLeastOneIPPTransactionFinished: Set<Int64>) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
@@ -175,8 +175,8 @@ extension GeneralAppSettings {
         self.featureAnnouncementCampaignSettings = try container.decodeIfPresent(
             [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings].self,
             forKey: .featureAnnouncementCampaignSettings) ?? [:]
-        self.sitesWithAtLeastOneIPPTransactionFinished = try container.decodeIfPresent([Int64].self,
-                                                                                        forKey: .sitesWithAtLeastOneIPPTransactionFinished) ?? []
+        self.sitesWithAtLeastOneIPPTransactionFinished = try container.decodeIfPresent(Set<Int64>.self,
+                                                                                        forKey: .sitesWithAtLeastOneIPPTransactionFinished) ?? Set<Int64>([])
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

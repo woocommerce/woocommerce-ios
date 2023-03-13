@@ -61,7 +61,7 @@ final class GeneralAppSettingsTests: XCTestCase {
         let featureAnnouncementCampaignSettings = [
             FeatureAnnouncementCampaign.upsellCardReaders:
                 FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: nil)]
-        let sitesWithAtLeastOneIPPTransactionFinished: [Int64] = [1234, 123, 12, 1]
+        let sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = [1234, 123, 12, 1]
         let previousSettings = GeneralAppSettings(installationDate: installationDate,
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
@@ -112,7 +112,7 @@ private extension GeneralAppSettingsTests {
                                   lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                                   lastJetpackBenefitsBannerDismissedTime: Date? = nil,
                                   featureAnnouncementCampaignSettings: [Campaign: CampaignSettings] = [:],
-                                  sitesWithAtLeastOneIPPTransactionFinished: [Int64] = []
+                                  sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = []
     ) -> GeneralAppSettings {
         GeneralAppSettings(installationDate: installationDate,
                            feedbacks: feedbacks,

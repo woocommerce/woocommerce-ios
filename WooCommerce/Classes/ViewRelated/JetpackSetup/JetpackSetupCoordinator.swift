@@ -180,7 +180,10 @@ private extension JetpackSetupCoordinator {
     func showWPComEmailLogin() {
         let emailLoginController = WPComEmailLoginHostingController(siteURL: site.url,
                                                                     requiresConnectionOnly: requiresConnectionOnly,
-                                                                    onSubmit: checkWordPressComAccount(email:))
+                                                                    onSubmit: { [weak self] email in
+            guard let self else { return }
+            await self.checkWordPressComAccount(email: email)
+        })
         let loginNavigationController = LoginNavigationController(rootViewController: emailLoginController)
         rootViewController.dismiss(animated: true) {
             self.rootViewController.present(loginNavigationController, animated: true)
@@ -188,6 +191,7 @@ private extension JetpackSetupCoordinator {
         self.loginNavigationController = loginNavigationController
     }
 
+    @MainActor
     func checkWordPressComAccount(email: String) async {
         await withCheckedContinuation { continuation -> Void in
             accountService.isPasswordlessAccount(username: email, success: { [weak self] passwordless in
@@ -217,23 +221,20 @@ private extension JetpackSetupCoordinator {
         }
     }
 
+    @MainActor
     func requestAuthenticationLink(email: String) async {
         await withCheckedContinuation { continuation in
             accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: { [weak self] in
                 guard let self else {
                     return continuation.resume()
                 }
-                DispatchQueue.main.async {
-                    self.showMagicLinkUI(email: email)
-                }
+                self.showMagicLinkUI(email: email)
                 continuation.resume()
             }, failure: { [weak self] error in
                 guard let self else {
                     return continuation.resume()
                 }
-                DispatchQueue.main.async {
-                    self.showAlert(message: self.prepareErrorMessage(for: error, fallback: Localization.errorRequestingAuthURL))
-                }
+                self.showAlert(message: self.prepareErrorMessage(for: error, fallback: Localization.errorRequestingAuthURL))
                 continuation.resume()
             })
         }
@@ -245,14 +246,41 @@ private extension JetpackSetupCoordinator {
     }
 
     func showPasswordUI(email: String) {
-        let viewController = WPComPasswordLoginHostingController(
+        let viewModel = WPComPasswordLoginViewModel(
             siteURL: site.url,
             email: email,
             requiresConnectionOnly: requiresConnectionOnly,
-            onSubmit: { _ in
-                #warning("TODO: handle log in")
+            onMultifactorCodeRequest: { [weak self] loginFields in
+                self?.show2FALoginUI(with: loginFields)
             },
-            onMagicLinkRequest: requestAuthenticationLink(email:))
+            onLoginFailure: { [weak self] error in
+                guard let self else { return }
+                let message = self.prepareErrorMessage(for: error, fallback: Localization.errorRequestingAuthURL)
+                self.showAlert(message: message)
+            },
+            onLoginSuccess: { _ in
+                DDLogInfo("✅ Ready for Jetpack setup")
+            })
+        let viewController = WPComPasswordLoginHostingController(viewModel: viewModel, onMagicLinkRequest: { [weak self] email in
+            guard let self else { return }
+            await self.requestAuthenticationLink(email: email)
+        })
+        loginNavigationController?.pushViewController(viewController, animated: true)
+    }
+
+    func show2FALoginUI(with loginFields: LoginFields) {
+        let viewModel = WPCom2FALoginViewModel(
+            loginFields: loginFields,
+            requiresConnectionOnly: requiresConnectionOnly,
+            onLoginFailure: { [weak self] error in
+                guard let self else { return }
+                let message = self.prepareErrorMessage(for: error, fallback: Localization.errorRequestingAuthURL)
+                self.showAlert(message: message)
+            },
+            onLoginSuccess: { _ in
+                DDLogInfo("✅ Ready for Jetpack setup")
+            })
+        let viewController = WPCom2FALoginHostingController(viewModel: viewModel)
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 }
@@ -332,6 +360,10 @@ private extension JetpackSetupCoordinator {
         static let pleaseWait = NSLocalizedString(
             "Please wait",
             comment: "Message on the loading view displayed when the magic link authentication for Jetpack setup is in progress"
+        )
+        static let errorLoggingIn = NSLocalizedString(
+            "Login failed. Please try again.",
+            comment: "Generic message shown on the error alert displayed when the WPCom login for the Jetpack setup flow fails"
         )
     }
 }

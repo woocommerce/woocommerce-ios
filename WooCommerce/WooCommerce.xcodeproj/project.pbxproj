@@ -456,7 +456,7 @@
 		02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */; };
 		02E3B62829026C8F007E0F13 /* AccountCreationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B62729026C8F007E0F13 /* AccountCreationForm.swift */; };
 		02E3B62D290631B3007E0F13 /* AccountCreationFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B62C290631B3007E0F13 /* AccountCreationFormViewModel.swift */; };
-		02E3B62F2906322B007E0F13 /* AccountCreationFormFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B62E2906322B007E0F13 /* AccountCreationFormFieldView.swift */; };
+		02E3B62F2906322B007E0F13 /* AuthenticationFormFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B62E2906322B007E0F13 /* AuthenticationFormFieldView.swift */; };
 		02E3B63129066858007E0F13 /* StoreCreationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B63029066858007E0F13 /* StoreCreationCoordinator.swift */; };
 		02E4908929AE49B9005942AE /* TopPerformersEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4908829AE49B9005942AE /* TopPerformersEmptyView.swift */; };
 		02E4908D29AF216E005942AE /* DashboardTopPerformersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4908C29AF216E005942AE /* DashboardTopPerformersView.swift */; };
@@ -1888,6 +1888,9 @@
 		DE4D23A429B0A9FA003A4B5D /* WPComPasswordLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23A329B0A9FA003A4B5D /* WPComPasswordLoginView.swift */; };
 		DE4D23A629B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23A529B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift */; };
 		DE4D23A829B0D11E003A4B5D /* WPComPasswordLoginViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23A729B0D11E003A4B5D /* WPComPasswordLoginViewModelTests.swift */; };
+		DE4D23AA29B1B0CA003A4B5D /* WPCom2FALoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23A929B1B0CA003A4B5D /* WPCom2FALoginView.swift */; };
+		DE4D23AE29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23AD29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift */; };
+		DE4D23B029B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D23AF29B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift */; };
 		DE4D308928507B5B00E36ADD /* CouponCreationSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D308828507B5B00E36ADD /* CouponCreationSuccess.swift */; };
 		DE4FB7732812AE96003D20D6 /* FilterListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4FB7722812AE96003D20D6 /* FilterListView.swift */; };
 		DE50294928BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50294828BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift */; };
@@ -2043,6 +2046,11 @@
 		EEB4E2D329B2047700371C3C /* StoreOnboardingViewHostingControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2D229B2047700371C3C /* StoreOnboardingViewHostingControllerTests.swift */; };
 		EEB4E2D629B2063800371C3C /* StoreOnboardingTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2D429B205F400371C3C /* StoreOnboardingTaskViewModel.swift */; };
 		EEB4E2D829B20F0F00371C3C /* StoreOnboardingTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2D729B20F0F00371C3C /* StoreOnboardingTaskViewModel.swift */; };
+		EEB221A529B97F8400662A12 /* CouponInputTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB221A429B97F8400662A12 /* CouponInputTransformerTests.swift */; };
+		EEB221A729B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB221A629B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift */; };
+		EEB4E2DA29B5F8FC00371C3C /* CouponLineDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2D929B5F8FC00371C3C /* CouponLineDetailsViewModel.swift */; };
+		EEB4E2DC29B600B800371C3C /* CouponLineDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2DB29B600B800371C3C /* CouponLineDetails.swift */; };
+		EEB4E2DE29B61AAD00371C3C /* CouponInputTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2DD29B61AAD00371C3C /* CouponInputTransformer.swift */; };
 		EEC2D27F292CF60E0072132E /* LoginJetpackSetupHostingControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC2D27E292CF60E0072132E /* LoginJetpackSetupHostingControllerTests.swift */; };
 		EEC2D281292D10520072132E /* SiteCredentialLoginHostingViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC2D280292D10520072132E /* SiteCredentialLoginHostingViewControllerTests.swift */; };
 		EEC5E01129A70CC300416CAC /* StoreSetupProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC5E01029A70CC300416CAC /* StoreSetupProgressView.swift */; };
@@ -2606,7 +2614,7 @@
 		02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommand.swift; sourceTree = "<group>"; };
 		02E3B62729026C8F007E0F13 /* AccountCreationForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationForm.swift; sourceTree = "<group>"; };
 		02E3B62C290631B3007E0F13 /* AccountCreationFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationFormViewModel.swift; sourceTree = "<group>"; };
-		02E3B62E2906322B007E0F13 /* AccountCreationFormFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationFormFieldView.swift; sourceTree = "<group>"; };
+		02E3B62E2906322B007E0F13 /* AuthenticationFormFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationFormFieldView.swift; sourceTree = "<group>"; };
 		02E3B63029066858007E0F13 /* StoreCreationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationCoordinator.swift; sourceTree = "<group>"; };
 		02E4908829AE49B9005942AE /* TopPerformersEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersEmptyView.swift; sourceTree = "<group>"; };
 		02E4908C29AF216E005942AE /* DashboardTopPerformersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardTopPerformersView.swift; sourceTree = "<group>"; };
@@ -4053,6 +4061,9 @@
 		DE4D23A329B0A9FA003A4B5D /* WPComPasswordLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComPasswordLoginView.swift; sourceTree = "<group>"; };
 		DE4D23A529B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComPasswordLoginViewModel.swift; sourceTree = "<group>"; };
 		DE4D23A729B0D11E003A4B5D /* WPComPasswordLoginViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComPasswordLoginViewModelTests.swift; sourceTree = "<group>"; };
+		DE4D23A929B1B0CA003A4B5D /* WPCom2FALoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPCom2FALoginView.swift; sourceTree = "<group>"; };
+		DE4D23AD29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPCom2FALoginViewModel.swift; sourceTree = "<group>"; };
+		DE4D23AF29B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPCom2FALoginViewModelTests.swift; sourceTree = "<group>"; };
 		DE4D308828507B5B00E36ADD /* CouponCreationSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponCreationSuccess.swift; sourceTree = "<group>"; };
 		DE4FB7722812AE96003D20D6 /* FilterListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterListView.swift; sourceTree = "<group>"; };
 		DE50294828BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "WordPressOrgCredentials+Authenticator.swift"; path = "Classes/Authentication/WordPressOrgCredentials+Authenticator.swift"; sourceTree = SOURCE_ROOT; };
@@ -4208,6 +4219,11 @@
 		EEB4E2D229B2047700371C3C /* StoreOnboardingViewHostingControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingViewHostingControllerTests.swift; sourceTree = "<group>"; };
 		EEB4E2D429B205F400371C3C /* StoreOnboardingTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTaskViewModel.swift; sourceTree = "<group>"; };
 		EEB4E2D729B20F0F00371C3C /* StoreOnboardingTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTaskViewModel.swift; sourceTree = "<group>"; };
+		EEB221A429B97F8400662A12 /* CouponInputTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponInputTransformerTests.swift; sourceTree = "<group>"; };
+		EEB221A629B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponLineDetailsViewModelTests.swift; sourceTree = "<group>"; };
+		EEB4E2D929B5F8FC00371C3C /* CouponLineDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponLineDetailsViewModel.swift; sourceTree = "<group>"; };
+		EEB4E2DB29B600B800371C3C /* CouponLineDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponLineDetails.swift; sourceTree = "<group>"; };
+		EEB4E2DD29B61AAD00371C3C /* CouponInputTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponInputTransformer.swift; sourceTree = "<group>"; };
 		EEC2D27E292CF60E0072132E /* LoginJetpackSetupHostingControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginJetpackSetupHostingControllerTests.swift; sourceTree = "<group>"; };
 		EEC2D280292D10520072132E /* SiteCredentialLoginHostingViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginHostingViewControllerTests.swift; sourceTree = "<group>"; };
 		EEC5E01029A70CC300416CAC /* StoreSetupProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreSetupProgressView.swift; sourceTree = "<group>"; };
@@ -5422,7 +5438,7 @@
 			isa = PBXGroup;
 			children = (
 				02E3B62729026C8F007E0F13 /* AccountCreationForm.swift */,
-				02E3B62E2906322B007E0F13 /* AccountCreationFormFieldView.swift */,
+				02E3B62E2906322B007E0F13 /* AuthenticationFormFieldView.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -5668,6 +5684,7 @@
 				269098B927D6922E001FEB07 /* FeesInputTransformerTests.swift */,
 				2602A64927BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift */,
 				CC4B252C27CFE443008D2E6E /* OrderTotalsCalculatorTests.swift */,
+				EEB221A429B97F8400662A12 /* CouponInputTransformerTests.swift */,
 			);
 			path = Synchronizer;
 			sourceTree = "<group>";
@@ -5948,6 +5965,7 @@
 				269098B327D2BBFC001FEB07 /* ShippingInputTransformer.swift */,
 				269098B727D68CCD001FEB07 /* FeesInputTransformer.swift */,
 				CC4B252A27CFCEE2008D2E6E /* OrderTotalsCalculator.swift */,
+				EEB4E2DD29B61AAD00371C3C /* CouponInputTransformer.swift */,
 			);
 			path = Synchronizer;
 			sourceTree = "<group>";
@@ -8093,6 +8111,8 @@
 				AEA3F90E27BE8EB400B9F555 /* ShippingLineDetailsViewModel.swift */,
 				AE7C957A27C3D5DA007E8E12 /* FeeLineDetails.swift */,
 				AE7C957C27C3F187007E8E12 /* FeeLineDetailsViewModel.swift */,
+				EEB4E2D929B5F8FC00371C3C /* CouponLineDetailsViewModel.swift */,
+				EEB4E2DB29B600B800371C3C /* CouponLineDetails.swift */,
 			);
 			path = PaymentSection;
 			sourceTree = "<group>";
@@ -8141,6 +8161,7 @@
 				AEA3F91227BEC40A00B9F555 /* ShippingLineDetailsViewModelTests.swift */,
 				AE7C957E27C417FA007E8E12 /* FeeLineDetailsViewModelTests.swift */,
 				2602A64027BD89B300B347F1 /* Synchronizer */,
+				EEB221A629B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift */,
 			);
 			path = "Order Creation";
 			sourceTree = "<group>";
@@ -9463,6 +9484,8 @@
 				DE4D239D29B073B1003A4B5D /* WPComMagicLinkViewModel.swift */,
 				DE4D23A329B0A9FA003A4B5D /* WPComPasswordLoginView.swift */,
 				DE4D23A529B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift */,
+				DE4D23A929B1B0CA003A4B5D /* WPCom2FALoginView.swift */,
+				DE4D23AD29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift */,
 			);
 			path = WPComLogin;
 			sourceTree = "<group>";
@@ -9473,6 +9496,7 @@
 				DEF8CF2129ACDBB100800A60 /* WPComEmailLoginViewModelTests.swift */,
 				DE4D239F29B09D71003A4B5D /* WPComMagicLinkViewModelTests.swift */,
 				DE4D23A729B0D11E003A4B5D /* WPComPasswordLoginViewModelTests.swift */,
+				DE4D23AF29B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift */,
 			);
 			path = WPComLogin;
 			sourceTree = "<group>";
@@ -10616,6 +10640,7 @@
 				CCF4346E290AE1F900B4475A /* ProductsOnboardingAnnouncementCardViewModel.swift in Sources */,
 				0217399E2772FB7E0084CD89 /* StoreStatsAndTopPerformersPeriodViewController.swift in Sources */,
 				020BE74823B05CF2007FE54C /* ProductInventoryEditableData.swift in Sources */,
+				EEB4E2DE29B61AAD00371C3C /* CouponInputTransformer.swift in Sources */,
 				035C6DEB273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift in Sources */,
 				31F92DE125E85F6A00DE04DF /* ConnectedReaderTableViewCell.swift in Sources */,
 				26C6E8E026E2B7BD00C7BB0F /* CountrySelectorViewModel.swift in Sources */,
@@ -10808,6 +10833,7 @@
 				D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */,
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
 				035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */,
+				EEB4E2DC29B600B800371C3C /* CouponLineDetails.swift in Sources */,
 				02C37B7D2967B72A00F0CF9E /* FreeStagingDomainView.swift in Sources */,
 				457509E4267B9E91005FA2EA /* AggregatedProductListViewController.swift in Sources */,
 				D8815B0D263861A400EDAD62 /* CardPresentModalSuccess.swift in Sources */,
@@ -11038,6 +11064,7 @@
 				DEC2962326BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift in Sources */,
 				E1E649EB28461EDF0070B194 /* BetaFeaturesConfiguration.swift in Sources */,
 				26309F17277D0AEA0012797F /* SafeAreaInsetsKey.swift in Sources */,
+				DE4D23AA29B1B0CA003A4B5D /* WPCom2FALoginView.swift in Sources */,
 				023D1DD124AB2D05002B03A3 /* ProductListSelectorViewController.swift in Sources */,
 				0206483A23FA4160008441BB /* OrdersRootViewController.swift in Sources */,
 				022BF7FD23B9D708000A1DFB /* InProgressViewController.swift in Sources */,
@@ -11196,6 +11223,7 @@
 				DE4FB7732812AE96003D20D6 /* FilterListView.swift in Sources */,
 				02521E11243DC3C400DC7810 /* CancellableMedia.swift in Sources */,
 				CCCC29E325E576810046B96F /* RenameAttributesViewController.swift in Sources */,
+				EEB4E2DA29B5F8FC00371C3C /* CouponLineDetailsViewModel.swift in Sources */,
 				B6C78B8E293BAE68008934A1 /* AnalyticsHubLastMonthRangeData.swift in Sources */,
 				B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */,
 				318109DC25E5B51900EE0BE7 /* ImageTableViewCell.swift in Sources */,
@@ -11560,6 +11588,7 @@
 				D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
 				57532CAC24BFF4DA0032B84E /* MessageComposerPresenter.swift in Sources */,
+				DE4D23AE29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift in Sources */,
 				0270F47824D006F60005210A /* ProductFormPresentationStyle.swift in Sources */,
 				EECB7EE62864647F0028C888 /* ProductImagesProductIDUpdater.swift in Sources */,
 				FE28F7182684EE6A004465C7 /* RoleErrorViewModel.swift in Sources */,
@@ -11567,7 +11596,7 @@
 				03E471C8293A3076001A58AD /* CardPresentModalBuiltInConnectingToReader.swift in Sources */,
 				0365986529AF942700F297D3 /* PaymentSettingsFlowHint.swift in Sources */,
 				CE0F17CF22A8105800964A63 /* ReadMoreTableViewCell.swift in Sources */,
-				02E3B62F2906322B007E0F13 /* AccountCreationFormFieldView.swift in Sources */,
+				02E3B62F2906322B007E0F13 /* AuthenticationFormFieldView.swift in Sources */,
 				03EF24FE28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift in Sources */,
 				DEC2961F26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift in Sources */,
 				D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */,
@@ -11742,6 +11771,7 @@
 				263491D5299C923400594566 /* SupportFormViewModelTests.swift in Sources */,
 				0279F0DC252DBF1F0098D7DE /* ProductVariationDetailsFactoryTests.swift in Sources */,
 				450C2CB324D0803000D570DD /* ProductSettingsRowsTests.swift in Sources */,
+				EEB221A529B97F8400662A12 /* CouponInputTransformerTests.swift in Sources */,
 				45AF9DAF265CFAB4001EB794 /* MockShippingLabelCarrierRate.swift in Sources */,
 				CC593A6726EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift in Sources */,
 				DE68B84326FAF17A00C86CFB /* DefaultConnectivityObserver.swift in Sources */,
@@ -11755,6 +11785,7 @@
 				B555531321B57E8800449E71 /* MockUserNotificationsCenterAdapter.swift in Sources */,
 				682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */,
 				4590B652261C8D1E00A6FCE0 /* WeightFormatterTests.swift in Sources */,
+				DE4D23B029B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift in Sources */,
 				D8C11A6022E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift in Sources */,
 				B622BC74289CF19400B10CEC /* WaitingTimeTrackerTests.swift in Sources */,
 				023EC2E224DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift in Sources */,
@@ -11860,6 +11891,7 @@
 				02BF9BAF2851E7EA008CE2DD /* MockAppleIDCredentialChecker.swift in Sources */,
 				E17E3BFB266917E20009D977 /* CardPresentModalBluetoothRequiredTests.swift in Sources */,
 				CCD2E68925DD52C100BD975D /* ProductVariationsViewModelTests.swift in Sources */,
+				EEB221A729B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift in Sources */,
 				0203C11C293058CB00EE61BF /* WebPurchasesForWPComPlansTests.swift in Sources */,
 				2683835A296F9C1A00CCF60A /* GenerateAllVariationsUseCaseTests.swift in Sources */,
 				020ACF8A299B746700B3638B /* DomainContactInfoFormViewModelTests.swift in Sources */,

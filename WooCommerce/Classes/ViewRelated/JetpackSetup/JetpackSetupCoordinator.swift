@@ -180,7 +180,10 @@ private extension JetpackSetupCoordinator {
     func showWPComEmailLogin() {
         let emailLoginController = WPComEmailLoginHostingController(siteURL: site.url,
                                                                     requiresConnectionOnly: requiresConnectionOnly,
-                                                                    onSubmit: checkWordPressComAccount(email:))
+                                                                    onSubmit: { [weak self] email in
+            guard let self else { return }
+            await self.checkWordPressComAccount(email: email)
+        })
         let loginNavigationController = LoginNavigationController(rootViewController: emailLoginController)
         rootViewController.dismiss(animated: true) {
             self.rootViewController.present(loginNavigationController, animated: true)
@@ -258,7 +261,10 @@ private extension JetpackSetupCoordinator {
             onLoginSuccess: { _ in
                 DDLogInfo("✅ Ready for Jetpack setup")
             })
-        let viewController = WPComPasswordLoginHostingController(viewModel: viewModel, onMagicLinkRequest: requestAuthenticationLink(email:))
+        let viewController = WPComPasswordLoginHostingController(viewModel: viewModel, onMagicLinkRequest: { [weak self] email in
+            guard let self else { return }
+            await self.requestAuthenticationLink(email: email)
+        })
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 

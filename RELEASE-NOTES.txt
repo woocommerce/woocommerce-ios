@@ -2,7 +2,7 @@
 
 12.8
 -----
-
+- [Internal] Dashboard: the UI layer had a major refactoring to allow scrolling for content more than stats for the onboarding project. The main design change is on the refresh control, where it was moved from each stats tab to below the navigation bar. Other design changes are not expected. [https://github.com/woocommerce/woocommerce-ios/pull/9031]
 
 12.7
 -----

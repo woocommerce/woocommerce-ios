@@ -311,6 +311,23 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(received, expected)
     }
 
+    func test_update_order_properly_encodes_coupon_lines() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let coupon = OrderCouponLine(couponID: 0, code: "couponcode", discount: "", discountTax: "")
+        let order = Order.fake().copy(coupons: [coupon])
+
+        // When
+        remote.updateOrder(from: sampleSiteID, order: order, fields: [.couponLines]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["coupon_lines"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "code": coupon.code
+        ]
+        assertEqual(received, expected)
+    }
 
     // MARK: - Load Order Notes Tests
 
@@ -365,6 +382,24 @@ final class OrdersRemoteTests: XCTestCase {
     }
 
     // MARK: - Create Order Tests
+
+    func test_create_order_properly_encodes_coupon_lines() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let coupon = OrderCouponLine(couponID: 0, code: "couponcode", discount: "", discountTax: "")
+        let order = Order.fake().copy(coupons: [coupon])
+
+        // When
+        remote.createOrder(siteID: 123, order: order, fields: [.couponLines]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["coupon_lines"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "code": coupon.code
+        ]
+        assertEqual(received, expected)
+    }
 
     func test_create_order_properly_encodes_fee_lines() throws {
         // Given

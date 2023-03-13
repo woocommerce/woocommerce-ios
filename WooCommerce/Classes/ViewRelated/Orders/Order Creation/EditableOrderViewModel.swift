@@ -167,7 +167,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the product list
     ///
-    var productSelectorViewModel: ProductSelectorViewModel {
+    func generateProductSelectorViewModel() -> ProductSelectorViewModel {
         ProductSelectorViewModel(
             siteID: siteID,
             selectedItemIDs: selectedProductsAndVariationsIDs,
@@ -206,7 +206,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// Keeps track of all selected Products and Product Variations IDs
     ///
     var selectedProductsAndVariationsIDs: [Int64] {
-        selectedProducts.compactMap { $0?.productID } + selectedProductVariations.compactMap { $0?.productID }
+        let selectedProductsCount = selectedProducts.compactMap { $0?.productID }
+        let selectedProductVariationsCount = selectedProductVariations.compactMap { $0?.productID }
+        print("🍍 selectedProductsAndVariationsIDs -> Products: \(selectedProductsCount.count) - Variations: \(selectedProductVariationsCount.count)")
+        return selectedProductsCount + selectedProductVariationsCount
     }
 
     // MARK: Customer data properties

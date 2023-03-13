@@ -278,12 +278,13 @@ private struct ProductsSection: View {
                 .sheet(isPresented: $showAddProduct, onDismiss: {
                     scroll.scrollTo(addProductButton)
                 }, content: {
-                    ProductSelectorView(configuration: ProductSelectorView.Configuration.addProductToOrder,
-                                    isPresented: $showAddProduct,
-                                    viewModel: viewModel.productSelectorViewModel)
-                        .onDisappear {
-                            navigationButtonID = UUID()
-                        }
+                    ProductSelectorView(
+                        configuration: ProductSelectorView.Configuration.addProductToOrder(),
+                        isPresented: $showAddProduct,
+                        viewModel: viewModel.generateProductSelectorViewModel())
+                    .onDisappear {
+                        navigationButtonID = UUID()
+                    }
                 })
             }
             .padding(.horizontal, insets: safeAreaInsets)
@@ -350,17 +351,19 @@ struct OrderForm_Previews: PreviewProvider {
 }
 
 private extension ProductSelectorView.Configuration {
-    static let addProductToOrder: Self =
-        .init(multipleSelectionsEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
-              clearSelectionEnabled: false,
-              searchHeaderBackgroundColor: .listBackground,
-              prefersLargeTitle: false,
-              doneButtonTitleSingularFormat: Localization.doneButtonSingular,
-              doneButtonTitlePluralFormat: Localization.doneButtonPlural,
-              title: Localization.title,
-              cancelButtonTitle: Localization.close,
-              productRowAccessibilityHint: Localization.productRowAccessibilityHint,
-              variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
+    static func addProductToOrder() -> ProductSelectorView.Configuration {
+        ProductSelectorView.Configuration(
+            multipleSelectionsEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
+            clearSelectionEnabled: false,
+            searchHeaderBackgroundColor: .listBackground,
+            prefersLargeTitle: false,
+            doneButtonTitleSingularFormat: Localization.doneButtonSingular,
+            doneButtonTitlePluralFormat: Localization.doneButtonPlural,
+            title: Localization.title,
+            cancelButtonTitle: Localization.close,
+            productRowAccessibilityHint: Localization.productRowAccessibilityHint,
+            variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
+    }
 
     enum Localization {
         static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")

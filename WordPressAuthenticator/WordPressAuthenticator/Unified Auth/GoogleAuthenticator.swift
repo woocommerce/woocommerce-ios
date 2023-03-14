@@ -319,7 +319,7 @@ extension GoogleAuthenticator {
         )
 
         await SVProgressHUD.show()
-        return try await sdkLessGoogleAuthenticator.getOAuthToken()
+        return try await sdkLessGoogleAuthenticator.getOAuthToken(from: viewController)
     }
 }
 

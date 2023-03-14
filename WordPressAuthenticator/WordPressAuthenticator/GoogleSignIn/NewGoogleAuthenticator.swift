@@ -56,9 +56,28 @@ public class NewGoogleAuthenticator: NSObject {
     }
 
     /// Get the user's OAuth token from their Google account. This token can be used to authenticate with the WordPress backend.
-    public func getOAuthToken() async throws -> IDToken {
+    ///
+    /// The app will present the browser to hand over authentication to Google from the given `UIViewController`.
+    public func getOAuthToken(from viewController: UIViewController) async throws -> IDToken {
+        return try await getOAuthToken(
+            from: WebAuthenticationPresentationContext(viewController: viewController)
+        )
+    }
+
+    /// Get the user's OAuth token from their Google account. This token can be used to authenticate with the WordPress backend.
+    ///
+    /// The app will present the browser to hand over authentication to Google using the given
+    /// `ASWebAuthenticationPresentationContextProviding`.
+    public func getOAuthToken(
+        from contextProvider: ASWebAuthenticationPresentationContextProviding
+    ) async throws -> IDToken {
         let pkce = try ProofKeyForCodeExchange()
-        let url = try await getURL(clientId: clientId, scheme: scheme, pkce: pkce, contextProvider: contextProvider)
+        let url = try await getURL(
+            clientId: clientId,
+            scheme: scheme,
+            pkce: pkce,
+            contextProvider: contextProvider
+        )
         return try await requestOAuthToken(url: url, clientId: clientId, audience: audience, pkce: pkce)
     }
 

@@ -1,6 +1,7 @@
 import UIKit
 import SwiftUI
 
+/// Coordinates navigation of the launch store action from store onboarding.
 final class StoreOnboardingLaunchStoreCoordinator: Coordinator {
     let navigationController: UINavigationController
     private let siteURL: URL

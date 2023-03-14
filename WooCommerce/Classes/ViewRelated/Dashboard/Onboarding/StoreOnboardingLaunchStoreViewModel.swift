@@ -1,6 +1,7 @@
 import SwiftUI
 import Yosemite
 
+/// View model for `StoreOnboardingLaunchStoreView`.
 final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
     let siteURL: URL
 
@@ -13,7 +14,5 @@ final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
     func launchStore() async throws {
         isLaunchingStore = true
         #warning("TODO: 9122 - launch store action")
-        throw StoreCreationError.invalidCompletionPath
-        isLaunchingStore = false
     }
 }

@@ -33,26 +33,24 @@ struct StoreOnboardingLaunchStoreView: View {
         ScrollView {
             #warning("TODO: 9122 - show upsell banner when the launch store action requires an upgraded plan")
 
-            // Readonly webview for the new site.
+            // Readonly webview for the site.
             WebView(isPresented: .constant(true), url: viewModel.siteURL)
-                .frame(height: 400 * scale)
+                .frame(height: Layout.webviewHeight * scale)
                 .disabled(true)
         }
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 0) {
                 Divider()
-                    .frame(height: 1)
-                    .foregroundColor(Color(.separator))
+                    .dividerStyle()
 
-                VStack(spacing: 16) {
-                    // Launch store button.
-                    Button(Localization.launchStoreButton) {
-                        Task { @MainActor in
-                            try await viewModel.launchStore()
-                        }
+
+                // Launch store button.
+                Button(Localization.launchStoreButton) {
+                    Task { @MainActor in
+                        try await viewModel.launchStore()
                     }
-                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLaunchingStore))
                 }
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLaunchingStore))
                 .padding(insets: Layout.buttonContainerPadding)
             }
             .background(Color(.systemBackground))
@@ -63,9 +61,8 @@ struct StoreOnboardingLaunchStoreView: View {
 
 private extension StoreOnboardingLaunchStoreView {
     enum Layout {
-        static let contentPadding: EdgeInsets = .init(top: 38, leading: 16, bottom: 16, trailing: 16)
+        static let webviewHeight: CGFloat = 400
         static let buttonContainerPadding: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
-        static let webviewHorizontalPadding: EdgeInsets = .init(top: 0, leading: 44, bottom: 0, trailing: 44)
     }
 
     enum Localization {

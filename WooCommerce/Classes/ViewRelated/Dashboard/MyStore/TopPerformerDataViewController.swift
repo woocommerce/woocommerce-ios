@@ -34,6 +34,8 @@ final class TopPerformerDataViewController: UIViewController {
 
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
+    private var hostingController: UIHostingController<DashboardTopPerformersView>?
+
     private let imageService: ImageService = ServiceLocator.imageService
 
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
@@ -103,7 +105,7 @@ final class TopPerformerDataViewController: UIViewController {
     }
 
     func displayPlaceholderContent() {
-        viewModel.update(state: .loading)
+        updateUIInLoadingState()
     }
 
     func removePlaceholderContent() {
@@ -112,7 +114,15 @@ final class TopPerformerDataViewController: UIViewController {
 }
 
 private extension TopPerformerDataViewController {
+    func updateUIInLoadingState() {
+        viewModel.update(state: .loading)
+        hostingController?.view.invalidateIntrinsicContentSize()
+    }
+
     func updateUIInLoadedState() {
+        defer {
+            hostingController?.view.invalidateIntrinsicContentSize()
+        }
         guard let items = topEarnerStats?.items?.sorted(by: >), items.isNotEmpty else {
             return viewModel.update(state: .loaded(rows: []))
         }
@@ -130,6 +140,7 @@ private extension TopPerformerDataViewController {
 
     func configureTopPerformersView() {
         let hostingController = UIHostingController(rootView: DashboardTopPerformersView(viewModel: viewModel))
+        self.hostingController = hostingController
         addChild(hostingController)
         view.addSubview(hostingController.view)
 
@@ -137,7 +148,7 @@ private extension TopPerformerDataViewController {
         view.pinSubviewToAllEdges(hostingController.view)
         hostingController.didMove(toParent: self)
 
-        viewModel.update(state: .loading)
+        updateUIInLoadingState()
     }
 
     func configureResultsController() {
@@ -184,23 +195,5 @@ private extension TopPerformerDataViewController {
         }
         ServiceLocator.analytics.track(event: .Dashboard.dashboardTopPerformersDate(timeRange: timeRange))
         isInitialLoad = false
-    }
-}
-
-// MARK: - Constants!
-//
-private extension TopPerformerDataViewController {
-    enum TableViewStyle {
-        static let backgroundColor = UIColor.basicBackground
-        static let separatorColor = UIColor.systemColor(.separator)
-    }
-
-    enum Constants {
-        static let estimatedRowHeight           = CGFloat(80)
-        static let estimatedSectionHeight       = CGFloat(125)
-        static let numberOfSections             = 1
-        static let emptyStateRowCount           = 1
-        static let placeholderRowsPerSection    = [3]
-        static let sectionHeaderTopSpacing = CGFloat(0)
     }
 }

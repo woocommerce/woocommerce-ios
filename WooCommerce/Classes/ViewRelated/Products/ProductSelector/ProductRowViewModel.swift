@@ -207,13 +207,23 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             }
         }()
 
+        // If product is a product bundle with a bundle stock quantity, use that as the product stock quantity.
+        let stockQuantity: Decimal? = {
+            switch (productBundlesEnabled, product.productType, product.bundleStockQuantity) {
+            case (true, .bundle, .some(let bundleStockQuantity)):
+                return Decimal(bundleStockQuantity)
+            default:
+                return product.stockQuantity
+            }
+        }()
+
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
                   sku: product.sku,
                   price: price,
                   stockStatusKey: stockStatusKey,
-                  stockQuantity: product.stockQuantity,
+                  stockQuantity: stockQuantity,
                   manageStock: product.manageStock,
                   quantity: quantity,
                   canChangeQuantity: canChangeQuantity,

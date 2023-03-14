@@ -69,10 +69,9 @@ struct JetpackBenefitsView: View {
                                            subtitle: Localization.userProfilesBenefitSubtitle,
                                            icon: .multipleUsersImage)
                     } else {
-                        #warning("TODO-8912: update icon for multiple stores")
                         JetpackBenefitItem(title: Localization.multiStoresBenefitTitle,
                                            subtitle: Localization.multiStoresBenefitSubtitle,
-                                           icon: .multipleUsersImage)
+                                           icon: .multipleStoresImage)
                     }
                 }.padding([.leading, .trailing], insets: Layout.horizontalPaddingInBenefitList)
 

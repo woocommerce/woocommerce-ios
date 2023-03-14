@@ -334,9 +334,17 @@ private extension OrderStore {
     /// Creates a manual order with the provided order details.
     ///
     func createOrder(siteID: Int64, order: Order, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let fields: [OrdersRemote.CreateOrderField] = [.status,
+                                                       .items,
+                                                       .billingAddress,
+                                                       .shippingAddress,
+                                                       .shippingLines,
+                                                       .feeLines,
+                                                       .couponLines,
+                                                       .customerNote]
         remote.createOrder(siteID: siteID,
                            order: order,
-                           fields: [.status, .items, .billingAddress, .shippingAddress, .shippingLines, .feeLines, .customerNote]) { [weak self] result in
+                           fields: fields) { [weak self] result in
             switch result {
             case .success(let order):
                 // Auto-draft orders are temporary and should not be stored

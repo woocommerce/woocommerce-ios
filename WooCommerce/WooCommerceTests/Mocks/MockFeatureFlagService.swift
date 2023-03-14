@@ -12,6 +12,8 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isStoreCreationM2WithInAppPurchasesEnabled: Bool
     private let isDomainSettingsEnabled: Bool
     private let isSupportRequestEnabled: Bool
+    private let isProductMultiSelectionM1Enabled: Bool
+    private let isAddCouponToOrderEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -22,7 +24,9 @@ struct MockFeatureFlagService: FeatureFlagService {
          isStoreCreationM2Enabled: Bool = false,
          isStoreCreationM2WithInAppPurchasesEnabled: Bool = false,
          isDomainSettingsEnabled: Bool = false,
-         isSupportRequestEnabled: Bool = false) {
+         isSupportRequestEnabled: Bool = false,
+         isProductMultiSelectionM1Enabled: Bool = false,
+         isAddCouponToOrderEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -33,6 +37,8 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isStoreCreationM2WithInAppPurchasesEnabled = isStoreCreationM2WithInAppPurchasesEnabled
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
         self.isSupportRequestEnabled = isSupportRequestEnabled
+        self.isProductMultiSelectionM1Enabled = isProductMultiSelectionM1Enabled
+        self.isAddCouponToOrderEnabled = isAddCouponToOrderEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -57,6 +63,10 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isDomainSettingsEnabled
         case .supportRequests:
             return isSupportRequestEnabled
+        case .productMultiSelectionM1:
+            return isProductMultiSelectionM1Enabled
+        case .addCouponToOrder:
+            return isAddCouponToOrderEnabled
         default:
             return false
         }

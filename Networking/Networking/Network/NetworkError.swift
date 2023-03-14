@@ -18,6 +18,9 @@ public enum NetworkError: Error, Equatable {
     case unacceptableStatusCode(statusCode: Int)
 
     case invalidURL
+
+    /// Error for REST API requests with invalid cookie nonce
+    case invalidCookieNonce
 }
 
 

@@ -89,7 +89,7 @@ struct AccountCreationForm: View {
                 // Form fields.
                 VStack(spacing: Layout.verticalSpacingBetweenFields) {
                     // Email field.
-                    AccountCreationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
+                    AuthenticationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
                                                                   placeholder: Localization.emailFieldPlaceholder,
                                                                   keyboardType: .emailAddress,
                                                                   text: $viewModel.email,
@@ -100,7 +100,7 @@ struct AccountCreationForm: View {
                     .disabled(isPerformingTask)
 
                     // Password field.
-                    AccountCreationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
+                    AuthenticationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
                                                                   placeholder: Localization.passwordFieldPlaceholder,
                                                                   keyboardType: .default,
                                                                   text: $viewModel.password,

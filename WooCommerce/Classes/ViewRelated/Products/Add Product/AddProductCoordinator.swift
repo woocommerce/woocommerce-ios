@@ -49,7 +49,7 @@ final class AddProductCoordinator: Coordinator {
     }
 
     init(siteID: Int64,
-         sourceView: UIView,
+         sourceView: UIView?,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,

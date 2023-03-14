@@ -128,13 +128,10 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
                                               },
                                               onContactSupportButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
-                let supportForm = SupportFormHostingController(viewModel: .init())
-                supportForm.show(from: self)
-            } else {
-                ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
-            }
-                                              })
+
+            let supportForm = SupportFormHostingController(viewModel: .init())
+            supportForm.show(from: self)
+        })
     }()
 
     convenience init(style: Style = .basic, configuration: Config? = nil, zendeskManager: ZendeskManagerProtocol? = nil) {
@@ -215,12 +212,8 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
             case .withSupportRequest:
                 return { [weak self] in
                     if let self = self {
-                        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
-                            let supportForm = SupportFormHostingController(viewModel: .init())
-                            supportForm.show(from: self)
-                        } else {
-                            self.zendeskManager.showNewRequestIfPossible(from: self, with: nil)
-                        }
+                        let supportForm = SupportFormHostingController(viewModel: .init())
+                        supportForm.show(from: self)
                     }
                 }
             default:

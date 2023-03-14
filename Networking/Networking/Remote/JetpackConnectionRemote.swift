@@ -1,5 +1,4 @@
 import Foundation
-import WordPressKit
 
 /// Handle API requests to the Jetpack REST API.
 ///

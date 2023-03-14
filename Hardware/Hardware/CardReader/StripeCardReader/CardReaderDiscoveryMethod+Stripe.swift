@@ -1,11 +1,7 @@
 #if !targetEnvironment(macCatalyst)
-import Foundation
 import StripeTerminal
 
-public enum CardReaderDiscoveryMethod {
-    case localMobile
-    case bluetoothScan
-
+public extension CardReaderDiscoveryMethod {
     func toStripe() -> DiscoveryMethod {
         switch self {
         case .localMobile:

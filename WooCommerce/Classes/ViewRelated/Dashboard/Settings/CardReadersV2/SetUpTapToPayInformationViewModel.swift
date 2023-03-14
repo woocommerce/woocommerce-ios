@@ -66,7 +66,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
             guard let self = self else { return }
             switch (status, self.enableSetup) {
             case (.notReachable, true),
-                (.reachable(_), false):
+                (.reachable, false):
                 self.enableSetup.toggle()
             default:
                 break

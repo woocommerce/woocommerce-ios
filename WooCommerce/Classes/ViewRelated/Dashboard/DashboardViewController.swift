@@ -703,7 +703,7 @@ private extension DashboardViewController {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 await self.viewModel.syncAnnouncements(for: self.siteID)
             }
             group.addTask { [weak self] in

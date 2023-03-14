@@ -43,7 +43,6 @@ struct StoreOnboardingLaunchStoreView: View {
                 Divider()
                     .dividerStyle()
 
-
                 // Launch store button.
                 Button(Localization.launchStoreButton) {
                     Task { @MainActor in

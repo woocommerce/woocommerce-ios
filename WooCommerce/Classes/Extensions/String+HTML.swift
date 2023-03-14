@@ -34,26 +34,4 @@ extension String {
         let string = replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
         return string
     }
-
-    /// Get contents between HTML tags
-    ///
-    func getHTMLTextContent(openingTag: String, closingTag: String) -> String? {
-        let pattern: String = "\(openingTag)[^~]*?\(closingTag)"
-        let regexOptions = NSRegularExpression.Options.caseInsensitive
-        do {
-            let regex = try NSRegularExpression(pattern: pattern, options: regexOptions)
-            guard let textCheckingResult = regex.firstMatch(
-                in: self,
-                options: NSRegularExpression.MatchingOptions(rawValue: UInt(0)),
-                range: NSMakeRange(0, count)) else {
-                return nil
-            }
-            let matchRange = textCheckingResult.range(at: 0)
-            let match = (self as NSString).substring(with: matchRange)
-            return match.removedHTMLTags.trimmingCharacters(in: .whitespacesAndNewlines)
-        } catch {
-            DDLogError("⚠️" + pattern + "<-- not found in string -->" + self )
-            return nil
-        }
-    }
 }

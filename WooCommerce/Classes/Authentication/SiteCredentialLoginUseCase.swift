@@ -9,7 +9,7 @@ protocol SiteCredentialLoginProtocol {
 
 enum SiteCredentialLoginError: Error {
     static let errorDomain = "SiteCredentialLogin"
-    case wrongCredentials
+    case loginFailed(message: String)
     case invalidLoginResponse
     case inaccessibleLoginPage
     case unacceptableStatusCode(code: Int)
@@ -23,8 +23,8 @@ enum SiteCredentialLoginError: Error {
             return NSError(domain: Self.errorDomain, code: 404, userInfo: nil)
         case .invalidLoginResponse:
             return NSError(domain: Self.errorDomain, code: -1, userInfo: nil)
-        case .wrongCredentials:
-            return NSError(domain: Self.errorDomain, code: 401, userInfo: nil)
+        case .loginFailed(let message):
+            return NSError(domain: Self.errorDomain, code: 401, userInfo: [NSLocalizedDescriptionKey: message])
         case .unacceptableStatusCode(let code):
             return NSError(domain: Self.errorDomain, code: code, userInfo: nil)
         case .genericFailure(let underlyingError):
@@ -102,16 +102,14 @@ private extension SiteCredentialLoginUseCase {
         case 404:
             errorHandler?(.inaccessibleLoginPage)
         case 200:
-            if let html = String(data: data, encoding: .utf8) {
+            guard let html = String(data: data, encoding: .utf8) else {
+                throw SiteCredentialLoginError.invalidLoginResponse
+            }
+            if let url = response.url, url.absoluteString.hasSuffix(Constants.wporgNoncePath) {
                 /// If we get data from the nonce retrieval request, consider this a success.
-                if let url = response.url, url.absoluteString.hasSuffix(Constants.wporgNoncePath) {
-                    return
-                } else if html.contains("<div id=\"login_error\">") {
-                    /// TODO: scrape html for the error tag to check for incorrect credentials.
-                    throw SiteCredentialLoginError.wrongCredentials
-                } else {
-                    throw SiteCredentialLoginError.invalidLoginResponse
-                }
+                return
+            } else if let errorMessage = html.findLoginErrorMessage() {
+                throw SiteCredentialLoginError.loginFailed(message: errorMessage)
             } else {
                 throw SiteCredentialLoginError.invalidLoginResponse
             }
@@ -152,5 +150,43 @@ extension SiteCredentialLoginUseCase {
         static let loginPath = "/wp-login.php"
         static let adminPath = "/wp-admin/"
         static let wporgNoncePath = "/wp-admin/admin-ajax.php?action=rest-nonce"
+    }
+}
+
+private extension String {
+    /// Get contents between HTML tags
+    ///
+    func findLoginErrorMessage() -> String? {
+        let pattern = "<div id=\"login_error\">[^~]*?</div>"
+        let urlPattern = "<a href=\".*\">[^~]*?</a>"
+        let regexOptions = NSRegularExpression.Options.caseInsensitive
+        let matchOptions = NSRegularExpression.MatchingOptions(rawValue: UInt(0))
+        do {
+            let regex = try NSRegularExpression(pattern: pattern, options: regexOptions)
+            guard let textCheckingResult = regex.firstMatch(in: self,
+                                                            options: matchOptions,
+                                                            range: NSMakeRange(0, count)) else {
+                return nil
+            }
+            let matchRange = textCheckingResult.range(at: 0)
+            let match = (self as NSString).substring(with: matchRange)
+
+            /// Removes any <a> tag
+            let urlRegex = try NSRegularExpression(pattern: urlPattern, options: regexOptions)
+            if let result = urlRegex.firstMatch(in: match,
+                                                options: matchOptions,
+                                                range: NSMakeRange(0, match.count)) {
+                let range = result.range(at: 0)
+                let urlMatch = (match as NSString).substring(with: range)
+                return match
+                    .replacingOccurrences(of: urlMatch, with: "")
+                    .removedHTMLTags
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+            return match.removedHTMLTags.trimmingCharacters(in: .whitespacesAndNewlines)
+        } catch {
+            DDLogError("⚠️" + pattern + "<-- not found in string -->" + self )
+            return nil
+        }
     }
 }

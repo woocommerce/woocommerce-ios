@@ -578,8 +578,7 @@ private extension DashboardViewController {
         onboardingView = uiView
 
         addChild(hostingController)
-        let indexAfterHeader = (headerStackView.arrangedSubviews.firstIndex(of: innerStackView) ?? -1) + 1
-        headerStackView.insertArrangedSubview(uiView, at: indexAfterHeader)
+        addViewBelowHeaderStackView(contentView: uiView)
 
         hostingController.didMove(toParent: self)
         hostingController.view.layoutIfNeeded()
@@ -622,7 +621,7 @@ private extension DashboardViewController {
 
         let contentView = updatedDashboardUI.view!
         addChild(updatedDashboardUI)
-        addViewBelowHeaderStackView(contentView: contentView)
+        containerStackView.addArrangedSubview(contentView)
         updatedDashboardUI.didMove(toParent: self)
 
         // Sets `dashboardUI` after its view is added to the view hierarchy so that observers can update UI based on its view.

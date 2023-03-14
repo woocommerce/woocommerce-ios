@@ -626,7 +626,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
-    func test_view_model_for_bundle_product_without_price_with_feature_flag_enabled() {
+    func test_view_model_for_bundle_product_without_price_or_bundled_items_with_feature_flag_enabled() {
         // Arrange
         let product = Fixtures.bundleProduct
         let model = EditableProductModel(product: product)
@@ -638,7 +638,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.bundledProducts,
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.bundledProducts(actionable: false),
                                                                        .reviews,
                                                                        .inventorySettings(editable: false),
                                                                        .linkedProducts(editable: true),
@@ -649,9 +649,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
-    func test_view_model_for_bundle_product_with_price_with_feature_flag_enabled() {
+    func test_view_model_for_bundle_product_with_price_and_bundled_items_with_feature_flag_enabled() {
         // Arrange
-        let product = Fixtures.bundleProduct.copy(regularPrice: "2")
+        let product = Fixtures.bundleProduct.copy(regularPrice: "2", bundledItems: [.fake()])
         let model = EditableProductModel(product: product)
 
         // Action
@@ -661,7 +661,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.bundledProducts,
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.bundledProducts(actionable: true),
                                                                        .priceSettings(editable: false, hideSeparator: false),
                                                                        .reviews,
                                                                        .inventorySettings(editable: false),

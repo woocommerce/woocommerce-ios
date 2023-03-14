@@ -72,12 +72,8 @@ private extension SurveyCoordinatingController {
             guard let self = self else {
                 return
             }
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
-                let supportForm = SupportFormHostingController(viewModel: .init())
-                supportForm.show(from: self)
-            } else {
-                self.zendeskManager.showNewRequestIfPossible(from: self, with: nil)
-            }
+            let supportForm = SupportFormHostingController(viewModel: .init())
+            supportForm.show(from: self)
         }, onBackToStoreAction: { [weak self] in
             self?.finishSurveyNavigation()
         })

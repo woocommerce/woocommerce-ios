@@ -160,14 +160,6 @@ private extension HelpAndSupportViewController {
     private func calculateRows() -> [Row] {
         var rows: [Row] = [.helpCenter, .contactSupport]
 
-        // Only show `contactWCPaySupport` and `myTickets` when the `supportRequests` flag is not enabled.
-        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
-            if isPaymentsAvailable {
-                rows.append(.contactWCPaySupport)
-            }
-            rows.append(.myTickets)
-        }
-
         rows.append(contentsOf: [.contactEmail,
                                  .applicationLog,
                                  .systemStatusReport])
@@ -207,10 +199,6 @@ private extension HelpAndSupportViewController {
             configureHelpCenter(cell: cell)
         case let cell as ValueOneTableViewCell where row == .contactSupport:
             configureContactSupport(cell: cell)
-        case let cell as ValueOneTableViewCell where row == .contactWCPaySupport:
-            configureContactWCPaySupport(cell: cell)
-        case let cell as ValueOneTableViewCell where row == .myTickets:
-            configureMyTickets(cell: cell)
         case let cell as ValueOneTableViewCell where row == .contactEmail:
             configureMyContactEmail(cell: cell)
         case let cell as ValueOneTableViewCell where row == .applicationLog:
@@ -241,27 +229,6 @@ private extension HelpAndSupportViewController {
             "Reach our happiness engineers who can help answer tough questions",
             comment: "Subtitle for Contact Support"
         )
-    }
-
-    /// Contact WCPay Support cell.
-    ///
-    func configureContactWCPaySupport(cell: ValueOneTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Contact WooCommerce Payments Support", comment: "Contact WooComerce Payments Support title")
-        cell.detailTextLabel?.text = NSLocalizedString(
-            "Reach our happiness engineers who can help answer payments related questions",
-            comment: "Subtitle for Contact WooCommerce Payments Support"
-        )
-    }
-
-    /// My Tickets cell.
-    ///
-    func configureMyTickets(cell: ValueOneTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("My Tickets", comment: "My Tickets title")
-        cell.detailTextLabel?.text = NSLocalizedString("View previously submitted support tickets", comment: "subtitle for My Tickets")
     }
 
     /// Contact Email cell.
@@ -339,36 +306,8 @@ private extension HelpAndSupportViewController {
     /// Contact Support action
     ///
     func contactSupportWasPressed() {
-        guard let navController = navigationController else {
-            return
-        }
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
-            let viewController = SupportFormHostingController(viewModel: .init())
-            viewController.show(from: self)
-        } else {
-            ZendeskProvider.shared.showNewRequestIfPossible(from: navController)
-        }
-    }
-
-    /// Contact WCPay Support action
-    ///
-    func contactWCPaySupportWasPressed() {
-        guard let navController = navigationController else {
-            return
-        }
-
-        ZendeskProvider.shared.showNewWCPayRequestIfPossible(from: navController)
-    }
-
-    /// My Tickets action
-    ///
-    func myTicketsWasPressed() {
-        guard let navController = navigationController else {
-            return
-        }
-
-        ZendeskProvider.shared.showTicketListIfPossible(from: navController)
+        let viewController = SupportFormHostingController(viewModel: .init())
+        viewController.show(from: self)
     }
 
     /// User's contact email action
@@ -467,10 +406,6 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             helpCenterWasPressed()
         case .contactSupport:
             contactSupportWasPressed()
-        case .contactWCPaySupport:
-            contactWCPaySupportWasPressed()
-        case .myTickets:
-            myTicketsWasPressed()
         case .contactEmail:
             contactEmailWasPressed()
         case .applicationLog:
@@ -497,8 +432,6 @@ private struct Section {
 private enum Row: CaseIterable {
     case helpCenter
     case contactSupport
-    case contactWCPaySupport
-    case myTickets
     case contactEmail
     case applicationLog
     case systemStatusReport
@@ -508,10 +441,6 @@ private enum Row: CaseIterable {
         case .helpCenter:
             return ValueOneTableViewCell.self
         case .contactSupport:
-            return ValueOneTableViewCell.self
-        case .contactWCPaySupport:
-            return ValueOneTableViewCell.self
-        case .myTickets:
             return ValueOneTableViewCell.self
         case .contactEmail:
             return ValueOneTableViewCell.self

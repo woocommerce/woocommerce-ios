@@ -94,13 +94,9 @@ final class DashboardViewController: UIViewController {
                                               },
                                               onContactSupportButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
-                let supportForm = SupportFormHostingController(viewModel: .init())
-                supportForm.show(from: self)
-            } else {
-                ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
-            }
-                                              })
+            let supportForm = SupportFormHostingController(viewModel: .init())
+            supportForm.show(from: self)
+        })
     }()
 
     private var announcementViewHostingController: ConstraintsUpdatingHostingController<AnnouncementCardWrapper>?
@@ -110,7 +106,6 @@ final class DashboardViewController: UIViewController {
     /// Onboarding card.
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
-    private var onboardingCoordinator: StoreOnboardingCoordinator?
 
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
@@ -536,10 +531,12 @@ private extension DashboardViewController {
 
 private extension DashboardViewController {
     func observeOnboardingVisibility() {
-        viewModel.$showOnboarding.sink { [weak self] showsOnboarding in
+        Publishers.CombineLatest(viewModel.$showOnboarding,
+                                 ServiceLocator.stores.site.compactMap { $0 })
+        .sink { [weak self] showsOnboarding, site in
             guard let self else { return }
             if showsOnboarding {
-                self.showOnboardingCard()
+                self.showOnboardingCard(site: site)
             } else {
                 self.removeOnboardingCard()
             }
@@ -556,33 +553,19 @@ private extension DashboardViewController {
         self.onboardingView = nil
     }
 
-    func showOnboardingCard() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+    func showOnboardingCard(site: Site) {
+        guard let navigationController else {
             return
         }
 
-        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false, siteID: siteID),
-                                                                     taskTapped: { [weak self] task in
-            guard let self,
-                  let navigationController = self.navigationController,
-                  let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                return
-            }
-            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: site)
-            self.onboardingCoordinator = coordinator
-            coordinator.start(task: task)
-        },
-                                                                                                   viewAllTapped: { [weak self] in
-            guard let self,
-                  let navigationController = self.navigationController,
-                  let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                return
-            }
-            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: site)
-            self.onboardingCoordinator = coordinator
-            coordinator.start()
-        },
-                                                                                                   shareFeedbackAction: { [weak self] in
+        if onboardingView != nil {
+            removeOnboardingCard()
+        }
+
+        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false, siteID: site.siteID),
+                                                                     navigationController: navigationController,
+                                                                     site: site,
+                                                                     shareFeedbackAction: { [weak self] in
             // Present survey
             let navigationController = SurveyCoordinatingController(survey: .storeSetup)
             self?.present(navigationController, animated: true, completion: nil)
@@ -700,8 +683,18 @@ private extension DashboardViewController {
 
     func onPullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-        await viewModel.syncAnnouncements(for: siteID)
-        await reloadDashboardUIStatsVersion(forced: true)
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { [weak self] in
+                guard let self else { return }
+                await self.viewModel.syncAnnouncements(for: self.siteID)
+            }
+            group.addTask { [weak self] in
+                await self?.reloadDashboardUIStatsVersion(forced: true)
+            }
+            group.addTask { [weak self] in
+                await self?.onboardingHostingController?.reloadTasks()
+            }
+        }
     }
 }
 

@@ -23,6 +23,31 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 0)
     }
 
+    func test_view_model_product_list_is_initialized_with_expected_values_given_product_multiselection_is_disabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
+
+        // Then
+        XCTAssertFalse(viewModel.addProductViewModel.supportsMultipleSelection)
+        XCTAssertFalse(viewModel.addProductViewModel.isClearSelectionEnabled)
+        XCTAssertFalse(viewModel.addProductViewModel.toggleAllVariationsOnSelection)
+    }
+
+    func test_view_model_product_list_is_initialized_with_expected_values_given_product_multiselection_is_enabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
+
+        // When
+        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
+
+        // Then
+        XCTAssertTrue(viewModel.addProductViewModel.supportsMultipleSelection)
+        XCTAssertFalse(viewModel.addProductViewModel.isClearSelectionEnabled)
+        XCTAssertFalse(viewModel.addProductViewModel.toggleAllVariationsOnSelection)
+    }
+
     func test_edition_view_model_inits_with_expected_values() {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)

@@ -515,8 +515,16 @@ private extension DefaultProductFormTableViewModel {
     func bundledProductsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.widgetsImage
         let title = Localization.bundledProductsTitle
+        let details: String
 
-        let details = "3 products" // TODO-8954: Display actual bundled product count (localized)
+        switch product.bundledItems.count {
+        case 1:
+            details = .localizedStringWithFormat(Localization.singularBundledProductFormat, product.bundledItems.count)
+        case 2...:
+            details = .localizedStringWithFormat(Localization.pluralBundledProductsFormat, product.bundledItems.count)
+        default:
+            details = ""
+        }
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -717,5 +725,9 @@ private extension DefaultProductFormTableViewModel {
 
         // Bundled products
         static let bundledProductsTitle = NSLocalizedString("Bundled products", comment: "Title for Bundled Products row in the product form screen.")
+        static let singularBundledProductFormat = NSLocalizedString("%ld product",
+                                                                    comment: "Format of the number of bundled products in singular form")
+        static let pluralBundledProductsFormat = NSLocalizedString("%ld products",
+                                                                   comment: "Format of the number of bundled products in plural form")
     }
 }

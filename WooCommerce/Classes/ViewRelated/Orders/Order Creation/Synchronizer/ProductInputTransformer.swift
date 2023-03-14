@@ -23,22 +23,42 @@ struct ProductInputTransformer {
     /// When `updateZeroQuantities` is true, items with `.zero` quantities will be updated instead of being deleted.
     ///
     static func update(input: OrderSyncProductInput, on order: Order, updateZeroQuantities: Bool) -> Order {
+        let items = updatedOrderItems(from: input,
+                                      on: order.items,
+                                      order: order,
+                                      updateZeroQuantities: updateZeroQuantities)
+        return order.copy(items: items)
+    }
+
+    private static func updatedOrderItems(from input: OrderSyncProductInput, on startingItems: [OrderItem], order: Order, updateZeroQuantities: Bool) -> [OrderItem] {
         // If the input's quantity is 0 or less, delete the item if required.
         guard input.quantity > 0 || updateZeroQuantities else {
-            return remove(input: input, from: order)
+            let updatedOrder = remove(input: input, from: order)
+            return updatedOrder.items
         }
 
         // Add or update the order items with the new input.
-        var items = order.items
-        if let itemIndex = order.items.firstIndex(where: { $0.itemID == input.id }) {
+        var items = startingItems
+        if let itemIndex = startingItems.firstIndex(where: { $0.itemID == input.id }) {
             let newItem = createOrderItem(using: input, usingPriceFrom: items[itemIndex])
             items[itemIndex] = newItem
         } else {
             let newItem = createOrderItem(using: input, usingPriceFrom: nil)
             items.append(newItem)
         }
+        return items
+    }
 
-        return order.copy(items: items)
+    /// Adds, deletes, or updates order items based on the given product input.
+    /// When `updateZeroQuantities` is true, items with `.zero` quantities will be updated instead of being deleted.
+    ///
+    static func update(input: [OrderSyncProductInput], on order: Order, updateZeroQuantities: Bool) -> Order {
+        var tempItems = order.items
+        for item in input {
+            tempItems.append(contentsOf: updatedOrderItems(from: item, on: tempItems, order: order, updateZeroQuantities: updateZeroQuantities))
+        }
+
+        return order.copy(items: tempItems)
     }
 
     /// Removes an order item from an order when the `item.itemID` matches the `input.id`.

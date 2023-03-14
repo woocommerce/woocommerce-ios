@@ -27,6 +27,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var setProduct = PassthroughSubject<OrderSyncProductInput, Never>()
 
+    var setProducts = PassthroughSubject<[OrderSyncProductInput], Never>()
+
     var setAddresses = PassthroughSubject<OrderSyncAddressesInput?, Never>()
 
     var setShipping =  PassthroughSubject<ShippingLine?, Never>()
@@ -137,6 +139,22 @@ private extension RemoteOrderSynchronizer {
             .map { [weak self] productInput, order -> Order in
                 guard let self = self else { return order }
                 let localInput = self.replaceInputWithLocalIDIfNeeded(productInput)
+                let updatedOrder = ProductInputTransformer.update(input: localInput, on: order, updateZeroQuantities: true)
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
+            }
+            .sink { [weak self] order in
+                self?.order = order
+                self?.orderSyncTrigger.send(order)
+            }
+            .store(in: &subscriptions)
+
+        setProducts.withLatestFrom(orderPublisher)
+            .map { [weak self] productsInput, order -> Order in
+                guard let self = self else { return order }
+                let localInput = productsInput.map {
+                    self.replaceInputWithLocalIDIfNeeded($0)
+                }
                 let updatedOrder = ProductInputTransformer.update(input: localInput, on: order, updateZeroQuantities: true)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()

@@ -707,7 +707,7 @@ private extension EditableOrderViewModel {
         }
 
         let input = OrderSyncProductInput(product: .product(product), quantity: 1)
-        orderSynchronizer.setProduct.send(input)
+        orderSynchronizer.setProducts.send([input, input])
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
     }

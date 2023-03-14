@@ -26,7 +26,7 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
         }
         self.viewModel = viewModel
 
-        super.init(rootView: SetUpTapToPayInformationView())
+        super.init(rootView: SetUpTapToPayInformationView(viewModel: viewModel))
         configureView()
     }
 
@@ -67,6 +67,7 @@ private extension SetUpTapToPayInformationViewController {
 }
 
 struct SetUpTapToPayInformationView: View {
+    @ObservedObject var viewModel: SetUpTapToPayInformationViewModel
     var setUpButtonAction: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
     var learnMoreUrl: URL? = nil
@@ -120,6 +121,7 @@ struct SetUpTapToPayInformationView: View {
                     setUpButtonAction?()
                 })
                 .buttonStyle(PrimaryButtonStyle())
+                .disabled(!viewModel.enableSetup)
 
                 InPersonPaymentsLearnMore(
                     viewModel: LearnMoreViewModel(formatText: Localization.learnMore))
@@ -216,6 +218,14 @@ private enum Localization {
 
 struct SetUpTapToPayInformationView_Previews: PreviewProvider {
     static var previews: some View {
-        SetUpTapToPayInformationView(setUpButtonAction: {})
+        let config = CardPresentConfigurationLoader().configuration
+        let viewModel = SetUpTapToPayInformationViewModel(
+            siteID: 0,
+            configuration: config,
+            didChangeShouldShow: nil,
+            activePaymentGateway: .wcPay,
+            connectionAnalyticsTracker: .init(configuration: config))
+        SetUpTapToPayInformationView(viewModel: viewModel,
+                                     setUpButtonAction: {})
     }
 }

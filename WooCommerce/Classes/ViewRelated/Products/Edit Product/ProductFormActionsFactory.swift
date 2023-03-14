@@ -34,7 +34,7 @@ enum ProductFormEditAction: Equatable {
     // Downloadable products only
     case downloadableFiles(editable: Bool)
     // Bundle products only
-    case bundledProducts
+    case bundledProducts(actionable: Bool)
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -252,11 +252,12 @@ private extension ProductFormActionsFactory {
 
     func allSettingsSectionActionsForBundleProduct() -> [ProductFormEditAction] {
         let shouldShowBundledProductsRow = isBundledProductsEnabled
+        let canOpenBundledProducts = product.bundledItems.isNotEmpty
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
 
         let actions: [ProductFormEditAction?] = [
-            shouldShowBundledProductsRow ? .bundledProducts : nil,
+            shouldShowBundledProductsRow ? .bundledProducts(actionable: canOpenBundledProducts) : nil,
             shouldShowPriceSettingsRow ? .priceSettings(editable: false, hideSeparator: false): nil,
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),

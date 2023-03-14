@@ -74,7 +74,9 @@ class StoreOnboardingViewModel: ObservableObject {
     func reloadTasks() async {
         await update(state: .loading)
         let tasks = try? await loadTasks()
-        await checkIfAllTasksAreCompleted()
+        if let tasks {
+            await checkIfAllTasksAreCompleted(tasks)
+        }
         await update(state: .loaded(rows: tasks ?? taskViewModels))
     }
 }
@@ -109,8 +111,12 @@ private extension StoreOnboardingViewModel {
     }
 
     @MainActor
-    func checkIfAllTasksAreCompleted() {
-        let isPendingTaskPresent = taskViewModels.contains(where: { $0.isComplete == false })
+    func checkIfAllTasksAreCompleted(_ tasksFromServer: [StoreOnboardingTaskViewModel]) {
+        guard tasksFromServer.isNotEmpty else {
+            return
+        }
+
+        let isPendingTaskPresent = tasksFromServer.contains(where: { $0.isComplete == false })
         guard isPendingTaskPresent == false else {
             return
         }

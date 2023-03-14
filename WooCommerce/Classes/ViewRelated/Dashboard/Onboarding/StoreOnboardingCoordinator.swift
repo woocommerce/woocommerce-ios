@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import UIKit
 import struct Yosemite.Site
+import struct Yosemite.StoreOnboardingTask
 
 /// Coordinates navigation for store onboarding.
 final class StoreOnboardingCoordinator: Coordinator {
@@ -21,7 +22,7 @@ final class StoreOnboardingCoordinator: Coordinator {
     @MainActor
     func start() {
         let onboardingNavigationController = UINavigationController()
-        let onboardingViewController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: true),
+        let onboardingViewController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: true, siteID: site.siteID),
                                                                             navigationController: onboardingNavigationController,
                                                                             site: site)
         onboardingNavigationController.pushViewController(onboardingViewController, animated: false)
@@ -32,7 +33,7 @@ final class StoreOnboardingCoordinator: Coordinator {
     /// - Parameter task: the task to complete.
     @MainActor
     func start(task: StoreOnboardingTask) {
-        switch task {
+        switch task.type {
         case .addFirstProduct:
             addProduct()
         case .customizeDomains:

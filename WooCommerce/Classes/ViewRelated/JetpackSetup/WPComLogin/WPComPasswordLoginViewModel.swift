@@ -1,20 +1,26 @@
 import Foundation
 import WordPressAuthenticator
+import class Networking.UserAgent
 
 /// View model for `WPComPasswordLoginView`.
 ///
-final class WPComPasswordLoginViewModel: ObservableObject {
+final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
 
     /// Title of the view.
     let titleString: String
 
     /// Entered password
     @Published var password: String = ""
+    @Published private(set) var isLoggingIn = false
 
     /// Email address of the WPCom account
     let email: String
 
     private let siteURL: String
+    private let loginFacade: LoginFacade
+    private let onMultifactorCodeRequest: (LoginFields) -> Void
+    private let onLoginFailure: (Error) -> Void
+    private let onLoginSuccess: (String) -> Void
 
     private(set) var avatarURL: URL?
 
@@ -27,15 +33,33 @@ final class WPComPasswordLoginViewModel: ObservableObject {
         return loginFields
     }
 
-    init(siteURL: String, email: String, requiresConnectionOnly: Bool) {
+    init(siteURL: String,
+         email: String,
+         requiresConnectionOnly: Bool,
+         onMultifactorCodeRequest: @escaping (LoginFields) -> Void,
+         onLoginFailure: @escaping (Error) -> Void,
+         onLoginSuccess: @escaping (String) -> Void) {
         self.siteURL = siteURL
         self.email = email
         self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+        self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
+                                       dotcomSecret: ApiCredentials.dotcomSecret,
+                                       userAgent: UserAgent.defaultUserAgent)
+        self.onMultifactorCodeRequest = onMultifactorCodeRequest
+        self.onLoginFailure = onLoginFailure
+        self.onLoginSuccess = onLoginSuccess
+        super.init()
+        loginFacade.delegate = self
         avatarURL = gravatarUrl(of: email)
     }
 
     func resetPassword() {
         WordPressAuthenticator.openForgotPasswordURL(loginFields)
+    }
+
+    func handleLogin() {
+        isLoggingIn = true
+        loginFacade.signIn(with: loginFields)
     }
 }
 
@@ -59,6 +83,23 @@ private extension WPComPasswordLoginViewModel {
             .lowercased()
             .trimmingCharacters(in: .whitespaces)
             .md5Hash()
+    }
+}
+
+extension WPComPasswordLoginViewModel: LoginFacadeDelegate {
+    func needsMultifactorCode() {
+        isLoggingIn = false
+        onMultifactorCodeRequest(loginFields)
+    }
+
+    func displayRemoteError(_ error: Error) {
+        isLoggingIn = false
+        onLoginFailure(error)
+    }
+
+    func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
+        isLoggingIn = false
+        onLoginSuccess(authToken)
     }
 }
 

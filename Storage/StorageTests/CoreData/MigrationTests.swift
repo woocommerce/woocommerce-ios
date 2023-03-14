@@ -1576,6 +1576,59 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "SiteSummaryStats"), 1)
         XCTAssertEqual(insertedStats, summaryStats)
     }
+
+    func test_migrating_from_80_to_81_adds_new_product_bundle_attributes_and_ProductBundleItem_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 80")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 80)
+        try sourceContext.save()
+
+        // Confidence Checks. This entity and attributes should not exist in Model 80.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "ProductBundleItem", in: sourceContext))
+        XCTAssertNil(product.entity.attributesByName["bundleStockQuantity"])
+        XCTAssertNil(product.entity.attributesByName["bundleStockStatus"])
+        XCTAssertNil(product.entity.relationshipsByName["bundledItems"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 81")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "ProductBundleItem"), 0)
+
+        let migratedProduct = try XCTUnwrap(targetContext.firstObject(ofType: Product.self))
+
+        // Migrated product has expected (nil/empty) bundle attributes.
+        XCTAssertNil(migratedProduct.value(forKey: "bundleStockQuantity"))
+        XCTAssertNil(migratedProduct.value(forKey: "bundleStockStatus"))
+        XCTAssertEqual(migratedProduct.mutableOrderedSetValue(forKey: "bundledItems").count, 0)
+
+        // Insert a new ProductBundleItem and add it to Product, along with new Product attributes.
+        let bundledItem = insertProductBundleItem(to: targetContext)
+        let bundleStockQuantity: Int64 = 0
+        let bundleStockStatus = "insufficientStock"
+        migratedProduct.setValue(bundleStockQuantity, forKey: "bundleStockQuantity")
+        migratedProduct.setValue(bundleStockStatus, forKey: "bundleStockStatus")
+        migratedProduct.setValue(NSOrderedSet(array: [bundledItem]), forKey: "bundledItems")
+        try targetContext.save()
+
+        // ProductBundleItem entity and attributes exist, including relationship with Product.
+        XCTAssertEqual(try targetContext.count(entityName: "ProductBundleItem"), 1)
+        XCTAssertNotNil(bundledItem.value(forKey: "bundledItemID"))
+        XCTAssertNotNil(bundledItem.value(forKey: "menuOrder"))
+        XCTAssertNotNil(bundledItem.value(forKey: "productID"))
+        XCTAssertNotNil(bundledItem.value(forKey: "stockStatus"))
+        XCTAssertNotNil(bundledItem.value(forKey: "title"))
+        XCTAssertEqual(bundledItem.value(forKey: "product") as? NSManagedObject, migratedProduct)
+
+        // Product attributes exist, including relationship with ProductBundleItem.
+        XCTAssertEqual(migratedProduct.value(forKey: "bundleStockQuantity") as? Int64, bundleStockQuantity)
+        XCTAssertEqual(migratedProduct.value(forKey: "bundleStockStatus") as? String, bundleStockStatus)
+        XCTAssertEqual(migratedProduct.value(forKey: "bundledItems") as? NSOrderedSet, NSOrderedSet(array: [bundledItem]))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -2191,6 +2244,17 @@ private extension MigrationTests {
     func insertProductSearchResults(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "ProductSearchResults", properties: [
             "keyword": "soul"
+        ])
+    }
+
+    @discardableResult
+    func insertProductBundleItem(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductBundleItem", properties: [
+            "bundledItemID": 12,
+            "menuOrder": 0,
+            "productID": 1,
+            "stockStatus": "in_stock",
+            "title": ""
         ])
     }
 }

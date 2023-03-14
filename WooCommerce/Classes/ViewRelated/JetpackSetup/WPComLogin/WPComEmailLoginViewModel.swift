@@ -1,6 +1,15 @@
 import Combine
 import UIKit
-import WordPressShared
+import WordPressAuthenticator
+
+/// A protocol used to mock `WordPressComAccountService` for unit tests.
+protocol WordPressComAccountServiceProtocol {
+    func isPasswordlessAccount(username: String, success: @escaping (Bool) -> Void, failure: @escaping (Error) -> Void)
+    func requestAuthenticationLink(for email: String, jetpackLogin: Bool, success: @escaping () -> Void, failure: @escaping (Error) -> Void)
+}
+
+/// Conformance
+extension WordPressComAccountService: WordPressComAccountServiceProtocol {}
 
 /// View model for `WPComEmailLoginView`
 final class WPComEmailLoginViewModel: ObservableObject {
@@ -8,16 +17,28 @@ final class WPComEmailLoginViewModel: ObservableObject {
     let subtitleString: String
 
     @Published var emailAddress: String = ""
-    /// Local validation on the email field.
-    @Published private(set) var isEmailValid: Bool = false
 
     let termsAttributedString: NSAttributedString
+
+    private let accountService: WordPressComAccountServiceProtocol
+    private let onPasswordUIRequest: (String) -> Void
+    private let onMagicLinkUIRequest: (String) -> Void
+    private let onError: (String) -> Void
 
     private var emailFieldSubscription: AnyCancellable?
 
     init(siteURL: String,
          requiresConnectionOnly: Bool,
-         debounceDuration: Double = Constants.fieldDebounceDuration) {
+         debounceDuration: Double = Constants.fieldDebounceDuration,
+         accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
+         onPasswordUIRequest: @escaping (String) -> Void,
+         onMagicLinkUIRequest: @escaping (String) -> Void,
+         onError: @escaping (String) -> Void) {
+        self.accountService = accountService
+        self.onPasswordUIRequest = onPasswordUIRequest
+        self.onMagicLinkUIRequest = onMagicLinkUIRequest
+        self.onError = onError
+
         self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
         self.subtitleString = requiresConnectionOnly ? Localization.loginToConnect : Localization.loginToInstall
         self.termsAttributedString = {
@@ -38,22 +59,48 @@ final class WPComEmailLoginViewModel: ObservableObject {
                                             linkURL: Constants.jetpackShareDetailsURL + siteURL)
             return mutableAttributedText
         }()
-        observeEmailField(debounceDuration: debounceDuration)
     }
-}
 
-private extension WPComEmailLoginViewModel {
-    func observeEmailField(debounceDuration: Double) {
-        emailFieldSubscription = $emailAddress
-            .removeDuplicates()
-            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
-            .sink { [weak self] email in
-                self?.validateEmail(email)
+    @MainActor
+    func checkWordPressComAccount(email: String) async {
+        do {
+            let passwordless = try await withCheckedThrowingContinuation { continuation in
+                accountService.isPasswordlessAccount(username: email, success: { passwordless in
+                    continuation.resume(returning: passwordless)
+                }, failure: { error in
+                    DDLogError("⛔️ Error checking for passwordless account: \(error)")
+                    continuation.resume(throwing: error)
+                })
             }
+            await startAuthentication(email: email, isPasswordlessAccount: passwordless)
+        } catch {
+            onError(error.localizedDescription)
+        }
     }
 
-    func validateEmail(_ email: String) {
-        isEmailValid = EmailFormatValidator.validate(string: email)
+    @MainActor
+    private func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
+        if isPasswordlessAccount {
+            await requestAuthenticationLink(email: email)
+        } else {
+            onPasswordUIRequest(email)
+        }
+    }
+
+    @MainActor
+    func requestAuthenticationLink(email: String) async {
+        do {
+            try await withCheckedThrowingContinuation { continuation in
+                accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: {
+                    continuation.resume()
+                }, failure: { error in
+                    continuation.resume(throwing: error)
+                })
+            }
+            onMagicLinkUIRequest(email)
+        } catch {
+            onError(error.localizedDescription)
+        }
     }
 }
 
@@ -62,6 +109,7 @@ extension WPComEmailLoginViewModel {
         static let fieldDebounceDuration = 0.3
         static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
         static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
+        static let wpcomErrorCodeKey = "WordPressComRestApiErrorCodeKey"
     }
 
     enum Localization {

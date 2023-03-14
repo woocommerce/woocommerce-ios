@@ -8,11 +8,10 @@ class NewGoogleAuthenticatorTests: XCTestCase {
     func testRequestingOAuthTokenThrowsIfCodeCannotBeExtractedFromURL() async throws {
         // Notice the use of a stub that returns a successful value.
         // This way, if we get an error, we can be more confident it's legit.
-        let authenticator = await NewGoogleAuthenticator(
+        let authenticator = NewGoogleAuthenticator(
             clientId: fakeClientId,
             scheme: "scheme",
             audience: "audience",
-            contextProvider: FakeContextProvider(),
             oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture())
         )
         let url = URL(string: "https://test.com?without=code")!
@@ -35,11 +34,10 @@ class NewGoogleAuthenticatorTests: XCTestCase {
     }
 
     func testRequestingOAuthTokenRethrowsTheErrorItRecives() async throws {
-        let authenticator = await NewGoogleAuthenticator(
+        let authenticator = NewGoogleAuthenticator(
             clientId: fakeClientId,
             scheme: "scheme",
             audience: "audience",
-            contextProvider: FakeContextProvider(),
             oautTokenGetter: GoogleOAuthTokenGettingStub(error: TestError(id: 1))
         )
         let url = URL(string: "https://test.com?code=a_code")!
@@ -59,11 +57,10 @@ class NewGoogleAuthenticatorTests: XCTestCase {
     }
 
     func testRequestingOAuthTokenThrowsIfIdTokenMissingFromResponse() async throws {
-        let authenticator = await NewGoogleAuthenticator(
+        let authenticator = NewGoogleAuthenticator(
             clientId: fakeClientId,
             scheme: "scheme",
             audience: "audience",
-            contextProvider: FakeContextProvider(),
             oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture(rawIDToken: .none))
         )
         let url = URL(string: "https://test.com?code=a_code")!
@@ -85,11 +82,10 @@ class NewGoogleAuthenticatorTests: XCTestCase {
     }
 
     func testRequestingOAuthTokenReturnsTokenIfSuccessful() async throws {
-        let authenticator = await NewGoogleAuthenticator(
+        let authenticator = NewGoogleAuthenticator(
             clientId: fakeClientId,
             scheme: "scheme",
             audience: "audience",
-            contextProvider: FakeContextProvider(),
             oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture(rawIDToken: JSONWebToken.validJWTStringWithEmail))
         )
         let url = URL(string: "https://test.com?code=a_code")!
@@ -105,13 +101,5 @@ class NewGoogleAuthenticatorTests: XCTestCase {
         } catch {
             XCTFail("Expected value, got error '\(error)'")
         }
-    }
-}
-
-import AuthenticationServices
-
-class FakeContextProvider: UIViewController, ASWebAuthenticationPresentationContextProviding {
-    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return view.window!
     }
 }

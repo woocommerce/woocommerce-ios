@@ -1,5 +1,24 @@
 import SwiftUI
 
+/// Hosting controller that wraps the `StoreOnboardingLaunchStoreView`.
+final class StoreOnboardingLaunchStoreHostingController: UIHostingController<StoreOnboardingLaunchStoreView> {
+    init(viewModel: StoreOnboardingLaunchStoreViewModel) {
+        super.init(rootView: StoreOnboardingLaunchStoreView(viewModel: viewModel))
+    }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        configureTransparentNavigationBar()
+    }
+}
+
+/// Shows a preview of the site with a CTA to launch store if applicable.
 struct StoreOnboardingLaunchStoreView: View {
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -38,6 +57,7 @@ struct StoreOnboardingLaunchStoreView: View {
             }
             .background(Color(.systemBackground))
         }
+        .navigationTitle(Localization.title)
     }
 }
 

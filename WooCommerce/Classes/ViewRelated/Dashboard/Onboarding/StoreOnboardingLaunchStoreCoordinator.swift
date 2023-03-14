@@ -11,7 +11,7 @@ final class StoreOnboardingLaunchStoreCoordinator: Coordinator {
     }
 
     func start() {
-        let launchStoreController = UIHostingController(rootView: StoreOnboardingLaunchStoreView(viewModel: .init(siteURL: siteURL)))
-        navigationController.show(launchStoreController, sender: nil)
+        let launchStoreController = StoreOnboardingLaunchStoreHostingController(viewModel: .init(siteURL: siteURL))
+        navigationController.present(WooNavigationController(rootViewController: launchStoreController), animated: true)
     }
 }

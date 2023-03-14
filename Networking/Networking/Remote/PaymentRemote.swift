@@ -56,7 +56,7 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
     public func loadSiteCurrentPlan(siteID: Int64) async throws -> WPComSitePlan {
         let path = "sites/\(siteID)/\(Path.products)"
         let request = DotcomRequest(wordpressApiVersion: .mark1_3, method: .get, path: path)
-        let plansByID: [String: SiteCurrentPlanResponse] = try await enqueue(request)
+        let plansByID: [String: SiteCurrentPlanResponse] = try await enqueue(request, mapper: SiteCurrentPlanResponseMapper())
         guard let currentPlan = plansByID.filter({ $0.value.isCurrentPlan == true }).first else {
             throw LoadSiteCurrentPlanError.noCurrentPlan
         }
@@ -186,6 +186,19 @@ public enum LoadSiteCurrentPlanError: Error {
 /// Possible error cases from creating cart for a site with a WPCOM plan.
 public enum CreateCartError: Error {
     case productNotInCart
+}
+
+/// Mapper: WPCom Site Plan Response Mapper.
+///
+private struct SiteCurrentPlanResponseMapper: Mapper {
+
+    /// (Attempts) to convert a dictionary into a WPCom site plan entity.
+    ///
+    func map(response: Data) throws -> [String: SiteCurrentPlanResponse] {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode([String: SiteCurrentPlanResponse].self, from: response)
+    }
 }
 
 /// Contains necessary data for handling the remote response from loading a site's current plan.

@@ -12,6 +12,7 @@ enum SiteCredentialLoginError: Error {
     case wrongCredentials
     case invalidLoginResponse
     case inaccessibleLoginPage
+    case unacceptableStatusCode(code: Int)
     case genericFailure(underlyingError: Error)
 
     /// Used for tracking error code
@@ -24,6 +25,8 @@ enum SiteCredentialLoginError: Error {
             return NSError(domain: Self.errorDomain, code: -1, userInfo: nil)
         case .wrongCredentials:
             return NSError(domain: Self.errorDomain, code: 401, userInfo: nil)
+        case .unacceptableStatusCode(let code):
+            return NSError(domain: Self.errorDomain, code: code, userInfo: nil)
         case .genericFailure(let underlyingError):
             return underlyingError as NSError
         }
@@ -57,11 +60,24 @@ final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
         // Old cookies can make the login succeeds even with incorrect credentials
         // So we need to clear all cookies before login.
         clearAllCookies()
-        startLogin(username: username, password: password, onSuccess: { [weak self] in
-            self?.successHandler?()
-        }, onFailure: { [weak self] error in
-            self?.errorHandler?(error)
-        })
+        guard let request = buildLoginRequest(username: username, password: password) else {
+            DDLogError("⛔️ Error constructing login request")
+            return
+        }
+        Task { @MainActor in
+            do {
+                try await startLogin(with: request)
+                successHandler?()
+            } catch {
+                let loginError: SiteCredentialLoginError = {
+                    if let error = error as? SiteCredentialLoginError {
+                        return error
+                    }
+                    return .genericFailure(underlyingError: error as NSError)
+                }()
+                errorHandler?(loginError)
+            }
+        }
     }
 }
 
@@ -74,39 +90,35 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
-    func startLogin(username: String, password: String, onSuccess: @escaping () -> Void, onFailure: @escaping (SiteCredentialLoginError) -> Void) {
-        guard let request = buildLoginRequest(username: username, password: password) else {
-            DDLogError("⛔️ Error constructing login request")
-            return
-        }
+    func startLogin(with request: URLRequest) async throws {
         let session = URLSession(configuration: .default)
-        let task = session.dataTask(with: request) { data, response, error in
-            DispatchQueue.main.async {
-                if let error = error as? NSError {
-                    return onFailure(.genericFailure(underlyingError: error))
-                }
-                guard let response = response as? HTTPURLResponse else {
-                    return onFailure(.invalidLoginResponse)
-                }
-                if response.statusCode == 404 {
-                    return onFailure(.inaccessibleLoginPage)
-                }
 
-                if let data, let html = String(data: data, encoding: .utf8) {
-                    /// If we get data from the nonce retrieval request, consider this a success.
-                    if let url = response.url, url.absoluteString.hasSuffix(Constants.wporgNoncePath) {
-                        return onSuccess()
-                    }
-                    /// scrape html for the error tag to check for incorrect credentials.
-                    if html.contains("<div id=\"login_error\">") {
-                        return onFailure(.wrongCredentials)
-                    } else {
-                        return onFailure(.invalidLoginResponse)
-                    }
-                }
-            }
+        let (data, response) = try await session.data(for: request)
+        guard let response = response as? HTTPURLResponse else {
+            throw SiteCredentialLoginError.invalidLoginResponse
         }
-        task.resume()
+
+        switch response.statusCode {
+        case 404:
+            errorHandler?(.inaccessibleLoginPage)
+        case 200:
+            if let html = String(data: data, encoding: .utf8) {
+                /// If we get data from the nonce retrieval request, consider this a success.
+                if let url = response.url, url.absoluteString.hasSuffix(Constants.wporgNoncePath) {
+                    return
+                } else if html.contains("<div id=\"login_error\">") {
+                    /// TODO: scrape html for the error tag to check for incorrect credentials.
+                    throw SiteCredentialLoginError.wrongCredentials
+                } else {
+                    throw SiteCredentialLoginError.invalidLoginResponse
+                }
+            } else {
+                throw SiteCredentialLoginError.invalidLoginResponse
+            }
+        default:
+            throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)
+        }
+
     }
 
     func buildLoginRequest(username: String, password: String) -> URLRequest? {

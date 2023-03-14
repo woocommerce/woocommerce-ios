@@ -159,6 +159,21 @@ final class DashboardViewModel {
         }
     }
 
+    /// Fetches the current site plan.
+    ///
+    func syncFreeTrialBanner(siteID: Int64) {
+        let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in
+            //guard let self = self else { return }
+            switch result {
+            case .success(let plan):
+                print(plan)
+            case .failure(let error):
+                DDLogError("⛔️ Error fetching the current site's plan information: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
     /// Checks if a store is eligible for products onboarding -returning error otherwise- and prepares the onboarding announcement if needed.
     ///
     private func syncProductsOnboarding(for siteID: Int64) async throws {

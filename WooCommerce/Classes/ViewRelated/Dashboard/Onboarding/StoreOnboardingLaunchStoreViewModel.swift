@@ -11,6 +11,7 @@ final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
         self.siteURL = siteURL
     }
 
+    @MainActor
     func launchStore() async throws {
         isLaunchingStore = true
         #warning("TODO: 9122 - launch store action")

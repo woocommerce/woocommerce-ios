@@ -187,7 +187,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
-                     removeProductIntent: @escaping (() -> Void) = {}) {
+                     removeProductIntent: @escaping (() -> Void) = {},
+                     productBundlesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles)) {
         // Don't show any price for variable products; price will be shown for each product variation.
         let price: String?
         if product.productType == .variable {
@@ -196,12 +197,22 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             price = product.price
         }
 
+        // If product is a product bundle with a bundle stock status, use that as the product stock status.
+        let stockStatusKey: String = {
+            switch (productBundlesEnabled, product.productType, product.bundleStockStatus) {
+            case (true, .bundle, .some(let bundleStockStatus)):
+                return bundleStockStatus.rawValue
+            default:
+                return product.stockStatusKey
+            }
+        }()
+
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
                   sku: product.sku,
                   price: price,
-                  stockStatusKey: product.stockStatusKey,
+                  stockStatusKey: stockStatusKey,
                   stockQuantity: product.stockQuantity,
                   manageStock: product.manageStock,
                   quantity: quantity,

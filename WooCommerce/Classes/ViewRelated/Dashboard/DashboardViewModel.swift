@@ -23,6 +23,12 @@ final class DashboardViewModel {
     ///
     let addProductTrigger = PassthroughSubject<Void, Never>()
 
+    /// Should be called when all the store onboarding tasks are completed
+    ///
+    func didCompleteAllOnboardingTasks() {
+        self.showOnboarding = false
+    }
+
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics

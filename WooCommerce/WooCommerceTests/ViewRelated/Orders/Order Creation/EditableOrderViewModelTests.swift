@@ -39,6 +39,9 @@ final class EditableOrderViewModelTests: XCTestCase {
         let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
 
+        // When
+        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
+
         // Then
         XCTAssertTrue(viewModel.addProductViewModel.supportsMultipleSelection)
         XCTAssertFalse(viewModel.addProductViewModel.isClearSelectionEnabled)

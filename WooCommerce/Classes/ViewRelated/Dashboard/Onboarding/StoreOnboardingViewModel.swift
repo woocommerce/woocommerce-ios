@@ -121,7 +121,7 @@ private extension StoreOnboardingViewModel {
             return
         }
 
-        // This will be reset to `false` when session resets
+        // This will be reset to `nil` when session resets
         defaults[.completedAllStoreOnboardingTasks] = true
         onAllOnboardingTasksCompleted?()
     }

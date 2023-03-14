@@ -47,19 +47,34 @@ class StoreOnboardingViewModel: ObservableObject {
     private let placeholderTasks: [StoreOnboardingTaskViewModel] = Array(repeating: StoreOnboardingTaskViewModel.placeHolder(),
                                                                          count: 3)
 
-    /// - Parameter isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
+    private let defaults: UserDefaults
+
+    private let onAllOnboardingTasksCompleted: (() -> Void)?
+
+    /// Initializer
+    /// - Parameters:
+    ///   - isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
+    ///   - siteID: siteID
+    ///   - stores: StoresManager
+    ///   - userDefaults: UserDefaults for storing when all onboarding tasks are completed
+    ///   - onAllOnboardingTasksCompleted:Callback to fire when all onboarding tasks are completed
     init(isExpanded: Bool,
          siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         defaults: UserDefaults = .standard,
+         onAllOnboardingTasksCompleted: (() -> Void)? = nil) {
         self.isExpanded = isExpanded
         self.siteID = siteID
         self.stores = stores
         self.state = .loading
+        self.defaults = defaults
+        self.onAllOnboardingTasksCompleted = onAllOnboardingTasksCompleted
     }
 
     func reloadTasks() async {
         await update(state: .loading)
         let tasks = try? await loadTasks()
+        await checkIfAllTasksAreCompleted()
         await update(state: .loaded(rows: tasks ?? taskViewModels))
     }
 }
@@ -91,6 +106,18 @@ private extension StoreOnboardingViewModel {
             self.taskViewModels = items
         }
         onStateChange?()
+    }
+
+    @MainActor
+    func checkIfAllTasksAreCompleted() {
+        let isPendingTaskPresent = taskViewModels.contains(where: { $0.isComplete == false })
+        guard isPendingTaskPresent == false else {
+            return
+        }
+
+        // This will be reset to `false` when session resets
+        defaults[.completedAllStoreOnboardingTasks] = true
+        onAllOnboardingTasksCompleted?()
     }
 }
 

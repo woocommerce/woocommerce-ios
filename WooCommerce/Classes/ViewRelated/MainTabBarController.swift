@@ -444,6 +444,7 @@ extension MainTabBarController {
     static func presentCollectPayment() {
         let viewController = presentPayments()
 
+        // Wait a second until the payments screen is presented. Suboptimal but works.
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             viewController?.openSimplePaymentsAmountFlow()
         }

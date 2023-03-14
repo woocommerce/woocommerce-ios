@@ -697,8 +697,18 @@ private extension DashboardViewController {
 
     func onPullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-        await viewModel.syncAnnouncements(for: siteID)
-        await reloadDashboardUIStatsVersion(forced: true)
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { [weak self] in
+                guard let self else { return }
+                await self.viewModel.syncAnnouncements(for: self.siteID)
+            }
+            group.addTask { [weak self] in
+                await self?.reloadDashboardUIStatsVersion(forced: true)
+            }
+            group.addTask { [weak self] in
+                await self?.onboardingHostingController?.reloadTasks()
+            }
+        }
     }
 }
 

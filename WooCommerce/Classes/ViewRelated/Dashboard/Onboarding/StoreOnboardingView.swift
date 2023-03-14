@@ -26,19 +26,22 @@ final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboa
         super.viewDidLoad()
 
         configureNavigationBarAppearance()
-        reloadTasks()
+        Task {
+            await reloadTasks()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        reloadTasks()
+        Task {
+            await reloadTasks()
+        }
     }
 
-    private func reloadTasks() {
-        Task {
-            await viewModel.reloadTasks()
-        }
+    @MainActor
+    func reloadTasks() async {
+        await viewModel.reloadTasks()
     }
 
     /// Shows a transparent navigation bar without a bottom border.

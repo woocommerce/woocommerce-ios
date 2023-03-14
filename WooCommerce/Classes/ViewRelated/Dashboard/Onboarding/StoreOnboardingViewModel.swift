@@ -15,6 +15,9 @@ class StoreOnboardingViewModel: ObservableObject {
     @Published private(set) var isRedacted: Bool = false
     @Published private(set) var taskViewModels: [StoreOnboardingTaskViewModel] = []
 
+    /// Set externally in the hosting controller to invalidate the SwiftUI `StoreOnboardingView`'s intrinsic content size as a workaround with UIKit.
+    var onStateChange: (() -> Void)?
+
     var numberOfTasksCompleted: Int {
         taskViewModels
             .filter({ $0.isComplete })
@@ -87,6 +90,7 @@ private extension StoreOnboardingViewModel {
             isRedacted = false
             self.taskViewModels = items
         }
+        onStateChange?()
     }
 }
 

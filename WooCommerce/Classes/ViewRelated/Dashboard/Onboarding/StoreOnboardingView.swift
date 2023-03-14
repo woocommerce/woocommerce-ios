@@ -15,6 +15,9 @@ final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboa
                                                  taskTapped: taskTapped,
                                                  viewAllTapped: viewAllTapped,
                                                  shareFeedbackAction: shareFeedbackAction))
+        viewModel.onStateChange = { [weak self] in
+            self?.view.invalidateIntrinsicContentSize()
+        }
     }
 
     @available(*, unavailable)

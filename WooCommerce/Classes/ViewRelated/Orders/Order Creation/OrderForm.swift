@@ -281,7 +281,7 @@ private struct ProductsSection: View {
                     ProductSelectorNavigationView(
                         configuration: ProductSelectorView.Configuration.addProductToOrder(),
                         isPresented: $showAddProduct,
-                        viewModel: viewModel.generateProductSelectorViewModel())
+                        viewModel: viewModel.productSelectorViewModel)
                     .onDisappear {
                         navigationButtonID = UUID()
                     }

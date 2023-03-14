@@ -9,7 +9,7 @@ final class StoreOnboardingViewHostingControllerTests: XCTestCase {
     func it_reloads_tasks_when_view_loads() {
         // Given
         let mockViewModel = MockStoreOnboardingViewModel()
-        let sut = StoreOnboardingViewHostingController(viewModel: mockViewModel, taskTapped: { _ in }, viewAllTapped: nil, shareFeedbackAction: nil)
+        let sut = StoreOnboardingViewHostingController(viewModel: mockViewModel, navigationController: .init(), site: .fake(), shareFeedbackAction: nil)
 
         // When
         sut.loadView()
@@ -21,7 +21,7 @@ final class StoreOnboardingViewHostingControllerTests: XCTestCase {
     func it_reloads_tasks_when_view_appears() {
         // Given
         let mockViewModel = MockStoreOnboardingViewModel()
-        let sut = StoreOnboardingViewHostingController(viewModel: mockViewModel, taskTapped: { _ in }, viewAllTapped: nil, shareFeedbackAction: nil)
+        let sut = StoreOnboardingViewHostingController(viewModel: mockViewModel, navigationController: .init(), site: .fake(), shareFeedbackAction: nil)
 
         // When
         sut.viewWillAppear(true)

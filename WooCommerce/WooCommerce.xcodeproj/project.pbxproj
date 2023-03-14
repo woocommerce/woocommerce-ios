@@ -281,7 +281,7 @@
 		026D4650295C08CA0037F59A /* StoreCreationSellingPlatformsQuestionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D464F295C08CA0037F59A /* StoreCreationSellingPlatformsQuestionViewModelTests.swift */; };
 		026D4652295D763B0037F59A /* CountryCode+FlagEmoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D4651295D763B0037F59A /* CountryCode+FlagEmoji.swift */; };
 		026D4654295D79230037F59A /* CountryCode+FlagEmojiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D4653295D79230037F59A /* CountryCode+FlagEmojiTests.swift */; };
-		026D4A24280461960090164F /* LegacyCollectOrderPaymentUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D4A23280461960090164F /* LegacyCollectOrderPaymentUseCaseTests.swift */; };
+		026D4A24280461960090164F /* CollectOrderPaymentUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D4A23280461960090164F /* CollectOrderPaymentUseCaseTests.swift */; };
 		026D68492A0E060A00D8C22C /* LocalNotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D68482A0E060A00D8C22C /* LocalNotificationScheduler.swift */; };
 		026D684B2A0E0A9600D8C22C /* LocalNotificationSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D684A2A0E0A9600D8C22C /* LocalNotificationSchedulerTests.swift */; };
 		0270F47624D005B00005210A /* ProductFormViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270F47524D005B00005210A /* ProductFormViewModelProtocol.swift */; };
@@ -2688,7 +2688,7 @@
 		026D464F295C08CA0037F59A /* StoreCreationSellingPlatformsQuestionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationSellingPlatformsQuestionViewModelTests.swift; sourceTree = "<group>"; };
 		026D4651295D763B0037F59A /* CountryCode+FlagEmoji.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CountryCode+FlagEmoji.swift"; sourceTree = "<group>"; };
 		026D4653295D79230037F59A /* CountryCode+FlagEmojiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CountryCode+FlagEmojiTests.swift"; sourceTree = "<group>"; };
-		026D4A23280461960090164F /* LegacyCollectOrderPaymentUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyCollectOrderPaymentUseCaseTests.swift; sourceTree = "<group>"; };
+		026D4A23280461960090164F /* CollectOrderPaymentUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectOrderPaymentUseCaseTests.swift; sourceTree = "<group>"; };
 		026D68482A0E060A00D8C22C /* LocalNotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationScheduler.swift; sourceTree = "<group>"; };
 		026D684A2A0E0A9600D8C22C /* LocalNotificationSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationSchedulerTests.swift; sourceTree = "<group>"; };
 		0270C0A827069BEF00FC799F /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -9962,7 +9962,7 @@
 				E17E3BF8266917C10009D977 /* CardPresentModalScanningFailedTests.swift */,
 				3190D61C26D6E97B00EF364D /* CardPresentModalRetryableErrorTests.swift */,
 				31AD0B1226E95998000B6391 /* CardPresentModalConnectingFailedTests.swift */,
-				026D4A23280461960090164F /* LegacyCollectOrderPaymentUseCaseTests.swift */,
+				026D4A23280461960090164F /* CollectOrderPaymentUseCaseTests.swift */,
 				028E19BB2805BD22001C36E0 /* RefundSubmissionUseCaseTests.swift */,
 				B9C4AB28280031AB007008B8 /* PaymentReceiptEmailParameterDeterminerTests.swift */,
 				036F6EA5281847D5006D84F8 /* LegacyPaymentCaptureOrchestratorTests.swift */,
@@ -13136,7 +13136,7 @@
 				45C8B25B231521510002FA77 /* CustomerNoteTableViewCellTests.swift in Sources */,
 				B5980A6721AC91AA00EBF596 /* BundleWooTests.swift in Sources */,
 				02CA3C9A29F8EB6A0079E2FF /* BottomSheetPresenterTests.swift in Sources */,
-				026D4A24280461960090164F /* LegacyCollectOrderPaymentUseCaseTests.swift in Sources */,
+				026D4A24280461960090164F /* CollectOrderPaymentUseCaseTests.swift in Sources */,
 				D88D5A3D230B5E85007B6E01 /* ServiceLocatorTests.swift in Sources */,
 				269098BA27D6922E001FEB07 /* FeesInputTransformerTests.swift in Sources */,
 				02A275C223FE590A005C560F /* MockKingfisherImageDownloader.swift in Sources */,

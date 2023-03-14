@@ -15,9 +15,9 @@ protocol CollectOrderPaymentProtocol {
     /// Starts the collect payment flow.
     ///
     /// - Parameter using: We specify a discovery method to allow us to choose between Tap to Pay and Bluetooth readers, which have distinct connection flows.
-    /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
     /// - Parameter onCancel: Closure invoked after the flow is cancelled
+    /// - Parameter onFailure: Closure invoked when there is an error in the flow
     func collectPayment(using: CardReaderDiscoveryMethod, onFailure: @escaping (Error) -> (), onCancel: @escaping () -> (), onCompleted: @escaping () -> ())
 }
 

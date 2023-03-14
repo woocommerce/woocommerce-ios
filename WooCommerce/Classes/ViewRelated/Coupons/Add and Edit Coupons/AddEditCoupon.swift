@@ -297,9 +297,9 @@ struct AddEditCoupon: View {
                 }
             }
             .sheet(isPresented: $showingSelectProducts) {
-                ProductSelectorView(configuration: ProductSelectorView.Configuration.productsForCoupons,
-                                isPresented: $showingSelectProducts,
-                                viewModel: viewModel.productSelectorViewModel)
+                ProductSelectorNavigationView(configuration: .productsForCoupons,
+                                              isPresented: $showingSelectProducts,
+                                              viewModel: viewModel.productSelectorViewModel)
                     .onDisappear {
                         viewModel.productSelectorViewModel.clearSearchAndFilters()
                     }

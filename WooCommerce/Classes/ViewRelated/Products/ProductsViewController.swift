@@ -196,6 +196,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        registerUserActivity()
+
         configureNavigationBar()
         configureMainView()
         configureTableView()
@@ -725,12 +727,8 @@ private extension ProductsViewController {
             },
             onContactSupportButtonPressed: { [weak self] in
                 guard let self = self else { return }
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
-                    let supportForm = SupportFormHostingController(viewModel: .init())
-                    supportForm.show(from: self)
-                } else {
-                    ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
-                }
+                let supportForm = SupportFormHostingController(viewModel: .init())
+                supportForm.show(from: self)
             })
         topBannerContainerView.updateSubview(errorBanner)
         topBannerView = errorBanner

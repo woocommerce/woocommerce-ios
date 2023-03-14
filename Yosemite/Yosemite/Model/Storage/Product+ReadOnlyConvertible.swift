@@ -162,7 +162,10 @@ extension Storage.Product: ReadOnlyConvertible {
                        variations: variations ?? [],
                        groupedProducts: groupedProducts ?? [],
                        menuOrder: Int(menuOrder),
-                       addOns: addOnsArray.map { $0.toReadOnly() })
+                       addOns: addOnsArray.map { $0.toReadOnly() },
+                       bundleStockStatus: nil, // TODO-8953: Convert the product bundle properties
+                       bundleStockQuantity: nil,
+                       bundledItems: [])
     }
 
     // MARK: - Private Helpers

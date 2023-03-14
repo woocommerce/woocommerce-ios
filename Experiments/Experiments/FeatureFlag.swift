@@ -105,10 +105,6 @@ public enum FeatureFlag: Int {
     ///
     case justInTimeMessagesOnDashboard
 
-    /// Adds the System Status Report to support requests
-    ///
-    case systemStatusReportInSupportRequest
-
     /// IPP in-app feedback banner
     ///
     case IPPInAppFeedbackBanner
@@ -167,4 +163,16 @@ public enum FeatureFlag: Int {
     /// Whether to enable the onboarding checklist in the dashboard for WPCOM stores.
     ///
     case dashboardOnboarding
+
+    ///Ability to add coupon to order
+    ///
+    case addCouponToOrder
+
+    /// Whether to enable product bundle settings in product details
+    ///
+    case productBundles
+
+    /// Enables conditional behaviour when a site has a free trial plan.
+    ///
+    case freeTrial
 }

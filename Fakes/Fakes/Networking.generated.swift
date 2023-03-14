@@ -110,6 +110,23 @@ extension Networking.Address {
         )
     }
 }
+extension Networking.Announcement {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.Announcement {
+        .init(
+            appVersionName: .fake(),
+            minimumAppVersion: .fake(),
+            maximumAppVersion: .fake(),
+            appVersionTargets: .fake(),
+            detailsUrl: .fake(),
+            announcementVersion: .fake(),
+            isLocalized: .fake(),
+            responseLocale: .fake(),
+            features: .fake()
+        )
+    }
+}
 extension Networking.Country {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -232,6 +249,30 @@ extension Networking.DotcomUser {
             email: .fake(),
             displayName: .fake(),
             avatar: .fake()
+        )
+    }
+}
+extension Networking.Feature {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.Feature {
+        .init(
+            title: .fake(),
+            subtitle: .fake(),
+            icons: .fake(),
+            iconUrl: .fake(),
+            iconBase64: .fake()
+        )
+    }
+}
+extension Networking.FeatureIcon {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.FeatureIcon {
+        .init(
+            iconUrl: .fake(),
+            iconBase64: .fake(),
+            iconType: .fake()
         )
     }
 }
@@ -787,7 +828,10 @@ extension Networking.Product {
             variations: .fake(),
             groupedProducts: .fake(),
             menuOrder: .fake(),
-            addOns: .fake()
+            addOns: .fake(),
+            bundleStockStatus: .fake(),
+            bundleStockQuantity: .fake(),
+            bundledItems: .fake()
         )
     }
 }
@@ -860,6 +904,26 @@ extension ProductBackordersSetting {
     ///
     public static func fake() -> ProductBackordersSetting {
         .allowed
+    }
+}
+extension Networking.ProductBundleItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductBundleItem {
+        .init(
+            bundledItemID: .fake(),
+            productID: .fake(),
+            menuOrder: .fake(),
+            title: .fake(),
+            stockStatus: .fake()
+        )
+    }
+}
+extension ProductBundleItemStockStatus {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ProductBundleItemStockStatus {
+        .inStock
     }
 }
 extension ProductCatalogVisibility {

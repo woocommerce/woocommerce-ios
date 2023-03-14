@@ -152,6 +152,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        registerUserActivity()
+
         registerTableViewHeadersAndCells()
         configureTableView()
 
@@ -368,6 +370,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                 }
 
                 if let error = error {
+                    ServiceLocator.analytics.track(event: .ordersListLoadError(error))
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
                     self.viewModel.hasErrorLoadingData = true
                 } else {
@@ -758,12 +761,8 @@ private extension OrderListViewController {
         },
         onContactSupportButtonPressed: { [weak self] in
             guard let self = self else { return }
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
-                let supportForm = SupportFormHostingController(viewModel: .init())
-                supportForm.show(from: self)
-            } else {
-                ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
-            }
+            let supportForm = SupportFormHostingController(viewModel: .init())
+            supportForm.show(from: self)
         })
         showTopBannerView()
     }

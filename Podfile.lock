@@ -25,7 +25,7 @@ PODS:
     - GTMSessionFetcher/Core (< 3.0, >= 1.5)
   - GTMSessionFetcher/Core (1.7.2)
   - KeychainAccess (4.2.2)
-  - Kingfisher (7.2.2)
+  - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
   - "NSURL+IDN (0.4)"
   - Sentry (7.31.5):
@@ -39,7 +39,7 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (5.5.0-beta.1):
+  - WordPressAuthenticator (5.5.0):
     - GoogleSignIn (~> 6.0.1)
     - Gridicons (~> 1.0)
     - "NSURL+IDN (= 0.4)"
@@ -47,7 +47,7 @@ PODS:
     - WordPressKit (~> 6.0-beta)
     - WordPressShared (~> 2.0-beta)
     - WordPressUI (~> 1.7-beta)
-  - WordPressKit (6.0.0):
+  - WordPressKit (6.2.0):
     - Alamofire (~> 4.8.0)
     - NSObject-SafeExpectations (~> 0.0.4)
     - UIDeviceIdentifier (~> 2.0)
@@ -55,7 +55,7 @@ PODS:
     - wpxmlrpc (~> 0.10)
   - WordPressShared (2.0.0)
   - WordPressUI (1.12.5)
-  - Wormholy (1.6.5)
+  - Wormholy (1.6.6)
   - WPMediaPicker (1.8.1)
   - wpxmlrpc (0.10.0)
   - XLPagerTabStrip (9.0.0)
@@ -80,21 +80,21 @@ DEPENDENCIES:
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 4.2.2)
-  - Kingfisher (~> 7.2.2)
+  - Kingfisher (~> 7.6.2)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.14)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `trunk`)
-  - WordPressKit (~> 6.0)
+  - WordPressAuthenticator (~> 5.5)
   - WordPressShared (~> 2.0)
   - WordPressUI (~> 1.12.5)
-  - Wormholy (~> 1.6.5)
+  - Wormholy (~> 1.6.6)
   - WPMediaPicker (~> 1.8.1)
   - XLPagerTabStrip (~> 9.0)
   - ZendeskSupportSDK (~> 6.0)
 
 SPEC REPOS:
   https://github.com/wordpress-mobile/cocoapods-specs.git:
+    - WordPressAuthenticator
     - WordPressKit
   trunk:
     - Alamofire
@@ -131,16 +131,6 @@ SPEC REPOS:
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
 
-EXTERNAL SOURCES:
-  WordPressAuthenticator:
-    :branch: trunk
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressAuthenticator:
-    :commit: 83d97fbd418050ac16c84d0e7d146fc03e01b508
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
@@ -151,7 +141,7 @@ SPEC CHECKSUMS:
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
-  Kingfisher: 184d4d1a8c36666e663caf8e08abe87898595c53
+  Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
   Sentry: 4c9babff9034785067c896fd580b1f7de44da020
@@ -162,11 +152,11 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: f33af270ba9045ea18b31d9aab88e42a0082ea67
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 986bd598aeaebd682b26f2fd343d95265494ab7a
-  WordPressKit: 159e2ae8f5eb2c768d3cc04bdea0dedef81301a3
+  WordPressAuthenticator: 60611898815b218622f98d2c024d4eeae53dec1c
+  WordPressKit: edcc1a54aa003e0da020438ee2afe75d55c43363
   WordPressShared: 35d41bdf0927e714af1fc85fa9cb692f934473be
   WordPressUI: c5be816f6c7b3392224ac21de9e521e89fa108ac
-  Wormholy: 3252bc3e55a1847ef9a0976c1377bd77bf3635fa
+  Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
   WPMediaPicker: 9011a0ec1f468c039af7485c244576b4c9889a0f
   wpxmlrpc: 68db063041e85d186db21f674adf08d9c70627fd
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
@@ -178,6 +168,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 069fec0d7db5d08f2248504260b92ab63bc898da
+PODFILE CHECKSUM: 98bcf5fe146d2c2309a4fa0fb01a864d3608f4ab
 
 COCOAPODS: 1.11.3

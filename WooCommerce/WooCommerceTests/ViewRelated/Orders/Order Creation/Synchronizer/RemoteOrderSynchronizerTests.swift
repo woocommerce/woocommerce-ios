@@ -2,12 +2,13 @@ import XCTest
 import TestKit
 import Fakes
 import Combine
+import WordPressAuthenticator
 
 @testable import WooCommerce
 @testable import Yosemite
 import SwiftUI
 
-class RemoteOrderSynchronizerTests: XCTestCase {
+final class RemoteOrderSynchronizerTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
     private let sampleProductID: Int64 = 234
@@ -19,7 +20,15 @@ class RemoteOrderSynchronizerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+
+        WordPressAuthenticator.initializeAuthenticator()
         subscriptions.removeAll()
+    }
+
+    override func tearDown() {
+        // There is no known tear down for the Authenticator. So this method intentionally does
+        // nothing.
+        super.tearDown()
     }
 
     func test_sending_status_input_updates_local_order() throws {
@@ -376,6 +385,71 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         // Then
         let firstLine = try XCTUnwrap(synchronizer.order.fees.first)
         XCTAssertNil(firstLine.name)
+    }
+
+    func test_sending_coupon_input_triggers_order_creation() {
+        // Given
+        let coupon = OrderCouponLine.fake().copy()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        let orderCreationInvoked: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder:
+                    promise(true)
+                default:
+                    promise(false)
+                }
+            }
+
+            synchronizer.setCoupon.send(coupon)
+        }
+
+        // Then
+        XCTAssertTrue(orderCreationInvoked)
+    }
+
+    func test_sending_coupon_input_triggers_order_sync_in_edit_flow() {
+        // Given
+        let coupon = OrderCouponLine.fake().copy()
+        let order = Order.fake().copy(orderID: sampleOrderID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        // When
+        let orderUpdateInvoked: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder:
+                    XCTFail("Creation shouldn't happen in edit flow")
+                case .updateOrder:
+                    promise(true)
+                default:
+                    promise(false)
+                }
+            }
+
+            synchronizer.setCoupon.send(coupon)
+        }
+
+        // Then
+        XCTAssertTrue(orderUpdateInvoked)
+    }
+
+    func test_sending_nil_coupon_input_updates_local_order() throws {
+        // Given
+        let couponLine = OrderCouponLine.fake().copy(code: "code")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        synchronizer.setCoupon.send(couponLine)
+        synchronizer.setCoupon.send(nil)
+
+        // Then
+        XCTAssertNil(synchronizer.order.coupons.first)
     }
 
     func test_sending_customer_note_input_updates_local_order() throws {
@@ -861,6 +935,7 @@ class RemoteOrderSynchronizerTests: XCTestCase {
                                       .billingAddress,
                                       .fees,
                                       .shippingLines,
+                                      .couponLines,
                                       .items])
     }
 

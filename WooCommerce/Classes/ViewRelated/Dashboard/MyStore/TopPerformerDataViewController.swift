@@ -116,12 +116,16 @@ final class TopPerformerDataViewController: UIViewController {
 private extension TopPerformerDataViewController {
     func updateUIInLoadingState() {
         viewModel.update(state: .loading)
-        hostingController?.view.invalidateIntrinsicContentSize()
+        if #unavailable(iOS 16.0) {
+            hostingController?.view.invalidateIntrinsicContentSize()
+        }
     }
 
     func updateUIInLoadedState() {
         defer {
-            hostingController?.view.invalidateIntrinsicContentSize()
+            if #unavailable(iOS 16.0) {
+                hostingController?.view.invalidateIntrinsicContentSize()
+            }
         }
         guard let items = topEarnerStats?.items?.sorted(by: >), items.isNotEmpty else {
             return viewModel.update(state: .loaded(rows: []))
@@ -139,7 +143,7 @@ private extension TopPerformerDataViewController {
     }
 
     func configureTopPerformersView() {
-        let hostingController = UIHostingController(rootView: DashboardTopPerformersView(viewModel: viewModel))
+        let hostingController = SelfSizingHostingController(rootView: DashboardTopPerformersView(viewModel: viewModel))
         self.hostingController = hostingController
         addChild(hostingController)
         view.addSubview(hostingController.view)

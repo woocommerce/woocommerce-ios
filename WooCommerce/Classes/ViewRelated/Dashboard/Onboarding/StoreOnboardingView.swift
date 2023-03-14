@@ -3,7 +3,7 @@ import struct Yosemite.StoreOnboardingTask
 
 /// Hosting controller for `StoreOnboardingView`.
 ///
-final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboardingView> {
+final class StoreOnboardingViewHostingController: SelfSizingHostingController<StoreOnboardingView> {
     private let viewModel: StoreOnboardingViewModel
 
     init(viewModel: StoreOnboardingViewModel,
@@ -15,8 +15,10 @@ final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboa
                                                  taskTapped: taskTapped,
                                                  viewAllTapped: viewAllTapped,
                                                  shareFeedbackAction: shareFeedbackAction))
-        viewModel.onStateChange = { [weak self] in
-            self?.view.invalidateIntrinsicContentSize()
+        if #unavailable(iOS 16.0) {
+            viewModel.onStateChange = { [weak self] in
+                self?.view.invalidateIntrinsicContentSize()
+            }
         }
     }
 

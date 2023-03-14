@@ -35,7 +35,7 @@ enum SiteCredentialLoginError: Error {
 /// - Handle cookie authentication with provided credentials.
 /// - Attempt retrieving plugin details. If the request fails with 401 error, the authentication fails.
 ///
-final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
+final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
     private let siteURL: String
     private let cookieJar: HTTPCookieStorage
     private var successHandler: (() -> Void)?
@@ -45,7 +45,6 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
          cookieJar: HTTPCookieStorage = HTTPCookieStorage.shared) {
         self.siteURL = siteURL
         self.cookieJar = cookieJar
-        super.init()
     }
 
     func setupHandlers(onLoginSuccess: @escaping () -> Void,
@@ -80,16 +79,10 @@ private extension SiteCredentialLoginUseCase {
             DDLogError("⛔️ Error constructing login request")
             return
         }
-        let session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+        let session = URLSession(configuration: .default)
         let task = session.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
                 if let error = error as? NSError {
-                    /// The request is manually cancelled in the session delegate
-                    /// when the login succeeds and redirects to the nonce retrieval URL,
-                    /// so we consider this a success.
-                    if error.domain == "NSURLErrorDomain", error.code == -999 {
-                        return onSuccess()
-                    }
                     return onFailure(.genericFailure(underlyingError: error))
                 }
                 guard let response = response as? HTTPURLResponse else {
@@ -98,8 +91,13 @@ private extension SiteCredentialLoginUseCase {
                 if response.statusCode == 404 {
                     return onFailure(.inaccessibleLoginPage)
                 }
+
                 if let data, let html = String(data: data, encoding: .utf8) {
-                    // scrape html
+                    /// If we get data from the nonce retrieval request, consider this a success.
+                    if let url = response.url, url.absoluteString.hasSuffix(Constants.wporgNoncePath) {
+                        return onSuccess()
+                    }
+                    /// scrape html for the error tag to check for incorrect credentials.
                     if html.contains("<div id=\"login_error\">") {
                         return onFailure(.wrongCredentials)
                     } else {
@@ -133,21 +131,6 @@ private extension SiteCredentialLoginUseCase {
         /// doesn't encode the '+'. Percent encodes '+' to avoid this ambiguity.
         let characterSet = CharacterSet(charactersIn: "+").inverted
         request.httpBody = components.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: characterSet)?.data(using: .utf8)
-        return request
-    }
-}
-
-extension SiteCredentialLoginUseCase: URLSessionDataDelegate {
-    func urlSession(_ session: URLSession,
-                           task: URLSessionTask,
-                           willPerformHTTPRedirection response: HTTPURLResponse,
-                           newRequest request: URLRequest) async -> URLRequest? {
-        // Disables redirection if the request is to retrieve nonce
-        if let url = request.url,
-            url.absoluteString.hasSuffix(Constants.wporgNoncePath) {
-            task.cancel()
-            return nil
-        }
         return request
     }
 }

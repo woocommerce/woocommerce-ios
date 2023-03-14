@@ -80,6 +80,8 @@ extension Storage.Product: ReadOnlyConvertible {
         backordersKey = product.backordersKey
         backordersAllowed = product.backordersAllowed
         backordered = product.backordered
+        bundleStockQuantity = product.bundleStockQuantity as? NSNumber
+        bundleStockStatus = product.bundleStockStatus?.rawValue
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -94,10 +96,15 @@ extension Storage.Product: ReadOnlyConvertible {
         let productDefaultAttributes = defaultAttributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductDefaultAttribute]()
         let productShippingClassModel = productShippingClass?.toReadOnly()
         let addOnsArray: [StorageProductAddOn] = addOns?.toArray() ?? []
+        let bundledItemsArray: [StorageProductBundleItem] = bundledItems?.toArray() ?? []
 
         var quantity: Decimal?
         if let stockQuantity = stockQuantity {
             quantity = Decimal(string: stockQuantity)
+        }
+        var productBundleStockStatus: ProductStockStatus?
+        if let bundleStockStatus {
+            productBundleStockStatus = ProductStockStatus(rawValue: bundleStockStatus)
         }
 
         return Product(siteID: siteID,
@@ -163,9 +170,9 @@ extension Storage.Product: ReadOnlyConvertible {
                        groupedProducts: groupedProducts ?? [],
                        menuOrder: Int(menuOrder),
                        addOns: addOnsArray.map { $0.toReadOnly() },
-                       bundleStockStatus: nil, // TODO-8953: Convert the product bundle properties
-                       bundleStockQuantity: nil,
-                       bundledItems: [])
+                       bundleStockStatus: productBundleStockStatus,
+                       bundleStockQuantity: bundleStockQuantity as? Int64,
+                       bundledItems: bundledItemsArray.map { $0.toReadOnly() })
     }
 
     // MARK: - Private Helpers

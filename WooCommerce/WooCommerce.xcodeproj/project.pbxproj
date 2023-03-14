@@ -1509,6 +1509,9 @@
 		B9E4364C287587D300883CFA /* FeatureAnnouncementCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */; };
 		B9E4364E287589E200883CFA /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364D287589E200883CFA /* BadgeView.swift */; };
 		B9EF083F2886CE3300D96C58 /* HostingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */; };
+		B9F3DAAD29BB71B100DDD545 /* CollectPaymentAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F3DAAC29BB71B100DDD545 /* CollectPaymentAppIntent.swift */; };
+		B9F3DAAF29BB73CD00DDD545 /* CreateOrderAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F3DAAE29BB73CD00DDD545 /* CreateOrderAppIntent.swift */; };
+		B9F3DAB129BB83E600DDD545 /* WooAnalyticsEvent+AppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F3DAB029BB83E600DDD545 /* WooAnalyticsEvent+AppIntents.swift */; };
 		BAA34C202787494300846F3C /* ReviewsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA34C1F2787494300846F3C /* ReviewsViewControllerTests.swift */; };
 		BAE4F8432734325C00871344 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE4F8422734325C00871344 /* SettingsViewModel.swift */; };
 		BAFEF51E273C2151005F94CC /* SettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAFEF51D273C2151005F94CC /* SettingsViewModelTests.swift */; };
@@ -3670,6 +3673,9 @@
 		B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardView.swift; sourceTree = "<group>"; };
 		B9E4364D287589E200883CFA /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
 		B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingTableViewCell.swift; sourceTree = "<group>"; };
+		B9F3DAAC29BB71B100DDD545 /* CollectPaymentAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectPaymentAppIntent.swift; sourceTree = "<group>"; };
+		B9F3DAAE29BB73CD00DDD545 /* CreateOrderAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderAppIntent.swift; sourceTree = "<group>"; };
+		B9F3DAB029BB83E600DDD545 /* WooAnalyticsEvent+AppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+AppIntents.swift"; sourceTree = "<group>"; };
 		BAA34C1F2787494300846F3C /* ReviewsViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewsViewControllerTests.swift; sourceTree = "<group>"; };
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAE4F8422734325C00871344 /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
@@ -7048,6 +7054,7 @@
 				EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */,
 				0206E295299CD2C900C061C1 /* WooAnalyticsEvent+DomainSettings.swift */,
 				B946881929BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift */,
+				B9F3DAB029BB83E600DDD545 /* WooAnalyticsEvent+AppIntents.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -7615,6 +7622,7 @@
 		B56DB3F12049C0B800D4AA8E /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				B9F3DAAB29BB714900DDD545 /* App Intents */,
 				B946880A29B6268D000646B0 /* Spotlight */,
 				B912603F2940B2C400CACD4B /* JustInTimeMessages */,
 				B958A7C528B3D42000823EEF /* Universal Links */,
@@ -8031,6 +8039,15 @@
 				B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */,
 			);
 			path = PermanentNotice;
+			sourceTree = "<group>";
+		};
+		B9F3DAAB29BB714900DDD545 /* App Intents */ = {
+			isa = PBXGroup;
+			children = (
+				B9F3DAAC29BB71B100DDD545 /* CollectPaymentAppIntent.swift */,
+				B9F3DAAE29BB73CD00DDD545 /* CreateOrderAppIntent.swift */,
+			);
+			path = "App Intents";
 			sourceTree = "<group>";
 		};
 		BA143222273662DE00E4B3AB /* Settings */ = {
@@ -10612,6 +10629,7 @@
 				B651474527D644FF00C9C4E6 /* CustomerNoteSection.swift in Sources */,
 				0375799B28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift in Sources */,
 				AE3AA890290C313600BE422D /* NavigationTitleView.swift in Sources */,
+				B9F3DAB129BB83E600DDD545 /* WooAnalyticsEvent+AppIntents.swift in Sources */,
 				DEF8CF1829A8C39600800A60 /* AdminRoleRequiredViewModel.swift in Sources */,
 				029F29FC24D94106004751CA /* EditableProductVariationModel.swift in Sources */,
 				0218B4EC242E06F00083A847 /* MediaType+WPMediaType.swift in Sources */,
@@ -11411,6 +11429,7 @@
 				E16058F9285876E600E471D4 /* LeftImageTitleSubtitleTableViewCell.swift in Sources */,
 				03E471C2293A1F6B001A58AD /* BluetoothReaderConnectionAlertsProvider.swift in Sources */,
 				DEC2962926C20ECB005A056B /* CollapsibleView.swift in Sources */,
+				B9F3DAAF29BB73CD00DDD545 /* CreateOrderAppIntent.swift in Sources */,
 				AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */,
 				7E7C5F862719A93C00315B61 /* ProductCategoryViewModelBuilder.swift in Sources */,
 				02E3B63129066858007E0F13 /* StoreCreationCoordinator.swift in Sources */,
@@ -11498,6 +11517,7 @@
 				029D444922F13F8A00DEFA8A /* DashboardUI.swift in Sources */,
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,
 				026D4652295D763B0037F59A /* CountryCode+FlagEmoji.swift in Sources */,
+				B9F3DAAD29BB71B100DDD545 /* CollectPaymentAppIntent.swift in Sources */,
 				DE23CFFA27462D8F003BE54E /* JCPJetpackInstallIntroView.swift in Sources */,
 				DEC6C51E27479280006832D3 /* JetpackInstallSteps.swift in Sources */,
 				021AEF9E2407F55C00029D28 /* PHAssetImageLoader.swift in Sources */,

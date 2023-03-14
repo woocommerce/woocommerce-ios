@@ -174,6 +174,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         []
     }
 
+    var bundleStockStatus: ProductStockStatus? {
+        nil
+    }
+
     // Visibility logic
 
     func allowsMultipleImages() -> Bool {

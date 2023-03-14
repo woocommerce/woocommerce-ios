@@ -70,6 +70,7 @@ protocol ProductFormDataModel {
 
     // Product Bundles
     var bundledItems: [ProductBundleItem] { get }
+    var bundleStockStatus: ProductStockStatus? { get }
 
     /// True if a product has been saved remotely.
     var existsRemotely: Bool { get }

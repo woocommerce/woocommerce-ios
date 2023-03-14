@@ -120,6 +120,33 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         let skuText = String.localizedStringWithFormat(Localization.skuFormat, sku)
         XCTAssertFalse(detailsText.contains(skuText))
     }
+
+    func test_details_for_product_bundle_contain_bundle_stock_status_when_feature_flag_enabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "instock", bundleStockStatus: .insufficientStock)
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product, productBundlesEnabled: true)
+        let detailsText = viewModel.detailsAttributedString.string
+
+        // Then
+        let expectedStockText = ProductStockStatus.insufficientStock.description
+        XCTAssertTrue(detailsText.contains(expectedStockText),
+                      "Expected details text to include \(expectedStockText) but it was \(detailsText) instead")
+    }
+
+    func test_details_for_product_bundle_contain_bundle_stock_status_when_feature_flag_disabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "instock", bundleStockStatus: .insufficientStock)
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product, productBundlesEnabled: false)
+        let detailsText = viewModel.detailsAttributedString.string
+
+        // Then
+        let expectedStockText = ProductStockStatus.inStock.description
+        XCTAssertTrue(detailsText.contains(expectedStockText))
+    }
 }
 
 extension ProductsTabProductViewModelTests {

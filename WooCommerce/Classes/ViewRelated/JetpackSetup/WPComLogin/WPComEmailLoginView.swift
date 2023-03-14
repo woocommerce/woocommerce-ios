@@ -8,9 +8,8 @@ final class WPComEmailLoginHostingController: UIHostingController<WPComEmailLogi
         return noticePresenter
     }()
 
-    init(siteURL: String, requiresConnectionOnly: Bool, onSubmit: @escaping (String) async -> Void) {
-        let viewModel = WPComEmailLoginViewModel(siteURL: siteURL, requiresConnectionOnly: requiresConnectionOnly)
-        super.init(rootView: WPComEmailLoginView(viewModel: viewModel, onSubmit: onSubmit))
+    init(viewModel: WPComEmailLoginViewModel) {
+        super.init(rootView: WPComEmailLoginView(viewModel: viewModel))
     }
 
     @available(*, unavailable)
@@ -44,13 +43,8 @@ struct WPComEmailLoginView: View {
     @FocusState private var isEmailFieldFocused: Bool
     @State private var isPrimaryButtonLoading = false
 
-    /// The closure to be triggered when the Install Jetpack button is tapped.
-    private let onSubmit: (String) async -> Void
-
-    init(viewModel: WPComEmailLoginViewModel,
-         onSubmit: @escaping (String) async -> Void) {
+    init(viewModel: WPComEmailLoginViewModel) {
         self.viewModel = viewModel
-        self.onSubmit = onSubmit
     }
 
     var body: some View {
@@ -67,7 +61,7 @@ struct WPComEmailLoginView: View {
                 }
 
                 // Email field
-                AccountCreationFormFieldView(viewModel: .init(
+                AuthenticationFormFieldView(viewModel: .init(
                     header: Localization.emailLabel,
                     placeholder: Localization.enterEmail,
                     keyboardType: .emailAddress,
@@ -88,12 +82,12 @@ struct WPComEmailLoginView: View {
                 Button(viewModel.titleString) {
                     Task { @MainActor in
                         isPrimaryButtonLoading = true
-                        await onSubmit(viewModel.emailAddress)
+                        await viewModel.checkWordPressComAccount(email: viewModel.emailAddress)
                         isPrimaryButtonLoading = false
                     }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPrimaryButtonLoading))
-                .disabled(!viewModel.isEmailValid)
+                .disabled(viewModel.emailAddress.isEmpty)
 
                 // Terms label
                 AttributedText(viewModel.termsAttributedString)
@@ -113,11 +107,11 @@ private extension WPComEmailLoginView {
 
     enum Localization {
         static let emailLabel = NSLocalizedString(
-            "Email address",
+            "Email Address or Username",
             comment: "Label for the email field on the WPCom email login screen of the Jetpack setup flow."
         )
         static let enterEmail = NSLocalizedString(
-            "Enter email",
+            "Enter email or username",
             comment: "Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow."
         )
     }
@@ -127,7 +121,9 @@ private extension WPComEmailLoginView {
 struct WPComEmailLoginView_Previews: PreviewProvider {
     static var previews: some View {
         WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
-                                             requiresConnectionOnly: true),
-                            onSubmit: { _ in })
+                                             requiresConnectionOnly: true,
+                                             onPasswordUIRequest: { _ in },
+                                             onMagicLinkUIRequest: { _ in },
+                                             onError: { _ in }))
     }
 }

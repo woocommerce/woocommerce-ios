@@ -95,13 +95,6 @@ private extension ProductFactory {
                 groupedProducts: [],
                 menuOrder: 0,
                 addOns: [],
-                bundleLayout: nil,
-                bundleFormLocation: nil,
-                bundleItemGrouping: nil,
-                bundleMinSize: nil,
-                bundleMaxSize: nil,
-                bundleEditableInCart: nil,
-                bundleSoldIndividuallyContext: nil,
                 bundleStockStatus: nil,
                 bundleStockQuantity: nil,
                 bundledItems: [])

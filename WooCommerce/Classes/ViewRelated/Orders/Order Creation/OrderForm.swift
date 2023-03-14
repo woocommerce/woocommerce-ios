@@ -278,13 +278,14 @@ private struct ProductsSection: View {
                 .sheet(isPresented: $showAddProduct, onDismiss: {
                     scroll.scrollTo(addProductButton)
                 }, content: {
-                    ProductSelectorView(configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                                    isPresented: $showAddProduct,
-                                    viewModel: viewModel.addProductViewModel)
-                        .onDisappear {
-                            viewModel.addProductViewModel.clearSearchAndFilters()
-                            navigationButtonID = UUID()
-                        }
+                    ProductSelectorNavigationView(
+                        configuration: ProductSelectorView.Configuration.addProductToOrder(),
+                        isPresented: $showAddProduct,
+                        viewModel: viewModel.addProductViewModel)
+                    .onDisappear {
+                        viewModel.addProductViewModel.clearSearchAndFilters()
+                        navigationButtonID = UUID()
+                    }
                 })
             }
             .padding(.horizontal, insets: safeAreaInsets)

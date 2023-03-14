@@ -73,9 +73,6 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         // https://github.com/woocommerce/woocommerce-ios/pull/2013#discussion_r454620804
         logOutOfCurrentStore {
             self.finalizeStoreSelection(storeID)
-            // Inform the Zendesk shared instance that the Store has been switched
-            // https://github.com/woocommerce/woocommerce-ios/pull/8008/
-            self.zendeskShared.observeStoreSwitch()
             onCompletion(true)
         }
     }

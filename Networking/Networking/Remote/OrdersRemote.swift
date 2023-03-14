@@ -166,6 +166,8 @@ public class OrdersRemote: Remote {
                         }
                     case .shippingLines:
                         params[Order.CodingKeys.shippingLines.rawValue] = try order.shippingLines.compactMap { try $0.toDictionary() }
+                    case .couponLines:
+                        params[Order.CodingKeys.couponLines.rawValue] = try order.coupons.compactMap { try $0.toDictionary() }
                     case .customerNote:
                         params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
                     }
@@ -235,6 +237,9 @@ public class OrdersRemote: Remote {
                     case .shippingLines:
                         let shippingEncoded = try order.shippingLines.map { try $0.toDictionary() }
                         params[Order.CodingKeys.shippingLines.rawValue] = shippingEncoded
+                    case .couponLines:
+                        let couponEncoded = try order.coupons.map { try $0.toDictionary() }
+                        params[Order.CodingKeys.couponLines.rawValue] = couponEncoded
                     case .status:
                         params[Order.CodingKeys.status.rawValue] = order.status.rawValue
                     case .items:
@@ -350,6 +355,7 @@ public extension OrdersRemote {
         case billingAddress
         case fees
         case shippingLines
+        case couponLines
         case items
         case status
     }
@@ -363,6 +369,7 @@ public extension OrdersRemote {
         case billingAddress
         case shippingAddress
         case shippingLines
+        case couponLines
         case customerNote
     }
 }

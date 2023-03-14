@@ -154,9 +154,9 @@ struct CouponRestrictions: View {
             .background(Color(.listForeground(modal: false)))
             .ignoresSafeArea(.container, edges: [.horizontal])
             .sheet(isPresented: $showingExcludeProducts) {
-                ProductSelectorView(configuration: ProductSelectorView.Configuration.excludedProductsForCoupons,
-                                isPresented: $showingExcludeProducts,
-                                viewModel: viewModel.productSelectorViewModel)
+                ProductSelectorNavigationView(configuration: .excludedProductsForCoupons,
+                                              isPresented: $showingExcludeProducts,
+                                              viewModel: viewModel.productSelectorViewModel)
                     .onDisappear {
                         viewModel.productSelectorViewModel.clearSearchAndFilters()
                     }

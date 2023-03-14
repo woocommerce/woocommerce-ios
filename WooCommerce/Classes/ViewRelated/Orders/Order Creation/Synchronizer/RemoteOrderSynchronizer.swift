@@ -33,6 +33,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var setFee = PassthroughSubject<OrderFeeLine?, Never>()
 
+    var setCoupon = PassthroughSubject<OrderCouponLine?, Never>()
+
     var setNote = PassthroughSubject<String?, Never>()
 
     var retryTrigger = PassthroughSubject<Void, Never>()
@@ -181,6 +183,17 @@ private extension RemoteOrderSynchronizer {
             }
             .store(in: &subscriptions)
 
+        setCoupon.withLatestFrom(orderPublisher)
+            .map { couponLineInput, order -> Order in
+                let updatedOrder = CouponInputTransformer.update(input: couponLineInput, on: order)
+                return updatedOrder
+            }
+            .sink { [weak self] order in
+                self?.order = order
+                self?.orderSyncTrigger.send(order)
+            }
+            .store(in: &subscriptions)
+
         setNote.withLatestFrom(orderPublisher)
             .map { note, order in
                 order.copy(customerNote: note)
@@ -257,7 +270,8 @@ private extension RemoteOrderSynchronizer {
                 $0.orderID != .zero
             }
             .handleEvents(receiveOutput: { order in
-                self.state = .syncing(blocking: order.containsLocalLines()) // Set a `blocking` state if the order contains new lines
+                // Set a `blocking` state if the order contains new lines
+                self.state = .syncing(blocking: order.containsLocalLines() || order.isCouponLineChanged(self.currencyFormatter))
             })
             .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.
@@ -355,12 +369,13 @@ private extension RemoteOrderSynchronizer {
     ///
     func orderUpdateFields(for type: OperationType) -> [OrderUpdateField] {
         switch type {
-        case .sync:  // We only sync addresses, items, feels, and shipping lines.
+        case .sync:  // We only sync addresses, items, fees, shipping and coupon lines.
             return [
                 .shippingAddress,
                 .billingAddress,
                 .fees,
                 .shippingLines,
+                .couponLines,
                 .items
             ]
         case .commit:
@@ -422,6 +437,23 @@ private extension Order {
         let containsLocalShippingLines = shippingLines.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.shippingID) }
         let containsLocalFeeLines = fees.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.feeID) }
         return containsLocalLineItems || containsLocalShippingLines || containsLocalFeeLines
+    }
+
+    /// Returns true if the there are any changes to the coupon lines
+    ///
+    func isCouponLineChanged(_ currencyFormatter: CurrencyFormatter) -> Bool {
+        // Check for newly added local coupon lines
+        if (coupons.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.couponID) }) {
+            return true
+        }
+
+        // Check for deleted coupon lines by comparing the discount total
+        // from all coupons with order's `discountTotal`
+        let discountTotalFromOrder = currencyFormatter.convertToDecimal(discountTotal) ?? .zero
+        let discountTotalFromCoupons = coupons
+            .map { currencyFormatter.convertToDecimal($0.discount) ?? .zero }
+            .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+        return discountTotalFromOrder != discountTotalFromCoupons
     }
 
     /// Removes the `itemID`, `total` & `subtotal` values from local items.

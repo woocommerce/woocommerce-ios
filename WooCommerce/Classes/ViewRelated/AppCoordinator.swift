@@ -323,12 +323,8 @@ private extension AppCoordinator {
             guard let viewController = window.rootViewController else {
                 return
             }
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
-                let supportForm = SupportFormHostingController(viewModel: .init())
-                supportForm.show(from: viewController)
-            } else {
-                ZendeskProvider.shared.showNewRequestIfPossible(from: viewController, with: nil)
-            }
+            let supportForm = SupportFormHostingController(viewModel: .init())
+            supportForm.show(from: viewController)
             analytics.track(.loginLocalNotificationTapped, withProperties: [
                 "action": "contact_support",
                 "type": response.notification.request.identifier

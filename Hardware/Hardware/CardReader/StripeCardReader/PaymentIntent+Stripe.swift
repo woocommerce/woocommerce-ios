@@ -11,7 +11,7 @@ extension PaymentIntent {
         self.created = intent.created
         self.amount = intent.amount
         self.currency = intent.currency
-        self.metadata = intent.metadata as? [String: String]
+        self.metadata = intent.metadata
         self.charges = intent.charges.map { .init(charge: $0) }
     }
 }
@@ -28,7 +28,7 @@ protocol StripePaymentIntent {
     var status: StripeTerminal.PaymentIntentStatus { get }
     var amount: UInt { get }
     var currency: String { get }
-    var metadata: [AnyHashable: Any]? { get }
+    var metadata: [String: String]? { get }
     var charges: [StripeTerminal.Charge] { get }
 }
 

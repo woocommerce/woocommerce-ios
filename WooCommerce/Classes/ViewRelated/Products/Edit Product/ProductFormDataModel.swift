@@ -68,6 +68,9 @@ protocol ProductFormDataModel {
 
     var hasAddOns: Bool { get }
 
+    // Product Bundles
+    var bundledItems: [ProductBundleItem] { get }
+
     /// True if a product has been saved remotely.
     var existsRemotely: Bool { get }
 }

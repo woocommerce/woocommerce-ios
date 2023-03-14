@@ -116,7 +116,6 @@ private extension SiteCredentialLoginUseCase {
         default:
             throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)
         }
-
     }
 
     func buildLoginRequest(username: String, password: String) -> URLRequest? {
@@ -154,7 +153,7 @@ extension SiteCredentialLoginUseCase {
 }
 
 private extension String {
-    /// Get contents between HTML tags
+    /// Gets contents between HTML tags with regex.
     ///
     func findLoginErrorMessage() -> String? {
         let pattern = "<div id=\"login_error\">[^~]*?</div>"
@@ -183,7 +182,7 @@ private extension String {
                     .removedHTMLTags
                     .trimmingCharacters(in: .whitespacesAndNewlines)
             }
-            return match.removedHTMLTags.trimmingCharacters(in: .whitespacesAndNewlines)
+            return match.strippedHTML.trimmingCharacters(in: .whitespacesAndNewlines)
         } catch {
             DDLogError("⚠️" + pattern + "<-- not found in string -->" + self )
             return nil

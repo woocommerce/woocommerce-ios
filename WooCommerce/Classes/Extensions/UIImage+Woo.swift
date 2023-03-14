@@ -738,6 +738,12 @@ extension UIImage {
         return ellipsisImage.imageWithTintColor(tintColor)!
     }
 
+    /// The Multiple stores icon on the Jetpack benefit modal
+    ///
+    static var multipleStoresImage: UIImage {
+        return UIImage(named: "multiple-stores")!
+    }
+
     /// Select multiple items icon
     ///
     static var multiSelectIcon: UIImage {
@@ -1213,6 +1219,10 @@ extension UIImage {
 
     static var builtInReaderError: UIImage {
         return UIImage(named: "built-in-reader-error")!
+    }
+
+    static var setUpBuiltInReader: UIImage {
+        return UIImage(named: "built-in-reader-set-up")!
     }
 }
 

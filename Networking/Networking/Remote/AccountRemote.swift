@@ -29,6 +29,8 @@ public protocol AccountRemoteProtocol {
                        password: String,
                        clientID: String,
                        clientSecret: String) async -> Result<CreateAccountResult, CreateAccountError>
+
+    func closeAccount() async throws
 }
 
 /// Account: Remote Endpoints
@@ -174,6 +176,12 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
             return .failure(CreateAccountError(dotcomError: dotcomError))
         }
     }
+
+    public func closeAccount() async throws {
+        let path = Path.closeAccount
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path)
+        return try await enqueue(request)
+    }
 }
 
 // MARK: - Constants
@@ -192,6 +200,7 @@ private extension AccountRemote {
         static let username = "me/username"
         static let usernameSuggestions = "users/username/suggestions"
         static let accountCreation = "users/new"
+        static let closeAccount = "me/account/close"
     }
 }
 

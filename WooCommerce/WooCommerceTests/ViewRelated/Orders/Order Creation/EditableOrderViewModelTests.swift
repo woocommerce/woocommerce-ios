@@ -494,6 +494,24 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£0.00")
     }
 
+    func test_supportsAddingCouponToOrder_is_false_when_feature_flag_is_turned_off() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               featureFlagService: MockFeatureFlagService(isAddCouponToOrderEnabled: false))
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.supportsAddingCouponToOrder)
+    }
+
+    func test_supportsAddingCouponToOrder_is_true_when_feature_flag_is_turned_on() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               featureFlagService: MockFeatureFlagService(isAddCouponToOrderEnabled: true))
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.supportsAddingCouponToOrder)
+    }
+
     // MARK: - Payment Section Tests
 
     func test_payment_section_is_updated_when_products_update() {
@@ -587,6 +605,33 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
+    }
+
+    func test_payment_section_is_updated_when_coupon_line_updated() throws {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        let testCouponLine = OrderCouponLine(couponID: 0, code: "COUPONCODE", discount: "1.5", discountTax: "")
+        viewModel.saveCouponLine(testCouponLine)
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowCoupon)
+        let summary = try XCTUnwrap(viewModel.paymentDataViewModel.couponSummary)
+        XCTAssertEqual(summary, "Coupon (COUPONCODE)")
+        XCTAssertEqual(viewModel.paymentDataViewModel.couponCode, "COUPONCODE")
+
+        // When
+        viewModel.saveCouponLine(nil)
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowCoupon)
+        XCTAssertNil(viewModel.paymentDataViewModel.couponSummary)
     }
 
     func test_payment_section_values_correct_when_shipping_line_is_negative() {
@@ -881,6 +926,19 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasChanges)
     }
 
+    func test_hasChanges_returns_true_when_coupon_line_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let couponLine = OrderCouponLine.fake()
+
+        // When
+        viewModel.saveCouponLine(couponLine)
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
     // MARK: - Tracking Tests
 
     func test_product_is_tracked_when_added() throws {
@@ -1006,6 +1064,39 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderFeeRemove.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        XCTAssertEqual(properties, "editing")
+    }
+
+    func test_coupon_line_tracked_when_added() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let couponLine = OrderCouponLine.fake()
+
+        // When
+        viewModel.saveCouponLine(couponLine)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderCouponAdd.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        XCTAssertEqual(properties, "creation")
+    }
+
+    func test_coupon_line_tracked_when_removed() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: .fake()),
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.saveCouponLine(nil)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderCouponRemove.rawValue])
 
         let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
         XCTAssertEqual(properties, "editing")

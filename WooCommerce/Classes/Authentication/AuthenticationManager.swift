@@ -1,7 +1,6 @@
 import Foundation
 import KeychainAccess
 import WordPressAuthenticator
-import WordPressKit
 import Yosemite
 import class Networking.UserAgent
 import enum Experiments.ABTest
@@ -393,12 +392,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
     ///
     func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
-            let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag.name))
-            supportForm.show(from: sourceViewController)
-        } else {
-            ZendeskProvider.shared.showNewRequestIfPossible(from: sourceViewController, with: sourceTag.name)
-        }
+        let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag.name))
+        supportForm.show(from: sourceViewController)
     }
 
     /// Indicates if the Login Epilogue should be presented.
@@ -763,16 +758,6 @@ private extension AuthenticationManager {
             let error = error as NSError
 
             switch error.code {
-            case WordPressComRestApiError.unknown.rawValue:
-                let restAPIErrorCode = error.userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
-                if restAPIErrorCode == "unknown_user" {
-                    return .emailDoesNotMatchWPAccount
-                } else {
-                    return .unknown
-                }
-            case WordPressOrgXMLRPCValidatorError.invalid.rawValue:
-                // We were able to connect to the site but it does not seem to be a WordPress site.
-                return .notWPSite
             case NSURLErrorCannotFindHost,
                  NSURLErrorCannotConnectToHost:
                 // The site cannot be found. This can mean that the domain is invalid.
@@ -781,6 +766,10 @@ private extension AuthenticationManager {
                 // The site does not have a valid SSL. It could be that it is only HTTP.
                 return .noSecureConnection
             default:
+                let restAPIErrorCode = error.userInfo["WordPressComRestApiErrorCodeKey"] as? String
+                if restAPIErrorCode == "unknown_user" {
+                    return .emailDoesNotMatchWPAccount
+                }
                 return .unknown
             }
         }

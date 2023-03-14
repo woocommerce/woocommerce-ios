@@ -233,4 +233,41 @@ final class AccountRemoteTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error, .invalidUsername)
     }
+
+    // MARK: - `closeAccount`
+
+    func test_closeAccount_succeeds_on_request_success() async {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "me/account/close", filename: "close-account")
+
+        // When
+        var errorCaught: Error?
+        do {
+            try await remote.closeAccount()
+        } catch {
+            errorCaught = error
+        }
+
+        // Then
+        XCTAssertNil(errorCaught)
+    }
+
+    func test_closeAccount_relays_error_on_request_failure() async {
+        // Given
+        let remote = AccountRemote(network: network)
+        let expectedError = NetworkError.timeout
+        network.simulateError(requestUrlSuffix: "me/account/close", error: expectedError)
+
+        // When
+        var errorCaught: Error?
+        do {
+            try await remote.closeAccount()
+        } catch {
+            errorCaught = error
+        }
+
+        // Then
+        XCTAssertEqual(expectedError, errorCaught as? NetworkError)
+    }
 }

@@ -1,12 +1,18 @@
 import SwiftUI
 
 final class PaymentMethodsHostingController: UIHostingController<HostedPaymentMethodsView> {
+
+    /// The parent controller that shows the Collect Payment screen.
+    /// We need this to call its `dismiss` method to dismiss all child views, including the share sheet.
+    ///
+    weak var parentController: UIViewController?
+
     init(viewModel: PaymentMethodsViewModel) {
         super.init(rootView: HostedPaymentMethodsView(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
+            self?.parentController?.dismiss(animated: true, completion: nil)
         }
     }
 

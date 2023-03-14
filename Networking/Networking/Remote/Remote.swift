@@ -21,6 +21,31 @@ public class Remote: NSObject {
         self.network = network
     }
 
+    /// Enqueues the specified Network Request and return Void if successful.
+    ///
+    /// - Parameter request: Request that should be performed.
+    ///
+    func enqueue(_ request: Request) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            network.responseData(for: request) { [weak self] result in
+                guard let self else { return }
+
+                switch result {
+                case .success(let data):
+                    do {
+                        let validator = request.responseDataValidator()
+                        try validator.validate(data: data)
+                        continuation.resume()
+                    } catch {
+                        self.handleResponseError(error: error, for: request)
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
 
     /// Enqueues the specified Network Request with a generic expected result type.
     ///

@@ -178,6 +178,10 @@ public class AppSettingsStore: Store {
             setCouponManagementFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadCouponManagementFeatureSwitchState(let onCompletion):
             loadCouponManagementFeatureSwitchState(onCompletion: onCompletion)
+        case .loadProductMultiSelectionFeatureSwitchState(let onCompletion):
+            loadProductMultiSelectionFeatureSwitchState(onCompletion: onCompletion)
+        case .setProductMultiSelectionFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setProductMultiSelectionFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .setFeatureAnnouncementDismissed(campaign: let campaign, remindAfterDays: let remindAfterDays, onCompletion: let completion):
             setFeatureAnnouncementDismissed(campaign: campaign, remindAfterDays: remindAfterDays, onCompletion: completion)
         case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
@@ -292,6 +296,23 @@ private extension AppSettingsStore {
     ///
     func loadCouponManagementFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
         onCompletion(.success(generalAppSettings.value(for: \.isCouponManagementSwitchEnabled)))
+    }
+
+    /// Loads the most recent state for the Product Multi-Selection experimental feature switch from `GeneralAppSettings`.
+    ///
+    func loadProductMultiSelectionFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        onCompletion(.success(generalAppSettings.value(for: \.isProductMultiSelectionSwitchEnabled)))
+    }
+
+    /// Sets the state for the Product Multi-Selection experimental feature switch from `GeneralAppSettings`
+    ///
+    func setProductMultiSelectionFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            try generalAppSettings.setValue(isEnabled, for: \.isProductMultiSelectionSwitchEnabled)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
     }
 
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`

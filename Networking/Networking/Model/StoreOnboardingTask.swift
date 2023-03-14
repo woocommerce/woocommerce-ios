@@ -8,6 +8,11 @@ public struct StoreOnboardingTask: Decodable, Equatable {
         case isComplete
         case type = "id"
     }
+
+    public init(isComplete: Bool, type: TaskType) {
+        self.isComplete = isComplete
+        self.type = type
+    }
 }
 
 public extension StoreOnboardingTask {

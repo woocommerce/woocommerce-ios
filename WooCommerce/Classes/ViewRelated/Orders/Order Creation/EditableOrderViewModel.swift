@@ -171,7 +171,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the product list
     ///
-    lazy var productSelectorViewModel: ProductSelectorViewModel = {
+    var productSelectorViewModel: ProductSelectorViewModel {
         ProductSelectorViewModel(
             siteID: siteID,
             selectedItemIDs: selectedProductsAndVariationsIDs,
@@ -189,7 +189,7 @@ final class EditableOrderViewModel: ObservableObject {
                 guard let self = self else { return }
                 self.addOrRemoveProductVariationFromOrder(variation, parent: parentProduct)
         })
-    }()
+    }
 
     /// View models for each product row in the order.
     ///
@@ -786,7 +786,7 @@ private extension EditableOrderViewModel {
     /// Adds a Product  to the Order if selected, or removes it from the Order if unselected
     ///
     func addOrRemoveProductFromOrder(_ product: Product) {
-        if !selectedProducts.contains(product) {
+        if !selectedProducts.contains(where: { $0?.productID == product.productID }) {
             selectedProducts.append(product)
             addProductToOrder(product)
         } else {

@@ -109,6 +109,27 @@ class SessionManagerTests: XCTestCase {
         }
     }
 
+    /// Verifies that `completedAllStoreOnboardingTasks` is set to `nil` upon reset
+    ///
+    func test_completedAllStoreOnboardingTasks_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = UserDefaults(suiteName: uuid)!
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // Then
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
+
+        // When
+        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? Bool))
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+    }
+
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {
@@ -154,7 +175,6 @@ class SessionManagerTests: XCTestCase {
         XCTAssertEqual(sut.defaultCredentials, Settings.wpcomCredentials)
     }
 }
-
 
 // MARK: - Testing Constants
 //

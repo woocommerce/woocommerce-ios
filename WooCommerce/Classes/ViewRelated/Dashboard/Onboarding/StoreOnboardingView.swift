@@ -39,8 +39,9 @@ final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboa
         }
     }
 
-   func reloadTasks() async {
-       await viewModel.reloadTasks()
+    @MainActor
+    func reloadTasks() async {
+        await viewModel.reloadTasks()
     }
 
     /// Shows a transparent navigation bar without a bottom border.

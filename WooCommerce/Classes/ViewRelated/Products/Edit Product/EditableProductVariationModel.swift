@@ -178,6 +178,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         nil
     }
 
+    var bundleStockQuantity: Int64? {
+        nil
+    }
+
     // Visibility logic
 
     func allowsMultipleImages() -> Bool {

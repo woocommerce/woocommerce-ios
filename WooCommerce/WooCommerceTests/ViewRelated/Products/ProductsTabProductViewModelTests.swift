@@ -147,6 +147,36 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         let expectedStockText = ProductStockStatus.inStock.description
         XCTAssertTrue(detailsText.contains(expectedStockText))
     }
+
+    func test_details_for_product_bundle_contain_stock_status_with_product_stock_quantity_when_feature_flag_enabled() {
+        // Arrange
+        let product = Product.fake().copy(productTypeKey: "bundle", manageStock: true, stockQuantity: 5, stockStatusKey: "instock", bundleStockQuantity: 1)
+
+        // Action
+        let viewModel = ProductsTabProductViewModel(product: product, productBundlesEnabled: true)
+        let detailsText = viewModel.detailsAttributedString.string
+
+        // Assert
+        let localizedStockQuantity = NumberFormatter.localizedString(from: 1 as NSNumber, number: .decimal)
+        let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown on Products tab")
+        let expectedStockDetail = String.localizedStringWithFormat(format, localizedStockQuantity)
+        XCTAssertTrue(detailsText.contains(expectedStockDetail))
+    }
+
+    func test_details_for_product_bundle_contain_stock_status_with_bundle_stock_quantity_when_feature_flag_disabled() {
+        // Arrange
+        let product = Product.fake().copy(productTypeKey: "bundle", manageStock: true, stockQuantity: 5, stockStatusKey: "instock", bundleStockQuantity: 1)
+
+        // Action
+        let viewModel = ProductsTabProductViewModel(product: product, productBundlesEnabled: false)
+        let detailsText = viewModel.detailsAttributedString.string
+
+        // Assert
+        let localizedStockQuantity = NumberFormatter.localizedString(from: 5 as NSNumber, number: .decimal)
+        let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown on Products tab")
+        let expectedStockDetail = String.localizedStringWithFormat(format, localizedStockQuantity)
+        XCTAssertTrue(detailsText.contains(expectedStockDetail))
+    }
 }
 
 extension ProductsTabProductViewModelTests {

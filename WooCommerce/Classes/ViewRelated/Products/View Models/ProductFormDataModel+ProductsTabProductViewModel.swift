@@ -13,6 +13,15 @@ extension ProductFormDataModel {
                 return self.stockStatus
             }
         }()
+        // When feature flag is enabled: If product is a product bundle with a bundle stock quantity, use that as the product stock quantity.
+        let stockQuantity: Decimal? = {
+            switch (productBundlesEnabled, productType, bundleStockQuantity) {
+            case (true, .bundle, .some(let bundleStockQuantity)):
+                return Decimal(bundleStockQuantity)
+            default:
+                return self.stockQuantity
+            }
+        }()
 
         switch stockStatus {
         case .inStock:

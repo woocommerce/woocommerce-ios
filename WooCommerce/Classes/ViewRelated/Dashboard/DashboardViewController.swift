@@ -531,10 +531,12 @@ private extension DashboardViewController {
 
 private extension DashboardViewController {
     func observeOnboardingVisibility() {
-        viewModel.$showOnboarding.sink { [weak self] showsOnboarding in
+        Publishers.CombineLatest(viewModel.$showOnboarding,
+                                 ServiceLocator.stores.site.compactMap { $0 })
+        .sink { [weak self] showsOnboarding, site in
             guard let self else { return }
             if showsOnboarding {
-                self.showOnboardingCard()
+                self.showOnboardingCard(site: site)
             } else {
                 self.removeOnboardingCard()
             }
@@ -551,11 +553,15 @@ private extension DashboardViewController {
         self.onboardingView = nil
     }
 
-    func showOnboardingCard() {
-        guard let navigationController,
-        let site = ServiceLocator.stores.sessionManager.defaultSite else {
+    func showOnboardingCard(site: Site) {
+        guard let navigationController else {
             return
         }
+
+        if onboardingView != nil {
+            removeOnboardingCard()
+        }
+
         let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false, siteID: site.siteID),
                                                                      navigationController: navigationController,
                                                                      site: site,

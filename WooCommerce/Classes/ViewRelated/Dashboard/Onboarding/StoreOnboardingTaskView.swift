@@ -40,11 +40,25 @@ struct StoreOnboardingTaskView: View {
                         // Task labels
                         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                             Spacer().frame(height: Layout.spacerHeight)
-                            // Task title.
-                            Text(viewModel.title)
-                                .headlineStyle()
-                                .multilineTextAlignment(.leading)
-                                .redacted(reason: isRedacted ? .placeholder : [])
+
+                            HStack {
+                                // Task title.
+                                Text(viewModel.title)
+                                    .headlineStyle()
+                                    .multilineTextAlignment(.leading)
+                                    .redacted(reason: isRedacted ? .placeholder : [])
+
+                                // PRIVATE label.
+                                Text(Localization.privateLabel)
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(Color(uiColor: .accent))
+                                    .multilineTextAlignment(.leading)
+                                    .padding(Layout.PrivateLabel.padding)
+                                    .background(Color(uiColor: .selectableSecondaryButtonSelectedBackground))
+                                    .cornerRadius(Layout.PrivateLabel.cornerRadius)
+                                    .renderedIf(!isRedacted && viewModel.task.type == .launchStore)
+                            }
 
                             // Task subtitle.
                             Text(viewModel.subtitle)
@@ -70,11 +84,19 @@ struct StoreOnboardingTaskView: View {
 }
 
 private extension StoreOnboardingTaskView {
+    enum Localization {
+        static let privateLabel = NSLocalizedString("PRIVATE", comment: "Label shown on the launch store task.")
+    }
     enum Layout {
         static let horizontalSpacing: CGFloat = 16
         static let verticalSpacing: CGFloat = 4
         static let spacerHeight: CGFloat = 12
         static let imageDimension: CGFloat = 24
+
+        enum PrivateLabel {
+            static let padding: EdgeInsets = .init(top: 4, leading: 6, bottom: 4, trailing: 6)
+            static let cornerRadius: CGFloat = 6
+        }
     }
 }
 

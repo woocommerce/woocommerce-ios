@@ -85,8 +85,9 @@ enum SiteCredentialLoginError: Error {
 
 /// This use case handles site credential login without the need to use XMLRPC API.
 /// Steps for login:
-/// - Handle cookie authentication with provided credentials.
-/// - Attempt retrieving plugin details. If the request fails with 401 error, the authentication fails.
+/// - Make a request to the site wp-login.php with a redirect to the nonce retrieval URL.
+/// - Upon redirect, cancel the request and verify if the redirect URL is the nonce retrieval URL.
+/// - If it is, make a request to retrieve nonce at that URL, the login succeeds if this is successful.
 ///
 final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let siteURL: String
@@ -165,11 +166,12 @@ private extension SiteCredentialLoginUseCase {
     @MainActor
     func checkRedirect(url: URL?) async {
         guard let url, url.absoluteString.hasSuffix(Constants.wporgNoncePath),
-              let nonceRequest = buildNonceRetrievalRequest() else {
+              let nonceRetrievalURL = URL(string: siteURL + Constants.adminPath + Constants.wporgNoncePath) else {
             errorHandler?(.invalidLoginResponse)
             return
         }
         do {
+            let nonceRequest = try URLRequest(url: nonceRetrievalURL, method: .get)
             try await checkAdminPageAccess(with: nonceRequest)
             successHandler?()
         } catch let error as SiteCredentialLoginError {
@@ -216,14 +218,6 @@ private extension SiteCredentialLoginUseCase {
         /// doesn't encode the '+'. Percent encodes '+' to avoid this ambiguity.
         let characterSet = CharacterSet(charactersIn: "+").inverted
         request.httpBody = components.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: characterSet)?.data(using: .utf8)
-        return request
-    }
-
-    func buildNonceRetrievalRequest() -> URLRequest? {
-        guard let nonceRetrievalURL = URL(string: siteURL + Constants.adminPath + Constants.wporgNoncePath) else {
-            return nil
-        }
-        let request = try? URLRequest(url: nonceRetrievalURL, method: .get)
         return request
     }
 }

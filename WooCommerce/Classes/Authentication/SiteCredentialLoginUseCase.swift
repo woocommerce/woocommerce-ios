@@ -112,8 +112,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
         // Old cookies can make the login succeeds even with incorrect credentials
         // So we need to clear all cookies before login.
         clearAllCookies()
-        guard let loginRequest = buildLoginRequest(username: username, password: password),
-            let nonceRequest = buildNonceRetrievalRequest() else {
+        guard let loginRequest = buildLoginRequest(username: username, password: password) else {
             DDLogError("⛔️ Error constructing login requests")
             return
         }
@@ -122,22 +121,10 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
                 try await startLogin(with: loginRequest)
             } catch let error as SiteCredentialLoginError {
                 errorHandler?(error)
+            } catch let nsError as NSError where nsError.domain == NSURLErrorDomain && nsError.code == -999 {
+                /// login request is cancelled upon redirect, ignore this error
             } catch {
-                let nsError = error as NSError
-                guard nsError.domain == NSURLErrorDomain, nsError.code == -999 else {
-                    errorHandler?(.genericFailure(underlyingError: nsError))
-                    return
-                }
-                /// The previous task was cancelled upon redirect,
-                /// now check the admin page access.
-                do {
-                    try await checkAdminPageAccess(with: nonceRequest)
-                    successHandler?()
-                } catch let error as SiteCredentialLoginError {
-                    errorHandler?(error)
-                } catch {
-                    errorHandler?(.genericFailure(underlyingError: error as NSError))
-                }
+                errorHandler?(.genericFailure(underlyingError: error as NSError))
             }
         }
     }
@@ -172,6 +159,23 @@ private extension SiteCredentialLoginUseCase {
             }
         default:
             throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)
+        }
+    }
+
+    @MainActor
+    func checkRedirect(url: URL?) async {
+        guard let url, url.absoluteString.hasSuffix(Constants.wporgNoncePath),
+              let nonceRequest = buildNonceRetrievalRequest() else {
+            errorHandler?(.invalidLoginResponse)
+            return
+        }
+        do {
+            try await checkAdminPageAccess(with: nonceRequest)
+            successHandler?()
+        } catch let error as SiteCredentialLoginError {
+            errorHandler?(error)
+        } catch {
+            errorHandler?(.genericFailure(underlyingError: error as NSError))
         }
     }
 
@@ -229,13 +233,10 @@ extension SiteCredentialLoginUseCase: URLSessionDataDelegate {
                     task: URLSessionTask,
                     willPerformHTTPRedirection response: HTTPURLResponse,
                     newRequest request: URLRequest) async -> URLRequest? {
-        // Disables redirection if the request is to load the nonce retrieval URL
-        if let url = request.url,
-            url.absoluteString.hasSuffix(Constants.wporgNoncePath) {
-            task.cancel()
-            return nil
-        }
-        return request
+        // Disables redirect and check if the redirect is correct
+        task.cancel()
+        await checkRedirect(url: request.url)
+        return nil
     }
 }
 

@@ -1,4 +1,5 @@
 import Foundation
+import WordPressAuthenticator
 #if !targetEnvironment(macCatalyst)
 import SupportSDK
 import ZendeskCoreSDK
@@ -581,6 +582,11 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     func decorateTags(tags: [String], supportSourceTag: String?) -> [String] {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            if ServiceLocator.stores.isAuthenticated == false,
+               AuthenticatorAnalyticsTracker.shared.state.lastFlow == .loginWithSiteAddress,
+               AuthenticatorAnalyticsTracker.shared.state.lastStep == .usernamePassword {
+                return tags + [Constants.siteCredentialLoginErrorTag]
+            }
             return tags
         }
 
@@ -1288,6 +1294,7 @@ private extension ZendeskManager {
         static let jetpackTag = "jetpack"
         static let wpComTag = "wpcom"
         static let authenticatedWithApplicationPasswordTag = "application_password_authenticated"
+        static let siteCredentialLoginErrorTag = "application_password_login_error"
         static let logFieldCharacterLimit = 64000
         static let networkWiFi = "WiFi"
         static let networkWWAN = "Mobile"

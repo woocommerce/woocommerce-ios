@@ -161,11 +161,11 @@ final class SessionManager: SessionManagerProtocol {
     ///
     func reset() {
         deleteApplicationPassword()
-        defaults[.completedAllStoreOnboardingTasks] = nil
         defaultAccount = nil
         defaultCredentials = nil
         defaultStoreID = nil
         defaultSite = nil
+        defaults[.completedAllStoreOnboardingTasks] = nil
     }
 
     /// Deletes application password

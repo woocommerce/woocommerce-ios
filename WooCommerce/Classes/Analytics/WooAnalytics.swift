@@ -149,8 +149,6 @@ public extension WooAnalytics {
         let errorCode: String = {
             if let networkError = error as? AFError {
                 return "\(networkError.responseCode ?? 0)"
-            } else if let loginError = error as? SiteCredentialLoginError {
-                return "\(loginError.underlyingError.code)"
             }
             return "\(err.code)"
         }()

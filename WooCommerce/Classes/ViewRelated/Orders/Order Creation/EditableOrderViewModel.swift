@@ -212,7 +212,7 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     var selectedProductsAndVariationsIDs: [Int64] {
         let selectedProductsCount = selectedProducts.compactMap { $0?.productID }
-        let selectedProductVariationsCount = selectedProductVariations.compactMap { $0?.productID }
+        let selectedProductVariationsCount = selectedProductVariations.compactMap { $0?.productVariationID }
         print("🍍 selectedProductsAndVariationsIDs -> Products: \(selectedProductsCount.count) - Variations: \(selectedProductVariationsCount.count)")
         return selectedProductsCount + selectedProductVariationsCount
     }
@@ -798,7 +798,7 @@ private extension EditableOrderViewModel {
     /// Adds a Product Variation to the Order if selected, or removes it from the Order if unselected
     ///
     func addOrRemoveProductVariationFromOrder(_ variation: ProductVariation, parent product: Product) {
-        if !selectedProductVariations.contains(variation) {
+        if !selectedProductVariations.contains(where: { $0?.productVariationID == variation.productVariationID }) {
             selectedProductVariations.append(variation)
             addProductVariationToOrder(variation)
         } else {

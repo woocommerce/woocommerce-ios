@@ -39,7 +39,7 @@ public struct PaymentIntentParameters {
 
     /// Set of key-value pairs that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
-    public let metadata: [AnyHashable: Any]?
+    public let metadata: [String: String]?
 
     /// Supported payment methods for this intent.
     ///
@@ -55,7 +55,7 @@ public struct PaymentIntentParameters {
                 statementDescription: String? = nil,
                 receiptEmail: String? = nil,
                 paymentMethodTypes: [String] = [],
-                metadata: [AnyHashable: Any]? = nil) {
+                metadata: [String: String]? = nil) {
         self.amount = amount
         self.currency = currency
         self.stripeSmallestCurrencyUnitMultiplier = stripeSmallestCurrencyUnitMultiplier

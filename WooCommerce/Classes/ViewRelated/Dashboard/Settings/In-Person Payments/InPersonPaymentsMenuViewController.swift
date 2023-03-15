@@ -424,7 +424,7 @@ extension InPersonPaymentsMenuViewController {
         navigationController?.pushViewController(InPersonPaymentsSelectPluginViewController(rootView: view), animated: true)
     }
 
-    func collectPaymentWasPressed() {
+    func openSimplePaymentsAmountFlow() {
         ServiceLocator.analytics.track(.paymentsMenuCollectPaymentTapped)
 
         guard let siteID = stores.sessionManager.defaultStoreID,
@@ -490,7 +490,7 @@ extension InPersonPaymentsMenuViewController: UITableViewDelegate {
         case .managePaymentGateways:
             managePaymentGatewaysWasPressed()
         case .collectPayment:
-            collectPaymentWasPressed()
+            openSimplePaymentsAmountFlow()
         case .toggleEnableCashOnDelivery:
             break
         case .setUpTapToPayOnIPhone:

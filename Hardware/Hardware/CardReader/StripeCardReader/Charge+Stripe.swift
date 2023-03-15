@@ -27,7 +27,7 @@ protocol StripeCharge {
     var currency: String { get }
     var status: StripeTerminal.ChargeStatus { get }
     var stripeDescription: String? { get }
-    var metadata: [AnyHashable: Any] { get }
+    var metadata: [String: String] { get }
     var paymentMethodDetails: StripeTerminal.PaymentMethodDetails? { get }
 }
 

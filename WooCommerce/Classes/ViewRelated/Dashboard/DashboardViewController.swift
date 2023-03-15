@@ -158,6 +158,8 @@ final class DashboardViewController: UIViewController {
         observeAddProductTrigger()
         observeOnboardingVisibility()
 
+        viewModel.syncFreeTrialBanner(siteID: siteID)
+
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
             await reloadDashboardUIStatsVersion(forced: true)

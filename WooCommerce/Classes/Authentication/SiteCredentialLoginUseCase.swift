@@ -20,19 +20,66 @@ enum SiteCredentialLoginError: Error {
     ///
     var underlyingError: NSError {
         switch self {
-        case .inaccessibleLoginPage:
-            return NSError(domain: Self.errorDomain, code: 404, userInfo: nil)
-        case .inaccessibleAdminPage:
-            return NSError(domain: Self.errorDomain, code: 404, userInfo: nil)
-        case .invalidLoginResponse:
-            return NSError(domain: Self.errorDomain, code: -1, userInfo: nil)
-        case .loginFailed(let message):
-            return NSError(domain: Self.errorDomain, code: 401, userInfo: [NSLocalizedDescriptionKey: message])
-        case .unacceptableStatusCode(let code):
-            return NSError(domain: Self.errorDomain, code: code, userInfo: nil)
+        case .inaccessibleLoginPage,
+             .inaccessibleAdminPage,
+             .invalidLoginResponse,
+             .loginFailed,
+             .unacceptableStatusCode:
+            return NSError(domain: Self.errorDomain, code: errorCode, userInfo: [NSLocalizedDescriptionKey: errorMessage])
         case .genericFailure(let underlyingError):
             return underlyingError as NSError
         }
+    }
+
+    var errorCode: Int {
+        switch self {
+        case .inaccessibleLoginPage, .inaccessibleAdminPage:
+            return 404
+        case .invalidLoginResponse:
+            return -1
+        case .loginFailed:
+            return 401
+        case .unacceptableStatusCode(let code):
+            return code
+        case .genericFailure(let underlyingError):
+            return (underlyingError as NSError).code
+        }
+    }
+
+    var errorMessage: String {
+        switch self {
+        case .inaccessibleLoginPage:
+            return Localization.inaccessibleLoginPage
+        case .inaccessibleAdminPage:
+            return Localization.inaccessibleAdminPage
+        case .invalidLoginResponse:
+            return Localization.invalidLoginResponse
+        case .loginFailed(let message):
+            return message
+        case .unacceptableStatusCode(let code):
+            return String(format: Localization.unacceptableStatusCode, code)
+        case .genericFailure:
+            return ""
+        }
+    }
+
+    private enum Localization {
+        static let inaccessibleLoginPage = NSLocalizedString(
+            "Login failed because the access to wp-login.php page on your site is blocked.",
+            comment: "Error message explaining login failure due to blocked wp-login.php"
+        )
+        static let inaccessibleAdminPage = NSLocalizedString(
+            "Login failed because the access to /wp-admin/ page on your site is blocked.",
+            comment: "Error message explaining login failure due to blocked WP Admin page"
+        )
+        static let invalidLoginResponse = NSLocalizedString(
+            "Login failed with an unexpected response from your site. We are working on fixing this issue.",
+            comment: "Error message explaining login failure due to unexpected response."
+        )
+        static let unacceptableStatusCode = NSLocalizedString(
+            "Login failed with status code %1$d. We are working on fixing this issue.",
+            comment: "Error message explaining login failure due to unacceptable status code."
+        )
     }
 }
 

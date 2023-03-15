@@ -1057,6 +1057,16 @@ extension WooAnalyticsEvent {
             )
         }
 
+        static func cardReaderAutomaticDisconnect(cardReaderModel: String?, forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderAutomaticDisconnect,
+                              properties: [
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                              ]
+            )
+        }
+
         /// Tracked when card reader discovery fails
         ///
         /// - Parameters:

@@ -213,7 +213,6 @@ final class EditableOrderViewModel: ObservableObject {
     var selectedProductsAndVariationsIDs: [Int64] {
         let selectedProductsCount = selectedProducts.compactMap { $0?.productID }
         let selectedProductVariationsCount = selectedProductVariations.compactMap { $0?.productVariationID }
-        print("🍍 selectedProductsAndVariationsIDs -> Products: \(selectedProductsCount.count) - Variations: \(selectedProductVariationsCount.count)")
         return selectedProductsCount + selectedProductVariationsCount
     }
 

@@ -274,7 +274,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             guard let self else { return }
             onLoading(false)
             onFailure(error.underlyingError, false)
-            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication, error: error.underlyingError))
+            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication, error: error))
         })
         self.siteCredentialLoginUseCase = useCase
 

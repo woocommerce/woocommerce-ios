@@ -363,7 +363,12 @@ final class EditableOrderViewModel: ObservableObject {
     func removeItemFromOrder(_ item: OrderItem) {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
-        selectedProducts.removeAll(where: { $0?.productID == item.productID })
+
+        if item.variationID != 0 {
+            selectedProductVariations.removeAll(where: { $0?.productVariationID == item.productOrVariationID })
+        } else {
+            selectedProducts.removeAll(where: { $0?.productID == item.productID })
+        }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
     }

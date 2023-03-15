@@ -304,6 +304,7 @@
 		027EB56C29C05F4B003CE551 /* StoreOnboardingLaunchStoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027EB56B29C05F4A003CE551 /* StoreOnboardingLaunchStoreView.swift */; };
 		027EB56E29C0602D003CE551 /* StoreOnboardingLaunchStoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027EB56D29C0602D003CE551 /* StoreOnboardingLaunchStoreViewModel.swift */; };
 		027EB57029C062DD003CE551 /* StoreOnboardingLaunchStoreCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027EB56F29C062DD003CE551 /* StoreOnboardingLaunchStoreCoordinator.swift */; };
+		027EB57829C18AAC003CE551 /* StoreOnboardingLaunchStoreViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027EB57729C18AAC003CE551 /* StoreOnboardingLaunchStoreViewModelTests.swift */; };
 		027F240C258371150021DB06 /* RefundShippingLabelViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027F240B258371150021DB06 /* RefundShippingLabelViewModelTests.swift */; };
 		027F83ED29B046D2002688C6 /* DashboardTopPerformersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027F83EC29B046D2002688C6 /* DashboardTopPerformersViewModel.swift */; };
 		027F83EF29B048E2002688C6 /* DashboardTopPerformersViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027F83EE29B048E2002688C6 /* DashboardTopPerformersViewModelTests.swift */; };
@@ -2469,6 +2470,7 @@
 		027EB56B29C05F4A003CE551 /* StoreOnboardingLaunchStoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingLaunchStoreView.swift; sourceTree = "<group>"; };
 		027EB56D29C0602D003CE551 /* StoreOnboardingLaunchStoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingLaunchStoreViewModel.swift; sourceTree = "<group>"; };
 		027EB56F29C062DD003CE551 /* StoreOnboardingLaunchStoreCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingLaunchStoreCoordinator.swift; sourceTree = "<group>"; };
+		027EB57729C18AAC003CE551 /* StoreOnboardingLaunchStoreViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingLaunchStoreViewModelTests.swift; sourceTree = "<group>"; };
 		027F240B258371150021DB06 /* RefundShippingLabelViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingLabelViewModelTests.swift; sourceTree = "<group>"; };
 		027F83EC29B046D2002688C6 /* DashboardTopPerformersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardTopPerformersViewModel.swift; sourceTree = "<group>"; };
 		027F83EE29B048E2002688C6 /* DashboardTopPerformersViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardTopPerformersViewModelTests.swift; sourceTree = "<group>"; };
@@ -9630,6 +9632,7 @@
 			children = (
 				EE3272A329A88F750015F8D0 /* StoreOnboardingViewModelTests.swift */,
 				EEB4E2D729B20F0F00371C3C /* StoreOnboardingTaskViewModel.swift */,
+				027EB57729C18AAC003CE551 /* StoreOnboardingLaunchStoreViewModelTests.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -11862,6 +11865,7 @@
 				02CE4307276994920006EAEF /* ProductSKUBarcodeScannerCoordinatorTests.swift in Sources */,
 				0999877427D2819F00F82C65 /* BulkUpdateViewControllerTests.swift in Sources */,
 				3190D61D26D6E97B00EF364D /* CardPresentModalRetryableErrorTests.swift in Sources */,
+				027EB57829C18AAC003CE551 /* StoreOnboardingLaunchStoreViewModelTests.swift in Sources */,
 				456417F6247D5643001203F6 /* UITableView+HelpersTests.swift in Sources */,
 				DE4B3B2C2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift in Sources */,
 				D89C009425B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift in Sources */,

@@ -53,6 +53,9 @@
 		026CF624237D839B009563D4 /* product-variations-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 026CF623237D839A009563D4 /* product-variations-load-all.json */; };
 		0272E3F5254AA48F00436277 /* order-with-line-item-attributes.json in Resources */ = {isa = PBXBuildFile; fileRef = 0272E3F4254AA48F00436277 /* order-with-line-item-attributes.json */; };
 		0272E3FB254AABB800436277 /* order-with-line-item-attributes-before-API-support.json in Resources */ = {isa = PBXBuildFile; fileRef = 0272E3FA254AABB800436277 /* order-with-line-item-attributes-before-API-support.json */; };
+		027EB57429C07524003CE551 /* site-launch-error-unauthorized.json in Resources */ = {isa = PBXBuildFile; fileRef = 027EB57129C07524003CE551 /* site-launch-error-unauthorized.json */; };
+		027EB57529C07524003CE551 /* site-launch-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 027EB57229C07524003CE551 /* site-launch-success.json */; };
+		027EB57629C07524003CE551 /* site-launch-error-already-launched.json in Resources */ = {isa = PBXBuildFile; fileRef = 027EB57329C07524003CE551 /* site-launch-error-already-launched.json */; };
 		028296F7237D588700E84012 /* ProductVariation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028296F6237D588700E84012 /* ProductVariation.swift */; };
 		0282DD91233A120A006A5FDB /* products-search-photo.json in Resources */ = {isa = PBXBuildFile; fileRef = 0282DD90233A120A006A5FDB /* products-search-photo.json */; };
 		028CB716290223CB00331C09 /* create-account-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 028CB712290223CB00331C09 /* create-account-success.json */; };
@@ -947,6 +950,9 @@
 		026CF623237D839A009563D4 /* product-variations-load-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variations-load-all.json"; sourceTree = "<group>"; };
 		0272E3F4254AA48F00436277 /* order-with-line-item-attributes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-with-line-item-attributes.json"; sourceTree = "<group>"; };
 		0272E3FA254AABB800436277 /* order-with-line-item-attributes-before-API-support.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-with-line-item-attributes-before-API-support.json"; sourceTree = "<group>"; };
+		027EB57129C07524003CE551 /* site-launch-error-unauthorized.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-launch-error-unauthorized.json"; sourceTree = "<group>"; };
+		027EB57229C07524003CE551 /* site-launch-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-launch-success.json"; sourceTree = "<group>"; };
+		027EB57329C07524003CE551 /* site-launch-error-already-launched.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-launch-error-already-launched.json"; sourceTree = "<group>"; };
 		028296F6237D588700E84012 /* ProductVariation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariation.swift; sourceTree = "<group>"; };
 		0282DD90233A120A006A5FDB /* products-search-photo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-search-photo.json"; sourceTree = "<group>"; };
 		028CB712290223CB00331C09 /* create-account-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-account-success.json"; sourceTree = "<group>"; };
@@ -2368,6 +2374,9 @@
 				02B41A93296C04BC00FE3311 /* load-site-plans-no-current-plan.json */,
 				EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */,
 				02B41A8F296BC85800FE3311 /* site-domains.json */,
+				027EB57329C07524003CE551 /* site-launch-error-already-launched.json */,
+				027EB57129C07524003CE551 /* site-launch-error-unauthorized.json */,
+				027EB57229C07524003CE551 /* site-launch-success.json */,
 				D865CE6D278CC19A002C8520 /* stripe-location-error.json */,
 				D865CE6C278CC19A002C8520 /* stripe-location.json */,
 				D865CE6A278CA266002C8520 /* stripe-payment-intent-error.json */,
@@ -3353,6 +3362,7 @@
 				DE4F2A442975684900B0701C /* site-api-without-data.json in Resources */,
 				DE42F96B296BC23800D514C2 /* customer-without-data.json in Resources */,
 				EE80A24729547F8B003591E4 /* coupons-all-without-data.json in Resources */,
+				027EB57629C07524003CE551 /* site-launch-error-already-launched.json in Resources */,
 				7412A8F021B6E416005D182A /* report-orders.json in Resources */,
 				CCF4346A2906C9C300B4475A /* products-ids-only-empty.json in Resources */,
 				DEF13C5E296686AB0024A02B /* orders-load-all-without-data.json in Resources */,
@@ -3395,6 +3405,7 @@
 				268B68FD24C87E37007EBF1D /* leaderboards-year-alt.json in Resources */,
 				74A1D264211898F000931DFA /* site-visits-week.json in Resources */,
 				EE57C127297F8E5E00BC31E7 /* product-attribute-terms-without-data.json in Resources */,
+				027EB57429C07524003CE551 /* site-launch-error-unauthorized.json in Resources */,
 				B53EF53621813681003E146F /* generic_success.json in Resources */,
 				31054718262E2F5E00C5C02B /* wcpay-payment-intent-requires-confirmation.json in Resources */,
 				DE66C5672977CEB800DAA978 /* shipping-label-status-success-without-data.json in Resources */,
@@ -3470,6 +3481,7 @@
 				2676F4D0290B0EC800C7A15B /* product-id-only.json in Resources */,
 				31D27C8F2602B553002EDB1D /* plugins.json in Resources */,
 				DE66C55D2977C35A00DAA978 /* shipping-label-packages-success-without-data.json in Resources */,
+				027EB57529C07524003CE551 /* site-launch-success.json in Resources */,
 				261CF1B4255AD6B30090D8D3 /* payment-gateway-list.json in Resources */,
 				268B68FB24C87384007EBF1D /* leaderboards-products.json in Resources */,
 				0359EA2527AAF7D60048DE2D /* wcpay-charge-card.json in Resources */,

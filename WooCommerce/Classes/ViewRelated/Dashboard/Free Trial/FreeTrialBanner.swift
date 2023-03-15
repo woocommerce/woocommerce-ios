@@ -3,11 +3,10 @@ import SwiftUI
 /// Hosting controller for `FreeTrialBanner`.
 ///
 final class FreeTrialBannerHostingViewController: UIHostingController<FreeTrialBanner> {
-
     /// Designated initializer.
     ///
-    init() {
-        super.init(rootView: FreeTrialBanner())
+    init(mainText: String, onUpgradeNowTapped: @escaping () -> Void) {
+        super.init(rootView: FreeTrialBanner(mainText: mainText, onUpgradeNowTapped: onUpgradeNowTapped))
         self.view.backgroundColor = .wooCommercePurple(.shade5)
     }
 
@@ -22,20 +21,26 @@ final class FreeTrialBannerHostingViewController: UIHostingController<FreeTrialB
 ///
 struct FreeTrialBanner: View {
 
+    /// Text to be rendered next to the info image.
+    ///
+    let mainText: String
+
+    /// Closure invoked when the merchants taps on the `Upgrade Now` button.
+    ///
+    let onUpgradeNowTapped: () -> Void
+
     var body: some View {
         HStack {
             Image(uiImage: .infoOutlineImage)
 
             HStack(spacing: 6) {
-                Text("Your trial has ended.")
+                Text(mainText)
                     .bodyStyle()
 
-                Text("Upgrade Now")
+                Text(Localization.upgradeNow)
                     .underline(true)
                     .linkStyle()
-                    .onTapGesture {
-                        print("Upgrade Now Pressed")
-                    }
+                    .onTapGesture(perform: onUpgradeNowTapped)
             }
         }
         .padding()
@@ -44,9 +49,16 @@ struct FreeTrialBanner: View {
     }
 }
 
+// MARK: Definitions
+extension FreeTrialBanner {
+    enum Localization {
+        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title on the button to upgrade a free trial plan.")
+    }
+}
+
 struct FreeTrial_Preview: PreviewProvider {
     static var previews: some View {
-        FreeTrialBanner()
+        FreeTrialBanner(mainText: "Your Free trial has ended", onUpgradeNowTapped: { })
             .previewLayout(.sizeThatFits)
     }
 }

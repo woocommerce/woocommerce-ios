@@ -160,23 +160,6 @@ final class DashboardViewController: UIViewController {
 
         viewModel.syncFreeTrialBanner(siteID: siteID)
 
-        DispatchQueue.main.async {
-            let freeTrial = FreeTrialBannerHostingViewController()
-            freeTrial.view.translatesAutoresizingMaskIntoConstraints = false
-
-            self.stackView.addSubview(freeTrial.view)
-            NSLayoutConstraint.activate([
-                freeTrial.view.leadingAnchor.constraint(equalTo: self.stackView.leadingAnchor),
-                freeTrial.view.trailingAnchor.constraint(equalTo: self.stackView.trailingAnchor),
-                freeTrial.view.bottomAnchor.constraint(equalTo: self.stackView.bottomAnchor)
-
-            ])
-
-            DispatchQueue.main.async {
-                self.containerView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: freeTrial.view.frame.size.height, right: 0)
-            }
-        }
-
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
             await reloadDashboardUIStatsVersion(forced: true)

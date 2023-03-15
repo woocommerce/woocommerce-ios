@@ -100,7 +100,7 @@ struct SiteCredentialLoginView: View {
                 // text fields
                 VStack(alignment: .leading, spacing: Constants.fieldVerticalSpacing) {
                     // Username field.
-                    AccountCreationFormFieldView(viewModel: .init(header: Localization.usernameFieldTitle,
+                    AuthenticationFormFieldView(viewModel: .init(header: Localization.usernameFieldTitle,
                                                                   placeholder: Localization.enterUsername,
                                                                   keyboardType: .default,
                                                                   text: $viewModel.username,
@@ -111,7 +111,7 @@ struct SiteCredentialLoginView: View {
                     .disabled(viewModel.isLoggingIn)
 
                     // Password field.
-                    AccountCreationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
+                    AuthenticationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
                                                                   placeholder: Localization.enterPassword,
                                                                   keyboardType: .default,
                                                                   text: $viewModel.password,

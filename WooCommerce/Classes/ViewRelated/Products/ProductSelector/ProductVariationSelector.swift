@@ -43,7 +43,7 @@ struct ProductVariationSelector: View {
                     }
                     .buttonStyle(LinkButtonStyle())
                     .fixedSize()
-                    .renderedIf(viewModel.selectedProductVariationIDs.isNotEmpty)
+                    .renderedIf(viewModel.isClearSelectionEnabled && viewModel.selectedProductVariationIDs.isNotEmpty)
 
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                        loadAction: viewModel.syncNextPage) {
@@ -137,7 +137,8 @@ struct AddProductVariationToOrder_Previews: PreviewProvider {
             productID: 2,
             productName: "Monstera Plant",
             productAttributes: [],
-            selectedProductVariationIDs: []
+            selectedProductVariationIDs: [],
+            supportsMultipleSelection: true
         )
 
         ProductVariationSelector(isPresented: .constant(true), viewModel: viewModel, multipleSelectionsEnabled: true)

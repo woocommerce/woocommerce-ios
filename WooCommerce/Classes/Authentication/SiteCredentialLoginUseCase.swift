@@ -1,6 +1,7 @@
 import enum Alamofire.AFError
 import struct Networking.CookieNonceAuthenticatorConfiguration
 import class Networking.WordPressOrgNetwork
+import enum Networking.NetworkError
 import Yosemite
 
 protocol SiteCredentialLoginProtocol {
@@ -13,12 +14,15 @@ protocol SiteCredentialLoginProtocol {
 enum SiteCredentialLoginError: Error {
     static let errorDomain = "SiteCredentialLogin"
     case wrongCredentials
+    case invalidCookieNonce
     case genericFailure(underlyingError: Error)
 
     /// Used for tracking error code
     ///
     var underlyingError: NSError {
         switch self {
+        case .invalidCookieNonce:
+            return NSError(domain: Self.errorDomain, code: 403, userInfo: nil)
         case .wrongCredentials:
             return NSError(domain: Self.errorDomain, code: 401, userInfo: nil)
         case .genericFailure(let underlyingError):
@@ -110,11 +114,13 @@ private extension SiteCredentialLoginUseCase {
 
     func handleRemoteError(_ error: Error) {
         switch error {
+        case NetworkError.invalidCookieNonce:
+            errorHandler?(.invalidCookieNonce)
         case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)),
             AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
             // Error 404 means Jetpack is not installed. Allow this to come through.
             // Error 403 means the lack of permission to manage plugins. Also allow this error
-            // since we want to show the error on the next screen.
+            // since we want to let users with shop manager roles to log in.
             successHandler?()
         case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401)):
             errorHandler?(.wrongCredentials)

@@ -112,6 +112,8 @@ private extension DefaultProductFormTableViewModel {
                 return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: true))
             case .attributes(let editable):
                 return .attributes(viewModel: productVariationsAttributesRow(product: product.product, isEditable: editable), isEditable: editable)
+            case .bundledProducts(let actionable):
+                return .bundledProducts(viewModel: bundledProductsRow(product: product, isActionable: actionable), isActionable: actionable)
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -507,6 +509,28 @@ private extension DefaultProductFormTableViewModel {
                                                         details: details,
                                                         isActionable: isEditable)
     }
+
+    // MARK: Bundle products only
+
+    func bundledProductsRow(product: ProductFormDataModel, isActionable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.widgetsImage
+        let title = Localization.bundledProductsTitle
+        let details: String
+
+        switch product.bundledItems.count {
+        case 1:
+            details = .localizedStringWithFormat(Localization.singularBundledProductFormat, product.bundledItems.count)
+        case 2...:
+            details = .localizedStringWithFormat(Localization.pluralBundledProductsFormat, product.bundledItems.count)
+        default:
+            details = ""
+        }
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        isActionable: isActionable)
+    }
 }
 
 private extension DefaultProductFormTableViewModel {
@@ -555,7 +579,7 @@ private extension DefaultProductFormTableViewModel {
                                                     comment: "Format of the sale period on the Price Settings row until a certain date")
 
         // Reviews
-        static let emptyReviews = NSLocalizedString("No ratings",
+        static let emptyReviews = NSLocalizedString("No (approved) reviews",
                                                     comment: "Placeholder for empty product ratings")
         static let singularReviewFormat = NSLocalizedString("rated once",
                                                             comment: "Format of the number of product ratings in singular form")
@@ -699,5 +723,12 @@ private extension DefaultProductFormTableViewModel {
 
         // Add-ons
         static let addOnsTitle = NSLocalizedString("Product Add-ons", comment: "Title for Add-ons row in the product form screen.")
+
+        // Bundled products
+        static let bundledProductsTitle = NSLocalizedString("Bundled products", comment: "Title for Bundled Products row in the product form screen.")
+        static let singularBundledProductFormat = NSLocalizedString("%ld product",
+                                                                    comment: "Format of the number of bundled products in singular form")
+        static let pluralBundledProductsFormat = NSLocalizedString("%ld products",
+                                                                   comment: "Format of the number of bundled products in plural form")
     }
 }

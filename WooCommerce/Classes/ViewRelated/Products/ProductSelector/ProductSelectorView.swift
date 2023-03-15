@@ -40,109 +40,108 @@ struct ProductSelectorView: View {
     }
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: 0) {
-                SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder)
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .accessibilityIdentifier("product-selector-search-bar")
-                HStack {
-                    Button(Localization.clearSelection) {
-                        viewModel.clearSelection()
-                    }
-                    .buttonStyle(LinkButtonStyle())
-                    .fixedSize()
-                    .renderedIf(viewModel.totalSelectedItemsCount > 0 && viewModel.syncStatus == .results)
-
-                    Spacer()
-
-                    Button(viewModel.filterButtonTitle) {
-                        showingFilters.toggle()
-                    }
-                    .buttonStyle(LinkButtonStyle())
-                    .fixedSize()
-                    .renderedIf(configuration.showsFilters)
-                }
+        VStack(spacing: 0) {
+            SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder)
                 .padding(.horizontal, insets: safeAreaInsets)
+                .accessibilityIdentifier("product-selector-search-bar")
+            HStack {
+                Button(Localization.clearSelection) {
+                    viewModel.clearSelection()
+                }
+                .buttonStyle(LinkButtonStyle())
+                .fixedSize()
+                .renderedIf(configuration.clearSelectionEnabled && viewModel.totalSelectedItemsCount > 0 && viewModel.syncStatus == .results)
+                Spacer()
 
-                switch viewModel.syncStatus {
-                case .results:
-                    VStack(spacing: 0) {
-                        InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
-                                           loadAction: viewModel.syncNextPage) {
-                            ForEach(viewModel.productRows) { rowViewModel in
-                                createProductRow(rowViewModel: rowViewModel)
-                                    .padding(Constants.defaultPadding)
-                                Divider().frame(height: Constants.dividerHeight)
-                                    .padding(.leading, Constants.defaultPadding)
-                            }
+                Button(viewModel.filterButtonTitle) {
+                    showingFilters.toggle()
+                }
+                .buttonStyle(LinkButtonStyle())
+                .fixedSize()
+                .renderedIf(configuration.showsFilters)
+            }
+            .padding(.horizontal, insets: safeAreaInsets)
+
+            switch viewModel.syncStatus {
+            case .results:
+                VStack(spacing: 0) {
+                    InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
+                                       loadAction: viewModel.syncNextPage) {
+                        ForEach(viewModel.productRows) { rowViewModel in
+                            createProductRow(rowViewModel: rowViewModel)
+                                .padding(Constants.defaultPadding)
+                                .accessibilityIdentifier(Constants.productRowAccessibilityIdentifier)
+                            Divider().frame(height: Constants.dividerHeight)
+                                .padding(.leading, Constants.defaultPadding)
                         }
-                        if configuration.multipleSelectionsEnabled {
-                            Button(doneButtonTitle) {
-                                viewModel.completeMultipleSelection()
-                                isPresented.toggle()
-                            }
-                            .buttonStyle(PrimaryButtonStyle())
-                            .padding(Constants.defaultPadding)
+                    }
+                    if configuration.multipleSelectionsEnabled {
+                        Button(doneButtonTitle) {
+                            viewModel.completeMultipleSelection()
+                            isPresented.toggle()
                         }
-                        if let variationListViewModel = variationListViewModel {
-                            LazyNavigationLink(destination: ProductVariationSelector(
-                                isPresented: $isPresented,
-                                viewModel: variationListViewModel,
-                                multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
-                                onMultipleSelections: { selectedIDs in
-                                    viewModel.updateSelectedVariations(productID: variationListViewModel.productID, selectedVariationIDs: selectedIDs)
-                                }), isActive: $isShowingVariationList) {
+                        .buttonStyle(PrimaryButtonStyle())
+                        .padding(Constants.defaultPadding)
+                        .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
+                    }
+                    if let variationListViewModel = variationListViewModel {
+                        LazyNavigationLink(destination: ProductVariationSelector(
+                            isPresented: $isPresented,
+                            viewModel: variationListViewModel,
+                            multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                            onMultipleSelections: { selectedIDs in
+                                viewModel.updateSelectedVariations(productID: variationListViewModel.productID, selectedVariationIDs: selectedIDs)
+                            }), isActive: $isShowingVariationList) {
                                 EmptyView()
                             }
-                        }
                     }
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .background(Color(.listForeground(modal: false)).ignoresSafeArea())
-
-                case .empty:
-                    EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
-                        .frame(maxHeight: .infinity)
-                case .firstPageSync:
-                    List(viewModel.ghostRows) { rowViewModel in
-                        ProductRow(viewModel: rowViewModel)
-                            .redacted(reason: .placeholder)
-                            .accessibilityRemoveTraits(.isButton)
-                            .accessibilityLabel(Localization.loadingRowsAccessibilityLabel)
-                            .shimmering()
-                    }
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .listStyle(PlainListStyle())
-                default:
-                    EmptyView()
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
+                .background(Color(.listForeground(modal: false)).ignoresSafeArea())
+
+            case .empty:
+                EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
+                    .frame(maxHeight: .infinity)
+            case .firstPageSync:
+                List(viewModel.ghostRows) { rowViewModel in
+                    ProductRow(viewModel: rowViewModel)
+                        .redacted(reason: .placeholder)
+                        .accessibilityRemoveTraits(.isButton)
+                        .accessibilityLabel(Localization.loadingRowsAccessibilityLabel)
+                        .shimmering()
+                }
+                .padding(.horizontal, insets: safeAreaInsets)
+                .listStyle(PlainListStyle())
+            default:
+                EmptyView()
             }
-            .background(Color(configuration.searchHeaderBackgroundColor).ignoresSafeArea())
-            .ignoresSafeArea(.container, edges: .horizontal)
-            .navigationTitle(configuration.title)
-            .navigationBarTitleDisplayMode(configuration.prefersLargeTitle ? .large : .inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(configuration.cancelButtonTitle) {
+        }
+        .background(Color(configuration.searchHeaderBackgroundColor).ignoresSafeArea())
+        .ignoresSafeArea(.container, edges: .horizontal)
+        .navigationTitle(configuration.title)
+        .navigationBarTitleDisplayMode(configuration.prefersLargeTitle ? .large : .inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                if let cancelButtonTitle = configuration.cancelButtonTitle {
+                    Button(cancelButtonTitle) {
                         isPresented.toggle()
                     }
                 }
             }
-            .onAppear {
-                viewModel.onLoadTrigger.send()
-            }
-            .notice($viewModel.notice, autoDismiss: false)
-            .sheet(isPresented: $showingFilters) {
-                FilterListView(viewModel: viewModel.filterListViewModel) { filters in
-                    viewModel.filters = filters
-                } onClearAction: {
-                    // no-op
-                } onDismissAction: {
-                    // no-op
-                }
+        }
+        .onAppear {
+            viewModel.onLoadTrigger.send()
+        }
+        .notice($viewModel.notice, autoDismiss: false)
+        .sheet(isPresented: $showingFilters) {
+            FilterListView(viewModel: viewModel.filterListViewModel) { filters in
+                viewModel.filters = filters
+            } onClearAction: {
+                // no-op
+            } onDismissAction: {
+                // no-op
             }
         }
-        .navigationViewStyle(.stack)
-        .wooNavigationBarStyle()
     }
 
     /// Creates the `ProductRow` for a product, depending on whether the product is variable.
@@ -151,9 +150,10 @@ struct ProductSelectorView: View {
         if let variationListViewModel = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
             HStack {
                 ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
-                           viewModel: rowViewModel) {
-                    viewModel.toggleSelectionForVariations(of: rowViewModel.productOrVariationID)
-                }
+                           viewModel: rowViewModel,
+                           onCheckboxSelected: {
+                    viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
+                })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
                     isShowingVariationList.toggle()
@@ -181,12 +181,13 @@ extension ProductSelectorView {
     struct Configuration {
         var showsFilters: Bool = false
         var multipleSelectionsEnabled: Bool = false
+        var clearSelectionEnabled: Bool = true
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
         var doneButtonTitleSingularFormat: String = ""
         var doneButtonTitlePluralFormat: String = ""
         let title: String
-        let cancelButtonTitle: String
+        let cancelButtonTitle: String?
         let productRowAccessibilityHint: String
         let variableProductRowAccessibilityHint: String
     }
@@ -196,6 +197,8 @@ private extension ProductSelectorView {
     enum Constants {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
+        static let doneButtonAccessibilityIdentifier: String = "product-multiple-selection-done-button"
+        static let productRowAccessibilityIdentifier: String = "product-item"
     }
 
     enum Localization {

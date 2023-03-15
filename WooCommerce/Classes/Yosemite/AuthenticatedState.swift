@@ -91,11 +91,12 @@ class AuthenticatedState: StoresManagerState {
                                network: network,
                                fileStorage: PListFileStorage()),
             WordPressSiteStore(network: network, dispatcher: dispatcher),
+            StoreOnboardingTasksStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
 
-        if case let .wpcom(_, authToken, _) = credentials {
-            services.append(AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: authToken))
+        if case .wpcom = credentials {
+            services.append(AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network))
         } else {
             DDLogInfo("No WordPress.com auth token found. AccountStore is not initialized.")
         }

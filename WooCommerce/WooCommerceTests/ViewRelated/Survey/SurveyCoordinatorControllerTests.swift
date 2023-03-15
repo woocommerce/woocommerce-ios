@@ -15,6 +15,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
         super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isSupportRequestEnabled: false))
     }
 
     override func tearDown() {
@@ -66,25 +67,6 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
         waitUntil {
             coordinator.presentingViewController == nil
         }
-    }
-
-    func test_it_invokes_zendesk_on_contactUs_action() throws {
-        // Given
-        let zendeskManager = MockZendeskManager()
-        let factory = MockSurveyViewControllersFactory()
-        let coordinator = SurveyCoordinatingController(survey: .inAppFeedback, zendeskManager: zendeskManager, viewControllersFactory: factory)
-        assertEmpty(zendeskManager.newRequestIfPossibleInvocations)
-
-        // When
-        factory.surveyViewController.onCompletion()
-        factory.surveySubmittedViewController.onContactUsAction?()
-
-        // Then
-        XCTAssertEqual(zendeskManager.newRequestIfPossibleInvocations.count, 1)
-
-        let invocation = try XCTUnwrap(zendeskManager.newRequestIfPossibleInvocations.first)
-        XCTAssertEqual(invocation.controller, coordinator)
-        XCTAssertNil(invocation.sourceTag)
     }
 
     func test_it_tracks_a_surveyScreen_completed_event_when_the_survey_is_submitted() throws {

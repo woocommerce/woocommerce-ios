@@ -295,6 +295,28 @@ final class ProductMapperTests: XCTestCase {
         // Then
         XCTAssertTrue(product.variations.isEmpty)
     }
+
+    /// Test that products with the `bundle` product type are properly parsed.
+    ///
+    func test_product_bundles_are_properly_parsed() throws {
+        // Given
+        let product = try XCTUnwrap(mapLoadProductBundleResponse())
+        let bundledItem = try XCTUnwrap(product.bundledItems.first)
+
+        // Then
+        // Check parsed Product properties
+        XCTAssertEqual(product.productType, .bundle)
+        XCTAssertEqual(product.bundleStockStatus, .insufficientStock)
+        XCTAssertEqual(product.bundleStockQuantity, 0)
+        XCTAssertEqual(product.bundledItems.count, 3)
+
+        // Check parsed ProductBundleItem properties
+        XCTAssertEqual(bundledItem.bundledItemID, 6)
+        XCTAssertEqual(bundledItem.productID, 36)
+        XCTAssertEqual(bundledItem.menuOrder, 0)
+        XCTAssertEqual(bundledItem.title, "Beanie with Logo")
+        XCTAssertEqual(bundledItem.stockStatus, .inStock)
+    }
 }
 
 
@@ -342,5 +364,11 @@ private extension ProductMapperTests {
     ///
     func mapLoadProductWithMalformedImageAltAndVariations() -> Product? {
         return mapProduct(from: "product-malformed-variations-and-image-alt")
+    }
+
+    /// Returns the ProductMapper output upon receiving `product-bundle`
+    ///
+    func mapLoadProductBundleResponse() -> Product? {
+        return mapProduct(from: "product-bundle")
     }
 }

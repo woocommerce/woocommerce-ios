@@ -16,15 +16,36 @@ final class DashboardViewController: UIViewController {
     @Published private var dashboardUI: DashboardUI?
 
     private lazy var deprecatedStatsViewController = DeprecatedDashboardStatsViewController()
-    private lazy var storeStatsAndTopPerformersViewController = StoreStatsAndTopPerformersViewController(siteID: siteID, dashboardViewModel: viewModel)
+    private lazy var storeStatsAndTopPerformersViewController =
+    StoreStatsAndTopPerformersViewController(siteID: siteID,
+                                             dashboardViewModel: viewModel,
+                                             usageTracksEventEmitter: usageTracksEventEmitter)
 
     // Used to enable subtitle with store name
     private var shouldShowStoreNameAsSubtitle: Bool = false
 
     // MARK: Subviews
 
-    private lazy var containerView: UIView = {
-        return UIView(frame: .zero)
+    /// The top-level stack view that contains the scroll view and other sticky views like the Jetpack benefits banner.
+    private lazy var stackView: UIStackView = {
+        .init(arrangedSubviews: [])
+    }()
+
+    /// The top-level scroll view. All subviews should not be a scroll view to avoid nested scroll views that can result in unexpected scrolling behavior.
+    private lazy var containerView: UIScrollView = {
+        return UIScrollView(frame: .zero)
+    }()
+
+    /// Refresh control for the scroll view.
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl(frame: .zero)
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
+        return refreshControl
+    }()
+
+    /// Embedded in the scroll view. Contains the header view and dashboard content view.
+    private lazy var containerStackView: UIStackView = {
+        .init(arrangedSubviews: [])
     }()
 
     private lazy var storeNameLabel: UILabel = {
@@ -57,16 +78,9 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
-    /// Constraint to attach the content view's top to the bottom of the header
-    /// When we hide the header, we disable this constraint so the content view can grow to fill the screen
-    private var contentTopToHeaderConstraint: NSLayoutConstraint?
-
     /// Stores an animator for showing/hiding the header view while there is an animation in progress
     /// so we can interrupt and reverse if needed
     private var headerAnimator: UIViewPropertyAnimator?
-
-    // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
-    private let hiddenScrollView = UIScrollView()
 
     /// Top banner that shows an error if there is a problem loading data
     ///
@@ -80,13 +94,9 @@ final class DashboardViewController: UIViewController {
                                               },
                                               onContactSupportButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
-                let supportForm = SupportFormHostingController(viewModel: .init())
-                supportForm.show(from: self)
-            } else {
-                ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
-            }
-                                              })
+            let supportForm = SupportFormHostingController(viewModel: .init())
+            supportForm.show(from: self)
+        })
     }()
 
     private var announcementViewHostingController: ConstraintsUpdatingHostingController<AnnouncementCardWrapper>?
@@ -96,12 +106,9 @@ final class DashboardViewController: UIViewController {
     /// Onboarding card.
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
-    private var onboardingCoordinator: StoreOnboardingCoordinator?
 
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
-    private var contentBottomToJetpackBenefitsBannerConstraint: NSLayoutConstraint?
-    private var contentBottomToContainerConstraint: NSLayoutConstraint?
     private var isJetpackBenefitsBannerShown: Bool {
         bottomJetpackBenefitsBannerController.view?.superview != nil
     }
@@ -117,6 +124,8 @@ final class DashboardViewController: UIViewController {
     }()
 
     private let viewModel: DashboardViewModel = .init()
+
+    private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
 
     private var subscriptions = Set<AnyCancellable>()
     private var navbarObserverSubscription: AnyCancellable?
@@ -135,8 +144,10 @@ final class DashboardViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        registerUserActivity()
         configureNavigation()
         configureView()
+        configureStackView()
         configureDashboardUIContainer()
         configureBottomJetpackBenefitsBanner()
         observeSiteForUIUpdates()
@@ -183,18 +194,19 @@ final class DashboardViewController: UIViewController {
 // MARK: - Header animation
 private extension DashboardViewController {
     func showHeaderWithoutAnimation() {
-        contentTopToHeaderConstraint?.isActive = true
-        headerStackView.alpha = 1
-        view.layoutIfNeeded()
+        headerStackView.isHidden = false
     }
 
     func hideHeaderWithoutAnimation() {
-        contentTopToHeaderConstraint?.isActive = false
-        headerStackView.alpha = 0
-        view.layoutIfNeeded()
+        headerStackView.isHidden = true
     }
 
     func updateHeaderVisibility(animated: Bool) {
+        // Only hide/show header when the dashboard content is taller than the scroll view.
+        // Otherwise, the large title state (navigation collapsed state) can be ambiguous because the scroll view becomes not scrollable.
+        guard let dashboardUI, dashboardUI.view.frame.height > containerView.frame.height else {
+            return
+        }
         if navigationBarIsCollapsed() {
             hideHeader(animated: animated)
         } else {
@@ -252,6 +264,16 @@ private extension DashboardViewController {
     }
 }
 
+extension DashboardViewController: UIScrollViewDelegate {
+    /// We're not using scrollViewDidScroll because that gets executed even while
+    /// the app is being loaded for the first time.
+    ///
+    /// Note: This also covers pull-to-refresh
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        usageTracksEventEmitter.interacted()
+    }
+}
+
 // MARK: - Configuration
 //
 private extension DashboardViewController {
@@ -262,6 +284,7 @@ private extension DashboardViewController {
 
     func configureNavigation() {
         configureTitle()
+        configureContainerStackView()
         configureHeaderStackView()
     }
 
@@ -275,15 +298,20 @@ private extension DashboardViewController {
         navigationItem.title = Localization.title
     }
 
+    func configureContainerStackView() {
+        containerStackView.axis = .vertical
+        containerView.addSubview(containerStackView)
+        containerStackView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.pinSubviewToAllEdges(containerStackView)
+        NSLayoutConstraint.activate([
+            containerView.widthAnchor.constraint(equalTo: containerStackView.widthAnchor)
+        ])
+    }
+
     func configureHeaderStackView() {
         configureSubtitle()
         configureErrorBanner()
-        containerView.addSubview(headerStackView)
-        NSLayoutConstraint.activate([
-            headerStackView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            headerStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            headerStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
-        ])
+        containerStackView.addArrangedSubview(headerStackView)
     }
 
     func configureSubtitle() {
@@ -301,39 +329,35 @@ private extension DashboardViewController {
     }
 
     func addViewBelowHeaderStackView(contentView: UIView) {
-        contentView.translatesAutoresizingMaskIntoConstraints = false
+        let indexAfterHeader = (containerStackView.arrangedSubviews.firstIndex(of: headerStackView) ?? -1) + 1
+        containerStackView.insertArrangedSubview(contentView, at: indexAfterHeader)
+    }
 
-        // This constraint will pin the bottom of the header to the top of the content
-        // We want this to be active when the header is visible
-        contentTopToHeaderConstraint = contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor)
-        contentTopToHeaderConstraint?.isActive = true
-
-        // This constraint has a lower priority and will pin the top of the content view to its superview
-        // This way, it has a defined height when contentTopToHeaderConstraint is disabled
-        let contentTopToContainerConstraint = contentView.topAnchor.constraint(equalTo: containerView.safeTopAnchor)
-        contentTopToContainerConstraint.priority = .defaultLow
-
-        NSLayoutConstraint.activate([
-            contentTopToContainerConstraint,
-            contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-        ])
-        contentBottomToContainerConstraint = contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+    func configureStackView() {
+        stackView.axis = .vertical
+        view.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(stackView)
     }
 
     func configureDashboardUIContainer() {
-        hiddenScrollView.configureForLargeTitleWorkaround()
-        // Adds the "hidden" scroll view to the root of the UIViewController for large titles.
-        view.addSubview(hiddenScrollView)
-        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+        containerView.delegate = self
 
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
-        view.addSubview(containerView)
+        stackView.addArrangedSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToSafeArea(containerView)
+
+        // Adds the refresh control to table view manually so that the refresh control always appears below the navigation bar title in
+        // large or normal size to be consistent with the products tab.
+        // If we do `scrollView.refreshControl = refreshControl`, the refresh control appears in the navigation bar when large title is shown.
+        containerView.addSubview(refreshControl)
+
+        NSLayoutConstraint.activate([
+            // The width matching constraint is required for the scroll view to be scrollable only vertically.
+            containerView.widthAnchor.constraint(equalTo: stackView.widthAnchor)
+        ])
     }
 
     func configureBottomJetpackBenefitsBanner() {
@@ -343,7 +367,7 @@ private extension DashboardViewController {
                 return
             }
             let coordinator = JetpackSetupCoordinator(site: site,
-                                                      navigationController: navigationController)
+                                                      rootViewController: navigationController)
             self.jetpackSetupCoordinator = coordinator
             coordinator.showBenefitModal()
             ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .tapped))
@@ -371,7 +395,6 @@ private extension DashboardViewController {
             case .v4:
                 dashboardUI = self.storeStatsAndTopPerformersViewController
             }
-            dashboardUI.scrollDelegate = self
             self.onDashboardUIUpdate(forced: false, updatedDashboardUI: dashboardUI)
         }.store(in: &subscriptions)
     }
@@ -508,10 +531,12 @@ private extension DashboardViewController {
 
 private extension DashboardViewController {
     func observeOnboardingVisibility() {
-        viewModel.$showOnboarding.sink { [weak self] showsOnboarding in
+        Publishers.CombineLatest(viewModel.$showOnboarding,
+                                 ServiceLocator.stores.site.compactMap { $0 })
+        .sink { [weak self] showsOnboarding, site in
             guard let self else { return }
             if showsOnboarding {
-                self.showOnboardingCard()
+                self.showOnboardingCard(site: site)
             } else {
                 self.removeOnboardingCard()
             }
@@ -528,29 +553,20 @@ private extension DashboardViewController {
         self.onboardingView = nil
     }
 
-    func showOnboardingCard() {
-        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false),
-                                                                     taskTapped: { [weak self] task in
-            guard let self,
-                  let navigationController = self.navigationController,
-                  let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                return
-            }
-            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: site)
-            self.onboardingCoordinator = coordinator
-            coordinator.start(task: task)
-        },
-                                                                                                   viewAllTapped: { [weak self] in
-            guard let self,
-                  let navigationController = self.navigationController,
-                  let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                return
-            }
-            let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: site)
-            self.onboardingCoordinator = coordinator
-            coordinator.start()
-        },
-                                                                                                   shareFeedbackAction: { [weak self] in
+    func showOnboardingCard(site: Site) {
+        guard let navigationController else {
+            return
+        }
+
+        if onboardingView != nil {
+            removeOnboardingCard()
+        }
+
+        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false,
+                                                                                      siteID: site.siteID),
+                                                                     navigationController: navigationController,
+                                                                     site: site,
+                                                                     shareFeedbackAction: { [weak self] in
             // Present survey
             let navigationController = SurveyCoordinatingController(survey: .storeSetup)
             self?.present(navigationController, animated: true, completion: nil)
@@ -563,18 +579,10 @@ private extension DashboardViewController {
         onboardingView = uiView
 
         addChild(hostingController)
-        let indexAfterHeader = (headerStackView.arrangedSubviews.firstIndex(of: innerStackView) ?? -1) + 1
-        headerStackView.insertArrangedSubview(uiView, at: indexAfterHeader)
+        addViewBelowHeaderStackView(contentView: uiView)
 
         hostingController.didMove(toParent: self)
         hostingController.view.layoutIfNeeded()
-    }
-}
-
-// MARK: - Delegate conformance
-extension DashboardViewController: DashboardUIScrollDelegate {
-    func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
-        hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
 }
 
@@ -607,12 +615,6 @@ private extension DashboardViewController {
             return
         }
 
-        // Resets the Auto Layout constraint that pins the previous content view to the bottom of the header view.
-        // Otherwise, if `contentTopToHeaderConstraint?.isActive = true` is called after the previous content view is removed
-        // in the next line `remove(previousDashboardUI)`, the app crashes because the content view is no longer in the
-        // view hierarchy.
-        contentTopToHeaderConstraint = nil
-
         // Tears down the previous child view controller.
         if let previousDashboardUI = dashboardUI {
             remove(previousDashboardUI)
@@ -620,16 +622,12 @@ private extension DashboardViewController {
 
         let contentView = updatedDashboardUI.view!
         addChild(updatedDashboardUI)
-        containerView.addSubview(contentView)
+        containerStackView.addArrangedSubview(contentView)
         updatedDashboardUI.didMove(toParent: self)
-        addViewBelowHeaderStackView(contentView: contentView)
 
         // Sets `dashboardUI` after its view is added to the view hierarchy so that observers can update UI based on its view.
         dashboardUI = updatedDashboardUI
 
-        updatedDashboardUI.onPullToRefresh = { [weak self] in
-            await self?.pullToRefresh()
-        }
         updatedDashboardUI.displaySyncingError = { [weak self] in
             self?.showTopBannerView()
         }
@@ -650,44 +648,54 @@ private extension DashboardViewController {
         guard let banner = bottomJetpackBenefitsBannerController.view else {
             return
         }
-        contentBottomToContainerConstraint?.isActive = false
 
         addChild(bottomJetpackBenefitsBannerController)
-        containerView.addSubview(banner)
+        stackView.addArrangedSubview(banner)
         bottomJetpackBenefitsBannerController.didMove(toParent: self)
-
-        banner.translatesAutoresizingMaskIntoConstraints = false
-
-        // The banner height is calculated in `viewDidLayoutSubviews` to support rotation.
-        let contentBottomToJetpackBenefitsBannerConstraint = banner.topAnchor.constraint(equalTo: contentView.bottomAnchor)
-        self.contentBottomToJetpackBenefitsBannerConstraint = contentBottomToJetpackBenefitsBannerConstraint
-
-        NSLayoutConstraint.activate([
-            contentBottomToJetpackBenefitsBannerConstraint,
-            banner.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            banner.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            // Pins from the safe area layout bottom to accommodate offline banner.
-            banner.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-        ])
     }
 
     func hideJetpackBenefitsBanner() {
-        contentBottomToJetpackBenefitsBannerConstraint?.isActive = false
-        contentBottomToContainerConstraint?.isActive = true
         if isJetpackBenefitsBannerShown {
-            bottomJetpackBenefitsBannerController.view?.removeFromSuperview()
+            stackView.removeArrangedSubview(bottomJetpackBenefitsBannerController.view)
             remove(bottomJetpackBenefitsBannerController)
         }
     }
 }
 
-// MARK: - Action Handlers
+// MARK: - Pull-to-refresh
 //
 private extension DashboardViewController {
-    func pullToRefresh() async {
+    @objc func pullToRefresh() {
+        Task { @MainActor in
+            showSpinner(shouldShowSpinner: true)
+            await onPullToRefresh()
+            showSpinner(shouldShowSpinner: false)
+        }
+    }
+
+    @MainActor
+    func showSpinner(shouldShowSpinner: Bool) {
+        if shouldShowSpinner {
+            refreshControl.beginRefreshing()
+        } else {
+            refreshControl.endRefreshing()
+        }
+    }
+
+    func onPullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-        await viewModel.syncAnnouncements(for: siteID)
-        await reloadDashboardUIStatsVersion(forced: true)
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { [weak self] in
+                guard let self else { return }
+                await self.viewModel.syncAnnouncements(for: self.siteID)
+            }
+            group.addTask { [weak self] in
+                await self?.reloadDashboardUIStatsVersion(forced: true)
+            }
+            group.addTask { [weak self] in
+                await self?.onboardingHostingController?.reloadTasks()
+            }
+        }
     }
 }
 
@@ -775,7 +783,7 @@ private extension DashboardViewController {
         static let bannerBottomMargin = CGFloat(8)
         static let horizontalMargin = CGFloat(16)
         static let storeNameTextColor: UIColor = .secondaryLabel
-        static let backgroundColor: UIColor = .systemBackground
+        static let backgroundColor: UIColor = .listForeground(modal: false)
         static let iPhoneCollapsedNavigationBarHeight = CGFloat(44)
         static let iPadCollapsedNavigationBarHeight = CGFloat(50)
         static let tabStripSpacing = CGFloat(12)

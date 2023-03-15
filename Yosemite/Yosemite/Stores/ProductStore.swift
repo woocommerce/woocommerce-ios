@@ -539,6 +539,7 @@ extension ProductStore {
             handleProductTags(readOnlyProduct, storageProduct, storage)
             handleProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
             handleProductAddOns(readOnlyProduct, storageProduct, storage)
+            handleProductBundledItems(readOnlyProduct, storageProduct, storage)
         }
     }
 
@@ -725,6 +726,23 @@ extension ProductStore {
             return storageAddOnOption
         }
         storageProductAddOn.addToOptions(NSOrderedSet(array: storageAddOnsOptions))
+    }
+
+    /// Replaces the `storageProduct.bundledItems` with the new `readOnlyProduct.bundledItems`
+    ///
+    func handleProductBundledItems(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        // Remove all previous bundledItems, they will be deleted as they have the `cascade` delete rule
+        if let bundledItems = storageProduct.bundledItems {
+            storageProduct.removeFromBundledItems(bundledItems)
+        }
+
+        // Create and add `storageBundledItems` from `readOnlyProduct.bundledItems`
+        let storageBundledItems = readOnlyProduct.bundledItems.map { readOnlyBundleItem -> StorageProductBundleItem in
+            let storageBundledItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
+            storageBundledItem.update(with: readOnlyBundleItem)
+            return storageBundledItem
+        }
+        storageProduct.addToBundledItems(NSOrderedSet(array: storageBundledItems))
     }
 }
 

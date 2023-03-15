@@ -151,6 +151,35 @@ final class OrdersRootViewController: UIViewController {
         navigationController?.pushViewController(loaderViewController, animated: true)
     }
 
+    /// Presents the Order Creation flow.
+    ///
+    @objc func presentOrderCreationFlow() {
+        guard let navigationController = navigationController else {
+            return
+        }
+
+        let viewModel = EditableOrderViewModel(siteID: siteID)
+        viewModel.onFinished = { [weak self] order in
+            guard let self = self else { return }
+
+            self.dismiss(animated: true) {
+                self.navigateToOrderDetail(order)
+            }
+        }
+
+        let viewController = OrderFormHostingController(viewModel: viewModel)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
+            navigationController.present(newOrderNavigationController, animated: true)
+        } else {
+            viewController.hidesBottomBarWhenPushed = true
+            navigationController.pushViewController(viewController, animated: true)
+        }
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
+        orderDurationRecorder.startRecording()
+    }
+
     /// Present `FilterListViewController`
     ///
     private func filterButtonTapped() {
@@ -357,40 +386,11 @@ private extension OrdersRootViewController {
         let button = UIBarButtonItem(image: .plusBarButtonItemImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentOrderCreationFlow(sender:)))
+                                     action: #selector(presentOrderCreationFlow))
         button.accessibilityTraits = .button
         button.accessibilityLabel = NSLocalizedString("Choose new order type", comment: "Opens action sheet to choose a type of a new order")
         button.accessibilityIdentifier = "new-order-type-sheet-button"
         return button
-    }
-
-    /// Presents the Order Creation flow.
-    ///
-    @objc func presentOrderCreationFlow(sender: UIBarButtonItem) {
-        guard let navigationController = navigationController else {
-            return
-        }
-
-        let viewModel = EditableOrderViewModel(siteID: siteID)
-        viewModel.onFinished = { [weak self] order in
-            guard let self = self else { return }
-
-            self.dismiss(animated: true) {
-                self.navigateToOrderDetail(order)
-            }
-        }
-
-        let viewController = OrderFormHostingController(viewModel: viewModel)
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
-            navigationController.present(newOrderNavigationController, animated: true)
-        } else {
-            viewController.hidesBottomBarWhenPushed = true
-            navigationController.pushViewController(viewController, animated: true)
-        }
-
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
-        orderDurationRecorder.startRecording()
     }
 
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.

@@ -5,7 +5,7 @@ enum BetaFeature: String, CaseIterable {
     case productSKUScanner
     case couponManagement
     case inAppPurchases
-    case tapToPayOnIPhone
+    case productMultiSelection
 }
 
 extension BetaFeature {
@@ -19,8 +19,8 @@ extension BetaFeature {
             return Localization.couponManagementTitle
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementTitle
-        case .tapToPayOnIPhone:
-            return Localization.tapToPayOnIPhoneTitle
+        case .productMultiSelection:
+            return Localization.productMultiSelectionTitle
         }
     }
 
@@ -34,8 +34,8 @@ extension BetaFeature {
             return Localization.couponManagementDescription
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementDescription
-        case .tapToPayOnIPhone:
-            return Localization.tapToPayOnIPhoneDescription
+        case .productMultiSelection:
+            return Localization.productMultiSelectionDescription
         }
     }
 
@@ -49,8 +49,8 @@ extension BetaFeature {
             return \.isCouponManagementSwitchEnabled
         case .inAppPurchases:
             return \.isInAppPurchasesSwitchEnabled
-        case .tapToPayOnIPhone:
-            return \.isTapToPayOnIPhoneSwitchEnabled
+        case .productMultiSelection:
+            return \.isProductMultiSelectionSwitchEnabled
         }
     }
 
@@ -69,21 +69,11 @@ extension BetaFeature {
         switch self {
         case .inAppPurchases:
             return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchases)
-        case .tapToPayOnIPhone:
-            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhone) && deviceMaySupportTTP
+        case .productMultiSelection:
+            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1)
         default:
             return true
         }
-    }
-
-    // Full checking for support of TTP requires a more complicated call.
-    // This is sufficient for whether the feature toggle should be shown, as full support checks
-    // are done when a payment is started. This is a temporary measure until full release.
-    private var deviceMaySupportTTP: Bool {
-        guard #available(iOS 16, *) else {
-            return false
-        }
-        return !UIDevice.isPad()
     }
 
     static var availableFeatures: [Self] {
@@ -159,13 +149,11 @@ private extension BetaFeature {
             "Test out in-app purchases as we get ready to launch",
             comment: "Cell description on beta features screen to enable in-app purchases")
 
-        static let tapToPayOnIPhoneTitle = NSLocalizedString(
-            "Tap to Pay on iPhone",
-            comment: "Cell tytle on beta features screen to enable Tap to Pay on iPhone: card payments with the " +
-            "phone's built in reader")
-        static let tapToPayOnIPhoneDescription = NSLocalizedString(
-            "Test out In-Person Payments using your phone's built-in card reader, as we get ready to launch. " +
-            "Supported on iPhone XS and newer phones, running iOS 16 or above, for US-based stores.",
-            comment: "Cell description on beta features screen to enable in-app purchases")
+        static let productMultiSelectionTitle = NSLocalizedString(
+            "Product Multi-Selection",
+            comment: "Cell title on beta features screen to enable Product Multi-Selection")
+        static let productMultiSelectionDescription = NSLocalizedString(
+            "Test out Product Multi-Selection as we get ready to launch",
+            comment: "Cell description on beta features screen to enable Product Multi-Selection")
     }
 }

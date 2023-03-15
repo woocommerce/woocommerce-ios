@@ -15,6 +15,10 @@ struct OrderPaymentSection: View {
     ///
     @State private var shouldShowFeeLineDetails: Bool = false
 
+    /// Indicates if the coupon line details screen should be shown or not.
+    ///
+    @State private var shouldShowCouponLineDetails: Bool = false
+
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
@@ -49,6 +53,12 @@ struct OrderPaymentSection: View {
                 .sheet(isPresented: $shouldShowFeeLineDetails) {
                     FeeLineDetails(viewModel: viewModel.feeLineViewModel)
                 }
+
+            couponRow
+                .sheet(isPresented: $shouldShowCouponLineDetails) {
+                    CouponLineDetails(viewModel: viewModel.couponLineViewModel)
+                }
+                .renderedIf(viewModel.supportsAddingCouponToOrder)
 
             TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
 
@@ -89,6 +99,21 @@ struct OrderPaymentSection: View {
             .accessibilityIdentifier("add-fee-button")
         }
     }
+
+    @ViewBuilder private var couponRow: some View {
+        if viewModel.shouldShowCoupon {
+            TitleAndValueRow(title: viewModel.couponSummary ?? Localization.coupon, value: .content(viewModel.discountTotal), selectionStyle: .highlight) {
+                shouldShowCouponLineDetails = true
+            }
+        } else {
+            Button(Localization.addCoupon) {
+                shouldShowCouponLineDetails = true
+            }
+            .buttonStyle(PlusButtonStyle())
+            .padding()
+            .accessibilityIdentifier("add-coupon-button")
+        }
+    }
 }
 
 // MARK: Constants
@@ -102,6 +127,8 @@ private extension OrderPaymentSection {
         static let addFee = NSLocalizedString("Add Fee", comment: "Title text of the button that adds a fee when creating a new order")
         static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
         static let taxesTotal = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
+        static let coupon = NSLocalizedString("Coupon", comment: "Label for the row showing the cost of coupon in the order")
+        static let addCoupon = NSLocalizedString("Add Coupon", comment: "Title text of the button that adds a fee when creating a new coupon")
     }
 }
 

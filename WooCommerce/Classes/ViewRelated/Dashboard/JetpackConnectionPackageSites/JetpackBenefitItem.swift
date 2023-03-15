@@ -17,6 +17,7 @@ struct JetpackBenefitItem: View {
                 .overlay(
                     Image(uiImage: icon)
                         .resizable()
+                        .aspectRatio(contentMode: .fit)
                         .frame(width: Layout.iconDimension, height: Layout.iconDimension, alignment: .center)
                 )
             VStack(alignment: .leading, spacing: Layout.verticalTextSpacing) {
@@ -32,7 +33,7 @@ private extension JetpackBenefitItem {
     enum Layout {
         static let circleDimension = CGFloat(40)
         static let iconDimension = CGFloat(20)
-        static let horizontalSpacing = CGFloat(16)
+        static let horizontalSpacing = CGFloat(20)
         static let verticalTextSpacing = CGFloat(2)
     }
 }

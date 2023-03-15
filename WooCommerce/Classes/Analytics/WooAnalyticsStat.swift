@@ -341,6 +341,7 @@ public enum WooAnalyticsStat: String {
     case ordersListFilter = "orders_list_filter"
     case ordersListSearch = "orders_list_search"
     case ordersListLoaded = "orders_list_loaded"
+    case ordersListLoadError = "orders_list_load_error"
     case orderProductAdd = "order_product_add"
     case orderProductQuantityChange = "order_product_quantity_change"
     case orderProductRemove = "order_product_remove"
@@ -358,6 +359,8 @@ public enum WooAnalyticsStat: String {
     case orderTrackingProvidersLoaded = "order_tracking_providers_loaded"
     case orderFeeAdd = "order_fee_add"
     case orderFeeRemove = "order_fee_remove"
+    case orderCouponAdd = "order_coupon_add"
+    case orderCouponRemove = "order_coupon_remove"
     case orderShippingMethodAdd = "order_shipping_method_add"
     case orderShippingMethodRemove = "order_shipping_method_remove"
     case orderSyncFailed = "order_sync_failed"
@@ -808,6 +811,7 @@ public enum WooAnalyticsStat: String {
     case paymentsMenuManageCardReadersTapped = "payments_hub_manage_card_readers_tapped"
     case paymentsMenuPaymentProviderTapped = "settings_card_present_select_payment_gateway_tapped"
     case inPersonPaymentsLearnMoreTapped = "in_person_payments_learn_more_tapped"
+    case setUpTapToPayOnIPhoneTapped = "set_up_tap_to_pay_on_iphone_tapped"
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"
@@ -815,6 +819,12 @@ public enum WooAnalyticsStat: String {
     // MARK: Universal Links
     case universalLinkOpened = "universal_link_opened"
     case universalLinkFailed = "universal_link_failed"
+
+    // MARK: Spotlight
+    case spotlightActivityOpened = "spotlight_activity_opened"
+
+    // MARK: App Intents
+    case appIntentShortcutOpened = "shortcut_opened"
 
     // MARK: Login Jetpack Connection
     case loginJetpackConnectionErrorShown = "login_jetpack_connection_error_shown"

@@ -1,6 +1,7 @@
 import XCTest
 import enum Networking.DotcomError
 import enum Networking.SiteCreationError
+import enum Networking.WordPressApiError
 @testable import class Networking.MockNetwork
 @testable import Yosemite
 
@@ -147,5 +148,54 @@ final class SiteStoreTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error, .invalidDomain)
+    }
+
+    // MARK: - `launchSite`
+
+    func test_launchSite_returns_success_on_success() throws {
+        // Given
+        remote.whenLaunchingSite(thenReturn: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(SiteAction.launchSite(siteID: 134) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_launchSite_returns_alreadyLaunched_error_on_already_launched_WordPressApiError() throws {
+        // Given
+        remote.whenLaunchingSite(thenReturn: .failure(WordPressApiError.unknown(code: "already-launched", message: "")))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(SiteAction.launchSite(siteID: 134) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error, .alreadyLaunched)
+    }
+
+    func test_launchSite_returns_unexpected_error_on_unauthorized_WordPressApiError() throws {
+        // Given
+        remote.whenLaunchingSite(thenReturn: .failure(WordPressApiError.unknown(code: "unauthorized", message: "")))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(SiteAction.launchSite(siteID: 134) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error, .unexpected(description: "WordPress API Error: [unauthorized] "))
     }
 }

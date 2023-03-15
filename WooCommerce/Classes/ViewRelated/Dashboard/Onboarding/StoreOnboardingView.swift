@@ -1,19 +1,42 @@
 import SwiftUI
+import struct Yosemite.Site
+import struct Yosemite.StoreOnboardingTask
 
 /// Hosting controller for `StoreOnboardingView`.
 ///
-final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboardingView> {
+final class StoreOnboardingViewHostingController: SelfSizingHostingController<StoreOnboardingView> {
     private let viewModel: StoreOnboardingViewModel
+    private let sourceNavigationController: UINavigationController
+    private let site: Site
+    private lazy var coordinator: StoreOnboardingCoordinator = .init(navigationController: sourceNavigationController,
+                                                                     site: site)
 
     init(viewModel: StoreOnboardingViewModel,
-         taskTapped: @escaping (StoreOnboardingTask) -> Void,
-         viewAllTapped: (() -> Void)? = nil,
+         navigationController: UINavigationController,
+         site: Site,
          shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
+        self.sourceNavigationController = navigationController
+        self.site = site
         super.init(rootView: StoreOnboardingView(viewModel: viewModel,
-                                                 taskTapped: taskTapped,
-                                                 viewAllTapped: viewAllTapped,
                                                  shareFeedbackAction: shareFeedbackAction))
+        if #unavailable(iOS 16.0) {
+            viewModel.onStateChange = { [weak self] in
+                self?.view.invalidateIntrinsicContentSize()
+            }
+        }
+
+        rootView.taskTapped = { [weak self] task in
+            guard let self else { return }
+            self.coordinator.start(task: task)
+        }
+
+        if !viewModel.isExpanded {
+            rootView.viewAllTapped = { [weak self] in
+                guard let self else { return }
+                self.coordinator.start()
+            }
+        }
     }
 
     @available(*, unavailable)
@@ -25,6 +48,22 @@ final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboa
         super.viewDidLoad()
 
         configureNavigationBarAppearance()
+        Task {
+            await reloadTasks()
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        Task {
+            await reloadTasks()
+        }
+    }
+
+    @MainActor
+    func reloadTasks() async {
+        await viewModel.reloadTasks()
     }
 
     /// Shows a transparent navigation bar without a bottom border.
@@ -45,18 +84,18 @@ final class StoreOnboardingViewHostingController: UIHostingController<StoreOnboa
 
 /// Shows a list of onboarding tasks for store setup with completion state.
 struct StoreOnboardingView: View {
-    private let viewModel: StoreOnboardingViewModel
-    private let taskTapped: (StoreOnboardingTask) -> Void
-    private let viewAllTapped: (() -> Void)?
+    /// Set externally in the hosting controller.
+    var taskTapped: (StoreOnboardingTask) -> Void = { _ in }
+    /// Set externally in the hosting controller.
+    var viewAllTapped: (() -> Void)?
+
+    @ObservedObject private var viewModel: StoreOnboardingViewModel
+
     private let shareFeedbackAction: (() -> Void)?
 
     init(viewModel: StoreOnboardingViewModel,
-         taskTapped: @escaping (StoreOnboardingTask) -> Void,
-         viewAllTapped: (() -> Void)? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
-        self.taskTapped = taskTapped
-        self.viewAllTapped = viewAllTapped
         self.shareFeedbackAction = shareFeedbackAction
     }
 
@@ -82,7 +121,8 @@ struct StoreOnboardingView: View {
                 StoreSetupProgressView(isExpanded: viewModel.isExpanded,
                                        totalNumberOfTasks: viewModel.taskViewModels.count,
                                        numberOfTasksCompleted: viewModel.numberOfTasksCompleted,
-                                       shareFeedbackAction: shareFeedbackAction)
+                                       shareFeedbackAction: shareFeedbackAction,
+                                       isRedacted: viewModel.isRedacted)
 
                 // Task list
                 VStack(alignment: .leading, spacing: Layout.verticalSpacingBetweenTasks) {
@@ -90,15 +130,17 @@ struct StoreOnboardingView: View {
                         let isLastTask = taskViewModel == viewModel.tasksForDisplay.last
 
                         StoreOnboardingTaskView(viewModel: taskViewModel,
-                                                showDivider: !isLastTask) { task in
+                                                showDivider: !isLastTask,
+                                                isRedacted: viewModel.isRedacted) { task in
                             taskTapped(task)
                         }
+                                                .shimmering(active: viewModel.isRedacted)
                     }
                 }
 
                 // View all button
                 viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
-                    .renderedIf(!viewModel.isExpanded)
+                    .renderedIf(!viewModel.isExpanded && !viewModel.isRedacted)
 
                 Spacer()
                     .renderedIf(viewModel.isExpanded)
@@ -150,8 +192,8 @@ private extension StoreOnboardingView {
 
 struct StoreOnboardingCardView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingView(viewModel: .init(isExpanded: false), taskTapped: { _ in })
+        StoreOnboardingView(viewModel: .init(isExpanded: false, siteID: 0))
 
-        StoreOnboardingView(viewModel: .init(isExpanded: true), taskTapped: { _ in })
+        StoreOnboardingView(viewModel: .init(isExpanded: true, siteID: 0))
     }
 }

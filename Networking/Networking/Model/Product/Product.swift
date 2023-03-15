@@ -85,6 +85,17 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     public let addOns: [ProductAddOn]
 
+    // MARK: Product Bundle properties
+
+    /// Stock status of this bundle, taking bundled product quantity requirements and limitations into account. Applicable for bundle-type products only.
+    public let bundleStockStatus: ProductStockStatus?
+
+    /// Quantity of bundles left in stock, taking bundled product quantity requirements into account. Applicable for bundle-type products only.
+    public let bundleStockQuantity: Int64?
+
+    /// List of bundled item data contained in this product.
+    public let bundledItems: [ProductBundleItem]
+
     /// Computed Properties
     ///
     public var productStatus: ProductStatus {
@@ -199,7 +210,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 variations: [Int64],
                 groupedProducts: [Int64],
                 menuOrder: Int,
-                addOns: [ProductAddOn]) {
+                addOns: [ProductAddOn],
+                bundleStockStatus: ProductStockStatus?,
+                bundleStockQuantity: Int64?,
+                bundledItems: [ProductBundleItem]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -263,6 +277,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.groupedProducts = groupedProducts
         self.menuOrder = menuOrder
         self.addOns = addOns
+        self.bundleStockStatus = bundleStockStatus
+        self.bundleStockQuantity = bundleStockQuantity
+        self.bundledItems = bundledItems
     }
 
     /// The public initializer for Product.
@@ -402,6 +419,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         // https://github.com/woocommerce/woocommerce-ios/issues/4205
         let addOns = (try? container.decodeIfPresent(ProductAddOnEnvelope.self, forKey: .metadata)?.revolve()) ?? []
 
+        // Product Bundle properties
+        // Uses failsafe decoding because non-bundle product types can return unexpected value types.
+        let bundleStockStatus = container.failsafeDecodeIfPresent(ProductStockStatus.self, forKey: .bundleStockStatus)
+        // When the bundle stock quantity is not set for a product bundle, the API returns an empty string and the value will be `nil`.
+        let bundleStockQuantity = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleStockQuantity)
+        let bundledItems = try container.decodeIfPresent([ProductBundleItem].self, forKey: .bundledItems) ?? []
+
         self.init(siteID: siteID,
                   productID: productID,
                   name: name,
@@ -464,7 +488,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   variations: variations,
                   groupedProducts: groupedProducts,
                   menuOrder: menuOrder,
-                  addOns: addOns)
+                  addOns: addOns,
+                  bundleStockStatus: bundleStockStatus,
+                  bundleStockQuantity: bundleStockQuantity,
+                  bundledItems: bundledItems)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -650,6 +677,10 @@ private extension Product {
         case groupedProducts    = "grouped_products"
         case menuOrder          = "menu_order"
         case metadata           = "meta_data"
+
+        case bundleStockStatus              = "bundle_stock_status"
+        case bundleStockQuantity            = "bundle_stock_quantity"
+        case bundledItems                   = "bundled_items"
     }
 }
 

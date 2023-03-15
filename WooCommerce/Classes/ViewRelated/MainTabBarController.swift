@@ -295,6 +295,12 @@ extension MainTabBarController {
         navigateTo(.reviews, completion: completion)
     }
 
+    /// Switches to the Products tab and pops to the root view controller
+    ///
+    static func switchToProductsTab(completion: (() -> Void)? = nil) {
+        navigateTo(.products, completion: completion)
+    }
+
     /// Switches to the Hub Menu tab and pops to the root view controller
     ///
     static func switchToHubMenuTab(completion: (() -> Void)? = nil) {
@@ -403,6 +409,19 @@ extension MainTabBarController {
         })
     }
 
+    static func presentOrderCreationFlow() {
+        switchToOrdersTab {
+            let tabBar = AppDelegate.shared.tabBarController
+            let ordersNavigationController = tabBar?.ordersNavigationController
+
+            guard let ordersSplitViewWrapperController = ordersNavigationController?.viewControllers.first as? OrdersSplitViewWrapperController else {
+                return
+            }
+
+            ordersSplitViewWrapperController.presentOrderCreationFlow()
+        }
+    }
+
     private static func presentDetails(for orderID: Int64, siteID: Int64) {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: orderID, siteID: siteID)
@@ -411,14 +430,24 @@ extension MainTabBarController {
         }
     }
 
-    static func presentPayments() {
+    @discardableResult
+    static func presentPayments() -> InPersonPaymentsMenuViewController? {
         switchToHubMenuTab()
 
         guard let hubMenuViewController: HubMenuViewController = childViewController() else {
-            return
+            return nil
         }
 
-        hubMenuViewController.showPaymentsMenu()
+        return hubMenuViewController.showPaymentsMenu()
+    }
+
+    static func presentCollectPayment() {
+        let viewController = presentPayments()
+
+        // Wait a second until the payments screen is presented. Suboptimal but works.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            viewController?.openSimplePaymentsAmountFlow()
+        }
     }
 }
 

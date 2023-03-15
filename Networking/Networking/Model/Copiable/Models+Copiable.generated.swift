@@ -70,6 +70,42 @@ extension Networking.Address {
     }
 }
 
+extension Networking.Announcement {
+    public func copy(
+        appVersionName: CopiableProp<String> = .copy,
+        minimumAppVersion: CopiableProp<String> = .copy,
+        maximumAppVersion: CopiableProp<String> = .copy,
+        appVersionTargets: CopiableProp<[String]> = .copy,
+        detailsUrl: CopiableProp<String> = .copy,
+        announcementVersion: CopiableProp<String> = .copy,
+        isLocalized: CopiableProp<Bool> = .copy,
+        responseLocale: CopiableProp<String> = .copy,
+        features: CopiableProp<[Feature]> = .copy
+    ) -> Networking.Announcement {
+        let appVersionName = appVersionName ?? self.appVersionName
+        let minimumAppVersion = minimumAppVersion ?? self.minimumAppVersion
+        let maximumAppVersion = maximumAppVersion ?? self.maximumAppVersion
+        let appVersionTargets = appVersionTargets ?? self.appVersionTargets
+        let detailsUrl = detailsUrl ?? self.detailsUrl
+        let announcementVersion = announcementVersion ?? self.announcementVersion
+        let isLocalized = isLocalized ?? self.isLocalized
+        let responseLocale = responseLocale ?? self.responseLocale
+        let features = features ?? self.features
+
+        return Networking.Announcement(
+            appVersionName: appVersionName,
+            minimumAppVersion: minimumAppVersion,
+            maximumAppVersion: maximumAppVersion,
+            appVersionTargets: appVersionTargets,
+            detailsUrl: detailsUrl,
+            announcementVersion: announcementVersion,
+            isLocalized: isLocalized,
+            responseLocale: responseLocale,
+            features: features
+        )
+    }
+}
+
 extension Networking.Coupon {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -219,6 +255,48 @@ extension Networking.DotcomUser {
             email: email,
             displayName: displayName,
             avatar: avatar
+        )
+    }
+}
+
+extension Networking.Feature {
+    public func copy(
+        title: CopiableProp<String> = .copy,
+        subtitle: CopiableProp<String> = .copy,
+        icons: NullableCopiableProp<[FeatureIcon]> = .copy,
+        iconUrl: CopiableProp<String> = .copy,
+        iconBase64: NullableCopiableProp<String> = .copy
+    ) -> Networking.Feature {
+        let title = title ?? self.title
+        let subtitle = subtitle ?? self.subtitle
+        let icons = icons ?? self.icons
+        let iconUrl = iconUrl ?? self.iconUrl
+        let iconBase64 = iconBase64 ?? self.iconBase64
+
+        return Networking.Feature(
+            title: title,
+            subtitle: subtitle,
+            icons: icons,
+            iconUrl: iconUrl,
+            iconBase64: iconBase64
+        )
+    }
+}
+
+extension Networking.FeatureIcon {
+    public func copy(
+        iconUrl: CopiableProp<String> = .copy,
+        iconBase64: CopiableProp<String> = .copy,
+        iconType: CopiableProp<String> = .copy
+    ) -> Networking.FeatureIcon {
+        let iconUrl = iconUrl ?? self.iconUrl
+        let iconBase64 = iconBase64 ?? self.iconBase64
+        let iconType = iconType ?? self.iconType
+
+        return Networking.FeatureIcon(
+            iconUrl: iconUrl,
+            iconBase64: iconBase64,
+            iconType: iconType
         )
     }
 }
@@ -519,6 +597,27 @@ extension Networking.Order {
             fees: fees,
             taxes: taxes,
             customFields: customFields
+        )
+    }
+}
+
+extension Networking.OrderCouponLine {
+    public func copy(
+        couponID: CopiableProp<Int64> = .copy,
+        code: CopiableProp<String> = .copy,
+        discount: CopiableProp<String> = .copy,
+        discountTax: CopiableProp<String> = .copy
+    ) -> Networking.OrderCouponLine {
+        let couponID = couponID ?? self.couponID
+        let code = code ?? self.code
+        let discount = discount ?? self.discount
+        let discountTax = discountTax ?? self.discountTax
+
+        return Networking.OrderCouponLine(
+            couponID: couponID,
+            code: code,
+            discount: discount,
+            discountTax: discountTax
         )
     }
 }
@@ -953,7 +1052,10 @@ extension Networking.Product {
         variations: CopiableProp<[Int64]> = .copy,
         groupedProducts: CopiableProp<[Int64]> = .copy,
         menuOrder: CopiableProp<Int> = .copy,
-        addOns: CopiableProp<[ProductAddOn]> = .copy
+        addOns: CopiableProp<[ProductAddOn]> = .copy,
+        bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
+        bundleStockQuantity: NullableCopiableProp<Int64> = .copy,
+        bundledItems: CopiableProp<[ProductBundleItem]> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1018,6 +1120,9 @@ extension Networking.Product {
         let groupedProducts = groupedProducts ?? self.groupedProducts
         let menuOrder = menuOrder ?? self.menuOrder
         let addOns = addOns ?? self.addOns
+        let bundleStockStatus = bundleStockStatus ?? self.bundleStockStatus
+        let bundleStockQuantity = bundleStockQuantity ?? self.bundleStockQuantity
+        let bundledItems = bundledItems ?? self.bundledItems
 
         return Networking.Product(
             siteID: siteID,
@@ -1082,7 +1187,10 @@ extension Networking.Product {
             variations: variations,
             groupedProducts: groupedProducts,
             menuOrder: menuOrder,
-            addOns: addOns
+            addOns: addOns,
+            bundleStockStatus: bundleStockStatus,
+            bundleStockQuantity: bundleStockQuantity,
+            bundledItems: bundledItems
         )
     }
 }
@@ -1191,6 +1299,30 @@ extension Networking.ProductAttribute {
             visible: visible,
             variation: variation,
             options: options
+        )
+    }
+}
+
+extension Networking.ProductBundleItem {
+    public func copy(
+        bundledItemID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        menuOrder: CopiableProp<Int64> = .copy,
+        title: CopiableProp<String> = .copy,
+        stockStatus: CopiableProp<ProductBundleItemStockStatus> = .copy
+    ) -> Networking.ProductBundleItem {
+        let bundledItemID = bundledItemID ?? self.bundledItemID
+        let productID = productID ?? self.productID
+        let menuOrder = menuOrder ?? self.menuOrder
+        let title = title ?? self.title
+        let stockStatus = stockStatus ?? self.stockStatus
+
+        return Networking.ProductBundleItem(
+            bundledItemID: bundledItemID,
+            productID: productID,
+            menuOrder: menuOrder,
+            title: title,
+            stockStatus: stockStatus
         )
     }
 }

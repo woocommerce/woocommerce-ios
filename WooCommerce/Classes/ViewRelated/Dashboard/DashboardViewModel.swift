@@ -30,13 +30,15 @@ final class DashboardViewModel {
 
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         userDefaults: UserDefaults = .standard) {
         self.stores = stores
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
-        // TODO: 8893 - determine if the onboarding view should be shown based on more criteria
-        self.showOnboarding = featureFlags.isFeatureFlagEnabled(.dashboardOnboarding)
+        userDefaults.publisher(for: \.completedAllStoreOnboardingTasks)
+            .map({ featureFlags.isFeatureFlagEnabled(.dashboardOnboarding) && ($0 == false) })
+            .assign(to: &$showOnboarding)
     }
 
     /// Syncs store stats for dashboard UI.
@@ -226,3 +228,9 @@ private extension DashboardViewModel {
         static let dashboardScreenName = "my_store"
     }
 }
+
+private extension UserDefaults {
+     @objc dynamic var completedAllStoreOnboardingTasks: Bool {
+         bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
+     }
+ }

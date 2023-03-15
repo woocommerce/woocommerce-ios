@@ -67,7 +67,10 @@ extension Product {
                 variations: [],
                 groupedProducts: [],
                 menuOrder: 0,
-                addOns: [])
+                addOns: [],
+                bundleStockStatus: nil,
+                bundleStockQuantity: nil,
+                bundledItems: [])
     }
 }
 

@@ -8,7 +8,6 @@ import class WidgetKit.WidgetCenter
 import CocoaLumberjack
 import KeychainAccess
 import WordPressUI
-import WordPressKit
 import WordPressAuthenticator
 import AutomatticTracks
 
@@ -45,6 +44,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var tabBarController: MainTabBarController? {
         appCoordinator?.tabBarController
     }
+
+    /// Coordinates the Jetpack setup flow for users authenticated without Jetpack.
+    ///
+    private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
     private let universalLinkRouter = UniversalLinkRouter.defaultUniversalLinkRouter()
 
@@ -102,6 +105,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fatalError()
         }
 
+        if ServiceLocator.stores.isAuthenticatedWithoutWPCom,
+           let site = ServiceLocator.stores.sessionManager.defaultSite {
+            let coordinator = JetpackSetupCoordinator(site: site, rootViewController: rootViewController)
+            jetpackSetupCoordinator = coordinator
+            return coordinator.handleAuthenticationUrl(url)
+        }
         return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
     }
 
@@ -180,6 +189,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             handleWebActivity(userActivity)
         }
 
+        SpotlightManager.handleUserActivity(userActivity)
         trackWidgetTappedIfNeeded(userActivity: userActivity)
 
         return true
@@ -284,7 +294,6 @@ private extension AppDelegate {
         let logger = ServiceLocator.wordPressLibraryLogger
         WPSharedSetLoggingDelegate(logger)
         WPAuthenticatorSetLoggingDelegate(logger)
-        WPKitSetLoggingDelegate(logger)
     }
 
     /// Sets up the current Log Level.

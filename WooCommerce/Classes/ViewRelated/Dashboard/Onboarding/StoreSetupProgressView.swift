@@ -9,7 +9,7 @@ struct StoreSetupProgressView: View {
 
     let shareFeedbackAction: (() -> Void)?
 
-    @State private var showingActionSheet = false
+    let isRedacted: Bool
 
     var body: some View {
         HStack(alignment: .top) {
@@ -20,11 +20,13 @@ struct StoreSetupProgressView: View {
                     .if(isExpanded) { $0.titleStyle() }
                     .if(!isExpanded) { $0.headlineStyle() }
                     .multilineTextAlignment(isExpanded ? .center : .leading)
+                    .unredacted()
 
                 // Progress view
                 ProgressView(value: Double(numberOfTasksCompleted), total: Double(totalNumberOfTasks))
                     .tint(.init(uiColor: .accent))
                     .frame(width: isExpanded ? Layout.ProgressView.widthExpanded : Layout.ProgressView.widthCollapsed, height: Layout.ProgressView.height)
+                    .renderedIf(!isRedacted)
 
                 // Subtitle label
                 Text(String(format: isExpanded ? Localization.TasksCompleted.expanded : Localization.TasksCompleted.collapsed,
@@ -32,25 +34,23 @@ struct StoreSetupProgressView: View {
                             totalNumberOfTasks))
                     .footnoteStyle()
                     .multilineTextAlignment(isExpanded ? .center : .leading)
+                    .redacted(reason: isRedacted ? .placeholder : [])
             }
 
             Spacer()
                 .renderedIf(!isExpanded)
 
             // More button
-            Button {
-                showingActionSheet = true
+            Menu {
+                Button(Localization.shareFeedbackButton) {
+                    shareFeedbackAction?()
+                }
             } label: {
                 Image(uiImage: .ellipsisImage)
                     .flipsForRightToLeftLayoutDirection(true)
                     .foregroundColor(Color(.textTertiary))
             }
             .renderedIf(!isExpanded)
-        }
-        .confirmationDialog(Localization.title, isPresented: $showingActionSheet) {
-            Button(Localization.shareFeedbackButton) {
-                shareFeedbackAction?()
-            }
         }
     }
 }
@@ -99,8 +99,8 @@ private extension StoreSetupProgressView {
 
 struct StoreSetupProgressView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreSetupProgressView(isExpanded: false, totalNumberOfTasks: 5, numberOfTasksCompleted: 1, shareFeedbackAction: nil)
+        StoreSetupProgressView(isExpanded: false, totalNumberOfTasks: 5, numberOfTasksCompleted: 1, shareFeedbackAction: nil, isRedacted: false)
 
-        StoreSetupProgressView(isExpanded: true, totalNumberOfTasks: 5, numberOfTasksCompleted: 1, shareFeedbackAction: nil)
+        StoreSetupProgressView(isExpanded: true, totalNumberOfTasks: 5, numberOfTasksCompleted: 1, shareFeedbackAction: nil, isRedacted: false)
     }
 }

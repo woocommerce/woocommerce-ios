@@ -269,7 +269,7 @@ private struct ProductsSection: View {
                     Divider()
                 }
 
-                Button(OrderForm.Localization.addProduct) {
+                Button(OrderForm.Localization.addProductsButtonTitle) {
                     showAddProduct.toggle()
                 }
                 .id(addProductButton)
@@ -278,13 +278,14 @@ private struct ProductsSection: View {
                 .sheet(isPresented: $showAddProduct, onDismiss: {
                     scroll.scrollTo(addProductButton)
                 }, content: {
-                    ProductSelectorView(configuration: ProductSelectorView.Configuration.addProductToOrder,
-                                    isPresented: $showAddProduct,
-                                    viewModel: viewModel.addProductViewModel)
-                        .onDisappear {
-                            viewModel.addProductViewModel.clearSearchAndFilters()
-                            navigationButtonID = UUID()
-                        }
+                    ProductSelectorNavigationView(
+                        configuration: ProductSelectorView.Configuration.addProductToOrder(),
+                        isPresented: $showAddProduct,
+                        viewModel: viewModel.addProductViewModel)
+                    .onDisappear {
+                        viewModel.addProductViewModel.clearSearchAndFilters()
+                        navigationButtonID = UUID()
+                    }
                 })
             }
             .padding(.horizontal, insets: safeAreaInsets)
@@ -310,8 +311,13 @@ private extension OrderForm {
         static let cancelButton = NSLocalizedString("Cancel", comment: "Button to cancel the creation of an order on the New Order screen")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
         static let addProduct = NSLocalizedString("Add Product", comment: "Title text of the button that adds a product when creating or editing an order")
+        static let addProducts = NSLocalizedString("Add Products",
+                                                   comment: "Title text of the button that allows to add multiple products when creating or editing an order")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")
+
+        static let addProductsButtonTitle = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) ?
+        Localization.addProducts : Localization.addProduct
     }
 
     enum Accessibility {
@@ -351,18 +357,29 @@ struct OrderForm_Previews: PreviewProvider {
 }
 
 private extension ProductSelectorView.Configuration {
-    static let addProductToOrder: Self =
-        .init(multipleSelectionsEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
-              searchHeaderBackgroundColor: .listBackground,
-              prefersLargeTitle: false,
-              title: Localization.title,
-              cancelButtonTitle: Localization.close,
-              productRowAccessibilityHint: Localization.productRowAccessibilityHint,
-              variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
+    static func addProductToOrder() -> ProductSelectorView.Configuration {
+        ProductSelectorView.Configuration(
+            multipleSelectionsEnabled: ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection),
+            clearSelectionEnabled: false,
+            searchHeaderBackgroundColor: .listBackground,
+            prefersLargeTitle: false,
+            doneButtonTitleSingularFormat: Localization.doneButtonSingular,
+            doneButtonTitlePluralFormat: Localization.doneButtonPlural,
+            title: Localization.title,
+            cancelButtonTitle: Localization.close,
+            productRowAccessibilityHint: Localization.productRowAccessibilityHint,
+            variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
+    }
 
     enum Localization {
         static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")
+        static let doneButtonSingular = NSLocalizedString("1 Product selected",
+                                                          comment: "Title of the action button at the bottom of the Select Products screen " +
+                                                          "when one product is selected")
+        static let doneButtonPlural = NSLocalizedString("%1$d Products selected",
+                                                        comment: "Title of the action button at the bottom of the Select Products screen " +
+                                                        "when more than 1 item is selected, reads like: 5 Products selected")
         static let productRowAccessibilityHint = NSLocalizedString("Adds product to order.",
                                                                    comment: "Accessibility hint for selecting a product in the Add Product screen")
         static let variableProductRowAccessibilityHint = NSLocalizedString(

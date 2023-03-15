@@ -148,6 +148,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.domainSearchPlaceholderImage)
     }
 
+    func test_emailImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.emailImage)
+    }
+
     func testEllipsisImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.ellipsisImage)
     }
@@ -328,6 +332,10 @@ final class IconsTests: XCTestCase {
 
     func testMoreImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.moreImage)
+    }
+
+    func test_multipleStoresImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.multipleStoresImage)
     }
 
     func test_multiSelectIcon_is_not_nil() {

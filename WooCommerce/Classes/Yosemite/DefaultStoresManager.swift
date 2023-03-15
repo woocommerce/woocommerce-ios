@@ -23,6 +23,8 @@ class DefaultStoresManager: StoresManager {
     /// https://github.com/woocommerce/woocommerce-ios/issues/878
     private var _sessionManager: SessionManagerProtocol
 
+    private let defaults: UserDefaults
+
     /// Keychain access. Used for sharing the auth access token with the widgets extension.
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
@@ -110,10 +112,12 @@ class DefaultStoresManager: StoresManager {
     /// Designated Initializer
     ///
     init(sessionManager: SessionManagerProtocol,
-         notificationCenter: NotificationCenter = .default) {
+         notificationCenter: NotificationCenter = .default,
+         defaults: UserDefaults = .standard) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
+        self.defaults = defaults
 
         isLoggedIn = isAuthenticated
 
@@ -217,6 +221,7 @@ class DefaultStoresManager: StoresManager {
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
         sessionManager.defaultSite = nil
+        defaults[.completedAllStoreOnboardingTasks] = nil
         restoreSessionSiteIfPossible()
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 
@@ -528,6 +533,7 @@ private extension DefaultStoresManager {
             switch result {
             case .success(let site):
                 self.sessionManager.defaultSite = site
+                self.updateAndReloadWidgetInformation(with: site.siteID)
                 /// Trigger the `v1.1/connect/site-info` API to get information about
                 /// the site's Jetpack status and whether it's a WPCom site.
                 WordPressAuthenticator.fetchSiteInfo(for: url) { [weak self] result in
@@ -538,6 +544,7 @@ private extension DefaultStoresManager {
                                                     isJetpackConnected: info.isJetpackConnected,
                                                     isWordPressComStore: info.isWPCom)
                         self.sessionManager.defaultSite = updatedSite
+                        self.updateAndReloadWidgetInformation(with: site.siteID)
                     case .failure(let error):
                         DDLogError("⛔️ Cannot fetch generic site info: \(error)")
                     }
@@ -566,13 +573,22 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
-    /// Updates the necesary dependencies for the widget to function correctly.
+    /// Updates the necessary dependencies for the widget to function correctly.
     /// Reloads widgets timelines.
     ///
     func updateAndReloadWidgetInformation(with siteID: Int64?) {
-        // Token to fire network requests
-        if case let .wpcom(_, authToken, _) = sessionManager.defaultCredentials {
+        // Token/password to fire network requests
+        keychain.currentAuthToken = nil
+        keychain.siteCredentialPassword = nil
+        switch sessionManager.defaultCredentials {
+        case let .wpcom(_, authToken, _):
             keychain.currentAuthToken = authToken
+        case let .wporg(username, password, siteAddress):
+            keychain.siteCredentialPassword = password
+            UserDefaults.group?[.defaultUsername] = username
+            UserDefaults.group?[.defaultSiteAddress] = siteAddress
+        default:
+            break
         }
 
         // Non-critical store info

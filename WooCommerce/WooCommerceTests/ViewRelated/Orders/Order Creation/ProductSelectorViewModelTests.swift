@@ -24,6 +24,21 @@ final class ProductSelectorViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_view_model_is_initialized_with_default_values() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertFalse(viewModel.supportsMultipleSelection)
+        XCTAssertTrue(viewModel.isClearSelectionEnabled)
+        XCTAssertTrue(viewModel.toggleAllVariationsOnSelection)
+        XCTAssertEqual(viewModel.filterButtonTitle, "Filter")
+        XCTAssertNil(viewModel.notice)
+        XCTAssertEqual(viewModel.ghostRows.count, 6)
+        XCTAssertEqual(viewModel.searchTerm, "")
+        XCTAssertEqual(viewModel.totalSelectedItemsCount, 0)
+    }
+
     func test_view_model_adds_product_rows_with_unchangeable_quantity() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)
@@ -303,6 +318,23 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(selectedProduct, product.productID)
     }
 
+    func test_selectProduct_given_supportsMultipleSelection_is_enabled_invokes_onProductSelected_closure_for_existing_product() {
+        // Given
+        var selectedProduct: Int64?
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager,
+                                                 supportsMultipleSelection: true,
+                                                 onProductSelected: { selectedProduct = $0.productID })
+
+        // When
+        viewModel.selectProduct(product.productID)
+
+        // Then
+        XCTAssertEqual(selectedProduct, product.productID)
+    }
+
     func test_getVariationsViewModel_returns_expected_view_model_for_variable_product() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true, variations: [1, 2])
@@ -332,12 +364,14 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertNil(variationsViewModel)
     }
 
-    func test_selecting_a_product_sets_its_row_to_selected_state() {
+    func test_selecting_a_product_if_supportsMultipleSelection_is_true_and_selectProduct_is_invoked_sets_its_row_to_selected_state() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 storageManager: storageManager)
+                                                 storageManager: storageManager,
+                                                 supportsMultipleSelection: true,
+                                                 onProductSelected: { _ in })
 
         // When
         viewModel.selectProduct(product.productID)
@@ -354,6 +388,43 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager)
+
+        // When
+        viewModel.selectProduct(product.productID)
+        viewModel.selectProduct(product.productID)
+
+        // Then
+        let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
+        XCTAssertNotNil(productRow)
+        XCTAssertEqual(productRow?.selectedState, .notSelected)
+    }
+
+    func test_productRow_selectedState_if_supportsMultiselection_is_false_and_selectProduct_invoked_twice_then_selectedState_is_notSelected() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager,
+                                                 supportsMultipleSelection: false,
+                                                 onProductSelected: { _ in })
+
+        // When
+        viewModel.selectProduct(product.productID)
+        viewModel.selectProduct(product.productID)
+
+        // Then
+        let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
+        XCTAssertNotNil(productRow)
+        XCTAssertEqual(productRow?.selectedState, .notSelected)
+    }
+
+    func test_productRow_selectedState_if_supportsMultiselection_is_true_and_selectProduct_invoked_twice_then_selectedState_is_notSelected() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager,
+                                                 supportsMultipleSelection: true)
 
         // When
         viewModel.selectProduct(product.productID)
@@ -389,7 +460,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  storageManager: storageManager)
 
         // When
-        viewModel.toggleSelectionForVariations(of: product.productID)
+        viewModel.toggleSelectionForAllVariations(of: product.productID)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
@@ -406,7 +477,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.updateSelectedVariations(productID: product.productID, selectedVariationIDs: [2])
-        viewModel.toggleSelectionForVariations(of: product.productID)
+        viewModel.toggleSelectionForAllVariations(of: product.productID)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
@@ -423,7 +494,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.updateSelectedVariations(productID: product.productID, selectedVariationIDs: [1, 2])
-        viewModel.toggleSelectionForVariations(of: product.productID)
+        viewModel.toggleSelectionForAllVariations(of: product.productID)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
@@ -460,6 +531,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  selectedItemIDs: [],
                                                  storageManager: storageManager,
+                                                 supportsMultipleSelection: true,
                                                  onMultipleSelectionCompleted: {
             selectedItems = $0
         })
@@ -524,7 +596,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 storageManager: storageManager)
+                                                 storageManager: storageManager,
+                                                 supportsMultipleSelection: true)
 
         // When
         viewModel.selectProduct(product.productID)
@@ -678,6 +751,38 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.productRows.count, 1) // only 1 variable product "Pizza"
+    }
+
+    func test_selectedProduct_does_not_change_if_selectedProduct_is_called_multiple_times_when_synchronizeProducts() {
+        // Given
+        var selectedProduct: Int64?
+        let products = [
+            Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true),
+            Product.fake().copy(siteID: sampleSiteID, productID: 12345, purchasable: true)
+        ]
+        insert(products)
+
+        let viewModel = ProductSelectorViewModel(
+            siteID: sampleSiteID,
+            storageManager: storageManager,
+            onProductSelected: {
+                selectedProduct = $0.productID
+            })
+
+        // When
+        viewModel.selectProduct(products[0].productID)
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            switch action {
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+                viewModel.selectProduct(products[1].productID)
+                onCompletion(.success(true))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        })
+
+        // Then
+        XCTAssertEqual(selectedProduct, products[0].productID)
     }
 }
 

@@ -1,19 +1,23 @@
 import XCTest
-import WordPressKit
 import WordPressAuthenticator
 import Yosemite
 @testable import WooCommerce
 
 /// Test cases for `AuthenticationManager`.
 final class AuthenticationManagerTests: XCTestCase {
+    override func setUp() {
+        WordPressAuthenticator.initializeAuthenticator()
+        super.setUp()
+    }
+
     /// We do not allow automatic WPCOM account sign-up if the user entered an email that is not
     /// registered in WordPress.com. This configuration is set up in
     /// `WordPressAuthenticatorConfiguration` in `AuthenticationManager.initialize()`.
     func test_it_supports_handling_for_unknown_WPCOM_user_errors() {
         // Given
         let manager = AuthenticationManager()
-        let error = NSError(domain: "", code: WordPressComRestApiError.unknown.rawValue, userInfo: [
-            WordPressComRestApi.ErrorKeyErrorCode: "unknown_user"
+        let error = NSError(domain: "", code: 7, userInfo: [
+            "WordPressComRestApiErrorCodeKey": "unknown_user"
         ])
 
         // When
@@ -26,8 +30,8 @@ final class AuthenticationManagerTests: XCTestCase {
     func test_it_does_not_support_handling_for_unknown_REST_API_errors() {
         // Given
         let manager = AuthenticationManager()
-        let error = NSError(domain: "", code: WordPressComRestApiError.unknown.rawValue, userInfo: [
-            WordPressComRestApi.ErrorKeyErrorCode: "rick_rolled"
+        let error = NSError(domain: "", code: 7, userInfo: [
+            "WordPressComRestApiErrorCodeKey": "rick_rolled"
         ])
 
         // When
@@ -35,19 +39,6 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // Then
         XCTAssertFalse(canHandle)
-    }
-
-    /// We provide a custom UI for sites that do not seem to be a WordPress site.
-    func test_it_supports_handling_for_unknown_site_errors() {
-        // Given
-        let manager = AuthenticationManager()
-        let error = NSError(domain: "", code: WordPressOrgXMLRPCValidatorError.invalid.rawValue)
-
-        // When
-        let canHandle = manager.shouldHandleError(error)
-
-        // Then
-        XCTAssertTrue(canHandle)
     }
 
     /// We don't allow sites that do not have SSL. We provide a custom error UI for this.
@@ -90,8 +81,8 @@ final class AuthenticationManagerTests: XCTestCase {
     func test_it_can_create_a_ViewModel_for_unknown_WPCOM_user_errors() throws {
         // Given
         let manager = AuthenticationManager()
-        let error = NSError(domain: "", code: WordPressComRestApiError.unknown.rawValue, userInfo: [
-            WordPressComRestApi.ErrorKeyErrorCode: "unknown_user"
+        let error = NSError(domain: "", code: 7, userInfo: [
+            "WordPressComRestApiErrorCodeKey": "unknown_user"
         ])
 
         // When

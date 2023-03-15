@@ -28,20 +28,15 @@ struct BundledProductsList: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack {
-                // TODO-8954: Display actual bundled items from view model
-                VStack(spacing: 0) {
-                    TitleAndSubtitleRow(title: "Beanie with Logo", subtitle: "In stock")
-                    Divider().padding(.leading)
-                    TitleAndSubtitleRow(title: "T-Shirt with Logo", subtitle: "In stock")
-                    Divider().padding(.leading)
-                    TitleAndSubtitleRow(title: "Hoodie with Logo", subtitle: "Out of stock")
+            LazyVStack(spacing: 0) {
+                ForEach(viewModel.bundledProducts) { bundledProduct in
+                    TitleAndSubtitleRow(title: bundledProduct.title, subtitle: bundledProduct.stockStatus)
                     Divider().padding(.leading)
                 }
-                .background(Color(.listForeground(modal: false)))
-
-                FooterNotice(infoText: viewModel.infoNotice)
             }
+            .background(Color(.listForeground(modal: false)))
+
+            FooterNotice(infoText: viewModel.infoNotice)
         }
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
@@ -53,7 +48,11 @@ struct BundledProductsList: View {
 // MARK: Previews
 struct BundledProductsList_Previews: PreviewProvider {
 
-    static let viewModel = BundledProductsListViewModel()
+    static let viewModel = BundledProductsListViewModel(bundledProducts: [
+        .init(id: 1, title: "Beanie with Logo", stockStatus: "In stock"),
+        .init(id: 2, title: "T-Shirt with Logo", stockStatus: "In stock"),
+        .init(id: 3, title: "Hoodie with Logo", stockStatus: "Out of stock")
+    ])
 
     static var previews: some View {
         BundledProductsList(viewModel: viewModel)

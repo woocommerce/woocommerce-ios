@@ -89,7 +89,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
                 } catch let error as SiteCredentialLoginError {
                     errorHandler?(error)
                 } catch {
-                    errorHandler?(.genericFailure(underlyingError: nsError))
+                    errorHandler?(.genericFailure(underlyingError: error as NSError))
                 }
             }
         }

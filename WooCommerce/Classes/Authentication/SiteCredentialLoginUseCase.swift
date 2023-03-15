@@ -72,16 +72,25 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
         }
         Task { @MainActor in
             do {
-                try await startLogin(loginRequest: loginRequest, nonceRetrievalRequest: nonceRequest)
-                successHandler?()
+                try await startLogin(with: loginRequest)
+            } catch let error as SiteCredentialLoginError {
+                errorHandler?(error)
             } catch {
-                let loginError: SiteCredentialLoginError = {
-                    if let error = error as? SiteCredentialLoginError {
-                        return error
-                    }
-                    return .genericFailure(underlyingError: error as NSError)
-                }()
-                errorHandler?(loginError)
+                let nsError = error as NSError
+                guard nsError.domain == NSURLErrorDomain, nsError.code == -999 else {
+                    errorHandler?(.genericFailure(underlyingError: nsError))
+                    return
+                }
+                /// The previous task was cancelled upon redirect,
+                /// now check the admin page access.
+                do {
+                    try await checkAdminPageAccess(with: nonceRequest)
+                    successHandler?()
+                } catch let error as SiteCredentialLoginError {
+                    errorHandler?(error)
+                } catch {
+                    errorHandler?(.genericFailure(underlyingError: nsError))
+                }
             }
         }
     }
@@ -96,37 +105,26 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
-    func startLogin(loginRequest: URLRequest, nonceRetrievalRequest: URLRequest) async throws {
-        do {
-            let (data, response) = try await session.data(for: loginRequest)
-            guard let response = response as? HTTPURLResponse else {
+    func startLogin(with loginRequest: URLRequest) async throws {
+        let (data, response) = try await session.data(for: loginRequest)
+        guard let response = response as? HTTPURLResponse else {
+            throw SiteCredentialLoginError.invalidLoginResponse
+        }
+
+        switch response.statusCode {
+        case 404:
+            errorHandler?(.inaccessibleLoginPage)
+        case 200:
+            guard let html = String(data: data, encoding: .utf8) else {
                 throw SiteCredentialLoginError.invalidLoginResponse
             }
-
-            switch response.statusCode {
-            case 404:
-                errorHandler?(.inaccessibleLoginPage)
-            case 200:
-                guard let html = String(data: data, encoding: .utf8) else {
-                    throw SiteCredentialLoginError.invalidLoginResponse
-                }
-                if let errorMessage = html.findLoginErrorMessage() {
-                    throw SiteCredentialLoginError.loginFailed(message: errorMessage)
-                } else {
-                    throw SiteCredentialLoginError.invalidLoginResponse
-                }
-            default:
-                throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)
-            }
-        } catch {
-            let nsError = error as NSError
-            if nsError.domain == NSURLErrorDomain, nsError.code == -999 {
-                /// The previous task was cancelled upon redirect,
-                /// now check the admin page access.
-                try await checkAdminPageAccess(with: nonceRetrievalRequest)
+            if let errorMessage = html.findLoginErrorMessage() {
+                throw SiteCredentialLoginError.loginFailed(message: errorMessage)
             } else {
-                throw SiteCredentialLoginError.genericFailure(underlyingError: nsError)
+                throw SiteCredentialLoginError.invalidLoginResponse
             }
+        default:
+            throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)
         }
     }
 

@@ -562,7 +562,8 @@ private extension DashboardViewController {
             removeOnboardingCard()
         }
 
-        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false, siteID: site.siteID),
+        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false,
+                                                                                      siteID: site.siteID),
                                                                      navigationController: navigationController,
                                                                      site: site,
                                                                      shareFeedbackAction: { [weak self] in

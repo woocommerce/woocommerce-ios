@@ -8,6 +8,10 @@ public protocol SiteRemoteProtocol {
     ///   - domain: The domain selected for the site.
     /// - Returns: The response with the site creation.
     func createSite(name: String, domain: String) async throws -> SiteCreationResponse
+
+    /// Launches a site publicly through WPCOM.
+    /// - Parameter siteID: Remote WPCOM ID of the site.
+    func launchSite(siteID: Int64) async throws
 }
 
 /// Site: Remote Endpoints
@@ -51,6 +55,12 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
 
+        return try await enqueue(request)
+    }
+
+    public func launchSite(siteID: Int64) async throws {
+        let path = "sites/\(siteID)/launch"
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path)
         return try await enqueue(request)
     }
 }

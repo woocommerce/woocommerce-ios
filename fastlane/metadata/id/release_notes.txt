@@ -1,1 +1,1 @@
-Kabar baik! Fitur Ketuk untuk Bayar kini hadir bagi penjual di AS yang menggunakan sistem Pembayaran WooCommerce. Lakukan pembayaran dengan kartu kredit langsung dari iPhone Anda! Bagikan feedback Anda seputar aplikasi, khususnya seputar fitur-fitur baru yang tengah kami kembangkan dan sudah bisa Anda akses.
+Rilis ini berisi beberapa perbaikan yang memudahkan Anda mengatur toko dari aplikasi. Berikan kami feedback - kami senang menerimanya!

@@ -8,6 +8,7 @@ final class FreeTrialBannerHostingViewController: UIHostingController<FreeTrialB
     ///
     init() {
         super.init(rootView: FreeTrialBanner())
+        self.view.backgroundColor = .wooCommercePurple(.shade5)
     }
 
     /// Needed for protocol conformance.
@@ -39,6 +40,7 @@ struct FreeTrialBanner: View {
         }
         .padding()
         .background(Color(.wooCommercePurple(.shade5)))
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

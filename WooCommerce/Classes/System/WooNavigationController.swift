@@ -119,9 +119,9 @@ private extension WooNavigationControllerDelegate {
     ///
     func setOfflineBannerWhenNoConnection(for viewController: UIViewController, status: ConnectivityStatus) {
         // We can only show it when we are sure we can't reach the internet
-//        guard status == .notReachable else {
-//            return removeOfflineBanner(for: viewController)
-//        }
+        guard status == .notReachable else {
+            return removeOfflineBanner(for: viewController)
+        }
 
         // Only add banner view if it's not already added.
         guard let navigationController = viewController.navigationController,

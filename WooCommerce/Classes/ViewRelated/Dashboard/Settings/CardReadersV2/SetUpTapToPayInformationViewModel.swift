@@ -16,6 +16,10 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     let connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
     let connectivityObserver: ConnectivityObserver
 
+
+    var connectionController: BuiltInCardReaderConnectionController? = nil
+    var alertsPresenter: CardPresentPaymentAlertsPresenting? = nil
+
     private(set) var noConnectedReader: CardReaderSettingsTriState = .isUnknown {
         didSet {
             didUpdate?()
@@ -73,6 +77,15 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
             }
         }
         .store(in: &subscriptions)
+    }
+
+    func setUpTapped() {
+        connectionController?.searchAndConnect { _ in
+            /// No need for logic here. Once connected, the connected reader will publish
+            /// through the `cardReaderAvailableSubscription`, so we can just
+            /// dismiss the connection flow alerts.
+            self.alertsPresenter?.dismiss()
+        }
     }
 
     /// Updates whether the view this viewModel is associated with should be shown or not

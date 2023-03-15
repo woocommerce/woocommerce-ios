@@ -65,19 +65,19 @@ enum SiteCredentialLoginError: Error {
 
     private enum Localization {
         static let inaccessibleLoginPage = NSLocalizedString(
-            "Login failed because the access to the wp-login.php page on your site is blocked.",
+            "Unable to login because we cannot identify your store's login URL.",
             comment: "Error message explaining login failure due to blocked wp-login.php"
         )
         static let inaccessibleAdminPage = NSLocalizedString(
-            "Login failed because the access to the wp-admin page on your site is blocked.",
+            "Unable to login because we cannot identify your store's admin URL.",
             comment: "Error message explaining login failure due to blocked WP Admin page"
         )
         static let invalidLoginResponse = NSLocalizedString(
-            "Login failed with an unexpected response from your site. We are working on fixing this issue.",
+            "Unable to login due to an unexpected response from your site. We are working on fixing this issue.",
             comment: "Error message explaining login failure due to unexpected response."
         )
         static let unacceptableStatusCode = NSLocalizedString(
-            "Login failed with status code %1$d.",
+            "Unable to login with response status code %1$d.",
             comment: "Error message explaining login failure due to unacceptable status code."
         )
     }

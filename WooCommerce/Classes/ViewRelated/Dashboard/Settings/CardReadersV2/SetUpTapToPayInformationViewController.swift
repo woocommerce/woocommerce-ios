@@ -107,7 +107,7 @@ struct SetUpTapToPayInformationView: View {
                 Button(Localization.setUpButton, action: {
                     viewModel.setUpTapped()
                 })
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.setUpInProgress))
                 .disabled(!viewModel.enableSetup)
 
                 InPersonPaymentsLearnMore(

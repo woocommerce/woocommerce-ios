@@ -10,6 +10,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     private let stores: StoresManager
 
     @Published var enableSetup: Bool = true
+    @Published var setUpInProgress: Bool = false
 
     let siteID: Int64
     let configuration: CardPresentPaymentsConfiguration
@@ -80,11 +81,13 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     }
 
     func setUpTapped() {
+        setUpInProgress = true
         connectionController?.searchAndConnect { _ in
             /// No need for logic here. Once connected, the connected reader will publish
             /// through the `cardReaderAvailableSubscription`, so we can just
             /// dismiss the connection flow alerts.
             self.alertsPresenter?.dismiss()
+            self.setUpInProgress = false
         }
     }
 

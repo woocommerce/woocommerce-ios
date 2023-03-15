@@ -67,11 +67,12 @@ class StoreOnboardingViewModel: ObservableObject {
 
     func reloadTasks() async {
         await update(state: .loading)
-        let tasks = try? await loadTasks()
-        if let tasks {
+        if let tasks = try? await loadTasks() {
             await checkIfAllTasksAreCompleted(tasks)
+            await update(state: .loaded(rows: tasks))
+        } else {
+            await update(state: .loaded(rows: taskViewModels))
         }
-        await update(state: .loaded(rows: tasks ?? taskViewModels))
     }
 }
 

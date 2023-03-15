@@ -9,8 +9,8 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     let learnMoreURL: URL
     private let stores: StoresManager
 
-    @Published var enableSetup: Bool = true
-    @Published var setUpInProgress: Bool = false
+    @Published private(set) var enableSetup: Bool = true
+    @Published private(set) var setUpInProgress: Bool = false
 
     let siteID: Int64
     let configuration: CardPresentPaymentsConfiguration

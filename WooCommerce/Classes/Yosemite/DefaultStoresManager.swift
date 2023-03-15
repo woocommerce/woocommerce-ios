@@ -183,7 +183,6 @@ class DefaultStoresManager: StoresManager {
     ///
     func removeDefaultStore() {
         sessionManager.deleteApplicationPassword()
-        defaults[.completedAllStoreOnboardingTasks] = nil
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
         ServiceLocator.pushNotesManager.unregisterForRemoteNotifications()
@@ -222,6 +221,7 @@ class DefaultStoresManager: StoresManager {
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
         sessionManager.defaultSite = nil
+        defaults[.completedAllStoreOnboardingTasks] = nil
         restoreSessionSiteIfPossible()
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 

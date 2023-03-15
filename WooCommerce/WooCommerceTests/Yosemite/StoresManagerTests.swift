@@ -284,7 +284,7 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertTrue(mockSessionManager.deleteApplicationPasswordInvoked)
     }
 
-    func test_removing_default_store_sets_completedAllStoreOnboardingTasks_to_nil() throws {
+    func test_updating_default_storeID_sets_completedAllStoreOnboardingTasks_to_nil() throws {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
@@ -298,7 +298,7 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? Bool))
 
         // When
-        sut.removeDefaultStore()
+        sut.updateDefaultStore(storeID: 0)
 
         // Then
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])

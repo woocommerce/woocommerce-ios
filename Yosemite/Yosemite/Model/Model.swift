@@ -70,6 +70,7 @@ public typealias ProductAddOn = Networking.ProductAddOn
 public typealias ProductAddOnOption = Networking.ProductAddOnOption
 public typealias ProductBackordersSetting = Networking.ProductBackordersSetting
 public typealias ProductBundleItem = Networking.ProductBundleItem
+public typealias ProductBundleItemStockStatus = Networking.ProductBundleItemStockStatus
 public typealias ProductReview = Networking.ProductReview
 public typealias ProductReviewStatus = Networking.ProductReviewStatus
 public typealias ProductShippingClass = Networking.ProductShippingClass

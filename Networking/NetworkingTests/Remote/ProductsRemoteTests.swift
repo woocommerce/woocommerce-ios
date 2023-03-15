@@ -744,7 +744,7 @@ private extension ProductsRemoteTests {
                        groupedProducts: [],
                        menuOrder: 0,
                        addOns: [],
-                       bundleStockStatus: nil,
+                       bundleStockStatus: .inStock,
                        bundleStockQuantity: nil,
                        bundledItems: [])
     }

@@ -49,26 +49,20 @@ class StoreOnboardingViewModel: ObservableObject {
 
     private let defaults: UserDefaults
 
-    private let onAllOnboardingTasksCompleted: (() -> Void)?
-
-    /// Initializer
     /// - Parameters:
     ///   - isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
     ///   - siteID: siteID
     ///   - stores: StoresManager
     ///   - userDefaults: UserDefaults for storing when all onboarding tasks are completed
-    ///   - onAllOnboardingTasksCompleted:Callback to fire when all onboarding tasks are completed
     init(isExpanded: Bool,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         defaults: UserDefaults = .standard,
-         onAllOnboardingTasksCompleted: (() -> Void)? = nil) {
+         defaults: UserDefaults = .standard) {
         self.isExpanded = isExpanded
         self.siteID = siteID
         self.stores = stores
         self.state = .loading
         self.defaults = defaults
-        self.onAllOnboardingTasksCompleted = onAllOnboardingTasksCompleted
     }
 
     func reloadTasks() async {
@@ -123,7 +117,6 @@ private extension StoreOnboardingViewModel {
 
         // This will be reset to `nil` when session resets
         defaults[.completedAllStoreOnboardingTasks] = true
-        onAllOnboardingTasksCompleted?()
     }
 }
 

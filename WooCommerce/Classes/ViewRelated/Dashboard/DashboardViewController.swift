@@ -563,8 +563,7 @@ private extension DashboardViewController {
         }
 
         let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false,
-                                                                                      siteID: site.siteID,
-                                                                                      onAllOnboardingTasksCompleted: viewModel.didCompleteAllOnboardingTasks),
+                                                                                      siteID: site.siteID),
                                                                      navigationController: navigationController,
                                                                      site: site,
                                                                      shareFeedbackAction: { [weak self] in

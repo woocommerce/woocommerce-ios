@@ -125,54 +125,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), initialTasks)
     }
 
-    // MARK: onAllOnboardingTasksCompleted callback
-
-    func test_it_does_not_call_onAllOnboardingTasksCompleted_when_there_are_pending_tasks() async {
-        // Given
-        var onAllOnboardingTasksCompletedCalled = false
-        let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
-        ]
-        mockLoadOnboardingTasks(result: .success(tasks))
-        let sut = StoreOnboardingViewModel(isExpanded: true,
-                                           siteID: 0,
-                                           stores: stores,
-                                           onAllOnboardingTasksCompleted: {
-            onAllOnboardingTasksCompletedCalled = true
-        })
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertFalse(onAllOnboardingTasksCompletedCalled)
-    }
-
-    func test_it_calls_onAllOnboardingTasksCompleted_when_there_are_no_pending_tasks() async {
-        // Given
-        var onAllOnboardingTasksCompletedCalled = false
-        let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: true, type: .addFirstProduct),
-            .init(isComplete: true, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
-            .init(isComplete: true, type: .payments)
-        ]
-        mockLoadOnboardingTasks(result: .success(tasks))
-        let sut = StoreOnboardingViewModel(isExpanded: true,
-                                           siteID: 0,
-                                           stores: stores,
-                                           onAllOnboardingTasksCompleted: {
-            onAllOnboardingTasksCompletedCalled = true
-        })
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertTrue(onAllOnboardingTasksCompletedCalled)
-    }
-
     // MARK: completedAllStoreOnboardingTasks user defaults
 
     func test_completedAllStoreOnboardingTasks_is_nil_when_there_are_pending_tasks() async throws {

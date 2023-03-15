@@ -23,17 +23,10 @@ final class DashboardViewModel {
     ///
     let addProductTrigger = PassthroughSubject<Void, Never>()
 
-    /// Should be called when all the store onboarding tasks are completed
-    ///
-    func didCompleteAllOnboardingTasks() {
-        self.showOnboarding = false
-    }
-
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
-    private let userDefaults: UserDefaults
 
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -42,10 +35,10 @@ final class DashboardViewModel {
         self.stores = stores
         self.featureFlagService = featureFlags
         self.analytics = analytics
-        self.userDefaults = userDefaults
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
-        let completedAllOnboardingTasks = userDefaults[.completedAllStoreOnboardingTasks] as? Bool ?? false
-        self.showOnboarding = featureFlags.isFeatureFlagEnabled(.dashboardOnboarding) && (completedAllOnboardingTasks == false)
+        userDefaults.publisher(for: \.completedAllStoreOnboardingTasks)
+            .map({ featureFlags.isFeatureFlagEnabled(.dashboardOnboarding) && ($0 == false) })
+            .assign(to: &$showOnboarding)
     }
 
     /// Syncs store stats for dashboard UI.
@@ -235,3 +228,9 @@ private extension DashboardViewModel {
         static let dashboardScreenName = "my_store"
     }
 }
+
+private extension UserDefaults {
+     @objc dynamic var completedAllStoreOnboardingTasks: Bool {
+         bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
+     }
+ }

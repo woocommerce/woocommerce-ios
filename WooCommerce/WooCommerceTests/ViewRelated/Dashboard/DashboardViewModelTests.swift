@@ -354,15 +354,17 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showOnboarding)
     }
 
-    func test_showOnboarding_is_set_to_false_upon_calling_didCompleteAllOnboardingTasks() {
+    func test_showOnboarding_is_set_to_false_upon_setting_user_defaults_value_completedAllStoreOnboardingTasks_as_true() throws {
         // Given
-        let viewModel = DashboardViewModel()
-
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
+                                           userDefaults: defaults)
         // Then
         XCTAssertTrue(viewModel.showOnboarding)
 
         // When
-        viewModel.didCompleteAllOnboardingTasks()
+        defaults[.completedAllStoreOnboardingTasks] = true
 
         // Then
         XCTAssertFalse(viewModel.showOnboarding)

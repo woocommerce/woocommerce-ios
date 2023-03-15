@@ -1,5 +1,22 @@
 import SwiftUI
 
+/// Hosting controller for `FreeTrialBanner`.
+///
+final class FreeTrialBannerHostingViewController: UIHostingController<FreeTrialBanner> {
+
+    /// Designated initializer.
+    ///
+    init() {
+        super.init(rootView: FreeTrialBanner())
+    }
+
+    /// Needed for protocol conformance.
+    ///
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 /// Free Trial Banner. To be used inside the Dashboard.
 ///
 struct FreeTrialBanner: View {

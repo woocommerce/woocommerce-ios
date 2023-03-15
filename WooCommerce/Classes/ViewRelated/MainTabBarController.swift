@@ -401,7 +401,7 @@ extension MainTabBarController {
                 guard storeIsShown else {
                     return
                 }
-         
+
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
                     presentDetails(for: orderID, siteID: siteID)
                 }

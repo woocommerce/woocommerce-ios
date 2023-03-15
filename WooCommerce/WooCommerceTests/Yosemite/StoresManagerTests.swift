@@ -284,6 +284,26 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertTrue(mockSessionManager.deleteApplicationPasswordInvoked)
     }
 
+    func test_removing_default_store_sets_completedAllStoreOnboardingTasks_to_nil() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let mockSessionManager = MockSessionManager()
+        let sut = DefaultStoresManager(sessionManager: mockSessionManager, defaults: defaults)
+
+        // When
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? Bool))
+
+        // When
+        sut.removeDefaultStore()
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+    }
+
     /// Verifies that user is logged out when application password regeneration fails
     ///
     func test_it_deauthenticates_upon_receiving_application_password_generation_failure_notification() {

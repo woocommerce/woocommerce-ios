@@ -23,6 +23,8 @@ class DefaultStoresManager: StoresManager {
     /// https://github.com/woocommerce/woocommerce-ios/issues/878
     private var _sessionManager: SessionManagerProtocol
 
+    private let defaults: UserDefaults
+
     /// Keychain access. Used for sharing the auth access token with the widgets extension.
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
@@ -110,10 +112,12 @@ class DefaultStoresManager: StoresManager {
     /// Designated Initializer
     ///
     init(sessionManager: SessionManagerProtocol,
-         notificationCenter: NotificationCenter = .default) {
+         notificationCenter: NotificationCenter = .default,
+         defaults: UserDefaults = .standard) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
+        self.defaults = defaults
 
         isLoggedIn = isAuthenticated
 
@@ -179,6 +183,7 @@ class DefaultStoresManager: StoresManager {
     ///
     func removeDefaultStore() {
         sessionManager.deleteApplicationPassword()
+        defaults[.completedAllStoreOnboardingTasks] = nil
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
         ServiceLocator.pushNotesManager.unregisterForRemoteNotifications()

@@ -336,6 +336,7 @@
 		CC2C0372262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0371262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift */; };
 		CC6A054628773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A054528773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift */; };
 		CC80E40C294B454A00D5FF45 /* SiteSummaryStats+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC80E40B294B454A00D5FF45 /* SiteSummaryStats+ReadOnlyConvertible.swift */; };
+		CCCF3A8129C07DD9001D3507 /* ProductBundleItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCF3A8029C07DD9001D3507 /* ProductBundleItem+ReadOnlyConvertible.swift */; };
 		CE01014F2368C41600783459 /* Refund+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE01014E2368C41600783459 /* Refund+ReadOnlyType.swift */; };
 		CE0DB6C0233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0DB6BF233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift */; };
 		CE12FBDB221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBDA221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift */; };
@@ -778,6 +779,7 @@
 		CC2C0371262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelPaymentMethod+ReadonlyConvertible.swift"; sourceTree = "<group>"; };
 		CC6A054528773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderMetaData+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CC80E40B294B454A00D5FF45 /* SiteSummaryStats+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SiteSummaryStats+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		CCCF3A8029C07DD9001D3507 /* ProductBundleItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductBundleItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CE01014E2368C41600783459 /* Refund+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		CE0DB6BF233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CE12FBDA221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1293,6 +1295,7 @@
 				266503502620E2EB0079A159 /* ProductAddOn+ReadOnlyConvertible.swift */,
 				2665034C2620E0A90079A159 /* ProductAddOnOption+ReadOnlyConvertible.swift */,
 				7493750B224987D9007D85D1 /* ProductAttribute+ReadOnlyConvertible.swift */,
+				CCCF3A8029C07DD9001D3507 /* ProductBundleItem+ReadOnlyConvertible.swift */,
 				7493750922498700007D85D1 /* ProductCategory+ReadOnlyConvertible.swift */,
 				26E5A07525A626CA000DF8F6 /* ProductAttributeTerm+ReadOnlyConvertible.swift */,
 				7493750F22498AB1007D85D1 /* ProductDefaultAttribute+ReadOnlyConvertible.swift */,
@@ -2168,6 +2171,7 @@
 				CE12FBDB221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift in Sources */,
 				74D42DBC221C983F00B4977D /* ShipmentTracking+ReadOnlyConvertible.swift in Sources */,
 				247CE87A258332B400F9D9D1 /* MockNotificationActionHandler.swift in Sources */,
+				CCCF3A8129C07DD9001D3507 /* ProductBundleItem+ReadOnlyConvertible.swift in Sources */,
 				B9AECD3E2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift in Sources */,
 				025CA2CE238F53CB00B05C81 /* ProductShippingClass+ReadOnlyConvertible.swift in Sources */,
 				247CE86225832B1600F9D9D1 /* MockRefundActionHandler.swift in Sources */,

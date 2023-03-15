@@ -6,9 +6,15 @@ import struct Yosemite.Site
 final class StoreOnboardingLaunchStoreCoordinator: Coordinator {
     let navigationController: UINavigationController
     private let site: Site
+    private let isLaunched: Bool
 
-    init(site: Site, navigationController: UINavigationController) {
+    /// - Parameters:
+    ///   - site: The site for the launch store onboarding task.
+    ///   - isLaunched: Whether the site has already been launched.
+    ///   - navigationController: The navigation controller that presents the launch store flow.
+    init(site: Site, isLaunched: Bool, navigationController: UINavigationController) {
         self.site = site
+        self.isLaunched = isLaunched
         self.navigationController = navigationController
     }
 
@@ -17,15 +23,46 @@ final class StoreOnboardingLaunchStoreCoordinator: Coordinator {
             assertionFailure("The site does not have a valid URL to launch from store onboarding: \(site).")
             return
         }
-        let launchStoreController = StoreOnboardingLaunchStoreHostingController(viewModel: .init(siteURL: siteURL, siteID: site.siteID) { [weak self] in
-            self?.showLaunchedView()
-        })
-        navigationController.present(WooNavigationController(rootViewController: launchStoreController), animated: true)
+
+        // Navigation controller for the launch store flow.
+        let modalNavigationController = WooNavigationController()
+        if isLaunched {
+            presentLaunchedView(siteURL: siteURL, in: modalNavigationController)
+        } else {
+            presentLaunchStoreView(siteURL: siteURL, in: modalNavigationController)
+        }
     }
 }
 
 private extension StoreOnboardingLaunchStoreCoordinator {
-    func showLaunchedView() {
-        print("🚀 site launched")
+    func presentLaunchStoreView(siteURL: URL, in modalNavigationController: UINavigationController) {
+        let launchStoreController = StoreOnboardingLaunchStoreHostingController(viewModel: .init(siteURL: siteURL, siteID: site.siteID) { [weak self] in
+            self?.showLaunchedView(siteURL: siteURL, in: modalNavigationController)
+        })
+        modalNavigationController.pushViewController(launchStoreController, animated: false)
+        navigationController.present(modalNavigationController, animated: true)
+    }
+
+    func presentLaunchedView(siteURL: URL, in modalNavigationController: UINavigationController) {
+        let launchedStoreController = createLaunchedStoreController(siteURL: siteURL)
+        modalNavigationController.pushViewController(launchedStoreController, animated: false)
+        navigationController.present(modalNavigationController, animated: true)
+    }
+
+    func showLaunchedView(siteURL: URL, in modalNavigationController: UINavigationController) {
+        let launchedStoreController = createLaunchedStoreController(siteURL: siteURL)
+        modalNavigationController.pushViewController(launchedStoreController, animated: true)
+    }
+
+    func dismiss() {
+        navigationController.dismiss(animated: true)
+    }
+}
+
+private extension StoreOnboardingLaunchStoreCoordinator {
+    func createLaunchedStoreController(siteURL: URL) -> UIViewController {
+        StoreOnboardingStoreLaunchedHostingController(siteURL: siteURL) { [weak self] in
+            self?.dismiss()
+        }
     }
 }

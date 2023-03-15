@@ -10,6 +10,7 @@ final class StoreOnboardingCoordinator: Coordinator {
 
     private var addProductCoordinator: AddProductCoordinator?
     private var domainSettingsCoordinator: DomainSettingsCoordinator?
+    private var launchStoreCoordinator: StoreOnboardingLaunchStoreCoordinator?
 
     private let site: Site
 
@@ -38,6 +39,8 @@ final class StoreOnboardingCoordinator: Coordinator {
             addProduct()
         case .customizeDomains:
             showCustomDomains()
+        case .launchStore:
+            launchStore()
         default:
             #warning("TODO: handle navigation for each onboarding task")
             start()
@@ -60,6 +63,17 @@ private extension StoreOnboardingCoordinator {
     func showCustomDomains() {
         let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding, site: site, navigationController: navigationController)
         self.domainSettingsCoordinator = coordinator
+        coordinator.start()
+    }
+
+    @MainActor
+    func launchStore() {
+        guard let siteURL = URL(string: site.url) else {
+            assertionFailure("The site does not have a valid URL to launch from store onboarding: \(site).")
+            return
+        }
+        let coordinator = StoreOnboardingLaunchStoreCoordinator(siteURL: siteURL, navigationController: navigationController)
+        self.launchStoreCoordinator = coordinator
         coordinator.start()
     }
 }

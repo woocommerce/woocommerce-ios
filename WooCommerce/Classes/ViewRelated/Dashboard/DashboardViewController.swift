@@ -345,7 +345,7 @@ private extension DashboardViewController {
     /// Adds a Free Trial bar at the bottom of the screen.
     ///
     func addFreeTrialBar(contentText: String) {
-        let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: "Your trial has ended.") {
+        let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) {
             print("Upgrade now tapped!!")
         }
         freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false

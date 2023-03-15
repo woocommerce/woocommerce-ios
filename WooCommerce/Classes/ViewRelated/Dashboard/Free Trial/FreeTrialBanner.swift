@@ -29,27 +29,37 @@ struct FreeTrialBanner: View {
     let onUpgradeNowTapped: () -> Void
 
     var body: some View {
-        HStack {
-            Image(uiImage: .infoOutlineImage)
+        VStack(spacing: .zero) {
+            Divider()
 
-            HStack(spacing: 6) {
-                Text(mainText)
-                    .bodyStyle()
+            HStack(alignment: .center) {
+                Image(uiImage: .infoOutlineImage)
 
-                Text(Localization.upgradeNow)
-                    .underline(true)
-                    .linkStyle()
-                    .onTapGesture(perform: onUpgradeNowTapped)
+                AdaptiveStack(verticalAlignment: .center, spacing: Layout.spacing) {
+                    Text(mainText)
+                        .bodyStyle()
+
+                    Text(Localization.upgradeNow)
+                        .underline(true)
+                        .linkStyle()
+                        .onTapGesture(perform: onUpgradeNowTapped)
+                }
             }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            Divider()
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.wooCommercePurple(.shade5)))
+        .background(Color(.bannerBackground))
     }
 }
 
 // MARK: Definitions
 extension FreeTrialBanner {
+    enum Layout {
+        static let spacing: CGFloat = 6.0
+    }
+
     enum Localization {
         static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title on the button to upgrade a free trial plan.")
     }

@@ -70,7 +70,9 @@ final class PaymentRemoteTests: XCTestCase {
         let plan = try await remote.loadSiteCurrentPlan(siteID: 134)
 
         // Then
-        XCTAssertEqual(plan, .init(hasDomainCredit: false))
+        XCTAssertEqual(plan, .init(id: "1008",
+                                   hasDomainCredit: false,
+                                   expiryDate: DateFormatter.Defaults.iso8601.date(from: "2025-01-01T00:00:00+00:00")))
     }
 
     func test_loadSiteCurrentPlan_returns_noCurrentPlan_error_when_response_has_no_current_plan() async throws {

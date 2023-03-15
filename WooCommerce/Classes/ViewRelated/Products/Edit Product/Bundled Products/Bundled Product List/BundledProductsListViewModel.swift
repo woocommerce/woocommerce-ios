@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// ViewModel for `BundledProductsList`
 ///
@@ -40,8 +41,8 @@ final class BundledProductsListViewModel {
 
 // MARK: Initializers
 extension BundledProductsListViewModel {
-    convenience init(siteID: Int64, bundledProducts: [Yosemite.ProductBundleItem]) {
-        let products = BundledProductsListViewModel.fetchProducts(for: siteID, including: bundledProducts.map { $0.productID })
+    convenience init(siteID: Int64, bundledProducts: [Yosemite.ProductBundleItem], storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        let products = BundledProductsListViewModel.fetchProducts(for: siteID, including: bundledProducts.map { $0.productID }, storageManager: storageManager)
         let viewModels = bundledProducts.map { bundledProduct in
             BundledProduct(id: bundledProduct.bundledItemID,
                            title: bundledProduct.title,
@@ -54,8 +55,7 @@ extension BundledProductsListViewModel {
 
 // MARK: Private helpers
 private extension BundledProductsListViewModel {
-    static func fetchProducts(for siteID: Int64, including productIDs: [Int64]) -> [Product] {
-        let storageManager = ServiceLocator.storageManager
+    static func fetchProducts(for siteID: Int64, including productIDs: [Int64], storageManager: StorageManagerType) -> [Product] {
         let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, productIDs)
         let controller = ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [])
 

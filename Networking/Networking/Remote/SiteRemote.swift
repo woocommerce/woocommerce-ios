@@ -59,7 +59,7 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
     }
 
     public func launchSite(siteID: Int64) async throws {
-        let path = "sites/\(siteID)/launch"
+        let path = Path.siteLaunch(siteID: siteID)
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path)
         return try await enqueue(request)
     }
@@ -103,5 +103,8 @@ public extension SiteCreationResponse {
 private extension SiteRemote {
     enum Path {
         static let siteCreation = "sites/new"
+        static func siteLaunch(siteID: Int64) -> String {
+            "sites/\(siteID)/launch"
+        }
     }
 }

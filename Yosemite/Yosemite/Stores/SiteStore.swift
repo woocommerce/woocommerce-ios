@@ -131,21 +131,12 @@ public enum SiteLaunchError: Error, Equatable {
     case unexpected(description: String)
 
     init(remoteError: Error) {
-        switch remoteError {
-        case let remoteError as WordPressApiError:
-            switch remoteError {
-            case let .unknown(code, _):
-                switch code {
-                case "already-launched":
-                    self = .alreadyLaunched
-                default:
-                    self = .unexpected(description: remoteError.localizedDescription)
-                }
-            default:
-                self = .unexpected(description: remoteError.localizedDescription)
-            }
-        default:
+        guard let error = remoteError as? WordPressApiError,
+              case let .unknown(code, _) = error,
+              code == "already-launched" else {
             self = .unexpected(description: remoteError.localizedDescription)
+            return
         }
+        self = .alreadyLaunched
     }
 }

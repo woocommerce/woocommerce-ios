@@ -120,7 +120,7 @@ private extension SiteCredentialLoginUseCase {
 
     func buildLoginRequest(username: String, password: String) -> URLRequest? {
         guard let loginURL = URL(string: siteURL + Constants.loginPath),
-              let nonceRetrievalURL = URL(string: siteURL + Constants.wporgNoncePath) else {
+              let nonceRetrievalURL = URL(string: siteURL + Constants.adminPath + Constants.wporgNoncePath) else {
             return nil
         }
 
@@ -147,8 +147,8 @@ private extension SiteCredentialLoginUseCase {
 extension SiteCredentialLoginUseCase {
     enum Constants {
         static let loginPath = "/wp-login.php"
-        static let adminPath = "/wp-admin/"
-        static let wporgNoncePath = "/wp-admin/admin-ajax.php?action=rest-nonce"
+        static let adminPath = "/wp-admin"
+        static let wporgNoncePath = "/admin-ajax.php?action=rest-nonce"
     }
 }
 
@@ -156,7 +156,7 @@ private extension String {
     /// Gets contents between HTML tags with regex.
     ///
     func findLoginErrorMessage() -> String? {
-        let pattern = "<div id=\"login_error\">[^~]*?</div>"
+        let pattern = "<div[^>]*id=\"login_error\">([\\s\\S]+?)</div>"
         let urlPattern = "<a href=\".*\">[^~]*?</a>"
         let regexOptions = NSRegularExpression.Options.caseInsensitive
         let matchOptions = NSRegularExpression.MatchingOptions(rawValue: UInt(0))
@@ -172,15 +172,21 @@ private extension String {
 
             /// Removes any <a> tag
             let urlRegex = try NSRegularExpression(pattern: urlPattern, options: regexOptions)
-            if let result = urlRegex.firstMatch(in: match,
-                                                options: matchOptions,
-                                                range: NSMakeRange(0, match.count)) {
+            let results = urlRegex.matches(in: match,
+                                           options: matchOptions,
+                                           range: NSMakeRange(0, match.count))
+            var urlMatches: [String] = []
+            for result in results {
                 let range = result.range(at: 0)
                 let urlMatch = (match as NSString).substring(with: range)
-                return match
-                    .replacingOccurrences(of: urlMatch, with: "")
-                    .removedHTMLTags
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                urlMatches.append(urlMatch)
+            }
+            if urlMatches.isNotEmpty {
+                var updatedMatch = match
+                urlMatches.forEach { url in
+                    updatedMatch = updatedMatch.replacingOccurrences(of: url, with: "")
+                }
+                return updatedMatch.strippedHTML.trimmingCharacters(in: .whitespacesAndNewlines)
             }
             return match.strippedHTML.trimmingCharacters(in: .whitespacesAndNewlines)
         } catch {

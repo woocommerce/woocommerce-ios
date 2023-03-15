@@ -160,7 +160,7 @@ private extension SiteCredentialLoginUseCase {
 
         switch response.statusCode {
         case 404:
-            errorHandler?(.inaccessibleLoginPage)
+            throw SiteCredentialLoginError.inaccessibleLoginPage
         case 200:
             guard let html = String(data: data, encoding: .utf8) else {
                 throw SiteCredentialLoginError.invalidLoginResponse

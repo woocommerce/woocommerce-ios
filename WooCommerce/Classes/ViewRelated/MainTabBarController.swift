@@ -401,8 +401,8 @@ extension MainTabBarController {
                 guard storeIsShown else {
                     return
                 }
-                // We give some time to the orders tab transition to finish, otherwise it might prevent the second navigation from happening
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+         
+                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
                     presentDetails(for: orderID, siteID: siteID)
                 }
             }
@@ -444,8 +444,7 @@ extension MainTabBarController {
     static func presentCollectPayment() {
         let viewController = presentPayments()
 
-        // Wait a second until the payments screen is presented. Suboptimal but works.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
             viewController?.openSimplePaymentsAmountFlow()
         }
     }
@@ -688,6 +687,15 @@ private extension MainTabBarController {
                                                                 forceReadOnly: false)
         let productNavController = WooNavigationController(rootViewController: productViewController)
         productsNavigationController.present(productNavController, animated: true)
+    }
+}
+
+private extension MainTabBarController {
+    enum Constants {
+        // Used to delay a second navigation after the previous one is called,
+        // to ensure that the first transition is finished. Without this delay
+        // the second one might not happen.
+        static let screenTransitionsDelay = 0.3
     }
 }
 

@@ -12,6 +12,7 @@ enum SiteCredentialLoginError: Error {
     case loginFailed(message: String)
     case invalidLoginResponse
     case inaccessibleLoginPage
+    case inaccessibleAdminPage
     case unacceptableStatusCode(code: Int)
     case genericFailure(underlyingError: Error)
 
@@ -20,6 +21,8 @@ enum SiteCredentialLoginError: Error {
     var underlyingError: NSError {
         switch self {
         case .inaccessibleLoginPage:
+            return NSError(domain: Self.errorDomain, code: 404, userInfo: nil)
+        case .inaccessibleAdminPage:
             return NSError(domain: Self.errorDomain, code: 404, userInfo: nil)
         case .invalidLoginResponse:
             return NSError(domain: Self.errorDomain, code: -1, userInfo: nil)
@@ -38,16 +41,18 @@ enum SiteCredentialLoginError: Error {
 /// - Handle cookie authentication with provided credentials.
 /// - Attempt retrieving plugin details. If the request fails with 401 error, the authentication fails.
 ///
-final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
+final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let siteURL: String
     private let cookieJar: HTTPCookieStorage
     private var successHandler: (() -> Void)?
     private var errorHandler: ((SiteCredentialLoginError) -> Void)?
+    private lazy var session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
 
     init(siteURL: String,
          cookieJar: HTTPCookieStorage = HTTPCookieStorage.shared) {
         self.siteURL = siteURL
         self.cookieJar = cookieJar
+        super.init()
     }
 
     func setupHandlers(onLoginSuccess: @escaping () -> Void,
@@ -60,13 +65,14 @@ final class SiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
         // Old cookies can make the login succeeds even with incorrect credentials
         // So we need to clear all cookies before login.
         clearAllCookies()
-        guard let request = buildLoginRequest(username: username, password: password) else {
-            DDLogError("⛔️ Error constructing login request")
+        guard let loginRequest = buildLoginRequest(username: username, password: password),
+            let nonceRequest = buildNonceRetrievalRequest() else {
+            DDLogError("⛔️ Error constructing login requests")
             return
         }
         Task { @MainActor in
             do {
-                try await startLogin(with: request)
+                try await startLogin(loginRequest: loginRequest, nonceRetrievalRequest: nonceRequest)
                 successHandler?()
             } catch {
                 let loginError: SiteCredentialLoginError = {
@@ -90,40 +96,61 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
-    func startLogin(with request: URLRequest) async throws {
-        let session = URLSession(configuration: .default)
+    func startLogin(loginRequest: URLRequest, nonceRetrievalRequest: URLRequest) async throws {
+        do {
+            let (data, response) = try await session.data(for: loginRequest)
+            guard let response = response as? HTTPURLResponse else {
+                throw SiteCredentialLoginError.invalidLoginResponse
+            }
 
-        let (data, response) = try await session.data(for: request)
+            switch response.statusCode {
+            case 404:
+                errorHandler?(.inaccessibleLoginPage)
+            case 200:
+                guard let html = String(data: data, encoding: .utf8) else {
+                    throw SiteCredentialLoginError.invalidLoginResponse
+                }
+                if let errorMessage = html.findLoginErrorMessage() {
+                    throw SiteCredentialLoginError.loginFailed(message: errorMessage)
+                } else {
+                    throw SiteCredentialLoginError.invalidLoginResponse
+                }
+            default:
+                throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)
+            }
+        } catch {
+            let nsError = error as NSError
+            if nsError.domain == NSURLErrorDomain, nsError.code == -999 {
+                /// The previous task was cancelled upon redirect,
+                /// now check the admin page access.
+                try await checkAdminPageAccess(with: nonceRetrievalRequest)
+            } else {
+                throw SiteCredentialLoginError.genericFailure(underlyingError: nsError)
+            }
+        }
+    }
+
+    func checkAdminPageAccess(with nonceRequest: URLRequest) async throws {
+        let (_, response) = try await session.data(for: nonceRequest)
         guard let response = response as? HTTPURLResponse else {
             throw SiteCredentialLoginError.invalidLoginResponse
         }
-
         switch response.statusCode {
-        case 404:
-            errorHandler?(.inaccessibleLoginPage)
         case 200:
-            guard let html = String(data: data, encoding: .utf8) else {
-                throw SiteCredentialLoginError.invalidLoginResponse
-            }
-            if let url = response.url, url.absoluteString.hasSuffix(Constants.wporgNoncePath) {
-                /// If we get data from the nonce retrieval request, consider this a success.
-                return
-            } else if let errorMessage = html.findLoginErrorMessage() {
-                throw SiteCredentialLoginError.loginFailed(message: errorMessage)
-            } else {
-                throw SiteCredentialLoginError.invalidLoginResponse
-            }
+            return // success 🎉
+        case 404:
+            throw SiteCredentialLoginError.inaccessibleAdminPage
         default:
             throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)
         }
     }
 
     func buildLoginRequest(username: String, password: String) -> URLRequest? {
-        guard let loginURL = URL(string: siteURL + Constants.loginPath),
-              let nonceRetrievalURL = URL(string: siteURL + Constants.adminPath + Constants.wporgNoncePath) else {
+        guard let loginURL = URL(string: siteURL + Constants.loginPath) else {
             return nil
         }
 
+        let nonceRetrievalPath = siteURL + Constants.adminPath + Constants.wporgNoncePath
         var request = URLRequest(url: loginURL)
 
         request.httpMethod = "POST"
@@ -132,7 +159,7 @@ private extension SiteCredentialLoginUseCase {
         var parameters = [URLQueryItem]()
         parameters.append(URLQueryItem(name: "log", value: username))
         parameters.append(URLQueryItem(name: "pwd", value: password))
-        parameters.append(URLQueryItem(name: "redirect_to", value: nonceRetrievalURL.absoluteString))
+        parameters.append(URLQueryItem(name: "redirect_to", value: nonceRetrievalPath))
         var components = URLComponents()
         components.queryItems = parameters
 
@@ -140,6 +167,29 @@ private extension SiteCredentialLoginUseCase {
         /// doesn't encode the '+'. Percent encodes '+' to avoid this ambiguity.
         let characterSet = CharacterSet(charactersIn: "+").inverted
         request.httpBody = components.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: characterSet)?.data(using: .utf8)
+        return request
+    }
+
+    func buildNonceRetrievalRequest() -> URLRequest? {
+        guard let nonceRetrievalURL = URL(string: siteURL + Constants.adminPath + Constants.wporgNoncePath) else {
+            return nil
+        }
+        let request = try? URLRequest(url: nonceRetrievalURL, method: .get)
+        return request
+    }
+}
+
+extension SiteCredentialLoginUseCase: URLSessionDataDelegate {
+    func urlSession(_ session: URLSession,
+                    task: URLSessionTask,
+                    willPerformHTTPRedirection response: HTTPURLResponse,
+                    newRequest request: URLRequest) async -> URLRequest? {
+        // Disables redirection if the request is to load the nonce retrieval URL
+        if let url = request.url,
+            url.absoluteString.hasSuffix(Constants.wporgNoncePath) {
+            task.cancel()
+            return nil
+        }
         return request
     }
 }

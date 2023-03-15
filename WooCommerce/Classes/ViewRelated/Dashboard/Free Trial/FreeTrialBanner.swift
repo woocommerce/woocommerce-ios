@@ -5,7 +5,23 @@ import SwiftUI
 struct FreeTrialBanner: View {
 
     var body: some View {
-        Text("Free Trial")
+        HStack {
+            Image(uiImage: .infoOutlineImage)
+
+            HStack(spacing: 6) {
+                Text("Your trial has ended.")
+                    .bodyStyle()
+
+                Text("Upgrade Now")
+                    .underline(true)
+                    .linkStyle()
+                    .onTapGesture {
+                        print("Upgrade Now Pressed")
+                    }
+            }
+        }
+        .padding()
+        .background(Color(.wooCommercePurple(.shade5)))
     }
 }
 

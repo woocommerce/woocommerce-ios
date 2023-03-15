@@ -140,7 +140,7 @@ struct StoreOnboardingView: View {
 
                 // View all button
                 viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
-                    .renderedIf(!viewModel.isExpanded)
+                    .renderedIf(!viewModel.isExpanded && !viewModel.isRedacted)
 
                 Spacer()
                     .renderedIf(viewModel.isExpanded)

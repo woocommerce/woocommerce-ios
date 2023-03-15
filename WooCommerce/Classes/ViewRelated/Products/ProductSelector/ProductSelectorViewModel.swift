@@ -340,6 +340,8 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     /// Sync products matching a given keyword.
     ///
     private func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+        searchProductsInCacheIfPossible(siteID: siteID, keyword: keyword)
+
         let action = ProductAction.searchProducts(siteID: siteID,
                                                   keyword: keyword,
                                                   pageNumber: pageNumber,
@@ -348,6 +350,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
                                                   productStatus: filters.productStatus,
                                                   productType: filters.productType,
                                                   productCategory: filters.productCategory) { [weak self] result in
+                                                      debugPrint("on remote completion")
             // Don't continue if this isn't the latest search.
             guard let self = self, keyword == self.searchTerm else {
                 return
@@ -365,6 +368,26 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
             self.transitionToResultsUpdatedState()
             onCompletion?(result.isSuccess)
+        }
+
+        stores.dispatch(action)
+    }
+
+    private func searchProductsInCacheIfPossible(siteID: Int64, keyword: String) {
+        guard filters.numberOfActiveFilters == 0 else {
+            return
+        }
+
+        let action = ProductAction.searchProductsInCache(siteID: siteID, keyword: keyword) { [weak self ] thereAreCachedResults in
+            guard let self = self,
+                  keyword == self.searchTerm else {
+                return
+            }
+            debugPrint("on local completion. Cached results?", thereAreCachedResults)
+            if thereAreCachedResults {
+                self.updateProductsResultsController()
+                self.transitionToResultsUpdatedState()
+            }
         }
 
         stores.dispatch(action)

@@ -46,6 +46,8 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case let.searchProductsInCache(siteID, keyword, onCompletion):
+            searchInCache(siteID: siteID, keyword: keyword, onCompletion: onCompletion)
         case let .searchProducts(siteID,
                                  keyword,
                                  filter,
@@ -56,8 +58,8 @@ public class ProductStore: Store {
                                  productType,
                                  productCategory,
                                  excludedProductIDs,
-                                 onLocalCompletion,
                                  onCompletion):
+
             searchProducts(siteID: siteID,
                            keyword: keyword,
                            filter: filter,
@@ -68,7 +70,6 @@ public class ProductStore: Store {
                            productType: productType,
                            productCategory: productCategory,
                            excludedProductIDs: excludedProductIDs,
-                           onLocalCompletion: onLocalCompletion,
                            onCompletion: onCompletion)
         case .synchronizeProducts(let siteID,
                                   let pageNumber,
@@ -140,12 +141,9 @@ private extension ProductStore {
                         productType: ProductType?,
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
-                        onLocalCompletion: @escaping (Result<Void, Error>) -> Void,
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
         switch filter {
         case .all:
-            localSearch(siteID: siteID, keyword: keyword, filter: filter, pageNumber: pageNumber, pageSize: pageSize, stockStatus: stockStatus, productStatus: productStatus, productType: productType, productCategory: productCategory, excludedProductIDs: excludedProductIDs, onLocalCompletion: onLocalCompletion, onCompletion: onCompletion)
-
             remote.searchProducts(for: siteID,
                                   keyword: keyword,
                                   pageNumber: pageNumber,
@@ -175,26 +173,18 @@ private extension ProductStore {
         }
     }
 
-    func localSearch(siteID: Int64,
-                    keyword: String,
-                    filter: ProductSearchFilter,
-                    pageNumber: Int,
-                    pageSize: Int,
-                    stockStatus: ProductStockStatus?,
-                    productStatus: ProductStatus?,
-                    productType: ProductType?,
-                    productCategory: ProductCategory?,
-                    excludedProductIDs: [Int64],
-                    onLocalCompletion: @escaping (Result<Void, Error>) -> Void,
-                    onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let predicate = NSPredicate(format: "name LIKE %@", keyword)
+    func searchInCache(siteID: Int64, keyword: String, onCompletion: @escaping (Bool) -> Void) {
+        let namePredicate = NSPredicate(format: "name BEGINSWITH[c] %@", keyword)
+        let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [namePredicate, sitePredicate])
+
         let results = sharedDerivedStorage.allObjects(ofType: StorageProduct.self, matching: predicate, sortedBy: nil)
 
         handleSearchResults(siteID: siteID,
-                                  keyword: keyword,
-                                  filter: filter,
-                                  result: Result.success(results.map { $0.toReadOnly() }),
-                                  onCompletion: onCompletion)
+                            keyword: keyword,
+                            filter: .all,
+                            result: Result.success(results.map { $0.toReadOnly() }),
+                            onCompletion: { _ in onCompletion(!results.isEmpty) })
     }
 
     /// Synchronizes the products associated with a given Site ID, sorted by ascending name.

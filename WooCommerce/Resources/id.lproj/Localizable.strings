@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-07 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-03-15 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -41,6 +41,11 @@
 
 /* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@ Version" = "Versi %1$@";
+
+/* A label prompting users to learn more about Tap to Pay on iPhone"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"%1$@ about accepting payments with Tap to Pay on iPhone." = "%1$@ tentang penerimaan pembayaran dengan Ketuk untuk Membayar di iPhone.";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -232,7 +237,8 @@ which should be translated separately and considered part of this sentence. */
 /* The text is preceded by the monthly price on the store creation plan screen. */
 "\/month" = "\/bulan";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 1 */
+/* Settings > Manage Card Reader > Connect > Help hint number 1
+   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
 "1" = "1";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
@@ -244,10 +250,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1 item dipilih";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 2 */
+/* Settings > Manage Card Reader > Connect > Help hint number 2
+   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 3 */
+/* Settings > Manage Card Reader > Connect > Help hint number 3
+   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3";
 
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
@@ -325,6 +333,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the feature announcement banner intended to upsell card readers */
 "Accept payments easily" = "Terima pembayaran dengan mudah";
+
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
+"Accept the Terms of Service during set up." = "Terima Ketentuan Layanan selama penyiapan.";
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "Akses tarif diskon pengiriman. Saat ini tersedia dengan DHL dan USPS, dan akan segera hadir lebih banyak lagi!";
@@ -1110,6 +1121,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for bundle product type. */
 "Bundle" = "Paket";
 
+/* Title for the bundled products screen */
+"Bundled Products" = "Produk Bundel";
+
+/* Title for Bundled Products row in the product form screen. */
+"Bundled products" = "Produk bundel";
+
 /* Country option for a site address. */
 "Burkina Faso" = "Burkina Faso";
 
@@ -1532,6 +1549,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the collect payment flow with a user name. */
 "Collect payment from %1$@" = "Terima pembayaran dari %1$@";
 
+/* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
+"Collect payments, setup Tap to Pay, order card readers and more." = "Terima pembayaran, atur Ketuk untuk Membayar, pesan pembaca kartu, dan lain-lain.";
+
 /* Industry option in the store creation category question. */
 "Collections Agencies" = "Jasa Penagihan Utang";
 
@@ -1921,6 +1941,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Buat variasi pertama Anda";
+
+/* Description of the 'Products' screen - used for spotlight indexing on iOS. */
+"Create, edit, and publish products." = "Buat, sunting, dan poskan produk.";
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Membuat variasi untuk semua kombinasi atribut Anda.";
@@ -2991,6 +3014,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "Dari perangkat";
 
+/* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
+"From purchase to fulfillment – manage the entire order process via the app." = "Dari pembelian sampai penyelesaian – kelola seluruh proses pemesanan via aplikasi.";
+
 /* Industry option in the store creation category question. */
 "Fuel Dispensers" = "Dispenser Bahan Bakar";
 
@@ -3394,8 +3420,7 @@ which should be translated separately and considered part of this sentence. */
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Pembayaran Langsung dapat diproses melalui penyedia pembayaran berikut. Penyedia mana yang ingin Anda gunakan?";
 
-/* Title for the error screen when In-Person Payments is unavailable
-   Title for the error screen when the merchant's payment account is restricted because it's under reviw
+/* Title for the error screen when the merchant's payment account is restricted because it's under reviw
    Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
 "In-Person Payments is currently unavailable" = "Pembayaran Langsung saat ini tidak tersedia";
 
@@ -3996,6 +4021,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text that explains how to update VC to get the latest stats */
 "Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "Pastikan Anda mengoperasikan WooCommerce versi terbaru di situs Anda dan telah mengaktifkan WooCommerce Admin.";
 
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to sign in to iCloud and set a passcode on the device */
+"Make sure you are signed in to iCloud, and have set a passcode." = "Pastikan Anda sudah login ke iCloud dan mengatur kode sandi.";
+
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "Buat produk Anda lebih mudah ditemukan dengan tag";
 
@@ -4243,7 +4271,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Musicians, Bands, Or Orchestras" = "Musisi, Band, atau Orkestra";
 
-/* Title of the hub menu view in case there is no title for the store */
+/* Title of the 'My Store' tab - used for spotlight indexing on iOS.
+   Title of the hub menu view in case there is no title for the store */
 "My Store" = "Toko Saya";
 
 /* My Tickets title */
@@ -4361,6 +4390,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Niue" = "Niue";
 
+/* Placeholder for empty product ratings */
+"No (approved) reviews" = "Tidak ada ulasan (yang disetujui)";
+
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "Tidak Ada Pembatasan";
 
@@ -4431,9 +4463,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Belum ada produk";
 
-/* Placeholder for empty product ratings */
-"No ratings" = "Belum ada nilai";
-
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
 "No results found for %1$@\nAdd a custom carrier" = "Tidak ada hasil yang ditemukan untuk %1$@\nTambahkan operator kustom";
 
@@ -4445,6 +4474,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "Tarif pengiriman tidak tersedia";
+
+/* Error in identifying supported contact methods in the Shipping Label Address Validation */
+"No supported contact method on this device." = "Tidak ada metode kontak yang didukung di perangkat ini.";
 
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "Tanpa Tag";
@@ -4687,7 +4719,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Ordered List" = "Daftar Berurutan";
 
 /* Orders stat label on dashboard - should be plural.
-   The title of the Orders tab. */
+   The title of the Orders tab.
+   Title of the 'Orders' tab - used for spotlight indexing on iOS. */
 "Orders" = "Pesanan";
 
 /* Subtitle of the product form bottom sheet action for editing categories. */
@@ -4896,6 +4929,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment was declined for an unspecified reason. Try another means of payment" = "Pembayaran ditolak karena alasan yang tidak dijelaskan. Coba gunakan metode pembayaran lainnya";
 
 /* Title for the Payments settings screen
+   Title of the 'Payments' screen - used for spotlight indexing on iOS.
    Title of the hub menu payments button */
 "Payments" = "Pembayaran";
 
@@ -5383,6 +5417,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product section title in Review Order screen if there is more than one product.
    Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
+   Title of the 'Products' tab - used for spotlight indexing on iOS.
    Title of the Products tab — plural form of Product
    Title text of the section that shows the Products when creating or editing an order
    Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -5986,6 +6021,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text on the button to see a saved receipt */
 "See Receipt" = "Lihat Tanda Terima";
 
+/* Description of the 'My Store' screen - used for spotlight indexing on iOS. */
+"See at a glance which products are winning." = "Lihat produk terlaris.";
+
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "Lihat opsi tata letak dan ukuran kertas";
 
@@ -6103,7 +6141,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Siapkan Jetpack";
 
-/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up.
+   Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
+   Settings > Set up Tap to Pay on iPhone > Prompt user to set up Tap to Pay on iPhone */
 "Set up Tap to Pay on iPhone" = "Atur fitur Ketuk untuk Bayar di iPhone";
 
 /* Header text on Add New Custom Package screen in Shipping Label flow
@@ -7517,6 +7557,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "Coba Instal Ulang";
 
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
+"Try a payment using your own card (and refund it when you're done.)" = "Coba pembayaran dengan kartu Anda (dan kembalikan dana setelah selesai.)";
+
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
@@ -8404,6 +8447,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "Anda dapat memilih lebih dari satu.";
 
+/* Info notice at the bottom of the bundled products screen */
+"You can edit bundled products in the web dashboard." = "Anda dapat menyunting produk bundel di dasbor web.";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Anda dapat menyunting add-on produk di dasbor web.";
 
@@ -8425,8 +8471,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "Anda dapat mengatur kode pos toko di wp-admin > WooCommerce > Pengaturan (Umum)";
 
-/* Error message when In-Person Payments is not supported in a specific country
-   Generic error message when In-Person Payments is unavailable */
+/* Error message when In-Person Payments is not supported in a specific country */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Anda masih dapat menerima pembayaran tunai secara langsung dengan mengaktifkan metode pembayaran \"Bayar di Tempat\" di toko Anda.";
 
 /* No comment provided by engineer. */
@@ -8606,6 +8651,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "password" = "Kata sandi";
 
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
+"payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "pembayaran, ketuk untuk membayar, woocommerce, woo, pembayaran langsung, pembayaran langsung, terima pembayaran, pembayaran, pembaca, pembaca kartu, pesan pembaca kartu";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "dinilai %ld kali";
 
@@ -8675,6 +8723,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "Tutup";
+
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
+"woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, toko saya, hari ini, minggu ini, bulan ini, tahun ini, pesanan, pengunjung, konversi, konversi teratas, item terjual";
+
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Orders' tab. */
+"woocommerce, orders, all orders, new order" = "woocommerce, pesanan, semua pesanan, pesanan baru";
+
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
+"woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, produk, kategori, produk baru, cari produk";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */

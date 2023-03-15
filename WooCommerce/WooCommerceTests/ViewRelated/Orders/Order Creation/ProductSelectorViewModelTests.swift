@@ -172,6 +172,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 self.insert(product, withSearchTerm: "shirt")
                 onCompletion(.success(()))
                 expectation.fulfill()
+            case .searchProductsInCache:
+                break
             default:
                 XCTFail("Unsupported Action")
             }
@@ -199,6 +201,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 self.insert(shirt, withSearchTerm: "shirt")
                 onCompletion(.success(()))
                 expectation.fulfill()
+            case .searchProductsInCache:
+                break
             default:
                 XCTFail("Unsupported Action")
             }
@@ -291,6 +295,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                     onCompletion(.failure(NSError(domain: "Error", code: 0)))
                     promise(viewModel.notice)
+                case .searchProductsInCache:
+                    break
                 default:
                     XCTFail("Received unsupported action: \(action)")
                 }

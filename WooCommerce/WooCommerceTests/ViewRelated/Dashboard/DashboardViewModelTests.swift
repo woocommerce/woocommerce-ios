@@ -300,10 +300,10 @@ final class DashboardViewModelTests: XCTestCase {
 
     // MARK: Store onboarding
 
-    func test_showOnboarding_is_false_when_feature_flag_is_turned_off_and_completedAllStoreOnboardingTasks_is_false() async {
+    func test_showOnboarding_is_false_when_feature_flag_is_turned_off_and_completedAllStoreOnboardingTasks_is_false() async throws {
         // Given
         let uuid = UUID().uuidString
-        let defaults = UserDefaults(suiteName: uuid)!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = false
         let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
                                            userDefaults: defaults)
@@ -311,10 +311,10 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showOnboarding)
     }
 
-    func test_showOnboarding_is_false_when_feature_flag_is_turned_off_and_completedAllStoreOnboardingTasks_is_true() async {
+    func test_showOnboarding_is_false_when_feature_flag_is_turned_off_and_completedAllStoreOnboardingTasks_is_true() async throws {
         // Given
         let uuid = UUID().uuidString
-        let defaults = UserDefaults(suiteName: uuid)!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = true
         let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
                                            userDefaults: defaults)
@@ -322,10 +322,10 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showOnboarding)
     }
 
-    func test_showOnboarding_is_false_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_true() async {
+    func test_showOnboarding_is_false_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_true() async throws {
         // Given
         let uuid = UUID().uuidString
-        let defaults = UserDefaults(suiteName: uuid)!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = true
         let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
@@ -333,10 +333,10 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showOnboarding)
     }
 
-    func test_showOnboarding_is_true_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_false() async {
+    func test_showOnboarding_is_true_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_false() async throws {
         // Given
         let uuid = UUID().uuidString
-        let defaults = UserDefaults(suiteName: uuid)!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = false
         let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
@@ -344,10 +344,10 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showOnboarding)
     }
 
-    func test_showOnboarding_is_true_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_not_set() async {
+    func test_showOnboarding_is_true_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_not_set() async throws {
         // Given
         let uuid = UUID().uuidString
-        let defaults = UserDefaults(suiteName: uuid)!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
         // Then

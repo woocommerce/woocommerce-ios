@@ -175,10 +175,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     // MARK: completedAllStoreOnboardingTasks user defaults
 
-    func test_completedAllStoreOnboardingTasks_is_nil_when_there_are_pending_tasks() async {
+    func test_completedAllStoreOnboardingTasks_is_nil_when_there_are_pending_tasks() async throws {
         // Given
         let uuid = UUID().uuidString
-        let defaults = UserDefaults(suiteName: uuid)!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
@@ -197,10 +197,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
 
-    func test_completedAllStoreOnboardingTasks_is_true_when_there_are_no_pending_tasks() async {
+    func test_completedAllStoreOnboardingTasks_is_true_when_there_are_no_pending_tasks() async throws {
         // Given
         let uuid = UUID().uuidString
-        let defaults = UserDefaults(suiteName: uuid)!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: true, type: .addFirstProduct),
             .init(isComplete: true, type: .launchStore),
@@ -219,10 +219,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? Bool))
     }
 
-    func test_completedAllStoreOnboardingTasks_is_not_changed_when_tasks_request_fails() async {
+    func test_completedAllStoreOnboardingTasks_is_not_changed_when_tasks_request_fails() async throws {
         // Given
         let uuid = UUID().uuidString
-        let defaults = UserDefaults(suiteName: uuid)!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         mockLoadOnboardingTasks(result: .failure(MockError()))
         let sut = StoreOnboardingViewModel(isExpanded: true,
                                            siteID: 0,
@@ -238,10 +238,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
 
-    func test_completedAllStoreOnboardingTasks_is_not_changed_when_tasks_request_returns_empty_array() async {
+    func test_completedAllStoreOnboardingTasks_is_not_changed_when_tasks_request_returns_empty_array() async throws {
         // Given
         let uuid = UUID().uuidString
-        let defaults = UserDefaults(suiteName: uuid)!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         mockLoadOnboardingTasks(result: .success([]))
         let sut = StoreOnboardingViewModel(isExpanded: true,
                                            siteID: 0,

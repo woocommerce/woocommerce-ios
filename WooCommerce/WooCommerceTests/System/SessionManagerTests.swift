@@ -114,13 +114,13 @@ class SessionManagerTests: XCTestCase {
     func test_completedAllStoreOnboardingTasks_is_set_to_nil_upon_reset() throws {
         // Given
         let uuid = UUID().uuidString
-        let defaults = UserDefaults(suiteName: uuid)!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
 
-        // Then
+        // When
         defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
 
-        // When
+        // Then
         XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? Bool))
 
         // When
@@ -151,12 +151,12 @@ class SessionManagerTests: XCTestCase {
 
     /// Verifies that WPCOM credentials are returned for already installed and logged in versions which don't have type stored in user defaults
     ///
-    func test_already_installed_version_without_authentication_type_saved_returns_WPCOM_credentials() {
+    func test_already_installed_version_without_authentication_type_saved_returns_WPCOM_credentials() throws {
         // Given
         let uuid = UUID().uuidString
 
         // Prepare user defaults
-        let defaults = UserDefaults(suiteName: uuid)!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[UserDefaults.Key.defaultUsername] = "lalala"
         defaults[UserDefaults.Key.defaultSiteAddress] = "https://example.com"
 

@@ -4,7 +4,7 @@ import Yosemite
 
 /// View model for `StoreOnboardingView`.
 class StoreOnboardingViewModel: ObservableObject {
-    /// UI state of the dashboard top performers.
+    /// UI state of the store onboarding tasks.
     enum State {
         /// Shows placeholder rows.
         case loading

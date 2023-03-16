@@ -233,6 +233,59 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(sut.shouldShowViewAllButton)
     }
 
+    // MARK: - isRedacted
+
+    func test_view_is_redacted_while_loading_tasks() async {
+        // Given
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores)
+
+        stores.whenReceivingAction(ofType: StoreOnboardingTasksAction.self) { action in
+            guard case let .loadOnboardingTasks(_, completion) = action else {
+                return XCTFail()
+            }
+
+            // Then
+            XCTAssertTrue(sut.isRedacted)
+            completion(.success([]))
+        }
+
+        // When
+        await sut.reloadTasks()
+    }
+
+    func test_view_is_unredacted_after_finishing_loading_tasks_successfully() async {
+        // Given
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]))
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.isRedacted)
+    }
+
+    func test_view_is_unredacted_after_failing_to_load_tasks() async {
+        // Given
+        mockLoadOnboardingTasks(result: .failure(MockError()))
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.isRedacted)
+    }
+
     // MARK: - Loading tasks
 
     func test_it_loads_previously_loaded_data_when_loading_tasks_fails() async {

@@ -582,11 +582,6 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     func decorateTags(tags: [String], supportSourceTag: String?) -> [String] {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-            if ServiceLocator.stores.isAuthenticated == false,
-               AuthenticatorAnalyticsTracker.shared.state.lastFlow == .loginWithSiteAddress,
-               AuthenticatorAnalyticsTracker.shared.state.lastStep == .usernamePassword {
-                return tags + [Constants.siteCredentialLoginErrorTag]
-            }
             return tags
         }
 

@@ -388,6 +388,12 @@ extension WooAnalyticsEvent {
         static func previewFailed(statusCode: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailPreviewFailed, properties: ["status_code": Int64(statusCode)])
         }
+
+        /// Tracks when the merchant taps the Bundled Products row (applicable for bundle-type products only).
+        ///
+        static func bundledProductsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailViewBundledProductsTapped, properties: [:])
+        }
     }
 }
 

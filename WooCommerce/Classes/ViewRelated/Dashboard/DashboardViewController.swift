@@ -103,6 +103,10 @@ final class DashboardViewController: UIViewController {
 
     private var announcementView: UIView?
 
+    /// Holds a reference to the Free Trial Banner view, Needed to be able to hide it when needed.
+    ///
+    private var freeTrialBanner: UIView?
+
     /// Onboarding card.
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
@@ -157,6 +161,7 @@ final class DashboardViewController: UIViewController {
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
+        observeFreeTrialBannerVisibility()
 
         viewModel.syncFreeTrialBanner(siteID: siteID)
 
@@ -362,6 +367,20 @@ private extension DashboardViewController {
         DispatchQueue.main.async {
             self.containerView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: freeTrialViewController.view.frame.size.height, right: 0)
         }
+
+        // Store a reference to it to manipulate it later in `removeFreeTrialBanner`.
+        freeTrialBanner = freeTrialViewController.view
+    }
+
+    /// Removes the Free Trial Banner when possible.
+    ///
+    func removeFreeTrialBanner() {
+        guard let banner = freeTrialBanner else {
+            return
+        }
+
+        banner.removeFromSuperview()
+        containerView.contentInset = .zero // Resets the content offset of main scroll view. Was adjusted previously in `addFreeTrialBar`
     }
 
     func configureDashboardUIContainer() {
@@ -550,6 +569,17 @@ private extension DashboardViewController {
         shouldShowStoreNameAsSubtitle = true
         storeNameLabel.isHidden = false
         storeNameLabel.text = siteName
+    }
+
+    /// Shows or hides the free trial banner.
+    ///
+    func observeFreeTrialBannerVisibility() {
+        viewModel.$freeTrialBannerViewModel.sink { [weak self] viewModel in
+            self?.removeFreeTrialBanner()
+            if let viewModel {
+                self?.addFreeTrialBar(contentText: viewModel.message)
+            }
+        }.store(in: &subscriptions)
     }
 }
 

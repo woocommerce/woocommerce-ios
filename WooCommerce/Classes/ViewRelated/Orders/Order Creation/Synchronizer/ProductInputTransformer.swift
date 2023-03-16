@@ -41,6 +41,20 @@ struct ProductInputTransformer {
         return order.copy(items: items)
     }
 
+    /// Adds, deletes, or updates order items based on the given product input array
+    ///
+    static func update(input: [OrderSyncProductInput], on order: Order, updateZeroQuantities: Bool) -> Order {
+        // TODO: Add rest of logic. For now does the minimum:
+        // Accepts [OrderSyncProductInput] -> Transforms to [OrderItem] -> returns Order copy
+        var items = order.items
+        let _ = input.map { item in
+            let newItem = createOrderItem(using: item, usingPriceFrom: nil)
+            items.append(newItem)
+        }
+
+        return order.copy(items: items )
+    }
+
     /// Removes an order item from an order when the `item.itemID` matches the `input.id`.
     ///
     private static func remove(input: OrderSyncProductInput, from order: Order) -> Order {

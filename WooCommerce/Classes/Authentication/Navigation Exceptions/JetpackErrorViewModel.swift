@@ -2,7 +2,7 @@ import UIKit
 import SafariServices
 import WordPressAuthenticator
 import WordPressUI
-
+import enum Yosemite.Credentials
 
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected
@@ -68,7 +68,15 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         let viewModel = JetpackSetupWebViewModel(siteURL: siteURL,
                                                  analytics: analytics,
                                                  onCompletion: jetpackSetupCompletionHandler)
-        let connectionController = AuthenticatedWebViewController(viewModel: viewModel, wporgCredentials: siteCredentials)
+        let credentials: Credentials? = {
+            if let siteCredentials {
+                return .wporg(username: siteCredentials.username,
+                              password: siteCredentials.password,
+                              siteAddress: siteCredentials.password)
+            }
+            return nil
+        }()
+        let connectionController = AuthenticatedWebViewController(viewModel: viewModel, extraCredentials: credentials)
         viewController.navigationController?.show(connectionController, sender: nil)
     }
 

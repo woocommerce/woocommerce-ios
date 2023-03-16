@@ -40,16 +40,18 @@ struct ProductInputTransformer {
 
         return order.copy(items: items)
     }
-
-    /// Adds, deletes, or updates order items based on the given multiple products input.
-    /// When `updateZeroQuantities` is true, items with `.zero` quantities will be updated instead of being deleted.
+    
+    /// Adds, deletes, or updates order items based on the multiple given product inputs
     ///
-    /// Accepts `[OrderSyncProductInput]`,  transforms into `[OrderItem]`, returns returns the updated `Order` copy
+    /// - Parameters:
+    ///   - input: Array of types of products the synchronizer supports
+    ///   - order: Represents an Order entity.
+    ///   - updateZeroQuantities: When true, items with `.zero` quantities will be updated instead of being deleted.
+    ///
+    /// - Returns: An Order entity.
     static func updateMultiple(input: [OrderSyncProductInput], on order: Order, updateZeroQuantities: Bool) -> Order {
-
         var items = order.items
 
-        // Transforms into `[OrderItem]` that we'll pass to the Order copy
         for productInput in input {
             items.append(contentsOf: updateOrderItems(
                 from: productInput,
@@ -61,8 +63,16 @@ struct ProductInputTransformer {
         return order.copy(items: items)
     }
 
+    
+    /// Updates the `OrderItems` array with `OrderSyncProductInput`.
+    /// Uses the same implementation as `update()` but returns an array of OrderItems instead,
+    /// rather than aggregating them into the Order
     ///
-    ///
+    /// - Parameters:
+    ///   - input: Types of products the synchronizer supports
+    ///   - order: Represents an Order entity.
+    ///   - updateZeroQuantities: When true, items with `.zero` quantities will be updated instead of being deleted.
+    /// - Returns: An array of Order Item entities
     private static func updateOrderItems(from input: OrderSyncProductInput,
                                          order: Order, updateZeroQuantities: Bool) -> [OrderItem] {
         // If the input's quantity is 0 or less, delete the item if required.

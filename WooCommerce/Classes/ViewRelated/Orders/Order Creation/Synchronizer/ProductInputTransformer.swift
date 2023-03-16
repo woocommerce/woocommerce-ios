@@ -53,7 +53,6 @@ struct ProductInputTransformer {
         for productInput in input {
             items.append(contentsOf: updateOrderItems(
                 from: productInput,
-                on: items,
                 order: order,
                 updateZeroQuantities: updateZeroQuantities)
             )
@@ -65,7 +64,6 @@ struct ProductInputTransformer {
     ///
     ///
     private static func updateOrderItems(from input: OrderSyncProductInput,
-                                         on initialOrderItems: [OrderItem],
                                          order: Order, updateZeroQuantities: Bool) -> [OrderItem] {
         // If the input's quantity is 0 or less, delete the item if required.
         guard input.quantity > 0 || updateZeroQuantities else {

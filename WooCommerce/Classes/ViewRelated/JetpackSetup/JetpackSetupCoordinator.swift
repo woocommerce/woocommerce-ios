@@ -4,6 +4,7 @@ import enum Alamofire.AFError
 import WordPressAuthenticator
 import struct Networking.CookieNonceAuthenticatorConfiguration
 import class Networking.WordPressOrgNetwork
+import enum Yosemite.Credentials
 
 /// Coordinates the Jetpack setup flow in the authenticated state.
 ///
@@ -17,6 +18,7 @@ final class JetpackSetupCoordinator {
     private let analytics: Analytics
     private let dotcomAuthScheme: String
 
+    private var jetpackConnectedEmail: String?
     private var benefitsController: JetpackBenefitsHostingController?
     private var loginNavigationController: LoginNavigationController?
     private var setupStepsNavigationController: UINavigationController?
@@ -110,10 +112,11 @@ private extension JetpackSetupCoordinator {
         switch result {
         case .success(let user):
             requiresConnectionOnly = !user.isConnected
+            let connectedEmail = user.wpcomUser?.email
+            jetpackConnectedEmail = connectedEmail
             if let onSuccess {
                 onSuccess()
             } else {
-                let connectedEmail = user.wpcomUser?.email
                 startAuthentication(with: connectedEmail)
             }
 
@@ -183,14 +186,28 @@ private extension JetpackSetupCoordinator {
             guard let self else { return }
             progressView.dismiss(animated: true)
             self.checkJetpackStatus(result, onSuccess: { [weak self] in
-                self?.showSetupSteps(authToken: authToken)
+                // TODO: find username based on token
+                self?.showSetupSteps(username: nil, authToken: authToken)
             })
         }
         stores.dispatch(action)
     }
 
-    func showSetupSteps(authToken: String) {
-        let setupUI = JetpackSetupHostingController(siteURL: site.url, connectionOnly: requiresConnectionOnly, onStoreNavigation: { _ in
+    func showSetupSteps(username: String?, authToken: String) {
+        guard jetpackConnectedEmail == nil else {
+            // TODO: authenticate user immediately
+            return
+        }
+        let credentials: Credentials? = {
+            guard let username else {
+                return nil
+            }
+            return .wpcom(username: username, authToken: authToken, siteAddress: site.url)
+        }()
+        let setupUI = JetpackSetupHostingController(siteURL: site.url,
+                                                    connectionOnly: requiresConnectionOnly,
+                                                    connectionWebViewCredentials: credentials,
+                                                    onStoreNavigation: { _ in
             // TODO-8921: Authenticate user with the logged in WPCom credentials
             DDLogInfo("🎉 Jetpack setup completes!")
         })
@@ -254,7 +271,7 @@ private extension JetpackSetupCoordinator {
                 self.showAlert(message: message)
             },
             onLoginSuccess: { [weak self] authToken in
-                self?.showSetupSteps(authToken: authToken)
+                self?.showSetupSteps(username: email, authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(
             viewModel: viewModel,
@@ -262,7 +279,18 @@ private extension JetpackSetupCoordinator {
             guard let self else { return }
             await self.emailLoginViewModel.requestAuthenticationLink(email: email)
         })
-        loginNavigationController?.pushViewController(viewController, animated: true)
+
+        if let loginNavigationController {
+            loginNavigationController.pushViewController(viewController, animated: true)
+        } else {
+            /// If the user already is connected, the email screen is skipped.
+            /// The login flow starts here, so create the navigation controller if needed.
+            let loginNavigationController = LoginNavigationController(rootViewController: viewController)
+            rootViewController.dismiss(animated: true) {
+                self.rootViewController.present(loginNavigationController, animated: true)
+            }
+            self.loginNavigationController = loginNavigationController
+        }
     }
 
     func show2FALoginUI(with loginFields: LoginFields) {
@@ -275,7 +303,7 @@ private extension JetpackSetupCoordinator {
                 self.showAlert(message: message)
             },
             onLoginSuccess: { [weak self] authToken in
-                self?.showSetupSteps(authToken: authToken)
+                self?.showSetupSteps(username: loginFields.username, authToken: authToken)
             })
         let viewController = WPCom2FALoginHostingController(viewModel: viewModel)
         loginNavigationController?.pushViewController(viewController, animated: true)

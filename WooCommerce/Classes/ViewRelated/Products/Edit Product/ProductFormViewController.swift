@@ -443,8 +443,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 editAttributes()
             case .status:
                 break
-            case .bundledProducts:
-                // TODO-8954: Add tracking
+            case .bundledProducts(_, let isActionable):
+                guard isActionable else {
+                    return
+                }
+                // TODO-9128: Add tracking
                 showBundledProducts()
                 return
             }
@@ -1683,7 +1686,7 @@ private extension ProductFormViewController {
         guard let product = product as? EditableProductModel else {
             return
         }
-        let viewModel = BundledProductsListViewModel()
+        let viewModel = BundledProductsListViewModel(bundledProducts: product.bundledItems)
         let viewController = BundledProductsListViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }

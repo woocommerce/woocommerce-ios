@@ -15,6 +15,9 @@ class StoreOnboardingViewModel: ObservableObject {
     @Published private(set) var isRedacted: Bool = false
     @Published private(set) var taskViewModels: [StoreOnboardingTaskViewModel] = []
 
+    /// Set externally in the hosting controller to invalidate the SwiftUI `StoreOnboardingView`'s intrinsic content size as a workaround with UIKit.
+    var onStateChange: (() -> Void)?
+
     var numberOfTasksCompleted: Int {
         taskViewModels
             .filter({ $0.isComplete })
@@ -44,20 +47,32 @@ class StoreOnboardingViewModel: ObservableObject {
     private let placeholderTasks: [StoreOnboardingTaskViewModel] = Array(repeating: StoreOnboardingTaskViewModel.placeHolder(),
                                                                          count: 3)
 
-    /// - Parameter isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
+    private let defaults: UserDefaults
+
+    /// - Parameters:
+    ///   - isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
+    ///   - siteID: siteID
+    ///   - stores: StoresManager
+    ///   - userDefaults: UserDefaults for storing when all onboarding tasks are completed
     init(isExpanded: Bool,
          siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         defaults: UserDefaults = .standard) {
         self.isExpanded = isExpanded
         self.siteID = siteID
         self.stores = stores
         self.state = .loading
+        self.defaults = defaults
     }
 
     func reloadTasks() async {
         await update(state: .loading)
-        let tasks = try? await loadTasks()
-        await update(state: .loaded(rows: tasks ?? taskViewModels))
+        if let tasks = try? await loadTasks() {
+            await checkIfAllTasksAreCompleted(tasks)
+            await update(state: .loaded(rows: tasks))
+        } else {
+            await update(state: .loaded(rows: taskViewModels))
+        }
     }
 }
 
@@ -87,6 +102,22 @@ private extension StoreOnboardingViewModel {
             isRedacted = false
             self.taskViewModels = items
         }
+        onStateChange?()
+    }
+
+    @MainActor
+    func checkIfAllTasksAreCompleted(_ tasksFromServer: [StoreOnboardingTaskViewModel]) {
+        guard tasksFromServer.isNotEmpty else {
+            return
+        }
+
+        let isPendingTaskPresent = tasksFromServer.contains(where: { $0.isComplete == false })
+        guard isPendingTaskPresent == false else {
+            return
+        }
+
+        // This will be reset to `nil` when session resets
+        defaults[.completedAllStoreOnboardingTasks] = true
     }
 }
 

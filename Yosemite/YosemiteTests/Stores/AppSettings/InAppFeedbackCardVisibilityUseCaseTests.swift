@@ -163,6 +163,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
                                           isCouponManagementSwitchEnabled: false,
                                           isInAppPurchasesSwitchEnabled: false,
                                           isTapToPayOnIPhoneSwitchEnabled: false,
+                                          isProductMultiSelectionSwitchEnabled: false,
                                           knownCardReaders: [],
                                           featureAnnouncementCampaignSettings: [:],
                                           sitesWithAtLeastOneIPPTransactionFinished: [])
@@ -233,6 +234,7 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             isCouponManagementSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
             isTapToPayOnIPhoneSwitchEnabled: false,
+            isProductMultiSelectionSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: []

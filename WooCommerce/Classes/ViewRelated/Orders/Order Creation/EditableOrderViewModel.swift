@@ -71,6 +71,10 @@ final class EditableOrderViewModel: ObservableObject {
         }
     }
 
+    /// Latest state for Product Multi-Selection experimental feature
+    ///
+    @Published var isProductMultiSelectionBetaFeatureEnabled: Bool = ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection)
+
     /// Active navigation bar trailing item.
     /// Defaults to create button.
     ///
@@ -173,7 +177,8 @@ final class EditableOrderViewModel: ObservableObject {
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
-            supportsMultipleSelection: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
+            supportsMultipleSelection: isProductMultiSelectionBetaFeatureEnabled,
+            isClearSelectionEnabled: false,
             toggleAllVariationsOnSelection: false,
             onProductSelected: { [weak self] product in
                 guard let self = self else { return }
@@ -299,6 +304,8 @@ final class EditableOrderViewModel: ObservableObject {
         // Needs to be reset before the view model is used.
         self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
 
+        configureProductMultiSelectionIfNeeded()
+
         configureDisabledState()
         configureNavigationTrailingItem()
         configureSyncErrors()
@@ -310,6 +317,20 @@ final class EditableOrderViewModel: ObservableObject {
         configureNonEditableIndicators()
         configureMultipleLinesMessage()
         resetAddressForm()
+    }
+
+    /// Checks the current state of the Product Multi Selection feature toggle
+    ///
+    private func configureProductMultiSelectionIfNeeded() {
+        let action = AppSettingsAction.loadProductMultiSelectionFeatureSwitchState(onCompletion: { result in
+            switch result {
+            case .success(let isEnabled):
+                self.isProductMultiSelectionBetaFeatureEnabled = isEnabled
+            case .failure(let error):
+                DDLogError("Unable to load MultiSelection feature switch state. \(error)")
+            }
+        })
+        stores.dispatch(action)
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.

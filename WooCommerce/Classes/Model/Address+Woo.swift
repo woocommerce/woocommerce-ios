@@ -100,7 +100,7 @@ private extension Address {
             return address1
         }
 
-        return address1 + " " + address2
+        return address1 + "\n" + address2
     }
 
     /// Returns a CNPostalAddress with the receiver's properties

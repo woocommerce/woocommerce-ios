@@ -34,7 +34,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .loginMagicLinkEmphasisM2:
             return true
         case .productMultiSelectionM1:
-            return false
+            return buildConfig == .localDeveloper  || buildConfig == .alpha
         case .promptToEnableCodInIppOnboarding:
             return true
         case .searchProductsBySKU:
@@ -50,8 +50,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .storeCreationM3Profiler:
             return false
         case .justInTimeMessagesOnDashboard:
-            return true
-        case .systemStatusReportInSupportRequest:
             return true
         case .IPPInAppFeedbackBanner:
             return true
@@ -73,8 +71,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper
         case .domainSettings:
             return true
-        case .supportRequests:
-            return true
         case .simplifyProductEditing:
             // Enabled for the A/B experiment treatment group only
             // Disabled for the control group and UI testing
@@ -86,6 +82,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .addCouponToOrder:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
         case .productBundles:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .freeTrial:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

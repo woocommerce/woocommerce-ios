@@ -411,7 +411,9 @@ extension InPersonPaymentsMenuViewController {
                                                                     configuration: viewModel.cardPresentPaymentsConfiguration,
                                                                     activePaymentGateway: activePaymentGateway)
         let setUpTapToPayViewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
-        navigationController?.present(setUpTapToPayViewController, animated: true)
+        let controller = WooNavigationController(rootViewController: setUpTapToPayViewController)
+        controller.navigationBar.isHidden = true
+        navigationController?.present(controller, animated: true)
     }
 
     func navigateToInPersonPaymentsSelectPluginView() {
@@ -424,7 +426,7 @@ extension InPersonPaymentsMenuViewController {
         navigationController?.pushViewController(InPersonPaymentsSelectPluginViewController(rootView: view), animated: true)
     }
 
-    func collectPaymentWasPressed() {
+    func openSimplePaymentsAmountFlow() {
         ServiceLocator.analytics.track(.paymentsMenuCollectPaymentTapped)
 
         guard let siteID = stores.sessionManager.defaultStoreID,
@@ -490,7 +492,7 @@ extension InPersonPaymentsMenuViewController: UITableViewDelegate {
         case .managePaymentGateways:
             managePaymentGatewaysWasPressed()
         case .collectPayment:
-            collectPaymentWasPressed()
+            openSimplePaymentsAmountFlow()
         case .toggleEnableCashOnDelivery:
             break
         case .setUpTapToPayOnIPhone:

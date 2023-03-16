@@ -1,1 +1,1 @@
-¡Buenas noticias! La función "Tap to Pay" ya está disponible para los vendedores de EE. UU. que utilizan WooCommerce Payments. Usa tu iPhone para cobrar rápidamente un pago realizado en persona con tarjeta de crédito. Agradecemos que nos hayas dejado comentarios sobre la aplicación, en concreto, los relacionados con las nuevas funciones en las que estamos trabajando y para las que ofrecemos acceso anticipado.
+Esta versión incluye algunas correcciones y mejoras con las que será más fácil gestionar tu tienda desde la aplicación. Sigue enviando comentarios: ¡te escuchamos!

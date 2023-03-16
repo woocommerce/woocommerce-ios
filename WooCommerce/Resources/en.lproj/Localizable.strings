@@ -35,6 +35,11 @@
 /* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
 "%1$@ / %2$@" = "%1$@ / %2$@";
 
+/* A label prompting users to learn more about Tap to Pay on iPhone"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"%1$@ about accepting payments with Tap to Pay on iPhone." = "%1$@ about accepting payments with Tap to Pay on iPhone.";
+
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
@@ -231,7 +236,8 @@ which should be translated separately and considered part of this sentence. */
 /* The text is preceded by the monthly price on the store creation plan screen. */
 "/month" = "/month";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 1 */
+/* Settings > Manage Card Reader > Connect > Help hint number 1
+   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
 "1" = "1";
 
 /* Title of the label indicating that there is 1 item to refund. */
@@ -243,10 +249,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product selected" = "1 Product selected";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 2 */
+/* Settings > Manage Card Reader > Connect > Help hint number 2
+   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 3 */
+/* Settings > Manage Card Reader > Connect > Help hint number 3
+   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3";
 
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
@@ -317,6 +325,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the feature announcement banner intended to upsell card readers */
 "Accept payments easily" = "Accept payments easily";
+
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
+"Accept the Terms of Service during set up." = "Accept the Terms of Service during set up.";
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!";
@@ -1121,6 +1132,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for bundle product type. */
 "Bundle" = "Bundle";
 
+/* Title for Bundled Products row in the product form screen. */
+"Bundled products" = "Bundled products";
+
+/* Title for the bundled products screen */
+"Bundled Products" = "Bundled Products";
+
 /* Country option for a site address. */
 "Burkina Faso" = "Burkina Faso";
 
@@ -1563,6 +1580,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the collect payment flow with a user name. */
 "Collect payment from %1$@" = "Collect payment from %1$@";
 
+/* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
+"Collect payments, setup Tap to Pay, order card readers and more." = "Collect payments, setup Tap to Pay, order card readers and more.";
+
 /* Industry option in the store creation category question. */
 "Collections Agencies" = "Collections Agencies";
 
@@ -1955,6 +1975,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Create your first variation";
+
+/* Description of the 'Products' screen - used for spotlight indexing on iOS. */
+"Create, edit, and publish products." = "Create, edit, and publish products.";
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Creates variations for all combinations of your attributes.";
@@ -3035,6 +3058,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "From device";
 
+/* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
+"From purchase to fulfillment – manage the entire order process via the app." = "From purchase to fulfillment – manage the entire order process via the app.";
+
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "From WordPress Media Library";
 
@@ -3432,8 +3458,7 @@ which should be translated separately and considered part of this sentence. */
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?";
 
-/* Title for the error screen when In-Person Payments is unavailable
-   Title for the error screen when the merchant's payment account is restricted because it's under reviw
+/* Title for the error screen when the merchant's payment account is restricted because it's under reviw
    Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
 "In-Person Payments is currently unavailable" = "In-Person Payments is currently unavailable";
 
@@ -4049,6 +4074,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text that explains how to update VC to get the latest stats */
 "Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated.";
 
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to sign in to iCloud and set a passcode on the device */
+"Make sure you are signed in to iCloud, and have set a passcode." = "Make sure you are signed in to iCloud, and have set a passcode.";
+
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "Make your products easier to find with tags";
 
@@ -4299,7 +4327,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Musicians, Bands, Or Orchestras" = "Musicians, Bands, Or Orchestras";
 
-/* Title of the hub menu view in case there is no title for the store */
+/* Title of the 'My Store' tab - used for spotlight indexing on iOS.
+   Title of the hub menu view in case there is no title for the store */
 "My Store" = "My Store";
 
 /* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard
@@ -4417,6 +4446,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Niue" = "Niue";
 
+/* Placeholder for empty product ratings */
+"No (approved) reviews" = "No (approved) reviews";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "No activity this period";
 
@@ -4487,9 +4519,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "No products yet";
 
-/* Placeholder for empty product ratings */
-"No ratings" = "No ratings";
-
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "No Restrictions";
 
@@ -4504,6 +4533,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "No shipping rates available";
+
+/* Error in identifying supported contact methods in the Shipping Label Address Validation */
+"No supported contact method on this device." = "No supported contact method on this device.";
 
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "No tags";
@@ -4746,7 +4778,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "ORDERS" = "ORDERS";
 
 /* Orders stat label on dashboard - should be plural.
-   The title of the Orders tab. */
+   The title of the Orders tab.
+   Title of the 'Orders' tab - used for spotlight indexing on iOS. */
 "Orders" = "Orders";
 
 /* Subtitle of the product form bottom sheet action for editing categories. */
@@ -4955,8 +4988,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment was declined for an unspecified reason. Try another means of payment" = "Payment was declined for an unspecified reason. Try another means of payment";
 
 /* Title for the Payments settings screen
+   Title of the 'Payments' screen - used for spotlight indexing on iOS.
    Title of the hub menu payments button */
 "Payments" = "Payments";
+
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
+"payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -5445,6 +5482,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product section title in Review Order screen if there is more than one product.
    Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
+   Title of the 'Products' tab - used for spotlight indexing on iOS.
    Title of the Products tab — plural form of Product
    Title text of the section that shows the Products when creating or editing an order
    Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -6021,6 +6059,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Security Brokers Or Dealers" = "Security Brokers Or Dealers";
 
+/* Description of the 'My Store' screen - used for spotlight indexing on iOS. */
+"See at a glance which products are winning." = "See at a glance which products are winning.";
+
 /* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
    Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "See Connected Stores";
@@ -6148,7 +6189,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Set up Jetpack";
 
-/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up.
+   Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
+   Settings > Set up Tap to Pay on iPhone > Prompt user to set up Tap to Pay on iPhone */
 "Set up Tap to Pay on iPhone" = "Set up Tap to Pay on iPhone";
 
 /* Header text on Add New Custom Package screen in Shipping Label flow
@@ -7608,6 +7651,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Trust";
 
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
+"Try a payment using your own card (and refund it when you're done.)" = "Try a payment using your own card (and refund it when you're done.)";
+
 /* Action button to retry Jetpack activation. */
 "Try Activating Again" = "Try Activating Again";
 
@@ -8489,6 +8535,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
+"woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold";
+
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Orders' tab. */
+"woocommerce, orders, all orders, new order" = "woocommerce, orders, all orders, new order";
+
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
+"woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, products, categories, new product, search products";
+
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
 
@@ -8536,6 +8591,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "You can choose multiple ones.";
 
+/* Info notice at the bottom of the bundled products screen */
+"You can edit bundled products in the web dashboard." = "You can edit bundled products in the web dashboard.";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "You can edit product add-ons in the web dashboard.";
 
@@ -8557,8 +8615,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode/ZIP in wp-admin > WooCommerce > Settings (General)" = "You can set your store's postcode/ZIP in wp-admin > WooCommerce > Settings (General)";
 
-/* Error message when In-Person Payments is not supported in a specific country
-   Generic error message when In-Person Payments is unavailable */
+/* Error message when In-Person Payments is not supported in a specific country */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store.";
 
 /* No comment provided by engineer. */

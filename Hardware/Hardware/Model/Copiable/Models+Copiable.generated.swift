@@ -41,7 +41,7 @@ extension Hardware.Charge {
         currency: CopiableProp<String> = .copy,
         status: CopiableProp<ChargeStatus> = .copy,
         description: NullableCopiableProp<String> = .copy,
-        metadata: NullableCopiableProp<[AnyHashable: Any]> = .copy,
+        metadata: NullableCopiableProp<[String: String]> = .copy,
         paymentMethod: NullableCopiableProp<PaymentMethod> = .copy
     ) -> Hardware.Charge {
         let id = id ?? self.id

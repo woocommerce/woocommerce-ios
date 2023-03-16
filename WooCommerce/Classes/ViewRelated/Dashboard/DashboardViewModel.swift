@@ -30,13 +30,15 @@ final class DashboardViewModel {
 
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         userDefaults: UserDefaults = .standard) {
         self.stores = stores
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
-        // TODO: 8893 - determine if the onboarding view should be shown based on more criteria
-        self.showOnboarding = featureFlags.isFeatureFlagEnabled(.dashboardOnboarding)
+        userDefaults.publisher(for: \.completedAllStoreOnboardingTasks)
+            .map({ featureFlags.isFeatureFlagEnabled(.dashboardOnboarding) && ($0 == false) })
+            .assign(to: &$showOnboarding)
     }
 
     /// Syncs store stats for dashboard UI.
@@ -159,6 +161,34 @@ final class DashboardViewModel {
         }
     }
 
+    /// Fetches the current site plan.
+    ///
+    func syncFreeTrialBanner(siteID: Int64) {
+        // Only fetch free trial information when the local feature flag is enabled.
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.freeTrial) else {
+            return
+        }
+
+        // Only fetch free trial information is the site is a WPCom site.
+        guard stores.sessionManager.defaultSite?.isWordPressComStore == true else {
+            return DDLogInfo("⚠️ Site is not a WPCOM site.")
+        }
+
+        let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
+            switch result {
+            case .success(let plan):
+                if plan.isFreeTrial {
+                    print("*****************************")
+                    print("****** FREE TRIAL PLAN ******")
+                    print("*****************************")
+                }
+            case .failure(let error):
+                DDLogError("⛔️ Error fetching the current site's plan information: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
     /// Checks if a store is eligible for products onboarding -returning error otherwise- and prepares the onboarding announcement if needed.
     ///
     private func syncProductsOnboarding(for siteID: Int64) async throws {
@@ -226,3 +256,9 @@ private extension DashboardViewModel {
         static let dashboardScreenName = "my_store"
     }
 }
+
+private extension UserDefaults {
+     @objc dynamic var completedAllStoreOnboardingTasks: Bool {
+         bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
+     }
+ }

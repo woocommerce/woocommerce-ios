@@ -270,15 +270,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping  (Error, Bool) -> Void) {
         let useCase = SiteCredentialLoginUseCase(siteURL: credentials.siteURL)
-        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { error in
+        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error in
+            guard let self else { return }
             onLoading(false)
-            let incorrectCredentials: Bool = {
-                if case .wrongCredentials = error {
-                    return true
-                }
-                return false
-            }()
-            onFailure(error.underlyingError, incorrectCredentials)
+            onFailure(error.underlyingError, false)
+            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication, error: error))
         })
         self.siteCredentialLoginUseCase = useCase
 
@@ -392,12 +388,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
     ///
     func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.supportRequests) {
-            let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag.name))
-            supportForm.show(from: sourceViewController)
-        } else {
-            ZendeskProvider.shared.showNewRequestIfPossible(from: sourceViewController, with: sourceTag.name)
-        }
+        let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag.name))
+        supportForm.show(from: sourceViewController)
     }
 
     /// Indicates if the Login Epilogue should be presented.

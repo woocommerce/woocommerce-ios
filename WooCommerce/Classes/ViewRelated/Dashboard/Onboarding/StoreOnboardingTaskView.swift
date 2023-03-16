@@ -49,7 +49,7 @@ struct StoreOnboardingTaskView: View {
                                     .redacted(reason: isRedacted ? .placeholder : [])
 
                                 // PRIVATE label.
-                                Text(Localization.privateLabel)
+                                Text(Localization.privateLabel.uppercased())
                                     .font(.caption)
                                     .fontWeight(.bold)
                                     .foregroundColor(Color(.wooCommercePurple(.shade60)))
@@ -84,7 +84,7 @@ struct StoreOnboardingTaskView: View {
 
 private extension StoreOnboardingTaskView {
     enum Localization {
-        static let privateLabel = NSLocalizedString("PRIVATE", comment: "Label shown on the launch store task.")
+        static let privateLabel = NSLocalizedString("private", comment: "Label shown on the launch store task.")
     }
     enum Layout {
         static let horizontalSpacing: CGFloat = 16

@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// ViewModel for `BundledProductsList`
 ///
@@ -16,6 +17,9 @@ final class BundledProductsListViewModel {
 
         /// Stock status of the bundled product
         let stockStatus: String
+
+        /// URL of the bundled product's image, if any
+        let imageURL: URL?
     }
 
     /// View title
@@ -37,11 +41,31 @@ final class BundledProductsListViewModel {
 
 // MARK: Initializers
 extension BundledProductsListViewModel {
-    convenience init(bundledProducts: [Yosemite.ProductBundleItem]) {
-        let viewModels = bundledProducts.map {
-            BundledProduct(id: $0.bundledItemID, title: $0.title, stockStatus: $0.stockStatus.description)
+    convenience init(siteID: Int64, bundledProducts: [Yosemite.ProductBundleItem], storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        let products = BundledProductsListViewModel.fetchProducts(for: siteID, including: bundledProducts.map { $0.productID }, storageManager: storageManager)
+        let viewModels = bundledProducts.map { bundledProduct in
+            BundledProduct(id: bundledProduct.bundledItemID,
+                           title: bundledProduct.title,
+                           stockStatus: bundledProduct.stockStatus.description,
+                           imageURL: products.first(where: { $0.productID == bundledProduct.productID })?.imageURL) // URL for bundled product's first image
         }
         self.init(bundledProducts: viewModels)
+    }
+}
+
+// MARK: Private helpers
+private extension BundledProductsListViewModel {
+    static func fetchProducts(for siteID: Int64, including productIDs: [Int64], storageManager: StorageManagerType) -> [Product] {
+        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, productIDs)
+        let controller = ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [])
+
+        do {
+            try controller.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch products for Bundled Products list: \(error)")
+        }
+
+        return controller.fetchedObjects
     }
 }
 

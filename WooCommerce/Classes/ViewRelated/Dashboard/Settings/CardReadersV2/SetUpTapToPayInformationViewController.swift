@@ -27,13 +27,13 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
         self.viewModel = viewModel
 
         super.init(rootView: SetUpTapToPayInformationView(viewModel: viewModel))
+
+        viewModel.alertsPresenter = alertsPresenter
+        viewModel.connectionController = connectionController
         configureView()
     }
 
     private func configureView() {
-        rootView.setUpButtonAction = { [weak self] in
-            self?.searchAndConnect()
-        }
         rootView.showURL = { url in
             WebviewHelper.launch(url, with: self)
         }
@@ -50,19 +50,6 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
     override func viewWillDisappear(_ animated: Bool) {
         viewModel.didUpdate = nil
         super.viewWillDisappear(animated)
-    }
-}
-
-// MARK: - Convenience Methods
-//
-private extension SetUpTapToPayInformationViewController {
-    func searchAndConnect() {
-        connectionController.searchAndConnect { _ in
-            /// No need for logic here. Once connected, the connected reader will publish
-            /// through the `cardReaderAvailableSubscription`, so we can just
-            /// dismiss the connection flow alerts.
-            self.alertsPresenter.dismiss()
-        }
     }
 }
 
@@ -118,9 +105,9 @@ struct SetUpTapToPayInformationView: View {
                 Spacer()
 
                 Button(Localization.setUpButton, action: {
-                    setUpButtonAction?()
+                    viewModel.setUpTapped()
                 })
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.setUpInProgress))
                 .disabled(!viewModel.enableSetup)
 
                 InPersonPaymentsLearnMore(

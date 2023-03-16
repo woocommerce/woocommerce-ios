@@ -40,7 +40,7 @@ struct ProductInputTransformer {
 
         return order.copy(items: items)
     }
-    
+
     /// Adds, deletes, or updates order items based on the multiple given product inputs
     ///
     /// - Parameters:
@@ -63,7 +63,6 @@ struct ProductInputTransformer {
         return order.copy(items: items)
     }
 
-    
     /// Updates the `OrderItems` array with `OrderSyncProductInput`.
     /// Uses the same implementation as `update()` but returns an array of OrderItems instead,
     /// rather than aggregating them into the Order

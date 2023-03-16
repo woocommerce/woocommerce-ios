@@ -33,7 +33,7 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
         /// priority, so viewmodels related to starting set up should come before viewmodels
         /// that expect set up to be completed, etc.
         ///
-        viewModelsAndViews.append(
+        viewModelsAndViews.append(contentsOf: [
             PaymentSettingsFlowViewModelAndView(
                 viewModel: SetUpTapToPayInformationViewModel(
                     siteID: siteID,
@@ -45,8 +45,18 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
                     connectionAnalyticsTracker: cardReaderConnectionAnalyticsTracker
                 ),
                 viewPresenter: SetUpTapToPayInformationViewController.self
+            ),
+
+            PaymentSettingsFlowViewModelAndView(
+                viewModel: SetUpTapToPayCompleteViewModel(
+                    didChangeShouldShow: { [weak self] state in
+                        self?.onDidChangeShouldShow(state)
+                    },
+                    connectionAnalyticsTracker: cardReaderConnectionAnalyticsTracker
+                ),
+                viewPresenter: SetUpTapToPayCompleteViewController.self
             )
-        )
+        ])
 
         /// And then immediately get a priority view if possible
         reevaluatePriorityViewModelAndView()

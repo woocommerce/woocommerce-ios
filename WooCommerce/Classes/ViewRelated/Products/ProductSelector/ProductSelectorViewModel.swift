@@ -350,7 +350,6 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
                                                   productStatus: filters.productStatus,
                                                   productType: filters.productType,
                                                   productCategory: filters.productCategory) { [weak self] result in
-                                                      debugPrint("on remote completion")
             // Don't continue if this isn't the latest search.
             guard let self = self, keyword == self.searchTerm else {
                 return
@@ -383,7 +382,6 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
                   keyword == self.searchTerm else {
                 return
             }
-            debugPrint("on local completion. Cached results?", thereAreCachedResults)
             if thereAreCachedResults {
                 self.updateProductsResultsController()
                 self.transitionToResultsUpdatedState()

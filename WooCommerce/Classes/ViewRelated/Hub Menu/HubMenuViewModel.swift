@@ -267,6 +267,17 @@ extension HubMenuViewModel {
         let trackingOption: String = "debug-iap"
     }
 
+    struct Upgrades: HubMenuItem {
+        static var id = "Upgrades"
+
+        let title: String = "[Debug] Upgrades"
+        let icon: UIImage = .iconBolt
+        let iconColor: UIColor = .primary
+        let badge: HubMenuBadgeType = .newFeature
+        let accessibilityIdentifier: String = "menu-upgrades"
+        let trackingOption: String = "upgrades"
+    }
+
     enum Localization {
         static let payments = NSLocalizedString("Payments",
                                                 comment: "Title of the hub menu payments button")

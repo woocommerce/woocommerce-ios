@@ -163,8 +163,6 @@ final class DashboardViewController: UIViewController {
         observeOnboardingVisibility()
         observeFreeTrialBannerVisibility()
 
-        viewModel.syncFreeTrialBanner(siteID: siteID)
-
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
             await reloadDashboardUIStatsVersion(forced: true)
@@ -175,6 +173,9 @@ final class DashboardViewController: UIViewController {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
+
+        // Proactively update the free trial banner every time we navigate to the dashboard.
+        viewModel.syncFreeTrialBanner(siteID: siteID)
     }
 
     override func viewDidAppear(_ animated: Bool) {

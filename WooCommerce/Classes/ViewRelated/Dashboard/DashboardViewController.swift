@@ -103,6 +103,10 @@ final class DashboardViewController: UIViewController {
 
     private var announcementView: UIView?
 
+    /// Holds a reference to the Free Trial Banner view, Needed to be able to hide it when needed.
+    ///
+    private var freeTrialBanner: UIView?
+
     /// Onboarding card.
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
@@ -157,8 +161,7 @@ final class DashboardViewController: UIViewController {
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
-
-        viewModel.syncFreeTrialBanner(siteID: siteID)
+        observeFreeTrialBannerVisibility()
 
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
@@ -170,6 +173,9 @@ final class DashboardViewController: UIViewController {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
+
+        // Proactively update the free trial banner every time we navigate to the dashboard.
+        viewModel.syncFreeTrialBanner(siteID: siteID)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -362,6 +368,20 @@ private extension DashboardViewController {
         DispatchQueue.main.async {
             self.containerView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: freeTrialViewController.view.frame.size.height, right: 0)
         }
+
+        // Store a reference to it to manipulate it later in `removeFreeTrialBanner`.
+        freeTrialBanner = freeTrialViewController.view
+    }
+
+    /// Removes the Free Trial Banner when possible.
+    ///
+    func removeFreeTrialBanner() {
+        guard let banner = freeTrialBanner else {
+            return
+        }
+
+        banner.removeFromSuperview()
+        containerView.contentInset = .zero // Resets the content offset of main scroll view. Was adjusted previously in `addFreeTrialBar`
     }
 
     func configureDashboardUIContainer() {
@@ -550,6 +570,17 @@ private extension DashboardViewController {
         shouldShowStoreNameAsSubtitle = true
         storeNameLabel.isHidden = false
         storeNameLabel.text = siteName
+    }
+
+    /// Shows or hides the free trial banner.
+    ///
+    func observeFreeTrialBannerVisibility() {
+        viewModel.$freeTrialBannerViewModel.sink { [weak self] viewModel in
+            self?.removeFreeTrialBanner()
+            if let viewModel {
+                self?.addFreeTrialBar(contentText: viewModel.message)
+            }
+        }.store(in: &subscriptions)
     }
 }
 

@@ -447,7 +447,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isActionable else {
                     return
                 }
-                // TODO-9128: Add tracking
+                ServiceLocator.analytics.track(event: .ProductDetail.bundledProductsTapped())
                 showBundledProducts()
                 return
             }

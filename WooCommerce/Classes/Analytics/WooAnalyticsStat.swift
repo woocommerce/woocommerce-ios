@@ -547,6 +547,7 @@ public enum WooAnalyticsStat: String {
     case productInventorySettingsSKUScanned = "product_inventory_settings_sku_scanned"
     case productDetailPreviewTapped = "product_detail_preview_tapped"
     case productDetailPreviewFailed = "product_detail_preview_failed"
+    case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"
 
     // MARK: Edit Product Variation Events
     //
@@ -822,6 +823,9 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Spotlight
     case spotlightActivityOpened = "spotlight_activity_opened"
+
+    // MARK: App Intents
+    case appIntentShortcutOpened = "shortcut_opened"
 
     // MARK: Login Jetpack Connection
     case loginJetpackConnectionErrorShown = "login_jetpack_connection_error_shown"

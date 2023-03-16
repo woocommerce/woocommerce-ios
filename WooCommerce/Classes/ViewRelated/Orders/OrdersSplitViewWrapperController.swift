@@ -7,6 +7,7 @@ final class OrdersSplitViewWrapperController: UIViewController {
     private let siteID: Int64
 
     private lazy var ordersSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView)
+    private lazy var ordersViewController = OrdersRootViewController(siteID: siteID)
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -47,11 +48,14 @@ final class OrdersSplitViewWrapperController: UIViewController {
 
         ordersSplitViewController.showDetailViewController(loaderNavigationController, sender: nil)
     }
+
+    func presentOrderCreationFlow() {
+        ordersViewController.presentOrderCreationFlow()
+    }
 }
 
 private extension OrdersSplitViewWrapperController {
     func configureSplitView() {
-        let ordersViewController = OrdersRootViewController(siteID: siteID)
         let ordersNavigationController = WooTabNavigationController()
         ordersNavigationController.viewControllers = [ordersViewController]
 

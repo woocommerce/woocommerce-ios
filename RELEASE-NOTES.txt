@@ -2,16 +2,19 @@
 
 12.8
 -----
+- [*] Shortcuts: We can now trigger the order creation and payment collection flows from the iOS Shortcuts app. [https://github.com/woocommerce/woocommerce-ios/pull/9103]
 - [Internal] Dashboard: the UI layer had a major refactoring to allow scrolling for content more than stats for the onboarding project. The main design change is on the refresh control, where it was moved from each stats tab to below the navigation bar. Other design changes are not expected. [https://github.com/woocommerce/woocommerce-ios/pull/9031]
+- [Internal] Mobile Payments: Updated StripeTerminal to 2.18 [https://github.com/woocommerce/woocommerce-ios/pull/9118]
 
 12.7
 -----
-- [*] Fix: unencoded special character in password causes login issues with store credentials (application passwords login).
 - [Internal] Shipping Label: add condition checks before showing contact options [https://github.com/woocommerce/woocommerce-ios/pull/8982]
 - [*] Main screens are now accessible through the Home Screen Spotlight Search [https://github.com/woocommerce/woocommerce-ios/pull/9082]
 - [*] Stats: Fixed a crash when order stats use a date and time matching the start of Daylight Saving Time. [https://github.com/woocommerce/woocommerce-ios/pull/9083]
 - [*] Fix: Dismiss Take Payment popup after sharing the payment link to another app. [https://github.com/woocommerce/woocommerce-ios/pull/9042]
 - [*] Site credential login: Catch invalid cookie nonce [https://github.com/woocommerce/woocommerce-ios/pull/9102]
+- [*] Better error messages for site credential login failures [https://github.com/woocommerce/woocommerce-ios/pull/9125]
+- [Internal] New Zendesk tag for site credential login errors [https://github.com/woocommerce/woocommerce-ios/pull/9150]
 
 12.6
 -----

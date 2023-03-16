@@ -11,6 +11,12 @@ public enum SiteAction: Action {
     case createSite(name: String,
                     domain: String,
                     completion: (Result<SiteCreationResult, SiteCreationError>) -> Void)
+
+    /// Launches a site publicly through WPCOM.
+    /// - Parameter:
+    ///   - siteID: ID of the site to launch.
+    ///   - completion: Called when the result of site launch is available.
+    case launchSite(siteID: Int64, completion: (Result<Void, SiteLaunchError>) -> Void)
 }
 
 /// The result of site creation including necessary site information.

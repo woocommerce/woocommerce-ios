@@ -27,7 +27,10 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         }
 
         rootView.taskTapped = { [weak self] task in
-            guard let self else { return }
+            guard let self,
+                  !task.isComplete else {
+                return
+            }
             self.coordinator.start(task: task)
         }
 
@@ -140,7 +143,7 @@ struct StoreOnboardingView: View {
 
                 // View all button
                 viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
-                    .renderedIf(!viewModel.isExpanded)
+                    .renderedIf(!viewModel.isExpanded && !viewModel.isRedacted && !(viewModel.taskViewModels.count < 3))
 
                 Spacer()
                     .renderedIf(viewModel.isExpanded)

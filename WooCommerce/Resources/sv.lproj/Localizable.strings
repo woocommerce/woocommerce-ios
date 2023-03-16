@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-07 15:54:04+0000 */
+/* Translation-Revision-Date: 2023-03-14 16:13:14+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -232,7 +232,8 @@ which should be translated separately and considered part of this sentence. */
 /* The text is preceded by the monthly price on the store creation plan screen. */
 "\/month" = "\/månad";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 1 */
+/* Settings > Manage Card Reader > Connect > Help hint number 1
+   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
 "1" = "1";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
@@ -244,10 +245,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1 objekt har valts";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 2 */
+/* Settings > Manage Card Reader > Connect > Help hint number 2
+   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 3 */
+/* Settings > Manage Card Reader > Connect > Help hint number 3
+   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3";
 
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
@@ -1922,6 +1925,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Skapa din första variation";
 
+/* Description of the 'Products' screen - used for spotlight indexing on iOS. */
+"Create, edit, and publish products." = "Skapa, redigera och publicera produkter.";
+
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Skapar variationer för alla kombinationer av dina attribut.";
 
@@ -3394,8 +3400,7 @@ which should be translated separately and considered part of this sentence. */
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
 "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Personliga betalningar kan behandlas via båda dessa betalningsleverantörer. Vilken leverantör vill du använda?";
 
-/* Title for the error screen when In-Person Payments is unavailable
-   Title for the error screen when the merchant's payment account is restricted because it's under reviw
+/* Title for the error screen when the merchant's payment account is restricted because it's under reviw
    Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
 "In-Person Payments is currently unavailable" = "Personliga betalningar är för närvarande inte tillgängliga";
 
@@ -4243,7 +4248,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Musicians, Bands, Or Orchestras" = "Musiker, band eller orkestrar";
 
-/* Title of the hub menu view in case there is no title for the store */
+/* Title of the 'My Store' tab - used for spotlight indexing on iOS.
+   Title of the hub menu view in case there is no title for the store */
 "My Store" = "Min butik";
 
 /* My Tickets title */
@@ -4430,9 +4436,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Placeholder text when there are no products on the product list selector
    The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Inga produkter ännu";
-
-/* Placeholder for empty product ratings */
-"No ratings" = "Inga betyg";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
 "No results found for %1$@\nAdd a custom carrier" = "Inga resultat hittades för  %1$@\nLägg till en anpassad transportör";
@@ -4687,7 +4690,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Ordered List" = "Sorterad lista";
 
 /* Orders stat label on dashboard - should be plural.
-   The title of the Orders tab. */
+   The title of the Orders tab.
+   Title of the 'Orders' tab - used for spotlight indexing on iOS. */
 "Orders" = "Ordrar";
 
 /* Subtitle of the product form bottom sheet action for editing categories. */
@@ -4896,6 +4900,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment was declined for an unspecified reason. Try another means of payment" = "Betalningen avvisades av ospecificerad anledning. Prova en annan betalningsmetod";
 
 /* Title for the Payments settings screen
+   Title of the 'Payments' screen - used for spotlight indexing on iOS.
    Title of the hub menu payments button */
 "Payments" = "Betalningar";
 
@@ -5383,6 +5388,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product section title in Review Order screen if there is more than one product.
    Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
+   Title of the 'Products' tab - used for spotlight indexing on iOS.
    Title of the Products tab — plural form of Product
    Title text of the section that shows the Products when creating or editing an order
    Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -6103,7 +6109,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Konfigurera Jetpack";
 
-/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up.
+   Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
+   Settings > Set up Tap to Pay on iPhone > Prompt user to set up Tap to Pay on iPhone */
 "Set up Tap to Pay on iPhone" = "Konfigurera Tryck för att betala på iPhone";
 
 /* Header text on Add New Custom Package screen in Shipping Label flow
@@ -8425,8 +8433,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "Du kan ange din butiks postnummer i WP-admin > WooCommerce > Inställningar (Allmänt)";
 
-/* Error message when In-Person Payments is not supported in a specific country
-   Generic error message when In-Person Payments is unavailable */
+/* Error message when In-Person Payments is not supported in a specific country */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Du kan fortfarande ta emot personliga kontanta betalningar genom att aktivera betalningsmetoden \"Postförskott\" i din butik.";
 
 /* No comment provided by engineer. */

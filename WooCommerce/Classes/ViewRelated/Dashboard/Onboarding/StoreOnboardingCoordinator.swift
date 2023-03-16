@@ -68,11 +68,7 @@ private extension StoreOnboardingCoordinator {
 
     @MainActor
     func launchStore() {
-        guard let siteURL = URL(string: site.url) else {
-            assertionFailure("The site does not have a valid URL to launch from store onboarding: \(site).")
-            return
-        }
-        let coordinator = StoreOnboardingLaunchStoreCoordinator(siteURL: siteURL, navigationController: navigationController)
+        let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site, navigationController: navigationController)
         self.launchStoreCoordinator = coordinator
         coordinator.start()
     }

@@ -187,6 +187,58 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 1)
     }
 
+    func test_entering_search_term_when_there_are_no_filters_then_performs_local_product_search() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let expectation = expectation(description: "Completed product search")
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .searchProducts:
+                break
+            case let .searchProductsInCache(_, _, _, onCompletion):
+                let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
+                self.insert(product, withSearchTerm: "shirt")
+                onCompletion(true)
+                expectation.fulfill()
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.searchTerm = "shirt"
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1)
+    }
+
+    func test_entering_search_term_when_there_are_no_cached_items_then_it_does_not_reload_products() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let expectation = expectation(description: "Completed product search")
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .searchProducts:
+                break
+            case let .searchProductsInCache(_, _, _, onCompletion):
+                let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
+                self.insert(product, withSearchTerm: "shirt")
+                onCompletion(false)
+                expectation.fulfill()
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.searchTerm = "shirt"
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 0)
+    }
+
     func test_searching_products_filters_product_list_as_expected() {
         // Given
         let hoodie = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Hoodie", purchasable: true)

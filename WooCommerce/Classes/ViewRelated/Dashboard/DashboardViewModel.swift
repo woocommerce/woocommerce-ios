@@ -181,6 +181,8 @@ final class DashboardViewModel {
             case .success(let plan):
                 if plan.isFreeTrial {
                     self?.freeTrialBannerViewModel = FreeTrialBannerViewModel(sitePlan: plan)
+                } else {
+                    self?.freeTrialBannerViewModel = nil
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error fetching the current site's plan information: \(error)")

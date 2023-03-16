@@ -4,7 +4,7 @@ import protocol Storage.StorageManagerType
 
 /// ViewModel for `BundledProductsList`
 ///
-final class BundledProductsListViewModel {
+final class BundledProductsListViewModel: ObservableObject {
 
     /// Represents a bundled product
     ///
@@ -35,7 +35,7 @@ final class BundledProductsListViewModel {
 
     /// Bundled products
     ///
-    var bundledProducts: [BundledProduct]
+    @Published var bundledProducts: [BundledProduct]
 
     init(bundledProducts: [BundledProduct]) {
         self.bundledProducts = bundledProducts

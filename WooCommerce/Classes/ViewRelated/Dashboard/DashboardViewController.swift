@@ -352,7 +352,6 @@ private extension DashboardViewController {
     ///
     func addFreeTrialBar(contentText: String) {
         let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) { [weak self] in
-            ServiceLocator.analytics.track(event: .FreeTrial.freeTrialUpgradeNowTapped(source: .banner))
             self?.showUpgradePlanWebView()
         }
         freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -388,7 +387,11 @@ private extension DashboardViewController {
     /// Shows a web view for the merchant to update their site plan.
     ///
     func showUpgradePlanWebView() {
-        // These URLs should be stored elsewhere but I'll wait until I reuse them in the plans menu to decide what is the best place for them.
+        ServiceLocator.analytics.track(event: .FreeTrial.freeTrialUpgradeNowTapped(source: .banner))
+
+        // These URLs should be stored elsewhere.
+        // I'll wait until I reuse them in the plans menu to decide what is the best place for them.
+        // https://github.com/woocommerce/woocommerce-ios/issues/9057
         guard let upgradeURL = URL(string: "https://wordpress.com/plans/\(siteID)") else { return }
         let exitTrigger = "my-plan/trial-upgraded" // When a site is upgraded from a trial, this URL path is invoked.
 

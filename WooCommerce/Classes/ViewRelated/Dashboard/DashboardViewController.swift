@@ -395,10 +395,7 @@ private extension DashboardViewController {
         let viewModel = DefaultAuthenticatedWebViewModel(title: Localization.upgradeNow,
                                                          initialURL: upgradeURL,
                                                          urlToTriggerExit: exitTrigger) { [weak self] in
-            self?.dismiss(animated: true)
-
-            // TODO: Plan should not be hardcoded. Will adjust it https://github.com/woocommerce/woocommerce-ios/issues/9064
-            ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeSuccess(source: .banner, plan: .freeTrial))
+            self?.exitUpgradeFreeTrialFlowAfterUpgrade()
         }
 
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
@@ -410,7 +407,17 @@ private extension DashboardViewController {
         present(navigationController, animated: true)
     }
 
-    /// Dismisses any controller presented modally.
+    /// Dismisses the upgrade now web view after the merchants successfully updates their plan.
+    ///
+    func exitUpgradeFreeTrialFlowAfterUpgrade() {
+        removeFreeTrialBanner()
+        dismiss(animated: true)
+
+        // TODO: Plan should not be hardcoded. Will adjust it https://github.com/woocommerce/woocommerce-ios/issues/9064
+        ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeSuccess(source: .banner, plan: .freeTrial))
+    }
+
+    /// Dismisses the upgrade now web view when the user abandons the flow.
     ///
     @objc func exitUpgradeFreeTrialFlow() {
         dismiss(animated: true)

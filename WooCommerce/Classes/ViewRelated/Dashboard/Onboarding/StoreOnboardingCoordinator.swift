@@ -40,7 +40,7 @@ final class StoreOnboardingCoordinator: Coordinator {
         case .customizeDomains:
             showCustomDomains()
         case .launchStore:
-            launchStore()
+            launchStore(task: task)
         default:
             #warning("TODO: handle navigation for each onboarding task")
             start()
@@ -67,8 +67,8 @@ private extension StoreOnboardingCoordinator {
     }
 
     @MainActor
-    func launchStore() {
-        let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site, navigationController: navigationController)
+    func launchStore(task: StoreOnboardingTask) {
+        let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site, isLaunched: task.isComplete, navigationController: navigationController)
         self.launchStoreCoordinator = coordinator
         coordinator.start()
     }

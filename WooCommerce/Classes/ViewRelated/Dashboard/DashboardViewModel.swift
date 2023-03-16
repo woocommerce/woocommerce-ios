@@ -19,6 +19,8 @@ final class DashboardViewModel {
 
     @Published private(set) var showOnboarding: Bool = false
 
+    @Published private(set) var freeTrialBannerViewModel: FreeTrialBannerViewModel? = nil
+
     /// Trigger to start the Add Product flow
     ///
     let addProductTrigger = PassthroughSubject<Void, Never>()
@@ -174,13 +176,11 @@ final class DashboardViewModel {
             return DDLogInfo("⚠️ Site is not a WPCOM site.")
         }
 
-        let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
+        let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in
             switch result {
             case .success(let plan):
                 if plan.isFreeTrial {
-                    print("*****************************")
-                    print("****** FREE TRIAL PLAN ******")
-                    print("*****************************")
+                    self?.freeTrialBannerViewModel = FreeTrialBannerViewModel(sitePlan: plan)
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error fetching the current site's plan information: \(error)")

@@ -25,12 +25,18 @@ class StoreOnboardingViewModel: ObservableObject {
     }
 
     var tasksForDisplay: [StoreOnboardingTaskViewModel] {
-        guard isRedacted == false else {
+        if isRedacted {
             return placeholderTasks
         }
-        guard !isExpanded else {
+
+        if isExpanded {
             return taskViewModels
         }
+
+        if !isExpanded && !shouldShowViewAllButton {
+            return taskViewModels
+        }
+
         let maxNumberOfTasksToDisplayInCollapsedMode = 3
         let incompleteTasks = taskViewModels.filter({ !$0.isComplete })
         return isExpanded ? taskViewModels : Array(incompleteTasks.prefix(maxNumberOfTasksToDisplayInCollapsedMode))

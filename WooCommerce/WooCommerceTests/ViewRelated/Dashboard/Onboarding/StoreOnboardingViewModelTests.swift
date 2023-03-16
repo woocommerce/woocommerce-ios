@@ -77,6 +77,50 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay.count, 4)
     }
 
+    func test_tasksForDisplay_returns_first_3_incomplete_tasks_when_view_all_button_is_visible_in_collapsed_mode() async {
+        // Given
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]))
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertTrue(sut.shouldShowViewAllButton)
+
+        XCTAssertEqual(sut.tasksForDisplay.count, 3)
+
+        XCTAssertEqual(sut.tasksForDisplay[0].task.type, .addFirstProduct)
+        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
+        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .customizeDomains)
+    }
+
+    func test_tasksForDisplay_returns_all_tasks_when_view_all_button_is_hidden_in_collapsed_mode() async {
+        // Given
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore)
+        ]))
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.shouldShowViewAllButton)
+
+        XCTAssertEqual(sut.tasksForDisplay.count, 2)
+        XCTAssertEqual(sut.tasksForDisplay[0].task.type, .addFirstProduct)
+        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
+    }
+
     // MARK: - shouldShowViewAllButton
 
     func test_view_all_button_is_hidden_in_expanded_mode() async {

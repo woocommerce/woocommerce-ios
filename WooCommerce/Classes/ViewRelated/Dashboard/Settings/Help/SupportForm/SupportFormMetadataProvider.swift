@@ -40,9 +40,10 @@ class SupportFormMetadataProvider {
     /// Common system & site  tags. Used in Zendesk Forms.
     ///
     func systemTags() -> [String] {
+        let authenticatorAnalyticsTracker = AuthenticatorAnalyticsTracker.shared
         if stores.isAuthenticated == false,
-           AuthenticatorAnalyticsTracker.shared.state.lastFlow == .loginWithSiteAddress,
-           AuthenticatorAnalyticsTracker.shared.state.lastStep == .usernamePassword {
+           authenticatorAnalyticsTracker.state.lastFlow == .loginWithSiteAddress,
+           authenticatorAnalyticsTracker.state.lastStep == .usernamePassword {
             return [Constants.platformTag, Constants.siteCredentialLoginErrorTag]
         }
 

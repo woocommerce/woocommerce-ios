@@ -9,11 +9,13 @@ public enum ProductAction: Action {
     /// Searches products that contain a given keyword in the local database.
     ///
     /// - Parameter siteID: Site id of the products.
-    /// - Parameter keyword: Keyword to search
+    /// - Parameter keyword: Keyword to search.
+    /// - Parameter pageSize: They max amount of items to return.
     /// - Parameter onCompletion: Callback called when the action is finished, including a Boolean showing whether results were found.
     /// 
     case searchProductsInCache(siteID: Int64,
                                keyword: String,
+                               pageSize: Int,
                                onCompletion: (Bool) -> Void)
 
     /// Searches products that contain a given keyword.

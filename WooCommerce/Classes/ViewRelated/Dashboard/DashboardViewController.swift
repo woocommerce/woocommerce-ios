@@ -351,8 +351,8 @@ private extension DashboardViewController {
     /// Adds a Free Trial bar at the bottom of the screen.
     ///
     func addFreeTrialBar(contentText: String) {
-        let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) {
-            print("Upgrade now tapped!!")
+        let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) { [weak self] in
+            self?.showUpgradePlanWebView()
         }
         freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -382,6 +382,35 @@ private extension DashboardViewController {
 
         banner.removeFromSuperview()
         containerView.contentInset = .zero // Resets the content offset of main scroll view. Was adjusted previously in `addFreeTrialBar`
+    }
+
+    /// Shows a web view for the merchant to update their site plan.
+    ///
+    func showUpgradePlanWebView() {
+        // These URLs should be stored elsewhere but I'll wait until I reuse them in the plans menu to decide what is the best place for them.
+        guard let upgradeURL = URL(string: "https://wordpress.com/plans/\(siteID)") else { return }
+        let exitTrigger = "my-plan/trial-upgraded" // When a site is upgraded from a trial, this URL path is invoked.
+
+        let viewModel = DefaultAuthenticatedWebViewModel(title: Localization.upgradeNow,
+                                                         initialURL: upgradeURL,
+                                                         urlToTriggerExit: exitTrigger) { [weak self] in
+            self?.dismissModalViewController()
+            // TODO: Add tracks event
+        }
+
+        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+        webViewController.navigationItem.leftBarButtonItem =  UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                                              target: self,
+                                                                              action: #selector(dismissModalViewController))
+        let navigationController = UINavigationController(rootViewController: webViewController)
+        navigationController.isModalInPresentation = true
+        present(navigationController, animated: true)
+    }
+
+    /// Dismisses any controller presented modally.
+    ///
+    @objc func dismissModalViewController() {
+        dismiss(animated: true)
     }
 
     func configureDashboardUIContainer() {
@@ -831,6 +860,7 @@ private extension DashboardViewController {
             "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
         )
+        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title for the WebView when upgrading a free trial plan")
     }
 
     enum Constants {

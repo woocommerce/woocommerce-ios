@@ -151,15 +151,18 @@ private extension RemoteOrderSynchronizer {
 
         setProducts.withLatestFrom(orderPublisher)
             .map { productsInput, order -> Order in
-                // TODO: 1., pass localInputs through replaceInputWithLocalIDIfNeeded
+                // 1. Replace localInputs with localID as needed
+                let _ = productsInput.map {
+                    self.replaceInputWithLocalIDIfNeeded($0)
+                }
 
-                // 2. Update Order with product inputs (new method that accepts an array of inputs)
-                let updatedOrder = ProductInputTransformer.update(
+                // 2. Updates the Order with multiple product inputs
+                let updatedOrder = ProductInputTransformer.updateMultiple(
                     input: productsInput,
                     on: order,
                     updateZeroQuantities: true)
 
-                // 3. Update Order totals locally while the Order is being synced
+                // 3. Updates the Order Totals locally while the Order is being synchronized
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .sink { order in

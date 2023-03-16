@@ -80,10 +80,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.order.items.count, 1)
 
         let item = try XCTUnwrap(synchronizer.order.items.first)
-        // TODO: XCTAssertEqual(item.itemID, productInput.id)
-        // This test will fail as long as we call replaceInputWithLocalIDIfNeeded but
-        // don't implement the ProductInputTransformer.update() for multiple inputs
-        // as in this case the item.id is expected to be -1
+        XCTAssertEqual(item.itemID, productInput.id)
         XCTAssertEqual(item.productID, product.productID)
         XCTAssertEqual(item.quantity, productInput.quantity)
     }
@@ -112,6 +109,16 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(synchronizer.order.items.count, 2)
+        let item = try XCTUnwrap(synchronizer.order.items[0])
+        let anotherItem = try XCTUnwrap(synchronizer.order.items[1])
+
+        XCTAssertEqual(item.itemID, productInput.id)
+        XCTAssertEqual(item.productID, product.productID)
+        XCTAssertEqual(item.quantity, productInput.quantity)
+
+        XCTAssertEqual(anotherItem.itemID, anotherProductInput.id)
+        XCTAssertEqual(anotherItem.productID, anotherProduct.productID)
+        XCTAssertEqual(anotherItem.quantity, anotherProductInput.quantity)
     }
 
     func test_sending_update_product_input_updates_local_order() throws {

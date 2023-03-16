@@ -41,18 +41,49 @@ struct ProductInputTransformer {
         return order.copy(items: items)
     }
 
-    /// Adds, deletes, or updates order items based on the given product input array
+    /// Adds, deletes, or updates order items based on the given multiple products input.
+    /// When `updateZeroQuantities` is true, items with `.zero` quantities will be updated instead of being deleted.
     ///
-    static func update(input: [OrderSyncProductInput], on order: Order, updateZeroQuantities: Bool) -> Order {
-        // TODO: Add rest of logic. For now does the minimum:
-        // Accepts [OrderSyncProductInput] -> Transforms to [OrderItem] -> returns Order copy
+    /// Accepts `[OrderSyncProductInput]`,  transforms into `[OrderItem]`, returns returns the updated `Order` copy
+    static func updateMultiple(input: [OrderSyncProductInput], on order: Order, updateZeroQuantities: Bool) -> Order {
+
         var items = order.items
-        let _ = input.map { item in
-            let newItem = createOrderItem(using: item, usingPriceFrom: nil)
-            items.append(newItem)
+
+        // Transforms into `[OrderItem]` that we'll pass to the Order copy
+        for productInput in input {
+            items.append(contentsOf: updateOrderItems(
+                from: productInput,
+                on: items,
+                order: order,
+                updateZeroQuantities: updateZeroQuantities)
+            )
         }
 
-        return order.copy(items: items )
+        return order.copy(items: items)
+    }
+
+    ///
+    ///
+    private static func updateOrderItems(from input: OrderSyncProductInput,
+                                         on initialOrderItems: [OrderItem],
+                                         order: Order, updateZeroQuantities: Bool) -> [OrderItem] {
+        // If the input's quantity is 0 or less, delete the item if required.
+        guard input.quantity > 0 || updateZeroQuantities else {
+            let updatedOrder = remove(input: input, from: order)
+            return updatedOrder.items
+        }
+
+        // Adds or updates the Order items with the new input:
+        var updatedOrderItems = order.items
+        if let itemIndex = order.items.firstIndex(where: { $0.itemID == input.id }) {
+            let newItem = createOrderItem(using: input, usingPriceFrom: updatedOrderItems[itemIndex])
+            updatedOrderItems[itemIndex] = newItem
+        } else {
+            let newItem = createOrderItem(using: input, usingPriceFrom: nil)
+            updatedOrderItems.append(newItem)
+        }
+
+        return updatedOrderItems
     }
 
     /// Removes an order item from an order when the `item.itemID` matches the `input.id`.

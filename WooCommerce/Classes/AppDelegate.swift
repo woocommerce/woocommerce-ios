@@ -84,6 +84,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // For example, `application_installed` could be the exposure event for logged-out experiments.
         checkForUpgrades()
 
+        // Cache onboarding state to speed IPP process
+        refreshCardPresentPaymentsOnboardingIfNeeded()
+
         return true
     }
 
@@ -168,6 +171,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+
+        // Cache onboarding state to speed IPP process
+        refreshCardPresentPaymentsOnboardingIfNeeded()
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -175,9 +181,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If the application was previously in the background, optionally refresh the user interface.
 
         RequirementsChecker.checkMinimumWooVersionForDefaultStore()
-
-        // Cache onboarding state to speed IPP process
-        refreshCardPresentPaymentsOnboardingIfNeeded()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

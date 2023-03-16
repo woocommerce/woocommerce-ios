@@ -32,14 +32,16 @@ struct ProductsTabProductViewModel {
          isSelected: Bool = false,
          isDraggable: Bool = false,
          isSKUShown: Bool = false,
-         imageService: ImageService = ServiceLocator.imageService) {
+         imageService: ImageService = ServiceLocator.imageService,
+         productBundlesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles)) {
 
         imageUrl = product.images.first?.src
         name = product.name.isEmpty ? Localization.noTitle : product.name
         self.productVariation = productVariation
         self.isSelected = isSelected
         self.isDraggable = isDraggable
-        detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString(isSKUShown: isSKUShown)
+        detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString(isSKUShown: isSKUShown,
+                                                                                                       productBundlesEnabled: productBundlesEnabled)
 
         self.imageService = imageService
     }
@@ -58,9 +60,9 @@ struct ProductsTabProductViewModel {
 }
 
 private extension EditableProductModel {
-    func createDetailsAttributedString(isSKUShown: Bool) -> NSAttributedString {
+    func createDetailsAttributedString(isSKUShown: Bool, productBundlesEnabled: Bool) -> NSAttributedString {
         let statusText = createStatusText()
-        let stockText = createStockText()
+        let stockText = createStockText(productBundlesEnabled: productBundlesEnabled)
         let variationsText = createVariationsText()
 
         let detailsText = [statusText, stockText, variationsText]

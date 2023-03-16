@@ -34,7 +34,8 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
     }
 
     private func configureView() {
-        rootView.showURL = { url in
+        rootView.showURL = { [weak self] url in
+            guard let self = self else { return }
             WebviewHelper.launch(url, with: self)
         }
         rootView.learnMoreUrl = viewModel.learnMoreURL

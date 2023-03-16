@@ -1,6 +1,7 @@
 import Foundation
 import CoreTelephony
 import Yosemite
+import class WordPressAuthenticator.AuthenticatorAnalyticsTracker
 import protocol Storage.StorageManagerType
 
 /// Helper that provides general device & site zendesk metadata.
@@ -39,6 +40,12 @@ class SupportFormMetadataProvider {
     /// Common system & site  tags. Used in Zendesk Forms.
     ///
     func systemTags() -> [String] {
+        if stores.isAuthenticated == false,
+           AuthenticatorAnalyticsTracker.shared.state.lastFlow == .loginWithSiteAddress,
+           AuthenticatorAnalyticsTracker.shared.state.lastStep == .usernamePassword {
+            return [Constants.platformTag, Constants.siteCredentialLoginErrorTag]
+        }
+
         guard let site = sessionManager.defaultSite else {
             return [Constants.platformTag] + getIPPTags()
         }
@@ -233,6 +240,7 @@ private extension SupportFormMetadataProvider {
         static let platformTag = "iOS"
         static let wpComTag = "wpcom"
         static let authenticatedWithApplicationPasswordTag = "application_password_authenticated"
+        static let siteCredentialLoginErrorTag = "application_password_login_error"
         static let logFieldCharacterLimit = 64000
         static let networkWiFi = "WiFi"
         static let networkWWAN = "Mobile"

@@ -60,6 +60,35 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(item.quantity, input.quantity)
     }
 
+    func test_setProducts_sends_single_product_input_then_updates_order_successfully() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation)
+        let product = Product.fake().copy(productID: sampleProductID)
+        let productInput = OrderSyncProductInput(
+            product: .product(product),
+            quantity: 1
+        )
+        // Confidence check
+        XCTAssertEqual(synchronizer.order.items.count, 0)
+
+        // When
+        let inputs: [OrderSyncProductInput] = [productInput]
+        synchronizer.setProducts.send(inputs)
+
+        // Then
+        XCTAssertEqual(synchronizer.order.items.count, 1)
+
+        let item = try XCTUnwrap(synchronizer.order.items.first)
+        XCTAssertEqual(item.itemID, productInput.id)
+        XCTAssertEqual(item.productID, product.productID)
+        XCTAssertEqual(item.quantity, productInput.quantity)
+    }
+
+    func test_setProducts_sends_multiple_product_input_then_updates_order_successfully() throws {
+        XCTFail("TODO")
+    }
+
     func test_sending_update_product_input_updates_local_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)

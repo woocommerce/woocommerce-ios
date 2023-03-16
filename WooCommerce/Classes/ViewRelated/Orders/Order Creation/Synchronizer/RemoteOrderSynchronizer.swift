@@ -27,6 +27,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var setProduct = PassthroughSubject<OrderSyncProductInput, Never>()
 
+    var setProducts = PassthroughSubject<[OrderSyncProductInput], Never>()
+
     var setAddresses = PassthroughSubject<OrderSyncAddressesInput?, Never>()
 
     var setShipping =  PassthroughSubject<ShippingLine?, Never>()
@@ -144,6 +146,20 @@ private extension RemoteOrderSynchronizer {
             .sink { [weak self] order in
                 self?.order = order
                 self?.orderSyncTrigger.send(order)
+            }
+            .store(in: &subscriptions)
+
+        setProducts.withLatestFrom(orderPublisher)
+            .map { productsInput, order -> Order in
+                return ProductInputTransformer.update(
+                    // TODO: This has to accept multiple inputs
+                    input: productsInput[0],
+                    on: order,
+                    updateZeroQuantities: true)
+            }
+            .sink { order in
+                self.order = order
+                self.orderSyncTrigger.send(order)
             }
             .store(in: &subscriptions)
 

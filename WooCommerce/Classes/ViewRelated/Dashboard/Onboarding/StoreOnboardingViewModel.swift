@@ -36,6 +36,10 @@ class StoreOnboardingViewModel: ObservableObject {
         return isExpanded ? taskViewModels : Array(incompleteTasks.prefix(maxNumberOfTasksToDisplayInCollapsedMode))
     }
 
+    var shouldShowViewAllButton: Bool {
+        !isExpanded && !isRedacted && !(taskViewModels.count < 3)
+    }
+
     let isExpanded: Bool
 
     private let siteID: Int64

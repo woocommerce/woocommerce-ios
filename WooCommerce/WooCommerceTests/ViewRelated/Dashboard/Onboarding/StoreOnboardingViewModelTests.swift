@@ -77,6 +77,118 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay.count, 4)
     }
 
+    // MARK: - shouldShowViewAllButton
+
+    func test_view_all_button_is_hidden_in_expanded_mode() async {
+        // Given
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]))
+        let sut = StoreOnboardingViewModel(isExpanded: true,
+                                           siteID: 0,
+                                           stores: stores)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.shouldShowViewAllButton)
+    }
+
+    func test_view_all_button_is_visible_in_collapsed_mode() async {
+        // Given
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]))
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertTrue(sut.shouldShowViewAllButton)
+    }
+
+    func test_view_all_button_is_hidden_when_view_is_redacted_while_loading() async {
+        // Given
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores)
+
+        stores.whenReceivingAction(ofType: StoreOnboardingTasksAction.self) { action in
+            guard case let .loadOnboardingTasks(_, completion) = action else {
+                return XCTFail()
+            }
+
+            // Then
+            XCTAssertTrue(sut.isRedacted)
+            XCTAssertFalse(sut.shouldShowViewAllButton)
+            completion(.success([]))
+        }
+
+        // When
+        await sut.reloadTasks()
+    }
+
+    func test_view_all_button_is_visible_after_view_is_loaded_and_unredacted() async {
+        // Given
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]))
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.isRedacted)
+        XCTAssertTrue(sut.shouldShowViewAllButton)
+    }
+
+    func test_view_all_button_is_visible_when_task_count_is_greater_than_2() async {
+        // Given
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]))
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertTrue(sut.shouldShowViewAllButton)
+    }
+
+    func test_view_all_button_is_hidden_when_task_count_is_less_than_3() async {
+        // Given
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore)
+        ]))
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.shouldShowViewAllButton)
+    }
+
     // MARK: - Loading tasks
 
     func test_it_loads_previously_loaded_data_when_loading_tasks_fails() async {

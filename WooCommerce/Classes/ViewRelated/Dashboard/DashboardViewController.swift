@@ -352,6 +352,7 @@ private extension DashboardViewController {
     ///
     func addFreeTrialBar(contentText: String) {
         let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) { [weak self] in
+            ServiceLocator.analytics.track(event: .FreeTrial.freeTrialUpgradeNowTapped(source: .banner))
             self?.showUpgradePlanWebView()
         }
         freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -394,14 +395,16 @@ private extension DashboardViewController {
         let viewModel = DefaultAuthenticatedWebViewModel(title: Localization.upgradeNow,
                                                          initialURL: upgradeURL,
                                                          urlToTriggerExit: exitTrigger) { [weak self] in
-            self?.dismissModalViewController()
-            // TODO: Add tracks event
+            self?.dismiss(animated: true)
+
+            // TODO: Plan should not be hardcoded. Will adjust it https://github.com/woocommerce/woocommerce-ios/issues/9064
+            ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeSuccess(source: .banner, plan: .freeTrial))
         }
 
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
         webViewController.navigationItem.leftBarButtonItem =  UIBarButtonItem(barButtonSystemItem: .cancel,
                                                                               target: self,
-                                                                              action: #selector(dismissModalViewController))
+                                                                              action: #selector(exitUpgradeFreeTrialFlow))
         let navigationController = UINavigationController(rootViewController: webViewController)
         navigationController.isModalInPresentation = true
         present(navigationController, animated: true)
@@ -409,8 +412,11 @@ private extension DashboardViewController {
 
     /// Dismisses any controller presented modally.
     ///
-    @objc func dismissModalViewController() {
+    @objc func exitUpgradeFreeTrialFlow() {
         dismiss(animated: true)
+
+        // TODO: Plan should not be hardcoded. Will adjust it https://github.com/woocommerce/woocommerce-ios/issues/9064
+        ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeAbandoned(source: .banner, plan: .freeTrial))
     }
 
     func configureDashboardUIContainer() {

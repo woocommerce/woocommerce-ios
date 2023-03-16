@@ -73,14 +73,13 @@ struct SetUpTapToPayInformationView: View {
     var dismiss: (() -> Void)? = nil
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
-    @Environment(\.sizeCategory) private var sizeCategory
 
     var isCompact: Bool {
         verticalSizeClass == .compact
     }
 
-    var isSizeCategoryLargerThanExtraLarge: Bool {
-        sizeCategory >= .accessibilityMedium
+    var imageMaxHeight: CGFloat {
+        isCompact ? Constants.maxCompactImageHeight : Constants.maxImageHeight
     }
 
     var body: some View {
@@ -94,36 +93,36 @@ struct SetUpTapToPayInformationView: View {
             .padding(.top)
 
             Spacer()
+            VStack {
+                Text(Localization.setUpTapToPayOnIPhoneTitle)
+                    .font(.title.weight(.semibold))
+                    .multilineTextAlignment(.center)
+                    .padding([.leading, .trailing])
+                    .fixedSize(horizontal: false, vertical: true)
+                Image(uiImage: .setUpBuiltInReader)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxHeight: imageMaxHeight)
+                    .padding()
 
-            Text(Localization.setUpTapToPayOnIPhoneTitle)
-                .font(.title.weight(.semibold))
-                .multilineTextAlignment(.center)
-                .padding([.leading, .trailing])
+                VStack(spacing: Constants.hintSpacing) {
+                    PaymentSettingsFlowHint(title: Localization.hintOneTitle, text: Localization.hintOne)
+                    PaymentSettingsFlowHint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
+                    PaymentSettingsFlowHint(title: Localization.hintThreeTitle, text: Localization.hintThree)
+                }
                 .fixedSize(horizontal: false, vertical: true)
-            Image(uiImage: .setUpBuiltInReader)
-                .resizable()
-                .scaledToFit()
-                .frame(height: isCompact ? 80 : 206)
-                .padding()
+                .layoutPriority(1)
+                .padding([.top, .bottom])
 
-            VStack(spacing: 16) {
-                PaymentSettingsFlowHint(title: Localization.hintOneTitle, text: Localization.hintOne)
-                PaymentSettingsFlowHint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
-                PaymentSettingsFlowHint(title: Localization.hintThreeTitle, text: Localization.hintThree)
-            }
-            .fixedSize(horizontal: false, vertical: true)
-            .layoutPriority(1)
-            .padding([.top, .bottom])
+                Spacer()
 
-            Spacer()
+                Button(Localization.setUpButton, action: {
+                    setUpButtonAction?()
+                })
+                .buttonStyle(PrimaryButtonStyle())
 
-            Button(Localization.setUpButton, action: {
-                setUpButtonAction?()
-            })
-            .buttonStyle(PrimaryButtonStyle())
-
-            InPersonPaymentsLearnMore(
-                viewModel: LearnMoreViewModel(formatText: Localization.learnMore))
+                InPersonPaymentsLearnMore(
+                    viewModel: LearnMoreViewModel(formatText: Localization.learnMore))
                 .customOpenURL(action: { url in
                     switch url {
                     case LearnMoreViewModel.learnMoreURL:
@@ -134,17 +133,27 @@ struct SetUpTapToPayInformationView: View {
                         showURL?(url)
                     }
                 })
-        }
-        .frame(
-            maxWidth: .infinity,
-            maxHeight: .infinity
-        )
-        .padding()
-        .if(isCompact || isSizeCategoryLargerThanExtraLarge) { content in
-            ScrollView(.vertical) {
-                content
             }
+            .scrollVerticallyIfNeeded()
         }
+        .padding()
+    }
+}
+
+private enum Constants {
+    // maxHeight should be 208, but that hides the button on iPhone SE
+    // TODO: make this 208, or proportional to screen height for small screens
+    // https://github.com/woocommerce/woocommerce-ios/issues/9134
+    static let maxImageHeight: CGFloat = 180
+    static let maxCompactImageHeight: CGFloat = 80
+    static let hintSpacing: CGFloat = 16
+}
+
+private struct ViewSizeKey: PreferenceKey {
+    static var defaultValue: CGSize = .zero
+
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+        value = nextValue()
     }
 }
 

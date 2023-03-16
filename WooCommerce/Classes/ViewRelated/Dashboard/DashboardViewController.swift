@@ -342,6 +342,28 @@ private extension DashboardViewController {
         view.pinSubviewToSafeArea(stackView)
     }
 
+    /// Adds a Free Trial bar at the bottom of the screen.
+    ///
+    func addFreeTrialBar(contentText: String) {
+        let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) {
+            print("Upgrade now tapped!!")
+        }
+        freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false
+
+        self.stackView.addSubview(freeTrialViewController.view)
+        NSLayoutConstraint.activate([
+            freeTrialViewController.view.leadingAnchor.constraint(equalTo: self.stackView.leadingAnchor),
+            freeTrialViewController.view.trailingAnchor.constraint(equalTo: self.stackView.trailingAnchor),
+            freeTrialViewController.view.bottomAnchor.constraint(equalTo: self.stackView.bottomAnchor)
+
+        ])
+
+        // Adjust the main container content inset to prevent it from being hidden by the `freeTrialViewController`
+        DispatchQueue.main.async {
+            self.containerView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: freeTrialViewController.view.frame.size.height, right: 0)
+        }
+    }
+
     func configureDashboardUIContainer() {
         containerView.delegate = self
 

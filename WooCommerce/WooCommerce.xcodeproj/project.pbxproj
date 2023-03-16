@@ -737,6 +737,7 @@
 		26C6E8EA26E8FD3900C7BB0F /* LazyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8E926E8FD3900C7BB0F /* LazyView.swift */; };
 		26C6E8EC26E8FF4800C7BB0F /* LazyNavigationLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8EB26E8FF4800C7BB0F /* LazyNavigationLink.swift */; };
 		26C98F9829C1247000F96503 /* WPComSitePlan+FreeTrial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C98F9729C1246F00F96503 /* WPComSitePlan+FreeTrial.swift */; };
+		26C98F9B29C18ACE00F96503 /* FreeTrialBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C98F9A29C18ACE00F96503 /* FreeTrialBanner.swift */; };
 		26CCBE0B2523B3650073F94D /* RefundProductsTotalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CCBE0A2523B3650073F94D /* RefundProductsTotalTableViewCell.swift */; };
 		26CCBE0D2523C2560073F94D /* RefundProductsTotalTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26CCBE0C2523C2560073F94D /* RefundProductsTotalTableViewCell.xib */; };
 		26CFDB2727357E8000AB940B /* SimplePaymentsSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDB2627357E8000AB940B /* SimplePaymentsSummary.swift */; };
@@ -2901,6 +2902,7 @@
 		26C6E8E926E8FD3900C7BB0F /* LazyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyView.swift; sourceTree = "<group>"; };
 		26C6E8EB26E8FF4800C7BB0F /* LazyNavigationLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyNavigationLink.swift; sourceTree = "<group>"; };
 		26C98F9729C1246F00F96503 /* WPComSitePlan+FreeTrial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WPComSitePlan+FreeTrial.swift"; sourceTree = "<group>"; };
+		26C98F9A29C18ACE00F96503 /* FreeTrialBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialBanner.swift; sourceTree = "<group>"; };
 		26CCBE0A2523B3650073F94D /* RefundProductsTotalTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundProductsTotalTableViewCell.swift; sourceTree = "<group>"; };
 		26CCBE0C2523C2560073F94D /* RefundProductsTotalTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundProductsTotalTableViewCell.xib; sourceTree = "<group>"; };
 		26CFDB2627357E8000AB940B /* SimplePaymentsSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsSummary.swift; sourceTree = "<group>"; };
@@ -6016,6 +6018,14 @@
 			path = CountrySelector;
 			sourceTree = "<group>";
 		};
+		26C98F9929C18ABF00F96503 /* Free Trial */ = {
+			isa = PBXGroup;
+			children = (
+				26C98F9A29C18ACE00F96503 /* FreeTrialBanner.swift */,
+			);
+			path = "Free Trial";
+			sourceTree = "<group>";
+		};
 		26DB7E3228636CF200506173 /* Order Edition */ = {
 			isa = PBXGroup;
 			children = (
@@ -8798,6 +8808,7 @@
 				029D444722F13F5C00DEFA8A /* Factories */,
 				74036CBE211B87FD00E462C2 /* MyStore */,
 				CE85FD5820F7A59E0080B73E /* Settings */,
+				26C98F9929C18ABF00F96503 /* Free Trial */,
 				CE85FD5220F677770080B73E /* Dashboard.storyboard */,
 				B509112D2049E27A007D25DC /* DashboardViewController.swift */,
 				028E1F6F2833DD0A001F8829 /* DashboardViewModel.swift */,
@@ -11579,6 +11590,7 @@
 				575472812452185300A94C3C /* PushNotification.swift in Sources */,
 				0396CFAD2981476900E91436 /* CardPresentModalBuiltInConnectingFailed.swift in Sources */,
 				02C1853B27FF0D9C00ABD764 /* RefundSubmissionUseCase.swift in Sources */,
+				26C98F9B29C18ACE00F96503 /* FreeTrialBanner.swift in Sources */,
 				E10BD16D27CF890800CE6449 /* InPersonPaymentsCountryNotSupportedStripe.swift in Sources */,
 				26F94E26267A559300DB6CCF /* ProductAddOn.swift in Sources */,
 				4541D88A270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift in Sources */,

@@ -8,7 +8,9 @@ import Fakes
 class ProductInputTransformerTests: XCTestCase {
 
     private let sampleProductID: Int64 = 123
+    private let anotherSampleProductID: Int64 = 987
     private let sampleProductVariationID: Int64 = 345
+    private let anotherSampleProductVariationID: Int64 = 789
     private let sampleInputID: Int64 = 567
 
     func test_sending_a_new_product_input_adds_an_item_to_order() throws {
@@ -31,6 +33,39 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.total, "9.99")
     }
 
+    func test_sending_multiple_product_inputs_adds_multiple_items_to_an_order() throws {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
+        let anotherProduct = Product.fake().copy(productID: anotherSampleProductID, price: "9.99")
+        let input = [
+            OrderSyncProductInput(product: .product(product), quantity: 1),
+            OrderSyncProductInput(product: .product(anotherProduct), quantity: 1)
+        ]
+        let originalOrder = OrderFactory.emptyNewOrder
+
+        // When
+        let updatedOrder = ProductInputTransformer.updateMultipleItems(
+            with: input,
+            on: originalOrder,
+            updateZeroQuantities: false)
+
+        // Then
+        let items = try XCTUnwrap(updatedOrder.items)
+        XCTAssertEqual(items.count, 2)
+        XCTAssertEqual(items[0].itemID, input[0].id)
+        XCTAssertEqual(items[1].itemID, input[1].id)
+        XCTAssertEqual(items[0].quantity, input[0].quantity)
+        XCTAssertEqual(items[1].quantity, input[1].quantity)
+        XCTAssertEqual(items[0].productID, product.productID)
+        XCTAssertEqual(items[1].productID, anotherProduct.productID)
+        let _ = items.map { item in
+            XCTAssertEqual(item.variationID, 0)
+            XCTAssertEqual(item.price, 9.99)
+            XCTAssertEqual(item.subtotal, "9.99")
+            XCTAssertEqual(item.total, "9.99")
+        }
+    }
+
     func test_sending_a_new_product_variation_input_adds_an_item_to_order() throws {
         // Given
         let productVariation = ProductVariation.fake().copy(productID: sampleProductID, productVariationID: sampleProductVariationID, price: "9.99")
@@ -49,6 +84,44 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.price, 9.99)
         XCTAssertEqual(item.subtotal, "9.99")
         XCTAssertEqual(item.total, "9.99")
+    }
+
+    func test_sending_multiple_variation_inputs_adds_multiple_items_to_an_order() throws {
+        // Given
+        let productVariation = ProductVariation.fake().copy(productID: sampleProductID,
+                                                            productVariationID: sampleProductVariationID,
+                                                            price: "9.99")
+        let anotherProductVariation = ProductVariation.fake().copy(productID: anotherSampleProductID,
+                                                                   productVariationID: anotherSampleProductVariationID,
+                                                                   price: "9.99")
+        let input = [
+            OrderSyncProductInput(product: .variation(productVariation), quantity: 1),
+            OrderSyncProductInput(product: .variation(anotherProductVariation), quantity: 1)
+        ]
+        let originalOrder = OrderFactory.emptyNewOrder
+
+        // When
+        let updatedOrder = ProductInputTransformer.updateMultipleItems(
+            with: input,
+            on: originalOrder,
+            updateZeroQuantities: false)
+
+        // Then
+        let items = try XCTUnwrap(updatedOrder.items)
+        XCTAssertEqual(items.count, 2)
+        XCTAssertEqual(items[0].itemID, input[0].id)
+        XCTAssertEqual(items[1].itemID, input[1].id)
+        XCTAssertEqual(items[0].quantity, input[0].quantity)
+        XCTAssertEqual(items[1].quantity, input[1].quantity)
+        XCTAssertEqual(items[0].productID, productVariation.productID)
+        XCTAssertEqual(items[1].productID, anotherProductVariation.productID)
+        XCTAssertEqual(items[0].variationID, productVariation.productVariationID)
+        XCTAssertEqual(items[1].variationID, anotherProductVariation.productVariationID)
+        let _ = items.map { item in
+            XCTAssertEqual(item.price, 9.99)
+            XCTAssertEqual(item.subtotal, "9.99")
+            XCTAssertEqual(item.total, "9.99")
+        }
     }
 
     func test_sending_a_new_product_input_twice_adds_adds_two_items_to_order() throws {
@@ -83,6 +156,32 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.price, 9.99)
         XCTAssertEqual(item.subtotal, "19.98")
         XCTAssertEqual(item.total, "19.98")
+    }
+
+    func test_updateMultipleItems_update() throws {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
+        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
+        let update1 = ProductInputTransformer.updateMultipleItems(with: [input1], on: OrderFactory.emptyNewOrder, updateZeroQuantities: false)
+
+        // When
+        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 2)
+        let update2 = ProductInputTransformer.updateMultipleItems(with: [input2], on: update1, updateZeroQuantities: false)
+
+        // Then
+        // TODO: Confirm if this is what we actually want to do:
+        /*
+         [0]    Networking.OrderItem quantity 1
+         [1]    Networking.OrderItem quantity 2
+         */
+        let item = try XCTUnwrap(update2.items.last)
+        XCTAssertEqual(item.itemID, input2.id)
+        XCTAssertEqual(item.quantity, input2.quantity)
+        XCTAssertEqual(item.productID, product.productID)
+        XCTAssertEqual(item.price, 9.99)
+        XCTAssertEqual(item.subtotal, "19.98")
+        XCTAssertEqual(item.total, "19.98")
+
     }
 
     func test_sending_an_update_product_input_uses_item_price_from_order() throws {

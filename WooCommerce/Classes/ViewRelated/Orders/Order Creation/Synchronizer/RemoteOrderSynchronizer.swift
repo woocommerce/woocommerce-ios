@@ -157,8 +157,8 @@ private extension RemoteOrderSynchronizer {
                     self.replaceInputWithLocalIDIfNeeded($0)
                 }
 
-                let updatedOrder = ProductInputTransformer.updateMultiple(
-                    input: productsInput,
+                let updatedOrder = ProductInputTransformer.updateMultipleItems(
+                    with: productsInput,
                     on: order,
                     updateZeroQuantities: true)
 

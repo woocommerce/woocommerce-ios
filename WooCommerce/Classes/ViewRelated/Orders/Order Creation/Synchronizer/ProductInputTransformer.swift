@@ -41,18 +41,18 @@ struct ProductInputTransformer {
         return order.copy(items: items)
     }
 
-    /// Adds, deletes, or updates order items based on the multiple given product inputs
+    /// Adds, deletes, or updates Order items based on the multiple given product inputs
     ///
     /// - Parameters:
-    ///   - input: Array of types of products the synchronizer supports
+    ///   - inputs: Array of product types the OrderSynchronizer supports
     ///   - order: Represents an Order entity.
     ///   - updateZeroQuantities: When true, items with `.zero` quantities will be updated instead of being deleted.
     ///
     /// - Returns: An Order entity.
-    static func updateMultiple(input: [OrderSyncProductInput], on order: Order, updateZeroQuantities: Bool) -> Order {
+    static func updateMultipleItems(with inputs: [OrderSyncProductInput], on order: Order, updateZeroQuantities: Bool) -> Order {
         var items = order.items
 
-        for productInput in input {
+        for productInput in inputs {
             items.append(contentsOf: updateOrderItems(
                 from: productInput,
                 order: order,

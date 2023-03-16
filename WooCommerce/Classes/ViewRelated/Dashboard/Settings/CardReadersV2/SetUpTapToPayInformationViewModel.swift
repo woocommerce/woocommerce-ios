@@ -2,16 +2,19 @@ import Foundation
 import Combine
 import Yosemite
 
-final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewModel {
+final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewModel, ObservableObject {
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
     let learnMoreURL: URL
     private let stores: StoresManager
 
+    @Published var enableSetup: Bool = true
+
     let siteID: Int64
     let configuration: CardPresentPaymentsConfiguration
     let connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
+    let connectivityObserver: ConnectivityObserver
 
     private(set) var noConnectedReader: CardReaderSettingsTriState = .isUnknown {
         didSet {
@@ -26,15 +29,18 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
          didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
          activePaymentGateway: CardPresentPaymentsPlugin,
          connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker,
+         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.configuration = configuration
         self.didChangeShouldShow = didChangeShouldShow
         self.stores = stores
         self.connectionAnalyticsTracker = connectionAnalyticsTracker
+        self.connectivityObserver = connectivityObserver
         self.learnMoreURL = Self.learnMoreURL(for: activePaymentGateway)
 
         beginConnectedReaderObservation()
+        beginConnectivityObservation()
     }
 
     deinit {
@@ -53,6 +59,20 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
             self.reevaluateShouldShow()
         }
         stores.dispatch(connectedAction)
+    }
+
+    private func beginConnectivityObservation() {
+        connectivityObserver.statusPublisher.sink { [weak self] status in
+            guard let self = self else { return }
+            switch (status, self.enableSetup) {
+            case (.notReachable, true),
+                (.reachable, false):
+                self.enableSetup.toggle()
+            default:
+                break
+            }
+        }
+        .store(in: &subscriptions)
     }
 
     /// Updates whether the view this viewModel is associated with should be shown or not

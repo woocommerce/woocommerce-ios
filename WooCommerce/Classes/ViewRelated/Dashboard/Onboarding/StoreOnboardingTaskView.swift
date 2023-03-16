@@ -52,10 +52,10 @@ struct StoreOnboardingTaskView: View {
                                 Text(Localization.privateLabel)
                                     .font(.caption)
                                     .fontWeight(.bold)
-                                    .foregroundColor(Color(uiColor: .accent))
+                                    .foregroundColor(Color(.wooCommercePurple(.shade60)))
                                     .multilineTextAlignment(.leading)
                                     .padding(Layout.PrivateLabel.padding)
-                                    .background(Color(uiColor: .selectableSecondaryButtonSelectedBackground))
+                                    .background(Color(.wooCommercePurple(.shade0)))
                                     .cornerRadius(Layout.PrivateLabel.cornerRadius)
                                     .renderedIf(!isRedacted && viewModel.task.type == .launchStore)
                             }

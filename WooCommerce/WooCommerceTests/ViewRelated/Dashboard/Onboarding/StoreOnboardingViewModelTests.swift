@@ -417,6 +417,65 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         // Then
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
+
+    // MARK: - `whenNoTasksAvailable``
+
+    func test_whenNoTasksAvailable_is_called_when_no_tasks_available_due_to_network_error() async {
+        // Given
+        var callbackCalled = false
+        mockLoadOnboardingTasks(result: .failure(MockError()))
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores,
+                                           whenNoTasksAvailable: {
+            callbackCalled = true
+        })
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertTrue(callbackCalled)
+    }
+
+    func test_whenNoTasksAvailable_is_called_when_no_tasks_received_in_success_response() async {
+        // Given
+        var callbackCalled = false
+        mockLoadOnboardingTasks(result: .success([]))
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores,
+                                           whenNoTasksAvailable: {
+            callbackCalled = true
+        })
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertTrue(callbackCalled)
+    }
+
+    func test_whenNoTasksAvailable_is_not_called_when_tasks_received_in_response() async {
+        // Given
+        var callbackCalled = false
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: true, type: .addFirstProduct),
+            .init(isComplete: true, type: .launchStore),
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: true, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(tasks))
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores,
+                                           whenNoTasksAvailable: {
+            callbackCalled = true
+        })
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(callbackCalled)
+    }
 }
 
 private extension StoreOnboardingViewModelTests {

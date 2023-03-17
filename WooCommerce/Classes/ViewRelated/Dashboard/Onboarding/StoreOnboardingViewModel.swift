@@ -59,29 +59,38 @@ class StoreOnboardingViewModel: ObservableObject {
 
     private let defaults: UserDefaults
 
+    private let whenNoTasksAvailable: (() -> Void)?
+
     /// - Parameters:
     ///   - isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
     ///   - siteID: siteID
     ///   - stores: StoresManager
-    ///   - userDefaults: UserDefaults for storing when all onboarding tasks are completed
+    ///   - defaults: UserDefaults for storing when all onboarding tasks are completed
+    ///   - whenNoTasksAvailable: Callback when no tasks are available to display
     init(isExpanded: Bool,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         defaults: UserDefaults = .standard) {
+         defaults: UserDefaults = .standard,
+         whenNoTasksAvailable: (() -> Void)? = nil) {
         self.isExpanded = isExpanded
         self.siteID = siteID
         self.stores = stores
         self.state = .loading
         self.defaults = defaults
+        self.whenNoTasksAvailable = whenNoTasksAvailable
     }
 
     func reloadTasks() async {
         await update(state: .loading)
-        if let tasks = try? await loadTasks() {
+        if let tasks = try? await loadTasks(),
+           tasks.isNotEmpty {
             await checkIfAllTasksAreCompleted(tasks)
             await update(state: .loaded(rows: tasks))
-        } else {
+        } else if taskViewModels.isNotEmpty {
             await update(state: .loaded(rows: taskViewModels))
+        } else {
+            whenNoTasksAvailable?()
+            await update(state: .loaded(rows: []))
         }
     }
 }

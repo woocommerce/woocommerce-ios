@@ -2,8 +2,12 @@ import SwiftUI
 
 /// Hosting controller that wraps the `StoreOnboardingStoreLaunchedView`.
 final class StoreOnboardingPaymentsSetupHostingController: UIHostingController<StoreOnboardingPaymentsSetupView> {
-    init(task: StoreOnboardingPaymentsSetupCoordinator.Task, onContinue: @escaping () -> Void) {
-        super.init(rootView: StoreOnboardingPaymentsSetupView(task: task, onContinue: onContinue))
+    init(task: StoreOnboardingPaymentsSetupCoordinator.Task,
+         onContinue: @escaping () -> Void,
+         onDismiss: @escaping () -> Void) {
+        super.init(rootView: StoreOnboardingPaymentsSetupView(task: task,
+                                                              onContinue: onContinue,
+                                                              onDismiss: onDismiss))
     }
 
     @available(*, unavailable)
@@ -21,10 +25,14 @@ struct StoreOnboardingPaymentsSetupView: View {
 
     private let task: Task
     private let onContinue: () -> Void
+    private let onDismiss: () -> Void
 
-    init(task: Task, onContinue: @escaping () -> Void) {
+    init(task: Task,
+         onContinue: @escaping () -> Void,
+         onDismiss: @escaping () -> Void) {
         self.task = task
         self.onContinue = onContinue
+        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -80,7 +88,14 @@ struct StoreOnboardingPaymentsSetupView: View {
             }
             .background(Color(.systemBackground))
         }
-        .navigationBarHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(Localization.dismiss) {
+                    onDismiss()
+                }
+                .buttonStyle(LinkButtonStyle())
+            }
+        }
     }
 }
 
@@ -107,6 +122,10 @@ private extension StoreOnboardingPaymentsSetupView {
         static let learnMoreButtonTitle = NSLocalizedString(
             "Learn More",
             comment: "Title of the secondary button on the store onboarding payments setup screen."
+        )
+        static let dismiss = NSLocalizedString(
+            "Cancel",
+            comment: "Title of the dismiss button on the store onboarding payments setup screen."
         )
     }
 }
@@ -169,7 +188,11 @@ private extension StoreOnboardingPaymentsSetupView.Task {
 
 struct StoreOnboardingPaymentsSetupView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingPaymentsSetupView(task: .wcPay, onContinue: {})
-        StoreOnboardingPaymentsSetupView(task: .payments, onContinue: {})
+        NavigationView {
+            StoreOnboardingPaymentsSetupView(task: .wcPay, onContinue: {}, onDismiss: {})
+        }
+        NavigationView {
+            StoreOnboardingPaymentsSetupView(task: .payments, onContinue: {}, onDismiss: {})
+        }
     }
 }

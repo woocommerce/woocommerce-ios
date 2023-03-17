@@ -7,6 +7,12 @@ import struct Networking.ApplicationPassword
 ///
 final class ApplicationPasswordAuthorizationWebViewController: UIViewController {
 
+    /// Callback when application password is authorized.
+    var onSuccess: (ApplicationPassword) -> Void = { _ in }
+
+    /// Callback when application password is rejected.
+    var onFailure: () -> Void = {}
+
     /// Main web view
     private lazy var webView: WKWebView = {
         let webView = WKWebView(frame: .zero)
@@ -39,13 +45,10 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
     }()
 
     private let viewModel: ApplicationPasswordAuthorizationViewModel
-    private let successHandler: (ApplicationPassword, UINavigationController?) -> Void
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(viewModel: ApplicationPasswordAuthorizationViewModel,
-         onSuccess: @escaping (ApplicationPassword, UINavigationController?) -> Void) {
+    init(viewModel: ApplicationPasswordAuthorizationViewModel) {
         self.viewModel = viewModel
-        self.successHandler = onSuccess
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -125,13 +128,14 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             do {
                 guard let url = try await viewModel.fetchAuthURL() else {
                     DDLogError("⛔️ No authorization URL found for application passwords")
-                    // show error alert
-                    return
+                    return showErrorAlert(message: Localization.applicationPasswordDisabled)
                 }
                 loadAuthorizationPage(url: url)
             } catch {
                 DDLogError("⛔️ Error fetching authorization URL for application passwords \(error)")
-                // show error alert
+                showErrorAlert(message: Localization.errorFetchingAuthURL, onRetry: { [weak self] in
+                    self?.fetchAuthorizationURL()
+                })
             }
             activityIndicator.stopAnimating()
         }
@@ -161,13 +165,26 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         guard let queryItems = components?.queryItems,
               let username = queryItems.first(where: { $0.name == "user_login" })?.value,
               let password = queryItems.first(where: { $0.name == "password" })?.value else {
-            // show error alert
             DDLogError("⛔️ Authorization rejected for application passwords")
-            return
+            return showErrorAlert(message: Localization.authorizationRejected)
         }
         let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: appID)
-        successHandler(applicationPassword, navigationController)
+        onSuccess(applicationPassword)
         DDLogInfo("✅ Application password authorized")
+    }
+
+    func showErrorAlert(message: String, onRetry: (() -> Void)? = nil) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        let action = UIAlertAction(title: Localization.cancel, style: .cancel) { [weak self] _ in
+            self?.onFailure()
+        }
+        alertController.addAction(action)
+        if let onRetry {
+            let retryAction = UIAlertAction(title: Localization.tryAgain, style: .default) { _ in
+                onRetry()
+            }
+        }
+        present(alertController, animated: true)
     }
 }
 
@@ -176,6 +193,21 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         static let successURL = "woocommerce://application-password"
     }
     enum Localization {
-        static let login = "Log In"
+        static let login = NSLocalizedString("Log In", comment: "Title for the application password authorization web view")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the error alerts of the application password authorization web view")
+        static let tryAgain = NSLocalizedString("Retry", comment: "Button to retry fetching application password authorization URL during login")
+        static let authorizationRejected = NSLocalizedString(
+            "Unable to log in because the request to use application passwords to your site has been rejected.",
+            comment: "Error message displayed when the user rejects application password authorization request during login"
+        )
+        static let applicationPasswordDisabled = NSLocalizedString(
+            "Unable to log in because application passwords are disabled on your site.",
+            comment: "Error message displayed when application password authorization fails " +
+            "during login due to the feature being disabled on the input site."
+        )
+        static let errorFetchingAuthURL = NSLocalizedString(
+            "Failed to fetch the authorization URL for application passwords. Please try again.",
+            comment: "Error message displayed when failed to fetch application password authorization URL during login"
+        )
     }
 }

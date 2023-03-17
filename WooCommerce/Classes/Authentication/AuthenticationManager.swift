@@ -638,9 +638,13 @@ private extension AuthenticationManager {
     ///
     func applicationPasswordWebView(for siteURL: String) -> UIViewController {
         let viewModel = ApplicationPasswordAuthorizationViewModel(siteURL: siteURL)
-        let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel, onSuccess: { _, navigationController in
-            // TODO
-        })
+        let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel)
+        controller.onSuccess = { _ in
+            // TODO: handle success
+        }
+        controller.onFailure = {
+            controller.navigationController?.popViewController(animated: true)
+        }
         return controller
     }
 

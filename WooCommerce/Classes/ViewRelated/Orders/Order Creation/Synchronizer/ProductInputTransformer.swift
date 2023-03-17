@@ -96,8 +96,7 @@ private extension ProductInputTransformer {
     private static func updateOrderItems(from input: OrderSyncProductInput, order: Order, updateZeroQuantities: Bool) -> [OrderItem] {
         // If the input's quantity is 0 or less, delete the item if required.
         guard input.quantity > 0 || updateZeroQuantities else {
-            let updatedOrder = remove(input: input, from: order)
-            return updatedOrder.items
+            return remove(input: input, from: order).items
         }
 
         // Adds or updates the Order items with the new input:

@@ -243,7 +243,7 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(orderUpdate.items.count, 0)
     }
 
-    func test_sending_a_zero_quantity_update_product_input_dont_delete_item_on_order() throws {
+    func test_sending_a_zero_quantity_update_product_input_does_not_delete_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)

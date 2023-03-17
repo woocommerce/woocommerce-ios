@@ -81,7 +81,7 @@ struct StoreOnboardingPaymentsSetupView: View {
 
                     // Learn more button.
                     Button(Localization.learnMoreButtonTitle) {
-                        // TODO-JC: clarify behavior
+                        urlToOpen = task.learnMoreURL
                     }
                     .buttonStyle(SecondaryButtonStyle())
                 }
@@ -178,6 +178,20 @@ private extension StoreOnboardingPaymentsSetupView.Task {
                 comment: "Details on the store onboarding payments setup screen."
             )
         }
+    }
+
+    var learnMoreURL: URL {
+        let urlString: String
+        switch self {
+        case .wcPay:
+            urlString = "https://woocommerce.com/document/woocommerce-payments/startup-guide"
+        case .payments:
+            urlString = "https://woocommerce.com/documentation/woocommerce/getting-started/sell-products/core-payment-options"
+        }
+        guard let url = URL(string: urlString) else {
+            fatalError("Unexpected URL: \(urlString)")
+        }
+        return url
     }
 }
 

@@ -416,8 +416,7 @@ private extension DashboardViewController {
         removeFreeTrialBanner()
         dismiss(animated: true)
 
-        // TODO: Plan should not be hardcoded. Will adjust it https://github.com/woocommerce/woocommerce-ios/issues/9064
-        ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeSuccess(source: .banner, plan: .freeTrial))
+        ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeSuccess(source: .banner))
     }
 
     /// Dismisses the upgrade now web view when the user abandons the flow.
@@ -425,8 +424,7 @@ private extension DashboardViewController {
     @objc func exitUpgradeFreeTrialFlow() {
         dismiss(animated: true)
 
-        // TODO: Plan should not be hardcoded. Will adjust it https://github.com/woocommerce/woocommerce-ios/issues/9064
-        ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeAbandoned(source: .banner, plan: .freeTrial))
+        ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeAbandoned(source: .banner))
     }
 
     func configureDashboardUIContainer() {

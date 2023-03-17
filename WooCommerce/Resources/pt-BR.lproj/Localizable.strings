@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-15 15:54:04+0000 */
+/* Translation-Revision-Date: 2023-03-15 19:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -45,7 +45,7 @@
 /* A label prompting users to learn more about Tap to Pay on iPhone"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with Tap to Pay on iPhone." = "%1$@ sobre aceitar pagamentos com o toque para pagar no iPhone.";
+"%1$@ about accepting payments with Tap to Pay on iPhone." = "%1$@ sobre como aceitar pagamentos com o Tap to Pay on iPhone.";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -335,7 +335,7 @@ which should be translated separately and considered part of this sentence. */
 "Accept payments easily" = "Aceite pagamentos com facilidade";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
-"Accept the Terms of Service during set up." = "Aceite os termos de serviço durante esta configuração.";
+"Accept the Terms of Service during set up." = "Aceite os termos de serviço durante a configuração.";
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "Tenha desconto nas tarifas de envio. Disponível para DHL e USPS, com mais por vir em breve.";
@@ -1550,7 +1550,7 @@ which should be translated separately and considered part of this sentence. */
 "Collect payment from %1$@" = "Receber pagamento de %1$@";
 
 /* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
-"Collect payments, setup Tap to Pay, order card readers and more." = "Receber pagamentos, configurar toque para pagar, pedir cartões de visitantes e mais.";
+"Collect payments, setup Tap to Pay, order card readers and more." = "Receba pagamentos, configure o Tap to Pay, peça leitores de cartão e muito mais.";
 
 /* Industry option in the store creation category question. */
 "Collections Agencies" = "Agências de cobranças";
@@ -3015,7 +3015,7 @@ which should be translated separately and considered part of this sentence. */
 "From device" = "Do dispositivo";
 
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
-"From purchase to fulfillment – manage the entire order process via the app." = "Da compra à satisfação: gerencie todo o processo do pedido através do app.";
+"From purchase to fulfillment – manage the entire order process via the app." = "Da compra ao processamento: gerencie todo o processo do pedido pelo app.";
 
 /* Industry option in the store creation category question. */
 "Fuel Dispensers" = "Dispensadores de combustível";
@@ -4022,7 +4022,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "Use a versão mais recente do WooCommerce no seu site e certifique-se de que o WooCommerce Admin está ativado.";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to sign in to iCloud and set a passcode on the device */
-"Make sure you are signed in to iCloud, and have set a passcode." = "Certifique que você efetuou o login no iCloud e que definiu uma senha.";
+"Make sure you are signed in to iCloud, and have set a passcode." = "Certifique-se de ter feito login no iCloud e definido uma senha.";
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "Use tags para ser mais fácil encontrar seus produtos";
@@ -4391,7 +4391,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Niue" = "Niue";
 
 /* Placeholder for empty product ratings */
-"No (approved) reviews" = "Nenhuma avaliação aprovada";
+"No (approved) reviews" = "Nenhuma avaliação (aprovada)";
 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "Sem restrições";
@@ -4476,7 +4476,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No shipping rates available" = "Nenhuma tarifa de envio disponível";
 
 /* Error in identifying supported contact methods in the Shipping Label Address Validation */
-"No supported contact method on this device." = "Nenhum método de contato suportado neste dispositivo.";
+"No supported contact method on this device." = "Nenhum método de contato aceito neste dispositivo.";
 
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "Nenhuma tag";
@@ -8448,7 +8448,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "You can choose multiple ones." = "Você pode escolher várias opções.";
 
 /* Info notice at the bottom of the bundled products screen */
-"You can edit bundled products in the web dashboard." = "Você pode editar produtos agrupados no painel da web.";
+"You can edit bundled products in the web dashboard." = "Você pode editar produtos agrupados no painel da Web.";
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Você pode editar complementos de produtos no painel da Web.";
@@ -8652,7 +8652,7 @@ which should be translated separately and considered part of this sentence. */
 "password" = "senha";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
-"payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "pagamentos, toque para pagar, woocommerce, woo, pagamentos presenciais, receber pagamento, pagamentos, visitante, cartão de visitante, pedir cartão de visitante";
+"payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "pagamentos, tap to pay, woocommerce, woo, pagamentos presenciais, pagamento presencial, receber pagamento, pagamentos, leitor, leitor de cartão, pedir leitor de cartão";
 
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "classificado %ld vezes";
@@ -8725,7 +8725,7 @@ which should be translated separately and considered part of this sentence. */
 "webKit.button.dismiss" = "Dispensar";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
-"woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, minha loja, hoje, essa semana, esse mês, esse ano, pedidos, visitantes, conversão, conversão superior, itens vendidos";
+"woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, minha loja, hoje, essa semana, esse mês, esse ano, pedidos, visitantes, conversão, principais caminhos de conversão, itens vendidos";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Orders' tab. */
 "woocommerce, orders, all orders, new order" = "woocommerce, pedidos, todos os pedidos, novo pedido";

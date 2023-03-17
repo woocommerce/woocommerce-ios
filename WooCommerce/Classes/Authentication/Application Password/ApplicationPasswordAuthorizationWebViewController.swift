@@ -21,17 +21,21 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
         return bar
     }()
 
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+
     private let viewModel: ApplicationPasswordAuthorizationViewModel
     private let successHandler: (ApplicationPassword, UINavigationController?) -> Void
-    private let failureHandler: () -> Void
     private var subscriptions: Set<AnyCancellable> = []
 
     init(viewModel: ApplicationPasswordAuthorizationViewModel,
-         onSuccess: @escaping (ApplicationPassword, UINavigationController?) -> Void,
-         onFailure: @escaping () -> Void) {
+         onSuccess: @escaping (ApplicationPassword, UINavigationController?) -> Void) {
         self.viewModel = viewModel
         self.successHandler = onSuccess
-        self.failureHandler = onFailure
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -44,12 +48,14 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
         configureNavigationBar()
         configureWebView()
         configureProgressBar()
+        configureActivityIndicator()
+        loadAuthorizationURL()
     }
 }
 
 private extension ApplicationPasswordAuthorizationWebViewController {
     func configureNavigationBar() {
-        title = Localization.authorizeAppPassword
+        title = Localization.login
     }
 
     func configureWebView() {
@@ -98,6 +104,31 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         ])
     }
 
+    func configureActivityIndicator() {
+        view.addSubview(activityIndicator)
+        NSLayoutConstraint.activate([
+            view.centerXAnchor.constraint(equalTo: activityIndicator.centerXAnchor),
+            view.centerYAnchor.constraint(equalTo: activityIndicator.centerYAnchor)
+        ])
+    }
+
+    func loadAuthorizationURL() {
+        Task { @MainActor in
+            activityIndicator.startAnimating()
+            do {
+                guard let url = try await viewModel.fetchAuthURL() else {
+                    // show error alert
+                    return
+                }
+                let request = URLRequest(url: url)
+                webView.load(request)
+            } catch {
+                // show error alert
+            }
+            activityIndicator.stopAnimating()
+        }
+    }
+
     func handleAuthorizationResponse(with url: URL) {
         // TODO
     }
@@ -108,6 +139,6 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         static let successURL = "woocommerce://application-password"
     }
     enum Localization {
-        static let authorizeAppPassword = "Authorize application password"
+        static let login = "Log In"
     }
 }

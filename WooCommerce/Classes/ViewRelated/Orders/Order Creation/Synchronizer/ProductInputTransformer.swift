@@ -54,12 +54,6 @@ struct ProductInputTransformer {
         var updatedOrderItems = order.items
 
         for input in inputs {
-            // 1. If the input quantity is 0 or less, delete the item if needed
-            // TODO: case for deleting and having updateZeroQuantities
-            //  if input.quantity <= 0 {
-            //      updatedOrderItems.removeAll(where: { $0.itemID == input.id})
-            //  }
-
             // If the item already exists, update the existing OrderItem
             if let itemIndex = order.items.firstIndex(where: {$0.itemID == input.id}) {
                 let newItem = createOrderItem(using: input, usingPriceFrom: updatedOrderItems[itemIndex])
@@ -68,6 +62,15 @@ struct ProductInputTransformer {
                 // If the item doesn't exist, create a new OrderItem and append it to our updated Order
                 let newItem = createOrderItem(using: input, usingPriceFrom: nil)
                 updatedOrderItems.append(newItem)
+            }
+        }
+
+        // If the input's quantity is 0 or less, delete the item if required.
+        // We perform a second loop for deletions so we don't attempt to access to overflown indexes
+        for input in inputs {
+            guard input.quantity > 0 || updateZeroQuantities else {
+                updatedOrderItems.removeAll(where: { $0.itemID == input.id })
+                return order.copy(items: updatedOrderItems)
             }
         }
 

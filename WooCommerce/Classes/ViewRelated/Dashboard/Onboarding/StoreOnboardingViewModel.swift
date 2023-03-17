@@ -4,7 +4,7 @@ import Yosemite
 
 /// View model for `StoreOnboardingView`.
 class StoreOnboardingViewModel: ObservableObject {
-    /// UI state of the dashboard top performers.
+    /// UI state of the store onboarding tasks.
     enum State {
         /// Shows placeholder rows.
         case loading
@@ -25,15 +25,21 @@ class StoreOnboardingViewModel: ObservableObject {
     }
 
     var tasksForDisplay: [StoreOnboardingTaskViewModel] {
-        guard isRedacted == false else {
+        if isRedacted {
             return placeholderTasks
         }
-        guard !isExpanded else {
+
+        if isExpanded || !shouldShowViewAllButton {
             return taskViewModels
         }
+
         let maxNumberOfTasksToDisplayInCollapsedMode = 3
         let incompleteTasks = taskViewModels.filter({ !$0.isComplete })
         return isExpanded ? taskViewModels : Array(incompleteTasks.prefix(maxNumberOfTasksToDisplayInCollapsedMode))
+    }
+
+    var shouldShowViewAllButton: Bool {
+        !isExpanded && !isRedacted && !(taskViewModels.count < 3)
     }
 
     let isExpanded: Bool

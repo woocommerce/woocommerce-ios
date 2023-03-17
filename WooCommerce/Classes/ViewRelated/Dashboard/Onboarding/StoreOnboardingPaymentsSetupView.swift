@@ -34,13 +34,11 @@ struct StoreOnboardingPaymentsSetupView: View {
                     Spacer()
                 }
 
-                // TODO-JC: highlighted
-                Text(task.header)
+                Text(task.attributedHeader)
                     .bold()
-                    .titleStyle()
 
                 Text(.init(task.details))
-                    .tint(Color(.brand))
+                    .tint(Color(.accent))
                     .bodyStyle()
             }
             .padding(Layout.contentPadding)
@@ -99,19 +97,12 @@ private extension StoreOnboardingPaymentsSetupView {
 }
 
 private extension StoreOnboardingPaymentsSetupView.Task {
-    var header: String {
-        switch self {
-        case .wcPay:
-            return NSLocalizedString(
-                "Set up WooCommerce Payments",
-                comment: "Header text on the store onboarding WCPay setup screen."
-            )
-        case .payments:
-            return NSLocalizedString(
-                "Set up Payment Methods",
-                comment: "Header text on the store onboarding payments setup screen."
-            )
-        }
+    var headerFormat: String {
+        NSLocalizedString(
+            "Set up %1$@",
+            comment: "Header text format on the store onboarding WCPay/payments setup screen. " +
+            "%1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.'"
+        )
     }
 
     var highlightedInHeader: String {
@@ -119,16 +110,28 @@ private extension StoreOnboardingPaymentsSetupView.Task {
         case .wcPay:
             return NSLocalizedString(
                 "WooCommerce Payments",
-                comment: "Highlighted header text on the store onboarding WCPay setup screen. " +
-                "This must be a substring of the `Set up WooCommerce Payments` string."
+                comment: "Highlighted header text on the store onboarding WCPay setup screen."
             )
         case .payments:
             return NSLocalizedString(
                 "Payment Methods",
-                comment: "Header text on the store onboarding payments setup screen. " +
-                "This must be a substring of the `Set up Payment Methods` string."
+                comment: "Highlighted header text on the store onboarding payments setup screen."
             )
         }
+    }
+
+    var attributedHeader: AttributedString {
+        var attributedText = AttributedString(.init(format: headerFormat, highlightedInHeader))
+        attributedText.font = .title1
+        attributedText.foregroundColor = .init(.text)
+
+        // Styles for the highlighted string.
+        if let range = attributedText.range(of: highlightedInHeader) {
+            let highlightedContainer = AttributeContainer()
+                .foregroundColor(.init(uiColor: .wooCommercePurple(.shade50)))
+            attributedText[range].mergeAttributes(highlightedContainer)
+        }
+        return attributedText
     }
 
     var details: String {

@@ -26,14 +26,14 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
         }
         self.viewModel = viewModel
 
-        super.init(rootView: SetUpTapToPayInformationView())
+        super.init(rootView: SetUpTapToPayInformationView(viewModel: viewModel))
+
+        viewModel.alertsPresenter = alertsPresenter
+        viewModel.connectionController = connectionController
         configureView()
     }
 
     private func configureView() {
-        rootView.setUpButtonAction = { [weak self] in
-            self?.searchAndConnect()
-        }
         rootView.showURL = { url in
             WebviewHelper.launch(url, with: self)
         }
@@ -53,34 +53,21 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
     }
 }
 
-// MARK: - Convenience Methods
-//
-private extension SetUpTapToPayInformationViewController {
-    func searchAndConnect() {
-        connectionController.searchAndConnect { _ in
-            /// No need for logic here. Once connected, the connected reader will publish
-            /// through the `cardReaderAvailableSubscription`, so we can just
-            /// dismiss the connection flow alerts.
-            self.alertsPresenter.dismiss()
-        }
-    }
-}
-
 struct SetUpTapToPayInformationView: View {
+    @ObservedObject var viewModel: SetUpTapToPayInformationViewModel
     var setUpButtonAction: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
     var learnMoreUrl: URL? = nil
     var dismiss: (() -> Void)? = nil
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
-    @Environment(\.sizeCategory) private var sizeCategory
 
     var isCompact: Bool {
         verticalSizeClass == .compact
     }
 
-    var isSizeCategoryLargerThanExtraLarge: Bool {
-        sizeCategory >= .accessibilityMedium
+    var imageMaxHeight: CGFloat {
+        isCompact ? Constants.maxCompactImageHeight : Constants.maxImageHeight
     }
 
     var body: some View {
@@ -94,36 +81,37 @@ struct SetUpTapToPayInformationView: View {
             .padding(.top)
 
             Spacer()
+            VStack {
+                Text(Localization.setUpTapToPayOnIPhoneTitle)
+                    .font(.title.weight(.semibold))
+                    .multilineTextAlignment(.center)
+                    .padding([.leading, .trailing])
+                    .fixedSize(horizontal: false, vertical: true)
+                Image(uiImage: .setUpBuiltInReader)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxHeight: imageMaxHeight)
+                    .padding()
 
-            Text(Localization.setUpTapToPayOnIPhoneTitle)
-                .font(.title.weight(.semibold))
-                .multilineTextAlignment(.center)
-                .padding([.leading, .trailing])
+                VStack(spacing: Constants.hintSpacing) {
+                    PaymentSettingsFlowHint(title: Localization.hintOneTitle, text: Localization.hintOne)
+                    PaymentSettingsFlowHint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
+                    PaymentSettingsFlowHint(title: Localization.hintThreeTitle, text: Localization.hintThree)
+                }
                 .fixedSize(horizontal: false, vertical: true)
-            Image(uiImage: .setUpBuiltInReader)
-                .resizable()
-                .scaledToFit()
-                .frame(height: isCompact ? 80 : 206)
-                .padding()
+                .layoutPriority(1)
+                .padding([.top, .bottom])
 
-            VStack(spacing: 16) {
-                PaymentSettingsFlowHint(title: Localization.hintOneTitle, text: Localization.hintOne)
-                PaymentSettingsFlowHint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
-                PaymentSettingsFlowHint(title: Localization.hintThreeTitle, text: Localization.hintThree)
-            }
-            .fixedSize(horizontal: false, vertical: true)
-            .layoutPriority(1)
-            .padding([.top, .bottom])
+                Spacer()
 
-            Spacer()
+                Button(Localization.setUpButton, action: {
+                    viewModel.setUpTapped()
+                })
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.setUpInProgress))
+                .disabled(!viewModel.enableSetup)
 
-            Button(Localization.setUpButton, action: {
-                setUpButtonAction?()
-            })
-            .buttonStyle(PrimaryButtonStyle())
-
-            InPersonPaymentsLearnMore(
-                viewModel: LearnMoreViewModel(formatText: Localization.learnMore))
+                InPersonPaymentsLearnMore(
+                    viewModel: LearnMoreViewModel(formatText: Localization.learnMore))
                 .customOpenURL(action: { url in
                     switch url {
                     case LearnMoreViewModel.learnMoreURL:
@@ -134,17 +122,27 @@ struct SetUpTapToPayInformationView: View {
                         showURL?(url)
                     }
                 })
-        }
-        .frame(
-            maxWidth: .infinity,
-            maxHeight: .infinity
-        )
-        .padding()
-        .if(isCompact || isSizeCategoryLargerThanExtraLarge) { content in
-            ScrollView(.vertical) {
-                content
             }
+            .scrollVerticallyIfNeeded()
         }
+        .padding()
+    }
+}
+
+private enum Constants {
+    // maxHeight should be 208, but that hides the button on iPhone SE
+    // TODO: make this 208, or proportional to screen height for small screens
+    // https://github.com/woocommerce/woocommerce-ios/issues/9134
+    static let maxImageHeight: CGFloat = 180
+    static let maxCompactImageHeight: CGFloat = 80
+    static let hintSpacing: CGFloat = 16
+}
+
+private struct ViewSizeKey: PreferenceKey {
+    static var defaultValue: CGSize = .zero
+
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+        value = nextValue()
     }
 }
 
@@ -207,6 +205,14 @@ private enum Localization {
 
 struct SetUpTapToPayInformationView_Previews: PreviewProvider {
     static var previews: some View {
-        SetUpTapToPayInformationView(setUpButtonAction: {})
+        let config = CardPresentConfigurationLoader().configuration
+        let viewModel = SetUpTapToPayInformationViewModel(
+            siteID: 0,
+            configuration: config,
+            didChangeShouldShow: nil,
+            activePaymentGateway: .wcPay,
+            connectionAnalyticsTracker: .init(configuration: config))
+        SetUpTapToPayInformationView(viewModel: viewModel,
+                                     setUpButtonAction: {})
     }
 }

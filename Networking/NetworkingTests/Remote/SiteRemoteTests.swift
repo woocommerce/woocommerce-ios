@@ -20,6 +20,8 @@ final class SiteRemoteTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - `createSite`
+
     func test_createSite_returns_created_site_on_success() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "sites/new", filename: "site-creation-success")
@@ -56,6 +58,54 @@ final class SiteRemoteTests: XCTestCase {
         await assertThrowsError({
             // When
             _ = try await remote.createSite(name: "Wapuu swags", domain: "wapuu.store")
+        }, errorAssert: { ($0 as? NetworkError) == .notFound })
+    }
+
+    // MARK: - `launchSite`
+
+    func test_launchSite_returns_on_success() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "launch", filename: "site-launch-success")
+
+        // When
+        do {
+            try await remote.launchSite(siteID: 134)
+        } catch {
+            // Then
+            XCTFail("Unexpected failure launching site: \(error)")
+        }
+    }
+
+    func test_launchSite_returns_DotcomError_failure_on_already_launched_error() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "launch", filename: "site-launch-error-already-launched")
+
+        await assertThrowsError({
+            // When
+            try await remote.launchSite(siteID: 134)
+        }, errorAssert: {
+            ($0 as? WordPressApiError) == .unknown(code: "already-launched",
+                                                   message: "This site has already been launched")
+        })
+    }
+
+    func test_launchSite_returns_WordPressApiError_failure_on_unauthorized_error() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "launch", filename: "site-launch-error-unauthorized")
+
+        await assertThrowsError({
+            // When
+            try await remote.launchSite(siteID: 134)
+        }, errorAssert: {
+            ($0 as? WordPressApiError) == .unknown(code: "unauthorized",
+                                                   message: "You do not have permission to launch this site.")
+        })
+    }
+
+    func test_launchSite_returns_failure_on_empty_response() async throws {
+        await assertThrowsError({
+            // When
+            _ = try await remote.launchSite(siteID: 134)
         }, errorAssert: { ($0 as? NetworkError) == .notFound })
     }
 }

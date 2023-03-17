@@ -23,6 +23,8 @@ class DefaultStoresManager: StoresManager {
     /// https://github.com/woocommerce/woocommerce-ios/issues/878
     private var _sessionManager: SessionManagerProtocol
 
+    private let defaults: UserDefaults
+
     /// Keychain access. Used for sharing the auth access token with the widgets extension.
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
@@ -110,10 +112,12 @@ class DefaultStoresManager: StoresManager {
     /// Designated Initializer
     ///
     init(sessionManager: SessionManagerProtocol,
-         notificationCenter: NotificationCenter = .default) {
+         notificationCenter: NotificationCenter = .default,
+         defaults: UserDefaults = .standard) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
+        self.defaults = defaults
 
         isLoggedIn = isAuthenticated
 
@@ -217,6 +221,7 @@ class DefaultStoresManager: StoresManager {
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
         sessionManager.defaultSite = nil
+        defaults[.completedAllStoreOnboardingTasks] = nil
         restoreSessionSiteIfPossible()
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 

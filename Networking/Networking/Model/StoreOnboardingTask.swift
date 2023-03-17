@@ -44,3 +44,26 @@ public extension StoreOnboardingTask {
         }
     }
 }
+
+private extension StoreOnboardingTask.TaskType {
+    var sortOrder: Int {
+        switch self {
+        case .addFirstProduct:
+            return 0
+        case .launchStore:
+            return 1
+        case .customizeDomains:
+            return 2
+        case .payments, .woocommercePayments:
+            return 3
+        case .unsupported:
+            return 4
+        }
+    }
+}
+
+extension StoreOnboardingTask: Comparable {
+    public static func < (lhs: StoreOnboardingTask, rhs: StoreOnboardingTask) -> Bool {
+        lhs.type.sortOrder < rhs.type.sortOrder
+    }
+}

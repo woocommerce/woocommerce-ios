@@ -103,6 +103,10 @@ final class DashboardViewController: UIViewController {
 
     private var announcementView: UIView?
 
+    /// Holds a reference to the Free Trial Banner view, Needed to be able to hide it when needed.
+    ///
+    private var freeTrialBanner: UIView?
+
     /// Onboarding card.
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
@@ -157,6 +161,7 @@ final class DashboardViewController: UIViewController {
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
+        observeFreeTrialBannerVisibility()
 
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
@@ -168,6 +173,9 @@ final class DashboardViewController: UIViewController {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
+
+        // Proactively update the free trial banner every time we navigate to the dashboard.
+        viewModel.syncFreeTrialBanner(siteID: siteID)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -338,6 +346,42 @@ private extension DashboardViewController {
         view.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToSafeArea(stackView)
+    }
+
+    /// Adds a Free Trial bar at the bottom of the screen.
+    ///
+    func addFreeTrialBar(contentText: String) {
+        let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) {
+            print("Upgrade now tapped!!")
+        }
+        freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false
+
+        self.stackView.addSubview(freeTrialViewController.view)
+        NSLayoutConstraint.activate([
+            freeTrialViewController.view.leadingAnchor.constraint(equalTo: self.stackView.leadingAnchor),
+            freeTrialViewController.view.trailingAnchor.constraint(equalTo: self.stackView.trailingAnchor),
+            freeTrialViewController.view.bottomAnchor.constraint(equalTo: self.stackView.bottomAnchor)
+
+        ])
+
+        // Adjust the main container content inset to prevent it from being hidden by the `freeTrialViewController`
+        DispatchQueue.main.async {
+            self.containerView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: freeTrialViewController.view.frame.size.height, right: 0)
+        }
+
+        // Store a reference to it to manipulate it later in `removeFreeTrialBanner`.
+        freeTrialBanner = freeTrialViewController.view
+    }
+
+    /// Removes the Free Trial Banner when possible.
+    ///
+    func removeFreeTrialBanner() {
+        guard let banner = freeTrialBanner else {
+            return
+        }
+
+        banner.removeFromSuperview()
+        containerView.contentInset = .zero // Resets the content offset of main scroll view. Was adjusted previously in `addFreeTrialBar`
     }
 
     func configureDashboardUIContainer() {
@@ -527,6 +571,17 @@ private extension DashboardViewController {
         storeNameLabel.isHidden = false
         storeNameLabel.text = siteName
     }
+
+    /// Shows or hides the free trial banner.
+    ///
+    func observeFreeTrialBannerVisibility() {
+        viewModel.$freeTrialBannerViewModel.sink { [weak self] viewModel in
+            self?.removeFreeTrialBanner()
+            if let viewModel {
+                self?.addFreeTrialBar(contentText: viewModel.message)
+            }
+        }.store(in: &subscriptions)
+    }
 }
 
 private extension DashboardViewController {
@@ -562,7 +617,8 @@ private extension DashboardViewController {
             removeOnboardingCard()
         }
 
-        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false, siteID: site.siteID),
+        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false,
+                                                                                      siteID: site.siteID),
                                                                      navigationController: navigationController,
                                                                      site: site,
                                                                      shareFeedbackAction: { [weak self] in

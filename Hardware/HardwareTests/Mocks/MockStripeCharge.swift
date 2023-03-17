@@ -9,7 +9,7 @@ struct MockStripeCharge {
     let currency: String
     let status: StripeTerminal.ChargeStatus
     let stripeDescription: String?
-    let metadata: [AnyHashable: Any]
+    let metadata: [String: String]
     let paymentMethodDetails: StripeTerminal.PaymentMethodDetails?
 }
 

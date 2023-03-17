@@ -194,6 +194,11 @@ public class AppSettingsStore: Store {
             setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
         case .loadLastSelectedStatsTimeRange(let siteID, let onCompletion):
             loadLastSelectedStatsTimeRange(siteID: siteID, onCompletion: onCompletion)
+        case .loadSiteHasAtLeastOneIPPTransactionFinished(let siteID, let onCompletion):
+            loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID, onCompletion: onCompletion)
+        case .markSiteHasAtLeastOneIPPTransactionFinished(let siteID):
+            markSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID)
+
         }
     }
 }
@@ -814,6 +819,16 @@ extension AppSettingsStore {
         }
     }
 
+    func loadSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64, onCompletion: (Bool) -> Void) {
+        onCompletion(generalAppSettings.value(for: \.sitesWithAtLeastOneIPPTransactionFinished).contains(siteID))
+    }
+
+    func markSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64) {
+        var updatingSet = generalAppSettings.settings.sitesWithAtLeastOneIPPTransactionFinished
+        updatingSet.insert(siteID)
+
+        try? generalAppSettings.setValue(updatingSet, for: \.sitesWithAtLeastOneIPPTransactionFinished)
+    }
 }
 
 private extension AppSettingsStore {

@@ -270,15 +270,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping  (Error, Bool) -> Void) {
         let useCase = SiteCredentialLoginUseCase(siteURL: credentials.siteURL)
-        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { error in
+        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error in
+            guard let self else { return }
             onLoading(false)
-            let incorrectCredentials: Bool = {
-                if case .wrongCredentials = error {
-                    return true
-                }
-                return false
-            }()
-            onFailure(error.underlyingError, incorrectCredentials)
+            onFailure(error.underlyingError, false)
+            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication, error: error))
         })
         self.siteCredentialLoginUseCase = useCase
 

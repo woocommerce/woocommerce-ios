@@ -6,19 +6,21 @@ import XCTest
 /// Test cases for `StoreOnboardingViewHostingController`.
 ///
 final class StoreOnboardingViewHostingControllerTests: XCTestCase {
-    func it_reloads_tasks_when_view_loads() {
+    func test_it_reloads_tasks_when_view_loads() {
         // Given
         let mockViewModel = MockStoreOnboardingViewModel()
         let sut = StoreOnboardingViewHostingController(viewModel: mockViewModel, navigationController: .init(), site: .fake(), shareFeedbackAction: nil)
 
         // When
-        sut.loadView()
+        sut.viewDidLoad()
 
         // Then
-        XCTAssertTrue(mockViewModel.reloadTasksCalled)
+        waitUntil {
+            mockViewModel.reloadTasksCalled
+        }
     }
 
-    func it_reloads_tasks_when_view_appears() {
+    func test_it_reloads_tasks_when_view_appears() {
         // Given
         let mockViewModel = MockStoreOnboardingViewModel()
         let sut = StoreOnboardingViewHostingController(viewModel: mockViewModel, navigationController: .init(), site: .fake(), shareFeedbackAction: nil)
@@ -27,7 +29,9 @@ final class StoreOnboardingViewHostingControllerTests: XCTestCase {
         sut.viewWillAppear(true)
 
         // Then
-        XCTAssertTrue(mockViewModel.reloadTasksCalled)
+        waitUntil {
+            mockViewModel.reloadTasksCalled
+        }
     }
 }
 

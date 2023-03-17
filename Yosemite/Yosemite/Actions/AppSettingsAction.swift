@@ -218,4 +218,12 @@ public enum AppSettingsAction: Action {
     case setLastSelectedStatsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4)
 
     case loadLastSelectedStatsTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
+
+    /// Loads whether the user finished an IPP transaction for the given siteID
+    ///
+    case loadSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64, onCompletion: (Bool) -> Void)
+
+    /// Stores that the user finished an IPP transaction for the given siteID
+    ///
+    case markSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64)
 }

@@ -72,9 +72,9 @@ private enum Layout {
 struct BundledProductsList_Previews: PreviewProvider {
 
     static let viewModel = BundledProductsListViewModel(bundledProducts: [
-        .init(id: 1, productID: 11, title: "Beanie with Logo", stockStatus: "In stock", imageURL: nil),
-        .init(id: 2, productID: 12, title: "T-Shirt with Logo", stockStatus: "In stock", imageURL: nil),
-        .init(id: 3, productID: 13, title: "Hoodie with Logo", stockStatus: "Out of stock", imageURL: nil)
+        .init(id: 1, title: "Beanie with Logo", stockStatus: "In stock", imageURL: nil),
+        .init(id: 2, title: "T-Shirt with Logo", stockStatus: "In stock", imageURL: nil),
+        .init(id: 3, title: "Hoodie with Logo", stockStatus: "Out of stock", imageURL: nil)
     ])
 
     static var previews: some View {

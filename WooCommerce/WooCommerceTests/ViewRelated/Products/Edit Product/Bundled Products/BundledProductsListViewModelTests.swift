@@ -28,7 +28,7 @@ final class BundledProductsListViewModelTests: XCTestCase {
         let bundleItem = ProductBundleItem.fake().copy(bundledItemID: 1, title: "Hoodie", stockStatus: .outOfStock)
 
         // When
-        let viewModel = BundledProductsListViewModel(siteID: sampleSiteID, bundledProducts: [bundleItem])
+        let viewModel = BundledProductsListViewModel(siteID: sampleSiteID, bundleItems: [bundleItem])
         let bundledProduct = try XCTUnwrap(viewModel.bundledProducts.first)
 
         // Then
@@ -45,7 +45,7 @@ final class BundledProductsListViewModelTests: XCTestCase {
         insert(product)
 
         // When
-        let viewModel = BundledProductsListViewModel(siteID: sampleSiteID, bundledProducts: [bundleItem], storageManager: storageManager)
+        let viewModel = BundledProductsListViewModel(siteID: sampleSiteID, bundleItems: [bundleItem], storageManager: storageManager)
         let bundledProduct = try XCTUnwrap(viewModel.bundledProducts.first)
 
         // Then

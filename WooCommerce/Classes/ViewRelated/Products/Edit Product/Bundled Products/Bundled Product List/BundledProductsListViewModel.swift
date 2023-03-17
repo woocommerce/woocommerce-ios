@@ -9,11 +9,8 @@ final class BundledProductsListViewModel: ObservableObject {
     /// Represents a bundled product
     ///
     struct BundledProduct: Identifiable {
-        /// ID of the bundled product (item ID unique to the bundled product list)
+        /// Bundled product ID
         let id: Int64
-
-        /// Product ID of the bundled product
-        let productID: Int64
 
         /// Title of the bundled product
         let title: String
@@ -44,14 +41,16 @@ final class BundledProductsListViewModel: ObservableObject {
 
 // MARK: Initializers
 extension BundledProductsListViewModel {
-    convenience init(siteID: Int64, bundledProducts: [Yosemite.ProductBundleItem], storageManager: StorageManagerType = ServiceLocator.storageManager) {
-        let viewModels = BundledProductsListViewModel.getViewModels(for: bundledProducts, siteID: siteID, storageManager: storageManager)
+    convenience init(siteID: Int64,
+                     bundleItems: [Yosemite.ProductBundleItem],
+                     storageManager: StorageManagerType = ServiceLocator.storageManager,
+                     stores: StoresManager = ServiceLocator.stores) {
+        let products = BundledProductsListViewModel.fetchProducts(for: siteID, including: bundleItems.map { $0.productID }, storageManager: storageManager)
+        let viewModels = BundledProductsListViewModel.getViewModels(for: bundleItems, with: products, siteID: siteID)
         self.init(bundledProducts: viewModels)
 
         // Re-sync bundled products to get product images if needed
-        synchronizeBundledProductsIfNeeded(for: siteID) { [weak self] in
-            self?.bundledProducts = BundledProductsListViewModel.getViewModels(for: bundledProducts, siteID: siteID, storageManager: storageManager)
-        }
+        synchronizeBundledProductsIfNeeded(for: bundleItems, siteID: siteID, stores: stores)
     }
 }
 
@@ -59,11 +58,9 @@ extension BundledProductsListViewModel {
 private extension BundledProductsListViewModel {
     /// Creates `BundledProduct` view models for the provided Product Bundle Items
     ///
-    static func getViewModels(for bundleItems: [ProductBundleItem], siteID: Int64, storageManager: StorageManagerType) -> [BundledProduct] {
-        let products = fetchProducts(for: siteID, including: bundleItems.map { $0.productID }, storageManager: storageManager)
-        return bundleItems.map { bundleItem in
+    static func getViewModels(for bundleItems: [ProductBundleItem], with products: [Product], siteID: Int64) -> [BundledProduct] {
+        bundleItems.map { bundleItem in
             BundledProduct(id: bundleItem.bundledItemID,
-                           productID: bundleItem.productID,
                            title: bundleItem.title,
                            stockStatus: bundleItem.stockStatus.description,
                            imageURL: products.first(where: { $0.productID == bundleItem.productID })?.imageURL) // URL for bundle item's first image
@@ -85,24 +82,24 @@ private extension BundledProductsListViewModel {
         return controller.fetchedObjects
     }
 
-    /// Synchronizes the products matching the provided product IDs, to retrieve their product images
+    /// Synchronizes the products matching the provided Product Bundle Items, to retrieve their product images
     ///
-    func synchronizeBundledProductsIfNeeded(for siteID: Int64, onCompletion: @escaping () -> Void) {
+    func synchronizeBundledProductsIfNeeded(for bundleItems: [ProductBundleItem], siteID: Int64, stores: StoresManager) {
         // We only need to sync if the bundled products are missing images
         guard bundledProducts.filter({ $0.imageURL == nil }).isNotEmpty else { return }
 
-        let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: bundledProducts.map { $0.productID }) { result in
+        let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: bundleItems.map { $0.productID }) { [weak self] result in
+            guard let self else { return }
+
             switch result {
-            case .success:
-                break
+            case let .success((products, _)):
+                self.bundledProducts = BundledProductsListViewModel.getViewModels(for: bundleItems, with: products, siteID: siteID)
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing products: \(error)")
             }
-
-            onCompletion()
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 }
 

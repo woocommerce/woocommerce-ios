@@ -169,8 +169,10 @@ class ProductInputTransformerTests: XCTestCase {
         let updatedOrder = ProductInputTransformer.updateMultipleItems(with: [productInput2], on: initialOrder, updateZeroQuantities: false)
 
         // Then
-        XCTAssertEqual(updatedOrder.items.count, 1) // Confirm that we still have only 1 item
+        // Confirm that we still have only 1 item
+        XCTAssertEqual(updatedOrder.items.count, 1)
         let item = try XCTUnwrap(updatedOrder.items.first)
+        // Confirm that the item is updated
         XCTAssertEqual(item.itemID, productInput2.id)
         XCTAssertEqual(item.quantity, productInput2.quantity)
         XCTAssertEqual(item.productID, product.productID)
@@ -228,10 +230,7 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(update2.items.count, 0)
     }
 
-    // TODO: Failing test
-    // As the other cases with updateMultipleItems(),
-    // we're not updating the unique product, but we're duplicating the product
-    func test_order_when_updateMultipleItems_with_zero_quantity_product_input_and_updateZeroQuantities_is_false_then_does_not_delete_item_on_order() throws {
+    func test_order_when_updateMultipleItems_with_zero_quantity_product_input_and_updateZeroQuantities_is_false_then_deletes_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
@@ -259,9 +258,6 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.quantity, input2.quantity)
     }
 
-    // TODO: Failing test
-    // As the other cases with updateMultipleItems(),
-    // we're not updating the unique product, but we're duplicating the product
     func test_order_when_updateMultipleItems_with_zero_quantity_product_input_and_updateZeroQuantities_then_does_not_delete_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)

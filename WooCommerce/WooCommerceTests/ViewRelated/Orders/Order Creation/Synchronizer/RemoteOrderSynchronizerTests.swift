@@ -60,6 +60,67 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(item.quantity, input.quantity)
     }
 
+    func test_setProducts_sends_single_product_input_then_updates_order_successfully() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let product = Product.fake().copy(productID: sampleProductID)
+        let productInput = OrderSyncProductInput(
+            product: .product(product),
+            quantity: 1
+        )
+        // Confidence check
+        XCTAssertEqual(synchronizer.order.items.count, 0)
+
+        // When
+        let inputs: [OrderSyncProductInput] = [productInput]
+        synchronizer.setProducts.send(inputs)
+
+        // Then
+        XCTAssertEqual(synchronizer.order.items.count, 1)
+
+        let item = try XCTUnwrap(synchronizer.order.items.first)
+        XCTAssertEqual(item.itemID, productInput.id)
+        XCTAssertEqual(item.productID, product.productID)
+        XCTAssertEqual(item.quantity, productInput.quantity)
+    }
+
+    func test_setProducts_sends_multiple_product_input_then_updates_order_successfully() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let product = Product.fake().copy(productID: sampleProductID)
+        let anotherProduct = Product.fake().copy(productID: 12345)
+        let productInput = OrderSyncProductInput(
+            product: .product(product),
+            quantity: 1
+        )
+        let anotherProductInput = OrderSyncProductInput(
+            product: .product(anotherProduct),
+            quantity: 1
+        )
+
+        // Confidence check
+        XCTAssertEqual(synchronizer.order.items.count, 0)
+
+        // When
+        let inputs: [OrderSyncProductInput] = [productInput, anotherProductInput]
+        synchronizer.setProducts.send(inputs)
+
+        // Then
+        XCTAssertEqual(synchronizer.order.items.count, 2)
+        let item = try XCTUnwrap(synchronizer.order.items[0])
+        let anotherItem = try XCTUnwrap(synchronizer.order.items[1])
+
+        XCTAssertEqual(item.itemID, productInput.id)
+        XCTAssertEqual(item.productID, product.productID)
+        XCTAssertEqual(item.quantity, productInput.quantity)
+
+        XCTAssertEqual(anotherItem.itemID, anotherProductInput.id)
+        XCTAssertEqual(anotherItem.productID, anotherProduct.productID)
+        XCTAssertEqual(anotherItem.quantity, anotherProductInput.quantity)
+    }
+
     func test_sending_update_product_input_updates_local_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)

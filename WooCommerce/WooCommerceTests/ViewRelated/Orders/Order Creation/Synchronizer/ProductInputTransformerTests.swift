@@ -158,20 +158,15 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.total, "19.98")
     }
 
-    // TODO: Failing test
-    // At the moment the current implementation of updateMultipleItems will not update existing items, but copy and append the update:
-    // In this case we're not updating the unique product from quantity 1 to 2, but we're duplicating the product.
     func test_updatedOrder_when_updateMultipleItems_sends_an_updated_product_input_then_updates_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
         let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
         let initialOrder = ProductInputTransformer.updateMultipleItems(with: [productInput], on: OrderFactory.emptyNewOrder, updateZeroQuantities: false)
-        // po update1.items.count = 1
 
         // When
         let productInput2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 2)
         let updatedOrder = ProductInputTransformer.updateMultipleItems(with: [productInput2], on: initialOrder, updateZeroQuantities: false)
-        // po update2.items.count = 2 -> updateMultipleItems is adding a second product here, when we actually want to update the existing product
 
         // Then
         XCTAssertEqual(updatedOrder.items.count, 1) // Confirm that we still have only 1 item
@@ -202,9 +197,6 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(updatedItem.total, "16")
     }
 
-    // TODO: Failing test
-    // As the other cases with updateMultipleItems(),
-    // we're not updating the unique product, but we're duplicating the product.
     func test_updatedOrder_when_updateMultipleItems_sends_an_updated_product_input_then_updates_price_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")

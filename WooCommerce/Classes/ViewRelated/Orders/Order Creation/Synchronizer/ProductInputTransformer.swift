@@ -42,6 +42,7 @@ struct ProductInputTransformer {
     }
 
     /// Adds, deletes, or updates Order items based on the multiple given product inputs
+    /// We receive an `[OrderSyncProductInput]` object as input, and must return an updated `Order`
     ///
     /// - Parameters:
     ///   - inputs: Array of product types the OrderSynchronizer supports
@@ -50,17 +51,27 @@ struct ProductInputTransformer {
     ///
     /// - Returns: An Order entity.
     static func updateMultipleItems(with inputs: [OrderSyncProductInput], on order: Order, updateZeroQuantities: Bool) -> Order {
-        var items = order.items
+        var updatedOrderItems = order.items
 
-        for productInput in inputs {
-            items.append(contentsOf: updateOrderItems(
-                from: productInput,
-                order: order,
-                updateZeroQuantities: updateZeroQuantities)
-            )
+        for input in inputs {
+            // 1. If the input quantity is 0 or less, delete the item if needed
+            // TODO: case for deleting and having updateZeroQuantities
+            //  if input.quantity <= 0 {
+            //      updatedOrderItems.removeAll(where: { $0.itemID == input.id})
+            //  }
+
+            // If the item already exists, update the existing OrderItem
+            if let itemIndex = order.items.firstIndex(where: {$0.itemID == input.id}) {
+                let newItem = createOrderItem(using: input, usingPriceFrom: updatedOrderItems[itemIndex])
+                updatedOrderItems[itemIndex] = newItem
+            } else {
+                // If the item doesn't exist, create a new OrderItem and append it to our updated Order
+                let newItem = createOrderItem(using: input, usingPriceFrom: nil)
+                updatedOrderItems.append(newItem)
+            }
         }
 
-        return order.copy(items: items)
+        return order.copy(items: updatedOrderItems)
     }
 
     /// Updates the `OrderItems` array with `OrderSyncProductInput`.

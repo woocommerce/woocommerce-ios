@@ -3,7 +3,7 @@ import WebKit
 
 /// View with embedded web view to authorize application password for a site.
 ///
-final class SiteCredentialLoginWebViewController: UIViewController {
+final class ApplicationPasswordAuthorizationWebViewController: UIViewController {
 
     /// Main web view
     private lazy var webView: WKWebView = {

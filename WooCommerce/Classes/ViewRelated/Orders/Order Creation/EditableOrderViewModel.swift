@@ -746,15 +746,21 @@ private extension EditableOrderViewModel {
         if !allProducts.contains(product) {
             allProducts.append(product)
         }
-        
-        if !selectedProducts.contains(where: { $0?.productID == product.productID }) {
-            selectedProducts.append(product)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
-        } else {
-            selectedProducts.removeAll(where: { $0?.productID == product.productID })
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: .creation))
-        }
 
+        // TODO: Refactor with guard
+        if !featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            orderSynchronizer.setProduct.send(input)
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+        } else {
+            if !selectedProducts.contains(where: { $0?.productID == product.productID }) {
+                selectedProducts.append(product)
+                analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
+            } else {
+                selectedProducts.removeAll(where: { $0?.productID == product.productID })
+                analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: .creation))
+            }
+        }
     }
 
     /// Adds a selected product variation (from the product list) to the order.
@@ -769,12 +775,19 @@ private extension EditableOrderViewModel {
             allProductVariations.append(variation)
         }
 
-        if !selectedProductVariations.contains(where: { $0?.productVariationID == variation.productVariationID }) {
-            selectedProductVariations.append(variation)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
+        // TODO: Refactor with guard
+        if !featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
+            let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
+            orderSynchronizer.setProduct.send(input)
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
         } else {
-            selectedProductVariations.removeAll(where: { $0?.productVariationID == variation.productVariationID })
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: .creation))
+            if !selectedProductVariations.contains(where: { $0?.productVariationID == variation.productVariationID }) {
+                selectedProductVariations.append(variation)
+                analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
+            } else {
+                selectedProductVariations.removeAll(where: { $0?.productVariationID == variation.productVariationID })
+                analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: .creation))
+            }
         }
     }
 

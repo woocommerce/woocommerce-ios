@@ -28,6 +28,16 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
         return indicator
     }()
 
+    /// WP Core requires that the UUID has lowercased letters.
+    private let appID = UUID().uuidString.lowercased()
+
+    /// Name of the app to display in the authorization page
+    private lazy var appName: String = {
+        let bundleIdentifier = Bundle.main.bundleIdentifier ?? "Unknown"
+        let model = UIDevice.current.model
+        return bundleIdentifier + ".ios-app-client." + model
+    }()
+
     private let viewModel: ApplicationPasswordAuthorizationViewModel
     private let successHandler: (ApplicationPassword, UINavigationController?) -> Void
     private var subscriptions: Set<AnyCancellable> = []
@@ -49,7 +59,7 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
         configureWebView()
         configureProgressBar()
         configureActivityIndicator()
-        loadAuthorizationURL()
+        fetchAuthorizationURL()
     }
 }
 
@@ -82,9 +92,6 @@ private extension ApplicationPasswordAuthorizationWebViewController {
 
         webView.publisher(for: \.url)
             .sink { [weak self] url in
-                guard let url, url.absoluteString.hasPrefix(Constants.successURL) else {
-                    return
-                }
                 self?.handleAuthorizationResponse(with: url)
             }
             .store(in: &subscriptions)
@@ -112,25 +119,55 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         ])
     }
 
-    func loadAuthorizationURL() {
+    func fetchAuthorizationURL() {
         Task { @MainActor in
             activityIndicator.startAnimating()
             do {
                 guard let url = try await viewModel.fetchAuthURL() else {
+                    DDLogError("⛔️ No authorization URL found for application passwords")
                     // show error alert
                     return
                 }
-                let request = URLRequest(url: url)
-                webView.load(request)
+                loadAuthorizationPage(url: url)
             } catch {
+                DDLogError("⛔️ Error fetching authorization URL for application passwords \(error)")
                 // show error alert
             }
             activityIndicator.stopAnimating()
         }
     }
 
-    func handleAuthorizationResponse(with url: URL) {
-        // TODO
+    func loadAuthorizationPage(url: URL) {
+        let parameters: [URLQueryItem] = [
+            URLQueryItem(name: "app_name", value: appName),
+            URLQueryItem(name: "app_id", value: appID),
+            URLQueryItem(name: "success_url", value: Constants.successURL)
+        ]
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        components?.queryItems = parameters
+        guard let urlWithQueries = components?.url else {
+            DDLogError("⛔️ Error building authorization URL request")
+            return
+        }
+        let request = URLRequest(url: urlWithQueries)
+        webView.load(request)
+    }
+
+    func handleAuthorizationResponse(with url: URL?) {
+        guard let url, url.absoluteString.hasPrefix(Constants.successURL) else {
+            return
+        }
+        let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        guard let queryItems = components?.queryItems,
+              let username = queryItems.first(where: { $0.name == "user_login" })?.value,
+              let password = queryItems.first(where: { $0.name == "password" })?.value else {
+            // show error alert
+            DDLogError("⛔️ Authorization rejected for application passwords")
+            return
+        }
+        let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: appID)
+        successHandler(applicationPassword, navigationController)
+        DDLogInfo("✅ Application password authorized")
     }
 }
 

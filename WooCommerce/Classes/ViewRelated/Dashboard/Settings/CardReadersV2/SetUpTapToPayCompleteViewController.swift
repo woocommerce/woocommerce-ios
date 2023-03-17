@@ -15,11 +15,11 @@ final class SetUpTapToPayCompleteViewController: UIHostingController<SetUpTapToP
 
         super.init(rootView: SetUpTapToPayCompleteView(viewModel: viewModel))
 
-        configureView()
+        configureViewModel()
     }
 
-    private func configureView() {
-        rootView.dismiss = { [weak self] in
+    private func configureViewModel() {
+        viewModel.dismiss = { [weak self] in
             self?.dismiss(animated: true)
         }
     }
@@ -36,7 +36,6 @@ final class SetUpTapToPayCompleteViewController: UIHostingController<SetUpTapToP
 
 struct SetUpTapToPayCompleteView: View {
     @ObservedObject var viewModel: SetUpTapToPayCompleteViewModel
-    var dismiss: (() -> Void)? = nil
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
@@ -104,7 +103,7 @@ private enum Constants {
 private extension SetUpTapToPayCompleteView {
     enum Localization {
         static let setUpCompleteTitle = NSLocalizedString(
-            "Congratulations on your setup",
+            "Set up complete",
             comment: "Settings > Set up Tap to Pay on iPhone > Complete > Inform user that " +
             "Tap to Pay on iPhone is ready"
         )

@@ -6,6 +6,7 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
+    var dismiss: (() -> Void)?
 
     private(set) var connectedReader: CardReaderSettingsTriState = .isUnknown {
         didSet {
@@ -58,7 +59,7 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
     }
 
     func doneTapped() {
-
+        dismiss?()
     }
 
     deinit {

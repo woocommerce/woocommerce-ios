@@ -12,4 +12,18 @@ final class ApplicationPasswordAuthorizationViewModel {
         self.siteURL = siteURL
         self.stores = stores
     }
+
+    func fetchAuthURL() async throws -> URL? {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: siteURL) { result in
+                switch result {
+                case .success(let url):
+                    continuation.resume(returning: url)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
 }

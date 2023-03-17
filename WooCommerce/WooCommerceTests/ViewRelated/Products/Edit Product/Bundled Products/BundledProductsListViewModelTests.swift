@@ -51,10 +51,49 @@ final class BundledProductsListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(bundledProduct.imageURL, imageURL)
     }
+
+    func test_view_model_syncs_and_updates_bundled_products_with_missing_images() throws {
+        // Given
+        let productWithImage = Product.fake().copy(siteID: sampleSiteID, productID: 12, images: [.fake().copy(src: "https://woocommerce.com/woo.jpg")])
+        let productWithoutImage = Product.fake().copy(siteID: sampleSiteID, productID: 13)
+        insert([productWithImage, productWithoutImage])
+
+        // When
+        var viewModel: BundledProductsListViewModel?
+        _ = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: ProductAction.self) { action in
+                switch action {
+                case let .retrieveProducts(_, _, _, _, onCompletion):
+                    let products = [productWithImage, productWithImage.copy(productID: 13)]
+                    onCompletion(.success((products: products, hasNextPage: false)))
+                    promise(true)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            viewModel = BundledProductsListViewModel(siteID: self.sampleSiteID,
+                                                     bundleItems: [ProductBundleItem.fake().copy(productID: 12),
+                                                                       ProductBundleItem.fake().copy(productID: 13)],
+                                                     storageManager: self.storageManager,
+                                                     stores: self.stores)
+        }
+
+        // Then
+        let bundledProductsWithoutImages = try XCTUnwrap(viewModel?.bundledProducts.filter({ $0.imageURL == nil }))
+        XCTAssertTrue(bundledProductsWithoutImages.isEmpty)
+    }
 }
 
 // MARK: - Utils
 private extension BundledProductsListViewModelTests {
+    /// Insert an array of `Product` into storage.
+    func insert(_ readOnlyProducts: [Yosemite.Product]) {
+        for readOnlyProduct in readOnlyProducts {
+            insert(readOnlyProduct)
+        }
+    }
+
     /// Insert a `Product` into storage.
     func insert(_ readOnlyProduct: Yosemite.Product) {
         let product = storage.insertNewObject(ofType: StorageProduct.self)

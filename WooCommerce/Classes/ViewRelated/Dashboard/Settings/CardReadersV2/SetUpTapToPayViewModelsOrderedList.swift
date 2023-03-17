@@ -55,7 +55,17 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
                     connectionAnalyticsTracker: cardReaderConnectionAnalyticsTracker
                 ),
                 viewPresenter: SetUpTapToPayCompleteViewController.self
-            )
+            ),
+
+            PaymentSettingsFlowViewModelAndView(
+                viewModel: SetUpTapToPayTryPaymentPromptViewModel(
+                    didChangeShouldShow: { [weak self] state in
+                        self?.onDidChangeShouldShow(state)
+                    },
+                    connectionAnalyticsTracker: cardReaderConnectionAnalyticsTracker
+                ),
+                viewPresenter: SetUpTapToPayTryPaymentPromptViewController.self
+            ),
         ])
 
         /// And then immediately get a priority view if possible

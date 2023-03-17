@@ -2,14 +2,17 @@ import Foundation
 import Yosemite
 import Combine
 
-final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewModel, ObservableObject {
+final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresentedViewModel, ObservableObject {
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
+    var dismiss: (() -> Void)?
 
-    private var doneWasTapped: Bool = false
-
-    private(set) var connectedReader: CardReaderSettingsTriState = .isUnknown
+    private(set) var connectedReader: CardReaderSettingsTriState = .isUnknown {
+        didSet {
+            didUpdate?()
+        }
+    }
 
     private let connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
     private let stores: StoresManager
@@ -44,13 +47,7 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
     /// Notifies the viewModel owner if a change occurs via didChangeShouldShow
     ///
     private func reevaluateShouldShow() {
-        let newShouldShow: CardReaderSettingsTriState
-        switch (doneWasTapped, connectedReader) {
-        case (true, _):
-            newShouldShow = .isFalse
-        case (false, _):
-            newShouldShow = connectedReader
-        }
+        let newShouldShow: CardReaderSettingsTriState = connectedReader
 
         let didChange = newShouldShow != shouldShow
 
@@ -61,9 +58,12 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
         }
     }
 
-    func doneTapped() {
-        doneWasTapped = true
+    func tryAPaymentTapped() {
         reevaluateShouldShow()
+    }
+
+    func skipTapped() {
+        dismiss?()
     }
 
     deinit {

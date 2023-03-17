@@ -1,0 +1,138 @@
+import SwiftUI
+
+/// This view controller is used when no reader is connected. It assists
+/// the merchant in connecting to a reader.
+///
+final class SetUpTapToPayTryPaymentPromptViewController: UIHostingController<SetUpTapToPayPaymentPromptView>, PaymentSettingsFlowViewModelPresenter {
+
+    private var viewModel: SetUpTapToPayTryPaymentPromptViewModel
+
+    init?(viewModel: PaymentSettingsFlowPresentedViewModel) {
+        guard let viewModel = viewModel as? SetUpTapToPayTryPaymentPromptViewModel else {
+            return nil
+        }
+        self.viewModel = viewModel
+
+        super.init(rootView: SetUpTapToPayPaymentPromptView(viewModel: viewModel))
+
+        configureViewModel()
+    }
+
+    private func configureViewModel() {
+        viewModel.dismiss = { [weak self] in
+            self?.dismiss(animated: true)
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("Not implemented")
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        viewModel.didUpdate = nil
+        super.viewWillDisappear(animated)
+    }
+}
+
+struct SetUpTapToPayPaymentPromptView: View {
+    @ObservedObject var viewModel: SetUpTapToPayTryPaymentPromptViewModel
+
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+
+    var isCompact: Bool {
+        verticalSizeClass == .compact
+    }
+
+    var imageMaxHeight: CGFloat {
+        isCompact ? Constants.maxCompactImageHeight : Constants.maxImageHeight
+    }
+
+    var imageFontSize: CGFloat {
+        isCompact ? Constants.maxCompactImageHeight : Constants.imageFontSize
+    }
+
+    var body: some View {
+        ScrollableVStack(padding: 0) {
+            Image(systemName: "wave.3.right.circle.fill")
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(Color(.wooCommercePurple(.shade50)))
+                .scaledToFit()
+                .frame(maxHeight: imageMaxHeight)
+                .font(.system(size: imageFontSize))
+                .padding()
+
+            Text(Localization.setUpTryPaymentPromptTitle)
+                .font(.title2.weight(.semibold))
+                .multilineTextAlignment(.center)
+                .padding()
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(Localization.setUpTryPaymentPromptDescription)
+                .font(.body)
+                .multilineTextAlignment(.center)
+                .padding()
+                .fixedSize(horizontal: false, vertical: true)
+
+            Spacer()
+
+            Button(Localization.tryAPaymentButton, action: {
+                viewModel.tryAPaymentTapped()
+            })
+            .buttonStyle(PrimaryButtonStyle())
+
+            Button(Localization.skipButton, action: {
+                viewModel.skipTapped()
+            })
+            .buttonStyle(SecondaryButtonStyle())
+        }
+        .padding()
+    }
+}
+
+private enum Constants {
+    static let maxImageHeight: CGFloat = 180
+    static let maxCompactImageHeight: CGFloat = 80
+    static let imageFontSize: CGFloat = 120
+    static let compactImageFontSize: CGFloat = 40
+}
+
+// MARK: - Localization
+//
+private extension SetUpTapToPayPaymentPromptView {
+    enum Localization {
+        static let setUpTryPaymentPromptTitle = NSLocalizedString(
+            "Try a payment",
+            comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that " +
+            "Tap to Pay on iPhone is ready"
+        )
+
+        static let setUpTryPaymentPromptDescription = NSLocalizedString(
+            "Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your " +
+            "debit or credit card: you can refund it when you're done.",
+            comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Description"
+        )
+
+        static let tryAPaymentButton = NSLocalizedString(
+            "Try a Payment",
+            comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start " +
+            "a payment for testing Tap to Pay on iPhone using the merchant's own card."
+        )
+
+        static let skipButton = NSLocalizedString(
+            "Skip",
+            comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip " +
+            "to the trial payment and dismiss the Set up Tap to Pay on iPhone flow"
+        )
+    }
+}
+
+struct SetUpTapToPayPaymentPromptView_Previews: PreviewProvider {
+    static var previews: some View {
+
+        let config = CardPresentConfigurationLoader().configuration
+        let viewModel = SetUpTapToPayTryPaymentPromptViewModel(
+            didChangeShouldShow: nil,
+            connectionAnalyticsTracker: .init(configuration: config))
+        SetUpTapToPayPaymentPromptView(viewModel: viewModel)
+    }
+}

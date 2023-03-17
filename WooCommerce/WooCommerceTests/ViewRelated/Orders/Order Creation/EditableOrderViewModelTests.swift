@@ -4,10 +4,22 @@ import Yosemite
 import WooFoundation
 
 final class EditableOrderViewModelTests: XCTestCase {
+    var viewModel: EditableOrderViewModel!
+    var stores: MockStoresManager!
+    var storageManager: MockStorageManager!
+    var featureFlag: MockFeatureFlagService!
 
     let sampleSiteID: Int64 = 123
     let sampleOrderID: Int64 = 1234
     let sampleProductID: Int64 = 5
+
+    override func setUp() {
+        super.setUp()
+        stores = MockStoresManager(sessionManager: .testingInstance)
+        storageManager = MockStorageManager()
+        featureFlag = MockFeatureFlagService(isProductMultiSelectionM1Enabled: false)
+        viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlag)
+    }
 
     func test_view_model_inits_with_expected_values() {
         // Given
@@ -21,12 +33,18 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "pending")
         XCTAssertEqual(viewModel.productRows.count, 0)
+        XCTAssertEqual(viewModel.selectedProducts.count, 0)
+        XCTAssertEqual(viewModel.selectedProductVariations.count, 0)
+        XCTAssertEqual(viewModel.selectedProductsAndVariationsIDs.count, 0)
     }
 
     func test_view_model_product_list_is_initialized_with_expected_values_given_product_multiselection_is_disabled() {
         // Given
         let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: false)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
+
+        // When
+        viewModel.isProductMultiSelectionBetaFeatureEnabled = false
 
         // Then
         XCTAssertFalse(viewModel.productSelectorViewModel.supportsMultipleSelection)
@@ -270,9 +288,7 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_view_model_is_updated_when_product_is_added_to_order() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
-        let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
         viewModel.productSelectorViewModel.selectProduct(product.productID)
@@ -281,12 +297,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == sampleProductID }), "Product rows do not contain expected product")
     }
 
-    func test_order_details_are_updated_when_product_quantity_changes() {
+    func test_order_details_are_updated_when_product_quantity_changes_given_product_multiselection_is_disabled() {
         // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: false)
         let storageManager = MockStorageManager()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
+
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
         viewModel.productSelectorViewModel.selectProduct(product.productID)
@@ -300,12 +320,39 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
     }
 
-    func test_product_is_selected_when_quantity_is_decremented_below_1() {
+    // TODO: Currently there's no logic to add products when multiselection is enabled.
+//    func test_order_details_are_updated_when_product_quantity_changes_and_ProductMultiselection_is_enabled() {
+//        // Given
+//        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
+//        let storageManager = MockStorageManager()
+//        let stores = MockStoresManager(sessionManager: .testingInstance)
+//
+//        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+//        let anotherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 123456, purchasable: true)
+//
+//        storageManager.insertSampleProduct(readOnlyProduct: product)
+//        storageManager.insertSampleProduct(readOnlyProduct: anotherProduct)
+//
+//        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
+//
+//        // When
+//        viewModel.productSelectorViewModel.selectProduct(product.productID)
+//        viewModel.productRows[0].incrementQuantity()
+//        // And when another product is added to the order (to confirm the first product's quantity change is retained)
+//        viewModel.productSelectorViewModel.selectProduct(anotherProduct.productID)
+//
+//        // Then
+//        XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
+//        XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
+//    }
+
+    func test_product_is_selected_when_quantity_is_decremented_below_1_given_product_multiselection_is_disabled() {
         // Given
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: false)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, featureFlagService: featureFlagService)
 
         // Product quantity is 1
         viewModel.productSelectorViewModel.selectProduct(product.productID)
@@ -318,12 +365,13 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.selectedProductViewModel)
     }
 
-    func test_selectOrderItem_selects_expected_order_item() throws {
+    func test_selectOrderItem_selects_expected_order_item_given_product_multiselection_is_disabled() throws {
         // Given
+        let featureFlag = MockFeatureFlagService(isProductMultiSelectionM1Enabled: false)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, featureFlagService: featureFlag)
         viewModel.productSelectorViewModel.selectProduct(product.productID)
 
         // When
@@ -339,9 +387,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
         let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
-        let storageManager = MockStorageManager()
         storageManager.insertProducts([product0, product1])
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Given products are added to order
         viewModel.productSelectorViewModel.selectProduct(product0.productID)
@@ -517,13 +563,17 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     // MARK: - Payment Section Tests
 
-    func test_payment_section_is_updated_when_products_update() {
+    func test_payment_section_is_updated_when_products_update_given_product_multiselection_is_disabled() {
         // Given
+        let featureFlag = MockFeatureFlagService(isProductMultiSelectionM1Enabled: false)
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               currencySettings: currencySettings,
+                                               featureFlagService: featureFlag)
 
         // When & Then
         viewModel.productSelectorViewModel.selectProduct(product.productID)
@@ -540,9 +590,12 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
-        let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               currencySettings: currencySettings,
+                                               featureFlagService: featureFlag)
 
         // When
         viewModel.productSelectorViewModel.selectProduct(product.productID)
@@ -576,9 +629,11 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
-        let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               currencySettings: currencySettings,
+                                               featureFlagService: featureFlag)
 
         // When
         viewModel.productSelectorViewModel.selectProduct(product.productID)
@@ -614,7 +669,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
-        let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
@@ -637,13 +691,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.paymentDataViewModel.couponSummary)
     }
 
-    func test_payment_section_values_correct_when_shipping_line_is_negative() {
+    func test_payment_section_values_correct_when_shipping_line_is_negative_given_product_multiselection_is_disabled() {
         // Given
+        let featureFlag = MockFeatureFlagService(isProductMultiSelectionM1Enabled: false)
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
-        let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               currencySettings: currencySettings,
+                                               featureFlagService: featureFlag)
 
         // When
         viewModel.productSelectorViewModel.selectProduct(product.productID)
@@ -673,13 +730,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
     }
 
-    func test_payment_section_values_correct_when_fee_line_is_negative() {
+    func test_payment_section_values_correct_when_fee_line_is_negative_given_product_multiselection_is_disabled() {
         // Given
+        let featureFlag = MockFeatureFlagService(isProductMultiSelectionM1Enabled: false)
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
-        let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               currencySettings: currencySettings,
+                                               featureFlagService: featureFlag)
 
         // When
         viewModel.productSelectorViewModel.selectProduct(product.productID)
@@ -711,13 +771,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
     }
 
-    func test_payment_section_is_correct_when_shipping_line_and_fee_line_are_added() {
+    func test_payment_section_is_correct_when_shipping_line_and_fee_line_are_added_given_product_multiselection_is_disabled() {
         // Given
+        let featureFlag = MockFeatureFlagService(isProductMultiSelectionM1Enabled: false)
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
-        let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               currencySettings: currencySettings,
+                                               featureFlagService: featureFlag)
 
         // When
         viewModel.productSelectorViewModel.selectProduct(product.productID)
@@ -761,23 +824,19 @@ final class EditableOrderViewModelTests: XCTestCase {
     }
 
     func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
-
         // When
         let isLoadingDuringSync: Bool = waitFor { promise in
-            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case let .createOrder(_, _, onCompletion):
-                    promise(viewModel.paymentDataViewModel.isLoading)
+                    promise(self.viewModel.paymentDataViewModel.isLoading)
                     onCompletion(.success(.fake()))
                 default:
                     XCTFail("Received unsupported action: \(action)")
                 }
             }
             // Trigger remote sync
-            viewModel.saveShippingLine(ShippingLine.fake())
+            self.viewModel.saveShippingLine(ShippingLine.fake())
         }
 
         // Then
@@ -850,12 +909,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasChanges)
     }
 
-    func test_hasChanges_returns_true_when_product_quantity_changes() {
+    func test_hasChanges_returns_true_when_product_quantity_changes_given_product_multiselection_is_disabled() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
-        let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
         viewModel.productSelectorViewModel.selectProduct(product.productID)
@@ -865,10 +922,6 @@ final class EditableOrderViewModelTests: XCTestCase {
     }
 
     func test_hasChanges_returns_true_when_order_status_is_updated() {
-        // Given
-        let storageManager = MockStorageManager()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
-
         // When
         viewModel.updateOrderStatus(newStatus: .completed)
 
@@ -891,10 +944,6 @@ final class EditableOrderViewModelTests: XCTestCase {
     }
 
     func test_hasChanges_returns_true_when_customer_note_is_updated() {
-        // Given
-        let storageManager = MockStorageManager()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
-
         //When
         viewModel.noteViewModel.newNote = "Test"
         viewModel.updateCustomerNote()
@@ -905,8 +954,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_hasChanges_returns_true_when_shipping_line_is_updated() {
         // Given
-        let storageManager = MockStorageManager()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
         let shippingLine = ShippingLine.fake()
 
         // When
@@ -918,8 +965,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_hasChanges_returns_true_when_fee_line_is_updated() {
         // Given
-        let storageManager = MockStorageManager()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
         let feeLine = OrderFeeLine.fake()
 
         // When
@@ -931,8 +976,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_hasChanges_returns_true_when_coupon_line_is_updated() {
         // Given
-        let storageManager = MockStorageManager()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
         let couponLine = OrderCouponLine.fake()
 
         // When
@@ -947,7 +990,6 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_product_is_tracked_when_added() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
-        let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, analytics: WooAnalytics(analyticsProvider: analytics))
@@ -962,16 +1004,18 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(properties, "creation")
     }
 
-    func test_product_is_tracked_when_quantity_changes() throws {
+    func test_product_is_tracked_when_quantity_changes_given_ProductMultiSelection_is_disabled() throws {
         // Given
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: false)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
-        let storageManager = MockStorageManager()
+        //let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                flow: .editing(initialOrder: .fake()),
                                                storageManager: storageManager,
-                                               analytics: WooAnalytics(analyticsProvider: analytics))
+                                               analytics: WooAnalytics(analyticsProvider: analytics),
+                                               featureFlagService: featureFlagService)
 
         // When
         viewModel.productSelectorViewModel.selectProduct(product.productID)
@@ -986,11 +1030,15 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_product_is_tracked_when_removed_from_order() throws {
         // Given
+        let featureFlag = MockFeatureFlagService(isProductMultiSelectionM1Enabled: false)
         let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertProducts([product0])
         let analytics = MockAnalyticsProvider()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics),
+                                               featureFlagService: featureFlag)
 
         // Given products are added to order
         viewModel.productSelectorViewModel.selectProduct(product0.productID)

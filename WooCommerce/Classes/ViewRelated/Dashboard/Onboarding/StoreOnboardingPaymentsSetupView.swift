@@ -1,10 +1,19 @@
 import SwiftUI
 
-struct StoreOnboardingPaymentsSetupView: View {
-    enum Task {
-        case wcPay
-        case payments
+/// Hosting controller that wraps the `StoreOnboardingStoreLaunchedView`.
+final class StoreOnboardingPaymentsSetupHostingController: UIHostingController<StoreOnboardingPaymentsSetupView> {
+    init(task: StoreOnboardingPaymentsSetupCoordinator.Task, onContinue: @escaping () -> Void) {
+        super.init(rootView: StoreOnboardingPaymentsSetupView(task: task, onContinue: onContinue))
     }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+struct StoreOnboardingPaymentsSetupView: View {
+    typealias Task = StoreOnboardingPaymentsSetupCoordinator.Task
 
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1.0

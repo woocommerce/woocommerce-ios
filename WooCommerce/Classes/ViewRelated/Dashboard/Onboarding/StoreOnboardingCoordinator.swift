@@ -11,6 +11,7 @@ final class StoreOnboardingCoordinator: Coordinator {
     private var addProductCoordinator: AddProductCoordinator?
     private var domainSettingsCoordinator: DomainSettingsCoordinator?
     private var launchStoreCoordinator: StoreOnboardingLaunchStoreCoordinator?
+    private var paymentsSetupCoordinator: StoreOnboardingPaymentsSetupCoordinator?
 
     private let site: Site
 
@@ -41,9 +42,12 @@ final class StoreOnboardingCoordinator: Coordinator {
             showCustomDomains()
         case .launchStore:
             launchStore(task: task)
+        case .woocommercePayments:
+            showWCPaySetup()
+        case .payments:
+            showPaymentsSetup()
         default:
-            #warning("TODO: handle navigation for each onboarding task")
-            start()
+            assertionFailure("Unexpected onboarding task: \(task)")
         }
     }
 }
@@ -70,6 +74,20 @@ private extension StoreOnboardingCoordinator {
     func launchStore(task: StoreOnboardingTask) {
         let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site, isLaunched: task.isComplete, navigationController: navigationController)
         self.launchStoreCoordinator = coordinator
+        coordinator.start()
+    }
+
+    @MainActor
+    func showWCPaySetup() {
+        let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .wcPay, site: site, navigationController: navigationController)
+        self.paymentsSetupCoordinator = coordinator
+        coordinator.start()
+    }
+
+    @MainActor
+    func showPaymentsSetup() {
+        let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .payments, site: site, navigationController: navigationController)
+        self.paymentsSetupCoordinator = coordinator
         coordinator.start()
     }
 }

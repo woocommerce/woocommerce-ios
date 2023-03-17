@@ -89,7 +89,9 @@ class StoreOnboardingViewModel: ObservableObject {
         } else if taskViewModels.isNotEmpty {
             await update(state: .loaded(rows: taskViewModels))
         } else {
-            whenNoTasksAvailable?()
+            await MainActor.run {
+                whenNoTasksAvailable?()
+            }
             await update(state: .loaded(rows: []))
         }
     }

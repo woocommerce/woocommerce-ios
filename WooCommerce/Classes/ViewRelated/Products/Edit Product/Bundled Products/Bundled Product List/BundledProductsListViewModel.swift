@@ -88,6 +88,9 @@ private extension BundledProductsListViewModel {
         // We only need to sync if the bundled products are missing images
         guard bundledProducts.filter({ $0.imageURL == nil }).isNotEmpty else { return }
 
+        // Sync all bundled products, with the understanding that this should be a small set of products.
+        // That way, if we're performing a sync we'll sync all products, in case any of the stored image URLs have changed.
+        // We can revisit this if needed, to limit the sync to only products that are missing an image URL.
         let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: bundleItems.map { $0.productID }) { [weak self] result in
             guard let self else { return }
 

@@ -17,6 +17,7 @@ struct StoreOnboardingPaymentsSetupView: View {
 
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1.0
+    @State private var urlToOpen: URL?
 
     private let task: Task
     private let onContinue: () -> Void
@@ -49,6 +50,11 @@ struct StoreOnboardingPaymentsSetupView: View {
                 Text(.init(task.details))
                     .tint(Color(.accent))
                     .bodyStyle()
+                    .environment(\.openURL, OpenURLAction { url in
+                        urlToOpen = url
+                        return .handled
+                    })
+                    .safariSheet(url: $urlToOpen)
             }
             .padding(Layout.contentPadding)
         }

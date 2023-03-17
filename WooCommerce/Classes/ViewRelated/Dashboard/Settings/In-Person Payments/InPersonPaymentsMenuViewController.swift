@@ -92,7 +92,7 @@ private extension InPersonPaymentsMenuViewController {
             return
         }
 
-        cardPresentPaymentsOnboardingUseCase.refresh()
+        cardPresentPaymentsOnboardingUseCase.refreshIfNecessary()
 
         cardPresentPaymentsOnboardingUseCase.$state
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)

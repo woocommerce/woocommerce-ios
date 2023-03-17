@@ -11,9 +11,11 @@ final class MockCardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboard
         $state
     }
 
+    var refreshWasCalled = false
+
     // MARK: Protocol Methods
     func refresh() {
-        // No op
+        refreshWasCalled = true
     }
 
     func updateState() {

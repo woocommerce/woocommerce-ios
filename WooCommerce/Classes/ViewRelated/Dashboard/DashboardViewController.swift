@@ -351,8 +351,8 @@ private extension DashboardViewController {
     /// Adds a Free Trial bar at the bottom of the screen.
     ///
     func addFreeTrialBar(contentText: String) {
-        let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) {
-            print("Upgrade now tapped!!")
+        let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) { [weak self] in
+            self?.showUpgradePlanWebView()
         }
         freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -382,6 +382,49 @@ private extension DashboardViewController {
 
         banner.removeFromSuperview()
         containerView.contentInset = .zero // Resets the content offset of main scroll view. Was adjusted previously in `addFreeTrialBar`
+    }
+
+    /// Shows a web view for the merchant to update their site plan.
+    ///
+    func showUpgradePlanWebView() {
+        ServiceLocator.analytics.track(event: .FreeTrial.freeTrialUpgradeNowTapped(source: .banner))
+
+        // These URLs should be stored elsewhere.
+        // I'll wait until I reuse them in the plans menu to decide what is the best place for them.
+        // https://github.com/woocommerce/woocommerce-ios/issues/9057
+        guard let upgradeURL = URL(string: "https://wordpress.com/plans/\(siteID)") else { return }
+        let exitTrigger = "my-plan/trial-upgraded" // When a site is upgraded from a trial, this URL path is invoked.
+
+        let viewModel = DefaultAuthenticatedWebViewModel(title: Localization.upgradeNow,
+                                                         initialURL: upgradeURL,
+                                                         urlToTriggerExit: exitTrigger) { [weak self] in
+            self?.exitUpgradeFreeTrialFlowAfterUpgrade()
+        }
+
+        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+        webViewController.navigationItem.leftBarButtonItem =  UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                                              target: self,
+                                                                              action: #selector(exitUpgradeFreeTrialFlow))
+        let navigationController = UINavigationController(rootViewController: webViewController)
+        navigationController.isModalInPresentation = true
+        present(navigationController, animated: true)
+    }
+
+    /// Dismisses the upgrade now web view after the merchants successfully updates their plan.
+    ///
+    func exitUpgradeFreeTrialFlowAfterUpgrade() {
+        removeFreeTrialBanner()
+        dismiss(animated: true)
+
+        ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeSuccess(source: .banner))
+    }
+
+    /// Dismisses the upgrade now web view when the user abandons the flow.
+    ///
+    @objc func exitUpgradeFreeTrialFlow() {
+        dismiss(animated: true)
+
+        ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeAbandoned(source: .banner))
     }
 
     func configureDashboardUIContainer() {
@@ -831,6 +874,7 @@ private extension DashboardViewController {
             "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
         )
+        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title for the WebView when upgrading a free trial plan")
     }
 
     enum Constants {

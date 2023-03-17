@@ -2139,3 +2139,30 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Free Trial
+//
+extension WooAnalyticsEvent {
+    enum FreeTrial {
+        enum Keys: String {
+            case source
+        }
+
+        enum Source: String {
+            case banner
+            case upgradesScreen = "upgrades_screen"
+        }
+
+        static func freeTrialUpgradeNowTapped(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .freeTrialUpgradeNowTapped, properties: [Keys.source.rawValue: source.rawValue])
+        }
+
+        static func planUpgradeSuccess(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradeSuccess, properties: [Keys.source.rawValue: source.rawValue])
+        }
+
+        static func planUpgradeAbandoned(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradeAbandoned, properties: [Keys.source.rawValue: source.rawValue])
+        }
+    }
+}

@@ -71,6 +71,7 @@ struct ProductInputTransformer {
     ///   - input: Types of products the synchronizer supports
     ///   - order: Represents an Order entity.
     ///   - updateZeroQuantities: When true, items with `.zero` quantities will be updated instead of being deleted.
+    ///
     /// - Returns: An array of Order Item entities
     private static func updateOrderItems(from input: OrderSyncProductInput,
                                          order: Order, updateZeroQuantities: Bool) -> [OrderItem] {

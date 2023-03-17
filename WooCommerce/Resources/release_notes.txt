@@ -1,5 +1,1 @@
-- [*] Shortcuts: We can now trigger the order creation and payment collection flows from the iOS Shortcuts app. [https://github.com/woocommerce/woocommerce-ios/pull/9103]
-- [Internal] Dashboard: the UI layer had a major refactoring to allow scrolling for content more than stats for the onboarding project. The main design change is on the refresh control, where it was moved from each stats tab to below the navigation bar. Other design changes are not expected. [https://github.com/woocommerce/woocommerce-ios/pull/9031]
-- [**] Products: Adds read-only support for the Product Bundles extension, including a list of bundled products and stock status for product bundles. [https://github.com/woocommerce/woocommerce-ios/pull/9177]
-- [Internal] Mobile Payments: Updated StripeTerminal to 2.18 [https://github.com/woocommerce/woocommerce-ios/pull/9118]
-
+This release includes a few enhancements to your store management experience. It's now possible to use the iOS Shortcuts app to create an order and collect payments from the WooCommerce mobile apps! Please try it out and share your feedback.

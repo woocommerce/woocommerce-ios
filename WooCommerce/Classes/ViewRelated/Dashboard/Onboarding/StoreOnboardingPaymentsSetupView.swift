@@ -16,6 +16,7 @@ final class StoreOnboardingPaymentsSetupHostingController: UIHostingController<S
     }
 }
 
+/// Shows an overview of the payments setup with a CTA to set up payments in a webview.
 struct StoreOnboardingPaymentsSetupView: View {
     typealias Task = StoreOnboardingPaymentsSetupCoordinator.Task
 
@@ -93,7 +94,7 @@ struct StoreOnboardingPaymentsSetupView: View {
                 Button(Localization.dismiss) {
                     onDismiss()
                 }
-                .buttonStyle(LinkButtonStyle())
+                .buttonStyle(TextButtonStyle())
             }
         }
     }
@@ -105,16 +106,10 @@ private extension StoreOnboardingPaymentsSetupView {
         static let buttonContainerPadding: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let defaultSpacing: CGFloat = 16
         static let verticalSpacing: CGFloat = 24
-        static let titleAndCircleSpacing: CGFloat = 14
         static let circleDimension: CGFloat = 120
     }
 
     enum Localization {
-        static let setUp = NSLocalizedString(
-            "Set up",
-            comment: "Set up header on the store onboarding payments setup screen. " +
-            "Followed by either Payment Methods or WooCommerce Payments"
-        )
         static let continueButtonTitle = NSLocalizedString(
             "Continue Setup",
             comment: "Title of the primary button on the store onboarding payments setup screen."
@@ -179,7 +174,7 @@ private extension StoreOnboardingPaymentsSetupView.Task {
             )
         case .payments:
             return NSLocalizedString(
-                "Discovery other payment providers and choose a payment provider.",
+                "Discover other payment providers and choose a payment provider.",
                 comment: "Details on the store onboarding payments setup screen."
             )
         }

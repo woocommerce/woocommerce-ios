@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+12.9
+-----
+
+
 12.8
 -----
 - [*] Shortcuts: We can now trigger the order creation and payment collection flows from the iOS Shortcuts app. [https://github.com/woocommerce/woocommerce-ios/pull/9103]

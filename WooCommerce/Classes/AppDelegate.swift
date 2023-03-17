@@ -84,6 +84,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // For example, `application_installed` could be the exposure event for logged-out experiments.
         checkForUpgrades()
 
+        // Cache onboarding state to speed IPP process
+        refreshCardPresentPaymentsOnboardingIfNeeded()
+
         return true
     }
 
@@ -168,6 +171,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+
+        // Cache onboarding state to speed IPP process
+        refreshCardPresentPaymentsOnboardingIfNeeded()
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -398,6 +404,10 @@ private extension AppDelegate {
             .forEach {
                 $0.layer.speed = 100
             }
+    }
+
+    func refreshCardPresentPaymentsOnboardingIfNeeded() {
+        ServiceLocator.cardPresentPaymentsOnboardingIPPUsersRefresher.refreshIPPUsersOnboardingState()
     }
 
     /// Tracks if the application was opened via a widget tap.

@@ -79,6 +79,6 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
     }
 
     func refresh() {
-        onboardingUseCase.forceRefresh()
+        onboardingUseCase.refreshIfNecessary()
     }
 }

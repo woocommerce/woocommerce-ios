@@ -46,7 +46,7 @@ final class StoreOnboardingCoordinator: Coordinator {
             showWCPaySetup()
         case .payments:
             showPaymentsSetup()
-        default:
+        case .unsupported:
             assertionFailure("Unexpected onboarding task: \(task)")
         }
     }

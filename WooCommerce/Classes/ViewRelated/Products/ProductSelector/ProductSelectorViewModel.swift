@@ -149,7 +149,8 @@ final class ProductSelectorViewModel: ObservableObject {
          isClearSelectionEnabled: Bool = true,
          toggleAllVariationsOnSelection: Bool = true,
          onProductSelected: ((Product) -> Void)? = nil,
-         onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
+         onVariationSelected: ((ProductVariation, Product) -> Void)? = nil,
+         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -158,7 +159,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.onProductSelected = onProductSelected
         self.onVariationSelected = onVariationSelected
-        self.onMultipleSelectionCompleted = nil
+        self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
 

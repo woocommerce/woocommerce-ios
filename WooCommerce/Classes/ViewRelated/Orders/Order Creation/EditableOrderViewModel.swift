@@ -171,9 +171,10 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the product list
     ///
-    lazy var addProductViewModel = {
+    var productSelectorViewModel: ProductSelectorViewModel {
         ProductSelectorViewModel(
             siteID: siteID,
+            selectedItemIDs: selectedProductsAndVariationsIDs,
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
@@ -188,7 +189,7 @@ final class EditableOrderViewModel: ObservableObject {
                 guard let self = self else { return }
                 self.addProductVariationToOrder(variation, parent: parentProduct)
             })
-    }()
+    }
 
     /// View models for each product row in the order.
     ///
@@ -198,6 +199,23 @@ final class EditableOrderViewModel: ObservableObject {
     /// Used to open the product details in `ProductInOrder`.
     ///
     @Published var selectedProductViewModel: ProductInOrderViewModel? = nil
+
+    /// Keeps track of selected/unselected Products, if any
+    ///
+    @Published var selectedProducts: [Product?] = []
+
+    /// Keeps track of selected/unselected Product Variations, if any
+    ///
+    @Published var selectedProductVariations: [ProductVariation?] = []
+
+    /// Keeps track of all selected Products and Product Variations IDs
+    ///
+    var selectedProductsAndVariationsIDs: [Int64] {
+        let selectedProductsCount = selectedProducts.compactMap { $0?.productID }
+        let selectedProductVariationsCount = selectedProductVariations.compactMap { $0?.productVariationID }
+        print("🍍 Selected: \(selectedProductsCount + selectedProductVariationsCount)")
+        return selectedProductsCount + selectedProductVariationsCount
+    }
 
     // MARK: Customer data properties
 
@@ -726,11 +744,15 @@ private extension EditableOrderViewModel {
         if !allProducts.contains(product) {
             allProducts.append(product)
         }
+        
+        if !selectedProducts.contains(where: { $0?.productID == product.productID }) {
+            selectedProducts.append(product)
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
+        } else {
+            selectedProducts.removeAll(where: { $0?.productID == product.productID })
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: .creation))
+        }
 
-        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
-        orderSynchronizer.setProduct.send(input)
-
-        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
     }
 
     /// Adds a selected product variation (from the product list) to the order.
@@ -745,10 +767,13 @@ private extension EditableOrderViewModel {
             allProductVariations.append(variation)
         }
 
-        let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
-        orderSynchronizer.setProduct.send(input)
-
-        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+        if !selectedProductVariations.contains(where: { $0?.productVariationID == variation.productVariationID }) {
+            selectedProductVariations.append(variation)
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
+        } else {
+            selectedProductVariations.removeAll(where: { $0?.productVariationID == variation.productVariationID })
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: .creation))
+        }
     }
 
     /// Configures product row view models for each item in `orderDetails`.

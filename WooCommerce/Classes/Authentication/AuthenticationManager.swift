@@ -239,6 +239,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         if site.isWPCom || site.isJetpackConnected {
             let authenticationResult: WordPressAuthenticatorResult = .presentEmailController
             onCompletion(authenticationResult)
+        } else if featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthorizationInWebView) {
+            let webView = applicationPasswordWebView(for: site.url)
+            onCompletion(.injectViewController(value: webView))
         } else {
             let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: true)
             onCompletion(authenticationResult)
@@ -629,6 +632,16 @@ private extension AuthenticationManager {
     var noWPUI: UIViewController {
         let viewModel = NotWPErrorViewModel()
         return ULErrorViewController(viewModel: viewModel)
+    }
+
+    /// Web view to authorize application password for a given site.
+    ///
+    func applicationPasswordWebView(for siteURL: String) -> UIViewController {
+        let viewModel = ApplicationPasswordAuthorizationViewModel(siteURL: siteURL)
+        let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel, onSuccess: { _, navigationController in
+            // TODO
+        })
+        return controller
     }
 
     /// The error screen to be displayed when Jetpack setup for a site is required.

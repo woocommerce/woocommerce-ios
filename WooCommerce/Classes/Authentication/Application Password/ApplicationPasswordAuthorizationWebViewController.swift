@@ -19,7 +19,10 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
         return bar
     }()
 
-    init() {
+    private let viewModel: ApplicationPasswordAuthorizationViewModel
+
+    init(viewModel: ApplicationPasswordAuthorizationViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 

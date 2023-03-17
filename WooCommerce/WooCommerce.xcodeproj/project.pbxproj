@@ -1951,6 +1951,7 @@
 		DE971219290A9615000C0BD3 /* AddStoreFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE971218290A9615000C0BD3 /* AddStoreFooterView.swift */; };
 		DEA4269A2875440500265B0C /* PaymentMethodsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA426992875440500265B0C /* PaymentMethodsScreen.swift */; };
 		DEC0293729C418FF00FD0E2F /* ApplicationPasswordAuthorizationWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC0293629C418FF00FD0E2F /* ApplicationPasswordAuthorizationWebViewController.swift */; };
+		DEC0293A29C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC0293929C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift */; };
 		DEC1508227F450AC00F4487C /* CouponAllowedEmails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1508127F450AC00F4487C /* CouponAllowedEmails.swift */; };
 		DEC2961F26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961E26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift */; };
 		DEC2962126BD1627005A056B /* ShippingLabelCustomsFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962026BD1627005A056B /* ShippingLabelCustomsFormList.swift */; };
@@ -4141,6 +4142,7 @@
 		DE971218290A9615000C0BD3 /* AddStoreFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStoreFooterView.swift; sourceTree = "<group>"; };
 		DEA426992875440500265B0C /* PaymentMethodsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsScreen.swift; sourceTree = "<group>"; };
 		DEC0293629C418FF00FD0E2F /* ApplicationPasswordAuthorizationWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordAuthorizationWebViewController.swift; sourceTree = "<group>"; };
+		DEC0293929C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordAuthorizationViewModel.swift; sourceTree = "<group>"; };
 		DEC1508127F450AC00F4487C /* CouponAllowedEmails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmails.swift; sourceTree = "<group>"; };
 		DEC2961E26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormListViewModel.swift; sourceTree = "<group>"; };
 		DEC2962026BD1627005A056B /* ShippingLabelCustomsFormList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormList.swift; sourceTree = "<group>"; };
@@ -9484,6 +9486,7 @@
 			isa = PBXGroup;
 			children = (
 				DEC0293629C418FF00FD0E2F /* ApplicationPasswordAuthorizationWebViewController.swift */,
+				DEC0293929C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift */,
 			);
 			path = "Application Password";
 			sourceTree = "<group>";
@@ -11571,6 +11574,7 @@
 				02F49ADA23BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift in Sources */,
 				02645D8527BA2DB40065DC68 /* InboxNoteRowViewModel.swift in Sources */,
 				740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */,
+				DEC0293A29C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift in Sources */,
 				03191AE628E1DF0600670723 /* WooCommercePluginViewModel.swift in Sources */,
 				CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */,
 				02BA12852461674B008D8325 /* Optional+String.swift in Sources */,

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Hosting controller that wraps the `StoreOnboardingStoreLaunchedView`.
+/// Hosting controller that wraps the `StoreOnboardingPaymentsSetupView`.
 final class StoreOnboardingPaymentsSetupHostingController: UIHostingController<StoreOnboardingPaymentsSetupView> {
     init(task: StoreOnboardingPaymentsSetupCoordinator.Task,
          onContinue: @escaping () -> Void,

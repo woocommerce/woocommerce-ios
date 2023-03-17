@@ -30,14 +30,7 @@ struct ProductInputTransformer {
 
         // Add or update the order items with the new input.
         var items = order.items
-        if let itemIndex = order.items.firstIndex(where: { $0.itemID == input.id }) {
-            let newItem = createOrderItem(using: input, usingPriceFrom: items[itemIndex])
-            items[itemIndex] = newItem
-        } else {
-            let newItem = createOrderItem(using: input, usingPriceFrom: nil)
-            items.append(newItem)
-        }
-
+        updateOrderItems(from: order, with: input, orderItems: &items)
         return order.copy(items: items)
     }
 
@@ -54,15 +47,7 @@ struct ProductInputTransformer {
         var updatedOrderItems = order.items
 
         for input in inputs {
-            // If the item already exists, update the existing OrderItem
-            if let itemIndex = order.items.firstIndex(where: {$0.itemID == input.id}) {
-                let newItem = createOrderItem(using: input, usingPriceFrom: updatedOrderItems[itemIndex])
-                updatedOrderItems[itemIndex] = newItem
-            } else {
-                // If the item doesn't exist, create a new OrderItem and append it to our updated Order
-                let newItem = createOrderItem(using: input, usingPriceFrom: nil)
-                updatedOrderItems.append(newItem)
-            }
+            updateOrderItems(from: order, with: input, orderItems: &updatedOrderItems)
         }
 
         // If the input's quantity is 0 or less, delete the item if required.
@@ -75,6 +60,27 @@ struct ProductInputTransformer {
         }
 
         return order.copy(items: updatedOrderItems)
+    }
+}
+
+// MARK: ProductInputTransformer helper methods
+//
+private extension ProductInputTransformer {
+    /// Creates, or updates existing `OrderItems` of a given `Order` with any `OrderSyncProductInput` update
+    ///
+    /// - Parameters:
+    ///   - order: Represents an Order entity.
+    ///   - input: Types of products the synchronizer supports
+    ///   - updatedOrderItems: An array of `[OrderItem]` entities
+    ///
+    static func updateOrderItems(from order: Order, with input: OrderSyncProductInput, orderItems updatedOrderItems: inout [OrderItem]) {
+        if let itemIndex = order.items.firstIndex(where: { $0.itemID == input.id }) {
+            let newItem = createOrderItem(using: input, usingPriceFrom: updatedOrderItems[itemIndex])
+            updatedOrderItems[itemIndex] = newItem
+        } else {
+            let newItem = createOrderItem(using: input, usingPriceFrom: nil)
+            updatedOrderItems.append(newItem)
+        }
     }
 
     /// Updates the `OrderItems` array with `OrderSyncProductInput`.
@@ -97,13 +103,7 @@ struct ProductInputTransformer {
 
         // Adds or updates the Order items with the new input:
         var updatedOrderItems = order.items
-        if let itemIndex = order.items.firstIndex(where: { $0.itemID == input.id }) {
-            let newItem = createOrderItem(using: input, usingPriceFrom: updatedOrderItems[itemIndex])
-            updatedOrderItems[itemIndex] = newItem
-        } else {
-            let newItem = createOrderItem(using: input, usingPriceFrom: nil)
-            updatedOrderItems.append(newItem)
-        }
+        updateOrderItems(from: order, with: input, orderItems: &updatedOrderItems)
 
         return updatedOrderItems
     }

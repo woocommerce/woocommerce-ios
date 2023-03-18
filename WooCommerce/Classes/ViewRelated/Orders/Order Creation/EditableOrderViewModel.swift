@@ -188,7 +188,9 @@ final class EditableOrderViewModel: ObservableObject {
             onVariationSelected: { [weak self] variation, parentProduct in
                 guard let self = self else { return }
                 self.addProductVariationToOrder(variation, parent: parentProduct)
-            }, onMultipleSelectionCompleted: { _ in
+            }, onMultipleSelectionCompleted: { [weak self] _ in
+                guard let self = self else { return }
+                self.addItemsToOrder(products: self.selectedProducts, variations: self.selectedProductVariations)
                 print("🍍 Completed: \(self.selectedProductsAndVariationsIDs)")
             })
     }
@@ -737,6 +739,30 @@ private extension EditableOrderViewModel {
                 return StatusBadgeViewModel(orderStatus: siteOrderStatus)
             }
             .assign(to: &$statusBadgeViewModel)
+    }
+
+    /// Adds multiple products to the Order
+    ///
+    func addItemsToOrder(products: [Product?], variations: [ProductVariation?]) {
+        var productInputs: [OrderSyncProductInput] = []
+        var productVariationInputs: [OrderSyncProductInput] = []
+
+        for product in products {
+            if let product {
+                productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
+            }
+        }
+
+        for variation in variations {
+            if let variation {
+                productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
+            }
+        }
+
+        // TODO: While the Order syncs, it may show the wrong products for a bit: https://github.com/woocommerce/woocommerce-ios/issues/9213
+        orderSynchronizer.setProducts.send(productInputs)
+        orderSynchronizer.setProducts.send(productVariationInputs)
+        print("🍍 Products and Variations sync")
     }
 
     /// Adds a selected product (from the product list) to the order.

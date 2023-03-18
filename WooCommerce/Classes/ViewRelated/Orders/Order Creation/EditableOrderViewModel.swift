@@ -190,6 +190,9 @@ final class EditableOrderViewModel: ObservableObject {
                 self.addProductVariationToOrder(variation, parent: parentProduct)
             }, onMultipleSelectionCompleted: { [weak self] _ in
                 guard let self = self else { return }
+                // TODO: Selected items need to be up-to-date across this class, ProductSelectorViewModel, ProductVariationSelectorViewModel, etc ...
+                // This is needed to keep the Order properly update when we select/unselect different products
+                // Also others like calling "Clear Selection" from the Product or Variations selector view should update this class
                 self.addItemsToOrder(products: self.selectedProducts, variations: self.selectedProductVariations)
                 print("🍍 Completed: \(self.selectedProductsAndVariationsIDs)")
             })
@@ -746,6 +749,12 @@ private extension EditableOrderViewModel {
     func addItemsToOrder(products: [Product?], variations: [ProductVariation?]) {
         var productInputs: [OrderSyncProductInput] = []
         var productVariationInputs: [OrderSyncProductInput] = []
+        
+        // TODO:
+        // - If a product is selected for first time, we send it to the remote sync so it can be added
+        // - If a product is part of the order, and is unselected, send the update to the remote sync an remove it (send quantity: 0)
+        // - If we re-open the selector view the products will appear as selected, we don't want to send them again to the synchronizer, just ignore it
+        // - If we remove a product from Order View, the ProductSelector should be updated as well.
 
         for product in products {
             if let product {
@@ -759,7 +768,8 @@ private extension EditableOrderViewModel {
             }
         }
 
-        // TODO: While the Order syncs, it may show the wrong products for a bit: https://github.com/woocommerce/woocommerce-ios/issues/9213
+        // TODO: While the Order syncs, it may show the wrong products for a bit:
+        // A ProgressView or similar can be added: https://github.com/woocommerce/woocommerce-ios/issues/9213
         orderSynchronizer.setProducts.send(productInputs)
         orderSynchronizer.setProducts.send(productVariationInputs)
         print("🍍 Products and Variations sync")
@@ -773,11 +783,13 @@ private extension EditableOrderViewModel {
             allProducts.append(product)
         }
 
-        // TODO: Refactor with guard
+        // TODO: Refactor
+        // Single-Selection
         if !featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
             let input = OrderSyncProductInput(product: .product(product), quantity: 1)
             orderSynchronizer.setProduct.send(input)
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+        // Multi-Selection
         } else {
             if !selectedProducts.contains(where: { $0?.productID == product.productID }) {
                 selectedProducts.append(product)
@@ -801,11 +813,13 @@ private extension EditableOrderViewModel {
             allProductVariations.append(variation)
         }
 
-        // TODO: Refactor with guard
+        // TODO: Refactor
+        // Single-Selection
         if !featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
             let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
             orderSynchronizer.setProduct.send(input)
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+        // Multi-Selection
         } else {
             if !selectedProductVariations.contains(where: { $0?.productVariationID == variation.productVariationID }) {
                 selectedProductVariations.append(variation)

@@ -400,7 +400,7 @@ final class EditableOrderViewModel: ObservableObject {
             selectedProductVariations.removeAll(where: { $0?.productVariationID == item.variationID})
             print("🍍 ProductVariationID: \(item.variationID) removed and unselected from Order")
         }
-        
+
         updatedProductAndVariationIDsInOrder.removeAll(where: { $0 == item.productOrVariationID })
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))

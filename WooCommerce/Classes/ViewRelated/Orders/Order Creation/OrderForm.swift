@@ -265,6 +265,7 @@ private struct ProductsSection: View {
                         .sheet(item: $viewModel.selectedProductViewModel) { productViewModel in
                             ProductInOrder(viewModel: productViewModel)
                         }
+                        .redacted(reason: viewModel.disabled ? .placeholder : [] )
 
                     Divider()
                 }

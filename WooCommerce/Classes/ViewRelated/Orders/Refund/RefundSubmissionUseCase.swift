@@ -182,6 +182,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
                                     onCompletion(result)
                                 }
                             case .failure(let error):
+                                CardPresentPaymentOnboardingStateCache.shared.invalidate()
                                 onCompletion(.failure(error))
                             }
                         }

@@ -447,7 +447,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isActionable else {
                     return
                 }
-                // TODO-9128: Add tracking
+                ServiceLocator.analytics.track(event: .ProductDetail.bundledProductsTapped())
                 showBundledProducts()
                 return
             }
@@ -1686,7 +1686,7 @@ private extension ProductFormViewController {
         guard let product = product as? EditableProductModel else {
             return
         }
-        let viewModel = BundledProductsListViewModel(bundledProducts: product.bundledItems)
+        let viewModel = BundledProductsListViewModel(siteID: product.siteID, bundleItems: product.bundledItems)
         let viewController = BundledProductsListViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }

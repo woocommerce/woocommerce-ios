@@ -61,6 +61,7 @@ final class GeneralAppSettingsTests: XCTestCase {
         let featureAnnouncementCampaignSettings = [
             FeatureAnnouncementCampaign.upsellCardReaders:
                 FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: nil)]
+        let sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = [1234, 123, 12, 1]
         let previousSettings = GeneralAppSettings(installationDate: installationDate,
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
@@ -72,7 +73,8 @@ final class GeneralAppSettingsTests: XCTestCase {
                                                   knownCardReaders: readers,
                                                   lastEligibilityErrorInfo: eligibilityInfo,
                                                   lastJetpackBenefitsBannerDismissedTime: jetpackBannerDismissedDate,
-                                                  featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings)
+                                                  featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
+                                                  sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished)
 
         let previousEncodedSettings = try JSONEncoder().encode(previousSettings)
         var previousSettingsJson = try JSONSerialization.jsonObject(with: previousEncodedSettings, options: .allowFragments) as? [String: Any]
@@ -92,6 +94,7 @@ final class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.isCouponManagementSwitchEnabled, true)
         assertEqual(newSettings.lastJetpackBenefitsBannerDismissedTime, jetpackBannerDismissedDate)
         assertEqual(newSettings.featureAnnouncementCampaignSettings, featureAnnouncementCampaignSettings)
+        assertEqual(newSettings.sitesWithAtLeastOneIPPTransactionFinished, sitesWithAtLeastOneIPPTransactionFinished)
     }
 }
 
@@ -110,7 +113,8 @@ private extension GeneralAppSettingsTests {
                                   knownCardReaders: [String] = [],
                                   lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                                   lastJetpackBenefitsBannerDismissedTime: Date? = nil,
-                                  featureAnnouncementCampaignSettings: [Campaign: CampaignSettings] = [:]
+                                  featureAnnouncementCampaignSettings: [Campaign: CampaignSettings] = [:],
+                                  sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = []
     ) -> GeneralAppSettings {
         GeneralAppSettings(installationDate: installationDate,
                            feedbacks: feedbacks,
@@ -123,6 +127,7 @@ private extension GeneralAppSettingsTests {
                            knownCardReaders: knownCardReaders,
                            lastEligibilityErrorInfo: lastEligibilityErrorInfo,
                            lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime,
-                           featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings)
+                           featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
+                           sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished)
     }
 }

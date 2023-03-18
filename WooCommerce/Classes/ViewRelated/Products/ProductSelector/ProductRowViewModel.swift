@@ -187,7 +187,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
-                     removeProductIntent: @escaping (() -> Void) = {}) {
+                     removeProductIntent: @escaping (() -> Void) = {},
+                     productBundlesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles)) {
         // Don't show any price for variable products; price will be shown for each product variation.
         let price: String?
         if product.productType == .variable {
@@ -196,13 +197,33 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             price = product.price
         }
 
+        // If product is a product bundle with a bundle stock status, use that as the product stock status.
+        let stockStatusKey: String = {
+            switch (productBundlesEnabled, product.productType, product.bundleStockStatus) {
+            case (true, .bundle, .some(let bundleStockStatus)):
+                return bundleStockStatus.rawValue
+            default:
+                return product.stockStatusKey
+            }
+        }()
+
+        // If product is a product bundle with a bundle stock quantity, use that as the product stock quantity.
+        let stockQuantity: Decimal? = {
+            switch (productBundlesEnabled, product.productType, product.bundleStockQuantity) {
+            case (true, .bundle, .some(let bundleStockQuantity)):
+                return Decimal(bundleStockQuantity)
+            default:
+                return product.stockQuantity
+            }
+        }()
+
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
                   sku: product.sku,
                   price: price,
-                  stockStatusKey: product.stockStatusKey,
-                  stockQuantity: product.stockQuantity,
+                  stockStatusKey: stockStatusKey,
+                  stockQuantity: stockQuantity,
                   manageStock: product.manageStock,
                   quantity: quantity,
                   canChangeQuantity: canChangeQuantity,

@@ -29,11 +29,7 @@ class StoreOnboardingViewModel: ObservableObject {
             return placeholderTasks
         }
 
-        if isExpanded {
-            return taskViewModels
-        }
-
-        if !isExpanded && !shouldShowViewAllButton {
+        if isExpanded || !shouldShowViewAllButton {
             return taskViewModels
         }
 

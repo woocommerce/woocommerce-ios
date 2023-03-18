@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-08 17:54:04+0000 */
+/* Translation-Revision-Date: 2023-03-15 17:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -41,6 +41,11 @@
 
 /* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@ Version" = "%1$@ Sürümü";
+
+/* A label prompting users to learn more about Tap to Pay on iPhone"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"%1$@ about accepting payments with Tap to Pay on iPhone." = "Tap to Pay on iPhone ile ödeme kabul etme hakkında %1$@.";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -328,6 +333,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the feature announcement banner intended to upsell card readers */
 "Accept payments easily" = "Ödemeleri kolayca kabul edin";
+
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
+"Accept the Terms of Service during set up." = "Kurulum sırasında Hizmet Koşullarını kabul edin.";
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "İndirimli gönderim ücretlerine erişin. Şu anda DHL ve USPS kullanılabilir, yakında daha fazlası da gelecek!";
@@ -1113,6 +1121,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for bundle product type. */
 "Bundle" = "Paket";
 
+/* Title for the bundled products screen */
+"Bundled Products" = "Paketli Ürünler";
+
+/* Title for Bundled Products row in the product form screen. */
+"Bundled products" = "Paketli ürünler";
+
 /* Country option for a site address. */
 "Burkina Faso" = "Burkina Faso";
 
@@ -1535,6 +1549,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the collect payment flow with a user name. */
 "Collect payment from %1$@" = "%1$@ kaynağından ödeme al";
 
+/* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
+"Collect payments, setup Tap to Pay, order card readers and more." = "Ödemeleri alın, Tap to Pay'i kurun, kart okuyucu sipariş edin ve daha fazlasını yapın.";
+
 /* Industry option in the store creation category question. */
 "Collections Agencies" = "Tahsilat Acenteleri";
 
@@ -1924,6 +1941,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "İlk varyasyonunuzu oluşturun";
+
+/* Description of the 'Products' screen - used for spotlight indexing on iOS. */
+"Create, edit, and publish products." = "Ürünleri oluşturun, düzenleyin ve yayınlayın.";
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Niteliklerinizin tüm kombinasyonları için varyasyonlar oluşturur.";
@@ -2994,6 +3014,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "Cihazdan";
 
+/* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
+"From purchase to fulfillment – manage the entire order process via the app." = "Satın almadan sipariş karşılamaya kadar tüm sipariş sürecini uygulama üzerinden yönetin.";
+
 /* Industry option in the store creation category question. */
 "Fuel Dispensers" = "Yakıt Dispenserleri";
 
@@ -3998,6 +4021,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text that explains how to update VC to get the latest stats */
 "Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "Sitenizde en son WooCommerce sürümünü çalıştırdığınızdan ve WooCommerce Admin'i etkinleştirdiğinizden emin olun.";
 
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to sign in to iCloud and set a passcode on the device */
+"Make sure you are signed in to iCloud, and have set a passcode." = "iCloud'a giriş yaptığınızdan ve bir parola oluşturduğunuzdan emin olun.";
+
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "Etiket kullanarak ürünlerinizin bulunmasını kolaylaştırın";
 
@@ -4364,6 +4390,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Niue" = "Niue";
 
+/* Placeholder for empty product ratings */
+"No (approved) reviews" = "(Onaylanmış) yorum yok";
+
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "Kısıtlama Yok";
 
@@ -4445,6 +4474,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "Gönderim ücreti yok";
+
+/* Error in identifying supported contact methods in the Shipping Label Address Validation */
+"No supported contact method on this device." = "Bu cihazda desteklenen bir iletişim yöntemi yok.";
 
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "Etiket yok";
@@ -5989,6 +6021,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text on the button to see a saved receipt */
 "See Receipt" = "Makbuzu Gör";
 
+/* Description of the 'My Store' screen - used for spotlight indexing on iOS. */
+"See at a glance which products are winning." = "Hangi ürünlerin en çok sattığını bir bakışta görün.";
+
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "Düzen ve kağıt boyutu seçeneklerine bakın";
 
@@ -7522,6 +7557,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "Tekrar Kurmayı Deneyin";
 
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
+"Try a payment using your own card (and refund it when you're done.)" = "Kendi kartınızı kullanarak ödeme yapmayı deneyin (ve işiniz bittiğinde iade edin.)";
+
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
@@ -8409,6 +8447,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "Birden çok seçebilirsiniz.";
 
+/* Info notice at the bottom of the bundled products screen */
+"You can edit bundled products in the web dashboard." = "Paketli ürünleri web panosunda düzenleyebilirsiniz.";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Ürün eklentilerini web panosunda düzenleyebilirsiniz.";
 
@@ -8610,6 +8651,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "password" = "şifre";
 
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
+"payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "ödemeler, tap to pay, woocommerce, woo, şahsi ödemeler, şahsen ödemeler, ödeme alma, ödemeler, okuyucu, kart okuyucu, kart okuyucu sipariş etme";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "%ld kez derecelendirildi";
 
@@ -8679,6 +8723,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "Kapat";
+
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
+"woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, mağazam, bugün, bu hafta, bu ay, bu yıl, siparişler, ziyaretçiler, dönüşüm, en çok dönüşüm, satılan ürünler";
+
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Orders' tab. */
+"woocommerce, orders, all orders, new order" = "woocommerce, siparişler, tüm siparişler, yeni sipariş";
+
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
+"woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, ürünler, kategoriler, yeni ürün, ürün arama";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */

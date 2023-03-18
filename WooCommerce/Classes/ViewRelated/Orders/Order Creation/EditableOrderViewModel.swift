@@ -760,7 +760,7 @@ private extension EditableOrderViewModel {
     func addItemsToOrder(products: [Product?], variations: [ProductVariation?]) {
         var productInputs: [OrderSyncProductInput] = []
         var productVariationInputs: [OrderSyncProductInput] = []
-        
+
         // TODO:
         // - If a product is selected for first time, we send it to the remote sync so it can be added
         // - If a product is part of the order, and is unselected, send the update to the remote sync an remove it (send quantity: 0)

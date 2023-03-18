@@ -403,6 +403,23 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.map { $0.id }, [expectedRemainingRow].map { $0.id })
     }
 
+    func test_selected_products_are_removed_when_product_is_removed_from_order() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertProducts([product])
+
+        // When
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        // Confidence check
+        XCTAssertEqual(viewModel.selectedProducts.count, 1)
+
+        let orderItem = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
+        viewModel.removeItemFromOrder(orderItem)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedProducts.count, 0)
+    }
+
     func test_createProductRowViewModel_creates_expected_row_for_product() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)

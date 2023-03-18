@@ -195,9 +195,6 @@ final class EditableOrderViewModel: ObservableObject {
                 self.addProductVariationToOrder(variation, parent: parentProduct)
             }, onMultipleSelectionCompleted: { [weak self] _ in
                 guard let self = self else { return }
-                // TODO: Selected items need to be up-to-date across this class, ProductSelectorViewModel, ProductVariationSelectorViewModel, etc ...
-                // This is needed to keep the Order properly update when we select/unselect different products
-                // Also others like calling "Clear Selection" from the Product or Variations selector view should update this class
                 self.addItemsToOrder(products: self.selectedProducts, variations: self.selectedProductVariations)
                 print("🍍 Completed: \(self.selectedProductsAndVariationsIDs)")
             })

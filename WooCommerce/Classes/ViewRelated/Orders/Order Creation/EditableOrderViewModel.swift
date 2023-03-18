@@ -169,6 +169,11 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private var allProductVariations: [ProductVariation] = []
 
+    /// Products and Product Variation IDs that have been already added to the Order
+    /// We use this to keep track of which items have already been sent to the remote, no matter if are selected or unselected during Order creation or editing.
+    ///
+    @Published private var updatedProductAndVariationIDsInOrder: [Int64] = []
+
     /// View model for the product list
     ///
     var productSelectorViewModel: ProductSelectorViewModel {
@@ -382,6 +387,8 @@ final class EditableOrderViewModel: ObservableObject {
             selectedProductVariations.removeAll(where: { $0?.productVariationID == item.variationID})
             print("🍍 ProductVariationID: \(item.variationID) removed and unselected from Order")
         }
+        
+        updatedProductAndVariationIDsInOrder.removeAll(where: { $0 == item.productOrVariationID })
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
     }
@@ -769,21 +776,35 @@ private extension EditableOrderViewModel {
 
         for product in products {
             if let product {
-                productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
+                // Only perform the operation if the product has not been already added to the existing Order
+                if !updatedProductAndVariationIDsInOrder.contains(where: {$0 == product.productID }) {
+                    productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
+                    // Keep track of what's already part of the Order
+                    updatedProductAndVariationIDsInOrder.append(product.productID)
+                } else {
+                    print("🍍 product \(product.productID) is already part of the Order, we won't be adding it again")
+                }
             }
         }
 
         for variation in variations {
             if let variation {
-                productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
+                // Only perform the operation if the product has not been already added to the existing Order
+                if !updatedProductAndVariationIDsInOrder.contains(where: {$0 == variation.productVariationID }) {
+                    productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
+                    // Keep track of what's already part of the Order
+                    updatedProductAndVariationIDsInOrder.append(variation.productVariationID)
+                } else {
+                    print("🍍 variation \(variation.productVariationID) is already part of the Order, we won't be adding it again")
+                }
             }
         }
 
         // TODO: While the Order syncs, it may show the wrong products for a bit:
         // A ProgressView or similar can be added: https://github.com/woocommerce/woocommerce-ios/issues/9213
+        print("🍍 Products and Variations sync")
         orderSynchronizer.setProducts.send(productInputs)
         orderSynchronizer.setProducts.send(productVariationInputs)
-        print("🍍 Products and Variations sync")
     }
 
     /// Adds a selected product (from the product list) to the order.

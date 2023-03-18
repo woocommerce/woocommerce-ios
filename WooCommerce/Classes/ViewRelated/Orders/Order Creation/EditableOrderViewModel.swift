@@ -344,6 +344,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureNonEditableIndicators()
         configureMultipleLinesMessage()
         resetAddressForm()
+        configureOrderExistingSelectedProductsIfNeeded()
     }
 
     /// Checks the current state of the Product Multi Selection feature toggle
@@ -358,6 +359,21 @@ final class EditableOrderViewModel: ObservableObject {
             }
         })
         stores.dispatch(action)
+    }
+
+    /// Checks the latest Order sync, if the Order already contains products then we mark these as selected
+    ///
+    private func configureOrderExistingSelectedProductsIfNeeded() {
+        let _ = orderSynchronizer.order.items.map { item in
+            if item.variationID != 0 {
+                let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID })
+                selectedProductVariations.append(variation)
+            } else {
+                let product = allProducts.first(where: { $0.productID == item.productID })
+                selectedProducts.append(product)
+            }
+            updatedProductAndVariationIDsInOrder.append(item.productOrVariationID)
+        }
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.
@@ -783,6 +799,7 @@ private extension EditableOrderViewModel {
                 }
             }
         }
+        orderSynchronizer.setProducts.send(productInputs)
 
         for variation in variations {
             if let variation {
@@ -796,12 +813,9 @@ private extension EditableOrderViewModel {
                 }
             }
         }
-
-        // TODO: While the Order syncs, it may show the wrong products for a bit:
-        // A ProgressView or similar can be added: https://github.com/woocommerce/woocommerce-ios/issues/9213
-        print("🍍 Products and Variations sync")
-        orderSynchronizer.setProducts.send(productInputs)
         orderSynchronizer.setProducts.send(productVariationInputs)
+
+        print("🍍 Products and Variations sync")
     }
 
     /// Adds a selected product (from the product list) to the order.

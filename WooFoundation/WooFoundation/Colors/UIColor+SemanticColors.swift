@@ -360,6 +360,13 @@ public extension UIColor {
     static var jetpackGreen: UIColor {
         .withColorStudio(.jetpackGreen, shade: .shade20)
     }
+
+    /// Free Trial Banner Background.
+    ///
+    static var bannerBackground: UIColor {
+        .init(light: .withColorStudio(.wooCommercePurple, shade: .shade0),
+              dark: .withColorStudio(.wooCommercePurple, shade: .shade90))
+    }
 }
 
 // MARK: - UI elements.

@@ -37,8 +37,8 @@ final class CardPresentModalBuiltInConnectingFailed: CardPresentPaymentsModalVie
         self.cancelSearchAction = cancelSearch
 
         switch error {
-        case CardReaderServiceError.connection(let underlyingError):
-            bottomTitle = underlyingError.localizedDescription
+        case CardReaderServiceError.connection(_):
+            bottomTitle = builtInReaderDescription(for: error)
         default:
             break
         }
@@ -53,6 +53,20 @@ final class CardPresentModalBuiltInConnectingFailed: CardPresentPaymentsModalVie
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
+}
+
+extension CardPresentModalBuiltInConnectingFailed: ReaderConnectionUnderlyingErrorDisplaying {
+    func errorDescription(underlyingError: CardReaderServiceUnderlyingError) -> String? {
+        switch underlyingError {
+        case .internalServiceError:
+            return NSLocalizedString(
+                "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again.",
+                comment: "Error message when the built-in reader connection experiences an unexpected internal service error."
+            )
+        default:
+            return underlyingError.errorDescription
+        }
+    }
 }
 
 private extension CardPresentModalBuiltInConnectingFailed {

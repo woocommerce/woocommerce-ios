@@ -388,6 +388,12 @@ extension WooAnalyticsEvent {
         static func previewFailed(statusCode: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailPreviewFailed, properties: ["status_code": Int64(statusCode)])
         }
+
+        /// Tracks when the merchant taps the Bundled Products row (applicable for bundle-type products only).
+        ///
+        static func bundledProductsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailViewBundledProductsTapped, properties: [:])
+        }
     }
 }
 
@@ -2130,6 +2136,33 @@ extension WooAnalyticsEvent {
                 Key.isJetpackConnected.rawValue: isJetpackConnected,
                 Key.urlAfterRedirects.rawValue: urlAfterRedirects
             ])
+        }
+    }
+}
+
+// MARK: - Free Trial
+//
+extension WooAnalyticsEvent {
+    enum FreeTrial {
+        enum Keys: String {
+            case source
+        }
+
+        enum Source: String {
+            case banner
+            case upgradesScreen = "upgrades_screen"
+        }
+
+        static func freeTrialUpgradeNowTapped(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .freeTrialUpgradeNowTapped, properties: [Keys.source.rawValue: source.rawValue])
+        }
+
+        static func planUpgradeSuccess(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradeSuccess, properties: [Keys.source.rawValue: source.rawValue])
+        }
+
+        static func planUpgradeAbandoned(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradeAbandoned, properties: [Keys.source.rawValue: source.rawValue])
         }
     }
 }

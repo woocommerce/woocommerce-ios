@@ -372,6 +372,17 @@ final class EditableOrderViewModel: ObservableObject {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
 
+        // Updates selectedProducts and selectedProductVariations for all items that have been removed directly from the Order
+        if item.productID != 0 {
+            selectedProducts.removeAll(where: { $0?.productID == item.productID})
+            print("🍍 ProductID: \(item.productID) removed and unselected from Order")
+        }
+
+        if item.variationID != 0 {
+            selectedProductVariations.removeAll(where: { $0?.productVariationID == item.variationID})
+            print("🍍 ProductVariationID: \(item.variationID) removed and unselected from Order")
+        }
+
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
     }
 

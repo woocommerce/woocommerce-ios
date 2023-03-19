@@ -771,77 +771,55 @@ private extension EditableOrderViewModel {
             .assign(to: &$statusBadgeViewModel)
     }
 
-    /// Adds multiple products to the Order
+    /// Adds, or removes multiple products from an Order
     ///
     func addOrRemoveItemsFromOrder(products: [Product?], variations: [ProductVariation?]) {
         var productInputs: [OrderSyncProductInput] = []
         var productVariationInputs: [OrderSyncProductInput] = []
 
-        // Find all IDs for products and variations that are already part of the order, but have been unselected
-        var itemIDsToRemoveFromOrder: [Int64] = []
-        let _ = updatedProductAndVariationIDsInOrder.map { existingProductInOrder in
-            if !products.contains(where: { $0?.productID == existingProductInOrder }) {
-                itemIDsToRemoveFromOrder.append(existingProductInOrder)
-            }
-            if !variations.contains(where: { $0?.productVariationID == existingProductInOrder }) {
-                itemIDsToRemoveFromOrder.append(existingProductInOrder)
-            }
-        }
-        // TODO: Remove before merge
-        print("🍍 Products to remove from Order: \(itemIDsToRemoveFromOrder)")
-
-        // Add selected products to Order
+        // Add selected products to Order, unless already are
         for product in products {
-            if let product {
-                // Only perform the operation if the product has not been already added to the existing Order
-                if !updatedProductAndVariationIDsInOrder.contains(where: {$0 == product.productID }) {
+            if let product,
+                !updatedProductAndVariationIDsInOrder.contains(where: {$0 == product.productID}) {
                     productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
-                    // Keep track of what's already part of the Order
-                    updatedProductAndVariationIDsInOrder.append(product.productID)
-                }
+                updatedProductAndVariationIDsInOrder.append(product.productID)
             }
         }
-        if productInputs.isNotEmpty {
-            orderSynchronizer.setProducts.send(productInputs)
-        }
+        orderSynchronizer.setProducts.send(productInputs)
 
-        // Add selected variations to Order
+        // Add selected variations to Order, unless already are
         for variation in variations {
-            if let variation {
-                // Only perform the operation if the product has not been already added to the existing Order
-                if !updatedProductAndVariationIDsInOrder.contains(where: {$0 == variation.productVariationID }) {
-                    productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
-                    // Keep track of what's already part of the Order
-                    updatedProductAndVariationIDsInOrder.append(variation.productVariationID)
-                }
+            if let variation,
+                !updatedProductAndVariationIDsInOrder.contains(where: {$0 == variation.productVariationID}) {
+                productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
+                updatedProductAndVariationIDsInOrder.append(variation.productVariationID)
             }
         }
-        if productVariationInputs.isNotEmpty {
-            orderSynchronizer.setProducts.send(productVariationInputs)
+        orderSynchronizer.setProducts.send(productVariationInputs)
+
+        // Products to be removed from the Order
+        let removeProducts = orderSynchronizer.order.items.filter { item in
+            // Definition in OrderItem+Woo
+            return item.variationID == 0 && !products.contains(where: { $0?.productID == item.productID })
+        }
+        for item in removeProducts {
+            removeItemFromOrder(item)
         }
 
-        for id in itemIDsToRemoveFromOrder {
-            if let product = allProducts.first(where: { $0.productID == id }) {
-                if let orderItem = orderSynchronizer.order.items.first( where: { $0.productID == product.productID }) {
-                    removeItemFromOrder(orderItem)
-                }
-            }
-            if let variation = allProductVariations.first(where: { $0.productVariationID == id }) {
-                if let orderItem = orderSynchronizer.order.items.first( where: { $0.variationID == variation.productVariationID }) {
-                    removeItemFromOrder(orderItem)
-                }
-            }
+        // Variations to be removed from the Order
+        let removeProductVariations = orderSynchronizer.order.items.filter { item in
+            return item.variationID != 0 && !variations.contains(where: { $0?.productVariationID == item.variationID })
         }
-
-        // TODO: Remove before merge
-        print("🍍 Products to add to Order: \(products.map { $0?.productID})")
-        print("🍍 Variations to add to Order: \(variations.map { $0?.productVariationID})")
-        print("🍍 IDs (both products, and variations) already part of the Order: \(updatedProductAndVariationIDsInOrder)")
-        print("🍍 All items (both products, and variations) in updated order: \(orderSynchronizer.order.items.map { $0.productOrVariationID})")
+        for item in removeProductVariations {
+            removeItemFromOrder(item)
+        }
     }
 
     /// Adds a selected product (from the product list) to the order.
     ///
+    // TODO: This method needs to be renamed
+    // to reflect that adds products to Order for single selection
+    // but only selects/unselects for multi-selection
     func addProductToOrder(_ product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {

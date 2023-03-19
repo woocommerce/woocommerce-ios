@@ -860,10 +860,10 @@ private extension EditableOrderViewModel {
         // Multi-selection
         if !selectedProducts.contains(where: { $0?.productID == product.productID }) {
             selectedProducts.append(product)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
         } else {
             selectedProducts.removeAll(where: { $0?.productID == product.productID })
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: .creation))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
         }
     }
 
@@ -880,19 +880,19 @@ private extension EditableOrderViewModel {
         }
 
         // Single-Selection
-        if !featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
+        guard featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled else {
             let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
             orderSynchronizer.setProduct.send(input)
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+            return
+        }
         // Multi-Selection
+        if !selectedProductVariations.contains(where: { $0?.productVariationID == variation.productVariationID }) {
+            selectedProductVariations.append(variation)
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
         } else {
-            if !selectedProductVariations.contains(where: { $0?.productVariationID == variation.productVariationID }) {
-                selectedProductVariations.append(variation)
-                analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
-            } else {
-                selectedProductVariations.removeAll(where: { $0?.productVariationID == variation.productVariationID })
-                analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: .creation))
-            }
+            selectedProductVariations.removeAll(where: { $0?.productVariationID == variation.productVariationID })
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
         }
     }
 

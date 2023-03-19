@@ -342,7 +342,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureNonEditableIndicators()
         configureMultipleLinesMessage()
         resetAddressForm()
-        configureOrderExistingSelectedProductsIfNeeded()
+        selectExistingProductsInOrderIfNeeded()
     }
 
     /// Checks the current state of the Product Multi Selection feature toggle
@@ -361,7 +361,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Checks the latest Order sync, if the Order already contains products then we mark these as selected
     ///
-    private func configureOrderExistingSelectedProductsIfNeeded() {
+    private func selectExistingProductsInOrderIfNeeded() {
         let _ = orderSynchronizer.order.items.map { item in
             if item.variationID != 0 {
                 let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID })

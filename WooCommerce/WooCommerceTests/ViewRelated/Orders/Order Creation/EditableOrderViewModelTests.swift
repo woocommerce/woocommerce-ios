@@ -377,7 +377,22 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.map { $0.id }, [expectedRemainingRow].map { $0.id })
     }
 
-    func test_selected_products_are_removed_when_product_is_removed_from_order_given_product_multiselection_is_enabled() {
+    func test_selectedProducts_are_added_when_product_is_added_to_order_called_then_selectProducts_has_one_product() {
+
+        // Given
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertProducts([product])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
+
+        // When
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedProducts.count, 1)
+    }
+
+    func test_selectedProducts_are_removed_when_product_is_removed_from_order_given_product_multiselection_is_enabled() {
         // Given
         let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
@@ -394,6 +409,26 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.selectedProducts.count, 0)
+    }
+
+    func test_selectedProductsAndVariationsIDs_keeps_track_of_products_and_variations_added_to_the_order() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, productTypeKey: "variable", purchasable: true, variations: [20])
+        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            productVariationID: 20,
+                                                            sku: "product-variation", purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation, on: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
+
+        // When
+        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.selectedProductVariations.append(productVariation)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedProductsAndVariationsIDs.count, 2)
     }
 
     func test_createProductRowViewModel_creates_expected_row_for_product() {

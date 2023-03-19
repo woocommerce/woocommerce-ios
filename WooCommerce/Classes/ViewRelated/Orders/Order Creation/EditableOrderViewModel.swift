@@ -778,14 +778,17 @@ private extension EditableOrderViewModel {
         var productVariationInputs: [OrderSyncProductInput] = []
 
         // Find all IDs for products and variations that are already part of the order, but have been unselected
-        var productsToRemoveFromOrder: [Int64] = []
+        var itemIDsToRemoveFromOrder: [Int64] = []
         let _ = updatedProductAndVariationIDsInOrder.map { existingProductInOrder in
             if !products.contains(where: { $0?.productID == existingProductInOrder }) {
-                productsToRemoveFromOrder.append(existingProductInOrder)
+                itemIDsToRemoveFromOrder.append(existingProductInOrder)
+            }
+            if !variations.contains(where: { $0?.productVariationID == existingProductInOrder }) {
+                itemIDsToRemoveFromOrder.append(existingProductInOrder)
             }
         }
         // TODO: Remove before merge
-        print("🍍 Products to remove from Order: \(productsToRemoveFromOrder)")
+        print("🍍 Products to remove from Order: \(itemIDsToRemoveFromOrder)")
 
         // Add selected products to Order
         for product in products {
@@ -817,32 +820,24 @@ private extension EditableOrderViewModel {
             orderSynchronizer.setProducts.send(productVariationInputs)
         }
 
-        // Remove unselected products from Order, if have been added previously
-        for id in productsToRemoveFromOrder {
-            guard let product = allProducts.first(where: { $0.productID == id }) else {
-                return
+        for id in itemIDsToRemoveFromOrder {
+            if let product = allProducts.first(where: { $0.productID == id }) {
+                if let orderItem = orderSynchronizer.order.items.first( where: { $0.productID == product.productID }) {
+                    removeItemFromOrder(orderItem)
+                }
             }
-            guard let orderItem = orderSynchronizer.order.items.first( where: { $0.productID == product.productID }) else {
-                return
+            if let variation = allProductVariations.first(where: { $0.productVariationID == id }) {
+                if let orderItem = orderSynchronizer.order.items.first( where: { $0.variationID == variation.productVariationID }) {
+                    removeItemFromOrder(orderItem)
+                }
             }
-            removeItemFromOrder(orderItem)
-        }
-
-        // Remove unselected variations from Order, if have been added previously
-        for id in productsToRemoveFromOrder {
-            guard let variation = allProductVariations.first(where: { $0.productVariationID == id }) else {
-                return
-            }
-            guard let orderItem = orderSynchronizer.order.items.first( where: { $0.productID == variation.productVariationID }) else {
-                return
-            }
-            removeItemFromOrder(orderItem)
         }
 
         // TODO: Remove before merge
         print("🍍 Products to add to Order: \(products.map { $0?.productID})")
-        print("🍍 Products already part of the Order: \(updatedProductAndVariationIDsInOrder)")
-        print("🍍 All products in updated order: \(orderSynchronizer.order.items.map { $0.productID })")
+        print("🍍 Variations to add to Order: \(variations.map { $0?.productVariationID})")
+        print("🍍 IDs (both products, and variations) already part of the Order: \(updatedProductAndVariationIDsInOrder)")
+        print("🍍 All items (both products, and variations) in updated order: \(orderSynchronizer.order.items.map { $0.productOrVariationID})")
     }
 
     /// Adds a selected product (from the product list) to the order.

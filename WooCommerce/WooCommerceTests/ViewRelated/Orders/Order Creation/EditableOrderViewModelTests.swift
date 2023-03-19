@@ -386,7 +386,9 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
 
         // When
+        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
         viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.completeMultipleSelection()
 
         // Then
         XCTAssertEqual(viewModel.selectedProducts.count, 1)
@@ -405,8 +407,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
 
         // When
+        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
         viewModel.productSelectorViewModel.selectProduct(product.productID)
         viewModel.selectedProductVariations.append(productVariation)
+        viewModel.productSelectorViewModel.completeMultipleSelection()
 
         // Then
         XCTAssertEqual(viewModel.selectedProductsAndVariationsIDs.count, 2)

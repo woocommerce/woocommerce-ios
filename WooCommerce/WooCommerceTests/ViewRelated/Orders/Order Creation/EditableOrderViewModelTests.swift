@@ -316,10 +316,9 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         viewModel.isProductMultiSelectionBetaFeatureEnabled = true
         viewModel.productSelectorViewModel.selectProduct(product.productID)
-        viewModel.productSelectorViewModel.completeMultipleSelection()
-        // And when another product is added to the order (to confirm the first product's quantity change is retained)
         viewModel.productSelectorViewModel.selectProduct(anotherProduct.productID)
         viewModel.productSelectorViewModel.completeMultipleSelection()
+        // And when another product is added to the order (to confirm the first product's quantity change is retained)
         viewModel.productRows[0].incrementQuantity()
 
         // Then

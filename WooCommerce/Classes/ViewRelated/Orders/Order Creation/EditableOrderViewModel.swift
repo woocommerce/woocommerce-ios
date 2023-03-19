@@ -826,21 +826,20 @@ private extension EditableOrderViewModel {
             allProducts.append(product)
         }
 
-        // TODO: Refactor
-        // Single-Selection
-        if !featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
+        guard featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled else {
+            // Single-selection
             let input = OrderSyncProductInput(product: .product(product), quantity: 1)
             orderSynchronizer.setProduct.send(input)
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
-        // Multi-Selection
+            return
+        }
+        // Multi-selection
+        if !selectedProducts.contains(where: { $0?.productID == product.productID }) {
+            selectedProducts.append(product)
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
         } else {
-            if !selectedProducts.contains(where: { $0?.productID == product.productID }) {
-                selectedProducts.append(product)
-                analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
-            } else {
-                selectedProducts.removeAll(where: { $0?.productID == product.productID })
-                analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: .creation))
-            }
+            selectedProducts.removeAll(where: { $0?.productID == product.productID })
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: .creation))
         }
     }
 

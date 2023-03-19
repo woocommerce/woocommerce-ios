@@ -798,7 +798,9 @@ private extension EditableOrderViewModel {
                 }
             }
         }
-        orderSynchronizer.setProducts.send(productInputs)
+        if productInputs.isNotEmpty {
+            orderSynchronizer.setProducts.send(productInputs)
+        }
 
         // Add selected variations to Order
         for variation in variations {
@@ -811,8 +813,9 @@ private extension EditableOrderViewModel {
                 }
             }
         }
-
-        orderSynchronizer.setProducts.send(productVariationInputs)
+        if productVariationInputs.isNotEmpty {
+            orderSynchronizer.setProducts.send(productVariationInputs)
+        }
 
         // Remove unselected products from Order, if have been added previously
         for id in productsToRemoveFromOrder {

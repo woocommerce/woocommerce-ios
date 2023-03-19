@@ -196,7 +196,6 @@ final class EditableOrderViewModel: ObservableObject {
             }, onMultipleSelectionCompleted: { [weak self] _ in
                 guard let self = self else { return }
                 self.addItemsToOrder(products: self.selectedProducts, variations: self.selectedProductVariations)
-                print("🍍 Completed: \(self.selectedProductsAndVariationsIDs)")
             })
     }
 
@@ -222,7 +221,6 @@ final class EditableOrderViewModel: ObservableObject {
     var selectedProductsAndVariationsIDs: [Int64] {
         let selectedProductsCount = selectedProducts.compactMap { $0?.productID }
         let selectedProductVariationsCount = selectedProductVariations.compactMap { $0?.productVariationID }
-        print("🍍 Selected: \(selectedProductsCount + selectedProductVariationsCount)")
         return selectedProductsCount + selectedProductVariationsCount
     }
 
@@ -393,12 +391,10 @@ final class EditableOrderViewModel: ObservableObject {
         // Updates selectedProducts and selectedProductVariations for all items that have been removed directly from the Order
         if item.productID != 0 {
             selectedProducts.removeAll(where: { $0?.productID == item.productID})
-            print("🍍 ProductID: \(item.productID) removed and unselected from Order")
         }
 
         if item.variationID != 0 {
             selectedProductVariations.removeAll(where: { $0?.productVariationID == item.variationID})
-            print("🍍 ProductVariationID: \(item.variationID) removed and unselected from Order")
         }
 
         updatedProductAndVariationIDsInOrder.removeAll(where: { $0 == item.productOrVariationID })
@@ -781,12 +777,6 @@ private extension EditableOrderViewModel {
         var productInputs: [OrderSyncProductInput] = []
         var productVariationInputs: [OrderSyncProductInput] = []
 
-        // TODO:
-        // - If a product is selected for first time, we send it to the remote sync so it can be added
-        // - If a product is part of the order, and is unselected, send the update to the remote sync an remove it (send quantity: 0)
-        // - If we re-open the selector view the products will appear as selected, we don't want to send them again to the synchronizer, just ignore it
-        // - If we remove a product from Order View, the ProductSelector should be updated as well.
-
         for product in products {
             if let product {
                 // Only perform the operation if the product has not been already added to the existing Order
@@ -794,8 +784,6 @@ private extension EditableOrderViewModel {
                     productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
                     // Keep track of what's already part of the Order
                     updatedProductAndVariationIDsInOrder.append(product.productID)
-                } else {
-                    print("🍍 product \(product.productID) is already part of the Order, we won't be adding it again")
                 }
             }
         }
@@ -808,14 +796,10 @@ private extension EditableOrderViewModel {
                     productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
                     // Keep track of what's already part of the Order
                     updatedProductAndVariationIDsInOrder.append(variation.productVariationID)
-                } else {
-                    print("🍍 variation \(variation.productVariationID) is already part of the Order, we won't be adding it again")
                 }
             }
         }
         orderSynchronizer.setProducts.send(productVariationInputs)
-
-        print("🍍 Products and Variations sync")
     }
 
     /// Adds a selected product (from the product list) to the order.
@@ -855,7 +839,6 @@ private extension EditableOrderViewModel {
             allProductVariations.append(variation)
         }
 
-        // TODO: Refactor
         // Single-Selection
         if !featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
             let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)

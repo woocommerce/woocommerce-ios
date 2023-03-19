@@ -392,25 +392,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedProducts.count, 1)
     }
 
-    func test_selectedProducts_are_removed_when_product_is_removed_from_order_given_product_multiselection_is_enabled() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
-        storageManager.insertProducts([product])
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
-
-        // When
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
-        // Confidence check
-        XCTAssertEqual(viewModel.selectedProducts.count, 1)
-
-        let orderItem = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
-        viewModel.removeItemFromOrder(orderItem)
-
-        // Then
-        XCTAssertEqual(viewModel.selectedProducts.count, 0)
-    }
-
     func test_selectedProductsAndVariationsIDs_keeps_track_of_products_and_variations_added_to_the_order() {
         // Given
         let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)

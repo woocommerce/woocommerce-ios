@@ -314,15 +314,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
 
         // When
+        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
         viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.completeMultipleSelection()
         // And when another product is added to the order (to confirm the first product's quantity change is retained)
         viewModel.productSelectorViewModel.selectProduct(anotherProduct.productID)
         viewModel.productSelectorViewModel.completeMultipleSelection()
         viewModel.productRows[0].incrementQuantity()
 
         // Then
-        // TODO: Failing test
-        //XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
+        XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
         XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
     }
 

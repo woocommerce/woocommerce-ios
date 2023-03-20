@@ -10,7 +10,7 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
     private let siteAddress: String
     private let session: URLSession
 
-    public init(applicationPassword: ApplicationPassword?,
+    public init(applicationPassword: ApplicationPassword? = nil,
                 siteAddress: String,
                 keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
         let storage = ApplicationPasswordStorage(keychain: keychain)

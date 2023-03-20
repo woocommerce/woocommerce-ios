@@ -40,7 +40,6 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
     ///
     init(credentials: Credentials?, applicationPasswordUseCase: ApplicationPasswordUseCase? = nil) {
         self.credentials = credentials
-        let storage = ApplicationPasswordStorage()
         let useCase: ApplicationPasswordUseCase? = {
             if let applicationPasswordUseCase {
                 return applicationPasswordUseCase
@@ -49,9 +48,8 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
                                                               password: password,
                                                               siteAddress: siteAddress)
             } else if let credentials,
-                      case .applicationPassword(_, _, let siteAddress) = credentials,
-                      let applicationPassword = storage.applicationPassword {
-                return OneTimeApplicationPasswordUseCase(applicationPassword: applicationPassword, siteAddress: siteAddress)
+                      case .applicationPassword(_, _, let siteAddress) = credentials {
+                return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)
             } else {
                 return nil
             }

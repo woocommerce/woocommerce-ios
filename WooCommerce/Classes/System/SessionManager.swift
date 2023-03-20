@@ -181,7 +181,7 @@ final class SessionManager: SessionManagerProtocol {
                                                               siteAddress: siteAddress,
                                                               keychain: keychain)
             case let .applicationPassword(_, _, siteAddress):
-                return OneTimeApplicationPasswordUseCase(applicationPassword: nil, siteAddress: siteAddress, keychain: keychain)
+                return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress, keychain: keychain)
             default:
                 return nil
             }

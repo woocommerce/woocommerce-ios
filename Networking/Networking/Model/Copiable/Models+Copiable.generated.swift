@@ -1055,7 +1055,8 @@ extension Networking.Product {
         addOns: CopiableProp<[ProductAddOn]> = .copy,
         bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
         bundleStockQuantity: NullableCopiableProp<Int64> = .copy,
-        bundledItems: CopiableProp<[ProductBundleItem]> = .copy
+        bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
+        compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1123,6 +1124,7 @@ extension Networking.Product {
         let bundleStockStatus = bundleStockStatus ?? self.bundleStockStatus
         let bundleStockQuantity = bundleStockQuantity ?? self.bundleStockQuantity
         let bundledItems = bundledItems ?? self.bundledItems
+        let compositeComponents = compositeComponents ?? self.compositeComponents
 
         return Networking.Product(
             siteID: siteID,
@@ -1190,7 +1192,8 @@ extension Networking.Product {
             addOns: addOns,
             bundleStockStatus: bundleStockStatus,
             bundleStockQuantity: bundleStockQuantity,
-            bundledItems: bundledItems
+            bundledItems: bundledItems,
+            compositeComponents: compositeComponents
         )
     }
 }
@@ -1323,6 +1326,30 @@ extension Networking.ProductBundleItem {
             menuOrder: menuOrder,
             title: title,
             stockStatus: stockStatus
+        )
+    }
+}
+
+extension Networking.ProductCompositeComponent {
+    public func copy(
+        componentID: CopiableProp<String> = .copy,
+        title: CopiableProp<String> = .copy,
+        imageURL: CopiableProp<String> = .copy,
+        optionType: CopiableProp<CompositeComponentOptionType> = .copy,
+        optionIDs: CopiableProp<[Int64]> = .copy
+    ) -> Networking.ProductCompositeComponent {
+        let componentID = componentID ?? self.componentID
+        let title = title ?? self.title
+        let imageURL = imageURL ?? self.imageURL
+        let optionType = optionType ?? self.optionType
+        let optionIDs = optionIDs ?? self.optionIDs
+
+        return Networking.ProductCompositeComponent(
+            componentID: componentID,
+            title: title,
+            imageURL: imageURL,
+            optionType: optionType,
+            optionIDs: optionIDs
         )
     }
 }

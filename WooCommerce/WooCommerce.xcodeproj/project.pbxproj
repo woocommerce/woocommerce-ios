@@ -1982,6 +1982,7 @@
 		DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437726D8DAD900888A75 /* InProgressView.swift */; };
 		DEEDA239298A11FB0088256B /* SiteCredentialLoginUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */; };
 		DEEDA23D298A22180088256B /* SiteCredentialLoginUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDA23C298A22180088256B /* SiteCredentialLoginUseCaseTests.swift */; };
+		DEEF8E6629C833C600D47411 /* PaymentSettingsFlowPrioritizedViewModelsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31EF399B26430C6D0093C6F6 /* PaymentSettingsFlowPrioritizedViewModelsProvider.swift */; };
 		DEF13C522963D0B20024A02B /* PostSiteCredentialLoginChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF13C512963D0B20024A02B /* PostSiteCredentialLoginChecker.swift */; };
 		DEF13C542963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF13C532963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift */; };
 		DEF3300C270444070073AE29 /* ShippingLabelSelectedRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF3300B270444060073AE29 /* ShippingLabelSelectedRate.swift */; };
@@ -10624,6 +10625,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEEF8E6629C833C600D47411 /* PaymentSettingsFlowPrioritizedViewModelsProvider.swift in Sources */,
 				B5F571A421BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift in Sources */,
 				EE57C11F297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift in Sources */,
 				AEA3F91127BEC08800B9F555 /* PriceFieldFormatter.swift in Sources */,

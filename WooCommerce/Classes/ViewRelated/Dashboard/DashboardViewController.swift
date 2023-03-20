@@ -792,7 +792,7 @@ private extension DashboardViewController {
                 await self?.reloadDashboardUIStatsVersion(forced: true)
             }
             group.addTask { [weak self] in
-                await self?.onboardingHostingController?.reloadTasks()
+                await self?.viewModel.reloadStoreOnboardingTasks()
             }
         }
     }

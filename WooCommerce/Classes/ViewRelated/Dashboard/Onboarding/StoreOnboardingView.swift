@@ -65,7 +65,7 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
     }
 
     @MainActor
-    func reloadTasks() async {
+    private func reloadTasks() async {
         await viewModel.reloadTasks()
     }
 

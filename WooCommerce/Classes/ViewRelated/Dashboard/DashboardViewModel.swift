@@ -62,6 +62,12 @@ final class DashboardViewModel {
             .assign(to: &$showOnboarding)
     }
 
+    /// Reloads store onboarding tasks
+    ///
+    func reloadStoreOnboardingTasks() async {
+        await storeOnboardingViewModel?.reloadTasks()
+    }
+
     /// Syncs store stats for dashboard UI.
     func syncStats(for siteID: Int64,
                    siteTimezone: TimeZone,

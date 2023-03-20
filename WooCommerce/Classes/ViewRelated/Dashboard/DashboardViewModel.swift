@@ -15,9 +15,28 @@ final class DashboardViewModel {
 
     @Published var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
 
+    var storeOnboardingViewModel: StoreOnboardingViewModel? = nil {
+        didSet {
+            storeOnboardingViewModel?.noTasksAvailableForDisplay
+                .map({ false })
+                .assign(to: &$showOnboarding)
+        }
+    }
+
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 
-    @Published private(set) var showOnboarding: Bool = false
+    var showOnboardingPublisher: AnyPublisher<Bool, Never> {
+        $showOnboarding
+            .map({ [weak self] in
+                guard let self else {
+                    return false
+                }
+                return self.featureFlagService.isFeatureFlagEnabled(.dashboardOnboarding) && $0 })
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
+    @Published private var showOnboarding: Bool = false
 
     @Published private(set) var freeTrialBannerViewModel: FreeTrialBannerViewModel? = nil
 
@@ -39,7 +58,7 @@ final class DashboardViewModel {
         self.analytics = analytics
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         userDefaults.publisher(for: \.completedAllStoreOnboardingTasks)
-            .map({ featureFlags.isFeatureFlagEnabled(.dashboardOnboarding) && ($0 == false) })
+            .map({ $0 == false })
             .assign(to: &$showOnboarding)
     }
 

@@ -629,7 +629,7 @@ private extension DashboardViewController {
 
 private extension DashboardViewController {
     func observeOnboardingVisibility() {
-        Publishers.CombineLatest(viewModel.$showOnboarding,
+        Publishers.CombineLatest(viewModel.showOnboardingPublisher,
                                  ServiceLocator.stores.site.compactMap { $0 })
         .sink { [weak self] showsOnboarding, site in
             guard let self else { return }
@@ -660,11 +660,9 @@ private extension DashboardViewController {
             removeOnboardingCard()
         }
 
-        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false,
-                                                                                      siteID: site.siteID,
-                                                                                      whenNoTasksAvailable: { [weak self] in
-            self?.removeOnboardingCard()
-        }),
+        let storeOnboardingViewModel = StoreOnboardingViewModel(isExpanded: false, siteID: site.siteID)
+        viewModel.storeOnboardingViewModel = storeOnboardingViewModel
+        let hostingController = StoreOnboardingViewHostingController(viewModel: storeOnboardingViewModel,
                                                                      navigationController: navigationController,
                                                                      site: site,
                                                                      shareFeedbackAction: { [weak self] in

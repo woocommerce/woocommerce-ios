@@ -103,7 +103,7 @@ private enum Constants {
 private extension SetUpTapToPayCompleteView {
     enum Localization {
         static let setUpCompleteTitle = NSLocalizedString(
-            "Set up complete",
+            "Setup complete",
             comment: "Settings > Set up Tap to Pay on iPhone > Complete > Inform user that " +
             "Tap to Pay on iPhone is ready"
         )

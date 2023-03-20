@@ -2,6 +2,8 @@ import Combine
 import Foundation
 import Yosemite
 import KeychainAccess
+import protocol Networking.ApplicationPasswordUseCase
+import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
 
 // MARK: - SessionManager Notifications
@@ -171,16 +173,25 @@ final class SessionManager: SessionManagerProtocol {
     /// Deletes application password
     ///
     func deleteApplicationPassword() {
-        guard case let .wporg(username, password, siteAddress) = loadCredentials(),
-              let usecase = try? DefaultApplicationPasswordUseCase(username: username,
-                                                                   password: password,
-                                                                   siteAddress: siteAddress,
-                                                                   keychain: keychain) else {
+        let useCase: ApplicationPasswordUseCase? = {
+            switch loadCredentials() {
+            case let .wporg(username, password, siteAddress):
+                return try? DefaultApplicationPasswordUseCase(username: username,
+                                                              password: password,
+                                                              siteAddress: siteAddress,
+                                                              keychain: keychain)
+            case let .applicationPassword(_, _, siteAddress):
+                return OneTimeApplicationPasswordUseCase(applicationPassword: nil, siteAddress: siteAddress, keychain: keychain)
+            default:
+                return nil
+            }
+        }()
+        guard let useCase else {
             return
         }
 
         Task {
-            try await usecase.deletePassword()
+            try await useCase.deletePassword()
         }
     }
 }

@@ -152,6 +152,16 @@ class DefaultStoresManager: StoresManager {
         return self
     }
 
+    /// Deauthenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
+    ///
+    func listenToApplicationPasswordGenerationFailureNotification() {
+        applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
+                                                                                      object: nil,
+                                                                                      queue: .main) { [weak self] note in
+            _ = self?.deauthenticate()
+        }
+    }
+
     /// Synchronizes all of the Session's Entities.
     ///
     @discardableResult
@@ -602,16 +612,6 @@ private extension DefaultStoresManager {
 
         // Reload widgets UI
         WidgetCenter.shared.reloadAllTimelines()
-    }
-
-    /// Deauthenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
-    ///
-    func listenToApplicationPasswordGenerationFailureNotification() {
-        applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
-                                                                                      object: nil,
-                                                                                      queue: .main) { [weak self] note in
-            _ = self?.deauthenticate()
-        }
     }
 }
 

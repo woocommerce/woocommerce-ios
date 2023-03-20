@@ -50,8 +50,7 @@ class StoreOnboardingViewModel: ObservableObject {
 
     private var state: State
 
-    private let placeholderTasks: [StoreOnboardingTaskViewModel] = Array(repeating: StoreOnboardingTaskViewModel.placeHolder(),
-                                                                         count: 3)
+    private let placeholderTasks: [StoreOnboardingTaskViewModel] = [.placeHolder(), .placeHolder(), .placeHolder()]
 
     private let defaults: UserDefaults
 

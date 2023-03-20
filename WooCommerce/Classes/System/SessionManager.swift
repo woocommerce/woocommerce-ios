@@ -192,6 +192,7 @@ private extension SessionManager {
     enum AuthenticationTypeIdentifier: String {
         case wpcom = "AuthenticationType.wpcom"
         case wporg = "AuthenticationType.wporg"
+        case applicationPassword = "AuthenticationType.applicationPassword"
 
         init(type: Credentials) {
             switch type {
@@ -199,6 +200,8 @@ private extension SessionManager {
                 self = AuthenticationTypeIdentifier.wpcom
             case .wporg:
                 self = AuthenticationTypeIdentifier.wporg
+            case .applicationPassword:
+                self = AuthenticationTypeIdentifier.applicationPassword
             }
         }
     }
@@ -226,6 +229,8 @@ private extension SessionManager {
             return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
         case .wporg:
             return .wporg(username: username, password: secret, siteAddress: siteAddress)
+        case .applicationPassword:
+            return .applicationPassword(username: username, password: secret, siteAddress: siteAddress)
         }
     }
 

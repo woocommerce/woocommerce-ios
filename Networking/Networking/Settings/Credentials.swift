@@ -12,6 +12,10 @@ public enum Credentials: Equatable {
     ///
     case wporg(username: String, password: String, siteAddress: String)
 
+    /// For users that authorized application password through WP-admin
+    ///
+    case applicationPassword(username: String, password: String, siteAddress: String)
+
     /// For WPCOM credentials
     ///
     public init(username: String, authToken: String, siteAddress: String? = nil) {
@@ -66,6 +70,8 @@ public extension Credentials {
             return username
         case .wporg(let username, _, _):
             return username
+        case .applicationPassword(let username, _, _):
+            return username
         }
     }
 
@@ -75,6 +81,8 @@ public extension Credentials {
             return siteAddress
         case .wporg(_, _, let siteAddress):
             return siteAddress
+        case .applicationPassword(_, _, let siteAddress):
+            return siteAddress
         }
     }
 
@@ -83,6 +91,8 @@ public extension Credentials {
         case .wpcom(_, let authToken, _):
             return authToken
         case .wporg(_, let password, _):
+            return password
+        case .applicationPassword(_, let password, _):
             return password
         }
     }

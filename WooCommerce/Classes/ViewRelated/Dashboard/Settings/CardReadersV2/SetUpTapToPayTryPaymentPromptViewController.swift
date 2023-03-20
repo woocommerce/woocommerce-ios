@@ -16,12 +16,17 @@ final class SetUpTapToPayTryPaymentPromptViewController: UIHostingController<Set
         super.init(rootView: SetUpTapToPayPaymentPromptView(viewModel: viewModel))
 
         configureViewModel()
+        configureView()
     }
 
     private func configureViewModel() {
         viewModel.dismiss = { [weak self] in
             self?.dismiss(animated: true)
         }
+    }
+
+    private func configureView() {
+        rootView.rootViewController = self
     }
 
     required init?(coder: NSCoder) {
@@ -36,6 +41,7 @@ final class SetUpTapToPayTryPaymentPromptViewController: UIHostingController<Set
 
 struct SetUpTapToPayPaymentPromptView: View {
     @ObservedObject var viewModel: SetUpTapToPayTryPaymentPromptViewModel
+    weak var rootViewController: UIViewController?
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
@@ -78,14 +84,32 @@ struct SetUpTapToPayPaymentPromptView: View {
             Button(Localization.tryAPaymentButton, action: {
                 viewModel.tryAPaymentTapped()
             })
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
 
             Button(Localization.skipButton, action: {
                 viewModel.skipTapped()
             })
             .buttonStyle(SecondaryButtonStyle())
+
+            LazyNavigationLink(destination: paymentFlow(), isActive: $viewModel.summaryActive) {
+                EmptyView()
+            }
         }
         .padding()
+    }
+
+    /// Returns a `SimplePaymentsSummary` instance when the view model is available.
+    ///
+    private func paymentFlow() -> some View {
+        WooNavigationSheet(viewModel: WooNavigationSheetViewModel(navigationTitle: Localization.setUpTryPaymentPromptTitle,
+                                                                  done: viewModel.dismiss ?? {})) {
+            if let summaryViewModel = viewModel.summaryViewModel {
+                    SimplePaymentsSummary(dismiss: viewModel.dismiss ?? {},
+                                          rootViewController: rootViewController?.navigationController,
+                                          viewModel: summaryViewModel)
+            }
+            EmptyView()
+        }
     }
 }
 
@@ -123,6 +147,11 @@ private extension SetUpTapToPayPaymentPromptView {
             comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip " +
             "to the trial payment and dismiss the Set up Tap to Pay on iPhone flow"
         )
+
+        static let cancelButton = NSLocalizedString(
+            "Cancel",
+            comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow " +
+            "> Cancel button")
     }
 }
 

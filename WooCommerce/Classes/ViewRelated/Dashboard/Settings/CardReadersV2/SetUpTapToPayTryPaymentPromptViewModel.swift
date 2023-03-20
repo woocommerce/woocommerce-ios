@@ -17,7 +17,22 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
     private let connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
     private let stores: StoresManager
 
+    @Published var loading: Bool = false
+    var summaryViewModel: SimplePaymentsSummaryViewModel? = nil {
+        didSet {
+            summaryActive = summaryViewModel != nil
+        }
+    }
+    @Published var summaryActive: Bool = false
+
+    private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject()
+    private let analytics: Analytics = ServiceLocator.analytics
+
     private var subscriptions = Set<AnyCancellable>()
+
+    private var siteID: Int64 {
+        stores.sessionManager.defaultStoreID ?? 0
+    }
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
          connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker,
@@ -43,6 +58,31 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
         stores.dispatch(connectedAction)
     }
 
+    private func startTestPayment() {
+        loading = true
+        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID,
+                                                           status: .pending,
+                                                           amount: Constants.tapToPayTryAPaymentAmount,
+                                                           taxable: false) { [weak self] result in
+            guard let self = self else { return }
+            self.loading = false
+
+            switch result {
+            case .success(let order):
+                self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                                       providedAmount: order.total,
+                                                                       presentNoticeSubject: self.presentNoticeSubject)
+
+            case .failure(let error):
+                self.presentNoticeSubject.send(.error(Localization.errorCreatingTestPayment))
+                self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: .tapToPayTryAPayment,
+                                                                                              source: .tapToPayTryAPaymentPrompt))
+                DDLogError("⛔️ Error creating Tap to Pay try a payment order: \(error)")
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
     /// Updates whether the view this viewModel is associated with should be shown or not
     /// Notifies the viewModel owner if a change occurs via didChangeShouldShow
     ///
@@ -59,7 +99,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
     }
 
     func tryAPaymentTapped() {
-        reevaluateShouldShow()
+        startTestPayment()
     }
 
     func skipTapped() {
@@ -68,5 +108,17 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
 
     deinit {
         subscriptions.removeAll()
+    }
+}
+
+extension SetUpTapToPayTryPaymentPromptViewModel {
+    enum Constants {
+        static let tapToPayTryAPaymentAmount = "0.50"
+    }
+
+    enum Localization {
+        static let errorCreatingTestPayment = NSLocalizedString(
+            "The trial payment could not be started, please try again, or contact support if this problem persists.",
+            comment: "Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails.")
     }
 }

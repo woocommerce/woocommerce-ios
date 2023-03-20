@@ -880,6 +880,7 @@ extension WooAnalyticsEvent {
             case amount
             case summary
             case paymentMethod = "payment_method"
+            case tapToPayTryAPaymentPrompt = "tap_to_pay_try_a_payment_prompt"
         }
 
         /// Possible flows
@@ -887,6 +888,7 @@ extension WooAnalyticsEvent {
         enum Flow: String {
             case simplePayment = "simple_payment"
             case orderPayment = "order_payment"
+            case tapToPayTryAPayment = "tap_to_pay_try_a_payment"
         }
 
         /// Common event keys

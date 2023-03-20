@@ -40,6 +40,7 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
     ///
     init(credentials: Credentials?, applicationPasswordUseCase: ApplicationPasswordUseCase? = nil) {
         self.credentials = credentials
+        let storage = ApplicationPasswordStorage()
         let useCase: ApplicationPasswordUseCase? = {
             if let applicationPasswordUseCase {
                 return applicationPasswordUseCase
@@ -47,6 +48,9 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,
                                                               siteAddress: siteAddress)
+            } else if case .applicationPassword = credentials,
+                      let applicationPassword = storage.applicationPassword {
+                return OneTimeApplicationPasswordUseCase(applicationPassword: applicationPassword)
             } else {
                 return nil
             }
@@ -88,7 +92,17 @@ private extension DefaultRequestAuthenticator {
     /// To check whether the given URLRequest is a REST API request
     /// 
     func isRestAPIRequest(_ urlRequest: URLRequest) -> Bool {
-        guard case let .wporg(_, _, siteAddress) = credentials,
+        let siteAddress: String? = {
+            switch credentials {
+            case let .wporg(_, _, siteAddress):
+                return siteAddress
+            case let .applicationPassword(_, _, siteAddress):
+                return siteAddress
+            default:
+                return nil
+            }
+        }()
+        guard let siteAddress,
               let url = urlRequest.url,
               url.absoluteString.hasPrefix(siteAddress.trimSlashes() + "/" + RESTRequest.Settings.basePath) else {
             return false

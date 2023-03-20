@@ -1,17 +1,21 @@
 import XCTest
 import Yosemite
 @testable import WooCommerce
+import Combine
 
 final class StoreOnboardingViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
+    private var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
         super.setUp()
+        subscriptions = []
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
     }
 
     override func tearDown() {
         stores = nil
+        subscriptions = []
         super.tearDown()
     }
 
@@ -418,45 +422,46 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
 
-    // MARK: - `whenNoTasksAvailable``
+    // MARK: - `noTasksAvailableForDisplay``
 
-    func test_whenNoTasksAvailable_is_called_when_no_tasks_available_due_to_network_error() async {
+    func test_noTasksAvailableForDisplay_is_fired_when_no_tasks_available_due_to_network_error() async {
         // Given
-        var callbackCalled = false
+        var eventReceived = false
         mockLoadOnboardingTasks(result: .failure(MockError()))
         let sut = StoreOnboardingViewModel(isExpanded: false,
                                            siteID: 0,
-                                           stores: stores,
-                                           whenNoTasksAvailable: {
-            callbackCalled = true
-        })
+                                           stores: stores)
+        sut.noTasksAvailableForDisplay.sink { _ in
+            eventReceived = true
+        }.store(in: &subscriptions)
+
         // When
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(callbackCalled)
+        XCTAssertTrue(eventReceived)
     }
 
-    func test_whenNoTasksAvailable_is_called_when_no_tasks_received_in_success_response() async {
+    func test_noTasksAvailableForDisplay_is_fired_when_no_tasks_received_in_success_response() async {
         // Given
-        var callbackCalled = false
+        var eventReceived = false
         mockLoadOnboardingTasks(result: .success([]))
         let sut = StoreOnboardingViewModel(isExpanded: false,
                                            siteID: 0,
-                                           stores: stores,
-                                           whenNoTasksAvailable: {
-            callbackCalled = true
-        })
+                                           stores: stores)
+        sut.noTasksAvailableForDisplay.sink { _ in
+            eventReceived = true
+        }.store(in: &subscriptions)
         // When
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(callbackCalled)
+        XCTAssertTrue(eventReceived)
     }
 
-    func test_whenNoTasksAvailable_is_not_called_when_tasks_received_in_response() async {
+    func test_noTasksAvailableForDisplay_is_not_fired_when_tasks_received_in_response() async {
         // Given
-        var callbackCalled = false
+        var eventReceived = false
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: true, type: .addFirstProduct),
             .init(isComplete: true, type: .launchStore),
@@ -466,15 +471,16 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success(tasks))
         let sut = StoreOnboardingViewModel(isExpanded: false,
                                            siteID: 0,
-                                           stores: stores,
-                                           whenNoTasksAvailable: {
-            callbackCalled = true
-        })
+                                           stores: stores)
+        sut.noTasksAvailableForDisplay.sink { _ in
+            eventReceived = true
+        }.store(in: &subscriptions)
+
         // When
         await sut.reloadTasks()
 
         // Then
-        XCTAssertFalse(callbackCalled)
+        XCTAssertFalse(eventReceived)
     }
 }
 

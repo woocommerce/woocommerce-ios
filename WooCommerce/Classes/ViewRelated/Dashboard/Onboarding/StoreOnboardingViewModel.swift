@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
+import Combine
 
 /// View model for `StoreOnboardingView`.
 class StoreOnboardingViewModel: ObservableObject {
@@ -10,10 +11,17 @@ class StoreOnboardingViewModel: ObservableObject {
         case loading
         /// Shows a list of onboarding tasks
         case loaded(rows: [StoreOnboardingTaskViewModel])
+        /// When the request fails and there is no previously loaded local data
+        case failed
     }
 
     @Published private(set) var isRedacted: Bool = false
     @Published private(set) var taskViewModels: [StoreOnboardingTaskViewModel] = []
+
+    /// Emits when there are no tasks available for display after reload.
+    /// i.e. When (request failed && No previously loaded local data available)
+    ///
+    let noTasksAvailableForDisplay = PassthroughSubject<Void, Never>()
 
     /// Set externally in the hosting controller to invalidate the SwiftUI `StoreOnboardingView`'s intrinsic content size as a workaround with UIKit.
     var onStateChange: (() -> Void)?
@@ -54,25 +62,20 @@ class StoreOnboardingViewModel: ObservableObject {
 
     private let defaults: UserDefaults
 
-    private let whenNoTasksAvailable: (() -> Void)?
-
     /// - Parameters:
     ///   - isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
     ///   - siteID: siteID
     ///   - stores: StoresManager
     ///   - defaults: UserDefaults for storing when all onboarding tasks are completed
-    ///   - whenNoTasksAvailable: Callback when no tasks are available to display
     init(isExpanded: Bool,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         defaults: UserDefaults = .standard,
-         whenNoTasksAvailable: (() -> Void)? = nil) {
+         defaults: UserDefaults = .standard) {
         self.isExpanded = isExpanded
         self.siteID = siteID
         self.stores = stores
         self.state = .loading
         self.defaults = defaults
-        self.whenNoTasksAvailable = whenNoTasksAvailable
     }
 
     func reloadTasks() async {
@@ -84,10 +87,7 @@ class StoreOnboardingViewModel: ObservableObject {
         } else if taskViewModels.isNotEmpty {
             await update(state: .loaded(rows: taskViewModels))
         } else {
-            await MainActor.run {
-                whenNoTasksAvailable?()
-            }
-            await update(state: .loaded(rows: []))
+            await update(state: .failed)
         }
     }
 }
@@ -116,7 +116,11 @@ private extension StoreOnboardingViewModel {
             isRedacted = true
         case .loaded(let items):
             isRedacted = false
-            self.taskViewModels = items
+            taskViewModels = items
+        case .failed:
+            isRedacted = false
+            taskViewModels = []
+            noTasksAvailableForDisplay.send()
         }
         onStateChange?()
     }

@@ -1057,6 +1057,13 @@ extension WooAnalyticsEvent {
             )
         }
 
+        /// Tracked when we automatically disconnect a Built In reader, when setting up Tap to Pay
+        ///
+        /// - Parameters:
+        ///   - cardReaderModel: the model type of the card reader.
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///
         static func cardReaderAutomaticDisconnect(cardReaderModel: String?, forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderAutomaticDisconnect,
                               properties: [

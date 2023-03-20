@@ -79,7 +79,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
 
     private func disconnect() {
         let action = CardPresentPaymentAction.disconnect { _ in }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     private func beginConnectivityObservation() {

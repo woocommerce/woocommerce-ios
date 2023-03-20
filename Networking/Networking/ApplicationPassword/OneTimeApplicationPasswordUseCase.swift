@@ -2,49 +2,58 @@ import Foundation
 import KeychainAccess
 
 /// Use case to save application password generated from web view;
-/// The password will not be re-generated or deleted because no cookie authentication is available.
+/// The password will not be re-generated because no cookie authentication is available.
 ///
 final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase {
     public let applicationPassword: ApplicationPassword?
 
-    private let network: Network
     private let siteAddress: String
-    private let appID: String
+    private let session: URLSession
 
-    public init(applicationPassword: ApplicationPassword,
+    public init(applicationPassword: ApplicationPassword?,
                 siteAddress: String,
-                credentials: Credentials,
                 keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
-        self.applicationPassword = applicationPassword
-        self.siteAddress = siteAddress
-        self.appID = applicationPassword.uuid
-        self.network = AlamofireNetwork(credentials: credentials)
         let storage = ApplicationPasswordStorage(keychain: keychain)
-        storage.saveApplicationPassword(applicationPassword)
+        if let applicationPassword {
+            storage.saveApplicationPassword(applicationPassword)
+        }
+        self.applicationPassword = applicationPassword ?? storage.applicationPassword
+        self.siteAddress = siteAddress
+        self.session = URLSession(configuration: .default)
     }
 
     public func generateNewPassword() async throws -> ApplicationPassword {
-        throw ApplicationPasswordUseCaseError.unauthorizedRequest
+        /// We don't support generating new password for this use case.
+        throw ApplicationPasswordUseCaseError.notSupported
     }
 
     public func deletePassword() async throws {
-        let request = RESTRequest(siteURL: siteAddress, method: .delete, path: Path.applicationPasswords + "/" + appID)
-
-        try await withCheckedThrowingContinuation { continuation in
-            network.responseData(for: request) { result in
-                switch result {
-                case .success:
-                    continuation.resume()
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
+        guard let uuid = applicationPassword?.uuid,
+              let username = applicationPassword?.wpOrgUsername,
+              let password = applicationPassword?.password.secretValue,
+              let url = URL(string: siteAddress + Path.applicationPasswords + uuid) else {
+            return
         }
+
+        var request = try URLRequest(url: url, method: .delete)
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
+
+        let loginString = "\(username):\(password)"
+
+        if let loginData = loginString.data(using: .utf8) {
+            let base64LoginString = loginData.base64EncodedString()
+            request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
+        }
+
+        // Cookies from `CookieNonceAuthenticator` should be skipped
+        request.httpShouldHandleCookies = false
+        _ = try await session.data(for: request)
     }
 }
 
 private extension OneTimeApplicationPasswordUseCase {
     enum Path {
-        static let applicationPasswords = "wp/v2/users/me/application-passwords"
+        static let applicationPasswords = "/wp-json/wp/v2/users/me/application-passwords/"
     }
 }

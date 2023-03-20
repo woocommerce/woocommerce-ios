@@ -53,6 +53,32 @@ extension FancyAlertViewController {
         let controller = FancyAlertViewController.controllerWithConfiguration(configuration: config)
         return controller
     }
+
+    static func makeSiteCredentialLoginErrorAlert(message: String, defaultAction: (() -> Void)?) -> FancyAlertViewController {
+        let moreHelpButton = makeNeedMoreHelpButton()
+        let cancelButton = Config.ButtonConfig(Localization.cancelButton) { controller, _ in
+            controller.dismiss(animated: true)
+        }
+        let webViewButton: Config.ButtonConfig? = {
+            guard let defaultAction else {
+                return nil
+            }
+            return Config.ButtonConfig(Localization.loginWithWebViewButton) { controller, _ in
+                controller.dismiss(animated: true, completion: defaultAction)
+            }
+        }()
+        let config = FancyAlertViewController.Config(titleText: nil,
+                                                     bodyText: message,
+                                                     headerImage: nil,
+                                                     dividerPosition: .top,
+                                                     defaultButton: cancelButton,
+                                                     cancelButton: webViewButton,
+                                                     moreInfoButton: moreHelpButton,
+                                                     dismissAction: {})
+
+        let controller = FancyAlertViewController.controllerWithConfiguration(configuration: config)
+        return controller
+    }
 }
 
 
@@ -106,6 +132,16 @@ private extension FancyAlertViewController {
             "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app.",
             comment: "Description of alert for suggestion on how to connect to a WP.com site" +
             "Presented when a user logs in with an email that does not have access to a WP.com site"
+        )
+
+        static let cancelButton = NSLocalizedString(
+            "Cancel",
+            comment: "Title of dismiss button presented when site credential login fails"
+        )
+
+        static let loginWithWebViewButton = NSLocalizedString(
+            "Try again with WP-Admin page",
+            comment: "Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails"
         )
     }
 

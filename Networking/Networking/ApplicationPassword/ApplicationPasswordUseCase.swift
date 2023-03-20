@@ -28,28 +28,6 @@ public protocol ApplicationPasswordUseCase {
     func deletePassword() async throws
 }
 
-/// Use case to save application password generated from web view;
-/// The password will not be re-generated or deleted because no cookie authentication is available.
-///
-final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase {
-    public let applicationPassword: ApplicationPassword?
-
-    public init(applicationPassword: ApplicationPassword,
-                keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
-        self.applicationPassword = applicationPassword
-        let storage = ApplicationPasswordStorage(keychain: keychain)
-        storage.saveApplicationPassword(applicationPassword)
-    }
-    
-    public func generateNewPassword() async throws -> ApplicationPassword {
-        throw ApplicationPasswordUseCaseError.unauthorizedRequest
-    }
-    
-    public func deletePassword() async throws {
-        throw ApplicationPasswordUseCaseError.unauthorizedRequest
-    }
-}
-
 final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     /// Site Address
     ///

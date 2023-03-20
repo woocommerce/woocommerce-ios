@@ -36,7 +36,7 @@ final class DashboardViewModel {
     private let analytics: Analytics
     private let userDefaults: UserDefaults
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
-    private var showOnboardingCancellable: AnyCancellable?
+    private var showOnboardingSubscription: AnyCancellable?
 
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -268,19 +268,19 @@ final class DashboardViewModel {
         guard featureFlagService.isFeatureFlagEnabled(.dashboardOnboarding) else {
             return
         }
-
-        let noOnboardingTasksAvailablePublisher: AnyPublisher<Bool, Never>
-        if let storeOnboardingViewModel {
-            noOnboardingTasksAvailablePublisher = storeOnboardingViewModel.$noTasksAvailableForDisplay.eraseToAnyPublisher()
-        } else {
-            noOnboardingTasksAvailablePublisher = Just(false).eraseToAnyPublisher()
+        
+        guard let storeOnboardingViewModel else {
+            showOnboardingSubscription = userDefaults.publisher(for: \.completedAllStoreOnboardingTasks)
+                .sink { [weak self] in
+                    self?.showOnboarding = !$0
+                }
+            return
         }
-
-        self.showOnboardingCancellable = Publishers.CombineLatest(noOnboardingTasksAvailablePublisher,
-                                                                  userDefaults.publisher(for: \.completedAllStoreOnboardingTasks))
-        .sink { [weak self] noTasksAvailableForDisplay, completedAllStoreOnboardingTasks in
-            self?.showOnboarding = !(noTasksAvailableForDisplay || completedAllStoreOnboardingTasks)
-        }
+        
+        showOnboardingSubscription = storeOnboardingViewModel.$shouldShowInDashboard
+            .sink { [weak self] in
+                self?.showOnboarding = $0
+            }
     }
 }
 
@@ -292,9 +292,3 @@ private extension DashboardViewModel {
         static let dashboardScreenName = "my_store"
     }
 }
-
-private extension UserDefaults {
-     @objc dynamic var completedAllStoreOnboardingTasks: Bool {
-         bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
-     }
- }

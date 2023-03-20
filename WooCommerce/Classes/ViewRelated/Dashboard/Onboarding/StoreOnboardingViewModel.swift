@@ -18,10 +18,9 @@ class StoreOnboardingViewModel: ObservableObject {
     @Published private(set) var isRedacted: Bool = false
     @Published private(set) var taskViewModels: [StoreOnboardingTaskViewModel] = []
 
-    /// Emits when there are no tasks available for display after reload.
-    /// i.e. When (request failed && No previously loaded local data available)
+    /// Used to determine whether the task list should be displayed in dashboard
     ///
-    @Published private(set) var noTasksAvailableForDisplay: Bool = false
+    @Published private(set) var shouldShowInDashboard: Bool = false
 
     /// Set externally in the hosting controller to invalidate the SwiftUI `StoreOnboardingView`'s intrinsic content size as a workaround with UIKit.
     var onStateChange: (() -> Void)?
@@ -62,6 +61,11 @@ class StoreOnboardingViewModel: ObservableObject {
 
     private let defaults: UserDefaults
 
+    /// Emits when there are no tasks available for display after reload.
+    /// i.e. When (request failed && No previously loaded local data available)
+    ///
+    @Published private var noTasksAvailableForDisplay: Bool = false
+
     /// - Parameters:
     ///   - isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
     ///   - siteID: siteID
@@ -76,6 +80,11 @@ class StoreOnboardingViewModel: ObservableObject {
         self.stores = stores
         self.state = .loading
         self.defaults = defaults
+
+        Publishers.CombineLatest($noTasksAvailableForDisplay,
+                                 defaults.publisher(for: \.completedAllStoreOnboardingTasks))
+        .map { !($0 || $1) }
+        .assign(to: &$shouldShowInDashboard)
     }
 
     func reloadTasks() async {
@@ -147,3 +156,9 @@ private extension StoreOnboardingTaskViewModel {
                           type: .launchStore))
     }
 }
+
+extension UserDefaults {
+     @objc dynamic var completedAllStoreOnboardingTasks: Bool {
+         bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
+     }
+ }

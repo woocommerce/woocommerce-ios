@@ -418,36 +418,67 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
 
-    // MARK: - `noTasksAvailableForDisplay``
+    // MARK: - `shouldShowInDashboard``
 
-    func test_noTasksAvailableForDisplay_is_true_when_no_tasks_available_due_to_network_error() async {
+    func test_shouldShowInDashboard_is_false_when_no_tasks_available_due_to_network_error() async throws {
         // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         mockLoadOnboardingTasks(result: .failure(MockError()))
         let sut = StoreOnboardingViewModel(isExpanded: false,
                                            siteID: 0,
-                                           stores: stores)
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(sut.noTasksAvailableForDisplay)
+        XCTAssertFalse(sut.shouldShowInDashboard)
     }
 
-    func test_noTasksAvailableForDisplay_is_true_when_no_tasks_received_in_success_response() async {
+    func test_shouldShowInDashboard_is_false_when_no_tasks_received_in_success_response() async throws {
         // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         mockLoadOnboardingTasks(result: .success([]))
         let sut = StoreOnboardingViewModel(isExpanded: false,
                                            siteID: 0,
-                                           stores: stores)
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(sut.noTasksAvailableForDisplay)
+        XCTAssertFalse(sut.shouldShowInDashboard)
     }
 
-    func test_noTasksAvailableForDisplay_is_false_when_tasks_received_in_response() async {
+    func test_shouldShowInDashboard_is_true_when_pending_tasks_received_in_response() async throws {
         // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: true, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains),
+            .init(isComplete: true, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(tasks))
+        let sut = StoreOnboardingViewModel(isExpanded: false,
+                                           siteID: 0,
+                                           stores: stores,
+                                           defaults: defaults)
+
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertTrue(sut.shouldShowInDashboard)
+    }
+
+    func test_shouldShowInDashboard_is_false_when_all_tasks_are_complete() async throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: true, type: .addFirstProduct),
             .init(isComplete: true, type: .launchStore),
@@ -457,13 +488,14 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success(tasks))
         let sut = StoreOnboardingViewModel(isExpanded: false,
                                            siteID: 0,
-                                           stores: stores)
+                                           stores: stores,
+                                           defaults: defaults)
 
         // When
         await sut.reloadTasks()
 
         // Then
-        XCTAssertFalse(sut.noTasksAvailableForDisplay)
+        XCTAssertFalse(sut.shouldShowInDashboard)
     }
 }
 

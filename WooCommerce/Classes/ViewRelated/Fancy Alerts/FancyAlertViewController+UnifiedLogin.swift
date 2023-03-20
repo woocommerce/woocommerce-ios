@@ -55,7 +55,6 @@ extension FancyAlertViewController {
     }
 
     static func makeSiteCredentialLoginErrorAlert(message: String, defaultAction: (() -> Void)?) -> FancyAlertViewController {
-        let moreHelpButton = makeNeedMoreHelpButton()
         let cancelButton = Config.ButtonConfig(Localization.cancelButton) { controller, _ in
             controller.dismiss(animated: true)
         }
@@ -73,7 +72,7 @@ extension FancyAlertViewController {
                                                      dividerPosition: .top,
                                                      defaultButton: cancelButton,
                                                      cancelButton: webViewButton,
-                                                     moreInfoButton: moreHelpButton,
+                                                     moreInfoButton: nil,
                                                      dismissAction: {})
 
         let controller = FancyAlertViewController.controllerWithConfiguration(configuration: config)

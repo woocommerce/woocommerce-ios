@@ -771,7 +771,7 @@ private extension EditableOrderViewModel {
             }
             .assign(to: &$statusBadgeViewModel)
     }
-    
+
     /// Creates an array of OrderSyncProductInput that will be sent to the RemoteOrderSynchronizer when adding multiple products to an Order
     /// - Parameters:
     ///   - products: Selected products
@@ -803,7 +803,7 @@ private extension EditableOrderViewModel {
 
         return productInputs + productVariationInputs
     }
-    
+
     /// Creates an array of OrderSyncProductInput that will be sent to the RemoteOrderSynchronizer when removing multiple products from an Order
     /// - Parameters:
     ///   - products: Represents a Product entity
@@ -846,6 +846,14 @@ private extension EditableOrderViewModel {
         let addedItemsToSync = productInputAdditionsToSync(products: products, variations: variations)
         let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
         orderSynchronizer.setProducts.send(addedItemsToSync + removedItemsToSync)
+
+        if addedItemsToSync.isNotEmpty {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+        }
+
+        if removedItemsToSync.isNotEmpty {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
+        }
     }
 
     /// Adds a selected product (from the product list) to the order.
@@ -868,15 +876,15 @@ private extension EditableOrderViewModel {
         // Multi-selection
         if !selectedProducts.contains(where: { $0?.productID == product.productID }) {
             selectedProducts.append(product)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
         } else {
             selectedProducts.removeAll(where: { $0?.productID == product.productID })
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
         }
     }
 
     /// Adds a selected product variation (from the product list) to the order.
     ///
+    // TODO: This method needs to be renamed
+    // to reflect that adds variations to Order for single selection, but only selects/unselects for multi-selection
     func addProductVariationToOrder(_ variation: ProductVariation, parent product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {
@@ -897,10 +905,8 @@ private extension EditableOrderViewModel {
         // Multi-Selection
         if !selectedProductVariations.contains(where: { $0?.productVariationID == variation.productVariationID }) {
             selectedProductVariations.append(variation)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
         } else {
             selectedProductVariations.removeAll(where: { $0?.productVariationID == variation.productVariationID })
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
         }
     }
 

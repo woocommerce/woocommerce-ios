@@ -121,7 +121,8 @@ extension MockReviews {
                        addOns: [],
                        bundleStockStatus: nil,
                        bundleStockQuantity: nil,
-                       bundledItems: [])
+                       bundledItems: [],
+                       compositeComponents: [])
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {
@@ -270,7 +271,8 @@ extension MockReviews {
                        addOns: [],
                        bundleStockStatus: nil,
                        bundleStockQuantity: nil,
-                       bundledItems: [])
+                       bundledItems: [],
+                       compositeComponents: [])
     }
 
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
@@ -394,7 +396,8 @@ extension MockReviews {
                        addOns: [],
                        bundleStockStatus: nil,
                        bundleStockQuantity: nil,
-                       bundledItems: [])
+                       bundledItems: [],
+                       compositeComponents: [])
     }
 
     func sampleVariationTypeDimensions() -> Networking.ProductDimensions {

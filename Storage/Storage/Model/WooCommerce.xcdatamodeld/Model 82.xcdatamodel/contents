@@ -426,6 +426,7 @@
         <relationship name="attributes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductAttribute" inverseName="product" inverseEntity="ProductAttribute"/>
         <relationship name="bundledItems" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ProductBundleItem" inverseName="product" inverseEntity="ProductBundleItem"/>
         <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductCategory" inverseName="products" inverseEntity="ProductCategory"/>
+        <relationship name="compositeComponents" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ProductCompositeComponent" inverseName="product" inverseEntity="ProductCompositeComponent"/>
         <relationship name="defaultAttributes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductDefaultAttribute" inverseName="product" inverseEntity="ProductDefaultAttribute"/>
         <relationship name="dimensions" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductDimensions" inverseName="product" inverseEntity="ProductDimensions"/>
         <relationship name="downloads" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ProductDownload" inverseName="product" inverseEntity="ProductDownload"/>
@@ -496,6 +497,14 @@
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="slug" attributeType="String"/>
         <relationship name="products" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="Product" inverseName="categories" inverseEntity="Product"/>
+    </entity>
+    <entity name="ProductCompositeComponent" representedClassName="ProductCompositeComponent" syncable="YES">
+        <attribute name="componentID" attributeType="String" defaultValueString=""/>
+        <attribute name="imageURL" attributeType="String" defaultValueString=""/>
+        <attribute name="optionIDs" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
+        <attribute name="optionType" attributeType="String" defaultValueString=""/>
+        <attribute name="title" attributeType="String" defaultValueString=""/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="compositeComponents" inverseEntity="Product"/>
     </entity>
     <entity name="ProductDefaultAttribute" representedClassName="ProductDefaultAttribute" syncable="YES">
         <attribute name="attributeID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

@@ -39,6 +39,7 @@ extension WordPressAuthenticator {
                                                                 skipXMLRPCCheckForSiteDiscovery: true,
                                                                 skipXMLRPCCheckForSiteAddressLogin: true,
                                                                 enableManualSiteCredentialLogin: true,
+                                                                enableManualErrorHandlingForSiteCredentialLogin: true,
                                                                 useEnterEmailAddressAsStepValueForGetStartedVC: true,
                                                                 enableSiteAddressLoginOnlyInPrologue: true,
                                                                 enableSiteCredentialLoginForJetpackSites: false)

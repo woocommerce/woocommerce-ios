@@ -1,6 +1,11 @@
 import Foundation
 import WebKit
-import WordPressAuthenticator
+
+protocol WebviewReloadable {
+    /// Allows the view model to load a URL in the webview at anytime.
+    /// This is useful when we have custom redirect handling for WordPress.com login in self-hosted states.
+    var loadWebview: (_ url: URL) -> Void { get set }
+}
 
 /// Abstracts different configurations and logic for web view controllers
 /// which are authenticated for WordPress.com, where possible

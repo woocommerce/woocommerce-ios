@@ -785,7 +785,6 @@ private extension EditableOrderViewModel {
                 updatedProductAndVariationIDsInOrder.append(product.productID)
             }
         }
-        orderSynchronizer.setProducts.send(productInputs)
 
         // Add selected variations to Order, unless already are
         for variation in variations {
@@ -795,11 +794,14 @@ private extension EditableOrderViewModel {
                 updatedProductAndVariationIDsInOrder.append(variation.productVariationID)
             }
         }
-        orderSynchronizer.setProducts.send(productVariationInputs)
+
+        // We need to send all OrderSyncProductInput in one call to the RemoteOrderSynchronizer, both additions and deletions
+        // otherwise may ignore the subsequent values that are sent
+        orderSynchronizer.setProducts.send(productInputs + productVariationInputs)
 
         // Products to be removed from the Order
+        // TODO: Removals need to be refactored to be also included in an unique call to orderSynchronizer.setProducts.send
         let removeProducts = orderSynchronizer.order.items.filter { item in
-            // Definition in OrderItem+Woo
             return item.variationID == 0 && !products.contains(where: { $0?.productID == item.productID })
         }
         for item in removeProducts {

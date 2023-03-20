@@ -145,6 +145,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
+         selectedProductVariations: [ProductVariation] = [],
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
@@ -164,6 +165,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onVariationSelected = onVariationSelected
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
+        self.selectedProductVariations = selectedProductVariations
         self.purchasableItemsOnly = purchasableItemsOnly
 
         configureSyncingCoordinator()
@@ -236,7 +238,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  isClearSelectionEnabled: isClearSelectionEnabled,
                                                  onVariationSelected: onVariationSelected,
                                                  onMultipleSelectionCompleted: { [weak self] productVariations in
-            self?.selectedProductVariations = productVariations
+            self?.updateSelectedVariations(productID: productID, selectedVariations: productVariations)
         })
     }
 

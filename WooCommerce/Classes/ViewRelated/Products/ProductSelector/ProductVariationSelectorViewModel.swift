@@ -67,12 +67,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     @Published private(set) var selectedProductVariationIDs: [Int64]
 
-    var selectedProductVariations: [ProductVariation] {
-        selectedProductVariationIDs.map { id in
-            productVariationsResultsController.fetchedObjects.first { $0.productVariationID == id }
-        }
-        .compactMap { $0 }
-    }
+    var selectedProductVariations: [ProductVariation]
 
     // MARK: Sync & Storage properties
 
@@ -145,6 +140,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.selectedProductVariationIDs = selectedProductVariationIDs
         self.purchasableItemsOnly = purchasableItemsOnly
+        self.selectedProductVariations = []
 
         configureSyncingCoordinator()
         configureProductVariationsResultsController()
@@ -205,6 +201,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     func clearSelection() {
         selectedProductVariationIDs = []
+        selectedProductVariations = []
     }
 }
 
@@ -266,6 +263,10 @@ private extension ProductVariationSelectorViewModel {
     func transitionToResultsUpdatedState() {
         shouldShowScrollIndicator = false
         syncStatus = productVariations.isNotEmpty ? .results: .empty
+        selectedProductVariations = selectedProductVariationIDs.map { selectedVariationID in
+            productVariationsResultsController.fetchedObjects.first { $0.productVariationID == selectedVariationID }
+        }
+        .compactMap { $0 }
     }
 }
 
@@ -320,8 +321,12 @@ private extension ProductVariationSelectorViewModel {
     func toggleSelection(productVariationID: Int64) {
         if selectedProductVariationIDs.contains(productVariationID) {
             selectedProductVariationIDs.removeAll(where: { $0 == productVariationID })
+            selectedProductVariations.removeAll { $0.productVariationID == productVariationID }
         } else {
+            guard let variation = productVariationsResultsController.fetchedObjects.first(where: { $0.productVariationID == productVariationID })
+            else { return }
             selectedProductVariationIDs.append(productVariationID)
+            selectedProductVariations.append(variation)
         }
     }
 

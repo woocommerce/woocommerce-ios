@@ -180,6 +180,7 @@ final class EditableOrderViewModel: ObservableObject {
         ProductSelectorViewModel(
             siteID: siteID,
             selectedItemIDs: selectedProductsAndVariationsIDs,
+            selectedProductVariations: selectedProductVariations,
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
@@ -214,7 +215,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Keeps track of selected/unselected Product Variations, if any
     ///
-    @Published var selectedProductVariations: [ProductVariation?] = []
+    @Published var selectedProductVariations: [ProductVariation] = []
 
     /// Keeps track of all selected Products and Product Variations IDs
     ///
@@ -364,8 +365,9 @@ final class EditableOrderViewModel: ObservableObject {
     private func selectExistingProductsInOrderIfNeeded() {
         let _ = orderSynchronizer.order.items.map { item in
             if item.variationID != 0 {
-                let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID })
-                selectedProductVariations.append(variation)
+                if let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+                    selectedProductVariations.append(variation)
+                }
             } else {
                 let product = allProducts.first(where: { $0.productID == item.productID })
                 selectedProducts.append(product)
@@ -395,7 +397,7 @@ final class EditableOrderViewModel: ObservableObject {
                 selectedProducts.removeAll(where: { $0?.productID == item.productID})
             }
             if item.variationID != 0 {
-                selectedProductVariations.removeAll(where: { $0?.productVariationID == item.variationID})
+                selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID})
             }
             updatedProductAndVariationIDsInOrder.removeAll(where: { $0 == item.productOrVariationID })
         }
@@ -786,18 +788,16 @@ private extension EditableOrderViewModel {
         for product in products {
             // Only perform the operation if the product has not been already added to the existing Order
             if let product,
-               !updatedProductAndVariationIDsInOrder.contains(where: {$0 == product.productID}) {
+               !orderSynchronizer.order.items.contains(where: {$0.productID == product.productID}) {
                 productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
-                updatedProductAndVariationIDsInOrder.append(product.productID)
             }
         }
 
         for variation in variations {
             // Only perform the operation if the variation has not been already added to the existing Order
             if let variation,
-               !updatedProductAndVariationIDsInOrder.contains(where: {$0 == variation.productVariationID}) {
+               !orderSynchronizer.order.items.contains(where: {$0.variationID == variation.productVariationID}) {
                 productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
-                updatedProductAndVariationIDsInOrder.append(variation.productVariationID)
             }
         }
 
@@ -909,10 +909,10 @@ private extension EditableOrderViewModel {
             return
         }
         // Multi-Selection
-        if !selectedProductVariations.contains(where: { $0?.productVariationID == variation.productVariationID }) {
+        if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
             selectedProductVariations.append(variation)
         } else {
-            selectedProductVariations.removeAll(where: { $0?.productVariationID == variation.productVariationID })
+            selectedProductVariations.removeAll(where: { $0.productVariationID == variation.productVariationID })
         }
     }
 

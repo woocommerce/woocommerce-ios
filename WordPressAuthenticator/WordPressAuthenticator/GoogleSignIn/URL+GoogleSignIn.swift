@@ -18,9 +18,9 @@ extension URL {
             ("code_challenge_method", pkce.method.urlQueryParameterValue),
             ("redirect_uri", clientId.defaultRedirectURI),
             ("response_type", "code"),
-            // TODO: We might want to add some of these or them configurable
-            // See https://developers.google.com/identity/protocols/oauth2/scopes
-            ("scope", "openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile")
+            // See what the Google SDK does:
+            // https://github.com/google/GoogleSignIn-iOS/blob/7.0.0/GoogleSignIn/Sources/GIDScopes.m#L58-L61
+            ("scope", "profile email")
         ].map { URLQueryItem(name: $0.0, value: $0.1) }
 
         if #available(iOS 16.0, *) {

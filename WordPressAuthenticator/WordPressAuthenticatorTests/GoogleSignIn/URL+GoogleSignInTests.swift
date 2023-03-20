@@ -34,7 +34,7 @@ class URLGoogleSignInTests: XCTestCase {
         assertQueryItems(
             for: url,
             includeItemNamed: "scope",
-            withValue: "openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+            withValue: "profile email"
         )
         assertQueryItems(for: url, includeItemNamed: "response_type", withValue: "code")
     }

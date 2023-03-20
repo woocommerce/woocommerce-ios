@@ -453,7 +453,7 @@ private extension SiteCredentialsViewController {
                                             password: loginFields.password,
                                             xmlrpc: xmlrpc,
                                             options: [:])
-        delegate.handleSiteCredentialLogin(credentials: wporg, in: self, onLoading: { [weak self] shouldShowLoading in
+        delegate.handleSiteCredentialLogin(credentials: wporg, onLoading: { [weak self] shouldShowLoading in
             self?.configureViewLoading(shouldShowLoading)
         }, onSuccess: { [weak self] in
             self?.finishedLogin(withUsername: wporg.username,
@@ -468,6 +468,7 @@ private extension SiteCredentialsViewController {
     func handleLoginFailure(error: Error, incorrectCredentials: Bool) {
         configureViewLoading(false)
         guard configuration.enableManualErrorHandlingForSiteCredentialLogin == false else {
+            WordPressAuthenticator.shared.delegate?.handleSiteCredentialLoginFailure(error: error, for: loginFields.siteAddress, in: self)
             return
         }
         if incorrectCredentials {

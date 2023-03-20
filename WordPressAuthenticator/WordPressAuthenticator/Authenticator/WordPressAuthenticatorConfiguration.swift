@@ -156,6 +156,7 @@ public struct WordPressAuthenticatorConfiguration {
 
     /// If enabled, the library will not show any alert or inline error message
     /// when site credential login fails.
+    /// Instead, the delegate method `handleSiteCredentialLoginFailure` will be called.
     ///
     let enableManualErrorHandlingForSiteCredentialLogin: Bool
 

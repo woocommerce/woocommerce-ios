@@ -109,7 +109,7 @@ private extension SetUpTapToPayCompleteView {
         )
 
         static let setUpCompleteDescription = NSLocalizedString(
-            "Your phone is ready for Tap to Pay on iPhone. Your customer can tap their card or " +
+            "Your phone is ready for Tap to Pay on iPhone. Your customers can tap their card or " +
             "device on your phone to pay.",
             comment: "Settings > Set up Tap to Pay on iPhone > Complete > Description"
         )

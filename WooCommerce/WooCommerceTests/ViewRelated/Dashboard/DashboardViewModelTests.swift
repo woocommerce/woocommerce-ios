@@ -5,6 +5,8 @@ import enum Yosemite.ProductAction
 import enum Yosemite.AppSettingsAction
 import enum Yosemite.JustInTimeMessageAction
 import struct Yosemite.JustInTimeMessage
+import struct Yosemite.StoreOnboardingTask
+import enum Yosemite.StoreOnboardingTasksAction
 @testable import WooCommerce
 
 final class DashboardViewModelTests: XCTestCase {
@@ -369,4 +371,112 @@ final class DashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.showOnboarding)
     }
+
+    func test_showOnboarding_is_true_when_there_are_tasks_available_for_display() async throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
+                                           userDefaults: defaults)
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: true, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(tasks))
+
+        // When
+        let storeOnboardingViewModel = StoreOnboardingViewModel(isExpanded: false,
+                                                                siteID: 0,
+                                                                stores: stores,
+                                                                defaults: defaults)
+        sut.storeOnboardingViewModel = storeOnboardingViewModel
+        await sut.reloadStoreOnboardingTasks()
+
+        // Then
+        XCTAssertTrue(sut.showOnboarding)
+    }
+
+    func test_showOnboarding_is_false_when_all_tasks_are_complete() async throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
+                                           userDefaults: defaults)
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: true, type: .addFirstProduct),
+            .init(isComplete: true, type: .launchStore),
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: true, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(tasks))
+
+        // When
+        let storeOnboardingViewModel = StoreOnboardingViewModel(isExpanded: false,
+                                                                siteID: 0,
+                                                                stores: stores,
+                                                                defaults: defaults)
+        sut.storeOnboardingViewModel = storeOnboardingViewModel
+        await sut.reloadStoreOnboardingTasks()
+
+        // Then
+        XCTAssertFalse(sut.showOnboarding)
+    }
+
+    func test_showOnboarding_is_false_when_no_tasks_available_for_display_due_to_network_error() async throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
+                                           userDefaults: defaults)
+        mockLoadOnboardingTasks(result: .failure(MockError()))
+
+        // Then
+        XCTAssertTrue(sut.showOnboarding)
+
+        // When
+        let storeOnboardingViewModel = StoreOnboardingViewModel(isExpanded: false,
+                                                                siteID: 0,
+                                                                stores: stores,
+                                                                defaults: defaults)
+        sut.storeOnboardingViewModel = storeOnboardingViewModel
+        await sut.reloadStoreOnboardingTasks()
+
+        // Then
+        XCTAssertFalse(sut.showOnboarding)
+    }
+
+    func test_showOnboarding_is_false_when_no_tasks_available_for_display_due_to_empty_tasks_response() async throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
+                                           userDefaults: defaults)
+        mockLoadOnboardingTasks(result: .success([]))
+
+        // When
+        let storeOnboardingViewModel = StoreOnboardingViewModel(isExpanded: false,
+                                                                siteID: 0,
+                                                                stores: stores,
+                                                                defaults: defaults)
+        sut.storeOnboardingViewModel = storeOnboardingViewModel
+        await sut.reloadStoreOnboardingTasks()
+
+        // Then
+        XCTAssertFalse(sut.showOnboarding)
+    }
+}
+
+private extension DashboardViewModelTests {
+    func mockLoadOnboardingTasks(result: Result<[StoreOnboardingTask], Error>) {
+        stores.whenReceivingAction(ofType: StoreOnboardingTasksAction.self) { action in
+            guard case let .loadOnboardingTasks(_, completion) = action else {
+                return XCTFail()
+            }
+            completion(result)
+        }
+    }
+
+    final class MockError: Error { }
 }

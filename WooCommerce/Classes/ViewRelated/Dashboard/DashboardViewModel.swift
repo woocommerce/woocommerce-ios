@@ -36,7 +36,7 @@ final class DashboardViewModel {
     private let analytics: Analytics
     private let userDefaults: UserDefaults
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
-    private var showOnboardingCancellable: AnyCancellable? = nil
+    private var showOnboardingCancellable: AnyCancellable?
 
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -278,9 +278,9 @@ final class DashboardViewModel {
 
         self.showOnboardingCancellable = Publishers.CombineLatest(noOnboardingTasksAvailablePublisher,
                                                                   userDefaults.publisher(for: \.completedAllStoreOnboardingTasks))
-        .sink(receiveValue: { [weak self] noTasksAvailableForDisplay, completedAllStoreOnboardingTasks in
+        .sink { [weak self] noTasksAvailableForDisplay, completedAllStoreOnboardingTasks in
             self?.showOnboarding = !(noTasksAvailableForDisplay || completedAllStoreOnboardingTasks)
-        })
+        }
     }
 }
 

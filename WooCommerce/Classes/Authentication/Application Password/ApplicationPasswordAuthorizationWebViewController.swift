@@ -142,9 +142,9 @@ private extension ApplicationPasswordAuthorizationWebViewController {
 
     func loadAuthorizationPage(url: URL) {
         let parameters: [URLQueryItem] = [
-            URLQueryItem(name: "app_name", value: appName),
-            URLQueryItem(name: "app_id", value: appID),
-            URLQueryItem(name: "success_url", value: Constants.successURL)
+            URLQueryItem(name: Constants.Query.appName, value: appName),
+            URLQueryItem(name: Constants.Query.appID, value: appID),
+            URLQueryItem(name: Constants.Query.successURL, value: Constants.successURL)
         ]
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
         components?.queryItems = parameters
@@ -162,8 +162,8 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         }
         let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
         guard let queryItems = components?.queryItems,
-              let username = queryItems.first(where: { $0.name == "user_login" })?.value,
-              let password = queryItems.first(where: { $0.name == "password" })?.value else {
+              let username = queryItems.first(where: { $0.name == Constants.Query.username })?.value,
+              let password = queryItems.first(where: { $0.name == Constants.Query.password })?.value else {
             DDLogError("⛔️ Authorization rejected for application passwords")
             return showErrorAlert(message: Localization.authorizationRejected)
         }
@@ -197,6 +197,13 @@ private extension ApplicationPasswordAuthorizationWebViewController {
 private extension ApplicationPasswordAuthorizationWebViewController {
     enum Constants {
         static let successURL = "woocommerce://application-password"
+        enum Query {
+            static let username = "user_login"
+            static let password = "password"
+            static let appName = "app_name"
+            static let appID = "app_id"
+            static let successURL = "success_url"
+        }
     }
     enum Localization {
         static let login = NSLocalizedString("Log In", comment: "Title for the application password authorization web view")

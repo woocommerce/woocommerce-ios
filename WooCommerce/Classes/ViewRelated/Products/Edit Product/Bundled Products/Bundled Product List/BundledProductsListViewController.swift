@@ -25,7 +25,7 @@ struct BundledProductsList: View {
 
     /// View model that directs the view content.
     ///
-    let viewModel: BundledProductsListViewModel
+    @ObservedObject var viewModel: BundledProductsListViewModel
 
     /// Dynamic image width, also used for its height.
     ///

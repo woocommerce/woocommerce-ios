@@ -69,6 +69,10 @@ protocol OrderSynchronizer {
     ///
     var setProduct: PassthroughSubject<OrderSyncProductInput, Never> { get }
 
+    /// Sets multiple products with their quantities.
+    ///
+    var setProducts: PassthroughSubject<[OrderSyncProductInput], Never> { get }
+
     /// Sets or removes the order shipping & billing addresses.
     ///
     var setAddresses: PassthroughSubject<OrderSyncAddressesInput?, Never> { get }

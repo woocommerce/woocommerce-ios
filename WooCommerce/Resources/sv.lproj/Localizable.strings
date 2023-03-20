@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-14 16:13:14+0000 */
+/* Translation-Revision-Date: 2023-03-16 13:54:10+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -41,6 +41,11 @@
 
 /* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@ Version" = "%1$@-version";
+
+/* A label prompting users to learn more about Tap to Pay on iPhone"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"%1$@ about accepting payments with Tap to Pay on iPhone." = "%1$@ om att ta emot betalningar med Tryck för att betala på iPhone.";
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -328,6 +333,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the feature announcement banner intended to upsell card readers */
 "Accept payments easily" = "Ta emot betalningar enkelt";
+
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
+"Accept the Terms of Service during set up." = "Godkänn användarvillkoren under konfigurationen.";
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "Kom åt rabatterade fraktavgifter. För närvarande endast tillgängligt med DHL och USPS, men fler alternativ kommer snart.";
@@ -1113,6 +1121,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for bundle product type. */
 "Bundle" = "Paket";
 
+/* Title for the bundled products screen */
+"Bundled Products" = "Paketprodukter";
+
+/* Title for Bundled Products row in the product form screen. */
+"Bundled products" = "Paketprodukter";
+
 /* Country option for a site address. */
 "Burkina Faso" = "Burkina Faso";
 
@@ -1534,6 +1548,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert title when starting the collect payment flow with a user name. */
 "Collect payment from %1$@" = "Ta emot betalning från %1$@";
+
+/* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
+"Collect payments, setup Tap to Pay, order card readers and more." = "Ta emot betalning, konfigurera tryck för att betala, beställ kortläsare med mera.";
 
 /* Industry option in the store creation category question. */
 "Collections Agencies" = "Inkassobyråer";
@@ -2997,6 +3014,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "Från enhet";
 
+/* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
+"From purchase to fulfillment – manage the entire order process via the app." = "Från köp till fullföljande – hantera hela beställningsprocessen via appen.";
+
 /* Industry option in the store creation category question. */
 "Fuel Dispensers" = "Bränsleautomater";
 
@@ -4001,6 +4021,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text that explains how to update VC to get the latest stats */
 "Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "Se till att du kör den senaste versionen av WooCommerce på din webbplats och att du har WooCommerce Admin aktiverad.";
 
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to sign in to iCloud and set a passcode on the device */
+"Make sure you are signed in to iCloud, and have set a passcode." = "Se till att du är inloggad i iCloud och att du har angett en lösenkod.";
+
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "Gör dina produkter lättare att hitta med etiketter";
 
@@ -4367,6 +4390,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Niue" = "Niue";
 
+/* Placeholder for empty product ratings */
+"No (approved) reviews" = "Inga (godkända) recensioner";
+
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "Inga begränsningar";
 
@@ -4448,6 +4474,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "Det finns inga fraktavgifter tillgängliga";
+
+/* Error in identifying supported contact methods in the Shipping Label Address Validation */
+"No supported contact method on this device." = "Det finns ingen kontaktmetod som stöds på den här enheten.";
 
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "Inga etiketter";
@@ -5992,6 +6021,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text on the button to see a saved receipt */
 "See Receipt" = "Se kvitto";
 
+/* Description of the 'My Store' screen - used for spotlight indexing on iOS. */
+"See at a glance which products are winning." = "Se en överblick av vilka produkter som presterar bäst.";
+
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "Se alternativen för layout och pappersstorlek";
 
@@ -7525,6 +7557,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "Prova installera igen";
 
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
+"Try a payment using your own card (and refund it when you're done.)" = "Prova att genomföra en betalning med ditt eget kort (och återbetala den när du är klar).";
+
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
@@ -8412,6 +8447,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "Du kan välja flera stycken.";
 
+/* Info notice at the bottom of the bundled products screen */
+"You can edit bundled products in the web dashboard." = "Du kan redigera paketprodukter i webbadminpanelen.";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Du kan redigera produkttillägg i webbadminpanelen.";
 
@@ -8613,6 +8651,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "password" = "lösenord";
 
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
+"payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "betalningar, tryck för att betala, woocommerce, woo, personliga betalningar, ta emot personliga betalningar, betalningar, läsare, kortläsare, beställ kortläsare";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "betygsatt %ld gånger";
 
@@ -8682,6 +8723,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "Avfärda";
+
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
+"woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommece, min butik, idag, den här veckan, den här månaden, det här året, beställningar, besökare, konvertering, toppkonvertering, artiklar sålda";
+
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Orders' tab. */
+"woocommerce, orders, all orders, new order" = "woocommerce, beställningar, alla beställningar, ny beställning";
+
+/* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
+"woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, produkter, kategorier, ny produkt, sök produkter";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */

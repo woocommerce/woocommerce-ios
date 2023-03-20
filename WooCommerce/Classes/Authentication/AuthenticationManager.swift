@@ -267,7 +267,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Handles site credential login
     func handleSiteCredentialLogin(credentials: WordPressOrgCredentials,
-                                   in viewController: UIViewController,
                                    onLoading: @escaping (Bool) -> Void,
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping  (Error, Bool) -> Void) {
@@ -277,14 +276,28 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             onLoading(false)
             onFailure(error.underlyingError, false)
             self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication, error: error))
-            self.handleSiteCredentialLoginError(error,
-                                                for: credentials.siteURL,
-                                                in: viewController)
         })
         self.siteCredentialLoginUseCase = useCase
 
         useCase.handleLogin(username: credentials.username, password: credentials.password)
         onLoading(true)
+    }
+
+    func handleSiteCredentialLoginFailure(error: Error,
+                                          for siteURL: String,
+                                          in viewController: UIViewController) {
+        guard featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin) else {
+            return
+        }
+        let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
+            message: (error as NSError).localizedDescription,
+            defaultAction: { [weak self] in
+                guard let self else { return }
+                let webViewController = self.applicationPasswordWebView(for: siteURL)
+                viewController.present(UINavigationController(rootViewController: webViewController), animated: true)
+            }
+        )
+        viewController.present(alertController, animated: true)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.
@@ -708,23 +721,6 @@ private extension AuthenticationManager {
             self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
         }
         self.postSiteCredentialLoginChecker = checker
-    }
-
-    func handleSiteCredentialLoginError(_ error: SiteCredentialLoginError,
-                                        for siteURL: String,
-                                        in viewController: UIViewController) {
-        guard featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin) else {
-            return
-        }
-        let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
-            message: error.underlyingError.localizedDescription,
-            defaultAction: { [weak self] in
-                guard let self else { return }
-                let webViewController = self.applicationPasswordWebView(for: siteURL)
-                viewController.present(UINavigationController(rootViewController: webViewController), animated: true)
-            }
-        )
-        viewController.present(alertController, animated: true)
     }
 }
 

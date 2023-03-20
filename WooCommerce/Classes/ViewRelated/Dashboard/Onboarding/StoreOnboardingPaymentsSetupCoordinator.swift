@@ -43,10 +43,10 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
         let title: String
         switch task {
         case .wcPay:
-            urlString = "\(site.adminURL.removingSuffix("/"))/admin.php?page=wc-settings&tab=checkout"
+            urlString = URLs.wcPay(site: site)
             title = Localization.wcPayWebviewTitle
         case .payments:
-            urlString = "\(site.adminURL.removingSuffix("/"))/admin.php?page=wc-admin&task=payments"
+            urlString = URLs.payments(site: site)
             title = Localization.paymentsWebviewTitle
         }
 
@@ -75,5 +75,15 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
             "Payments",
             comment: "Title of the webview for payments setup from onboarding."
         )
+    }
+
+    enum URLs {
+        static func wcPay(site: Site) -> String {
+            "\(site.adminURL.removingSuffix("/"))/admin.php?page=wc-settings&tab=checkout"
+        }
+
+        static func payments(site: Site) -> String {
+            "\(site.adminURL.removingSuffix("/"))/admin.php?page=wc-admin&task=payments"
+        }
     }
 }

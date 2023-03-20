@@ -8,6 +8,8 @@ import enum Experiments.ABTest
 import struct Networking.Settings
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
+import protocol Networking.ApplicationPasswordUseCase
+import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
 import protocol Experiments.ABTestVariationProvider
 import struct Experiments.CachedABTestVariationProvider
@@ -294,7 +296,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             defaultAction: { [weak self] in
                 guard let self else { return }
                 let webViewController = self.applicationPasswordWebView(for: siteURL)
-                viewController.present(UINavigationController(rootViewController: webViewController), animated: true)
+                viewController.navigationController?.pushViewController(webViewController, animated: true)
             }
         )
         viewController.present(alertController, animated: true)
@@ -653,8 +655,21 @@ private extension AuthenticationManager {
     ///
     func applicationPasswordWebView(for siteURL: String) -> UIViewController {
         let viewModel = ApplicationPasswordAuthorizationViewModel(siteURL: siteURL)
-        let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel, onSuccess: { _ in
-            // TODO: handle success
+        let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel,
+                                                                           onSuccess: { [weak self] applicationPassword, navigationController in
+            guard let navigationController else {
+                DDLogInfo("⚠️ No navigation controller found")
+                return
+            }
+            let credentials: Credentials = .applicationPassword(
+                username: applicationPassword.wpOrgUsername,
+                password: applicationPassword.password.secretValue,
+                siteAddress: siteURL
+            )
+            ServiceLocator.stores.authenticate(credentials: credentials)
+            let useCase = OneTimeApplicationPasswordUseCase(applicationPassword: applicationPassword,
+                                                            siteAddress: siteURL)
+            self?.checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
         })
         return controller
     }
@@ -705,6 +720,12 @@ private extension AuthenticationManager {
         ) else {
             return assertionFailure("⛔️ Error creating application password use case")
         }
+        checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
+    }
+
+    func checkSiteCredentialLogin(to siteURL: String,
+                                  with useCase: ApplicationPasswordUseCase,
+                                  in navigationController: UINavigationController) {
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
         checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
             guard let self else { return }

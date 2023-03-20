@@ -175,4 +175,8 @@ public enum FeatureFlag: Int {
     /// Enables conditional behaviour when a site has a free trial plan.
     ///
     case freeTrial
+
+    /// Enables manual error handling for site credential login.
+    ///
+    case manualErrorHandlingForSiteCredentialLogin
 }

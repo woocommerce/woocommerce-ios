@@ -74,10 +74,10 @@ class DefaultStoresManager: StoresManager {
     /// Indicates if the StoresManager is currently authenticated with site credentials only.
     ///
     var isAuthenticatedWithoutWPCom: Bool {
-        if case .wporg = sessionManager.defaultCredentials {
-            return true
+        if case .wpcom = sessionManager.defaultCredentials {
+            return false
         }
-        return false
+        return true
     }
 
     @Published private var isLoggedIn: Bool = false

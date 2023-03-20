@@ -18,6 +18,7 @@ final class SiteCredentialsViewController: LoginViewController {
 
     private let isDismissible: Bool
     private let completionHandler: ((WordPressOrgCredentials) -> Void)?
+    private let configuration = WordPressAuthenticator.shared.configuration
 
     init?(coder: NSCoder, isDismissible: Bool, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
         self.isDismissible = isDismissible
@@ -265,7 +266,7 @@ private extension SiteCredentialsViewController {
             rows.append(.errorMessage)
         }
 
-        if WordPressAuthenticator.shared.configuration.displayHintButtons {
+        if configuration.displayHintButtons {
             rows.append(.forgotPassword)
         }
     }
@@ -466,6 +467,9 @@ private extension SiteCredentialsViewController {
 
     func handleLoginFailure(error: Error, incorrectCredentials: Bool) {
         configureViewLoading(false)
+        guard configuration.enableManualErrorHandlingForSiteCredentialLogin == false else {
+            return
+        }
         if incorrectCredentials {
             let message = NSLocalizedString("It looks like this username/password isn't associated with this site.",
                                             comment: "An error message shown during log in when the username or password is incorrect.")
@@ -520,7 +524,7 @@ extension SiteCredentialsViewController {
     /// proceeds with the submit action.
     ///
     @objc func validateForm() {
-        guard WordPressAuthenticator.shared.configuration.enableManualSiteCredentialLogin else {
+        guard configuration.enableManualSiteCredentialLogin else {
             return validateFormAndLogin() // handles login with XMLRPC normally
         }
 
@@ -536,7 +540,7 @@ extension SiteCredentialsViewController {
         let wporg = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
         let credentials = AuthenticatorCredentials(wporg: wporg)
 
-        guard WordPressAuthenticator.shared.configuration.isWPComLoginRequiredForSiteCredentialsLogin else {
+        guard configuration.isWPComLoginRequiredForSiteCredentialsLogin else {
             // Client didn't explicitly ask for WPCOM credentials. (`isWPComLoginRequiredForSiteCredentialsLogin` is false)
             // So, sync the available credentials and finish sign in.
             //

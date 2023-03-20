@@ -5,7 +5,7 @@ import Codegen
 ///
 public struct ProductCompositeComponent: Codable, Equatable, GeneratedCopiable, GeneratedFakeable {
     /// Component ID.
-    public let componentID: Int64
+    public let componentID: String
 
     /// Title of the component.
     public let title: String
@@ -21,7 +21,7 @@ public struct ProductCompositeComponent: Codable, Equatable, GeneratedCopiable, 
 
     /// ProductCompositeComponent struct initializer
     ///
-    public init(componentID: Int64,
+    public init(componentID: String,
                 title: String,
                 imageURL: String,
                 optionType: CompositeComponentOptionType,

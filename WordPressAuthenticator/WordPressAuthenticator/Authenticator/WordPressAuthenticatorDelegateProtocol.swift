@@ -115,11 +115,13 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///
     /// - Parameters:
     ///     - credentials: WordPress.org credentials submitted in the site credentials form.
+    ///     - viewController: the view controller containing the site credential input.
     ///     - onLoading: the block to update the loading state on the site credentials form when necessary.
     ///     - onSuccess: the block to finish the login flow after login succeeds.
     ///     - onFailure: the block to trigger error handling. The closure accepts an error and a boolean indicating if the login failed with incorrect credentials.
     ///
     func handleSiteCredentialLogin(credentials: WordPressOrgCredentials,
+                                   in viewController: UIViewController,
                                    onLoading: @escaping (Bool) -> Void,
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping (Error, Bool) -> Void)
@@ -158,6 +160,7 @@ public extension WordPressAuthenticatorDelegate {
     }
 
     func handleSiteCredentialLogin(credentials: WordPressOrgCredentials,
+                                   in viewController: UIViewController,
                                    onLoading: @escaping (Bool) -> Void,
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping (Error, Bool) -> Void) {

@@ -37,6 +37,19 @@ final class WPAdminWebViewModelTests: XCTestCase {
         XCTAssertEqual(urlToLoad, url)
     }
 
+    func test_redirecting_to_wpcom_does_not_invoke_loadWebview_when_initialURL_is_the_same() throws {
+        // Given
+        let url = try XCTUnwrap(URL(string: URLs.urlAfterWPComAuth))
+        let viewModel = WPAdminWebViewModel(initialURL: url)
+
+        // When
+        viewModel.loadWebview = { url in
+            // Then
+            XCTFail("Unexpected webview load for \(url)")
+        }
+        viewModel.handleRedirect(for: url)
+    }
+
     func test_redirecting_to_non_wpcom_does_not_invoke_loadWebview() throws {
         // Given
         let url = try XCTUnwrap(URL(string: "https://woocommerce.com"))

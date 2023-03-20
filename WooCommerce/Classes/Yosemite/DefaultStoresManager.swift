@@ -587,6 +587,9 @@ private extension DefaultStoresManager {
             keychain.siteCredentialPassword = password
             UserDefaults.group?[.defaultUsername] = username
             UserDefaults.group?[.defaultSiteAddress] = siteAddress
+        case let .applicationPassword(username, _, siteAddress):
+            UserDefaults.group?[.defaultUsername] = username
+            UserDefaults.group?[.defaultSiteAddress] = siteAddress
         default:
             break
         }

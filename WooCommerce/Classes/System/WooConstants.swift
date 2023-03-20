@@ -33,6 +33,10 @@ enum WooConstants {
     ///
     static let siteCredentialPassword = "siteCredentialPassword"
 
+    /// Keychain Access's Key for the current application password
+    ///
+    static let applicationPassword = "ApplicationPassword"
+
     /// Shared UsersDefaults Suite Name
     ///
     static let sharedUserDefaultsSuiteName = "group.com.automattic.woocommerce"

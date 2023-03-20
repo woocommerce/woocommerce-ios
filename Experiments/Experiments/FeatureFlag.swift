@@ -176,7 +176,7 @@ public enum FeatureFlag: Int {
     ///
     case freeTrial
 
-    /// Enables showing a web view for application password authorization during login.
+    /// Enables manual error handling for site credential login.
     ///
-    case applicationPasswordAuthorizationInWebView
+    case manualErrorHandlingForSiteCredentialLogin
 }

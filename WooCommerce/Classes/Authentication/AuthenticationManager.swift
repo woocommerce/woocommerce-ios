@@ -713,19 +713,16 @@ private extension AuthenticationManager {
     func handleSiteCredentialLoginError(_ error: SiteCredentialLoginError,
                                         for siteURL: String,
                                         in viewController: UIViewController) {
-        let webViewAction: (() -> Void)? = {
-            guard featureFlagService.isFeatureFlagEnabled(.applicationPasswordAuthorizationInWebView) else {
-                return nil
-            }
-            return { [weak self] in
+        guard featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin) else {
+            return
+        }
+        let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
+            message: error.underlyingError.localizedDescription,
+            defaultAction: { [weak self] in
                 guard let self else { return }
                 let webViewController = self.applicationPasswordWebView(for: siteURL)
                 viewController.present(UINavigationController(rootViewController: webViewController), animated: true)
             }
-        }()
-        let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
-            message: error.underlyingError.localizedDescription,
-            defaultAction: webViewAction
         )
         viewController.present(alertController, animated: true)
     }

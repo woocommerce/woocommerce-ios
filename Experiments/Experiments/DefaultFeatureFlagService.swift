@@ -85,8 +85,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .freeTrial:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .applicationPasswordAuthorizationInWebView:
-            return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
+        case .manualErrorHandlingForSiteCredentialLogin:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

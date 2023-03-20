@@ -200,7 +200,10 @@ private extension ApplicationPasswordAuthorizationWebViewController {
     }
     enum Localization {
         static let login = NSLocalizedString("Log In", comment: "Title for the application password authorization web view")
-        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the view or error alerts of the application password authorization web view")
+        static let cancel = NSLocalizedString(
+            "Cancel",
+            comment: "Button to dismiss the view or error alerts of the application password authorization web view"
+        )
         static let tryAgain = NSLocalizedString("Retry", comment: "Button to retry fetching application password authorization URL during login")
         static let authorizationRejected = NSLocalizedString(
             "Unable to log in because the request to use application passwords to your site has been rejected.",

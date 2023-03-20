@@ -30,15 +30,80 @@ struct ProductInputTransformer {
 
         // Add or update the order items with the new input.
         var items = order.items
-        if let itemIndex = order.items.firstIndex(where: { $0.itemID == input.id }) {
-            let newItem = createOrderItem(using: input, usingPriceFrom: items[itemIndex])
-            items[itemIndex] = newItem
-        } else {
-            let newItem = createOrderItem(using: input, usingPriceFrom: nil)
-            items.append(newItem)
+        updateOrderItems(from: order, with: input, orderItems: &items)
+        return order.copy(items: items)
+    }
+
+    /// Adds, deletes, or updates Order items based on the multiple given product inputs
+    /// We receive an `[OrderSyncProductInput]` object as input, and must return an updated `Order`
+    ///
+    /// - Parameters:
+    ///   - inputs: Array of product types the OrderSynchronizer supports
+    ///   - order: Represents an Order entity.
+    ///   - updateZeroQuantities: When true, items with `.zero` quantities will be updated instead of being deleted.
+    ///
+    /// - Returns: An Order entity.
+    static func updateMultipleItems(with inputs: [OrderSyncProductInput], on order: Order, updateZeroQuantities: Bool) -> Order {
+        var updatedOrderItems = order.items
+
+        for input in inputs {
+            updateOrderItems(from: order, with: input, orderItems: &updatedOrderItems)
         }
 
-        return order.copy(items: items)
+        // If the input's quantity is 0 or less, delete the item if required.
+        // We perform a second loop for deletions so we don't attempt to access to overflown indexes
+        for input in inputs {
+            guard input.quantity > 0 || updateZeroQuantities else {
+                updatedOrderItems.removeAll(where: { $0.itemID == input.id })
+                return order.copy(items: updatedOrderItems)
+            }
+        }
+
+        return order.copy(items: updatedOrderItems)
+    }
+}
+
+// MARK: ProductInputTransformer helper methods
+//
+private extension ProductInputTransformer {
+    /// Creates, or updates existing `OrderItems` of a given `Order` with any `OrderSyncProductInput` update
+    ///
+    /// - Parameters:
+    ///   - order: Represents an Order entity.
+    ///   - input: Types of products the synchronizer supports
+    ///   - updatedOrderItems: An array of `[OrderItem]` entities
+    ///
+    static func updateOrderItems(from order: Order, with input: OrderSyncProductInput, orderItems updatedOrderItems: inout [OrderItem]) {
+        if let itemIndex = order.items.firstIndex(where: { $0.itemID == input.id }) {
+            let newItem = createOrderItem(using: input, usingPriceFrom: updatedOrderItems[itemIndex])
+            updatedOrderItems[itemIndex] = newItem
+        } else {
+            let newItem = createOrderItem(using: input, usingPriceFrom: nil)
+            updatedOrderItems.append(newItem)
+        }
+    }
+
+    /// Updates the `OrderItems` array with `OrderSyncProductInput`.
+    /// Uses the same implementation as `update()` but returns an array of OrderItems instead,
+    /// rather than aggregating them into the Order
+    ///
+    /// - Parameters:
+    ///   - input: Types of products the synchronizer supports
+    ///   - order: Represents an Order entity.
+    ///   - updateZeroQuantities: When true, items with `.zero` quantities will be updated instead of being deleted.
+    ///
+    /// - Returns: An array of Order Item entities
+    private static func updateOrderItems(from input: OrderSyncProductInput, order: Order, updateZeroQuantities: Bool) -> [OrderItem] {
+        // If the input's quantity is 0 or less, delete the item if required.
+        guard input.quantity > 0 || updateZeroQuantities else {
+            return remove(input: input, from: order).items
+        }
+
+        // Adds or updates the Order items with the new input:
+        var updatedOrderItems = order.items
+        updateOrderItems(from: order, with: input, orderItems: &updatedOrderItems)
+
+        return updatedOrderItems
     }
 
     /// Removes an order item from an order when the `item.itemID` matches the `input.id`.

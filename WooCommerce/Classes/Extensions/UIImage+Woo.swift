@@ -1224,6 +1224,10 @@ extension UIImage {
     static var setUpBuiltInReader: UIImage {
         return UIImage(named: "built-in-reader-set-up")!
     }
+
+    static var iconBolt: UIImage {
+        UIImage(imageLiteralResourceName: "icon-bolt")
+    }
 }
 
 private extension UIImage {

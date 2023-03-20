@@ -120,6 +120,8 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         group.notify(queue: .main) {
             onCompletion()
         }
+
+        CardPresentPaymentOnboardingStateCache.shared.invalidate()
     }
 
     /// Part of the switch store selection. This method will update the new default store selected.

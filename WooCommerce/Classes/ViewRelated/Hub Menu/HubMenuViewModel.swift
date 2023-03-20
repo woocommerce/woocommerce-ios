@@ -81,6 +81,11 @@ final class HubMenuViewModel: ObservableObject {
             menuElements.append(InAppPurchases())
         }
 
+        // Only show the upgrades menu on WPCom sites
+        if featureFlagService.isFeatureFlagEnabled(.freeTrial) && stores.sessionManager.defaultSite?.isWordPressComStore == true {
+            menuElements.append(Upgrades())
+        }
+
         let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
         inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
             guard let self = self else { return }
@@ -267,6 +272,17 @@ extension HubMenuViewModel {
         let trackingOption: String = "debug-iap"
     }
 
+    struct Upgrades: HubMenuItem {
+        static var id = "upgrades"
+
+        let title: String = Localization.upgrades
+        let icon: UIImage = .iconBolt
+        let iconColor: UIColor = .primary
+        let badge: HubMenuBadgeType = .number(number: 0)
+        let accessibilityIdentifier: String = "menu-upgrades"
+        let trackingOption: String = "upgrades"
+    }
+
     enum Localization {
         static let payments = NSLocalizedString("Payments",
                                                 comment: "Title of the hub menu payments button")
@@ -280,5 +296,6 @@ extension HubMenuViewModel {
         static let coupon = NSLocalizedString("Coupons", comment: "Title of the Coupons menu in the hub menu")
         static let reviews = NSLocalizedString("Reviews",
                                                comment: "Title of one of the hub menu options")
+        static let upgrades = NSLocalizedString("Upgrades", comment: "Title of one of the hub menu options")
     }
 }

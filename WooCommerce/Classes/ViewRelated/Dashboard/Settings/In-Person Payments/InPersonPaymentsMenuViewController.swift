@@ -92,7 +92,7 @@ private extension InPersonPaymentsMenuViewController {
             return
         }
 
-        cardPresentPaymentsOnboardingUseCase.refresh()
+        cardPresentPaymentsOnboardingUseCase.refreshIfNecessary()
 
         cardPresentPaymentsOnboardingUseCase.$state
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
@@ -411,7 +411,9 @@ extension InPersonPaymentsMenuViewController {
                                                                     configuration: viewModel.cardPresentPaymentsConfiguration,
                                                                     activePaymentGateway: activePaymentGateway)
         let setUpTapToPayViewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
-        navigationController?.present(setUpTapToPayViewController, animated: true)
+        let controller = WooNavigationController(rootViewController: setUpTapToPayViewController)
+        controller.navigationBar.isHidden = true
+        navigationController?.present(controller, animated: true)
     }
 
     func navigateToInPersonPaymentsSelectPluginView() {

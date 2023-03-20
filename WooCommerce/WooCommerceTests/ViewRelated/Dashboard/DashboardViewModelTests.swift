@@ -6,7 +6,6 @@ import enum Yosemite.AppSettingsAction
 import enum Yosemite.JustInTimeMessageAction
 import struct Yosemite.JustInTimeMessage
 @testable import WooCommerce
-import Combine
 
 final class DashboardViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 122
@@ -14,22 +13,11 @@ final class DashboardViewModelTests: XCTestCase {
     private var analytics: Analytics!
     private var analyticsProvider: MockAnalyticsProvider!
     private var stores: MockStoresManager!
-    private var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
-        super.setUp()
-        subscriptions = []
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         stores = MockStoresManager(sessionManager: .makeForTesting())
-    }
-
-    override func tearDown() {
-        stores = nil
-        analytics = nil
-        analyticsProvider = nil
-        subscriptions = []
-        super.tearDown()
     }
 
     func test_default_statsVersion_is_v4() {
@@ -319,14 +307,8 @@ final class DashboardViewModelTests: XCTestCase {
         defaults[.completedAllStoreOnboardingTasks] = false
         let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
                                            userDefaults: defaults)
-
-        var showOnboarding = false
-        viewModel.showOnboardingPublisher.sink { isEnabled in
-            showOnboarding = isEnabled
-        }.store(in: &subscriptions)
-
         // Then
-        XCTAssertFalse(showOnboarding)
+        XCTAssertFalse(viewModel.showOnboarding)
     }
 
     func test_showOnboarding_is_false_when_feature_flag_is_turned_off_and_completedAllStoreOnboardingTasks_is_true() async throws {
@@ -336,14 +318,8 @@ final class DashboardViewModelTests: XCTestCase {
         defaults[.completedAllStoreOnboardingTasks] = true
         let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
                                            userDefaults: defaults)
-
-        var showOnboarding = false
-        viewModel.showOnboardingPublisher.sink { isEnabled in
-            showOnboarding = isEnabled
-        }.store(in: &subscriptions)
-
         // Then
-        XCTAssertFalse(showOnboarding)
+        XCTAssertFalse(viewModel.showOnboarding)
     }
 
     func test_showOnboarding_is_false_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_true() async throws {
@@ -353,14 +329,8 @@ final class DashboardViewModelTests: XCTestCase {
         defaults[.completedAllStoreOnboardingTasks] = true
         let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
-
-        var showOnboarding = false
-        viewModel.showOnboardingPublisher.sink { isEnabled in
-            showOnboarding = isEnabled
-        }.store(in: &subscriptions)
-
         // Then
-        XCTAssertFalse(showOnboarding)
+        XCTAssertFalse(viewModel.showOnboarding)
     }
 
     func test_showOnboarding_is_true_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_false() async throws {
@@ -370,14 +340,8 @@ final class DashboardViewModelTests: XCTestCase {
         defaults[.completedAllStoreOnboardingTasks] = false
         let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
-
-        var showOnboarding = false
-        viewModel.showOnboardingPublisher.sink { isEnabled in
-            showOnboarding = isEnabled
-        }.store(in: &subscriptions)
-
         // Then
-        XCTAssertTrue(showOnboarding)
+        XCTAssertTrue(viewModel.showOnboarding)
     }
 
     func test_showOnboarding_is_true_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_not_set() async throws {
@@ -386,14 +350,8 @@ final class DashboardViewModelTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
-
-        var showOnboarding = false
-        viewModel.showOnboardingPublisher.sink { isEnabled in
-            showOnboarding = isEnabled
-        }.store(in: &subscriptions)
-
         // Then
-        XCTAssertTrue(showOnboarding)
+        XCTAssertTrue(viewModel.showOnboarding)
     }
 
     func test_showOnboarding_is_set_to_false_upon_setting_user_defaults_value_completedAllStoreOnboardingTasks_as_true() throws {
@@ -402,16 +360,13 @@ final class DashboardViewModelTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
-
-        var showOnboarding = true
-        viewModel.showOnboardingPublisher.sink { isEnabled in
-            showOnboarding = isEnabled
-        }.store(in: &subscriptions)
+        // Then
+        XCTAssertTrue(viewModel.showOnboarding)
 
         // When
         defaults[.completedAllStoreOnboardingTasks] = true
 
         // Then
-        XCTAssertFalse(showOnboarding)
+        XCTAssertFalse(viewModel.showOnboarding)
     }
 }

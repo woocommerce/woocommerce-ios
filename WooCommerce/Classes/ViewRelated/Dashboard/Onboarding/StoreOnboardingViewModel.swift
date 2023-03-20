@@ -21,7 +21,7 @@ class StoreOnboardingViewModel: ObservableObject {
     /// Emits when there are no tasks available for display after reload.
     /// i.e. When (request failed && No previously loaded local data available)
     ///
-    let noTasksAvailableForDisplay = PassthroughSubject<Void, Never>()
+    @Published private(set) var noTasksAvailableForDisplay: Bool = false
 
     /// Set externally in the hosting controller to invalidate the SwiftUI `StoreOnboardingView`'s intrinsic content size as a workaround with UIKit.
     var onStateChange: (() -> Void)?
@@ -120,7 +120,7 @@ private extension StoreOnboardingViewModel {
         case .failed:
             isRedacted = false
             taskViewModels = []
-            noTasksAvailableForDisplay.send()
+            noTasksAvailableForDisplay = true
         }
         onStateChange?()
     }

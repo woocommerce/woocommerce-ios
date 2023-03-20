@@ -629,7 +629,7 @@ private extension DashboardViewController {
 
 private extension DashboardViewController {
     func observeOnboardingVisibility() {
-        Publishers.CombineLatest(viewModel.showOnboardingPublisher,
+        Publishers.CombineLatest(viewModel.$showOnboarding,
                                  ServiceLocator.stores.site.compactMap { $0 })
         .sink { [weak self] showsOnboarding, site in
             guard let self else { return }

@@ -17,26 +17,13 @@ final class DashboardViewModel {
 
     var storeOnboardingViewModel: StoreOnboardingViewModel? = nil {
         didSet {
-            storeOnboardingViewModel?.noTasksAvailableForDisplay
-                .map({ false })
-                .assign(to: &$showOnboarding)
+            setupObserverForShowOnboarding()
         }
     }
 
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 
-    var showOnboardingPublisher: AnyPublisher<Bool, Never> {
-        $showOnboarding
-            .map({ [weak self] in
-                guard let self else {
-                    return false
-                }
-                return self.featureFlagService.isFeatureFlagEnabled(.dashboardOnboarding) && $0 })
-            .removeDuplicates()
-            .eraseToAnyPublisher()
-    }
-
-    @Published private var showOnboarding: Bool = false
+    @Published private(set) var showOnboarding: Bool = false
 
     @Published private(set) var freeTrialBannerViewModel: FreeTrialBannerViewModel? = nil
 
@@ -47,7 +34,9 @@ final class DashboardViewModel {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
+    private let userDefaults: UserDefaults
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
+    private var showOnboardingCancellable: AnyCancellable? = nil
 
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -57,9 +46,8 @@ final class DashboardViewModel {
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
-        userDefaults.publisher(for: \.completedAllStoreOnboardingTasks)
-            .map({ $0 == false })
-            .assign(to: &$showOnboarding)
+        self.userDefaults = userDefaults
+        setupObserverForShowOnboarding()
     }
 
     /// Reloads store onboarding tasks
@@ -272,6 +260,27 @@ final class DashboardViewModel {
         let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
         viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
         announcementViewModel = viewModel
+    }
+
+    /// Sets up observer to decide store onboarding task lists visibility
+    ///
+    private func setupObserverForShowOnboarding() {
+        guard featureFlagService.isFeatureFlagEnabled(.dashboardOnboarding) else {
+            return
+        }
+
+        let noOnboardingTasksAvailablePublisher: AnyPublisher<Bool, Never>
+        if let storeOnboardingViewModel {
+            noOnboardingTasksAvailablePublisher = storeOnboardingViewModel.$noTasksAvailableForDisplay.eraseToAnyPublisher()
+        } else {
+            noOnboardingTasksAvailablePublisher = Just(false).eraseToAnyPublisher()
+        }
+
+        self.showOnboardingCancellable = Publishers.CombineLatest(noOnboardingTasksAvailablePublisher,
+                                                                  userDefaults.publisher(for: \.completedAllStoreOnboardingTasks))
+        .sink(receiveValue: { [weak self] noTasksAvailableForDisplay, completedAllStoreOnboardingTasks in
+            self?.showOnboarding = !(noTasksAvailableForDisplay || completedAllStoreOnboardingTasks)
+        })
     }
 }
 

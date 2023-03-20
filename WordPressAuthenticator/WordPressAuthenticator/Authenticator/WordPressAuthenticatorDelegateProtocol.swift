@@ -124,6 +124,17 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping (Error, Bool) -> Void)
 
+    /// Signals to the Host App to handle an error for site credential login.
+    ///
+    /// - Parameters:
+    ///     - error: The site credential login failure.
+    ///     - siteURL: The site URL of the login failure.
+    ///     - viewController: the view controller containing the site credential input.
+    ///
+    func handleSiteCredentialLoginFailure(error: Error,
+                                          for siteURL: String,
+                                          in viewController: UIViewController)
+
     /// Signals to the Host App to navigate to the site creation flow.
     /// This method is currently used only in the simplified login flow
     /// when the configs `enableSimplifiedLoginI1` and `enableSiteCreationForSimplifiedLoginI1` is enabled
@@ -161,6 +172,12 @@ public extension WordPressAuthenticatorDelegate {
                                    onLoading: @escaping (Bool) -> Void,
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping (Error, Bool) -> Void) {
+        // No-op
+    }
+
+    func handleSiteCredentialLoginFailure(error: Error,
+                                          for siteURL: String,
+                                          in viewController: UIViewController) {
         // No-op
     }
 }

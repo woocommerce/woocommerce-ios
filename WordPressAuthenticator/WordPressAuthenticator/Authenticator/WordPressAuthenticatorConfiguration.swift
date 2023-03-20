@@ -154,6 +154,12 @@ public struct WordPressAuthenticatorConfiguration {
     /// instead of using the XMLRPC API for handling site credential login.
     let enableManualSiteCredentialLogin: Bool
 
+    /// If enabled, the library will not show any alert or inline error message
+    /// when site credential login fails.
+    /// Instead, the delegate method `handleSiteCredentialLoginFailure` will be called.
+    ///
+    let enableManualErrorHandlingForSiteCredentialLogin: Bool
+
     /// Used to determine the `step` value for `unified_login_step` analytics event in `GetStartedViewController`
     ///
     ///  - If disabled `start` will be used as `step` value
@@ -206,6 +212,7 @@ public struct WordPressAuthenticatorConfiguration {
                  skipXMLRPCCheckForSiteDiscovery: Bool = false,
                  skipXMLRPCCheckForSiteAddressLogin: Bool = false,
                  enableManualSiteCredentialLogin: Bool = false,
+                 enableManualErrorHandlingForSiteCredentialLogin: Bool = false,
                  useEnterEmailAddressAsStepValueForGetStartedVC: Bool = false,
                  enableSiteAddressLoginOnlyInPrologue: Bool = false,
                  enableSiteCredentialLoginForJetpackSites: Bool = true,
@@ -244,6 +251,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.skipXMLRPCCheckForSiteDiscovery = skipXMLRPCCheckForSiteDiscovery
         self.skipXMLRPCCheckForSiteAddressLogin = skipXMLRPCCheckForSiteAddressLogin
         self.enableManualSiteCredentialLogin = enableManualSiteCredentialLogin
+        self.enableManualErrorHandlingForSiteCredentialLogin = enableManualErrorHandlingForSiteCredentialLogin
         self.useEnterEmailAddressAsStepValueForGetStartedVC = useEnterEmailAddressAsStepValueForGetStartedVC
         self.enableSiteAddressLoginOnlyInPrologue = enableSiteAddressLoginOnlyInPrologue
         self.enableSiteCredentialLoginForJetpackSites = enableSiteCredentialLoginForJetpackSites

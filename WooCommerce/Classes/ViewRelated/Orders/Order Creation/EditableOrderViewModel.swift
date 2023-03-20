@@ -195,7 +195,7 @@ final class EditableOrderViewModel: ObservableObject {
                 self.addProductVariationToOrder(variation, parent: parentProduct)
             }, onMultipleSelectionCompleted: { [weak self] _ in
                 guard let self = self else { return }
-                self.addOrRemoveItemsFromOrder(products: self.selectedProducts, variations: self.selectedProductVariations)
+                self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
             })
     }
 
@@ -388,16 +388,17 @@ final class EditableOrderViewModel: ObservableObject {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
 
-        // Updates selectedProducts and selectedProductVariations for all items that have been removed directly from the Order
-        if item.productID != 0 {
-            selectedProducts.removeAll(where: { $0?.productID == item.productID})
+        if isProductMultiSelectionBetaFeatureEnabled {
+            // Updates selected products and selected variations for all items that have been removed directly from the Order
+            // when using multi-selection, for example by tapping the `-` button within the Order view
+            if item.productID != 0 {
+                selectedProducts.removeAll(where: { $0?.productID == item.productID})
+            }
+            if item.variationID != 0 {
+                selectedProductVariations.removeAll(where: { $0?.productVariationID == item.variationID})
+            }
+            updatedProductAndVariationIDsInOrder.removeAll(where: { $0 == item.productOrVariationID })
         }
-
-        if item.variationID != 0 {
-            selectedProductVariations.removeAll(where: { $0?.productVariationID == item.variationID})
-        }
-
-        updatedProductAndVariationIDsInOrder.removeAll(where: { $0 == item.productOrVariationID })
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
     }
@@ -770,58 +771,87 @@ private extension EditableOrderViewModel {
             }
             .assign(to: &$statusBadgeViewModel)
     }
-
-    /// Adds, or removes multiple products from an Order
+    
+    /// Creates an array of OrderSyncProductInput that will be sent to the RemoteOrderSynchronizer when adding multiple products to an Order
+    /// - Parameters:
+    ///   - products: Selected products
+    ///   - variations: Selected product variations
+    /// - Returns: [OrderSyncProductInput]
     ///
-    func addOrRemoveItemsFromOrder(products: [Product?], variations: [ProductVariation?]) {
+    func productInputAdditionsToSync (products: [Product?], variations: [ProductVariation?]) -> [OrderSyncProductInput] {
         var productInputs: [OrderSyncProductInput] = []
         var productVariationInputs: [OrderSyncProductInput] = []
 
-        // Add selected products to Order, unless already are
+        // TODO: We may be able to simplify this bit by using createUpdateProductInput() helper
         for product in products {
+            // Only perform the operation if the product has not been already added to the existing Order
             if let product,
-                !updatedProductAndVariationIDsInOrder.contains(where: {$0 == product.productID}) {
-                    productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
+               !updatedProductAndVariationIDsInOrder.contains(where: {$0 == product.productID}) {
+                productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
                 updatedProductAndVariationIDsInOrder.append(product.productID)
             }
         }
 
-        // Add selected variations to Order, unless already are
         for variation in variations {
+            // Only perform the operation if the variation has not been already added to the existing Order
             if let variation,
-                !updatedProductAndVariationIDsInOrder.contains(where: {$0 == variation.productVariationID}) {
+               !updatedProductAndVariationIDsInOrder.contains(where: {$0 == variation.productVariationID}) {
                 productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
                 updatedProductAndVariationIDsInOrder.append(variation.productVariationID)
             }
         }
 
-        // We need to send all OrderSyncProductInput in one call to the RemoteOrderSynchronizer, both additions and deletions
-        // otherwise may ignore the subsequent values that are sent
-        orderSynchronizer.setProducts.send(productInputs + productVariationInputs)
+        return productInputs + productVariationInputs
+    }
+    
+    /// Creates an array of OrderSyncProductInput that will be sent to the RemoteOrderSynchronizer when removing multiple products from an Order
+    /// - Parameters:
+    ///   - products: Represents a Product entity
+    ///   - variations: Represents a ProductVariation entity
+    /// - Returns: [OrderSyncProductInput]
+    ///
+    func productInputDeletionsToSync (products: [Product?], variations: [ProductVariation?]) -> [OrderSyncProductInput] {
+        var inputsToBeRemoved: [OrderSyncProductInput] = []
 
         // Products to be removed from the Order
-        // TODO: Removals need to be refactored to be also included in an unique call to orderSynchronizer.setProducts.send
         let removeProducts = orderSynchronizer.order.items.filter { item in
             return item.variationID == 0 && !products.contains(where: { $0?.productID == item.productID })
-        }
-        for item in removeProducts {
-            removeItemFromOrder(item)
         }
 
         // Variations to be removed from the Order
         let removeProductVariations = orderSynchronizer.order.items.filter { item in
             return item.variationID != 0 && !variations.contains(where: { $0?.productVariationID == item.variationID })
         }
-        for item in removeProductVariations {
-            removeItemFromOrder(item)
+
+        let allOrderItemsToBeRemoved = removeProducts + removeProductVariations
+
+        for item in allOrderItemsToBeRemoved {
+
+            if let input = createUpdateProductInput(item: item, quantity: 0) {
+                inputsToBeRemoved.append(input)
+            }
+
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
         }
+
+        return inputsToBeRemoved
+
+    }
+
+    /// Adds, or removes multiple products from an Order
+    ///
+    func syncOrderItems(products: [Product?], variations: [ProductVariation?]) {
+        // We need to send all OrderSyncProductInput in one call to the RemoteOrderSynchronizer, both additions and deletions
+        // otherwise may ignore the subsequent values that are sent
+        let addedItemsToSync = productInputAdditionsToSync(products: products, variations: variations)
+        let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
+        orderSynchronizer.setProducts.send(addedItemsToSync + removedItemsToSync)
     }
 
     /// Adds a selected product (from the product list) to the order.
     ///
     // TODO: This method needs to be renamed
-    // to reflect that adds products to Order for single selection
-    // but only selects/unselects for multi-selection
+    // to reflect that adds products to Order for single selection, but only selects/unselects for multi-selection
     func addProductToOrder(_ product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {

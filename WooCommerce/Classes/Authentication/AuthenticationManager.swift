@@ -1,6 +1,7 @@
 import Foundation
 import KeychainAccess
 import WordPressAuthenticator
+import WordPressUI
 import Yosemite
 import class Networking.UserAgent
 import enum Experiments.ABTest
@@ -280,6 +281,23 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         useCase.handleLogin(username: credentials.username, password: credentials.password)
         onLoading(true)
+    }
+
+    func handleSiteCredentialLoginFailure(error: Error,
+                                          for siteURL: String,
+                                          in viewController: UIViewController) {
+        guard featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin) else {
+            return
+        }
+        let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
+            message: (error as NSError).localizedDescription,
+            defaultAction: { [weak self] in
+                guard let self else { return }
+                let webViewController = self.applicationPasswordWebView(for: siteURL)
+                viewController.present(UINavigationController(rootViewController: webViewController), animated: true)
+            }
+        )
+        viewController.present(alertController, animated: true)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.
@@ -629,6 +647,16 @@ private extension AuthenticationManager {
     var noWPUI: UIViewController {
         let viewModel = NotWPErrorViewModel()
         return ULErrorViewController(viewModel: viewModel)
+    }
+
+    /// Web view to authorize application password for a given site.
+    ///
+    func applicationPasswordWebView(for siteURL: String) -> UIViewController {
+        let viewModel = ApplicationPasswordAuthorizationViewModel(siteURL: siteURL)
+        let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel, onSuccess: { _ in
+            // TODO: handle success
+        })
+        return controller
     }
 
     /// The error screen to be displayed when Jetpack setup for a site is required.

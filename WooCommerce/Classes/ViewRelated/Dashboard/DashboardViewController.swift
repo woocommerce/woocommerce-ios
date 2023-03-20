@@ -489,7 +489,7 @@ private extension DashboardViewController {
 
     func observeShowWebViewSheet() {
         Publishers.CombineLatest(viewModel.$showWebViewSheet,
-                                 viewModel.showOnboardingPublisher)
+                                 viewModel.$showOnboarding)
         .sink { [weak self] viewModel, showOnboarding in
             guard let self = self, !showOnboarding else { return }
             guard let viewModel = viewModel else { return }
@@ -546,7 +546,7 @@ private extension DashboardViewController {
 
     func observeAnnouncements() {
         Publishers.CombineLatest(viewModel.$announcementViewModel,
-                                 viewModel.showOnboardingPublisher)
+                                 viewModel.$showOnboarding)
         .sink { [weak self] viewModel, showOnboarding in
             guard let self = self else { return }
             Task { @MainActor in
@@ -628,7 +628,7 @@ private extension DashboardViewController {
     ///
     func observeFreeTrialBannerVisibility() {
         Publishers.CombineLatest(viewModel.$freeTrialBannerViewModel,
-                                 viewModel.showOnboardingPublisher)
+                                 viewModel.$showOnboarding)
         .sink { [weak self] viewModel, showOnboarding in
             self?.removeFreeTrialBanner()
 
@@ -840,7 +840,7 @@ private extension DashboardViewController {
     func observeBottomJetpackBenefitsBannerVisibilityUpdates() {
         Publishers.CombineLatest3(ServiceLocator.stores.site,
                                   $dashboardUI.eraseToAnyPublisher(),
-                                  viewModel.showOnboardingPublisher)
+                                  viewModel.$showOnboarding)
         .sink { [weak self] site, dashboardUI, showOnboarding in
             guard let self = self else { return }
 

@@ -74,7 +74,8 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Closure to be invoked when multiple selection is completed
     ///
-    private let onMultipleSelectionCompleted: (([Int64]) -> Void)?
+    private let onMultipleSelectionCompleted: ((_ products: [Product],
+                                                _ variations: [ProductVariation]) -> Void)?
 
     // MARK: Sync & Storage properties
 
@@ -125,6 +126,8 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     @Published private var selectedProductVariationIDs: [Int64] = []
 
+    private var selectedProductVariations: [ProductVariation] = []
+
     var totalSelectedItemsCount: Int {
         selectedProductIDs.count + selectedProductVariationIDs.count
     }
@@ -150,7 +153,7 @@ final class ProductSelectorViewModel: ObservableObject {
          toggleAllVariationsOnSelection: Bool = true,
          onProductSelected: ((Product) -> Void)? = nil,
          onVariationSelected: ((ProductVariation, Product) -> Void)? = nil,
-         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
+         onMultipleSelectionCompleted: (([Product], [ProductVariation]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -179,7 +182,7 @@ final class ProductSelectorViewModel: ObservableObject {
          supportsMultipleSelection: Bool = false,
          isClearSelectionEnabled: Bool = true,
          toggleAllVariationsOnSelection: Bool = true,
-         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
+         onMultipleSelectionCompleted: (([Product], [ProductVariation]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -231,7 +234,10 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  purchasableItemsOnly: purchasableItemsOnly,
                                                  supportsMultipleSelection: supportsMultipleSelection,
                                                  isClearSelectionEnabled: isClearSelectionEnabled,
-                                                 onVariationSelected: onVariationSelected)
+                                                 onVariationSelected: onVariationSelected,
+                                                 onMultipleSelectionCompleted: { [weak self] productVariations in
+            self?.selectedProductVariations = productVariations
+        })
     }
 
     /// Clears the current search term and filters to display the full product list.
@@ -243,17 +249,20 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Updates selected variation list based on the new selected IDs
     ///
-    func updateSelectedVariations(productID: Int64, selectedVariationIDs: [Int64]) {
+    func updateSelectedVariations(productID: Int64, selectedVariations: [ProductVariation]) {
         guard let variableProduct = products.first(where: { $0.productID == productID }),
               variableProduct.variations.isNotEmpty else {
             return
         }
         // remove items that exist in the initial list
+        let selectedVariationIDs = selectedVariations.map { $0.productVariationID }
         initialSelectedItems.removeAll { selectedVariationIDs.contains($0) }
         // remove all previous selected variations
         selectedProductVariationIDs.removeAll(where: { variableProduct.variations.contains($0) })
+        self.selectedProductVariations.removeAll { $0.productID == productID }
         // append new selected IDs
         selectedProductVariationIDs.append(contentsOf: selectedVariationIDs)
+        selectedProductVariations.append(contentsOf: selectedVariations)
     }
 
     /// Select all variations for a given product
@@ -275,15 +284,18 @@ final class ProductSelectorViewModel: ObservableObject {
             // otherwise select all variations for the product
             selectedIDs = variableProduct.variations
         }
-
-        updateSelectedVariations(productID: productID, selectedVariationIDs: selectedIDs)
+        #warning("Test this, all-variations might not work")
+        updateSelectedVariations(productID: productID, selectedVariations: selectedProductVariations)
     }
 
     /// Triggers completion closure when the multiple selection completes.
     ///
     func completeMultipleSelection() {
-        let allIDs = selectedProductIDs + selectedProductVariationIDs
-        onMultipleSelectionCompleted?(allIDs)
+        let products = selectedProductIDs.map { id in
+            return productsResultsController.fetchedObjects.first { $0.productID == id }
+        }
+            .compactMap { $0 }
+        onMultipleSelectionCompleted?(products, selectedProductVariations)
     }
 
     /// Unselect all items.

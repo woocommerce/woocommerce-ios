@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 /// View showing a list of product variations to select.
 ///
@@ -17,7 +18,7 @@ struct ProductVariationSelector: View {
     ///
     private let multipleSelectionsEnabled: Bool
 
-    private let onMultipleSelections: (([Int64]) -> Void)?
+    private let onMultipleSelections: (([ProductVariation]) -> Void)?
 
     ///   Environment safe areas
     ///
@@ -26,7 +27,7 @@ struct ProductVariationSelector: View {
     init(isPresented: Binding<Bool>,
          viewModel: ProductVariationSelectorViewModel,
          multipleSelectionsEnabled: Bool = false,
-         onMultipleSelections: (([Int64]) -> Void)? = nil) {
+         onMultipleSelections: (([ProductVariation]) -> Void)? = nil) {
         self._isPresented = isPresented
         self.viewModel = viewModel
         self.multipleSelectionsEnabled = multipleSelectionsEnabled
@@ -105,7 +106,7 @@ struct ProductVariationSelector: View {
             guard multipleSelectionsEnabled else {
                 return
             }
-            onMultipleSelections?(viewModel.selectedProductVariationIDs)
+            onMultipleSelections?(viewModel.selectedProductVariations)
         }
         .notice($viewModel.notice, autoDismiss: false)
     }

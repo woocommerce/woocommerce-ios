@@ -193,9 +193,9 @@ final class EditableOrderViewModel: ObservableObject {
             onVariationSelected: { [weak self] variation, parentProduct in
                 guard let self = self else { return }
                 self.addProductVariationToOrder(variation, parent: parentProduct)
-            }, onMultipleSelectionCompleted: { [weak self] _ in
+            }, onMultipleSelectionCompleted: { [weak self] products, variations in
                 guard let self = self else { return }
-                self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+                self.syncOrderItems(products: products, variations: variations)
             })
     }
 
@@ -836,6 +836,12 @@ private extension EditableOrderViewModel {
 
         return inputsToBeRemoved
 
+    }
+
+    /// Adds, or removes multiple products from an Order
+    ///
+    func syncOrderItems(productIDs: [Int64], variationIDs: [Int64]) {
+        let products = productsResultsController
     }
 
     /// Adds, or removes multiple products from an Order

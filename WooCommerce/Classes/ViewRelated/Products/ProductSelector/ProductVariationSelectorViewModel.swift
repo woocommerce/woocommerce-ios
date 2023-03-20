@@ -61,9 +61,18 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     let onVariationSelected: ((ProductVariation, Product) -> Void)?
 
+    let onMultipleSelectionCompleted: (([ProductVariation]) -> Void)?
+
     /// All selected product variations if the selector supports multiple selections.
     ///
     @Published private(set) var selectedProductVariationIDs: [Int64]
+
+    var selectedProductVariations: [ProductVariation] {
+        selectedProductVariationIDs.map { id in
+            productVariationsResultsController.fetchedObjects.first { $0.productVariationID == id }
+        }
+        .compactMap { $0 }
+    }
 
     // MARK: Sync & Storage properties
 
@@ -122,7 +131,8 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          supportsMultipleSelection: Bool = false,
          isClearSelectionEnabled: Bool = true,
-         onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
+         onVariationSelected: ((ProductVariation, Product) -> Void)? = nil,
+         onMultipleSelectionCompleted: (([ProductVariation]) -> Void)? = nil) {
         self.siteID = siteID
         self.productID = productID
         self.productName = productName
@@ -132,6 +142,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.supportsMultipleSelection = supportsMultipleSelection
         self.isClearSelectionEnabled = isClearSelectionEnabled
         self.onVariationSelected = onVariationSelected
+        self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.selectedProductVariationIDs = selectedProductVariationIDs
         self.purchasableItemsOnly = purchasableItemsOnly
 
@@ -148,7 +159,8 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                      stores: StoresManager = ServiceLocator.stores,
                      supportsMultipleSelection: Bool = false,
                      isClearSelectionEnabled: Bool = true,
-                     onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
+                     onVariationSelected: ((ProductVariation, Product) -> Void)? = nil,
+                     onMultipleSelectionCompleted: (([ProductVariation]) -> Void)? = nil) {
         self.init(siteID: siteID,
                   productID: product.productID,
                   productName: product.name,
@@ -159,7 +171,8 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   stores: stores,
                   supportsMultipleSelection: supportsMultipleSelection,
                   isClearSelectionEnabled: isClearSelectionEnabled,
-                  onVariationSelected: onVariationSelected)
+                  onVariationSelected: onVariationSelected,
+                  onMultipleSelectionCompleted: onMultipleSelectionCompleted)
     }
 
     /// Select a product variation to add to the order

@@ -447,6 +447,8 @@
 		02CEBB8424C99A10002EDF35 /* Product+ShippingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CEBB8324C99A10002EDF35 /* Product+ShippingTests.swift */; };
 		02D3B68529657061009BF0BC /* SupportButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D3B68429657061009BF0BC /* SupportButton.swift */; };
 		02D45647231CB1FB008CF0A9 /* UIImage+Dot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D45646231CB1FB008CF0A9 /* UIImage+Dot.swift */; };
+		02D681A929C358BA00348510 /* StoreOnboardingPaymentsSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D681A829C358BA00348510 /* StoreOnboardingPaymentsSetupView.swift */; };
+		02D681AB29C3F8AC00348510 /* StoreOnboardingPaymentsSetupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D681AA29C3F8AC00348510 /* StoreOnboardingPaymentsSetupCoordinator.swift */; };
 		02DAE7FC291B7B8B009342B7 /* DomainSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DAE7FB291B7B8B009342B7 /* DomainSelectorViewModel.swift */; };
 		02DAE7FF291B8C8A009342B7 /* FreeDomainSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DAE7FE291B8C8A009342B7 /* FreeDomainSelectorViewModelTests.swift */; };
 		02DC2ED2242061BF002F9676 /* ProductPriceSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DC2ED1242061BE002F9676 /* ProductPriceSettingsViewModel.swift */; };
@@ -2624,6 +2626,8 @@
 		02CEBB8324C99A10002EDF35 /* Product+ShippingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ShippingTests.swift"; sourceTree = "<group>"; };
 		02D3B68429657061009BF0BC /* SupportButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportButton.swift; sourceTree = "<group>"; };
 		02D45646231CB1FB008CF0A9 /* UIImage+Dot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Dot.swift"; sourceTree = "<group>"; };
+		02D681A829C358BA00348510 /* StoreOnboardingPaymentsSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingPaymentsSetupView.swift; sourceTree = "<group>"; };
+		02D681AA29C3F8AC00348510 /* StoreOnboardingPaymentsSetupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingPaymentsSetupCoordinator.swift; sourceTree = "<group>"; };
 		02DAE7FB291B7B8B009342B7 /* DomainSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSelectorViewModel.swift; sourceTree = "<group>"; };
 		02DAE7FE291B8C8A009342B7 /* FreeDomainSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeDomainSelectorViewModelTests.swift; sourceTree = "<group>"; };
 		02DC2ED1242061BE002F9676 /* ProductPriceSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsViewModel.swift; sourceTree = "<group>"; };
@@ -5339,6 +5343,8 @@
 				027EB56D29C0602D003CE551 /* StoreOnboardingLaunchStoreViewModel.swift */,
 				027EB56F29C062DD003CE551 /* StoreOnboardingLaunchStoreCoordinator.swift */,
 				020B640E29C194CF001C5BD9 /* StoreOnboardingStoreLaunchedView.swift */,
+				02D681A829C358BA00348510 /* StoreOnboardingPaymentsSetupView.swift */,
+				02D681AA29C3F8AC00348510 /* StoreOnboardingPaymentsSetupCoordinator.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -10681,6 +10687,8 @@
 				CCC284112768C18500F6CC8B /* ProductInOrder.swift in Sources */,
 				DE2FE5882925DD950018040A /* JetpackInstallHeaderView.swift in Sources */,
 				263C4CC02963784900CA7E05 /* ProductVariationGenerator.swift in Sources */,
+				02D681A929C358BA00348510 /* StoreOnboardingPaymentsSetupView.swift in Sources */,
+				02D681AB29C3F8AC00348510 /* StoreOnboardingPaymentsSetupCoordinator.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				265BCA0C2430E741004E53EE /* ProductCategoryTableViewCell.swift in Sources */,
 				02ACD25A2852E11700EC928E /* CloseAccountCoordinator.swift in Sources */,

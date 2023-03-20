@@ -18,11 +18,9 @@ extension URL {
             ("code_challenge_method", pkce.method.urlQueryParameterValue),
             ("redirect_uri", clientId.defaultRedirectURI),
             ("response_type", "code"),
-            // The Google Sign-In SDK use "profile email", but we only need the user's email address.
-            //
-            // See:
+            // See what the Google SDK does:
             // https://github.com/google/GoogleSignIn-iOS/blob/7.0.0/GoogleSignIn/Sources/GIDScopes.m#L58-L61
-            ("scope", "email")
+            ("scope", "profile email")
         ].map { URLQueryItem(name: $0.0, value: $0.1) }
 
         if #available(iOS 16.0, *) {

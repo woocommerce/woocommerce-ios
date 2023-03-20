@@ -268,7 +268,7 @@ final class DashboardViewModel {
         guard featureFlagService.isFeatureFlagEnabled(.dashboardOnboarding) else {
             return
         }
-        
+
         guard let storeOnboardingViewModel else {
             showOnboardingSubscription = userDefaults.publisher(for: \.completedAllStoreOnboardingTasks)
                 .sink { [weak self] in
@@ -276,7 +276,7 @@ final class DashboardViewModel {
                 }
             return
         }
-        
+
         showOnboardingSubscription = storeOnboardingViewModel.$shouldShowInDashboard
             .sink { [weak self] in
                 self?.showOnboarding = $0

@@ -8,10 +8,7 @@ import struct Networking.ApplicationPassword
 final class ApplicationPasswordAuthorizationWebViewController: UIViewController {
 
     /// Callback when application password is authorized.
-    var onSuccess: (ApplicationPassword) -> Void = { _ in }
-
-    /// Callback when application password is rejected.
-    var onFailure: () -> Void = {}
+    private let onSuccess: (ApplicationPassword) -> Void
 
     /// Main web view
     private lazy var webView: WKWebView = {
@@ -47,8 +44,10 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
     private let viewModel: ApplicationPasswordAuthorizationViewModel
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(viewModel: ApplicationPasswordAuthorizationViewModel) {
+    init(viewModel: ApplicationPasswordAuthorizationViewModel,
+         onSuccess: @escaping (ApplicationPassword) -> Void) {
         self.viewModel = viewModel
+        self.onSuccess = onSuccess
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -69,6 +68,11 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
 private extension ApplicationPasswordAuthorizationWebViewController {
     func configureNavigationBar() {
         title = Localization.login
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .done, target: nil, action: #selector(dismissView))
+    }
+
+    @objc func dismissView() {
+        dismiss(animated: true)
     }
 
     func configureWebView() {
@@ -171,18 +175,20 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: appID)
         onSuccess(applicationPassword)
         DDLogInfo("✅ Application password authorized")
+        dismissView()
     }
 
     func showErrorAlert(message: String, onRetry: (() -> Void)? = nil) {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         let action = UIAlertAction(title: Localization.cancel, style: .cancel) { [weak self] _ in
-            self?.onFailure()
+            self?.dismissView()
         }
         alertController.addAction(action)
         if let onRetry {
             let retryAction = UIAlertAction(title: Localization.tryAgain, style: .default) { _ in
                 onRetry()
             }
+            alertController.addAction(retryAction)
         }
         present(alertController, animated: true)
     }
@@ -194,7 +200,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
     }
     enum Localization {
         static let login = NSLocalizedString("Log In", comment: "Title for the application password authorization web view")
-        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the error alerts of the application password authorization web view")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the view or error alerts of the application password authorization web view")
         static let tryAgain = NSLocalizedString("Retry", comment: "Button to retry fetching application password authorization URL during login")
         static let authorizationRejected = NSLocalizedString(
             "Unable to log in because the request to use application passwords to your site has been rejected.",

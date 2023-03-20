@@ -104,12 +104,22 @@ struct SetUpTapToPayPaymentPromptView: View {
         WooNavigationSheet(viewModel: WooNavigationSheetViewModel(navigationTitle: Localization.setUpTryPaymentPromptTitle,
                                                                   done: viewModel.dismiss ?? {})) {
             if let summaryViewModel = viewModel.summaryViewModel {
-                    SimplePaymentsSummary(dismiss: viewModel.dismiss ?? {},
-                                          rootViewController: rootViewController?.navigationController,
-                                          viewModel: summaryViewModel)
+                SimplePaymentsSummary(
+                    dismiss: {
+                        showOrder(orderID: summaryViewModel.orderID, siteID: summaryViewModel.siteID)
+                    },
+                    rootViewController: rootViewController?.navigationController,
+                    viewModel: summaryViewModel.simplePaymentSummaryViewModel)
             }
             EmptyView()
         }
+    }
+
+    private func showOrder(orderID: Int64, siteID: Int64) {
+        let orderViewController = OrderLoaderViewController(orderID: orderID, siteID: siteID)
+        orderViewController.addCloseNavigationBarButton(title: Localization.doneButton)
+        rootViewController?.navigationController?.navigationBar.isHidden = false
+        rootViewController?.navigationController?.setViewControllers([orderViewController], animated: true)
     }
 }
 
@@ -152,6 +162,11 @@ private extension SetUpTapToPayPaymentPromptView {
             "Cancel",
             comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow " +
             "> Cancel button")
+
+        static let doneButton = NSLocalizedString(
+            "Done",
+            comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow " +
+            "> Review Order > Done button")
     }
 }
 

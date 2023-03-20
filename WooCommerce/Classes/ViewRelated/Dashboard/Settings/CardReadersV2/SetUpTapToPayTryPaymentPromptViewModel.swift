@@ -18,7 +18,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
     private let stores: StoresManager
 
     @Published var loading: Bool = false
-    var summaryViewModel: SimplePaymentsSummaryViewModel? = nil {
+    var summaryViewModel: TryAPaymentSummaryViewModel? = nil {
         didSet {
             summaryActive = summaryViewModel != nil
         }
@@ -69,9 +69,13 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
 
             switch result {
             case .success(let order):
-                self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
-                                                                       providedAmount: order.total,
-                                                                       presentNoticeSubject: self.presentNoticeSubject)
+                self.summaryViewModel = TryAPaymentSummaryViewModel(
+                    simplePaymentSummaryViewModel: SimplePaymentsSummaryViewModel(order: order,
+                                                                                  providedAmount: order.total,
+                                                                                  presentNoticeSubject: self.presentNoticeSubject),
+                    siteID: self.siteID,
+                    orderID: order.orderID)
+
 
             case .failure(let error):
                 self.presentNoticeSubject.send(.error(Localization.errorCreatingTestPayment))
@@ -121,4 +125,10 @@ extension SetUpTapToPayTryPaymentPromptViewModel {
             "The trial payment could not be started, please try again, or contact support if this problem persists.",
             comment: "Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails.")
     }
+}
+
+struct TryAPaymentSummaryViewModel {
+    let simplePaymentSummaryViewModel: SimplePaymentsSummaryViewModel
+    let siteID: Int64
+    let orderID: Int64
 }

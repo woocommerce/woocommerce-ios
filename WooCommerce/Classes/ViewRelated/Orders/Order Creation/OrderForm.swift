@@ -265,7 +265,6 @@ private struct ProductsSection: View {
                         .sheet(item: $viewModel.selectedProductViewModel) { productViewModel in
                             ProductInOrder(viewModel: productViewModel)
                         }
-                        .redacted(reason: viewModel.disabled ? .placeholder : [] )
 
                     Divider()
                 }
@@ -282,9 +281,9 @@ private struct ProductsSection: View {
                     ProductSelectorNavigationView(
                         configuration: ProductSelectorView.Configuration.addProductToOrder(),
                         isPresented: $showAddProduct,
-                        viewModel: viewModel.productSelectorViewModel)
+                        viewModel: viewModel.addProductViewModel)
                     .onDisappear {
-                        viewModel.productSelectorViewModel.clearSearchAndFilters()
+                        viewModel.addProductViewModel.clearSearchAndFilters()
                         navigationButtonID = UUID()
                     }
                 })

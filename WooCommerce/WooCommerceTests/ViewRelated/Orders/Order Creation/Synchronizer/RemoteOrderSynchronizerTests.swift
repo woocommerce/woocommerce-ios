@@ -13,7 +13,6 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
     private let sampleProductID: Int64 = 234
     private let sampleInputID: Int64 = 345
-    private let anotherSampleInputID: Int64 = 312
     private let sampleShippingID: Int64 = 456
     private let sampleOrderID: Int64 = 567
     private let sampleFeeID: Int64 = 678
@@ -63,14 +62,13 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
     func test_setProducts_sends_single_product_input_then_updates_order_successfully() throws {
         // Given
-        let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let product = Product.fake().copy(productID: sampleProductID)
         let productInput = OrderSyncProductInput(
-            id: sampleInputID,
             product: .product(product),
-            quantity: 1)
-
+            quantity: 1
+        )
         // Confidence check
         XCTAssertEqual(synchronizer.order.items.count, 0)
 
@@ -94,13 +92,13 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let anotherProduct = Product.fake().copy(productID: 12345)
         let productInput = OrderSyncProductInput(
-            id: sampleInputID,
             product: .product(product),
-            quantity: 1)
+            quantity: 1
+        )
         let anotherProductInput = OrderSyncProductInput(
-            id: anotherSampleInputID,
             product: .product(anotherProduct),
-            quantity: 1)
+            quantity: 1
+        )
 
         // Confidence check
         XCTAssertEqual(synchronizer.order.items.count, 0)

@@ -51,6 +51,9 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         super.viewDidLoad()
 
         configureNavigationBarAppearance()
+        Task {
+            await reloadTasks()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -62,7 +65,7 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
     }
 
     @MainActor
-    private func reloadTasks() async {
+    func reloadTasks() async {
         await viewModel.reloadTasks()
     }
 
@@ -192,8 +195,8 @@ private extension StoreOnboardingView {
 
 struct StoreOnboardingCardView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingView(viewModel: .init(siteID: 0, isExpanded: false))
+        StoreOnboardingView(viewModel: .init(isExpanded: false, siteID: 0))
 
-        StoreOnboardingView(viewModel: .init(siteID: 0, isExpanded: true))
+        StoreOnboardingView(viewModel: .init(isExpanded: true, siteID: 0))
     }
 }

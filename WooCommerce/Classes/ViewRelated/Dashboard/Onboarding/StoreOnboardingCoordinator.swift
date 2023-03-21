@@ -24,8 +24,7 @@ final class StoreOnboardingCoordinator: Coordinator {
     @MainActor
     func start() {
         let onboardingNavigationController = UINavigationController()
-        let onboardingViewController = StoreOnboardingViewHostingController(viewModel: .init(siteID: site.siteID,
-                                                                                             isExpanded: true),
+        let onboardingViewController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: true, siteID: site.siteID),
                                                                             navigationController: onboardingNavigationController,
                                                                             site: site)
         onboardingNavigationController.pushViewController(onboardingViewController, animated: false)

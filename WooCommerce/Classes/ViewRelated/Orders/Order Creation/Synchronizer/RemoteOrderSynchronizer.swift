@@ -153,12 +153,12 @@ private extension RemoteOrderSynchronizer {
             .map { [weak self] productsInput, order -> Order in
                 guard let self = self else { return order }
 
-                let localInputs = productsInput.map {
+                let _ = productsInput.map {
                     self.replaceInputWithLocalIDIfNeeded($0)
                 }
 
                 let updatedOrder = ProductInputTransformer.updateMultipleItems(
-                    with: localInputs,
+                    with: productsInput,
                     on: order,
                     updateZeroQuantities: true)
 

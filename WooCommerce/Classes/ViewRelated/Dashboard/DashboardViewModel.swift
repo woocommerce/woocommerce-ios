@@ -15,8 +15,6 @@ final class DashboardViewModel {
 
     @Published var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
 
-    let storeOnboardingViewModel: StoreOnboardingViewModel
-
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
@@ -32,8 +30,7 @@ final class DashboardViewModel {
     private let analytics: Analytics
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
 
-    init(siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores,
+    init(stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard) {
@@ -41,14 +38,9 @@ final class DashboardViewModel {
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
-        self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
-        setupObserverForShowOnboarding()
-    }
-
-    /// Reloads store onboarding tasks
-    ///
-    func reloadStoreOnboardingTasks() async {
-        await storeOnboardingViewModel.reloadTasks()
+        userDefaults.publisher(for: \.completedAllStoreOnboardingTasks)
+            .map({ featureFlags.isFeatureFlagEnabled(.dashboardOnboarding) && ($0 == false) })
+            .assign(to: &$showOnboarding)
     }
 
     /// Syncs store stats for dashboard UI.
@@ -256,17 +248,6 @@ final class DashboardViewModel {
         viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
         announcementViewModel = viewModel
     }
-
-    /// Sets up observer to decide store onboarding task lists visibility
-    ///
-    private func setupObserverForShowOnboarding() {
-        guard featureFlagService.isFeatureFlagEnabled(.dashboardOnboarding) else {
-            return
-        }
-
-        storeOnboardingViewModel.$shouldShowInDashboard
-            .assign(to: &$showOnboarding)
-    }
 }
 
 // MARK: - Constants
@@ -277,3 +258,9 @@ private extension DashboardViewModel {
         static let dashboardScreenName = "my_store"
     }
 }
+
+private extension UserDefaults {
+     @objc dynamic var completedAllStoreOnboardingTasks: Bool {
+         bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
+     }
+ }

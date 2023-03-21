@@ -307,7 +307,8 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = false
-        let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
+        let viewModel = DashboardViewModel(stores: stores,
+                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
                                            userDefaults: defaults)
         // Then
         XCTAssertFalse(viewModel.showOnboarding)
@@ -318,7 +319,8 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = true
-        let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
+        let viewModel = DashboardViewModel(stores: stores,
+                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
                                            userDefaults: defaults)
         // Then
         XCTAssertFalse(viewModel.showOnboarding)
@@ -329,7 +331,8 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = true
-        let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
+        let viewModel = DashboardViewModel(stores: stores,
+                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
         // Then
         XCTAssertFalse(viewModel.showOnboarding)
@@ -340,7 +343,8 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = false
-        let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
+        let viewModel = DashboardViewModel(stores: stores,
+                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
         // Then
         XCTAssertTrue(viewModel.showOnboarding)
@@ -350,7 +354,8 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
+        let viewModel = DashboardViewModel(stores: stores,
+                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
         // Then
         XCTAssertTrue(viewModel.showOnboarding)
@@ -360,7 +365,8 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let viewModel = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
+        let viewModel = DashboardViewModel(stores: stores,
+                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
         // Then
         XCTAssertTrue(viewModel.showOnboarding)
@@ -376,8 +382,9 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                           userDefaults: defaults)
+        let sut = DashboardViewModel(stores: stores,
+                                     featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
+                                     userDefaults: defaults)
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: true, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
@@ -387,12 +394,7 @@ final class DashboardViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success(tasks))
 
         // When
-        let storeOnboardingViewModel = StoreOnboardingViewModel(isExpanded: false,
-                                                                siteID: 0,
-                                                                stores: stores,
-                                                                defaults: defaults)
-        sut.storeOnboardingViewModel = storeOnboardingViewModel
-        await sut.reloadStoreOnboardingTasks()
+        await sut.reloadStoreOnboardingTasks(for: 0)
 
         // Then
         XCTAssertTrue(sut.showOnboarding)
@@ -402,8 +404,9 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                           userDefaults: defaults)
+        let sut = DashboardViewModel(stores: stores,
+                                     featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
+                                     userDefaults: defaults)
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: true, type: .addFirstProduct),
             .init(isComplete: true, type: .launchStore),
@@ -413,12 +416,7 @@ final class DashboardViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success(tasks))
 
         // When
-        let storeOnboardingViewModel = StoreOnboardingViewModel(isExpanded: false,
-                                                                siteID: 0,
-                                                                stores: stores,
-                                                                defaults: defaults)
-        sut.storeOnboardingViewModel = storeOnboardingViewModel
-        await sut.reloadStoreOnboardingTasks()
+        await sut.reloadStoreOnboardingTasks(for: 0)
 
         // Then
         XCTAssertFalse(sut.showOnboarding)
@@ -428,20 +426,16 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                           userDefaults: defaults)
+        let sut = DashboardViewModel(stores: stores,
+                                     featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
+                                     userDefaults: defaults)
         mockLoadOnboardingTasks(result: .failure(MockError()))
 
         // Then
         XCTAssertTrue(sut.showOnboarding)
 
         // When
-        let storeOnboardingViewModel = StoreOnboardingViewModel(isExpanded: false,
-                                                                siteID: 0,
-                                                                stores: stores,
-                                                                defaults: defaults)
-        sut.storeOnboardingViewModel = storeOnboardingViewModel
-        await sut.reloadStoreOnboardingTasks()
+        await sut.reloadStoreOnboardingTasks(for: 0)
 
         // Then
         XCTAssertFalse(sut.showOnboarding)
@@ -451,17 +445,13 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                           userDefaults: defaults)
+        let sut = DashboardViewModel(stores: stores,
+                                     featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
+                                     userDefaults: defaults)
         mockLoadOnboardingTasks(result: .success([]))
 
         // When
-        let storeOnboardingViewModel = StoreOnboardingViewModel(isExpanded: false,
-                                                                siteID: 0,
-                                                                stores: stores,
-                                                                defaults: defaults)
-        sut.storeOnboardingViewModel = storeOnboardingViewModel
-        await sut.reloadStoreOnboardingTasks()
+        await sut.reloadStoreOnboardingTasks(for: 0)
 
         // Then
         XCTAssertFalse(sut.showOnboarding)

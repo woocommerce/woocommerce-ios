@@ -863,18 +863,18 @@ private extension EditableOrderViewModel {
             allProducts.append(product)
         }
 
-        guard featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled else {
+        if featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled {
+            // Multi-selection
+            if !selectedProducts.contains(where: { $0.productID == product.productID }) {
+                selectedProducts.append(product)
+            } else {
+                selectedProducts.removeAll(where: { $0.productID == product.productID })
+            }
+        } else {
             // Single-selection
             let input = OrderSyncProductInput(product: .product(product), quantity: 1)
             orderSynchronizer.setProduct.send(input)
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
-            return
-        }
-        // Multi-selection
-        if !selectedProducts.contains(where: { $0.productID == product.productID }) {
-            selectedProducts.append(product)
-        } else {
-            selectedProducts.removeAll(where: { $0.productID == product.productID })
         }
     }
 
@@ -893,18 +893,18 @@ private extension EditableOrderViewModel {
             allProductVariations.append(variation)
         }
 
-        // Single-Selection
-        guard featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled else {
+        if featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled {
+            // Multi-Selection
+            if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
+                selectedProductVariations.append(variation)
+            } else {
+                selectedProductVariations.removeAll(where: { $0.productVariationID == variation.productVariationID })
+            }
+        } else {
+            // Single-Selection
             let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
             orderSynchronizer.setProduct.send(input)
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
-            return
-        }
-        // Multi-Selection
-        if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
-            selectedProductVariations.append(variation)
-        } else {
-            selectedProductVariations.removeAll(where: { $0.productVariationID == variation.productVariationID })
         }
     }
 

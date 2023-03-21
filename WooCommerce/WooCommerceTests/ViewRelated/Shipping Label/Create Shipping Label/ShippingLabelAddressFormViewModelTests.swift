@@ -272,7 +272,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
     }
 
-    func test_sections_are_returned_correctly_if_phone_is_required_and_invalid() {
+    func test_sections_are_returned_correctly_if_phone_is_required_and_invalid_and_validation_is_required() {
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress(phone: "0123", country: "US")
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -293,6 +293,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                           address: shippingAddress,
                                                           email: nil,
                                                           phoneNumberRequired: true,
+                                                          needsPhoneNumberValidation: true,
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: [])
@@ -304,6 +305,50 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                                      .company,
                                                                      .phone,
                                                                      .fieldError(.invalidPhoneNumber),
+                                                                     .address,
+                                                                     .fieldError(.address),
+                                                                     .address2,
+                                                                     .city,
+                                                                     .fieldError(.city),
+                                                                     .postcode,
+                                                                     .fieldError(.postcode),
+                                                                     .state,
+                                                                     .country]
+        XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
+    }
+
+    func test_sections_are_returned_correctly_if_phone_is_required_and_invalid_and_validation_is_not_required() {
+        // Given
+        let shippingAddress = MockShippingLabelAddress.sampleAddress(phone: "0123", country: "US")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let validationError = ShippingLabelAddressValidationError(addressError: "Error", generalError: nil)
+
+        // When
+        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
+            switch action {
+            case let .validateAddress(_, _, onCompletion):
+                onCompletion(.failure(validationError))
+            default:
+                break
+            }
+        }
+
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
+                                                          type: .origin,
+                                                          address: shippingAddress,
+                                                          email: nil,
+                                                          phoneNumberRequired: true,
+                                                          needsPhoneNumberValidation: false,
+                                                          stores: stores,
+                                                          validationError: nil,
+                                                          countries: [])
+        viewModel.validateAddress(onlyLocally: false) { _ in }
+
+        // Then
+        let expectedRows: [ShippingLabelAddressFormViewModel.Row] = [.name,
+                                                                     .fieldError(.name),
+                                                                     .company,
+                                                                     .phone,
                                                                      .address,
                                                                      .fieldError(.address),
                                                                      .address2,

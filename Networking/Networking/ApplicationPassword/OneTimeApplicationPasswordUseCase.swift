@@ -41,9 +41,7 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
 
 private extension OneTimeApplicationPasswordUseCase {
     func fetchApplicationPasswordUUID() async throws -> String? {
-        guard let appID = applicationPassword?.appID,
-              appID.isEmpty == false,
-              let url = URL(string: siteAddress + Path.applicationPasswords) else {
+        guard let url = URL(string: siteAddress + Path.introspect) else {
             return nil
         }
 
@@ -58,8 +56,8 @@ private extension OneTimeApplicationPasswordUseCase {
             ]
         }
 
-        let passwords = try decoder.decode([ApplicationPassword].self, from: data)
-        return passwords.first(where: { $0.appID == appID })?.uuid
+        let password = try decoder.decode(ApplicationPassword.self, from: data)
+        return password.uuid
     }
 
     func authenticateRequest(request: URLRequest) -> URLRequest {
@@ -88,5 +86,6 @@ private extension OneTimeApplicationPasswordUseCase {
 private extension OneTimeApplicationPasswordUseCase {
     enum Path {
         static let applicationPasswords = "/wp-json/wp/v2/users/me/application-passwords/"
+        static let introspect = "/wp-json/wp/v2/users/me/application-passwords/introspect"
     }
 }

@@ -51,7 +51,7 @@ class StoreOnboardingViewModel: ObservableObject {
 
     let isExpanded: Bool
 
-    private let siteID: Int64
+    private var siteID: Int64?
 
     private let stores: StoresManager
 
@@ -68,15 +68,12 @@ class StoreOnboardingViewModel: ObservableObject {
 
     /// - Parameters:
     ///   - isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
-    ///   - siteID: siteID
     ///   - stores: StoresManager
     ///   - defaults: UserDefaults for storing when all onboarding tasks are completed
     init(isExpanded: Bool,
-         siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          defaults: UserDefaults = .standard) {
         self.isExpanded = isExpanded
-        self.siteID = siteID
         self.stores = stores
         self.state = .loading
         self.defaults = defaults
@@ -87,23 +84,25 @@ class StoreOnboardingViewModel: ObservableObject {
         .assign(to: &$shouldShowInDashboard)
     }
 
-    func reloadTasks() async {
+    func reloadTasks(siteID: Int64) async {
         await update(state: .loading)
-        if let tasks = try? await loadTasks(),
+        if let tasks = try? await loadTasks(siteID),
            tasks.isNotEmpty {
             await checkIfAllTasksAreCompleted(tasks)
             await update(state: .loaded(rows: tasks))
-        } else if taskViewModels.isNotEmpty {
+        } else if taskViewModels.isNotEmpty,
+                    self.siteID == siteID {
             await update(state: .loaded(rows: taskViewModels))
         } else {
             await update(state: .failed)
         }
+        self.siteID = siteID
     }
 }
 
 private extension StoreOnboardingViewModel {
     @MainActor
-    private func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
+    private func loadTasks(_ siteID: Int64) async throws -> [StoreOnboardingTaskViewModel] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
                 continuation.resume(with: result

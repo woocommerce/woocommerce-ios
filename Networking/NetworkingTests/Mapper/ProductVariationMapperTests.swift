@@ -27,6 +27,15 @@ final class ProductVariationMapperTests: XCTestCase {
 
         XCTAssertEqual(productVariation, sampleProductVariation(siteID: dummySiteID, productID: dummyProductID, id: 2783))
     }
+
+    /// Verifies that the fields of the Product Variations with alternative types are parsed correctly when they have different types than in the struct.
+    /// Currently, `price`, `regularPrice`, `salePrice`, `manageStock`, `purchasable`, and `permalink`  allow alternative types.
+    ///
+    func test_that_product_variations_alternative_types_are_properly_parsed() throws {
+        let productVariation = try XCTUnwrap(mapLoadProductVariationResponseWithAlternativeTypes())
+
+        XCTAssertEqual(productVariation, sampleProductVariationAlternativeTypes(siteID: dummySiteID, productID: dummyProductID, id: 2783))
+    }
 }
 
 /// Private Helpers
@@ -52,6 +61,12 @@ private extension ProductVariationMapperTests {
     ///
     func mapLoadProductVariationResponseWithoutDataEnvelope() -> ProductVariation? {
         return mapProductVariation(from: "product-variation-update-without-data")
+    }
+
+    /// Returns the ProductVariationMapper output upon receiving `ProductVariation`
+    ///
+    func mapLoadProductVariationResponseWithAlternativeTypes() -> ProductVariation? {
+        return mapProductVariation(from: "product-variations-load-all-alternative-types")
     }
 }
 
@@ -103,6 +118,55 @@ private extension ProductVariationMapperTests {
                                 shippingClass: "",
                                 shippingClassID: 0,
                                 menuOrder: 1)
+    }
+
+    func sampleProductVariationAlternativeTypes(siteID: Int64,
+                                productID: Int64,
+                                id: Int64) -> ProductVariation {
+        let imageSource = "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1"
+        return ProductVariation(siteID: siteID,
+                                productID: productID,
+                                productVariationID: id,
+                                attributes: [],
+                                image: ProductImage(imageID: 1063,
+                                                    dateCreated: DateFormatter.dateFromString(with: "2019-11-01T08:42:05"),
+                                                    dateModified: DateFormatter.dateFromString(with: "2019-11-01T08:42:05"),
+                                                    src: imageSource,
+                                                    name: "DSC_0010",
+                                                    alt: ""),
+                                permalink: "",
+                                dateCreated: DateFormatter.dateFromString(with: "2019-11-14T15:10:55"),
+                                dateModified: DateFormatter.dateFromString(with: "2019-11-14T15:36:42"),
+                                dateOnSaleStart: nil,
+                                dateOnSaleEnd: nil,
+                                status: .published,
+                                description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
+                                sku: "99%-nuts-marble",
+                                price: "17",
+                                regularPrice: "12.89",
+                                salePrice: "26.73",
+                                onSale: false,
+                                purchasable: false,
+                                virtual: false,
+                                downloadable: true,
+                                downloads: [],
+                                downloadLimit: -1,
+                                downloadExpiry: 0,
+                                taxStatusKey: "taxable",
+                                taxClass: "",
+                                manageStock: false,
+                                stockQuantity: 16,
+                                stockStatus: .inStock,
+                                backordersKey: "notify",
+                                backordersAllowed: true,
+                                backordered: false,
+                                weight: "2.5",
+                                dimensions: ProductDimensions(length: "10",
+                                                              width: "2.5",
+                                                              height: ""),
+                                shippingClass: "",
+                                shippingClassID: 0,
+                                menuOrder: 8)
     }
 
     func sampleProductVariationAttributes() -> [ProductVariationAttribute] {

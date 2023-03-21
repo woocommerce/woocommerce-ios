@@ -290,15 +290,44 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     func clearSelection() {
         let _ = products.map { product in
+            // Callback to deselect products
             if selectedProductIDs.contains(where: { $0 == product.productID }) {
                 if let onProductSelected {
                     onProductSelected(product)
+                }
+            }
+            // Callback to deselect the parent product:
+            // If has variations, and if any of those intersects with selected variations means the parent is toggled
+            // and can be cleared
+            if product.variations.isNotEmpty {
+                let variationIDs = product.variations
+                let intersection = Set(variationIDs).intersection(Set(selectedProductVariationIDs))
+                if intersection.count != 0 {
+                    let variations = retrieveVariations(for: product.productID)
+                    // TODO: Decide which behavior to keep
+                    // 1. If we call the product only, we don't unselect variations from ProductSelector
+                    if let onProductSelected {
+                        onProductSelected(product)
+                    }
+                    // 2. If we call variations, we unselect it from ProductSelector
+                    if let onVariationSelected, let variation = variations.first(where: { $0.productID == product.productID }) {
+                        onVariationSelected(variation, product)
+                    }
                 }
             }
         }
         initialSelectedItems = []
         selectedProductIDs = []
         selectedProductVariationIDs = []
+    }
+
+    private func retrieveVariations(for productID: Int64) -> [ProductVariation] {
+        let variationsViewModel = getVariationsViewModel(for: productID)
+        guard let variationsViewModel else {
+            DDLogError("No variations found for productID \(productID)")
+            return []
+        }
+        return variationsViewModel.productVariations
     }
 }
 

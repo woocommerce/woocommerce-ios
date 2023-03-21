@@ -210,17 +210,17 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Keeps track of selected/unselected Products, if any
     ///
-    @Published var selectedProducts: [Product?] = []
+    @Published var selectedProducts: [Product] = []
 
     /// Keeps track of selected/unselected Product Variations, if any
     ///
-    @Published var selectedProductVariations: [ProductVariation?] = []
+    @Published var selectedProductVariations: [ProductVariation] = []
 
     /// Keeps track of all selected Products and Product Variations IDs
     ///
     var selectedProductsAndVariationsIDs: [Int64] {
-        let selectedProductsCount = selectedProducts.compactMap { $0?.productID }
-        let selectedProductVariationsCount = selectedProductVariations.compactMap { $0?.productVariationID }
+        let selectedProductsCount = selectedProducts.compactMap { $0.productID }
+        let selectedProductVariationsCount = selectedProductVariations.compactMap { $0.productVariationID }
         return selectedProductsCount + selectedProductVariationsCount
     }
 
@@ -364,11 +364,13 @@ final class EditableOrderViewModel: ObservableObject {
     private func selectExistingProductsInOrderIfNeeded() {
         let _ = orderSynchronizer.order.items.map { item in
             if item.variationID != 0 {
-                let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID })
-                selectedProductVariations.append(variation)
+                if let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+                    selectedProductVariations.append(variation)
+                }
             } else {
-                let product = allProducts.first(where: { $0.productID == item.productID })
-                selectedProducts.append(product)
+                if let product = allProducts.first(where: { $0.productID == item.productID }) {
+                    selectedProducts.append(product)
+                }
             }
             updatedProductAndVariationIDsInOrder.append(item.productOrVariationID)
         }
@@ -392,10 +394,10 @@ final class EditableOrderViewModel: ObservableObject {
             // Updates selected products and selected variations for all items that have been removed directly from the Order
             // when using multi-selection, for example by tapping the `-` button within the Order view
             if item.productID != 0 {
-                selectedProducts.removeAll(where: { $0?.productID == item.productID})
+                selectedProducts.removeAll(where: { $0.productID == item.productID})
             }
             if item.variationID != 0 {
-                selectedProductVariations.removeAll(where: { $0?.productVariationID == item.variationID})
+                selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID})
             }
             updatedProductAndVariationIDsInOrder.removeAll(where: { $0 == item.productOrVariationID })
         }
@@ -875,10 +877,10 @@ private extension EditableOrderViewModel {
             return
         }
         // Multi-selection
-        if !selectedProducts.contains(where: { $0?.productID == product.productID }) {
+        if !selectedProducts.contains(where: { $0.productID == product.productID }) {
             selectedProducts.append(product)
         } else {
-            selectedProducts.removeAll(where: { $0?.productID == product.productID })
+            selectedProducts.removeAll(where: { $0.productID == product.productID })
         }
     }
 
@@ -905,10 +907,10 @@ private extension EditableOrderViewModel {
             return
         }
         // Multi-Selection
-        if !selectedProductVariations.contains(where: { $0?.productVariationID == variation.productVariationID }) {
+        if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
             selectedProductVariations.append(variation)
         } else {
-            selectedProductVariations.removeAll(where: { $0?.productVariationID == variation.productVariationID })
+            selectedProductVariations.removeAll(where: { $0.productVariationID == variation.productVariationID })
         }
     }
 

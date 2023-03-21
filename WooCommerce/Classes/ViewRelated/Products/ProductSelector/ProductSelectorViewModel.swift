@@ -276,9 +276,24 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedProductVariations.append(contentsOf: selectedVariations)
     }
 
+    func updateSelectedToggleAllVariations(for productID: Int64) {
+        guard let product = products.first(where: { $0.productID == productID }) else {
+            return
+        }
+        let allVariations = product.variations
+
+        let _ = allVariations.map { _ in
+            // Remove items that exist in the initial list
+            initialSelectedItems.removeAll(where: { allVariations.contains( $0 )})
+            // Remove all previous selected IDs
+            selectedProductVariationIDs.removeAll(where: { product.variations.contains($0) })
+            // Append new selected IDs
+            selectedProductVariationIDs.append(contentsOf: allVariations )
+        }
+    }
+
     /// Select all variations for a given product
     ///
-    // TODO: This toggle is now broken. Edited so it can compile.
     func toggleSelectionForAllVariations(of productID: Int64) {
         guard toggleAllVariationsOnSelection else {
             return
@@ -287,14 +302,20 @@ final class ProductSelectorViewModel: ObservableObject {
               variableProduct.variations.isNotEmpty else {
             return
         }
-        let _: [Int64]
-        let intersection = Set(variableProduct.variations).intersection(Set(selectedProductVariationIDs))
-        if intersection.count == variableProduct.variations.count {
-            // if all variation is currently selected, deselect them all
-            //selectedIDs = []
+
+        let allVariations = variableProduct.variations
+        let allSelectedVariations = selectedProductVariationIDs
+        let intersection = Set(allVariations).intersection(Set(allSelectedVariations))
+
+        if intersection.count == allVariations.count {
+            // If all variations are currently selected, deselect them all:
+            selectedProductVariations = []
         } else {
-            // otherwise select all variations for the product
-            //selectedIDs = variableProduct.variations
+            // Otherwise, select all variations for the specific product:
+            // As we never use this in Products, we don't need to fetch from the remote or storage,
+            // just pass the IDs:
+            updateSelectedToggleAllVariations(for: productID)
+            return
         }
 
         updateSelectedVariations(productID: productID, selectedVariations: selectedProductVariations)

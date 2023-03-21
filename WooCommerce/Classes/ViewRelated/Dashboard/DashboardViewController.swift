@@ -692,6 +692,14 @@ extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
                 await viewModel.syncAnnouncements(for: siteID)
             }
         }
+
+        if let onboardingNavigationController = presentationController.presentedViewController as? UINavigationController,
+           let vc = onboardingNavigationController.viewControllers.first,
+           isPresentedByStoreOnboardingTaskList(vc) {
+            Task { @MainActor in
+                await viewModel.reloadStoreOnboardingTasks()
+            }
+        }
     }
 }
 
@@ -801,6 +809,12 @@ private extension DashboardViewController {
 // MARK: - Private Helpers
 //
 private extension DashboardViewController {
+    func isPresentedByStoreOnboardingTaskList(_ vc: UIViewController) -> Bool {
+        vc is StoreOnboardingViewHostingController ||
+        vc is DomainSettingsHostingController || vc is StoreOnboardingLaunchStoreHostingController ||
+        vc is StoreOnboardingStoreLaunchedHostingController || vc is StoreOnboardingPaymentsSetupHostingController
+    }
+
     @MainActor
     func reloadData(forced: Bool) async {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")

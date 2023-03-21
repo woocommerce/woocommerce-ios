@@ -24,7 +24,7 @@ final class DashboardViewModelTests: XCTestCase {
 
     func test_default_statsVersion_is_v4() {
         // Given
-        let viewModel = DashboardViewModel()
+        let viewModel = DashboardViewModel(siteID: 0)
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v4)
@@ -37,7 +37,7 @@ final class DashboardViewModelTests: XCTestCase {
                 completion(.failure(DotcomError.noRestRoute))
             }
         }
-        let viewModel = DashboardViewModel(stores: stores)
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
         XCTAssertEqual(viewModel.statsVersion, .v4)
 
         // When
@@ -63,7 +63,7 @@ final class DashboardViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        let viewModel = DashboardViewModel(stores: stores)
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
         XCTAssertEqual(viewModel.statsVersion, .v4)
 
         // When
@@ -85,7 +85,7 @@ final class DashboardViewModelTests: XCTestCase {
                 completion(storeStatsResult)
             }
         }
-        let viewModel = DashboardViewModel(stores: stores)
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
         viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
         XCTAssertEqual(viewModel.statsVersion, .v3)
 
@@ -124,7 +124,7 @@ final class DashboardViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = DashboardViewModel(stores: stores)
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
 
         // When
         await viewModel.syncAnnouncements(for: sampleSiteID)
@@ -154,7 +154,7 @@ final class DashboardViewModelTests: XCTestCase {
 
         prepareStoresToShowJustInTimeMessage(.success([]))
 
-        let viewModel = DashboardViewModel(stores: stores)
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
 
         // When
         await viewModel.syncAnnouncements(for: sampleSiteID)
@@ -167,7 +167,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
         prepareStoresToShowJustInTimeMessage(.success([message]))
-        let viewModel = DashboardViewModel(stores: stores)
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
 
         // When
         await viewModel.syncAnnouncements(for: sampleSiteID)
@@ -213,7 +213,7 @@ final class DashboardViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        let viewModel = DashboardViewModel(stores: stores)
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
 
         // When
         await viewModel.syncAnnouncements(for: sampleSiteID)
@@ -230,7 +230,7 @@ final class DashboardViewModelTests: XCTestCase {
         let secondMessage = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id-2",
                                                                    featureClass: "test-feature-class-2")
         prepareStoresToShowJustInTimeMessage(.success([message, secondMessage]))
-        let viewModel = DashboardViewModel(stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
 
         // When
         await viewModel.syncAnnouncements(for: sampleSiteID)
@@ -253,7 +253,7 @@ final class DashboardViewModelTests: XCTestCase {
 
         let secondMessage = Yosemite.JustInTimeMessage.fake().copy(title: "Lower priority JITM")
         prepareStoresToShowJustInTimeMessage(.success([message, secondMessage]))
-        let viewModel = DashboardViewModel(stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
 
         // When
         await viewModel.syncAnnouncements(for: sampleSiteID)
@@ -266,7 +266,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let error = DotcomError.noRestRoute
         prepareStoresToShowJustInTimeMessage(.failure(error))
-        let viewModel = DashboardViewModel(stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
 
         // When
         await viewModel.syncAnnouncements(for: sampleSiteID)
@@ -287,7 +287,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         prepareStoresToShowJustInTimeMessage(.success([]))
 
-        let viewModel = DashboardViewModel(stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
         viewModel.announcementViewModel = JustInTimeMessageAnnouncementCardViewModel(
             justInTimeMessage: .fake(),
             screenName: "my_store",
@@ -307,7 +307,8 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = false
-        let viewModel = DashboardViewModel(stores: stores,
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
                                            featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
                                            userDefaults: defaults)
         // Then
@@ -319,7 +320,8 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = true
-        let viewModel = DashboardViewModel(stores: stores,
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
                                            featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
                                            userDefaults: defaults)
         // Then
@@ -331,7 +333,8 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = true
-        let viewModel = DashboardViewModel(stores: stores,
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
                                            featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
         // Then
@@ -343,7 +346,8 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = false
-        let viewModel = DashboardViewModel(stores: stores,
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
                                            featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
         // Then
@@ -354,7 +358,8 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let viewModel = DashboardViewModel(stores: stores,
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
                                            featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
         // Then
@@ -365,7 +370,8 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let viewModel = DashboardViewModel(stores: stores,
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
                                            featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
         // Then
@@ -382,7 +388,8 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(stores: stores,
+        let sut = DashboardViewModel(siteID: 0,
+                                     stores: stores,
                                      featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                      userDefaults: defaults)
         let tasks: [StoreOnboardingTask] = [
@@ -394,7 +401,7 @@ final class DashboardViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success(tasks))
 
         // When
-        await sut.reloadStoreOnboardingTasks(for: 0)
+        await sut.reloadStoreOnboardingTasks()
 
         // Then
         XCTAssertTrue(sut.showOnboarding)
@@ -404,7 +411,8 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(stores: stores,
+        let sut = DashboardViewModel(siteID: 0,
+                                     stores: stores,
                                      featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                      userDefaults: defaults)
         let tasks: [StoreOnboardingTask] = [
@@ -416,7 +424,7 @@ final class DashboardViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success(tasks))
 
         // When
-        await sut.reloadStoreOnboardingTasks(for: 0)
+        await sut.reloadStoreOnboardingTasks()
 
         // Then
         XCTAssertFalse(sut.showOnboarding)
@@ -426,7 +434,8 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(stores: stores,
+        let sut = DashboardViewModel(siteID: 0,
+                                     stores: stores,
                                      featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                      userDefaults: defaults)
         mockLoadOnboardingTasks(result: .failure(MockError()))
@@ -435,7 +444,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertTrue(sut.showOnboarding)
 
         // When
-        await sut.reloadStoreOnboardingTasks(for: 0)
+        await sut.reloadStoreOnboardingTasks()
 
         // Then
         XCTAssertFalse(sut.showOnboarding)
@@ -445,13 +454,14 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(stores: stores,
+        let sut = DashboardViewModel(siteID: 0,
+                                     stores: stores,
                                      featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                      userDefaults: defaults)
         mockLoadOnboardingTasks(result: .success([]))
 
         // When
-        await sut.reloadStoreOnboardingTasks(for: 0)
+        await sut.reloadStoreOnboardingTasks()
 
         // Then
         XCTAssertFalse(sut.showOnboarding)

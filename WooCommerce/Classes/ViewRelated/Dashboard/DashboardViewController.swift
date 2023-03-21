@@ -127,7 +127,7 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
-    private let viewModel: DashboardViewModel = .init()
+    private let viewModel: DashboardViewModel
 
     private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
 
@@ -138,6 +138,7 @@ final class DashboardViewController: UIViewController {
 
     init(siteID: Int64) {
         self.siteID = siteID
+        self.viewModel = .init(siteID: siteID)
         super.init(nibName: nil, bundle: nil)
         configureTabBarItem()
     }
@@ -790,8 +791,7 @@ private extension DashboardViewController {
                 await self?.reloadDashboardUIStatsVersion(forced: true)
             }
             group.addTask { [weak self] in
-                guard let self else { return }
-                await self.viewModel.reloadStoreOnboardingTasks(for: self.siteID)
+                await self?.viewModel.reloadStoreOnboardingTasks()
             }
         }
     }

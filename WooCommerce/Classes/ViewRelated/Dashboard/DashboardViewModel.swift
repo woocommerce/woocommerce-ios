@@ -32,7 +32,8 @@ final class DashboardViewModel {
     private let analytics: Analytics
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
 
-    init(stores: StoresManager = ServiceLocator.stores,
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard) {
@@ -40,14 +41,14 @@ final class DashboardViewModel {
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
-        self.storeOnboardingViewModel = .init(isExpanded: false, stores: stores, defaults: userDefaults)
+        self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         setupObserverForShowOnboarding()
     }
 
     /// Reloads store onboarding tasks
     ///
-    func reloadStoreOnboardingTasks(for siteID: Int64) async {
-        await storeOnboardingViewModel.reloadTasks(siteID: siteID)
+    func reloadStoreOnboardingTasks() async {
+        await storeOnboardingViewModel.reloadTasks()
     }
 
     /// Syncs store stats for dashboard UI.

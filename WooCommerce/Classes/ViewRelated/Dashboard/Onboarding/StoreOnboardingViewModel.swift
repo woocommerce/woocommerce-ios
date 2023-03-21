@@ -51,7 +51,7 @@ class StoreOnboardingViewModel: ObservableObject {
 
     let isExpanded: Bool
 
-    private var siteID: Int64?
+    private let siteID: Int64
 
     private let stores: StoresManager
 
@@ -67,12 +67,15 @@ class StoreOnboardingViewModel: ObservableObject {
     @Published private var noTasksAvailableForDisplay: Bool = false
 
     /// - Parameters:
+    ///   - siteID: siteID
     ///   - isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
     ///   - stores: StoresManager
     ///   - defaults: UserDefaults for storing when all onboarding tasks are completed
-    init(isExpanded: Bool,
+    init(siteID: Int64,
+         isExpanded: Bool,
          stores: StoresManager = ServiceLocator.stores,
          defaults: UserDefaults = .standard) {
+        self.siteID = siteID
         self.isExpanded = isExpanded
         self.stores = stores
         self.state = .loading
@@ -84,29 +87,27 @@ class StoreOnboardingViewModel: ObservableObject {
         .assign(to: &$shouldShowInDashboard)
     }
 
-    func reloadTasks(siteID: Int64) async {
+    func reloadTasks() async {
         guard !defaults.completedAllStoreOnboardingTasks else {
             return
         }
 
         await update(state: .loading)
-        if let tasks = try? await loadTasks(siteID),
+        if let tasks = try? await loadTasks(),
            tasks.isNotEmpty {
             await checkIfAllTasksAreCompleted(tasks)
             await update(state: .loaded(rows: tasks))
-        } else if taskViewModels.isNotEmpty,
-                    self.siteID == siteID {
+        } else if taskViewModels.isNotEmpty {
             await update(state: .loaded(rows: taskViewModels))
         } else {
             await update(state: .failed)
         }
-        self.siteID = siteID
     }
 }
 
 private extension StoreOnboardingViewModel {
     @MainActor
-    private func loadTasks(_ siteID: Int64) async throws -> [StoreOnboardingTaskViewModel] {
+    private func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
                 continuation.resume(with: result

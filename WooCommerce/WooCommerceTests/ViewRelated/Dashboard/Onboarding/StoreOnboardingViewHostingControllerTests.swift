@@ -23,12 +23,12 @@ final class StoreOnboardingViewHostingControllerTests: XCTestCase {
 
 private class MockStoreOnboardingViewModel: StoreOnboardingViewModel {
     init() {
-        super.init(isExpanded: true)
+        super.init(siteID: 0, isExpanded: true)
     }
 
     var reloadTasksCalled: Bool = false
 
-    override func reloadTasks(siteID: Int64) async {
+    override func reloadTasks() async {
         reloadTasksCalled = true
     }
 }

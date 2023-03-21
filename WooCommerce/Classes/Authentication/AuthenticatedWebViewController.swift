@@ -51,9 +51,10 @@ final class AuthenticatedWebViewController: UIViewController {
         }()
         super.init(nibName: nil, bundle: nil)
 
-        if var viewModel = viewModel as? WebviewReloadable {
-            viewModel.loadWebview = { [weak self] url in
-                self?.webView.load(.init(url: url))
+        if let initialURL = viewModel.initialURL,
+           var viewModel = viewModel as? WebviewReloadable {
+            viewModel.reloadWebview = { [weak self] in
+                self?.webView.load(.init(url: initialURL))
             }
         }
     }

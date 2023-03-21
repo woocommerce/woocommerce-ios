@@ -5,7 +5,7 @@ import WebKit
 /// `/wp-admin/admin.php?page=jetpack#/settings`.
 final class WPAdminWebViewModel: AuthenticatedWebViewModel, WebviewReloadable {
     /// Set in `AuthenticatedWebViewController`.
-    var loadWebview: (URL) -> Void = { _ in }
+    var reloadWebview: () -> Void = {}
 
     let title: String
     let initialURL: URL?
@@ -24,9 +24,8 @@ final class WPAdminWebViewModel: AuthenticatedWebViewModel, WebviewReloadable {
         // If the self-hosted site allows login with WPCOM as a Jetpack feature,
         // WPCOM authentication is complete after redirecting to the WPCOM homepage.
         if url?.absoluteString.removingSuffix("/") == URLs.urlAfterWPComAuth,
-           initialURL?.absoluteString != URLs.urlAfterWPComAuth,
-           let initialURL {
-            loadWebview(initialURL)
+           initialURL?.absoluteString != URLs.urlAfterWPComAuth {
+            reloadWebview()
         }
     }
 

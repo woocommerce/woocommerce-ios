@@ -3,9 +3,10 @@ import WebKit
 
 /// Optional conformance for a `AuthenticatedWebViewModel` implementation to reload a webview asynchronously.
 protocol WebviewReloadable {
-    /// Allows the view model to load a URL in the webview at anytime.
-    /// This is useful when we have custom redirect handling for WordPress.com login in self-hosted sites.
-    var loadWebview: (_ url: URL) -> Void { get set }
+    /// Allows the view model to reload the initial URL in the webview at anytime.
+    /// This is useful when we have custom redirect handling for WordPress.com login in self-hosted sites where WPCOM authentication
+    /// does not redirect to the initial URL.
+    var reloadWebview: () -> Void { get set }
 }
 
 /// Abstracts different configurations and logic for web view controllers

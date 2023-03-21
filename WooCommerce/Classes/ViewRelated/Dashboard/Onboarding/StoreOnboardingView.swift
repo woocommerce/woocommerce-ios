@@ -66,7 +66,7 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
 
     @MainActor
     private func reloadTasks() async {
-        await viewModel.reloadTasks()
+        await viewModel.reloadTasks(siteID: site.siteID)
     }
 
     /// Shows a transparent navigation bar without a bottom border.
@@ -195,8 +195,8 @@ private extension StoreOnboardingView {
 
 struct StoreOnboardingCardView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingView(viewModel: .init(isExpanded: false, siteID: 0))
+        StoreOnboardingView(viewModel: .init(isExpanded: false))
 
-        StoreOnboardingView(viewModel: .init(isExpanded: true, siteID: 0))
+        StoreOnboardingView(viewModel: .init(isExpanded: true))
     }
 }

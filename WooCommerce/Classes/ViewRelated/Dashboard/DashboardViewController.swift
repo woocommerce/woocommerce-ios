@@ -837,9 +837,8 @@ private extension DashboardViewController {
                     guard let self = self else { return }
 
                     let isJetpackCPSite = site?.isJetpackCPConnected == true
-                    let jetpackSetupForApplicationPassword = site?.isNonJetpackSite == true &&
-                        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)
-                    let shouldShowJetpackBenefitsBanner = (isJetpackCPSite || jetpackSetupForApplicationPassword) && isVisibleFromAppSettings
+                    let isNonJetpackSite = site?.isNonJetpackSite == true
+                    let shouldShowJetpackBenefitsBanner = (isJetpackCPSite || isNonJetpackSite) && isVisibleFromAppSettings
 
                     self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
                 }

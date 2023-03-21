@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 /// View showing a list of product variations to select.
 ///
@@ -17,20 +18,24 @@ struct ProductVariationSelector: View {
     ///
     private let multipleSelectionsEnabled: Bool
 
-    private let onMultipleSelections: (([Int64]) -> Void)?
+    /// Closure called when the multiple selection is complete,
+    /// currently we do this onDisappear()
+    ///
+    private let onMultipleSelectionsCompleted: (([ProductVariation]) -> Void)?
 
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
     init(isPresented: Binding<Bool>,
+         // Init the view with the VM here:
          viewModel: ProductVariationSelectorViewModel,
          multipleSelectionsEnabled: Bool = false,
-         onMultipleSelections: (([Int64]) -> Void)? = nil) {
+         onMultipleSelectionsCompleted: (([ProductVariation]) -> Void)? = nil) {
         self._isPresented = isPresented
         self.viewModel = viewModel
         self.multipleSelectionsEnabled = multipleSelectionsEnabled
-        self.onMultipleSelections = onMultipleSelections
+        self.onMultipleSelectionsCompleted = onMultipleSelectionsCompleted
     }
 
     var body: some View {
@@ -105,7 +110,7 @@ struct ProductVariationSelector: View {
             guard multipleSelectionsEnabled else {
                 return
             }
-            onMultipleSelections?(viewModel.selectedProductVariationIDs)
+            onMultipleSelectionsCompleted?(viewModel.selectedProductVariations)
         }
         .notice($viewModel.notice, autoDismiss: false)
     }

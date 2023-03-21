@@ -61,9 +61,21 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     let onVariationSelected: ((ProductVariation, Product) -> Void)?
 
+    /// Closure to be invoked when the multiple selection of product variations completes
+    ///
+    let onMultipleSelectionCompleted: (([ProductVariation]) -> Void)?
+
     /// All selected product variations if the selector supports multiple selections.
     ///
     @Published private(set) var selectedProductVariationIDs: [Int64]
+
+    ///
+    ///
+    private(set) var selectedProductVariations: [ProductVariation] = [] {
+        didSet(updatedValues) {
+            print("🍍 selectedProductVariations changed: \(updatedValues)")
+        }
+    }
 
     // MARK: Sync & Storage properties
 
@@ -117,12 +129,14 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          productName: String,
          productAttributes: [ProductAttribute],
          selectedProductVariationIDs: [Int64] = [],
+         selectedProductVariations: [ProductVariation] = [],
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          supportsMultipleSelection: Bool = false,
          isClearSelectionEnabled: Bool = true,
-         onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
+         onVariationSelected: ((ProductVariation, Product) -> Void)? = nil,
+         onMultipleSelectionCompleted: (([ProductVariation]) -> Void)? = nil ) {
         self.siteID = siteID
         self.productID = productID
         self.productName = productName
@@ -132,7 +146,10 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.supportsMultipleSelection = supportsMultipleSelection
         self.isClearSelectionEnabled = isClearSelectionEnabled
         self.onVariationSelected = onVariationSelected
+        self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.selectedProductVariationIDs = selectedProductVariationIDs
+        // Starts with initial empty state, then we'll synchronize in transitionToResultsUpdatedState
+        self.selectedProductVariations = []
         self.purchasableItemsOnly = purchasableItemsOnly
 
         configureSyncingCoordinator()
@@ -148,7 +165,8 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                      stores: StoresManager = ServiceLocator.stores,
                      supportsMultipleSelection: Bool = false,
                      isClearSelectionEnabled: Bool = true,
-                     onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
+                     onVariationSelected: ((ProductVariation, Product) -> Void)? = nil,
+                     onMultipleSelectionCompleted: (([ProductVariation]) -> Void)? = nil) {
         self.init(siteID: siteID,
                   productID: product.productID,
                   productName: product.name,
@@ -159,7 +177,8 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   stores: stores,
                   supportsMultipleSelection: supportsMultipleSelection,
                   isClearSelectionEnabled: isClearSelectionEnabled,
-                  onVariationSelected: onVariationSelected)
+                  onVariationSelected: onVariationSelected,
+                  onMultipleSelectionCompleted: onMultipleSelectionCompleted)
     }
 
     /// Select a product variation to add to the order
@@ -192,6 +211,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     func clearSelection() {
         selectedProductVariationIDs = []
+        selectedProductVariations = []
     }
 }
 
@@ -253,6 +273,12 @@ private extension ProductVariationSelectorViewModel {
     func transitionToResultsUpdatedState() {
         shouldShowScrollIndicator = false
         syncStatus = productVariations.isNotEmpty ? .results: .empty
+        //
+        selectedProductVariations = selectedProductVariationIDs.map { variationID in
+            productVariationsResultsController.fetchedObjects.first {
+                $0.productID == variationID
+            }
+        }.compactMap { $0 }
     }
 }
 
@@ -307,8 +333,13 @@ private extension ProductVariationSelectorViewModel {
     func toggleSelection(productVariationID: Int64) {
         if selectedProductVariationIDs.contains(productVariationID) {
             selectedProductVariationIDs.removeAll(where: { $0 == productVariationID })
+            selectedProductVariations.removeAll(where: { $0.productVariationID == productVariationID })
         } else {
+            //
+            guard let variation = productVariationsResultsController.fetchedObjects.first(where: {
+                $0.productVariationID == productVariationID }) else { return }
             selectedProductVariationIDs.append(productVariationID)
+            selectedProductVariations.append(variation)
         }
     }
 

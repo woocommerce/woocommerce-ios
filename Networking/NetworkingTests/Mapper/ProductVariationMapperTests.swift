@@ -34,7 +34,7 @@ final class ProductVariationMapperTests: XCTestCase {
     func test_that_product_variations_alternative_types_are_properly_parsed() throws {
         let productVariation = try XCTUnwrap(mapLoadProductVariationResponseWithAlternativeTypes())
 
-        XCTAssertEqual(productVariation, sampleProductVariationAlternativeTypes(siteID: dummySiteID, productID: dummyProductID, id: 2783))
+        XCTAssertEqual(productVariation, sampleProductVariationAlternativeTypes(siteID: dummySiteID, productID: dummyProductID, id: 1275))
     }
 }
 
@@ -129,22 +129,22 @@ private extension ProductVariationMapperTests {
                                 productVariationID: id,
                                 attributes: [],
                                 image: ProductImage(imageID: 1063,
-                                                    dateCreated: DateFormatter.dateFromString(with: "2019-11-01T08:42:05"),
-                                                    dateModified: DateFormatter.dateFromString(with: "2019-11-01T08:42:05"),
+                                                    dateCreated: DateFormatter.dateFromString(with: "2019-11-01T04:12:05"),
+                                                    dateModified: DateFormatter.dateFromString(with: "2019-11-01T04:12:05"),
                                                     src: imageSource,
                                                     name: "DSC_0010",
                                                     alt: ""),
                                 permalink: "",
-                                dateCreated: DateFormatter.dateFromString(with: "2019-11-14T15:10:55"),
-                                dateModified: DateFormatter.dateFromString(with: "2019-11-14T15:36:42"),
-                                dateOnSaleStart: nil,
-                                dateOnSaleEnd: nil,
+                                dateCreated: DateFormatter.dateFromString(with: "2019-11-14T12:40:55"),
+                                dateModified: DateFormatter.dateFromString(with: "2019-11-14T13:06:42"),
+                                dateOnSaleStart: DateFormatter.dateFromString(with: "2019-10-15T21:30:00"),
+                                dateOnSaleEnd: DateFormatter.dateFromString(with: "2019-10-27T21:29:59"),
                                 status: .published,
                                 description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
                                 sku: "99%-nuts-marble",
-                                price: "17",
-                                regularPrice: "12.89",
-                                salePrice: "26.73",
+                                price: "13.99",
+                                regularPrice: "16",
+                                salePrice: "9.99",
                                 onSale: false,
                                 purchasable: false,
                                 virtual: false,

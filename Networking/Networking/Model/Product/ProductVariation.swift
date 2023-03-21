@@ -168,7 +168,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
             do {
                 return try container.decode(String.self, forKey: .permalink)
             } catch {
-                DDLogError("⛔️ Error parsing `permalink` for Product ID \(productID): \(error)")
+                DDLogError("⛔️ Error parsing `permalink` for product variations in Product ID \(productID): \(error)")
                 return ""
             }
         }()

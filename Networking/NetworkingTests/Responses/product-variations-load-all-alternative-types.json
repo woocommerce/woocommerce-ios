@@ -1,5 +1,5 @@
 {
-    "data": [
+    "data":
         {
             "id": 1275,
             "date_created": "2019-11-14T15:10:55",
@@ -9,9 +9,9 @@
             "description": "<p>Nutty chocolate marble, 99% and organic.</p>\n",
             "permalink": 0,
             "sku": "99%-nuts-marble",
-            "price": 16,
-            "regular_price": 12,
-            "sale_price": 12.5,
+            "price": 13.99,
+            "regular_price": 16,
+            "sale_price": 9.99,
             "date_on_sale_from": "2019-10-16T00:00:00",
             "date_on_sale_from_gmt": "2019-10-15T21:30:00",
             "date_on_sale_to": "2019-10-27T23:59:59",
@@ -53,5 +53,4 @@
             "attributes": [],
             "menu_order": 8
         }
-    ]
 }

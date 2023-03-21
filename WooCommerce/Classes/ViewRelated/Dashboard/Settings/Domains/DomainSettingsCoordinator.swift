@@ -18,15 +18,18 @@ final class DomainSettingsCoordinator: Coordinator {
     private let stores: StoresManager
     private let source: Source
     private let analytics: Analytics
+    private weak var presentationControllerDelegate: UIAdaptivePresentationControllerDelegate?
 
     init(source: Source,
          site: Site,
          navigationController: UINavigationController,
+         presentationControllerDelegate: UIAdaptivePresentationControllerDelegate? = nil,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.source = source
         self.site = site
         self.navigationController = navigationController
+        self.presentationControllerDelegate = presentationControllerDelegate
         self.stores = stores
         self.analytics = analytics
     }
@@ -42,6 +45,7 @@ final class DomainSettingsCoordinator: Coordinator {
             self?.navigationController.dismiss(animated: true)
         }
         settingsNavigationController.pushViewController(domainSettings, animated: false)
+        settingsNavigationController.presentationController?.delegate = presentationControllerDelegate
         navigationController.present(settingsNavigationController, animated: true)
         analytics.track(event: .DomainSettings.domainSettingsStep(source: source,
                                                                   step: .dashboard))

@@ -60,7 +60,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.productSelectorViewModel.supportsMultipleSelection)
-        XCTAssertFalse(viewModel.productSelectorViewModel.isClearSelectionEnabled)
+        XCTAssertTrue(viewModel.productSelectorViewModel.isClearSelectionEnabled)
         XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
     }
 

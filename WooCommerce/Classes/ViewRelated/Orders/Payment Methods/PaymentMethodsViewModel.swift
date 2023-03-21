@@ -216,13 +216,24 @@ final class PaymentMethodsViewModel: ObservableObject {
                         onFailure: @escaping () -> Void) {
         switch isTapToPayOnIPhoneEnabled {
         case true:
-            newCollectPayment(on: rootViewController, onSuccess: onSuccess, onFailure: onFailure)
+            newCollectPayment(using: .bluetoothScan, on: rootViewController, onSuccess: onSuccess, onFailure: onFailure)
         case false:
             legacyCollectPayment(on: rootViewController, useCase: useCase, onSuccess: onSuccess)
         }
     }
 
-    func newCollectPayment(on rootViewController: UIViewController?,
+    func collectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
+                        on rootViewController: UIViewController?,
+                        onSuccess: @escaping () -> Void,
+                        onFailure: @escaping () -> Void) {
+        newCollectPayment(using: discoveryMethod,
+                          on: rootViewController,
+                          onSuccess: onSuccess,
+                          onFailure: onFailure)
+    }
+
+    func newCollectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
+                           on rootViewController: UIViewController?,
                            useCase: CollectOrderPaymentProtocol? = nil,
                            onSuccess: @escaping () -> Void,
                            onFailure: @escaping () -> Void) {
@@ -248,6 +259,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             configuration: CardPresentConfigurationLoader().configuration)
 
         collectPaymentsUseCase?.collectPayment(
+            using: discoveryMethod,
             onFailure: { [weak self] error in
                 self?.trackFlowFailed()
                 // Update order in case its status and/or other details are updated after a failed in-person payment

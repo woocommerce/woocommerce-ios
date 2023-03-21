@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/josh/Development/woocommerce-ios/Hardware/Hardware/CardReader/CardReader+CardReaderDiscoveryType.swift">
+   </FileRef>
+   <FileRef
       location = "group:WooCommerce/WooCommerce.xcodeproj">
    </FileRef>
    <FileRef

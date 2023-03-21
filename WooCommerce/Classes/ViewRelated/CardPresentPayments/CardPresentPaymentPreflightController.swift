@@ -17,6 +17,8 @@ final class CardPresentPaymentPreflightController {
     ///
     private let siteID: Int64
 
+    private let discoveryMethod: CardReaderDiscoveryMethod?
+
     /// IPP Configuration.
     ///
     private let configuration: CardPresentPaymentsConfiguration
@@ -57,7 +59,10 @@ final class CardPresentPaymentPreflightController {
 
     private(set) var readerConnection = CurrentValueSubject<CardReaderPreflightResult?, Never>(nil)
 
+    private let analyticsTracker: CardReaderConnectionAnalyticsTracker
+
     init(siteID: Int64,
+         discoveryMethod: CardReaderDiscoveryMethod?,
          configuration: CardPresentPaymentsConfiguration,
          rootViewController: UIViewController,
          alertsPresenter: CardPresentPaymentAlertsPresenting,
@@ -65,6 +70,7 @@ final class CardPresentPaymentPreflightController {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
+        self.discoveryMethod = discoveryMethod
         self.configuration = configuration
         self.rootViewController = rootViewController
         self.alertsPresenter = alertsPresenter
@@ -72,9 +78,9 @@ final class CardPresentPaymentPreflightController {
         self.stores = stores
         self.analytics = analytics
         self.connectedReader = nil
-        let analyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: configuration,
-                                                                    stores: stores,
-                                                                    analytics: analytics)
+        self.analyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: configuration,
+                                                                     stores: stores,
+                                                                     analytics: analytics)
         self.connectionController = CardReaderConnectionController(
             forSiteID: siteID,
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
@@ -94,13 +100,45 @@ final class CardPresentPaymentPreflightController {
     @MainActor
     func start() async {
         observeConnectedReaders()
-        // If we're already connected to a reader, return it
+        await checkForConnectedReader()
+    }
+
+    @MainActor
+    private func checkForConnectedReader() async {
         if let connectedReader = connectedReader,
            let paymentGatewayAccount = await selectedPaymentGateway() {
-            handleConnectionResult(.success(.connected(connectedReader)), paymentGatewayAccount: paymentGatewayAccount)
-            return
+            if connectedReader.discoveryMethod == discoveryMethod {
+                // If we're already connected to a reader of the correct type, return it
+                return handleConnectionResult(.success(.connected(connectedReader)), paymentGatewayAccount: paymentGatewayAccount)
+            } else {
+                // If it's the wrong type, disconnect it automatically and continue
+                do {
+                    try await automaticallyDisconnectFromReader()
+                    analyticsTracker.automaticallyDisconnectedFromReader()
+                    await continuePreflight()
+                } catch {
+                    return handlePreflightFailure(
+                        error: CardPresentPaymentPreflightError.failedToAutomaticallyDisconnect(reader: connectedReader))
+                }
+            }
+        } else {
+            // If we're not connected, continue
+            await continuePreflight()
         }
+    }
 
+    @MainActor
+    private func automaticallyDisconnectFromReader() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = CardPresentPaymentAction.disconnect { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    private func continuePreflight() async {
         await onboardingPresenter.showOnboardingIfRequired(from: rootViewController)
 
         // Once onboarding is complete, a Payment Gateway will have been chosen
@@ -109,17 +147,27 @@ final class CardPresentPaymentPreflightController {
             return handlePreflightFailure(error: CardPresentPaymentPreflightError.paymentGatewayAccountNotFound)
         }
 
-        // Ask for a Reader type if supported by device/in country
-        guard await localMobileReaderSupported(),
-              configuration.supportedReaders.contains(.appleBuiltIn)
-        else {
-            // Attempt to find a bluetooth reader and connect
+        let localMobileReaderSupported = await localMobileReaderSupported() && configuration.supportedReaders.contains(.appleBuiltIn)
+
+        switch (discoveryMethod, localMobileReaderSupported) {
+        case (.none, true):
+            promptForReaderTypeSelection(paymentGatewayAccount: paymentGatewayAccount)
+        case (.bluetoothScan, _),
+            (.none, false):
             connectionController.searchAndConnect(onCompletion: { [weak self] result in
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
-            return
+        case (.localMobile, true):
+            builtInConnectionController.searchAndConnect(onCompletion: { [weak self] result in
+                self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
+            })
+        case (.localMobile, false):
+            handlePreflightFailure(error: CardPresentPaymentPreflightError.localMobileReaderNotSupported)
         }
+    }
 
+    @MainActor
+    private func promptForReaderTypeSelection(paymentGatewayAccount: PaymentGatewayAccount) {
         analytics.track(event: .InPersonPayments.cardReaderSelectTypeShown(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                            countryCode: configuration.countryCode))
         alertsPresenter.present(viewModel: CardPresentModalSelectSearchType(
@@ -208,4 +256,6 @@ final class CardPresentPaymentPreflightController {
 
 enum CardPresentPaymentPreflightError: Error, Equatable {
     case paymentGatewayAccountNotFound
+    case failedToAutomaticallyDisconnect(reader: CardReader)
+    case localMobileReaderNotSupported
 }

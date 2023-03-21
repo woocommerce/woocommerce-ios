@@ -62,7 +62,7 @@ struct PaymentMethodsView: View {
                             Divider()
 
                             MethodRow(icon: .creditCardImage, title: Localization.card, accessibilityID: Accessibility.cardMethod) {
-                                viewModel.collectPayment(on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
+                                viewModel.collectPayment(using: .bluetoothScan, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
                         }
 
@@ -72,7 +72,7 @@ struct PaymentMethodsView: View {
                             MethodRow(icon: .tapToPayOnIPhoneIcon,
                                       title: Localization.tapToPay,
                                       accessibilityID: Accessibility.tapToPayMethod) {
-                                viewModel.collectPayment(on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
+                                viewModel.collectPayment(using: .localMobile, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
                         }
 
@@ -211,7 +211,8 @@ extension PaymentMethodsView {
     enum Localization {
         static let header = NSLocalizedString("Choose your payment method", comment: "Heading text on the select payment method screen")
         static let cash = NSLocalizedString("Cash", comment: "Cash method title on the select payment method screen")
-        static let card = NSLocalizedString("Card", comment: "Card method title on the select payment method screen")
+        static let card = NSLocalizedString("Card Reader",
+                                            comment: "(External) card reader payment method title on the select payment method screen")
         static let tapToPay = NSLocalizedString("Tap to Pay on iPhone",
                                                 comment: "Tap to Pay on iPhone method title on the select payment method screen")
         static let link = NSLocalizedString("Share Payment Link", comment: "Payment Link method title on the select payment method screen")

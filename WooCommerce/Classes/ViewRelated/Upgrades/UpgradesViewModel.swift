@@ -168,7 +168,7 @@ private extension UpgradesViewModel {
     enum Localization {
         static let freeTrial = NSLocalizedString("Free Trial", comment: "Plan name for an active free trial")
         static let trialEnded = NSLocalizedString("Trial ended", comment: "Plan name for an expired free trial")
-        static let trialEndedInfo = NSLocalizedString("Your free trial has ended and have limited access to all the features. Subscribe to eCommerce now.",
+        static let trialEndedInfo = NSLocalizedString("Your free trial has ended and you have limited access to all the features. Subscribe to eCommerce now.",
                                                       comment: "Info details for an expired free trial")
         static func freeTrialPlanInfo(planDuration: Int, daysLeft: Int) -> String {
             let format = NSLocalizedString("You are in the %1d-day free trial. The free trial will end in %2d days. " +

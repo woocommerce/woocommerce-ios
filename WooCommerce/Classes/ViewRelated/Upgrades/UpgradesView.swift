@@ -5,8 +5,9 @@ import SwiftUI
 ///
 final class UpgradesHostingController: UIHostingController<UpgradesView> {
 
-    init(currentPlan: String, planInfo: String) {
-        super.init(rootView: .init(currentPlan: currentPlan, planInfo: planInfo))
+    init(siteID: Int64) {
+        let viewModel = UpgradesViewModel(siteID: siteID)
+        super.init(rootView: .init(viewModel: viewModel))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -18,32 +19,33 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
 ///
 struct UpgradesView: View {
 
-    /// Store's Current Plan name
-    let currentPlan: String
-
-    /// Store's plan information
-    let planInfo: String
+    /// Drives the view.
+    ///
+    @StateObject var viewModel: UpgradesViewModel
 
     var body: some View {
         List {
             Section(content: {
-                Text(Localization.currentPlan(currentPlan))
+                Text(Localization.currentPlan(viewModel.planName))
                     .bodyStyle()
 
                 Button(Localization.upgradeNow) {
                     print("Upgrade Now tapped")
                 }
                 .linkStyle()
+                .renderedIf(viewModel.shouldShowUpgradeButton)
+
             }, header: {
                 Text(Localization.subscriptionStatus)
             }, footer: {
-                Text(planInfo)
+                Text(viewModel.planInfo)
             })
 
             Button(Localization.cancelTrial) {
                 print("Cancel Free Trial tapped")
             }
             .foregroundColor(Color(.systemRed))
+            .renderedIf(viewModel.shouldShowCancelTrialButton)
 
             Section(Localization.troubleshooting) {
                 Button(Localization.report) {
@@ -52,9 +54,14 @@ struct UpgradesView: View {
                 .linkStyle()
             }
         }
+        .redacted(reason: viewModel.showLoadingIndicator ? .placeholder : [])
+        .shimmering(active: viewModel.showLoadingIndicator)
         .background(Color(.listBackground))
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
+        .task {
+            viewModel.loadPlan()
+        }
     }
 }
 
@@ -80,9 +87,7 @@ private extension UpgradesView {
 struct UpgradesPreviews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            UpgradesView(currentPlan: "Free Trial",
-                         planInfo: "You are in the 14-day free trial. The free trial will end in 6 days. " +
-                                   "Upgrade to unlock new features and keep your store running.")
+            UpgradesView(viewModel: .init(siteID: 0))
         }
     }
 }

@@ -161,7 +161,14 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         let productVariationID = try container.decode(Int64.self, forKey: .productVariationID)
         let attributes = try container.decode([ProductVariationAttribute].self, forKey: .attributes)
         let image = try container.decodeIfPresent(ProductImage.self, forKey: .image)
-        let permalink = try container.decode(String.self, forKey: .permalink)
+        let permalink : String = {
+            do {
+                return try container.decode(String.self, forKey: .permalink)
+            } catch {
+                DDLogError("⛔️ Error parsing `permalink` for Product ID \(productID): \(error)")
+                return ""
+            }
+        }()
         let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
         let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified)
         let dateOnSaleStart = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleStart)

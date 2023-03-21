@@ -51,9 +51,6 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         super.viewDidLoad()
 
         configureNavigationBarAppearance()
-        Task {
-            await reloadTasks()
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -757,7 +757,7 @@ public enum WooAnalyticsStat: String {
     case jetpackInstallInWPAdminButtonTapped = "jetpack_install_in_wpadmin_button_tapped"
     case jetpackInstallContactSupportButtonTapped = "jetpack_install_contact_support_button_tapped"
     case jetpackBenefitsModalWPAdminButtonTapped = "jetpack_benefits_modal_wpadmin_button_tapped"
-    
+
     // MARK: Hub Menu
     //
     case hubMenuTabSelected = "main_tab_hub_menu_selected"

@@ -34,7 +34,8 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
     }
 
     private func configureView() {
-        rootView.showURL = { url in
+        rootView.showURL = { [weak self] url in
+            guard let self = self else { return }
             WebviewHelper.launch(url, with: self)
         }
         rootView.learnMoreUrl = viewModel.learnMoreURL
@@ -55,7 +56,6 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
 
 struct SetUpTapToPayInformationView: View {
     @ObservedObject var viewModel: SetUpTapToPayInformationViewModel
-    var setUpButtonAction: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
     var learnMoreUrl: URL? = nil
     var dismiss: (() -> Void)? = nil
@@ -138,14 +138,6 @@ private enum Constants {
     static let hintSpacing: CGFloat = 16
 }
 
-private struct ViewSizeKey: PreferenceKey {
-    static var defaultValue: CGSize = .zero
-
-    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-        value = nextValue()
-    }
-}
-
 // MARK: - Localization
 //
 private enum Localization {
@@ -212,7 +204,6 @@ struct SetUpTapToPayInformationView_Previews: PreviewProvider {
             didChangeShouldShow: nil,
             activePaymentGateway: .wcPay,
             connectionAnalyticsTracker: .init(configuration: config))
-        SetUpTapToPayInformationView(viewModel: viewModel,
-                                     setUpButtonAction: {})
+        SetUpTapToPayInformationView(viewModel: viewModel)
     }
 }

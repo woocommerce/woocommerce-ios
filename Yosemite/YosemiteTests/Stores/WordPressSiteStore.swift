@@ -65,4 +65,60 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertTrue(result.failure is NetworkError)
     }
+
+    func test_fetchApplicationPasswordAuthorizationURL_returns_nil_authorization_url_if_application_password_is_not_available() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info")
+        let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
+
+        // When
+        let result: Result<URL?, Error> = waitFor { promise in
+            let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let url = try result.get()
+        XCTAssertNil(url)
+    }
+
+    func test_fetchApplicationPasswordAuthorizationURL_returns_correct_authorization_url_if_available() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info-with-auth-url")
+        let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
+
+        // When
+        let result: Result<URL?, Error> = waitFor { promise in
+            let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let url = try result.get()
+        XCTAssertEqual(url?.absoluteString, "https://example.com/wp-admin/authorize-application.php")
+    }
+
+    func test_fetchApplicationPasswordAuthorizationURL_relays_error_properly() throws {
+        // Given
+        network.simulateError(requestUrlSuffix: "wp-json", error: NetworkError.notFound)
+        let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
+
+        // When
+        let result: Result<URL?, Error> = waitFor { promise in
+            let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertTrue(result.failure is NetworkError)
+    }
 }

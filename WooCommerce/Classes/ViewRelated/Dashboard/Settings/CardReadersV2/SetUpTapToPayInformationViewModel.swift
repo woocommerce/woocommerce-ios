@@ -60,10 +60,26 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
             guard let self = self else {
                 return
             }
+            self.disconnectFromBluetoothReader(in: readers)
             self.noConnectedReader = readers.isEmpty ? .isTrue : .isFalse
             self.reevaluateShouldShow()
         }
         stores.dispatch(connectedAction)
+    }
+
+    /// This screen is only used for setting up the Built In card reader.
+    /// If we're connected to a Bluetooth reader when the screen opens,
+    /// we should disconnect, as we can't continue with setup while connected.
+    private func disconnectFromBluetoothReader(in readers: [CardReader]) {
+        if readers.includesBluetoothReader() {
+            self.connectionAnalyticsTracker.automaticallyDisconnectedFromReader()
+            self.disconnect()
+        }
+    }
+
+    private func disconnect() {
+        let action = CardPresentPaymentAction.disconnect { _ in }
+        stores.dispatch(action)
     }
 
     private func beginConnectivityObservation() {
@@ -115,5 +131,18 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
         case .stripe:
             return WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()
         }
+    }
+}
+
+private extension [CardReader] {
+    func includesBluetoothReader() -> Bool {
+        return self.first(where: { reader in
+            switch reader.readerType {
+            case .appleBuiltIn:
+                return false
+            default:
+                return true
+            }
+        }) != nil
     }
 }

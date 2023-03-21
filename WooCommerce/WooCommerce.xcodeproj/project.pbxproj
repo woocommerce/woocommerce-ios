@@ -553,6 +553,8 @@
 		0379C51B27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */; };
 		037D270D28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037D270C28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift */; };
 		0386CFEB2852108B00134466 /* PaymentMethodsHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0386CFEA2852108B00134466 /* PaymentMethodsHostingController.swift */; };
+		038BC37D29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BC37C29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift */; };
+		038BC37F29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BC37E29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift */; };
 		0396CFAD2981476900E91436 /* CardPresentModalBuiltInConnectingFailed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396CFAC2981476800E91436 /* CardPresentModalBuiltInConnectingFailed.swift */; };
 		039D948D27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */; };
 		039D948F276113490044EF38 /* UIView+SuperviewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */; };
@@ -821,7 +823,6 @@
 		31C21FA626D994B700916E2E /* SeveralReadersFoundViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C21FA526D994B700916E2E /* SeveralReadersFoundViewController.xib */; };
 		31E6F21F26B3577800227E6F /* LegacyCardReaderConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E6F21E26B3577800227E6F /* LegacyCardReaderConnectionController.swift */; };
 		31E906A326CC91A70099A985 /* LegacyCardReaderConnectionControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E906A226CC91A70099A985 /* LegacyCardReaderConnectionControllerTests.swift */; };
-		31EF399C26430C6D0093C6F6 /* PaymentSettingsFlowPrioritizedViewModelsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31EF399B26430C6D0093C6F6 /* PaymentSettingsFlowPrioritizedViewModelsProvider.swift */; };
 		31F21B02263C8E150035B50A /* CardReaderSettingsSearchingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F21B01263C8E150035B50A /* CardReaderSettingsSearchingViewModelTests.swift */; };
 		31F21B5A263CB41A0035B50A /* MockCardPresentPaymentsStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F21B59263CB41A0035B50A /* MockCardPresentPaymentsStoresManager.swift */; };
 		31F21B60263CB78A0035B50A /* MockCardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F21B5F263CB78A0035B50A /* MockCardReader.swift */; };
@@ -1957,6 +1958,8 @@
 		DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C946D264699B600C94823 /* PluginListViewModel.swift */; };
 		DE971219290A9615000C0BD3 /* AddStoreFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE971218290A9615000C0BD3 /* AddStoreFooterView.swift */; };
 		DEA4269A2875440500265B0C /* PaymentMethodsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA426992875440500265B0C /* PaymentMethodsScreen.swift */; };
+		DEC0293729C418FF00FD0E2F /* ApplicationPasswordAuthorizationWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC0293629C418FF00FD0E2F /* ApplicationPasswordAuthorizationWebViewController.swift */; };
+		DEC0293A29C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC0293929C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift */; };
 		DEC1508227F450AC00F4487C /* CouponAllowedEmails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1508127F450AC00F4487C /* CouponAllowedEmails.swift */; };
 		DEC2961F26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961E26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift */; };
 		DEC2962126BD1627005A056B /* ShippingLabelCustomsFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962026BD1627005A056B /* ShippingLabelCustomsFormList.swift */; };
@@ -1985,6 +1988,7 @@
 		DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437726D8DAD900888A75 /* InProgressView.swift */; };
 		DEEDA239298A11FB0088256B /* SiteCredentialLoginUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */; };
 		DEEDA23D298A22180088256B /* SiteCredentialLoginUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDA23C298A22180088256B /* SiteCredentialLoginUseCaseTests.swift */; };
+		DEEF8E6629C833C600D47411 /* PaymentSettingsFlowPrioritizedViewModelsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31EF399B26430C6D0093C6F6 /* PaymentSettingsFlowPrioritizedViewModelsProvider.swift */; };
 		DEF13C522963D0B20024A02B /* PostSiteCredentialLoginChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF13C512963D0B20024A02B /* PostSiteCredentialLoginChecker.swift */; };
 		DEF13C542963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF13C532963ED4E0024A02B /* PostSiteCredentialLoginCheckerTests.swift */; };
 		DEF3300C270444070073AE29 /* ShippingLabelSelectedRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF3300B270444060073AE29 /* ShippingLabelSelectedRate.swift */; };
@@ -2737,6 +2741,8 @@
 		0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundConfirmationCardDetailsCell.swift; sourceTree = "<group>"; };
 		037D270C28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderModalFlowViewControllerProtocol.swift; sourceTree = "<group>"; };
 		0386CFEA2852108B00134466 /* PaymentMethodsHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsHostingController.swift; sourceTree = "<group>"; };
+		038BC37C29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayCompleteViewModel.swift; sourceTree = "<group>"; };
+		038BC37E29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayCompleteViewController.swift; sourceTree = "<group>"; };
 		0396CFAC2981476800E91436 /* CardPresentModalBuiltInConnectingFailed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInConnectingFailed.swift; sourceTree = "<group>"; };
 		039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaConstraints.swift"; sourceTree = "<group>"; };
 		039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SuperviewConstraints.swift"; sourceTree = "<group>"; };
@@ -4153,6 +4159,8 @@
 		DE8C946D264699B600C94823 /* PluginListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModel.swift; sourceTree = "<group>"; };
 		DE971218290A9615000C0BD3 /* AddStoreFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStoreFooterView.swift; sourceTree = "<group>"; };
 		DEA426992875440500265B0C /* PaymentMethodsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsScreen.swift; sourceTree = "<group>"; };
+		DEC0293629C418FF00FD0E2F /* ApplicationPasswordAuthorizationWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordAuthorizationWebViewController.swift; sourceTree = "<group>"; };
+		DEC0293929C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordAuthorizationViewModel.swift; sourceTree = "<group>"; };
 		DEC1508127F450AC00F4487C /* CouponAllowedEmails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmails.swift; sourceTree = "<group>"; };
 		DEC2961E26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormListViewModel.swift; sourceTree = "<group>"; };
 		DEC2962026BD1627005A056B /* ShippingLabelCustomsFormList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormList.swift; sourceTree = "<group>"; };
@@ -6170,6 +6178,7 @@
 				31EF399B26430C6D0093C6F6 /* PaymentSettingsFlowPrioritizedViewModelsProvider.swift */,
 				31B19B66263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift */,
 				0365986829AFB0C100F297D3 /* SetUpTapToPayInformationViewModel.swift */,
+				038BC37C29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift */,
 				317F679726420E9D00BA2A7A /* CardReaderSettingsViewModelsOrderedList.swift */,
 				0365986629AFAEFC00F297D3 /* SetUpTapToPayViewModelsOrderedList.swift */,
 				3142663E2645E2AB00500598 /* PaymentSettingsFlowViewModelPresenter.swift */,
@@ -6177,6 +6186,7 @@
 				314DC4BE268D183600444C9E /* CardReaderSettingsKnownReaderStorage.swift */,
 				ABC353433EABC5F0EC796222 /* CardReaderSettingsSearchingViewController.swift */,
 				0365986A29AFB11E00F297D3 /* SetUpTapToPayInformationViewController.swift */,
+				038BC37E29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift */,
 				31FC8CE627B47591004B9456 /* CardReaderSettingsDataSource.swift */,
 				31FC8CE827B476BA004B9456 /* CardReaderSettingsResultsControllers.swift */,
 			);
@@ -7518,6 +7528,7 @@
 		B55D4C0420B6026700D7A50F /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				DEC0293829C419F500FD0E2F /* Application Password */,
 				DE2FE5842925D9040018040A /* Jetpack Setup */,
 				AEB4DB95290AE72D00AE4340 /* WebAuth */,
 				D881A318256B5C9C00FE5605 /* Navigation Exceptions */,
@@ -9496,6 +9507,15 @@
 			path = Plugins;
 			sourceTree = "<group>";
 		};
+		DEC0293829C419F500FD0E2F /* Application Password */ = {
+			isa = PBXGroup;
+			children = (
+				DEC0293629C418FF00FD0E2F /* ApplicationPasswordAuthorizationWebViewController.swift */,
+				DEC0293929C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift */,
+			);
+			path = "Application Password";
+			sourceTree = "<group>";
+		};
 		DEC2961D26BD15D3005A056B /* Customs */ = {
 			isa = PBXGroup;
 			children = (
@@ -10623,6 +10643,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEEF8E6629C833C600D47411 /* PaymentSettingsFlowPrioritizedViewModelsProvider.swift in Sources */,
 				B5F571A421BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift in Sources */,
 				EE57C11F297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift in Sources */,
 				AEA3F91127BEC08800B9F555 /* PriceFieldFormatter.swift in Sources */,
@@ -11045,9 +11066,7 @@
 				451A04E62386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift in Sources */,
 				02E19B9C284743A40010B254 /* ProductImageUploader.swift in Sources */,
 				B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */,
-				31EF399C26430C6D0093C6F6 /* PaymentSettingsFlowPrioritizedViewModelsProvider.swift in Sources */,
 				CC857C7129B23A6C00E19D1E /* BundledProductsListViewController.swift in Sources */,
-				31EF399C26430C6D0093C6F6 /* PaymentSettingsFlowPrioritizedViewModelsProvider.swift in Sources */,
 				D85136C1231E09C300DD0539 /* ReviewsDataSourceProtocol.swift in Sources */,
 				CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */,
 				45968545254069AE00D17B90 /* DownloadableFileBottomSheetListSelectorCommand.swift in Sources */,
@@ -11064,6 +11083,7 @@
 				B59D1EEC2190B08B009D1978 /* Age.swift in Sources */,
 				CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */,
 				025B174A237AA49D00C780B4 /* Product+ProductForm.swift in Sources */,
+				DEC0293729C418FF00FD0E2F /* ApplicationPasswordAuthorizationWebViewController.swift in Sources */,
 				B57C744720F55BC800EEFC87 /* UIView+Helpers.swift in Sources */,
 				45912FE32526642200982948 /* ProductFormViewController+Helpers.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
@@ -11584,6 +11604,7 @@
 				02F49ADA23BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift in Sources */,
 				02645D8527BA2DB40065DC68 /* InboxNoteRowViewModel.swift in Sources */,
 				740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */,
+				DEC0293A29C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift in Sources */,
 				03191AE628E1DF0600670723 /* WooCommercePluginViewModel.swift in Sources */,
 				CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */,
 				02BA12852461674B008D8325 /* Optional+String.swift in Sources */,
@@ -11669,6 +11690,7 @@
 				E10BC15E26CC06970064F5E2 /* ScrollableVStack.swift in Sources */,
 				B50BB4162141828F00AF0F3C /* FooterSpinnerView.swift in Sources */,
 				D8610CE2257099E100A5DF27 /* FancyAlertViewController+UnifiedLogin.swift in Sources */,
+				038BC37D29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift in Sources */,
 				03E471CE293F63B4001A58AD /* PaymentCaptureOrchestrator.swift in Sources */,
 				B5980A6321AC879F00EBF596 /* Bundle+Woo.swift in Sources */,
 				B59D1EE5219080B4009D1978 /* Note+Woo.swift in Sources */,
@@ -11781,6 +11803,7 @@
 				26B9875D273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift in Sources */,
 				DEF36DEA2898D3CF00178AC2 /* AuthenticatedWebViewModel.swift in Sources */,
 				45A0E4CB2566B56000D4E8C3 /* NumberOfLinkedProductsTableViewCell.swift in Sources */,
+				038BC37F29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift in Sources */,
 				E16715CB26663B0B00326230 /* CardPresentModalSuccessWithoutEmail.swift in Sources */,
 				028CB70F290138EF00331C09 /* Publisher+Concurrency.swift in Sources */,
 				311F827426CD897900DF5BAD /* CardReaderSettingsAlertsProvider.swift in Sources */,

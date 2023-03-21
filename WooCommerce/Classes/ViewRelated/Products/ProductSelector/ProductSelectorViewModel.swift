@@ -245,7 +245,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  onVariationSelected: onVariationSelected,
                                                  onMultipleSelectionCompleted: { [weak self] variations in
             // Assign variations up from ProductVariationSelector
-            self?.updateSelectedVariations(productID: productID, selectedVariationIDs: selectedItems, selectedVariations: variations)
+            self?.updateSelectedVariations(productID: productID, selectedVariations: variations)
         })
     }
 
@@ -258,33 +258,27 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Updates selected variation list based on the new selected IDs
     ///
-    // TODO: We pass 3 parameters temporarily. Remove selectedVariationIDs
-    func updateSelectedVariations(productID: Int64, selectedVariationIDs: [Int64], selectedVariations: [ProductVariation] = []) {
+    func updateSelectedVariations(productID: Int64, selectedVariations: [ProductVariation]) {
         guard let variableProduct = products.first(where: { $0.productID == productID }),
               variableProduct.variations.isNotEmpty else {
             return
         }
-        // 1. Using IDs
-        // remove items that exist in the initial list
-        initialSelectedItems.removeAll { selectedVariationIDs.contains($0) }
-        // remove all previous selected variations
-        selectedProductVariationIDs.removeAll(where: { variableProduct.variations.contains($0) })
-        // append new selected IDs
-        selectedProductVariationIDs.append(contentsOf: selectedVariationIDs)
+        // Remove items that exist in the initial list
+        let selectedVariationIDs = selectedVariations.map { $0.productVariationID }
+        initialSelectedItems.removeAll { selectedProductIDs.contains( $0 ) }
 
-        // 2. Using variations
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
-           ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection) {
-             let selectedProductVariationIDs = selectedVariations.map { $0.productVariationID }
-            // remove all previous selected variations
-            selectedProductVariations.removeAll(where: { $0.productVariationID == productID })
-            // append new selected IDs
-            selectedProductVariations.append(contentsOf: selectedVariations)
-        }
+        // Remove all previous selected variations, and IDs
+        selectedProductVariationIDs.removeAll(where: { variableProduct.variations.contains($0) })
+        selectedProductVariations.removeAll(where: { $0.productID == productID })
+
+        // Append new selected variations, and IDs
+        selectedProductVariationIDs.append(contentsOf: selectedVariationIDs)
+        selectedProductVariations.append(contentsOf: selectedVariations)
     }
 
     /// Select all variations for a given product
     ///
+    // TODO: This toggle is now broken. Edited so it can compile.
     func toggleSelectionForAllVariations(of productID: Int64) {
         guard toggleAllVariationsOnSelection else {
             return
@@ -293,17 +287,17 @@ final class ProductSelectorViewModel: ObservableObject {
               variableProduct.variations.isNotEmpty else {
             return
         }
-        let selectedIDs: [Int64]
+        let _: [Int64]
         let intersection = Set(variableProduct.variations).intersection(Set(selectedProductVariationIDs))
         if intersection.count == variableProduct.variations.count {
             // if all variation is currently selected, deselect them all
-            selectedIDs = []
+            //selectedIDs = []
         } else {
             // otherwise select all variations for the product
-            selectedIDs = variableProduct.variations
+            //selectedIDs = variableProduct.variations
         }
 
-        updateSelectedVariations(productID: productID, selectedVariationIDs: selectedIDs)
+        updateSelectedVariations(productID: productID, selectedVariations: selectedProductVariations)
     }
 
     /// Triggers completion closure when the multiple selection completes.

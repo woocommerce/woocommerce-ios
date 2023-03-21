@@ -91,11 +91,9 @@ struct ProductSelectorView: View {
                             multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
                             onMultipleSelectionsCompleted: { selectedVariations in
                                 print("🍍 onMultipleSelectionsCompleted \( selectedVariations.map { $0.productVariationID } )")
-                                let selectedVariationIDs = selectedVariations.map { $0.productVariationID }
                                 viewModel.updateSelectedVariations(
                                     productID: variationListViewModel.productID,
-                                    selectedVariationIDs: selectedVariationIDs
-                                )
+                                    selectedVariations: selectedVariations)
                             }), isActive: $isShowingVariationList) {
                                 EmptyView()
                             }

@@ -188,8 +188,11 @@ final class EditableOrderViewModel: ObservableObject {
             onVariationSelected: { [weak self] variation, parentProduct in
                 guard let self = self else { return }
                 self.addProductVariationToOrder(variation, parent: parentProduct)
-            }, onMultipleSelectionCompleted: { [weak self] _, _ in
+            }, onMultipleSelectionCompleted: { [weak self] products, variations in
+                // Objective: Receive Products and Variations on this completion handler, rather than just [Int64] IDs,
+                // so we can pass these directly to syncOrderItems and not rely on selectedProducts and selectedVariations
                 guard let self = self else { return }
+                print("🍍 EditableOrder.onMultipleSelectionCompleted: \(products.map {$0.productID}) \(variations.map {$0.productVariationID})")
                 self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
             })
     }

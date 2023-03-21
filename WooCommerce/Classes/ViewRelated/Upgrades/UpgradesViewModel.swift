@@ -95,9 +95,9 @@ private extension UpgradesViewModel {
         // Handle the "Free trial" case specially.
         if plan.isFreeTrial {
             if daysLeft(for: plan) > 0 {
-                return "Free Trial"
+                return Localization.freeTrial
             } else {
-                return "Trial ended"
+                return Localization.trialEnded
             }
         }
 
@@ -115,20 +115,19 @@ private extension UpgradesViewModel {
 
         if plan.isFreeTrial {
             if daysLeft > 0 {
-                return "You are in the \(planDuration)-day free trial. The free trial will end in \(daysLeft) days. " +
-                "Upgrade to unlock new features and keep your store running."
+                return Localization.freeTrialPlanInfo(planDuration: planDuration, daysLeft: daysLeft)
             } else {
-                return "Your free trial has ended and have limited access to all the features. Subscribe to eCommerce now."
+                return Localization.trialEndedInfo
             }
         }
 
         let planName = getPlanName(from: plan)
         guard let expireDate = plan.expiryDate else {
-            return "You are a \(planName) subscriber!"
+            return ""
         }
 
         let expireText = DateFormatter.mediumLengthLocalizedDateFormatter.string(from: expireDate)
-        return "You are a \(planName) subscriber! You have access to all our features until \(expireText)."
+        return Localization.planInfo(planName: planName, expirationDate: expireText)
     }
 
     /// Only allow to upgrade the plan if we are on a free trial.
@@ -161,5 +160,28 @@ private extension UpgradesViewModel {
 
         let daysLeft = Calendar.current.dateComponents([.day], from: today, to: expiryDate).day ?? 0
         return daysLeft
+    }
+}
+
+// MARK: Definitions
+private extension UpgradesViewModel {
+    enum Localization {
+        static let freeTrial = NSLocalizedString("Free Trial", comment: "Plan name for an active free trial")
+        static let trialEnded = NSLocalizedString("Trial ended", comment: "Plan name for an expired free trial")
+        static let trialEndedInfo = NSLocalizedString("Your free trial has ended and have limited access to all the features. Subscribe to eCommerce now.",
+                                                      comment: "Info details for an expired free trial")
+        static func freeTrialPlanInfo(planDuration: Int, daysLeft: Int) -> String {
+            let format = NSLocalizedString("You are in the %1d-day free trial. The free trial will end in %2d days. " +
+                                           "Upgrade to unlock new features and keep your store running.",
+                                           comment: "Reads like: You are in the 14-day free trial. The free trial will end in 5 days. " +
+                                           "Upgrade to unlock new features and keep your store running.")
+            return String.localizedStringWithFormat(format, planDuration, daysLeft)
+        }
+
+        static func planInfo(planName: String, expirationDate: String) -> String {
+            let format = NSLocalizedString("You are a %1@ subscriber! You have access to all our features until %2@.",
+                                           comment: "Reads like: You are a eCommerce subscriber! You have access to all our features until Nov 28, 2023.")
+            return String.localizedStringWithFormat(format, planName, expirationDate)
+        }
     }
 }

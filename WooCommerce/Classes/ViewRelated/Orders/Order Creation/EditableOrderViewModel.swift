@@ -169,11 +169,6 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private var allProductVariations: [ProductVariation] = []
 
-    /// Products and Product Variation IDs that have been already added to the Order
-    /// We use this to keep track of which items have already been sent to the remote, no matter if are selected or unselected during Order creation or editing.
-    ///
-    @Published private var updatedProductAndVariationIDsInOrder: [Int64] = []
-
     /// View model for the product list
     ///
     var productSelectorViewModel: ProductSelectorViewModel {
@@ -342,7 +337,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureNonEditableIndicators()
         configureMultipleLinesMessage()
         resetAddressForm()
-        selectExistingProductsInOrderIfNeeded()
+        syncInitialSelectedState()
     }
 
     /// Checks the current state of the Product Multi Selection feature toggle
@@ -359,21 +354,22 @@ final class EditableOrderViewModel: ObservableObject {
         stores.dispatch(action)
     }
 
-    /// Checks the latest Order sync, if the Order already contains products then we mark these as selected
+    /// Checks the latest Order sync, and returns the current items that are in the Order
     ///
-    private func selectExistingProductsInOrderIfNeeded() {
+    private func syncExistingSelectedProductsInOrder() -> [OrderItem] {
+        var itemsInOrder: [OrderItem] = []
         let _ = orderSynchronizer.order.items.map { item in
             if item.variationID != 0 {
-                if let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
-                    selectedProductVariations.append(variation)
+                if let _ = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+                    itemsInOrder.append(item)
                 }
             } else {
-                if let product = allProducts.first(where: { $0.productID == item.productID }) {
-                    selectedProducts.append(product)
+                if let _ = allProducts.first(where: { $0.productID == item.productID }) {
+                    itemsInOrder.append(item)
                 }
             }
-            updatedProductAndVariationIDsInOrder.append(item.productOrVariationID)
         }
+        return itemsInOrder
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.
@@ -399,7 +395,6 @@ final class EditableOrderViewModel: ObservableObject {
             if item.variationID != 0 {
                 selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID})
             }
-            updatedProductAndVariationIDsInOrder.removeAll(where: { $0 == item.productOrVariationID })
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
@@ -780,26 +775,23 @@ private extension EditableOrderViewModel {
     ///   - variations: Selected product variations
     /// - Returns: [OrderSyncProductInput]
     ///
-    func productInputAdditionsToSync (products: [Product?], variations: [ProductVariation?]) -> [OrderSyncProductInput] {
+    func productInputAdditionsToSync (products: [Product], variations: [ProductVariation]) -> [OrderSyncProductInput] {
         var productInputs: [OrderSyncProductInput] = []
         var productVariationInputs: [OrderSyncProductInput] = []
 
-        // TODO: We may be able to simplify this bit by using createUpdateProductInput() helper
+        let itemsInOrder = syncExistingSelectedProductsInOrder()
+
         for product in products {
             // Only perform the operation if the product has not been already added to the existing Order
-            if let product,
-               !updatedProductAndVariationIDsInOrder.contains(where: {$0 == product.productID}) {
+            if !itemsInOrder.contains(where: { $0.productID == product.productID }) {
                 productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
-                updatedProductAndVariationIDsInOrder.append(product.productID)
             }
         }
 
         for variation in variations {
             // Only perform the operation if the variation has not been already added to the existing Order
-            if let variation,
-               !updatedProductAndVariationIDsInOrder.contains(where: {$0 == variation.productVariationID}) {
+            if !itemsInOrder.contains(where: { $0.productOrVariationID == variation.productVariationID }) {
                 productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
-                updatedProductAndVariationIDsInOrder.append(variation.productVariationID)
             }
         }
 
@@ -815,13 +807,15 @@ private extension EditableOrderViewModel {
     func productInputDeletionsToSync (products: [Product?], variations: [ProductVariation?]) -> [OrderSyncProductInput] {
         var inputsToBeRemoved: [OrderSyncProductInput] = []
 
+        let itemsInOrder = syncExistingSelectedProductsInOrder()
+
         // Products to be removed from the Order
-        let removeProducts = orderSynchronizer.order.items.filter { item in
+        let removeProducts = itemsInOrder.filter { item in
             return item.variationID == 0 && !products.contains(where: { $0?.productID == item.productID })
         }
 
         // Variations to be removed from the Order
-        let removeProductVariations = orderSynchronizer.order.items.filter { item in
+        let removeProductVariations = itemsInOrder.filter { item in
             return item.variationID != 0 && !variations.contains(where: { $0?.productVariationID == item.variationID })
         }
 
@@ -842,7 +836,7 @@ private extension EditableOrderViewModel {
 
     /// Adds, or removes multiple products from an Order
     ///
-    func syncOrderItems(products: [Product?], variations: [ProductVariation?]) {
+    func syncOrderItems(products: [Product], variations: [ProductVariation]) {
         // We need to send all OrderSyncProductInput in one call to the RemoteOrderSynchronizer, both additions and deletions
         // otherwise may ignore the subsequent values that are sent
         let addedItemsToSync = productInputAdditionsToSync(products: products, variations: variations)
@@ -1192,6 +1186,25 @@ private extension EditableOrderViewModel {
             allProductVariations = productVariationsResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Error fetching product variations for order: \(error)")
+        }
+    }
+
+    /// Syncs initial selected state for all items in the Order
+    ///
+    func syncInitialSelectedState() {
+        selectedProducts = []
+        selectedProductVariations = []
+
+        let _ = orderSynchronizer.order.items.map { item in
+            if item.variationID != 0 {
+                if let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+                    selectedProductVariations.append(variation)
+                }
+            } else {
+                if let product = allProducts.first(where: { $0.productID == item.productID }) {
+                    selectedProducts.append(product)
+                }
+            }
         }
     }
 

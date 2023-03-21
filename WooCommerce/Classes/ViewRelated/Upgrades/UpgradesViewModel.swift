@@ -3,7 +3,7 @@ import Yosemite
 
 /// ViewModel for the Upgrades View
 ///
-final class UpgradesViewModel {
+final class UpgradesViewModel: ObservableObject {
 
     /// Dependency state.
     ///
@@ -51,7 +51,7 @@ final class UpgradesViewModel {
     ///
     private let analytics: Analytics
 
-    init(siteID: Int64, stores: StoresManager, analytics: Analytics) {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics

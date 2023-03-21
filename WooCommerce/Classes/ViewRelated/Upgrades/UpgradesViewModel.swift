@@ -179,8 +179,9 @@ private extension UpgradesViewModel {
         }
 
         static func planInfo(planName: String, expirationDate: String) -> String {
-            let format = NSLocalizedString("You are a %1@ subscriber! You have access to all our features until %2@.",
-                                           comment: "Reads like: You are a eCommerce subscriber! You have access to all our features until Nov 28, 2023.")
+            let format = NSLocalizedString("You are subscribed to the %1@ plan! You have access to all our features until %2@.",
+                                           comment: "Reads like: You are subscribed to the eCommerce plan! " +
+                                                    "You have access to all our features until Nov 28, 2023.")
             return String.localizedStringWithFormat(format, planName, expirationDate)
         }
     }

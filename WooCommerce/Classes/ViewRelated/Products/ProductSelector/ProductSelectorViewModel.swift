@@ -289,7 +289,7 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Unselect all items.
     ///
     func clearSelection() {
-        let _ = products.map { product in
+        products.forEach { product in
             // Callback to deselect products
             if selectedProductIDs.contains(where: { $0 == product.productID }) {
                 if let onProductSelected {
@@ -304,12 +304,6 @@ final class ProductSelectorViewModel: ObservableObject {
                 let intersection = Set(variationIDs).intersection(Set(selectedProductVariationIDs))
                 if intersection.count != 0 {
                     let variations = retrieveVariations(for: product.productID)
-                    // TODO: Decide which behavior to keep
-                    // 1. If we call the product only, we don't unselect variations from ProductSelector
-                    if let onProductSelected {
-                        onProductSelected(product)
-                    }
-                    // 2. If we call variations, we unselect it from ProductSelector
                     if let onVariationSelected, let variation = variations.first(where: { $0.productID == product.productID }) {
                         onVariationSelected(variation, product)
                     }

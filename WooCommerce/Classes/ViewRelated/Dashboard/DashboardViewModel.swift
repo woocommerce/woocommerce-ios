@@ -269,18 +269,8 @@ final class DashboardViewModel {
             return
         }
 
-        guard let storeOnboardingViewModel else {
-            showOnboardingSubscription = userDefaults.publisher(for: \.completedAllStoreOnboardingTasks)
-                .sink { [weak self] in
-                    self?.showOnboarding = !$0
-                }
-            return
-        }
-
-        showOnboardingSubscription = storeOnboardingViewModel.$shouldShowInDashboard
-            .sink { [weak self] in
-                self?.showOnboarding = $0
-            }
+        storeOnboardingViewModel.$shouldShowInDashboard
+            .assign(to: &$showOnboarding)
     }
 }
 

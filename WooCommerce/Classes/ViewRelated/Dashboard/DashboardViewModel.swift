@@ -47,8 +47,8 @@ final class DashboardViewModel {
 
     /// Reloads store onboarding tasks
     ///
-    func reloadStoreOnboardingTasks() async {
-        await storeOnboardingViewModel?.reloadTasks()
+    func reloadStoreOnboardingTasks(for siteID: Int64) async {
+        await storeOnboardingViewModel.reloadTasks(siteID: siteID)
     }
 
     /// Syncs store stats for dashboard UI.

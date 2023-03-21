@@ -13,14 +13,9 @@ public struct ApplicationPassword: Decodable {
     ///
     public let uuid: String
 
-    /// App ID
-    ///
-    public let appID: String
-
-    public init(wpOrgUsername: String, password: Secret<String>, uuid: String, appID: String) {
+    public init(wpOrgUsername: String, password: Secret<String>, uuid: String) {
         self.password = password
         self.uuid = uuid
-        self.appID = appID
         self.wpOrgUsername = wpOrgUsername
     }
 
@@ -31,16 +26,14 @@ public struct ApplicationPassword: Decodable {
             throw ApplicationPasswordDecodingError.missingWpOrgUsername
         }
 
-        let password = try container.decodeIfPresent(String.self, forKey: .password) ?? ""
+        let password = try container.decode(String.self, forKey: .password)
         let uuid = try container.decode(String.self, forKey: .uuid)
-        let appID = try container.decode(String.self, forKey: .appID)
-        self.init(wpOrgUsername: wpOrgUsername, password: Secret(password), uuid: uuid, appID: appID)
+        self.init(wpOrgUsername: wpOrgUsername, password: Secret(password), uuid: uuid)
     }
 
     enum CodingKeys: String, CodingKey {
         case password
         case uuid
-        case appID = "app_id"
     }
 }
 

@@ -19,7 +19,7 @@ struct ApplicationPasswordStorage {
               let uuid = keychain.uuid else {
             return nil
         }
-        return ApplicationPassword(wpOrgUsername: username, password: Secret(password), uuid: uuid, appID: keychain.appID ?? "")
+        return ApplicationPassword(wpOrgUsername: username, password: Secret(password), uuid: uuid)
     }
 
     /// Saves application password into keychain
@@ -30,7 +30,6 @@ struct ApplicationPasswordStorage {
         keychain.username = password.wpOrgUsername
         keychain.password = password.password.secretValue
         keychain.uuid = password.uuid
-        keychain.appID = password.appID
     }
 
     /// Removes the currently saved password from storage
@@ -40,7 +39,6 @@ struct ApplicationPasswordStorage {
         keychain.username = nil
         keychain.password = nil
         keychain.uuid = nil
-        keychain.appID = nil
     }
 }
 
@@ -50,7 +48,6 @@ private extension Keychain {
     private static let keychainApplicationPassword = "ApplicationPassword"
     private static let keychainApplicationPasswordUsername = "ApplicationPasswordUsername"
     private static let keychainApplicationPasswordUUID = "ApplicationPasswordUUID"
-    private static let keychainApplicationPasswordAppID = "ApplicationPasswordAppID"
 
     var password: String? {
         get { self[Keychain.keychainApplicationPassword] }
@@ -65,10 +62,5 @@ private extension Keychain {
     var uuid: String? {
         get { self[Keychain.keychainApplicationPasswordUUID] }
         set { self[Keychain.keychainApplicationPasswordUUID] = newValue }
-    }
-
-    var appID: String? {
-        get { self[Keychain.keychainApplicationPasswordAppID] }
-        set { self[Keychain.keychainApplicationPasswordAppID] = newValue }
     }
 }

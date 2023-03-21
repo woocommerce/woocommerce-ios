@@ -173,7 +173,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         progressBar.setProgress(0, animated: false)
         activityIndicator.startAnimating()
 
-        let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: "", appID: appID)
+        let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: appID)
         onSuccess(applicationPassword, navigationController)
         DDLogInfo("✅ Application password authorized")
     }

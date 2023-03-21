@@ -666,9 +666,11 @@ private extension AuthenticationManager {
                 password: applicationPassword.password.secretValue,
                 siteAddress: siteURL
             )
-            ServiceLocator.stores.authenticate(credentials: credentials)
             let useCase = OneTimeApplicationPasswordUseCase(applicationPassword: applicationPassword,
                                                             siteAddress: siteURL)
+            /// IMPORTANT: authenticate after creating the use case above to make sure that
+            /// the application password is saved into keychain.
+            ServiceLocator.stores.authenticate(credentials: credentials)
             self?.checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
         })
         return controller

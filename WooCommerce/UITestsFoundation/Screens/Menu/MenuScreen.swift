@@ -9,7 +9,7 @@ public final class MenuScreen: ScreenObject {
     private let reviewsButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["menu-reviews"]
     }
-    
+
     private let paymentsButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["menu-payments"]
     }

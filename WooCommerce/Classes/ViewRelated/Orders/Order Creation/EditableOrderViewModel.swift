@@ -858,8 +858,9 @@ private extension EditableOrderViewModel {
 
     /// Adds a selected product (from the product list) to the order.
     ///
-    // TODO: This method needs to be renamed
-    // to reflect that adds products to Order for single selection, but only selects/unselects for multi-selection
+    // TODO:
+    // This method needs to be refactored, to reflect that adds products to Order for single selection,
+    // but only selects/unselects for multi-selection: https://github.com/woocommerce/woocommerce-ios/issues/9176
     func addProductToOrder(_ product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {
@@ -883,8 +884,9 @@ private extension EditableOrderViewModel {
 
     /// Adds a selected product variation (from the product list) to the order.
     ///
-    // TODO: This method needs to be renamed
-    // to reflect that adds variations to Order for single selection, but only selects/unselects for multi-selection
+    // TODO:
+    // This method needs to be refactored, to reflect that adds variations to Order for single selection,
+    // but only selects/unselects for multi-selection: https://github.com/woocommerce/woocommerce-ios/issues/9176
     func addProductVariationToOrder(_ variation: ProductVariation, parent product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {

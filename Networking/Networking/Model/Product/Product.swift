@@ -96,6 +96,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     /// List of bundled item data contained in this product.
     public let bundledItems: [ProductBundleItem]
 
+    // MARK: Composite Product properties
+
+    /// List of components that this product consists of. Applicable to composite-type products only.
+    public let compositeComponents: [ProductCompositeComponent]
+
     /// Computed Properties
     ///
     public var productStatus: ProductStatus {
@@ -213,7 +218,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 addOns: [ProductAddOn],
                 bundleStockStatus: ProductStockStatus?,
                 bundleStockQuantity: Int64?,
-                bundledItems: [ProductBundleItem]) {
+                bundledItems: [ProductBundleItem],
+                compositeComponents: [ProductCompositeComponent]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -280,6 +286,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.bundleStockStatus = bundleStockStatus
         self.bundleStockQuantity = bundleStockQuantity
         self.bundledItems = bundledItems
+        self.compositeComponents = compositeComponents
     }
 
     /// The public initializer for Product.
@@ -426,6 +433,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let bundleStockQuantity = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleStockQuantity)
         let bundledItems = try container.decodeIfPresent([ProductBundleItem].self, forKey: .bundledItems) ?? []
 
+        // Composite Product properties
+        let compositeComponents = try container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents) ?? []
+
         self.init(siteID: siteID,
                   productID: productID,
                   name: name,
@@ -491,7 +501,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   addOns: addOns,
                   bundleStockStatus: bundleStockStatus,
                   bundleStockQuantity: bundleStockQuantity,
-                  bundledItems: bundledItems)
+                  bundledItems: bundledItems,
+                  compositeComponents: compositeComponents)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -681,6 +692,8 @@ private extension Product {
         case bundleStockStatus              = "bundle_stock_status"
         case bundleStockQuantity            = "bundle_stock_quantity"
         case bundledItems                   = "bundled_items"
+
+        case compositeComponents    = "composite_components"
     }
 }
 

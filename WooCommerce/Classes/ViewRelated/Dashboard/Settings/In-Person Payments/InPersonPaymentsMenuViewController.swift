@@ -279,7 +279,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureOrderCardReader(cell: LeftImageTableViewCell) {
-        prepareForReuse(cell, accessibilityId: "order-card-reader")
+        prepareForReuse(cell, accessibilityID: "order-card-reader")
         cell.configure(image: .shoppingCartIcon, text: Localization.orderCardReader.localizedCapitalized)
     }
 
@@ -294,24 +294,24 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureManagePaymentGateways(cell: LeftImageTitleSubtitleTableViewCell) {
-        prepareForReuse(cell, accessibilityId: "manage-payment-gateways")
+        prepareForReuse(cell, accessibilityID: "manage-payment-gateways")
         cell.configure(image: .rectangleOnRectangleAngled,
                        text: Localization.managePaymentGateways.localizedCapitalized,
                        subtitle: pluginState?.preferred.pluginName ?? "")
     }
 
     func configureCardReaderManuals(cell: LeftImageTableViewCell) {
-        prepareForReuse(cell, accessibilityId: "card-reader-manuals")
+        prepareForReuse(cell, accessibilityID: "card-reader-manuals")
         cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals.localizedCapitalized)
     }
 
     func configureCollectPayment(cell: LeftImageTableViewCell) {
-        prepareForReuse(cell, accessibilityId: "collect-payment")
+        prepareForReuse(cell, accessibilityID: "collect-payment")
         cell.configure(image: .moneyIcon, text: Localization.collectPayment.localizedCapitalized)
     }
 
     func configureToggleEnableCashOnDelivery(cell: LeftImageTitleSubtitleToggleTableViewCell) {
-        prepareForReuse(cell, accessibilityId: "pay-in-person")
+        prepareForReuse(cell, accessibilityID: "pay-in-person")
         cell.leftImageView?.tintColor = .text
         cell.accessoryType = .none
         cell.selectionStyle = .none
@@ -327,16 +327,16 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureSetUpTapToPayOnIPhone(cell: LeftImageTableViewCell) {
-        prepareForReuse(cell, accessibilityId: "set-up-tap-to-pay")
+        prepareForReuse(cell, accessibilityID: "set-up-tap-to-pay")
         cell.configure(image: UIImage(systemName: "wave.3.right.circle") ?? .creditCardIcon,
                        text: Localization.tapToPayOnIPhone)
     }
 
-    private func prepareForReuse(_ cell: UITableViewCell, accessibilityId: String) {
+    private func prepareForReuse(_ cell: UITableViewCell, accessibilityID: String) {
         cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.accessibilityIdentifier = accessibilityId
+        cell.accessibilityIdentifier = accessibilityID
         updateEnabledState(in: cell)
     }
 

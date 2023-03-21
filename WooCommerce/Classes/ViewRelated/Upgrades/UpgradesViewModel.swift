@@ -59,8 +59,9 @@ final class UpgradesViewModel: ObservableObject {
 
     /// Loads the plan from network if needed.
     ///
-    func loadPlan() {
-        guard planState == .notLoaded else { return }
+    func loadPlan(forced: Bool = false) {
+        // Do not fetch the plan anymore if it is loaded, unless a force-load is requested.
+        guard planState == .notLoaded || forced == true else { return }
 
         planState = .loading
         let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in

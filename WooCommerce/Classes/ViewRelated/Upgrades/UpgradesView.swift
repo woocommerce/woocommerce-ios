@@ -11,7 +11,7 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
 
         // Assign after of `init` for `self` to be properly initialized.
         rootView.onUpgradeNowTapped = { [weak self] in
-            self?.showUpgradePlanWebView(siteID: siteID)
+            self?.showUpgradePlanWebView(siteID: siteID, viewModel: viewModel)
         }
     }
 
@@ -21,8 +21,10 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
 
     /// Shows a web view for the merchant to update their site plan.
     ///
-    private func showUpgradePlanWebView(siteID: Int64) {
-        let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .upgradesScreen)
+    private func showUpgradePlanWebView(siteID: Int64, viewModel: UpgradesViewModel) {
+        let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .upgradesScreen, onSuccess: {
+            viewModel.loadPlan(forced: true)
+        })
         present(upgradeController, animated: true)
     }
 }

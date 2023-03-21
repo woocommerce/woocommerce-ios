@@ -4,8 +4,8 @@ import Yosemite
 /// Hosting controller wrapper for `JetpackBenefitsView`
 ///
 final class JetpackBenefitsHostingController: UIHostingController<JetpackBenefitsView> {
-    init(isJetpackCPSite: Bool) {
-        let viewModel = JetpackBenefitsViewModel(isJetpackCPSite: isJetpackCPSite)
+    init(siteURL: String, isJetpackCPSite: Bool) {
+        let viewModel = JetpackBenefitsViewModel(siteURL: siteURL, isJetpackCPSite: isJetpackCPSite)
         super.init(rootView: JetpackBenefitsView(viewModel: viewModel))
     }
 
@@ -38,6 +38,7 @@ struct JetpackBenefitsView: View {
     }
 
     @State private var isPrimaryButtonLoading = false
+    @State private var isShowingWPAdmin = false
 
     var body: some View {
         VStack {
@@ -97,7 +98,7 @@ struct JetpackBenefitsView: View {
 
                 // Button to open wp-admin to install Jetpack
                 Button(Localization.wpAdminAction) {
-                    // TODO
+                    isShowingWPAdmin = true
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .fixedSize(horizontal: false, vertical: true)
@@ -108,7 +109,9 @@ struct JetpackBenefitsView: View {
                     .buttonStyle(SecondaryButtonStyle())
                     .fixedSize(horizontal: false, vertical: true)
             }
-        }.padding(insets: Layout.contentPadding)
+        }
+        .padding(insets: Layout.contentPadding)
+        .safariSheet(isPresented: $isShowingWPAdmin, url: viewModel.wpAdminInstallURL)
     }
 }
 
@@ -158,10 +161,10 @@ private extension JetpackBenefitsView {
 
 struct JetpackBenefits_Previews: PreviewProvider {
     static var previews: some View {
-        JetpackBenefitsView(viewModel: .init(isJetpackCPSite: true))
+        JetpackBenefitsView(viewModel: .init(siteURL: "https://example.com", isJetpackCPSite: true))
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 414, height: 780))
-        JetpackBenefitsView(viewModel: .init(isJetpackCPSite: false))
+        JetpackBenefitsView(viewModel: .init(siteURL: "https://example.com", isJetpackCPSite: false))
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 800, height: 300))
     }

@@ -611,9 +611,8 @@ private extension ShippingLabelAddressFormViewController {
                                                     comment: "Error showed in Shipping Label Address Validation for the state field")
         static let missingCountry = NSLocalizedString("Country missing",
                                                       comment: "Error showed in Shipping Label Address Validation for the country field")
-        static let missingPhoneNumber = NSLocalizedString("A phone number is required because this shipment requires a customs form",
-                                                          comment: "Error shown in Shipping Label Origin Address validation for " +
-                                                          "phone number field for international shipment")
+        static let missingPhoneNumber = NSLocalizedString("A phone number is required",
+                                                          comment: "Error shown in Shipping Label Origin Address validation for phone number field")
         static let invalidPhoneNumber = NSLocalizedString("Custom forms require a 10-digit phone number",
                                                           comment: "Error shown in Shipping Label Origin Address validation for " +
                                                             "phone number when the it doesn't have expected length for international shipment.")

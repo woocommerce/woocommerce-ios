@@ -99,6 +99,7 @@ struct JetpackBenefitsView: View {
                 // Button to open wp-admin to install Jetpack
                 Button(Localization.wpAdminAction) {
                     isShowingWPAdmin = true
+                    ServiceLocator.analytics.track(.jetpackBenefitsModalWPAdminButtonTapped)
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .fixedSize(horizontal: false, vertical: true)

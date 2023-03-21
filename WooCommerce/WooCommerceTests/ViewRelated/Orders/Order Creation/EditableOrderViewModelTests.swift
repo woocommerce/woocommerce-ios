@@ -157,7 +157,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         viewModel.updateOrderStatus(newStatus: .processing)
-        self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .createOrder(_, order, onCompletion):
                 onCompletion(.success(order))
@@ -177,7 +177,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let error = NSError(domain: "Error", code: 0)
 
         // When
-        self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .createOrder(_, _, onCompletion):
                 onCompletion(.failure(error))

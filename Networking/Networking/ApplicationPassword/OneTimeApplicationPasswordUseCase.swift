@@ -17,7 +17,7 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
         if let applicationPassword {
             storage.saveApplicationPassword(applicationPassword)
         }
-        self.applicationPassword = applicationPassword ?? storage.applicationPassword
+        self.applicationPassword = storage.applicationPassword
         self.siteAddress = siteAddress
         self.session = URLSession(configuration: .default)
     }
@@ -28,27 +28,60 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
     }
 
     public func deletePassword() async throws {
-        guard let uuid = applicationPassword?.uuid,
-              let username = applicationPassword?.wpOrgUsername,
-              let password = applicationPassword?.password.secretValue,
+        guard let uuid = try await fetchApplicationPasswordUUID(),
               let url = URL(string: siteAddress + Path.applicationPasswords + uuid) else {
             return
         }
 
-        var request = try URLRequest(url: url, method: .delete)
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
+        let request = try URLRequest(url: url, method: .delete)
+        let authenticatedRequest = authenticateRequest(request: request)
+        _ = try await session.data(for: authenticatedRequest)
+    }
+}
+
+private extension OneTimeApplicationPasswordUseCase {
+    func fetchApplicationPasswordUUID() async throws -> String? {
+        guard let appID = applicationPassword?.appID,
+              appID.isEmpty == false,
+              let url = URL(string: siteAddress + Path.applicationPasswords) else {
+            return nil
+        }
+
+        let request = try URLRequest(url: url, method: .get)
+        let authenticatedRequest = authenticateRequest(request: request)
+        let (data, _) = try await session.data(for: authenticatedRequest)
+
+        let decoder = JSONDecoder()
+        if let username = applicationPassword?.wpOrgUsername {
+            decoder.userInfo = [
+                .wpOrgUsername: username
+            ]
+        }
+
+        let passwords = try decoder.decode([ApplicationPassword].self, from: data)
+        return passwords.first(where: { $0.appID == appID })?.uuid
+    }
+
+    func authenticateRequest(request: URLRequest) -> URLRequest {
+        guard let username = applicationPassword?.wpOrgUsername,
+              let password = applicationPassword?.password.secretValue else {
+            return request
+        }
+        var authenticatedRequest = request
+        authenticatedRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+        authenticatedRequest.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
         let loginString = "\(username):\(password)"
 
         if let loginData = loginString.data(using: .utf8) {
             let base64LoginString = loginData.base64EncodedString()
-            request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
+            authenticatedRequest.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
         }
 
         // Cookies from `CookieNonceAuthenticator` should be skipped
-        request.httpShouldHandleCookies = false
-        _ = try await session.data(for: request)
+        authenticatedRequest.httpShouldHandleCookies = false
+
+        return authenticatedRequest
     }
 }
 

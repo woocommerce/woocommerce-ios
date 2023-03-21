@@ -35,4 +35,23 @@ final class StoreOnboardingCoordinatorTests: XCTestCase {
         let presentedNavigationController = try XCTUnwrap(coordinator.navigationController.presentedViewController as? WooNavigationController)
         assertThat(presentedNavigationController.topViewController, isAnInstanceOf: DomainSettingsHostingController.self)
     }
+
+    func test_isRelatedToOnboardingTask_returns_true_for_relevant_types() {
+        let url = URL(string: "https://example.com/")!
+        let domain = DomainSettingsHostingController(viewModel: .init(siteID: 0),
+                                                     addDomain: { _, _ in },
+                                                     onClose: {})
+        XCTAssertTrue(StoreOnboardingCoordinator.isRelatedToOnboardingTask(domain))
+
+        let launch = StoreOnboardingLaunchStoreHostingController(viewModel: .init(siteURL: url,
+                                                                                  siteID: 9,
+                                                                                  onLaunch: {}))
+        XCTAssertTrue(StoreOnboardingCoordinator.isRelatedToOnboardingTask(launch))
+
+        let launched = StoreOnboardingStoreLaunchedHostingController(siteURL: url, onContinue: {})
+        XCTAssertTrue(StoreOnboardingCoordinator.isRelatedToOnboardingTask(launched))
+
+        let payments = StoreOnboardingPaymentsSetupHostingController(task: .wcPay, onContinue: {}, onDismiss: {})
+        XCTAssertTrue(StoreOnboardingCoordinator.isRelatedToOnboardingTask(payments))
+    }
 }

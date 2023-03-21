@@ -19,6 +19,7 @@ final class ApplicationPasswordMapperTests: XCTestCase {
         XCTAssertEqual(password.password.secretValue, "passwordvalue")
         XCTAssertEqual(password.uuid, "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e")
         XCTAssertEqual(password.wpOrgUsername, "username")
+        XCTAssertEqual(password.appID, "9dde4718-7bb3-4e9e-aa98-502c7b618159")
     }
 }
 

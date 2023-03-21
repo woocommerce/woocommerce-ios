@@ -10,7 +10,10 @@ class SessionManagerTests: XCTestCase {
 
     /// Sample Application Password
     ///
-    private let applicationPassword = ApplicationPassword(wpOrgUsername: "username", password: .init("password"), uuid: "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e")
+    private let applicationPassword = ApplicationPassword(wpOrgUsername: "username",
+                                                          password: .init("password"),
+                                                          uuid: "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e",
+                                                          appID: "")
 
     /// CredentialsStorage Unit-Testing Instance
     ///

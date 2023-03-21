@@ -289,6 +289,13 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Unselect all items.
     ///
     func clearSelection() {
+        let _ = products.map { product in
+            if selectedProductIDs.contains(where: { $0 == product.productID }) {
+                if let onProductSelected {
+                    onProductSelected(product)
+                }
+            }
+        }
         initialSelectedItems = []
         selectedProductIDs = []
         selectedProductVariationIDs = []

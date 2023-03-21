@@ -664,6 +664,7 @@ private extension DashboardViewController {
         let hostingController = StoreOnboardingViewHostingController(viewModel: viewModel.storeOnboardingViewModel,
                                                                      navigationController: navigationController,
                                                                      site: site,
+                                                                     presentationControllerDelegate: self,
                                                                      shareFeedbackAction: { [weak self] in
             // Present survey
             let navigationController = SurveyCoordinatingController(survey: .storeSetup)

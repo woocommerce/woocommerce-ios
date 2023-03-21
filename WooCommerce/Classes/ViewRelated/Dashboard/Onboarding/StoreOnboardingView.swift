@@ -9,15 +9,19 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
     private let sourceNavigationController: UINavigationController
     private let site: Site
     private lazy var coordinator: StoreOnboardingCoordinator = .init(navigationController: sourceNavigationController,
-                                                                     site: site)
+                                                                     site: site,
+                                                                     presentationControllerDelegate: presentationControllerDelegate)
+    private weak var presentationControllerDelegate: UIAdaptivePresentationControllerDelegate?
 
     init(viewModel: StoreOnboardingViewModel,
          navigationController: UINavigationController,
          site: Site,
+         presentationControllerDelegate: UIAdaptivePresentationControllerDelegate? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.sourceNavigationController = navigationController
         self.site = site
+        self.presentationControllerDelegate = presentationControllerDelegate
         super.init(rootView: StoreOnboardingView(viewModel: viewModel,
                                                  shareFeedbackAction: shareFeedbackAction))
         if #unavailable(iOS 16.0) {

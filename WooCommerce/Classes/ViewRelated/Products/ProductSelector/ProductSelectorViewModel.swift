@@ -228,6 +228,7 @@ final class ProductSelectorViewModel: ObservableObject {
         return ProductVariationSelectorViewModel(siteID: siteID,
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
+                                                 selectedProductVariations: [],
                                                  purchasableItemsOnly: purchasableItemsOnly,
                                                  supportsMultipleSelection: supportsMultipleSelection,
                                                  isClearSelectionEnabled: isClearSelectionEnabled,

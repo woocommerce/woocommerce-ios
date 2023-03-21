@@ -15,11 +15,7 @@ final class DashboardViewModel {
 
     @Published var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
 
-    var storeOnboardingViewModel: StoreOnboardingViewModel? = nil {
-        didSet {
-            setupObserverForShowOnboarding()
-        }
-    }
+    let storeOnboardingViewModel: StoreOnboardingViewModel
 
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 
@@ -34,7 +30,6 @@ final class DashboardViewModel {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
-    private let userDefaults: UserDefaults
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
     private var showOnboardingSubscription: AnyCancellable?
 
@@ -46,7 +41,7 @@ final class DashboardViewModel {
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
-        self.userDefaults = userDefaults
+        self.storeOnboardingViewModel = .init(isExpanded: false, stores: stores, defaults: userDefaults)
         setupObserverForShowOnboarding()
     }
 

@@ -398,6 +398,7 @@ private extension ShippingLabelFormViewController {
             address: address,
             email: email,
             phoneNumberRequired: isPhoneNumberRequired,
+            needsPhoneNumberValidation: viewModel.customsFormRequired,
             validationError: validationError,
             countries: viewModel.filteredCountries(for: type),
             completion: { [weak self] (newShippingLabelAddress) in

@@ -97,14 +97,16 @@ final class ShippingLabelAddressFormViewController: UIViewController {
          address: ShippingLabelAddress?,
          email: String?,
          phoneNumberRequired: Bool = false,
+         needsPhoneNumberValidation: Bool = false,
          validationError: ShippingLabelAddressValidationError?,
          countries: [Country],
-         completion: @escaping Completion ) {
+         completion: @escaping Completion) {
         viewModel = ShippingLabelAddressFormViewModel(siteID: siteID,
                                                       type: type,
                                                       address: address,
                                                       email: email,
                                                       phoneNumberRequired: phoneNumberRequired,
+                                                      needsPhoneNumberValidation: needsPhoneNumberValidation,
                                                       validationError: validationError,
                                                       countries: countries)
         onCompletion = completion

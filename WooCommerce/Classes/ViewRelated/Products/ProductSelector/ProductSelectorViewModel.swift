@@ -125,6 +125,14 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     @Published private var selectedProductVariationIDs: [Int64] = []
 
+    ///
+    ///
+    private var selectedProductVariations: [ProductVariation] = [] {
+        willSet(newValue) {
+            print("🍍 ProductSelectorVM.selectedProductVariations changed: \(newValue.map { $0.productVariationID })")
+        }
+    }
+
     var totalSelectedItemsCount: Int {
         selectedProductIDs.count + selectedProductVariationIDs.count
     }
@@ -142,6 +150,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
+         selectedProductVariations: [ProductVariation] = [],
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
@@ -161,6 +170,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onVariationSelected = onVariationSelected
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
+        self.selectedProductVariations = selectedProductVariations
         self.purchasableItemsOnly = purchasableItemsOnly
 
         configureSyncingCoordinator()
@@ -228,11 +238,15 @@ final class ProductSelectorViewModel: ObservableObject {
         return ProductVariationSelectorViewModel(siteID: siteID,
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
-                                                 selectedProductVariations: [],
+                                                 selectedProductVariations: [], // TODO: Not needed? We initialize it empty anyway
                                                  purchasableItemsOnly: purchasableItemsOnly,
                                                  supportsMultipleSelection: supportsMultipleSelection,
                                                  isClearSelectionEnabled: isClearSelectionEnabled,
-                                                 onVariationSelected: onVariationSelected)
+                                                 onVariationSelected: onVariationSelected,
+                                                 onMultipleSelectionCompleted: { [weak self] variations in
+            // Assign variations up from ProductVariationSelector
+            self?.updateSelectedVariations(productID: productID, selectedVariationIDs: selectedItems, selectedVariations: variations)
+        })
     }
 
     /// Clears the current search term and filters to display the full product list.
@@ -244,17 +258,29 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Updates selected variation list based on the new selected IDs
     ///
-    func updateSelectedVariations(productID: Int64, selectedVariationIDs: [Int64]) {
+    // TODO: We pass 3 parameters temporarily. Remove selectedVariationIDs
+    func updateSelectedVariations(productID: Int64, selectedVariationIDs: [Int64], selectedVariations: [ProductVariation] = []) {
         guard let variableProduct = products.first(where: { $0.productID == productID }),
               variableProduct.variations.isNotEmpty else {
             return
         }
+        // 1. Using IDs
         // remove items that exist in the initial list
         initialSelectedItems.removeAll { selectedVariationIDs.contains($0) }
         // remove all previous selected variations
         selectedProductVariationIDs.removeAll(where: { variableProduct.variations.contains($0) })
         // append new selected IDs
         selectedProductVariationIDs.append(contentsOf: selectedVariationIDs)
+
+        // 2. Using variations
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
+           ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection) {
+             let selectedProductVariationIDs = selectedVariations.map { $0.productVariationID }
+            // remove all previous selected variations
+            selectedProductVariations.removeAll(where: { $0.productVariationID == productID })
+            // append new selected IDs
+            selectedProductVariations.append(contentsOf: selectedVariations)
+        }
     }
 
     /// Select all variations for a given product

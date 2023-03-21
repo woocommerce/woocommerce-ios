@@ -72,8 +72,8 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     ///
     private(set) var selectedProductVariations: [ProductVariation] = [] {
-        didSet(updatedValues) {
-            print("🍍 selectedProductVariations changed: \(updatedValues)")
+        willSet(newValue) {
+            print("🍍 ProductVariationSelectorVM.selectedProductVariations changed: \(newValue.map { $0.productVariationID })")
         }
     }
 

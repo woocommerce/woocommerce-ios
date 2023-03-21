@@ -121,6 +121,9 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
         // Get the uuid before removing the password from storage
         let uuidFromLocalPassword = applicationPassword?.uuid
 
+        // Remove password from storage
+        storage.removeApplicationPassword()
+
         let uuidToBeDeleted = try await {
             if let uuidFromLocalPassword {
                 return uuidFromLocalPassword
@@ -129,9 +132,6 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
             }
         }()
         try await deleteApplicationPassword(uuidToBeDeleted)
-
-        // Remove password from storage
-        storage.removeApplicationPassword()
     }
 }
 

@@ -13,17 +13,23 @@ final class StoreOnboardingPaymentsSetupCoordinator: Coordinator {
 
     private let task: Task
     private let site: Site
+    private weak var presentationControllerDelegate: UIAdaptivePresentationControllerDelegate?
 
-    init(task: Task, site: Site, navigationController: UINavigationController) {
+    init(task: Task,
+         site: Site,
+         navigationController: UINavigationController,
+         presentationControllerDelegate: UIAdaptivePresentationControllerDelegate? = nil) {
         self.task = task
         self.site = site
         self.navigationController = navigationController
+        self.presentationControllerDelegate = presentationControllerDelegate
     }
 
     func start() {
         // Navigation controller for the payments setup flow.
         let modalNavigationController = WooNavigationController()
         showSetupView(in: modalNavigationController)
+        modalNavigationController.presentationController?.delegate = presentationControllerDelegate
         navigationController.present(modalNavigationController, animated: true)
     }
 }

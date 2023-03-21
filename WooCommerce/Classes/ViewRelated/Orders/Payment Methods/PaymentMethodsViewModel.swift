@@ -18,6 +18,8 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     @Published private(set) var showPayWithCardRow = false
 
+    @Published private(set) var showTapToPayRow = false
+
     /// Allows the onboarding flow to be presented before a card present payment when required
     ///
     private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
@@ -382,21 +384,39 @@ private extension PaymentMethodsViewModel {
     func updateCardPaymentVisibility() {
         guard cardPresentPaymentsConfiguration.isSupportedCountry else {
             showPayWithCardRow = false
+            showTapToPayRow = false
 
             return
         }
 
+        localMobileReaderSupported { [weak self] tapToPaySupported in
+            self?.orderIsEligibleForCardPresentPayment { [weak self] orderIsEligible in
+                self?.showPayWithCardRow = orderIsEligible
+                self?.showTapToPayRow = orderIsEligible && tapToPaySupported
+            }
+        }
+    }
+
+    private func localMobileReaderSupported(onCompletion: @escaping ((Bool) -> Void)) {
+        let action = CardPresentPaymentAction.checkDeviceSupport(siteID: siteID,
+                                                                 cardReaderType: .appleBuiltIn,
+                                                                 discoveryMethod: .localMobile,
+                                                                 onCompletion: onCompletion)
+        stores.dispatch(action)
+    }
+
+    private func orderIsEligibleForCardPresentPayment(onCompletion: @escaping (Bool) -> Void) {
         let action = OrderCardPresentPaymentEligibilityAction
             .orderIsEligibleForCardPresentPayment(orderID: orderID,
                                                   siteID: siteID,
-                                                  cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) { [weak self] result in
-            switch result {
-            case .success(let eligible):
-                self?.showPayWithCardRow = eligible
-            case .failure(_):
-                self?.showPayWithCardRow = false
+                                                  cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) { result in
+                switch result {
+                case .success(let eligibility):
+                    onCompletion(eligibility)
+                case .failure:
+                    onCompletion(false)
+                }
             }
-        }
 
         stores.dispatch(action)
     }

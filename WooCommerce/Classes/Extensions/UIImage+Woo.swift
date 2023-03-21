@@ -228,6 +228,10 @@ extension UIImage {
         UIImage.gridicon(.creditCard)
     }
 
+    static var tapToPayOnIPhoneIcon: UIImage {
+        UIImage(systemName: "wave.3.right.circle")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
+    }
+
     /// Customize Icon
     ///
     static var customizeImage: UIImage {

@@ -7,15 +7,21 @@ final class StoreOnboardingLaunchStoreCoordinator: Coordinator {
     let navigationController: UINavigationController
     private let site: Site
     private let isLaunched: Bool
+    private weak var presentationControllerDelegate: UIAdaptivePresentationControllerDelegate?
 
     /// - Parameters:
     ///   - site: The site for the launch store onboarding task.
     ///   - isLaunched: Whether the site has already been launched.
     ///   - navigationController: The navigation controller that presents the launch store flow.
-    init(site: Site, isLaunched: Bool, navigationController: UINavigationController) {
+    ///   - presentationControllerDelegate: Delegate used to listen when the view gets dismissed.
+    init(site: Site,
+         isLaunched: Bool,
+         navigationController: UINavigationController,
+         presentationControllerDelegate: UIAdaptivePresentationControllerDelegate? = nil) {
         self.site = site
         self.isLaunched = isLaunched
         self.navigationController = navigationController
+        self.presentationControllerDelegate = presentationControllerDelegate
     }
 
     func start() {
@@ -40,12 +46,14 @@ private extension StoreOnboardingLaunchStoreCoordinator {
             self?.showLaunchedView(siteURL: siteURL, in: modalNavigationController)
         })
         modalNavigationController.pushViewController(launchStoreController, animated: false)
+        modalNavigationController.presentationController?.delegate = presentationControllerDelegate
         navigationController.present(modalNavigationController, animated: true)
     }
 
     func presentLaunchedView(siteURL: URL, in modalNavigationController: UINavigationController) {
         let launchedStoreController = createLaunchedStoreController(siteURL: siteURL)
         modalNavigationController.pushViewController(launchedStoreController, animated: false)
+        modalNavigationController.presentationController?.delegate = presentationControllerDelegate
         navigationController.present(modalNavigationController, animated: true)
     }
 

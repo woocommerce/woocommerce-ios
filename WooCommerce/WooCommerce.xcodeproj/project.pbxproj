@@ -635,6 +635,7 @@
 		261AA30C2753119E009530FE /* PaymentMethodsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261AA30B2753119E009530FE /* PaymentMethodsViewModel.swift */; };
 		261AA30E275506DE009530FE /* PaymentMethodsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261AA30D275506DE009530FE /* PaymentMethodsViewModelTests.swift */; };
 		261B526E29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261B526D29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift */; };
+		261E91A029C961EE00A5C118 /* UpgradesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261E919F29C961EE00A5C118 /* UpgradesViewModel.swift */; };
 		261F1A7929C2AB2E001D9861 /* FreeTrialBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F1A7829C2AB2E001D9861 /* FreeTrialBannerViewModel.swift */; };
 		261F1A7C29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F1A7B29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift */; };
 		26281776278F0B0100C836D3 /* View+NoticesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26281775278F0B0100C836D3 /* View+NoticesModifier.swift */; };
@@ -2813,6 +2814,7 @@
 		261AA30B2753119E009530FE /* PaymentMethodsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsViewModel.swift; sourceTree = "<group>"; };
 		261AA30D275506DE009530FE /* PaymentMethodsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsViewModelTests.swift; sourceTree = "<group>"; };
 		261B526D29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportFormMetadataProvider.swift; sourceTree = "<group>"; };
+		261E919F29C961EE00A5C118 /* UpgradesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradesViewModel.swift; sourceTree = "<group>"; };
 		261F1A7829C2AB2E001D9861 /* FreeTrialBannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialBannerViewModel.swift; sourceTree = "<group>"; };
 		261F1A7B29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialBannerViewModelTests.swift; sourceTree = "<group>"; };
 		26281775278F0B0100C836D3 /* View+NoticesModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+NoticesModifier.swift"; sourceTree = "<group>"; };
@@ -5850,6 +5852,7 @@
 			isa = PBXGroup;
 			children = (
 				264957A229C520860095AA4C /* UpgradesView.swift */,
+				261E919F29C961EE00A5C118 /* UpgradesViewModel.swift */,
 			);
 			name = Upgrades;
 			path = Classes/ViewRelated/Upgrades;
@@ -11496,6 +11499,7 @@
 				CE16177A21B7192A00B82A47 /* AuthenticationConstants.swift in Sources */,
 				26A630ED253F3B5C00CBC3B1 /* RefundCreationUseCase.swift in Sources */,
 				DE971219290A9615000C0BD3 /* AddStoreFooterView.swift in Sources */,
+				261E91A029C961EE00A5C118 /* UpgradesViewModel.swift in Sources */,
 				4574745D24EA84D800CF49BC /* ProductTypeBottomSheetListSelectorCommand.swift in Sources */,
 				26578C4126277AFF00A15097 /* OrderAddOnsListViewController.swift in Sources */,
 				02F67FEE25805F9C00C3BAD2 /* ShippingLabelTrackingURLGenerator.swift in Sources */,

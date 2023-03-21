@@ -9,6 +9,10 @@ public final class MenuScreen: ScreenObject {
     private let reviewsButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["menu-reviews"]
     }
+    
+    private let paymentsButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["menu-payments"]
+    }
 
     private let viewStoreButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["menu-view-store"]
@@ -25,6 +29,7 @@ public final class MenuScreen: ScreenObject {
     /// Button to open the Reviews section
     ///
     private var reviewsButton: XCUIElement { reviewsButtonGetter(app) }
+    private var paymentsButton: XCUIElement { paymentsButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
@@ -40,6 +45,12 @@ public final class MenuScreen: ScreenObject {
     public func goToReviewsScreen() throws -> ReviewsScreen {
         reviewsButton.tap()
         return try ReviewsScreen()
+    }
+
+    @discardableResult
+    public func goToPaymentsScreen() throws -> PaymentsScreen {
+        paymentsButton.tap()
+        return try PaymentsScreen()
     }
 
     @discardableResult

@@ -2,7 +2,7 @@
 
 12.9
 -----
-
+- [*] Jetpack benefit banner and modal is now available on the dashboard screen after logging in with site credentials. [https://github.com/woocommerce/woocommerce-ios/pull/9232]
 
 12.8
 -----

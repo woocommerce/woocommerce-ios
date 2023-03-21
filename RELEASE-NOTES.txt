@@ -2,7 +2,7 @@
 
 12.9
 -----
-
+- [*] Fix: Prevent product variations not loading due to an encoding error for `permalink`, which was altered by a plugin. [https://github.com/woocommerce/woocommerce-ios/pull/9233]
 
 12.8
 -----

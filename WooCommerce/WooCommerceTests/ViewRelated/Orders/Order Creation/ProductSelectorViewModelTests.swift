@@ -24,6 +24,22 @@ final class ProductSelectorViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_ProductSelectorViewModel_supportsMultipleSelection_is_false_on_initialization() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Then
+        XCTAssertFalse(viewModel.supportsMultipleSelection)
+    }
+
+    func test_ProductSelectorViewModel_toggleAllVariationsOnSelection_is_true_on_initialization() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Then
+        XCTAssertTrue(viewModel.toggleAllVariationsOnSelection)
+    }
+
     func test_view_model_is_initialized_with_default_values() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
@@ -259,6 +275,19 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.productRows.count, 2)
+    }
+
+    func test_searchTerm_and_filters_are_clear_on_init() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(viewModel.searchTerm, "")
+        XCTAssertNil(viewModel.filters.stockStatus)
+        XCTAssertNil(viewModel.filters.productCategory)
+        XCTAssertNil(viewModel.filters.productType)
+        XCTAssertNil(viewModel.filters.productCategory)
+        XCTAssertEqual(viewModel.filters.numberOfActiveFilters, 0)
     }
 
     func test_view_model_fires_error_notice_when_product_sync_fails() {

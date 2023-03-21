@@ -16,6 +16,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isAddCouponToOrderEnabled: Bool
     private let isDashboardStoreOnboardingEnabled: Bool
     private let isFreeTrial: Bool
+    private let jetpackSetupWithApplicationPassword: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -30,7 +31,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          isProductMultiSelectionM1Enabled: Bool = false,
          isAddCouponToOrderEnabled: Bool = false,
          isDashboardStoreOnboardingEnabled: Bool = false,
-         isFreeTrial: Bool = false) {
+         isFreeTrial: Bool = false,
+         jetpackSetupWithApplicationPassword: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -45,6 +47,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isAddCouponToOrderEnabled = isAddCouponToOrderEnabled
         self.isDashboardStoreOnboardingEnabled = isDashboardStoreOnboardingEnabled
         self.isFreeTrial = isFreeTrial
+        self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -77,6 +80,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isDashboardStoreOnboardingEnabled
         case .freeTrial:
             return isFreeTrial
+        case .jetpackSetupWithApplicationPassword:
+            return jetpackSetupWithApplicationPassword
         default:
             return false
         }

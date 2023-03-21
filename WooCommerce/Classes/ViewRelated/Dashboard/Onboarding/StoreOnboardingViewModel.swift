@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
+import Combine
 
 /// View model for `StoreOnboardingView`.
 class StoreOnboardingViewModel: ObservableObject {
@@ -10,10 +11,16 @@ class StoreOnboardingViewModel: ObservableObject {
         case loading
         /// Shows a list of onboarding tasks
         case loaded(rows: [StoreOnboardingTaskViewModel])
+        /// When the request fails and there is no previously loaded local data
+        case failed
     }
 
     @Published private(set) var isRedacted: Bool = false
     @Published private(set) var taskViewModels: [StoreOnboardingTaskViewModel] = []
+
+    /// Used to determine whether the task list should be displayed in dashboard
+    ///
+    @Published private(set) var shouldShowInDashboard: Bool = false
 
     /// Set externally in the hosting controller to invalidate the SwiftUI `StoreOnboardingView`'s intrinsic content size as a workaround with UIKit.
     var onStateChange: (() -> Void)?
@@ -50,34 +57,50 @@ class StoreOnboardingViewModel: ObservableObject {
 
     private var state: State
 
-    private let placeholderTasks: [StoreOnboardingTaskViewModel] = Array(repeating: StoreOnboardingTaskViewModel.placeHolder(),
-                                                                         count: 3)
+    private let placeholderTasks: [StoreOnboardingTaskViewModel] = [.placeHolder(), .placeHolder(), .placeHolder()]
 
     private let defaults: UserDefaults
 
+    /// Emits when there are no tasks available for display after reload.
+    /// i.e. When (request failed && No previously loaded local data available)
+    ///
+    @Published private var noTasksAvailableForDisplay: Bool = false
+
     /// - Parameters:
-    ///   - isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
     ///   - siteID: siteID
+    ///   - isExpanded: Whether the onboarding view is in the expanded state. The expanded state is shown when the view is in fullscreen.
     ///   - stores: StoresManager
-    ///   - userDefaults: UserDefaults for storing when all onboarding tasks are completed
-    init(isExpanded: Bool,
-         siteID: Int64,
+    ///   - defaults: UserDefaults for storing when all onboarding tasks are completed
+    init(siteID: Int64,
+         isExpanded: Bool,
          stores: StoresManager = ServiceLocator.stores,
          defaults: UserDefaults = .standard) {
-        self.isExpanded = isExpanded
         self.siteID = siteID
+        self.isExpanded = isExpanded
         self.stores = stores
         self.state = .loading
         self.defaults = defaults
+
+        Publishers.CombineLatest($noTasksAvailableForDisplay,
+                                 defaults.publisher(for: \.completedAllStoreOnboardingTasks))
+        .map { !($0 || $1) }
+        .assign(to: &$shouldShowInDashboard)
     }
 
     func reloadTasks() async {
+        guard !defaults.completedAllStoreOnboardingTasks else {
+            return
+        }
+
         await update(state: .loading)
-        if let tasks = try? await loadTasks() {
+        if let tasks = try? await loadTasks(),
+           tasks.isNotEmpty {
             await checkIfAllTasksAreCompleted(tasks)
             await update(state: .loaded(rows: tasks))
-        } else {
+        } else if taskViewModels.isNotEmpty {
             await update(state: .loaded(rows: taskViewModels))
+        } else {
+            await update(state: .failed)
         }
     }
 }
@@ -106,7 +129,11 @@ private extension StoreOnboardingViewModel {
             isRedacted = true
         case .loaded(let items):
             isRedacted = false
-            self.taskViewModels = items
+            taskViewModels = items
+        case .failed:
+            isRedacted = false
+            taskViewModels = []
+            noTasksAvailableForDisplay = true
         }
         onStateChange?()
     }
@@ -133,3 +160,9 @@ private extension StoreOnboardingTaskViewModel {
                           type: .launchStore))
     }
 }
+
+extension UserDefaults {
+     @objc dynamic var completedAllStoreOnboardingTasks: Bool {
+         bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
+     }
+ }

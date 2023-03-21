@@ -4,14 +4,18 @@ import Yosemite
 
 final class StoreOnboardingViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
+    private var defaults: UserDefaults!
 
-    override func setUp() {
-        super.setUp()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        let uuid = UUID().uuidString
+        defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
     }
 
     override func tearDown() {
         stores = nil
+        defaults = nil
         super.tearDown()
     }
 
@@ -25,9 +29,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
-        let sut = StoreOnboardingViewModel(isExpanded: true,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -45,9 +50,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
-        let sut = StoreOnboardingViewModel(isExpanded: false,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -67,9 +73,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
-        let sut = StoreOnboardingViewModel(isExpanded: true,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -85,9 +92,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
-        let sut = StoreOnboardingViewModel(isExpanded: false,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -107,9 +115,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore)
         ]))
-        let sut = StoreOnboardingViewModel(isExpanded: false,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -131,9 +140,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
-        let sut = StoreOnboardingViewModel(isExpanded: true,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -149,9 +159,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
-        let sut = StoreOnboardingViewModel(isExpanded: false,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -161,9 +172,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_view_all_button_is_hidden_when_view_is_redacted_while_loading() async {
         // Given
-        let sut = StoreOnboardingViewModel(isExpanded: false,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
 
         stores.whenReceivingAction(ofType: StoreOnboardingTasksAction.self) { action in
             guard case let .loadOnboardingTasks(_, completion) = action else {
@@ -188,9 +200,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
-        let sut = StoreOnboardingViewModel(isExpanded: false,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -207,9 +220,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
-        let sut = StoreOnboardingViewModel(isExpanded: false,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -223,9 +237,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore)
         ]))
-        let sut = StoreOnboardingViewModel(isExpanded: false,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -237,9 +252,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_view_is_redacted_while_loading_tasks() async {
         // Given
-        let sut = StoreOnboardingViewModel(isExpanded: false,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
 
         stores.whenReceivingAction(ofType: StoreOnboardingTasksAction.self) { action in
             guard case let .loadOnboardingTasks(_, completion) = action else {
@@ -263,9 +279,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
-        let sut = StoreOnboardingViewModel(isExpanded: false,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -276,9 +293,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     func test_view_is_unredacted_after_failing_to_load_tasks() async {
         // Given
         mockLoadOnboardingTasks(result: .failure(MockError()))
-        let sut = StoreOnboardingViewModel(isExpanded: false,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -297,9 +315,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .payments)
         ]
         mockLoadOnboardingTasks(result: .success(initialTasks))
-        let sut = StoreOnboardingViewModel(isExpanded: true,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -308,6 +327,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // When
         mockLoadOnboardingTasks(result: .failure(MockError()))
+        await sut.reloadTasks()
 
         // Then
         XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), initialTasks)
@@ -324,9 +344,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         let tasks = initialTasks + [(.init(isComplete: true, type: .unsupported("")))]
         mockLoadOnboardingTasks(result: .success(tasks))
-        let sut = StoreOnboardingViewModel(isExpanded: true,
-                                           siteID: 0,
-                                           stores: stores)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
+                                           stores: stores,
+                                           defaults: defaults)
         // When
         await sut.reloadTasks()
 
@@ -334,12 +355,57 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), initialTasks)
     }
 
+    func test_it_does_not_send_network_request_when_completedAllStoreOnboardingTasks_is_true() async {
+        // Given
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+        // Then
+        XCTAssertTrue(sut.tasksForDisplay.isEmpty)
+
+        // When
+        mockLoadOnboardingTasks(result: .success(tasks))
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertTrue(sut.tasksForDisplay.isEmpty)
+    }
+
+    func test_it_sends_network_request_when_completedAllStoreOnboardingTasks_is_nil() async {
+        // Given
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
+                                           stores: stores,
+                                           defaults: defaults)
+        // Then
+        XCTAssertTrue(sut.tasksForDisplay.isEmpty)
+
+        // When
+        mockLoadOnboardingTasks(result: .success(tasks))
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertTrue(sut.tasksForDisplay.isNotEmpty)
+    }
+
     // MARK: completedAllStoreOnboardingTasks user defaults
 
-    func test_completedAllStoreOnboardingTasks_is_nil_when_there_are_pending_tasks() async throws {
+    func test_completedAllStoreOnboardingTasks_is_nil_when_there_are_pending_tasks() async {
         // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
@@ -347,8 +413,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .payments)
         ]
         mockLoadOnboardingTasks(result: .success(tasks))
-        let sut = StoreOnboardingViewModel(isExpanded: true,
-                                           siteID: 0,
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
                                            stores: stores,
                                            defaults: defaults)
         // When
@@ -358,10 +424,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
 
-    func test_completedAllStoreOnboardingTasks_is_true_when_there_are_no_pending_tasks() async throws {
+    func test_completedAllStoreOnboardingTasks_is_true_when_there_are_no_pending_tasks() async {
         // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: true, type: .addFirstProduct),
             .init(isComplete: true, type: .launchStore),
@@ -369,8 +433,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: true, type: .payments)
         ]
         mockLoadOnboardingTasks(result: .success(tasks))
-        let sut = StoreOnboardingViewModel(isExpanded: true,
-                                           siteID: 0,
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
                                            stores: stores,
                                            defaults: defaults)
         // When
@@ -380,13 +444,11 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? Bool))
     }
 
-    func test_completedAllStoreOnboardingTasks_is_not_changed_when_tasks_request_fails() async throws {
+    func test_completedAllStoreOnboardingTasks_is_not_changed_when_tasks_request_fails() async {
         // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         mockLoadOnboardingTasks(result: .failure(MockError()))
-        let sut = StoreOnboardingViewModel(isExpanded: true,
-                                           siteID: 0,
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
                                            stores: stores,
                                            defaults: defaults)
         // Then
@@ -399,13 +461,11 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
 
-    func test_completedAllStoreOnboardingTasks_is_not_changed_when_tasks_request_returns_empty_array() async throws {
+    func test_completedAllStoreOnboardingTasks_is_not_changed_when_tasks_request_returns_empty_array() async {
         // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         mockLoadOnboardingTasks(result: .success([]))
-        let sut = StoreOnboardingViewModel(isExpanded: true,
-                                           siteID: 0,
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
                                            stores: stores,
                                            defaults: defaults)
         // Then
@@ -416,6 +476,78 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+    }
+
+    // MARK: - `shouldShowInDashboard``
+
+    func test_shouldShowInDashboard_is_false_when_no_tasks_available_due_to_network_error() async {
+        // Given
+        mockLoadOnboardingTasks(result: .failure(MockError()))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.shouldShowInDashboard)
+    }
+
+    func test_shouldShowInDashboard_is_false_when_no_tasks_received_in_success_response() async {
+        // Given
+        mockLoadOnboardingTasks(result: .success([]))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.shouldShowInDashboard)
+    }
+
+    func test_shouldShowInDashboard_is_true_when_pending_tasks_received_in_response() async {
+        // Given
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: true, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains),
+            .init(isComplete: true, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(tasks))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertTrue(sut.shouldShowInDashboard)
+    }
+
+    func test_shouldShowInDashboard_is_false_when_all_tasks_are_complete() async {
+        // Given
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: true, type: .addFirstProduct),
+            .init(isComplete: true, type: .launchStore),
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: true, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(tasks))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.shouldShowInDashboard)
     }
 }
 

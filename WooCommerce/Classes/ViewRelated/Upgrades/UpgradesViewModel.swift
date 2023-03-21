@@ -37,7 +37,7 @@ final class UpgradesViewModel: ObservableObject {
 
     /// Current dependency state.
     ///
-    private var planState = PlanState.notLoaded
+    @Published private var planState = PlanState.notLoaded
 
     /// Current site id.
     ///
@@ -76,6 +76,7 @@ final class UpgradesViewModel: ObservableObject {
                 // TODO: Abort flow and inform user
             }
         }
+        stores.dispatch(action)
     }
 }
 
@@ -117,16 +118,17 @@ private extension UpgradesViewModel {
                 return "You are in the \(planDuration)-day free trial. The free trial will end in \(daysLeft) days. " +
                 "Upgrade to unlock new features and keep your store running."
             } else {
-                return "You free trial has ended and have limited access to all the features. Subscribe to Commerce now."
+                return "Your free trial has ended and have limited access to all the features. Subscribe to eCommerce now."
             }
         }
 
+        let planName = getPlanName(from: plan)
         guard let expireDate = plan.expiryDate else {
-            return "You are a \(plan.name) subscriber!"
+            return "You are a \(planName) subscriber!"
         }
 
         let expireText = DateFormatter.mediumLengthLocalizedDateFormatter.string(from: expireDate)
-        return "You are a \(plan.name) subscriber! You have access to all our features until \(expireText)."
+        return "You are a \(planName) subscriber! You have access to all our features until \(expireText)."
     }
 
     /// Only allow to upgrade the plan if we are on a free trial.

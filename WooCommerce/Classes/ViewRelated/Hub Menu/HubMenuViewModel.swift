@@ -123,6 +123,13 @@ final class HubMenuViewModel: ObservableObject {
         }
     }
 
+    /// Presents the `Upgrades` view from the view model's navigation controller property.
+    ///
+    func presentUpgrades() {
+        let upgradesViewController = UpgradesHostingController(siteID: siteID)
+        navigationController?.show(upgradesViewController, sender: self)
+    }
+
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
         productReviewFromNoteParcel = parcel
         showingReviewDetail = true

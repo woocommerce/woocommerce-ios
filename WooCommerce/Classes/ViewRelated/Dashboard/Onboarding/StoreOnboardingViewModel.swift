@@ -85,6 +85,10 @@ class StoreOnboardingViewModel: ObservableObject {
     }
 
     func reloadTasks(siteID: Int64) async {
+        guard !defaults.completedAllStoreOnboardingTasks else {
+            return
+        }
+
         await update(state: .loading)
         if let tasks = try? await loadTasks(siteID),
            tasks.isNotEmpty {

@@ -14,10 +14,14 @@ final class StoreOnboardingCoordinator: Coordinator {
     private var paymentsSetupCoordinator: StoreOnboardingPaymentsSetupCoordinator?
 
     private let site: Site
+    private weak var presentationControllerDelegate: UIAdaptivePresentationControllerDelegate?
 
-    init(navigationController: UINavigationController, site: Site) {
+    init(navigationController: UINavigationController,
+         site: Site,
+         presentationControllerDelegate: UIAdaptivePresentationControllerDelegate? = nil) {
         self.navigationController = navigationController
         self.site = site
+        self.presentationControllerDelegate = presentationControllerDelegate
     }
 
     /// Navigates to the fullscreen store onboarding view.
@@ -29,6 +33,7 @@ final class StoreOnboardingCoordinator: Coordinator {
                                                                             navigationController: onboardingNavigationController,
                                                                             site: site)
         onboardingNavigationController.pushViewController(onboardingViewController, animated: false)
+        onboardingNavigationController.presentationController?.delegate = presentationControllerDelegate
         navigationController.present(onboardingNavigationController, animated: true)
     }
 
@@ -66,28 +71,40 @@ private extension StoreOnboardingCoordinator {
 
     @MainActor
     func showCustomDomains() {
-        let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding, site: site, navigationController: navigationController)
+        let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding,
+                                                    site: site,
+                                                    navigationController: navigationController,
+                                                    presentationControllerDelegate: presentationControllerDelegate)
         self.domainSettingsCoordinator = coordinator
         coordinator.start()
     }
 
     @MainActor
     func launchStore(task: StoreOnboardingTask) {
-        let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site, isLaunched: task.isComplete, navigationController: navigationController)
+        let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site,
+                                                                isLaunched: task.isComplete,
+                                                                navigationController: navigationController,
+                                                                presentationControllerDelegate: presentationControllerDelegate)
         self.launchStoreCoordinator = coordinator
         coordinator.start()
     }
 
     @MainActor
     func showWCPaySetup() {
-        let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .wcPay, site: site, navigationController: navigationController)
+        let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .wcPay,
+                                                                  site: site,
+                                                                  navigationController: navigationController,
+                                                                  presentationControllerDelegate: presentationControllerDelegate)
         self.paymentsSetupCoordinator = coordinator
         coordinator.start()
     }
 
     @MainActor
     func showPaymentsSetup() {
-        let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .payments, site: site, navigationController: navigationController)
+        let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .payments,
+                                                                  site: site,
+                                                                  navigationController: navigationController,
+                                                                  presentationControllerDelegate: presentationControllerDelegate)
         self.paymentsSetupCoordinator = coordinator
         coordinator.start()
     }

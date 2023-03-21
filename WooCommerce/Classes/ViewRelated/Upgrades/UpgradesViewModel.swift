@@ -171,7 +171,7 @@ private extension UpgradesViewModel {
         static let trialEndedInfo = NSLocalizedString("Your free trial has ended and you have limited access to all the features. Subscribe to eCommerce now.",
                                                       comment: "Info details for an expired free trial")
         static func freeTrialPlanInfo(planDuration: Int, daysLeft: Int) -> String {
-            let format = NSLocalizedString("You are in the %1d-day free trial. The free trial will end in %2d days. " +
+            let format = NSLocalizedString("You are in the %1$d-day free trial. The free trial will end in %2$d days. " +
                                            "Upgrade to unlock new features and keep your store running.",
                                            comment: "Reads like: You are in the 14-day free trial. The free trial will end in 5 days. " +
                                            "Upgrade to unlock new features and keep your store running.")

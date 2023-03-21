@@ -1,3 +1,4 @@
+import Experiments
 import Foundation
 import Yosemite
 
@@ -6,11 +7,18 @@ import Yosemite
 final class JetpackBenefitsViewModel {
     /// Whether the view is showing benefits for a JetpackCP site or non-Jetpack site.
     let isJetpackCPSite: Bool
+
+    /// Whether Jetpack install is not supported natively
+    let shouldShowWebViewForJetpackInstall: Bool
+
     private let stores: StoresManager
 
-    init(isJetpackCPSite: Bool, stores: StoresManager = ServiceLocator.stores) {
+    init(isJetpackCPSite: Bool,
+         stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.isJetpackCPSite = isJetpackCPSite
         self.stores = stores
+        self.shouldShowWebViewForJetpackInstall = !isJetpackCPSite && featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword) == false
     }
 
     @MainActor

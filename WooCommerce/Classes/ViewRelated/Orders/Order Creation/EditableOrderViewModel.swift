@@ -390,10 +390,10 @@ final class EditableOrderViewModel: ObservableObject {
             // Updates selected products and selected variations for all items that have been removed directly from the Order
             // when using multi-selection, for example by tapping the `-` button within the Order view
             if item.productID != 0 {
-                selectedProducts.removeAll(where: { $0.productID == item.productID})
+                selectedProducts.removeAll(where: { $0.productID == item.productID })
             }
             if item.variationID != 0 {
-                selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID})
+                selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID })
             }
         }
 
@@ -775,7 +775,7 @@ private extension EditableOrderViewModel {
     ///   - variations: Selected product variations
     /// - Returns: [OrderSyncProductInput]
     ///
-    func productInputAdditionsToSync (products: [Product], variations: [ProductVariation]) -> [OrderSyncProductInput] {
+    func productInputAdditionsToSync(products: [Product], variations: [ProductVariation]) -> [OrderSyncProductInput] {
         var productInputs: [OrderSyncProductInput] = []
         var productVariationInputs: [OrderSyncProductInput] = []
 
@@ -804,7 +804,7 @@ private extension EditableOrderViewModel {
     ///   - variations: Represents a ProductVariation entity
     /// - Returns: [OrderSyncProductInput]
     ///
-    func productInputDeletionsToSync (products: [Product?], variations: [ProductVariation?]) -> [OrderSyncProductInput] {
+    func productInputDeletionsToSync(products: [Product?], variations: [ProductVariation?]) -> [OrderSyncProductInput] {
         var inputsToBeRemoved: [OrderSyncProductInput] = []
 
         let itemsInOrder = syncExistingSelectedProductsInOrder()

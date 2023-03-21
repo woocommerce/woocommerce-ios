@@ -4,24 +4,21 @@ import struct Yosemite.StoreOnboardingTask
 
 /// Hosting controller for `StoreOnboardingView`.
 ///
-final class StoreOnboardingViewHostingController: SelfSizingHostingController<StoreOnboardingView> {
+final class StoreOnboardingViewHostingController: SelfSizingHostingController<StoreOnboardingView>, UIAdaptivePresentationControllerDelegate {
     private let viewModel: StoreOnboardingViewModel
     private let sourceNavigationController: UINavigationController
     private let site: Site
-    private lazy var coordinator: StoreOnboardingCoordinator = .init(navigationController: sourceNavigationController,
-                                                                     site: site,
-                                                                     presentationControllerDelegate: presentationControllerDelegate)
-    private weak var presentationControllerDelegate: UIAdaptivePresentationControllerDelegate?
+    private weak var collapsedModePresentationControllerDelegate: UIAdaptivePresentationControllerDelegate?
 
     init(viewModel: StoreOnboardingViewModel,
          navigationController: UINavigationController,
          site: Site,
-         presentationControllerDelegate: UIAdaptivePresentationControllerDelegate? = nil,
+         collapsedModePresentationControllerDelegate: UIAdaptivePresentationControllerDelegate? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.sourceNavigationController = navigationController
         self.site = site
-        self.presentationControllerDelegate = presentationControllerDelegate
+        self.collapsedModePresentationControllerDelegate = collapsedModePresentationControllerDelegate
         super.init(rootView: StoreOnboardingView(viewModel: viewModel,
                                                  shareFeedbackAction: shareFeedbackAction))
         if #unavailable(iOS 16.0) {
@@ -35,13 +32,21 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
                   !task.isComplete else {
                 return
             }
-            self.coordinator.start(task: task)
+
+            let delegate = viewModel.isExpanded ? self : self.collapsedModePresentationControllerDelegate
+            let coordinator = StoreOnboardingCoordinator(navigationController: self.sourceNavigationController,
+                                                         site: site,
+                                                         presentationControllerDelegate: delegate)
+            coordinator.start(task: task)
         }
 
         if !viewModel.isExpanded {
             rootView.viewAllTapped = { [weak self] in
                 guard let self else { return }
-                self.coordinator.start()
+                let coordinator = StoreOnboardingCoordinator(navigationController: self.sourceNavigationController,
+                                                             site: site,
+                                                             presentationControllerDelegate: self.collapsedModePresentationControllerDelegate)
+                coordinator.start()
             }
         }
     }
@@ -83,6 +88,16 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
     @objc
     private func dismissView() {
         dismiss(animated: true)
+    }
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        if let onboardingNavigationController = presentationController.presentedViewController as? UINavigationController,
+           let vc = onboardingNavigationController.viewControllers.first,
+           StoreOnboardingCoordinator.isRelatedToOnboardingTask(vc) {
+            Task { @MainActor in
+                await reloadTasks()
+            }
+        }
     }
 }
 
@@ -144,7 +159,7 @@ struct StoreOnboardingView: View {
 
                 // View all button
                 viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
-                    .renderedIf(viewModel.shouldShowViewAllButton)
+                    //.renderedIf(viewModel.shouldShowViewAllButton)
 
                 Spacer()
                     .renderedIf(viewModel.isExpanded)

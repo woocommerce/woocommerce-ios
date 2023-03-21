@@ -56,6 +56,16 @@ final class StoreOnboardingCoordinator: Coordinator {
             assertionFailure("Unexpected onboarding task: \(task)")
         }
     }
+
+    /// Determines whether a VC is related to a onboarding task
+    /// This check is run to reload the onboarding task list screen upon dismissing the the `vc`
+    ///
+    /// - Parameter vc: view controller to check
+    /// - Returns: true is the view controller type is related to a onboarding task
+    static func isRelatedToOnboardingTask(_ vc: UIViewController) -> Bool {
+        vc is DomainSettingsHostingController || vc is StoreOnboardingLaunchStoreHostingController ||
+        vc is StoreOnboardingStoreLaunchedHostingController || vc is StoreOnboardingPaymentsSetupHostingController
+    }
 }
 
 private extension StoreOnboardingCoordinator {

@@ -664,7 +664,7 @@ private extension DashboardViewController {
         let hostingController = StoreOnboardingViewHostingController(viewModel: viewModel.storeOnboardingViewModel,
                                                                      navigationController: navigationController,
                                                                      site: site,
-                                                                     presentationControllerDelegate: self,
+                                                                     collapsedModePresentationControllerDelegate: self,
                                                                      shareFeedbackAction: { [weak self] in
             // Present survey
             let navigationController = SurveyCoordinatingController(survey: .storeSetup)
@@ -695,7 +695,7 @@ extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
 
         if let onboardingNavigationController = presentationController.presentedViewController as? UINavigationController,
            let vc = onboardingNavigationController.viewControllers.first,
-           isPresentedByStoreOnboardingTaskList(vc) {
+           vc is StoreOnboardingViewHostingController || StoreOnboardingCoordinator.isRelatedToOnboardingTask(vc) {
             Task { @MainActor in
                 await viewModel.reloadStoreOnboardingTasks()
             }
@@ -809,12 +809,6 @@ private extension DashboardViewController {
 // MARK: - Private Helpers
 //
 private extension DashboardViewController {
-    func isPresentedByStoreOnboardingTaskList(_ vc: UIViewController) -> Bool {
-        vc is StoreOnboardingViewHostingController ||
-        vc is DomainSettingsHostingController || vc is StoreOnboardingLaunchStoreHostingController ||
-        vc is StoreOnboardingStoreLaunchedHostingController || vc is StoreOnboardingPaymentsSetupHostingController
-    }
-
     @MainActor
     func reloadData(forced: Bool) async {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")

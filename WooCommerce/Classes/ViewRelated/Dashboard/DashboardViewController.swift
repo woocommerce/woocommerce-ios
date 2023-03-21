@@ -629,8 +629,8 @@ private extension DashboardViewController {
 
 private extension DashboardViewController {
     func observeOnboardingVisibility() {
-        Publishers.CombineLatest(viewModel.$showOnboarding,
-                                 ServiceLocator.stores.site.compactMap { $0 })
+        Publishers.CombineLatest(viewModel.$showOnboarding.removeDuplicates(),
+                                 ServiceLocator.stores.site.compactMap { $0 }.removeDuplicates())
         .sink { [weak self] showsOnboarding, site in
             guard let self else { return }
             if showsOnboarding {

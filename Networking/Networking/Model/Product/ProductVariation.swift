@@ -161,7 +161,10 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         let productVariationID = try container.decode(Int64.self, forKey: .productVariationID)
         let attributes = try container.decode([ProductVariationAttribute].self, forKey: .attributes)
         let image = try container.decodeIfPresent(ProductImage.self, forKey: .image)
-        let permalink : String = {
+        // Even though a plain install of WooCommerce Core provides string values,
+        // some plugins alter the field value from String to Int or Decimal.
+        // We handle this by returning an empty string if we can't decode it
+        let permalink: String = {
             do {
                 return try container.decode(String.self, forKey: .permalink)
             } catch {

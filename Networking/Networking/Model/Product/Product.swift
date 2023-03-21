@@ -294,7 +294,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let productID = try container.decode(Int64.self, forKey: .productID)
         let name = try container.decode(String.self, forKey: .name).strippedHTML
         let slug = try container.decode(String.self, forKey: .slug)
-        let permalink : String = {
+        // Even though a plain install of WooCommerce Core provides string values,
+        // some plugins alter the field value from String to Int or Decimal.
+        // We handle this by returning an empty string if we can't decode it
+        let permalink: String = {
             do {
                 return try container.decode(String.self, forKey: .permalink)
             } catch {

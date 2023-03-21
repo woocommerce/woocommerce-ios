@@ -188,7 +188,7 @@ final class EditableOrderViewModel: ObservableObject {
             onVariationSelected: { [weak self] variation, parentProduct in
                 guard let self = self else { return }
                 self.addProductVariationToOrder(variation, parent: parentProduct)
-            }, onMultipleSelectionCompleted: { [weak self] _ in
+            }, onMultipleSelectionCompleted: { [weak self] _, _ in
                 guard let self = self else { return }
                 self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
             })

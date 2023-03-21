@@ -62,8 +62,10 @@ final class CouponRestrictionsViewModel: ObservableObject {
         ProductSelectorViewModel(siteID: siteID,
                                  selectedItemIDs: excludedProductOrVariationIDs,
                                  supportsMultipleSelection: true,
-                                 onMultipleSelectionCompleted: { [weak self] ids in
-            self?.excludedProductOrVariationIDs = ids
+                                 onMultipleSelectionCompleted: { [weak self] products, variations in
+            let productIDs = products.map { $0.productID }
+            let variationIDs = variations.map { $0.productVariationID }
+            self?.excludedProductOrVariationIDs = productIDs + variationIDs
         })
     }()
 

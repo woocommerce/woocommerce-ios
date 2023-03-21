@@ -74,7 +74,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Closure to be invoked when multiple selection is completed
     ///
-    private let onMultipleSelectionCompleted: (([Int64]) -> Void)?
+    private let onMultipleSelectionCompleted: ((_ selectedProducts: [Product], _ selectedVariations: [ProductVariation]) -> Void)?
 
     // MARK: Sync & Storage properties
 
@@ -159,7 +159,7 @@ final class ProductSelectorViewModel: ObservableObject {
          toggleAllVariationsOnSelection: Bool = true,
          onProductSelected: ((Product) -> Void)? = nil,
          onVariationSelected: ((ProductVariation, Product) -> Void)? = nil,
-         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
+         onMultipleSelectionCompleted: (([Product], [ProductVariation]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -189,7 +189,7 @@ final class ProductSelectorViewModel: ObservableObject {
          supportsMultipleSelection: Bool = false,
          isClearSelectionEnabled: Bool = true,
          toggleAllVariationsOnSelection: Bool = true,
-         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
+         onMultipleSelectionCompleted: (([Product], [ProductVariation]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -309,8 +309,11 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Triggers completion closure when the multiple selection completes.
     ///
     func completeMultipleSelection() {
-        let allIDs = selectedProductIDs + selectedProductVariationIDs
-        onMultipleSelectionCompleted?(allIDs)
+        let selectedProducts = selectedProductIDs.map { id in
+            return productsResultsController.fetchedObjects.first { $0.productID == id }
+        }.compactMap { $0 }
+
+        onMultipleSelectionCompleted?(selectedProducts, selectedProductVariations)
     }
 
     /// Unselect all items.

@@ -8,10 +8,22 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
     init(siteID: Int64) {
         let viewModel = UpgradesViewModel(siteID: siteID)
         super.init(rootView: .init(viewModel: viewModel))
+
+        // Assign after of `init` for `self` to be properly initialized.
+        rootView.onUpgradeNowTapped = { [weak self] in
+            self?.showUpgradePlanWebView(siteID: siteID)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    /// Shows a web view for the merchant to update their site plan.
+    ///
+    private func showUpgradePlanWebView(siteID: Int64) {
+        let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .upgradesScreen)
+        present(upgradeController, animated: true)
     }
 }
 
@@ -23,6 +35,10 @@ struct UpgradesView: View {
     ///
     @StateObject var viewModel: UpgradesViewModel
 
+    /// Closure to be invoked when the "Upgrade Now" button is tapped.
+    ///
+    var onUpgradeNowTapped: (() -> ())?
+
     var body: some View {
         List {
             Section(content: {
@@ -30,7 +46,7 @@ struct UpgradesView: View {
                     .bodyStyle()
 
                 Button(Localization.upgradeNow) {
-                    print("Upgrade Now tapped")
+                    onUpgradeNowTapped?()
                 }
                 .linkStyle()
                 .renderedIf(viewModel.shouldShowUpgradeButton)

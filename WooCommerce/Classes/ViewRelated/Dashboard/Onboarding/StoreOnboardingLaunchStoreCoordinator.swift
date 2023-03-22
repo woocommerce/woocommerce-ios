@@ -7,17 +7,21 @@ final class StoreOnboardingLaunchStoreCoordinator: Coordinator {
     let navigationController: UINavigationController
     private let site: Site
     private let isLaunched: Bool
-
-    var onStoreLaunched: (() -> Void)? = nil
+    private let onStoreLaunched: (() -> Void)?
 
     /// - Parameters:
     ///   - site: The site for the launch store onboarding task.
     ///   - isLaunched: Whether the site has already been launched.
     ///   - navigationController: The navigation controller that presents the launch store flow.
-    init(site: Site, isLaunched: Bool, navigationController: UINavigationController) {
+    ///   - onStoreLaunched: Fired when the store is launched successfully
+    init(site: Site,
+         isLaunched: Bool,
+         navigationController: UINavigationController,
+         onStoreLaunched: (() -> Void)? = nil) {
         self.site = site
         self.isLaunched = isLaunched
         self.navigationController = navigationController
+        self.onStoreLaunched = onStoreLaunched
     }
 
     func start() {

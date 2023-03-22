@@ -81,10 +81,12 @@ private extension StoreOnboardingCoordinator {
 
     @MainActor
     func launchStore(task: StoreOnboardingTask) {
-        let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site, isLaunched: task.isComplete, navigationController: navigationController)
-        coordinator.onStoreLaunched = { [weak self] in
-            self?.onTaskCompleted()
-        }
+        let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site,
+                                                                isLaunched: task.isComplete,
+                                                                navigationController: navigationController,
+                                                                onStoreLaunched: { [weak self] in
+                                                                    self?.onTaskCompleted()
+                                                                })
         self.launchStoreCoordinator = coordinator
         coordinator.start()
     }

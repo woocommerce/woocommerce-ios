@@ -403,10 +403,11 @@ private extension PaymentMethodsViewModel {
             return
         }
 
-        localMobileReaderSupported { [weak self] tapToPaySupported in
+        localMobileReaderSupported { [weak self] tapToPaySupportedByDevice in
+            let tapToPaySupportedByStore = self?.cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn) ?? false
             self?.orderIsEligibleForCardPresentPayment { [weak self] orderIsEligible in
                 self?.showPayWithCardRow = orderIsEligible
-                self?.showTapToPayRow = orderIsEligible && tapToPaySupported
+                self?.showTapToPayRow = orderIsEligible && tapToPaySupportedByDevice && tapToPaySupportedByStore
             }
         }
     }

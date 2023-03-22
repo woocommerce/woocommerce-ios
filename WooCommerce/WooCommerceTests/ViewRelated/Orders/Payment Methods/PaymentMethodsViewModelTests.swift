@@ -451,6 +451,48 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showTapToPayRow)
     }
 
+    func test_ttp_row_is_shown_for_eligible_order_and_country_when_ttp_is_supported_by_device_and_store() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storage = MockStorageManager()
+        let configuration = CardPresentPaymentsConfiguration.init(country: "US")
+
+        simulate(cardPaymentEligibility: true, tapToPayAvailability: false, on: stores)
+
+        let dependencies = Dependencies(stores: stores, storage: storage, cardPresentPaymentsConfiguration: configuration)
+        let viewModel = PaymentMethodsViewModel(siteID: 1212,
+                                                orderID: 111,
+                                                formattedTotal: "$5.00",
+                                                flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
+                                                dependencies: dependencies)
+
+        // Then
+        XCTAssertTrue(viewModel.showPayWithCardRow)
+        XCTAssertTrue(viewModel.showTapToPayRow)
+    }
+
+    func test_ttp_row_is_not_shown_for_eligible_order_and_country_when_ttp_is_supported_by_device_but_not_store() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storage = MockStorageManager()
+        let configuration = CardPresentPaymentsConfiguration.init(country: "CA")
+
+        simulate(cardPaymentEligibility: true, tapToPayAvailability: false, on: stores)
+
+        let dependencies = Dependencies(stores: stores, storage: storage, cardPresentPaymentsConfiguration: configuration)
+        let viewModel = PaymentMethodsViewModel(siteID: 1212,
+                                                orderID: 111,
+                                                formattedTotal: "$5.00",
+                                                flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
+                                                dependencies: dependencies)
+
+        // Then
+        XCTAssertTrue(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showTapToPayRow)
+    }
+
     func test_card_rows_are_not_shown_when_there_is_an_error_checking_for_order_eligibility() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

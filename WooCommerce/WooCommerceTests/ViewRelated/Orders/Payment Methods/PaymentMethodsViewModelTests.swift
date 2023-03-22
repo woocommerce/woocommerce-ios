@@ -457,7 +457,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let storage = MockStorageManager()
         let configuration = CardPresentPaymentsConfiguration.init(country: "US")
 
-        simulate(cardPaymentEligibility: true, tapToPayAvailability: false, on: stores)
+        simulate(cardPaymentEligibility: true, tapToPayAvailability: true, on: stores)
 
         let dependencies = Dependencies(stores: stores, storage: storage, cardPresentPaymentsConfiguration: configuration)
         let viewModel = PaymentMethodsViewModel(siteID: 1212,

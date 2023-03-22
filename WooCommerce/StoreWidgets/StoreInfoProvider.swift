@@ -137,6 +137,10 @@ private extension StoreInfoProvider {
                       let password = keychain[WooConstants.siteCredentialPassword],
                       let siteAddress = UserDefaults.group?[.defaultSiteAddress] as? String {
                 return .wporg(username: username, password: password, siteAddress: siteAddress)
+            } else if let username = UserDefaults.group?[.defaultUsername] as? String,
+                      let password = keychain[WooConstants.applicationPassword],
+                      let siteAddress = UserDefaults.group?[.defaultSiteAddress] as? String {
+                return .applicationPassword(username: username, password: password, siteAddress: siteAddress)
             }
             return nil
         }()

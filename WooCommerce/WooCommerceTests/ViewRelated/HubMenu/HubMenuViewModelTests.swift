@@ -361,7 +361,7 @@ final class HubMenuViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isFreeTrial: true)
 
-        var sessionManager = SessionManager.testingInstance
+        let sessionManager = SessionManager.testingInstance
         sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: true)
         let stores = MockStoresManager(sessionManager: sessionManager)
 
@@ -378,7 +378,7 @@ final class HubMenuViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isFreeTrial: true)
 
-        var sessionManager = SessionManager.testingInstance
+        let sessionManager = SessionManager.testingInstance
         sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: false)
         let stores = MockStoresManager(sessionManager: sessionManager)
 

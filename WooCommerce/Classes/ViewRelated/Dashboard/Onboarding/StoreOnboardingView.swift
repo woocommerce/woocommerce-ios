@@ -125,7 +125,7 @@ struct StoreOnboardingView: View {
                                        isRedacted: viewModel.isRedacted)
 
                 // Task list
-                VStack(alignment: .leading, spacing: Layout.verticalSpacingBetweenTasks) {
+                VStack(alignment: .leading, spacing: 0) {
                     ForEach(viewModel.tasksForDisplay) { taskViewModel in
                         let isLastTask = taskViewModel == viewModel.tasksForDisplay.last
 
@@ -180,7 +180,6 @@ private extension StoreOnboardingView {
             static let collapsedMode: CGFloat = 16
             static let expandedMode: CGFloat = 40
         }
-        static let verticalSpacingBetweenTasks: CGFloat = 4
     }
 
     enum Localization {

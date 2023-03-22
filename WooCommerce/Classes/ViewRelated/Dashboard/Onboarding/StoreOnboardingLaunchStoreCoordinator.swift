@@ -8,6 +8,8 @@ final class StoreOnboardingLaunchStoreCoordinator: Coordinator {
     private let site: Site
     private let isLaunched: Bool
 
+    var onStoreLaunched: (() -> Void)? = nil
+
     /// - Parameters:
     ///   - site: The site for the launch store onboarding task.
     ///   - isLaunched: Whether the site has already been launched.
@@ -37,6 +39,7 @@ final class StoreOnboardingLaunchStoreCoordinator: Coordinator {
 private extension StoreOnboardingLaunchStoreCoordinator {
     func presentLaunchStoreView(siteURL: URL, in modalNavigationController: UINavigationController) {
         let launchStoreController = StoreOnboardingLaunchStoreHostingController(viewModel: .init(siteURL: siteURL, siteID: site.siteID) { [weak self] in
+            self?.onStoreLaunched?()
             self?.showLaunchedView(siteURL: siteURL, in: modalNavigationController)
         })
         modalNavigationController.pushViewController(launchStoreController, animated: false)

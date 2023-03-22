@@ -61,7 +61,8 @@ final class DashboardViewController: UIViewController {
     private lazy var innerStackView: UIStackView = {
         let view = UIStackView()
         let horizontalMargin = Constants.horizontalMargin
-        view.layoutMargins = UIEdgeInsets(top: 0, left: horizontalMargin, bottom: 0, right: horizontalMargin)
+        let verticalMargin = Constants.verticalMargin
+        view.layoutMargins = UIEdgeInsets(top: 0, left: horizontalMargin, bottom: verticalMargin, right: horizontalMargin)
         view.isLayoutMarginsRelativeArrangement = true
         return view
     }()
@@ -887,6 +888,7 @@ private extension DashboardViewController {
         static let animationDurationSeconds = CGFloat(0.3)
         static let bannerBottomMargin = CGFloat(8)
         static let horizontalMargin = CGFloat(16)
+        static let verticalMargin = CGFloat(16)
         static let storeNameTextColor: UIColor = .secondaryLabel
         static let backgroundColor: UIColor = .listForeground(modal: false)
         static let iPhoneCollapsedNavigationBarHeight = CGFloat(44)

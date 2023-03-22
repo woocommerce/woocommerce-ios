@@ -23,7 +23,7 @@ final class StoreOnboardingTaskListMapperTests: XCTestCase {
 
         let storeDetails = tasks[0]
         XCTAssertTrue(storeDetails.isComplete)
-        XCTAssertEqual(storeDetails.type, .unsupported("store_details"))
+        XCTAssertEqual(storeDetails.type, .storeDetails)
 
         let addProductTask = try XCTUnwrap(tasks[1])
         XCTAssertFalse(addProductTask.isComplete)

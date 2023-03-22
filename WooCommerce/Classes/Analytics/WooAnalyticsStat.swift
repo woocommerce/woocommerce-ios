@@ -847,6 +847,14 @@ public enum WooAnalyticsStat: String {
     case freeTrialUpgradeNowTapped = "free_trial_upgrade_now_tapped"
     case planUpgradeSuccess = "plan_upgrade_success"
     case planUpgradeAbandoned = "plan_upgrade_abandoned"
+
+    // MARK: Application password authorization in web view
+    case applicationPasswordAuthorizationButtonTapped = "application_password_authorization_button_tapped"
+    case applicationPasswordAuthorizationWebViewShown = "application_password_authorization_web_view_shown"
+    case applicationPasswordAuthorizationRejected = "application_password_authorization_rejected"
+    case applicationPasswordAuthorizationApproved = "application_password_authorization_approved"
+    case applicationPasswordAuthorizationURLNotAvailable = "application_password_authorization_url_not_available"
+    case applicationPasswordAuthorizationURLFetchFailed = "application_password_authorization_url_fetch_failed"
 }
 
 public extension WooAnalyticsStat {

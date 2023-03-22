@@ -59,21 +59,25 @@ private extension StoreOnboardingCoordinator {
         let coordinator = AddProductCoordinator(siteID: site.siteID, sourceView: nil, sourceNavigationController: navigationController)
         self.addProductCoordinator = coordinator
         coordinator.onProductCreated = { _ in
-            #warning("Analytics when a product is added from the onboarding task")
+            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskCompleted(task: .addFirstProduct))
         }
         coordinator.start()
     }
 
     @MainActor
     func showCustomDomains() {
-        let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding, site: site, navigationController: navigationController)
+        let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding, site: site, navigationController: navigationController) {
+            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskCompleted(task: .customizeDomains))
+        }
         self.domainSettingsCoordinator = coordinator
         coordinator.start()
     }
 
     @MainActor
     func launchStore(task: StoreOnboardingTask) {
-        let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site, isLaunched: task.isComplete, navigationController: navigationController)
+        let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site, isLaunched: task.isComplete, navigationController: navigationController) {
+            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskCompleted(task: .launchStore))
+        }
         self.launchStoreCoordinator = coordinator
         coordinator.start()
     }

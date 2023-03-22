@@ -18,17 +18,20 @@ final class DomainSettingsCoordinator: Coordinator {
     private let stores: StoresManager
     private let source: Source
     private let analytics: Analytics
+    private let onDomainPurchaseSuccess: (() -> Void)?
 
     init(source: Source,
          site: Site,
          navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         onDomainPurchaseSuccess: (() -> Void)? = nil) {
         self.source = source
         self.site = site
         self.navigationController = navigationController
         self.stores = stores
         self.analytics = analytics
+        self.onDomainPurchaseSuccess = onDomainPurchaseSuccess
     }
 
     @MainActor
@@ -93,6 +96,7 @@ private extension DomainSettingsCoordinator {
             self.showSuccessView(from: navigationController, domainName: domain.name)
             self.analytics.track(event: .DomainSettings.domainSettingsCustomDomainPurchaseSuccess(source: self.source,
                                                                                                   useDomainCredit: false))
+            self.onDomainPurchaseSuccess?()
         }
         let checkoutController = AuthenticatedWebViewController(viewModel: checkoutViewModel)
         navigationController.pushViewController(checkoutController, animated: true)
@@ -117,6 +121,7 @@ private extension DomainSettingsCoordinator {
                 self.showSuccessView(from: navigationController, domainName: domain.name)
                 self.analytics.track(event: .DomainSettings.domainSettingsCustomDomainPurchaseSuccess(source: self.source,
                                                                                                       useDomainCredit: true))
+                self.onDomainPurchaseSuccess?()
             } catch {
                 // TODO: 8558 - error handling
                 print("⛔️ Error redeeming domain credit with the selected domain \(domain): \(error)")

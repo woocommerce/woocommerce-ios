@@ -31,6 +31,7 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
                   !task.isComplete else {
                 return
             }
+            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskTapped(task: task.type))
             self.coordinator.start(task: task)
         }
 

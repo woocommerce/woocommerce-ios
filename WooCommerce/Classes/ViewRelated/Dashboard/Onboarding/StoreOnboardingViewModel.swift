@@ -149,6 +149,8 @@ private extension StoreOnboardingViewModel {
             return
         }
 
+        ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingCompleted())
+
         // This will be reset to `nil` when session resets
         defaults[.completedAllStoreOnboardingTasks] = true
     }

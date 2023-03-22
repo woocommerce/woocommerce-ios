@@ -72,6 +72,7 @@ struct UpgradesView: View {
                 .linkStyle()
             }
         }
+        .notice($viewModel.errorNotice, autoDismiss: false)
         .redacted(reason: viewModel.showLoadingIndicator ? .placeholder : [])
         .shimmering(active: viewModel.showLoadingIndicator)
         .background(Color(.listBackground))

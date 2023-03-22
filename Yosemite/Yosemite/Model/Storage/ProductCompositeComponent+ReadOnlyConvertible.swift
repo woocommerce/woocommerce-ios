@@ -11,9 +11,11 @@ extension Storage.ProductCompositeComponent: ReadOnlyConvertible {
     public func update(with compositeComponent: Yosemite.ProductCompositeComponent) {
         componentID = compositeComponent.componentID
         title = compositeComponent.title
+        componentDescription = compositeComponent.description
         imageURL = compositeComponent.imageURL
         optionType = compositeComponent.optionType.rawValue
         optionIDs = compositeComponent.optionIDs
+        defaultOptionID = compositeComponent.defaultOptionID
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -21,10 +23,10 @@ extension Storage.ProductCompositeComponent: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.ProductCompositeComponent {
         return ProductCompositeComponent(componentID: componentID ?? "",
                                          title: title ?? "",
-                                         description: "", // TODO-8955: Convert description
+                                         description: componentDescription ?? "",
                                          imageURL: imageURL ?? "",
                                          optionType: CompositeComponentOptionType(rawValue: optionType ?? "product_ids") ?? .productIDs,
                                          optionIDs: optionIDs ?? [],
-                                         defaultOptionID: "") // TODO-8955: Convert default option ID
+                                         defaultOptionID: defaultOptionID ?? "")
     }
 }

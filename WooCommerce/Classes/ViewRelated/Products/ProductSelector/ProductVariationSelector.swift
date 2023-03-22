@@ -106,7 +106,6 @@ struct ProductVariationSelector: View {
                 return
             }
             onMultipleSelections?(viewModel.selectedProductVariationIDs)
-            viewModel.clearSelection()
         }
         .notice($viewModel.notice, autoDismiss: false)
     }

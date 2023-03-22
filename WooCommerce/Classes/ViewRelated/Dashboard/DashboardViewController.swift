@@ -103,6 +103,10 @@ final class DashboardViewController: UIViewController {
 
     private var announcementView: UIView?
 
+    /// Holds a reference to the Free Trial Banner view, Needed to be able to hide it when needed.
+    ///
+    private var freeTrialBanner: UIView?
+
     /// Onboarding card.
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
@@ -123,7 +127,7 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
-    private let viewModel: DashboardViewModel = .init()
+    private let viewModel: DashboardViewModel
 
     private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
 
@@ -134,6 +138,7 @@ final class DashboardViewController: UIViewController {
 
     init(siteID: Int64) {
         self.siteID = siteID
+        self.viewModel = .init(siteID: siteID)
         super.init(nibName: nil, bundle: nil)
         configureTabBarItem()
     }
@@ -157,6 +162,7 @@ final class DashboardViewController: UIViewController {
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
+        observeFreeTrialBannerVisibility()
 
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
@@ -168,6 +174,9 @@ final class DashboardViewController: UIViewController {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
+
+        // Proactively update the free trial banner every time we navigate to the dashboard.
+        viewModel.syncFreeTrialBanner(siteID: siteID)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -340,6 +349,85 @@ private extension DashboardViewController {
         view.pinSubviewToSafeArea(stackView)
     }
 
+    /// Adds a Free Trial bar at the bottom of the screen.
+    ///
+    func addFreeTrialBar(contentText: String) {
+        let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) { [weak self] in
+            self?.showUpgradePlanWebView()
+        }
+        freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false
+
+        self.stackView.addSubview(freeTrialViewController.view)
+        NSLayoutConstraint.activate([
+            freeTrialViewController.view.leadingAnchor.constraint(equalTo: self.stackView.leadingAnchor),
+            freeTrialViewController.view.trailingAnchor.constraint(equalTo: self.stackView.trailingAnchor),
+            freeTrialViewController.view.bottomAnchor.constraint(equalTo: self.stackView.bottomAnchor)
+
+        ])
+
+        // Adjust the main container content inset to prevent it from being hidden by the `freeTrialViewController`
+        DispatchQueue.main.async {
+            self.containerView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: freeTrialViewController.view.frame.size.height, right: 0)
+        }
+
+        // Store a reference to it to manipulate it later in `removeFreeTrialBanner`.
+        freeTrialBanner = freeTrialViewController.view
+    }
+
+    /// Removes the Free Trial Banner when possible.
+    ///
+    func removeFreeTrialBanner() {
+        guard let banner = freeTrialBanner else {
+            return
+        }
+
+        banner.removeFromSuperview()
+        containerView.contentInset = .zero // Resets the content offset of main scroll view. Was adjusted previously in `addFreeTrialBar`
+    }
+
+    /// Shows a web view for the merchant to update their site plan.
+    ///
+    func showUpgradePlanWebView() {
+        ServiceLocator.analytics.track(event: .FreeTrial.freeTrialUpgradeNowTapped(source: .banner))
+
+        // These URLs should be stored elsewhere.
+        // I'll wait until I reuse them in the plans menu to decide what is the best place for them.
+        // https://github.com/woocommerce/woocommerce-ios/issues/9057
+        guard let upgradeURL = URL(string: "https://wordpress.com/plans/\(siteID)") else { return }
+        let exitTrigger = "my-plan/trial-upgraded" // When a site is upgraded from a trial, this URL path is invoked.
+
+        let viewModel = DefaultAuthenticatedWebViewModel(title: Localization.upgradeNow,
+                                                         initialURL: upgradeURL,
+                                                         urlToTriggerExit: exitTrigger) { [weak self] in
+            self?.exitUpgradeFreeTrialFlowAfterUpgrade()
+        }
+
+        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+        webViewController.navigationItem.leftBarButtonItem =  UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                                              target: self,
+                                                                              action: #selector(exitUpgradeFreeTrialFlow))
+        let navigationController = UINavigationController(rootViewController: webViewController)
+        navigationController.isModalInPresentation = true
+        present(navigationController, animated: true)
+    }
+
+    /// Dismisses the upgrade now web view after the merchants successfully updates their plan.
+    ///
+    func exitUpgradeFreeTrialFlowAfterUpgrade() {
+        removeFreeTrialBanner()
+        dismiss(animated: true)
+
+        ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeSuccess(source: .banner))
+    }
+
+    /// Dismisses the upgrade now web view when the user abandons the flow.
+    ///
+    @objc func exitUpgradeFreeTrialFlow() {
+        dismiss(animated: true)
+
+        ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeAbandoned(source: .banner))
+    }
+
     func configureDashboardUIContainer() {
         containerView.delegate = self
 
@@ -455,11 +543,17 @@ private extension DashboardViewController {
     }
 
     func observeAnnouncements() {
-        viewModel.$announcementViewModel.sink { [weak self] viewModel in
+        Publishers.CombineLatest(viewModel.$announcementViewModel,
+                                 viewModel.$showOnboarding)
+        .sink { [weak self] viewModel, showOnboarding in
             guard let self = self else { return }
             Task { @MainActor in
                 self.removeAnnouncement()
                 guard let viewModel = viewModel else {
+                    return
+                }
+
+                guard !showOnboarding else {
                     return
                 }
 
@@ -527,12 +621,23 @@ private extension DashboardViewController {
         storeNameLabel.isHidden = false
         storeNameLabel.text = siteName
     }
+
+    /// Shows or hides the free trial banner.
+    ///
+    func observeFreeTrialBannerVisibility() {
+        viewModel.$freeTrialBannerViewModel.sink { [weak self] viewModel in
+            self?.removeFreeTrialBanner()
+            if let viewModel {
+                self?.addFreeTrialBar(contentText: viewModel.message)
+            }
+        }.store(in: &subscriptions)
+    }
 }
 
 private extension DashboardViewController {
     func observeOnboardingVisibility() {
-        Publishers.CombineLatest(viewModel.$showOnboarding,
-                                 ServiceLocator.stores.site.compactMap { $0 })
+        Publishers.CombineLatest(viewModel.$showOnboarding.removeDuplicates(),
+                                 ServiceLocator.stores.site.compactMap { $0 }.removeDuplicates())
         .sink { [weak self] showsOnboarding, site in
             guard let self else { return }
             if showsOnboarding {
@@ -562,8 +667,7 @@ private extension DashboardViewController {
             removeOnboardingCard()
         }
 
-        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false,
-                                                                                      siteID: site.siteID),
+        let hostingController = StoreOnboardingViewHostingController(viewModel: viewModel.storeOnboardingViewModel,
                                                                      navigationController: navigationController,
                                                                      site: site,
                                                                      shareFeedbackAction: { [weak self] in
@@ -693,7 +797,7 @@ private extension DashboardViewController {
                 await self?.reloadDashboardUIStatsVersion(forced: true)
             }
             group.addTask { [weak self] in
-                await self?.onboardingHostingController?.reloadTasks()
+                await self?.viewModel.reloadStoreOnboardingTasks()
             }
         }
     }
@@ -776,6 +880,7 @@ private extension DashboardViewController {
             "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
         )
+        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title for the WebView when upgrading a free trial plan")
     }
 
     enum Constants {

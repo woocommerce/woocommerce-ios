@@ -141,6 +141,7 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Initializer for single selection
     ///
     init(siteID: Int64,
+         selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
@@ -148,7 +149,8 @@ final class ProductSelectorViewModel: ObservableObject {
          isClearSelectionEnabled: Bool = true,
          toggleAllVariationsOnSelection: Bool = true,
          onProductSelected: ((Product) -> Void)? = nil,
-         onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
+         onVariationSelected: ((ProductVariation, Product) -> Void)? = nil,
+         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -157,8 +159,8 @@ final class ProductSelectorViewModel: ObservableObject {
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.onProductSelected = onProductSelected
         self.onVariationSelected = onVariationSelected
-        self.onMultipleSelectionCompleted = nil
-        self.initialSelectedItems = []
+        self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
+        self.initialSelectedItems = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
 
         configureSyncingCoordinator()

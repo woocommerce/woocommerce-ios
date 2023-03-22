@@ -1,4 +1,5 @@
 import SwiftUI
+import enum Yosemite.SiteLaunchError
 
 /// Hosting controller that wraps the `StoreOnboardingLaunchStoreView`.
 final class StoreOnboardingLaunchStoreHostingController: UIHostingController<StoreOnboardingLaunchStoreView> {
@@ -46,13 +47,18 @@ struct StoreOnboardingLaunchStoreView: View {
                 // Launch store button.
                 Button(Localization.launchStoreButton) {
                     Task { @MainActor in
-                        try await viewModel.launchStore()
+                        await viewModel.launchStore()
                     }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLaunchingStore))
                 .padding(insets: Layout.buttonContainerPadding)
             }
             .background(Color(.systemBackground))
+        }
+        .alert(item: $viewModel.error) { error in
+            Alert(title: Text(error.title),
+                  message: Text(error.message),
+                  dismissButton: .default(Text(error.dismissTitle)))
         }
         .navigationTitle(Localization.title)
     }
@@ -76,8 +82,60 @@ private extension StoreOnboardingLaunchStoreView {
     }
 }
 
+extension SiteLaunchError: Identifiable {
+    public var id: String {
+        title
+    }
+}
+
+private extension SiteLaunchError {
+    var title: String {
+        switch self {
+        case .alreadyLaunched:
+            return NSLocalizedString(
+                "Could not launch your store",
+                comment: "Title of the alert when the site cannot be launched from store onboarding > launch store screen."
+            )
+        case .unexpected:
+            return NSLocalizedString(
+                "Unexpected error",
+                comment: "Title of the alert when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
+
+    var message: String {
+        switch self {
+        case .alreadyLaunched:
+            return NSLocalizedString(
+                "We found that the store has already launched.",
+                comment: "Message of the alert when the site cannot be launched from store onboarding > launch store screen."
+            )
+        case .unexpected:
+            return NSLocalizedString(
+                "Oops, some unexpected errors happened.",
+                comment: "Message of the alert when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
+
+    var dismissTitle: String {
+        switch self {
+        case .alreadyLaunched:
+            return NSLocalizedString("OK",
+                comment: "Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen."
+            )
+        case .unexpected:
+            return NSLocalizedString(
+                "Cancel",
+                comment: "Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
+}
+
 struct StoreOnboardingLaunchStoreView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingLaunchStoreView(viewModel: .init(siteURL: .init(string: "https://woocommerce.com")!))
+        StoreOnboardingLaunchStoreView(viewModel: .init(siteURL: .init(string: "https://woocommerce.com")!, siteID: 0, onLaunch: {}))
     }
 }

@@ -31,6 +31,8 @@ public final class WordPressSiteStore: DeauthenticatedStore {
         switch action {
         case let .fetchSiteInfo(siteURL, completion):
             fetchSiteInfo(for: siteURL, completion: completion)
+        case let .fetchApplicationPasswordAuthorizationURL(siteURL, completion):
+            fetchApplicationPasswordAuthorizationURL(for: siteURL, completion: completion)
         }
     }
 }
@@ -42,6 +44,22 @@ private extension WordPressSiteStore {
                 let wpSite = try await remote.fetchSiteInfo(for: siteURL)
                 let site = wpSite.asSite
                 completion(.success(site))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func fetchApplicationPasswordAuthorizationURL(for siteURL: String, completion: @escaping (Result<URL?, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let wpSite = try await remote.fetchSiteInfo(for: siteURL)
+                if let path = wpSite.applicationPasswordAuthorizationURL,
+                   let url = URL(string: path) {
+                    completion(.success(url))
+                } else {
+                    completion(.success(nil))
+                }
             } catch {
                 completion(.failure(error))
             }

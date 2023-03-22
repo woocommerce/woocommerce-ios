@@ -97,6 +97,7 @@ extension Storage.Product: ReadOnlyConvertible {
         let productShippingClassModel = productShippingClass?.toReadOnly()
         let addOnsArray: [StorageProductAddOn] = addOns?.toArray() ?? []
         let bundledItemsArray: [StorageProductBundleItem] = bundledItems?.toArray() ?? []
+        let compositeComponentsArray: [StorageProductCompositeComponent] = compositeComponents?.toArray() ?? []
 
         var quantity: Decimal?
         if let stockQuantity = stockQuantity {
@@ -172,7 +173,8 @@ extension Storage.Product: ReadOnlyConvertible {
                        addOns: addOnsArray.map { $0.toReadOnly() },
                        bundleStockStatus: productBundleStockStatus,
                        bundleStockQuantity: bundleStockQuantity as? Int64,
-                       bundledItems: bundledItemsArray.map { $0.toReadOnly() })
+                       bundledItems: bundledItemsArray.map { $0.toReadOnly() },
+                       compositeComponents: compositeComponentsArray.map { $0.toReadOnly() })
     }
 
     // MARK: - Private Helpers

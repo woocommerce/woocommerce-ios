@@ -93,6 +93,9 @@ final class ServiceLocator {
     ///
     private static var _generalAppSettings: GeneralAppSettingsStorage = GeneralAppSettingsStorage()
 
+    private static var _cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher =
+    CardPresentPaymentsOnboardingIPPUsersRefresher()
+
     // MARK: - Getters
 
     /// Provides the access point to the analytics.
@@ -229,6 +232,10 @@ final class ServiceLocator {
     /// - Returns: An instance of GeneralAppSetingsStorage
     static var generalAppSettings: GeneralAppSettingsStorage {
         _generalAppSettings
+    }
+
+    static var cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher {
+        _cardPresentPaymentsOnboardingIPPUsersRefresher
     }
 }
 

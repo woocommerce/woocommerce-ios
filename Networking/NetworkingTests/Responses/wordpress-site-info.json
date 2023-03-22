@@ -5,7 +5,7 @@
     "home": "https://test.com",
     "gmt_offset": "0",
     "timezone_string": "",
-    "authentication": [],
+    "authentication": {},
     "namespaces": [
         "oembed/1.0",
         "wp/v2",

@@ -3,7 +3,7 @@
             "id": 282,
             "name": "Book the Green Room",
             "slug": "book-the-green-room",
-            "permalink": "https://example.com/product/book-the-green-room/",
+            "permalink": 0,
             "date_created": "2019-02-19T17:33:31",
             "date_created_gmt": "2019-02-19T17:33:31",
             "date_modified": "2019-02-19T17:48:01",

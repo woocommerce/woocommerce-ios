@@ -82,8 +82,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .addCouponToOrder:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
         case .productBundles:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .freeTrial:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .manualErrorHandlingForSiteCredentialLogin:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

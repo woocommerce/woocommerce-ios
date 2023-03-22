@@ -532,6 +532,7 @@ extension ProductStore {
             handleProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
             handleProductAddOns(readOnlyProduct, storageProduct, storage)
             handleProductBundledItems(readOnlyProduct, storageProduct, storage)
+            handleProductCompositeComponents(readOnlyProduct, storageProduct, storage)
         }
     }
 
@@ -735,6 +736,23 @@ extension ProductStore {
             return storageBundledItem
         }
         storageProduct.addToBundledItems(NSOrderedSet(array: storageBundledItems))
+    }
+
+    /// Replaces the `storageProduct.compositeComponents` with the new `readOnlyProduct.compositeComponents`
+    ///
+    func handleProductCompositeComponents(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        // Remove all previous compositeComponents, they will be deleted as they have the `cascade` delete rule
+        if let compositeComponents = storageProduct.compositeComponents {
+            storageProduct.removeFromCompositeComponents(compositeComponents)
+        }
+
+        // Create and add `storageCompositeComponents` from `readOnlyProduct.compositeComponents`
+        let storageCompositeComponents = readOnlyProduct.compositeComponents.map { readOnlyCompositeComponent -> StorageProductCompositeComponent in
+            let storageCompositeComponent = storage.insertNewObject(ofType: StorageProductCompositeComponent.self)
+            storageCompositeComponent.update(with: readOnlyCompositeComponent)
+            return storageCompositeComponent
+        }
+        storageProduct.addToCompositeComponents(NSOrderedSet(array: storageCompositeComponents))
     }
 }
 

@@ -14,17 +14,20 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
     private var modalController: CardPresentPaymentsModalViewController?
     private var severalFoundController: SeveralReadersFoundViewController?
 
-    let rootViewController: UIViewController
+    /// There should not be a strong reference to the view controller, as generally the alerts presenter
+    /// will be owned (perhaps indirectly) by the view controller. Keeping a strong reference here makes
+    /// retain cycles likely/unavoidable.
+    private weak var rootViewController: UIViewController?
 
     init(rootViewController: UIViewController) {
         self.rootViewController = rootViewController
     }
 
     func present(viewModel: CardPresentPaymentsModalViewModel) {
-        setViewModelAndPresent(from: rootViewController, viewModel: viewModel)
+        setViewModelAndPresent(viewModel: viewModel)
     }
 
-    private func setViewModelAndPresent(from: UIViewController, viewModel: CardPresentPaymentsModalViewModel) {
+    private func setViewModelAndPresent(viewModel: CardPresentPaymentsModalViewModel) {
         guard modalController == nil else {
             modalController?.setViewModel(viewModel)
             return
@@ -37,7 +40,7 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
 
         modalController.prepareForCardReaderModalFlow()
 
-        dismissSeveralFoundAndPresent(animated: true, from: from, present: modalController)
+        dismissSeveralFoundAndPresent(animated: true, from: rootViewController, present: modalController)
     }
 
     /// Dismisses any view controller based on `CardPresentPaymentsModalViewController`,

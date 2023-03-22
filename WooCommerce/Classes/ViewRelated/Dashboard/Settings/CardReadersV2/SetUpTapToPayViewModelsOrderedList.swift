@@ -26,6 +26,7 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
         /// Initialize dependencies for viewmodels first, then viewmodels
         ///
         cardReaderConnectionAnalyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: configuration)
+        cardReaderConnectionAnalyticsTracker.setGatewayID(gatewayID: activePaymentGateway.gatewayID)
 
         /// Instantiate and add each viewmodel related to setting up Tap to Pay on iPhone to the
         /// array. Viewmodels will be evaluated for shouldShow starting at the top
@@ -33,7 +34,7 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
         /// priority, so viewmodels related to starting set up should come before viewmodels
         /// that expect set up to be completed, etc.
         ///
-        viewModelsAndViews.append(
+        viewModelsAndViews.append(contentsOf: [
             PaymentSettingsFlowViewModelAndView(
                 viewModel: SetUpTapToPayInformationViewModel(
                     siteID: siteID,
@@ -45,8 +46,28 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
                     connectionAnalyticsTracker: cardReaderConnectionAnalyticsTracker
                 ),
                 viewPresenter: SetUpTapToPayInformationViewController.self
-            )
-        )
+            ),
+
+            PaymentSettingsFlowViewModelAndView(
+                viewModel: SetUpTapToPayCompleteViewModel(
+                    didChangeShouldShow: { [weak self] state in
+                        self?.onDidChangeShouldShow(state)
+                    },
+                    connectionAnalyticsTracker: cardReaderConnectionAnalyticsTracker
+                ),
+                viewPresenter: SetUpTapToPayCompleteViewController.self
+            ),
+
+            PaymentSettingsFlowViewModelAndView(
+                viewModel: SetUpTapToPayTryPaymentPromptViewModel(
+                    didChangeShouldShow: { [weak self] state in
+                        self?.onDidChangeShouldShow(state)
+                    },
+                    connectionAnalyticsTracker: cardReaderConnectionAnalyticsTracker
+                ),
+                viewPresenter: SetUpTapToPayTryPaymentPromptViewController.self
+            ),
+        ])
 
         /// And then immediately get a priority view if possible
         reevaluatePriorityViewModelAndView()

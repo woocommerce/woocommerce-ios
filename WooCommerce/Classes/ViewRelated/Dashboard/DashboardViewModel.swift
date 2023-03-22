@@ -15,9 +15,13 @@ final class DashboardViewModel {
 
     @Published var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
 
+    let storeOnboardingViewModel: StoreOnboardingViewModel
+
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
+
+    @Published private(set) var freeTrialBannerViewModel: FreeTrialBannerViewModel? = nil
 
     /// Trigger to start the Add Product flow
     ///
@@ -28,7 +32,8 @@ final class DashboardViewModel {
     private let analytics: Analytics
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
 
-    init(stores: StoresManager = ServiceLocator.stores,
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard) {
@@ -36,9 +41,14 @@ final class DashboardViewModel {
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
-        userDefaults.publisher(for: \.completedAllStoreOnboardingTasks)
-            .map({ featureFlags.isFeatureFlagEnabled(.dashboardOnboarding) && ($0 == false) })
-            .assign(to: &$showOnboarding)
+        self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
+        setupObserverForShowOnboarding()
+    }
+
+    /// Reloads store onboarding tasks
+    ///
+    func reloadStoreOnboardingTasks() async {
+        await storeOnboardingViewModel.reloadTasks()
     }
 
     /// Syncs store stats for dashboard UI.
@@ -161,6 +171,34 @@ final class DashboardViewModel {
         }
     }
 
+    /// Fetches the current site plan.
+    ///
+    func syncFreeTrialBanner(siteID: Int64) {
+        // Only fetch free trial information when the local feature flag is enabled.
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.freeTrial) else {
+            return
+        }
+
+        // Only fetch free trial information is the site is a WPCom site.
+        guard stores.sessionManager.defaultSite?.isWordPressComStore == true else {
+            return DDLogInfo("⚠️ Site is not a WPCOM site.")
+        }
+
+        let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in
+            switch result {
+            case .success(let plan):
+                if plan.isFreeTrial {
+                    self?.freeTrialBannerViewModel = FreeTrialBannerViewModel(sitePlan: plan)
+                } else {
+                    self?.freeTrialBannerViewModel = nil
+                }
+            case .failure(let error):
+                DDLogError("⛔️ Error fetching the current site's plan information: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
     /// Checks if a store is eligible for products onboarding -returning error otherwise- and prepares the onboarding announcement if needed.
     ///
     private func syncProductsOnboarding(for siteID: Int64) async throws {
@@ -218,6 +256,17 @@ final class DashboardViewModel {
         viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
         announcementViewModel = viewModel
     }
+
+    /// Sets up observer to decide store onboarding task lists visibility
+    ///
+    private func setupObserverForShowOnboarding() {
+        guard featureFlagService.isFeatureFlagEnabled(.dashboardOnboarding) else {
+            return
+        }
+
+        storeOnboardingViewModel.$shouldShowInDashboard
+            .assign(to: &$showOnboarding)
+    }
 }
 
 // MARK: - Constants
@@ -228,9 +277,3 @@ private extension DashboardViewModel {
         static let dashboardScreenName = "my_store"
     }
 }
-
-private extension UserDefaults {
-     @objc dynamic var completedAllStoreOnboardingTasks: Bool {
-         bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
-     }
- }

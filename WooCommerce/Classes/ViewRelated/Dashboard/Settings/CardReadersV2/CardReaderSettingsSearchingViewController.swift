@@ -37,10 +37,11 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
     }
 
     private func configureView() {
-        rootView.connectClickAction = {
-            self.searchAndConnect()
+        rootView.connectClickAction = { [weak self] in
+            self?.searchAndConnect()
         }
-        rootView.showURL = { url in
+        rootView.showURL = { [weak self] url in
+            guard let self = self else { return }
             WebviewHelper.launch(url, with: self)
         }
         rootView.learnMoreUrl = viewModel.learnMoreURL
@@ -98,7 +99,7 @@ private extension CardReaderSettingsSearchingViewController {
 //
 private extension CardReaderSettingsSearchingViewController {
     func searchAndConnect() {
-        connectionController?.searchAndConnect(from: self) {_ in
+        connectionController?.searchAndConnect(from: self) { _ in
             /// No need for logic here. Once connected, the connected reader will publish
             /// through the `cardReaderAvailableSubscription`
         }

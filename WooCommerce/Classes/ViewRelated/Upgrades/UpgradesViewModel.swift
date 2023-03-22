@@ -59,8 +59,9 @@ final class UpgradesViewModel: ObservableObject {
 
     /// Loads the plan from network if needed.
     ///
-    func loadPlan() {
-        guard planState == .notLoaded else { return }
+    func loadPlan(forced: Bool = false) {
+        // Do not fetch the plan anymore if it is loaded, unless a force-load is requested.
+        guard planState == .notLoaded || forced == true else { return }
 
         planState = .loading
         let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in
@@ -178,7 +179,7 @@ private extension UpgradesViewModel {
     enum Localization {
         static let freeTrial = NSLocalizedString("Free Trial", comment: "Plan name for an active free trial")
         static let trialEnded = NSLocalizedString("Trial ended", comment: "Plan name for an expired free trial")
-        static let trialEndedInfo = NSLocalizedString("Your free trial has ended and you have limited access to all the features. Subscribe to eCommerce now.",
+        static let trialEndedInfo = NSLocalizedString("Your free trial has ended, and you have limited access to all the features. Subscribe to eCommerce now.",
                                                       comment: "Info details for an expired free trial")
         static let planEndedInfo = NSLocalizedString("Your subscription has ended and you have limited access to all the features.",
                                                      comment: "Info details for an expired free trial")

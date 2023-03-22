@@ -11,6 +11,7 @@ struct FooterNotice: View {
     var body: some View {
         HStack {
             Image(uiImage: .infoOutlineImage)
+                .accessibilityHidden(true)
             Text(infoText)
         }
         .footnoteStyle()

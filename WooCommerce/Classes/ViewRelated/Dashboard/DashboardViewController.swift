@@ -488,10 +488,8 @@ private extension DashboardViewController {
     }
 
     func observeShowWebViewSheet() {
-        Publishers.CombineLatest(viewModel.$showWebViewSheet,
-                                 viewModel.$showOnboarding)
-        .sink { [weak self] viewModel, showOnboarding in
-            guard let self = self, !showOnboarding else { return }
+        viewModel.$showWebViewSheet.sink { [weak self] viewModel in
+            guard let self = self else { return }
             guard let viewModel = viewModel else { return }
             self.openWebView(viewModel: viewModel)
         }
@@ -627,15 +625,8 @@ private extension DashboardViewController {
     /// Shows or hides the free trial banner.
     ///
     func observeFreeTrialBannerVisibility() {
-        Publishers.CombineLatest(viewModel.$freeTrialBannerViewModel,
-                                 viewModel.$showOnboarding)
-        .sink { [weak self] viewModel, showOnboarding in
+        viewModel.$freeTrialBannerViewModel.sink { [weak self] viewModel in
             self?.removeFreeTrialBanner()
-
-            guard !showOnboarding else {
-                return
-            }
-
             if let viewModel {
                 self?.addFreeTrialBar(contentText: viewModel.message)
             }
@@ -838,35 +829,28 @@ private extension DashboardViewController {
     }
 
     func observeBottomJetpackBenefitsBannerVisibilityUpdates() {
-        Publishers.CombineLatest3(ServiceLocator.stores.site,
-                                  $dashboardUI.eraseToAnyPublisher(),
-                                  viewModel.$showOnboarding)
-        .sink { [weak self] site, dashboardUI, showOnboarding in
-            guard let self = self else { return }
-
-            guard let contentView = dashboardUI?.view else {
-                return
-            }
-
-            guard !showOnboarding else {
-                return self.updateJetpackBenefitsBannerVisibility(isBannerVisible: false,
-                                                                  contentView: contentView)
-            }
-
-            // Checks if Jetpack banner can be visible from app settings.
-            let action = AppSettingsAction.loadJetpackBenefitsBannerVisibility(currentTime: Date(),
-                                                                               calendar: .current) { [weak self] isVisibleFromAppSettings in
+        Publishers.CombineLatest(ServiceLocator.stores.site, $dashboardUI.eraseToAnyPublisher())
+            .sink { [weak self] site, dashboardUI in
                 guard let self = self else { return }
 
-                let isJetpackCPSite = site?.isJetpackCPConnected == true
-                let jetpackSetupForApplicationPassword = site?.isNonJetpackSite == true &&
-                ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)
-                let shouldShowJetpackBenefitsBanner = (isJetpackCPSite || jetpackSetupForApplicationPassword) && isVisibleFromAppSettings
+                guard let contentView = dashboardUI?.view else {
+                    return
+                }
 
-                self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
-            }
-            ServiceLocator.stores.dispatch(action)
-        }.store(in: &subscriptions)
+                // Checks if Jetpack banner can be visible from app settings.
+                let action = AppSettingsAction.loadJetpackBenefitsBannerVisibility(currentTime: Date(),
+                                                                                   calendar: .current) { [weak self] isVisibleFromAppSettings in
+                    guard let self = self else { return }
+
+                    let isJetpackCPSite = site?.isJetpackCPConnected == true
+                    let jetpackSetupForApplicationPassword = site?.isNonJetpackSite == true &&
+                        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)
+                    let shouldShowJetpackBenefitsBanner = (isJetpackCPSite || jetpackSetupForApplicationPassword) && isVisibleFromAppSettings
+
+                    self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
+                }
+                ServiceLocator.stores.dispatch(action)
+            }.store(in: &subscriptions)
     }
 
     func observeNavigationBarHeightForHeaderVisibility() {

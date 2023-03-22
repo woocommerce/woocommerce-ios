@@ -65,6 +65,7 @@ struct StoreOnboardingTaskView: View {
                                 .subheadlineStyle()
                                 .multilineTextAlignment(.leading)
                                 .redacted(reason: isRedacted ? .placeholder : [])
+                                // This size modifier is necessary so that the subtitle is never truncated.
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         Spacer()

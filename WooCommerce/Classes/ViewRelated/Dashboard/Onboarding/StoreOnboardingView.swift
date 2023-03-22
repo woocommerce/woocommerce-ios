@@ -110,7 +110,7 @@ struct StoreOnboardingView: View {
     }
 
     private var content: some View {
-        VStack {
+        VStack(spacing: 0) {
             Color(uiColor: .listBackground)
                 .frame(height: Layout.VerticalSpacing.collapsedMode)
                 .renderedIf(!viewModel.isExpanded)

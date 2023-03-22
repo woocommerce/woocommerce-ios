@@ -11,7 +11,6 @@ final class UpgradesViewModel: ObservableObject {
         case notLoaded
         case loading
         case loaded(WPComSitePlan)
-        case error
     }
 
     /// Indicates if the view should should a redacted state.
@@ -66,7 +65,7 @@ final class UpgradesViewModel: ObservableObject {
     ///
     func loadPlan(forced: Bool = false) {
         // Do not fetch the plan anymore if it is loaded, unless a force-load is requested.
-        guard planState == .notLoaded || planState == .error || forced == true else { return }
+        guard planState == .notLoaded || forced == true else { return }
 
         planState = .loading
         let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in
@@ -189,8 +188,8 @@ private extension UpgradesViewModel {
     /// Creates an error notice that allows to retry fetching a plan.
     ///
     func createErrorNotice() -> Notice {
-        .init(title: Localization.fetchErrorNotice, feedbackType: .error, actionTitle: Localization.retry) {
-            self.loadPlan()
+        .init(title: Localization.fetchErrorNotice, feedbackType: .error, actionTitle: Localization.retry) { [weak self] in
+            self?.loadPlan()
         }
     }
 }

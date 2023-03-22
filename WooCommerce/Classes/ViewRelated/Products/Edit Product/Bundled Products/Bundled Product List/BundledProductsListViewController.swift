@@ -31,6 +31,10 @@ struct BundledProductsList: View {
     ///
     @ScaledMetric private var imageWidth = Layout.standardImageWidth
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
@@ -49,13 +53,16 @@ struct BundledProductsList: View {
 
                         TitleAndSubtitleRow(title: bundledProduct.title, subtitle: bundledProduct.stockStatus)
                     }
-                    Divider().padding(.leading)
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    Divider().padding(.leading, insets: safeAreaInsets)
                 }
             }
             .background(Color(.listForeground(modal: false)))
 
             FooterNotice(infoText: viewModel.infoNotice)
+                .padding(.horizontal, insets: safeAreaInsets)
         }
+        .ignoresSafeArea(edges: .horizontal)
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
         )

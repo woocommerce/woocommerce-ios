@@ -41,7 +41,12 @@ final class JetpackSetupViewModel: ObservableObject {
 
     @Published private(set) var currentSetupStep: JetpackInstallStep?
     @Published private(set) var currentConnectionStep: ConnectionStep?
-    @Published private(set) var jetpackConnectionURL: URL?
+    var jetpackConnectionURL: URL? {
+        guard let url = URL(string: String(format: Constants.jetpackInstallString, siteURL, Constants.mobileRedirectURL)) else {
+            return nil
+        }
+        return url
+    }
     @Published var shouldPresentWebView = false
     @Published var jetpackConnectionInterrupted = false
 
@@ -163,7 +168,7 @@ private extension JetpackSetupViewModel {
                 if plugin.status == .inactive {
                     self.activateJetpack()
                 } else {
-                    self.fetchJetpackConnectionURL()
+                    self.shouldPresentWebView = true
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving Jetpack: \(error)")
@@ -205,29 +210,11 @@ private extension JetpackSetupViewModel {
             switch result {
             case .success:
                 self.analytics.track(.loginJetpackSetupActivationSuccessful)
-                self.fetchJetpackConnectionURL()
+                self.currentSetupStep = .connection
+                self.shouldPresentWebView = true
             case .failure(let error):
                 self.analytics.track(.loginJetpackSetupActivationFailed, withError: error)
                 DDLogError("⛔️ Error activating Jetpack: \(error)")
-                self.setupError = error
-                self.setupFailed = true
-            }
-        }
-        stores.dispatch(action)
-    }
-
-    func fetchJetpackConnectionURL() {
-        currentSetupStep = .connection
-        let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let url):
-                self.analytics.track(.loginJetpackSetupFetchJetpackConnectionURLSuccessful)
-                self.jetpackConnectionURL = url
-                self.shouldPresentWebView = true
-            case .failure(let error):
-                self.analytics.track(.loginJetpackSetupFetchJetpackConnectionURLFailed, withError: error)
-                DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
                 self.setupError = error
                 self.setupFailed = true
             }
@@ -388,5 +375,7 @@ extension JetpackSetupViewModel {
         static let errorCodeNoWPComUser = 99
         static let errorUserInfoReason = "reason"
         static let errorUserInfoNoWPComUser = "No connected WP.com user found"
+        static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
+        static let mobileRedirectURL = "woocommerce://jetpack-connected"
     }
 }

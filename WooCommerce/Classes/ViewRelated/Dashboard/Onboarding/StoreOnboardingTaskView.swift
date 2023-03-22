@@ -64,6 +64,7 @@ struct StoreOnboardingTaskView: View {
                                 .subheadlineStyle()
                                 .multilineTextAlignment(.leading)
                                 .redacted(reason: isRedacted ? .placeholder : [])
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         Spacer()
                         // Chevron icon

@@ -2,9 +2,6 @@ import UIKit
 import Yosemite
 import enum Alamofire.AFError
 import WordPressAuthenticator
-import struct Networking.CookieNonceAuthenticatorConfiguration
-import class Networking.WordPressOrgNetwork
-import enum Yosemite.Credentials
 
 /// Coordinates the Jetpack setup flow in the authenticated state.
 ///
@@ -51,7 +48,6 @@ final class JetpackSetupCoordinator {
     }
 
     func showBenefitModal() {
-        prepareCookieAuthenticationIfNeeded()
         let benefitsController = JetpackBenefitsHostingController(isJetpackCPSite: site.isJetpackCPConnected)
         benefitsController.setActions (installAction: { [weak self] result in
             guard let self else { return }
@@ -217,26 +213,6 @@ private extension JetpackSetupCoordinator {
             self.rootViewController.topmostPresentedViewController.present(navigationController, animated: true)
         })
         loginNavigationController = nil
-    }
-
-    func prepareCookieAuthenticationIfNeeded() {
-        guard let loginURL = URL(string: site.loginURL),
-              let adminURL = URL(string: site.adminURL) else {
-            DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(site.url)")
-            return
-        }
-        if case let .wporg(username, password, _) = stores.sessionManager.defaultCredentials {
-            // Prepares the authenticator with username and password
-            let config = CookieNonceAuthenticatorConfiguration(username: username,
-                                                               password: password,
-                                                               loginURL: loginURL,
-                                                               adminURL: adminURL)
-            let network = WordPressOrgNetwork(configuration: config)
-            let authenticationAction = JetpackConnectionAction.authenticate(siteURL: site.url, network: network)
-            stores.dispatch(authenticationAction)
-        } else {
-            DDLogWarn("⚠️ Unsupported authentication state for cookie authentication")
-        }
     }
 }
 

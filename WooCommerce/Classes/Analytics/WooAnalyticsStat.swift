@@ -260,6 +260,7 @@ public enum WooAnalyticsStat: String {
     case cardReaderConnectionSuccess = "card_reader_connection_success"
     case cardReaderDisconnectTapped = "card_reader_disconnect_tapped"
     case manageCardReadersBuiltInReaderAutoDisconnect = "manage_card_readers_automatic_disconnect_built_in_reader"
+    case cardReaderAutomaticDisconnect = "card_reader_automatic_disconnect"
 
     // MARK: Card Reader Software Update Events
     //
@@ -547,6 +548,7 @@ public enum WooAnalyticsStat: String {
     case productInventorySettingsSKUScanned = "product_inventory_settings_sku_scanned"
     case productDetailPreviewTapped = "product_detail_preview_tapped"
     case productDetailPreviewFailed = "product_detail_preview_failed"
+    case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"
 
     // MARK: Edit Product Variation Events
     //
@@ -823,6 +825,9 @@ public enum WooAnalyticsStat: String {
     // MARK: Spotlight
     case spotlightActivityOpened = "spotlight_activity_opened"
 
+    // MARK: App Intents
+    case appIntentShortcutOpened = "shortcut_opened"
+
     // MARK: Login Jetpack Connection
     case loginJetpackConnectionErrorShown = "login_jetpack_connection_error_shown"
     case loginJetpackConnectButtonTapped = "login_jetpack_connect_button_tapped"
@@ -837,6 +842,11 @@ public enum WooAnalyticsStat: String {
     // MARK: Application password Events
     case applicationPasswordsNewPasswordCreated = "application_passwords_new_password_created"
     case applicationPasswordsGenerationFailed = "application_passwords_generation_failed"
+
+    // MARK: Free Trial
+    case freeTrialUpgradeNowTapped = "free_trial_upgrade_now_tapped"
+    case planUpgradeSuccess = "plan_upgrade_success"
+    case planUpgradeAbandoned = "plan_upgrade_abandoned"
 }
 
 public extension WooAnalyticsStat {

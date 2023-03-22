@@ -27,7 +27,7 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
             icon = .domainsImage
             title = Localication.CustomizeDomains.title
             subtitle = Localication.CustomizeDomains.subtitle
-        case .payments:
+        case .payments, .woocommercePayments:
             icon = .currencyImage
             title = Localication.Payments.title
             subtitle = Localication.Payments.subtitle

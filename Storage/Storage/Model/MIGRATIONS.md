@@ -2,6 +2,18 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 82 (Release 12.9.0.0)
+- @rachelmcr 2023-03-20
+    - Added `ProductCompositeComponent` entity.
+    - Added `compositeComponents` to-many relationship from `Product` to `ProductCompositeComponent`.
+
+## Model 81 (Release 12.8.0.0)
+- @rachelmcr 2023-03-13
+    - Added `ProductBundleItem` entity.
+    - Added `bundledItems` attribute to `Product` entity.
+    - Added `bundleStockQuantity` attribute to `Product` entity.
+    - Added `bundleStockStatus` attribute to `Product` entity.
+
 ## Model 80 (Release 11.7.0.0)
 - @rachelmcr 2022-12-15
     - Added `SiteSummaryStats` entity.

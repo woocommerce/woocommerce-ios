@@ -42,18 +42,6 @@ class TabbedViewController: UIViewController {
         return stackView
     }()
 
-    private weak var child: UIViewController? {
-        didSet {
-            oldValue?.remove()
-
-            if let child = child, child.parent != self {
-                addChild(child)
-                stackView.addArrangedSubview(child.view)
-                child.didMove(toParent: self)
-            }
-        }
-    }
-
     init(items: [TabbedItem], tabSizingStyle: FilterTabBar.TabSizingStyle, onDismiss: (() -> Void)? = nil) {
         self.items = items
         self.onDismiss = onDismiss
@@ -81,17 +69,16 @@ class TabbedViewController: UIViewController {
         view.addSubview(stackView)
         view.pinSubviewToAllEdges(stackView)
 
+        configureChildViewControllers()
         setInitialChild()
     }
 
     private func setInitialChild() {
-        let initialItem: TabbedItem = items[selection]
-        child = initialItem.viewController
+        updateVisibleChildViewController(at: selection)
     }
 
     @objc func changedItem(sender: FilterTabBar) {
-        let item = items[sender.selectedIndex]
-        child = item.viewController
+        updateVisibleChildViewController(at: sender.selectedIndex)
         selection = sender.selectedIndex
     }
 }
@@ -103,5 +90,23 @@ private extension TabbedViewController {
         filterTabBar.selectedTitleColor = .primary
         filterTabBar.deselectedTabColor = .textSubtle
         filterTabBar.dividerColor = .systemColor(.separator)
+    }
+
+    func configureChildViewControllers() {
+        items.map { $0.viewController }.forEach { viewController in
+            addChild(viewController)
+            stackView.addArrangedSubview(viewController.view)
+            viewController.didMove(toParent: self)
+            viewController.view.isHidden = true
+        }
+    }
+}
+
+private extension TabbedViewController {
+    func updateVisibleChildViewController(at selectedTabIndex: Int) {
+        items.map { $0.viewController }.forEach { viewController in
+            viewController.view.isHidden = true
+        }
+        items[safe: selectedTabIndex]?.viewController.view.isHidden = false
     }
 }

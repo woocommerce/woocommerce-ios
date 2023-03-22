@@ -614,6 +614,43 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
+    func test_loadProductMultiSelectionFeatureSwitchState_returns_isEnabled_false_on_new_generalAppSettings() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadProductMultiSelectionFeatureSwitchState(onCompletion: { actionResult in
+                promise(actionResult)
+            })
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_setProductMultiSelectionFeatureSwitchState_when_switch_state_isEnabled_then_returns_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let updateAction = AppSettingsAction.setProductMultiSelectionFeatureSwitchState(isEnabled: true) { _ in }
+        subject?.onAction(updateAction)
+
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadProductMultiSelectionFeatureSwitchState(onCompletion: { actionResult in
+                promise(actionResult)
+            })
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertTrue(isEnabled)
+    }
+
     // MARK: - General Store Settings
 
     func test_saving_isTelemetryAvailable_works_correctly() throws {
@@ -1024,6 +1061,60 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(isEnabled)
     }
 
+    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_nothing_is_saved_returns_false() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.loadSiteHasAtLeastOneIPPTransactionFinished(siteID: 1) { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_for_a_different_site_returns_false() throws {
+        // Given
+        let siteIDA: Int64 = 1
+        let siteIDB: Int64 = 2
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.markSiteHasAtLeastOneIPPTransactionFinished(siteID: siteIDA)
+        subject?.onAction(updateAction)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteIDB) { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_for_that_site_returns_true() throws {
+        // Given
+        let siteID: Int64 = 1
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.markSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID)
+        subject?.onAction(updateAction)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID) { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result)
+    }
 }
 
 // MARK: - Utils
@@ -1044,8 +1135,10 @@ private extension AppSettingsStoreTests {
             isCouponManagementSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
             isTapToPayOnIPhoneSwitchEnabled: false,
+            isProductMultiSelectionSwitchEnabled: false,
             knownCardReaders: [],
-            featureAnnouncementCampaignSettings: [:]
+            featureAnnouncementCampaignSettings: [:],
+            sitesWithAtLeastOneIPPTransactionFinished: []
         )
         return (settings, feedback)
     }
@@ -1059,8 +1152,10 @@ private extension AppSettingsStoreTests {
             isCouponManagementSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
             isTapToPayOnIPhoneSwitchEnabled: false,
+            isProductMultiSelectionSwitchEnabled: false,
             knownCardReaders: [],
-            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings
+            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
+            sitesWithAtLeastOneIPPTransactionFinished: []
         )
         return settings
     }

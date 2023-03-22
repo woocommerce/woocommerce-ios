@@ -71,6 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
+        listenToApplicationPasswordGenerationFailureNotification()
 
         // Since we are using Injection for refreshing the content of the app in debug mode,
         // we are going to enable Inject.animation that will be used when
@@ -83,6 +84,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // used as an exposure event for an experiment.
         // For example, `application_installed` could be the exposure event for logged-out experiments.
         checkForUpgrades()
+
+        // Cache onboarding state to speed IPP process
+        refreshCardPresentPaymentsOnboardingIfNeeded()
 
         return true
     }
@@ -168,6 +172,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+
+        // Cache onboarding state to speed IPP process
+        refreshCardPresentPaymentsOnboardingIfNeeded()
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -400,6 +407,10 @@ private extension AppDelegate {
             }
     }
 
+    func refreshCardPresentPaymentsOnboardingIfNeeded() {
+        ServiceLocator.cardPresentPaymentsOnboardingIPPUsersRefresher.refreshIPPUsersOnboardingState()
+    }
+
     /// Tracks if the application was opened via a widget tap.
     ///
     func trackWidgetTappedIfNeeded(userActivity: NSUserActivity) {
@@ -448,6 +459,16 @@ extension AppDelegate {
         }
 
         ServiceLocator.stores.synchronizeEntities(onCompletion: nil)
+    }
+
+    /// Deauthenticates the user upon application password generation failure.
+    ///
+    private func listenToApplicationPasswordGenerationFailureNotification() {
+        guard ServiceLocator.stores.isAuthenticatedWithoutWPCom else {
+            return
+        }
+
+        ServiceLocator.stores.listenToApplicationPasswordGenerationFailureNotification()
     }
 
     /// Runs whenever the Authentication Flow is completed successfully.

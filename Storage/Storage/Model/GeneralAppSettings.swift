@@ -40,6 +40,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var isTapToPayOnIPhoneSwitchEnabled: Bool
 
+    /// The state for the Product Multi-Selection feature switch.
+    ///
+    public var isProductMultiSelectionSwitchEnabled: Bool
+
     /// A list (possibly empty) of known card reader IDs - i.e. IDs of card readers that should be reconnected to automatically
     /// e.g. ["CHB204909005931"]
     ///
@@ -56,6 +60,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     /// 
     public var featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]
 
+    /// Whether the user finished an IPP transaction for the given site
+    ///
+    public var sitesWithAtLeastOneIPPTransactionFinished: Set<Int64>
+
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
@@ -63,10 +71,12 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 isCouponManagementSwitchEnabled: Bool,
                 isInAppPurchasesSwitchEnabled: Bool,
                 isTapToPayOnIPhoneSwitchEnabled: Bool,
+                isProductMultiSelectionSwitchEnabled: Bool,
                 knownCardReaders: [String],
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                 lastJetpackBenefitsBannerDismissedTime: Date? = nil,
-                featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]) {
+                featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings],
+                sitesWithAtLeastOneIPPTransactionFinished: Set<Int64>) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
@@ -78,6 +88,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.featureAnnouncementCampaignSettings = featureAnnouncementCampaignSettings
         self.isInAppPurchasesSwitchEnabled = isInAppPurchasesSwitchEnabled
         self.isTapToPayOnIPhoneSwitchEnabled = isTapToPayOnIPhoneSwitchEnabled
+        self.sitesWithAtLeastOneIPPTransactionFinished = sitesWithAtLeastOneIPPTransactionFinished
+        self.isProductMultiSelectionSwitchEnabled = isProductMultiSelectionSwitchEnabled
     }
 
     public static var `default`: Self {
@@ -88,9 +100,11 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
               isCouponManagementSwitchEnabled: false,
               isInAppPurchasesSwitchEnabled: false,
               isTapToPayOnIPhoneSwitchEnabled: false,
+              isProductMultiSelectionSwitchEnabled: false,
               knownCardReaders: [],
               lastEligibilityErrorInfo: nil,
-              featureAnnouncementCampaignSettings: [:])
+              featureAnnouncementCampaignSettings: [:],
+              sitesWithAtLeastOneIPPTransactionFinished: [])
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -118,9 +132,11 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
             isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
+            isProductMultiSelectionSwitchEnabled: isProductMultiSelectionSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
-            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings
+            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
+            sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished
         )
     }
 
@@ -139,9 +155,11 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
             isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
+            isProductMultiSelectionSwitchEnabled: isProductMultiSelectionSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
-            featureAnnouncementCampaignSettings: updatedSettings
+            featureAnnouncementCampaignSettings: updatedSettings,
+            sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished
         )
     }
 }
@@ -160,12 +178,15 @@ extension GeneralAppSettings {
         self.isCouponManagementSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isCouponManagementSwitchEnabled) ?? false
         self.isInAppPurchasesSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isInAppPurchasesSwitchEnabled) ?? false
         self.isTapToPayOnIPhoneSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTapToPayOnIPhoneSwitchEnabled) ?? false
+        self.isProductMultiSelectionSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isProductMultiSelectionSwitchEnabled) ?? false
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
         self.lastJetpackBenefitsBannerDismissedTime = try container.decodeIfPresent(Date.self, forKey: .lastJetpackBenefitsBannerDismissedTime)
         self.featureAnnouncementCampaignSettings = try container.decodeIfPresent(
             [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings].self,
             forKey: .featureAnnouncementCampaignSettings) ?? [:]
+        self.sitesWithAtLeastOneIPPTransactionFinished = try container.decodeIfPresent(Set<Int64>.self,
+                                                                                        forKey: .sitesWithAtLeastOneIPPTransactionFinished) ?? Set<Int64>([])
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

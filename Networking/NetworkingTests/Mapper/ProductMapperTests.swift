@@ -105,7 +105,7 @@ final class ProductMapperTests: XCTestCase {
     }
 
     /// Verifies that the fields of the Product with alternative types are parsed correctly when they have different types than in the struct.
-    /// Currently, `price`, `regularPrice`, `salePrice`, `manageStock`, `soldIndividually`, and `purchasable` allow alternative types.
+    /// Currently, `price`, `regularPrice`, `salePrice`, `manageStock`, `soldIndividually`, `purchasable`, and `permalink`  allow alternative types.
     ///
     func test_that_product_alternative_types_are_properly_parsed() throws {
         let product = try XCTUnwrap(mapLoadProductResponseWithAlternativeTypes())
@@ -116,6 +116,7 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertTrue(product.manageStock)
         XCTAssertFalse(product.soldIndividually)
         XCTAssertTrue(product.purchasable)
+        XCTAssertEqual(product.permalink, "")
     }
 
     /// Verifies that the `salePrice` field of the Product are parsed correctly when the product is on sale, and the sale price is an empty string
@@ -301,54 +302,41 @@ final class ProductMapperTests: XCTestCase {
     func test_product_bundles_are_properly_parsed() throws {
         // Given
         let product = try XCTUnwrap(mapLoadProductBundleResponse())
-
-        // Then
-        XCTAssertEqual(product.productType, .bundle)
-        XCTAssertEqual(product.bundleLayout, .defaultLayout)
-        XCTAssertEqual(product.bundleFormLocation, .defaultLocation)
-        XCTAssertEqual(product.bundleItemGrouping, .parent)
-        XCTAssertEqual(product.bundleMinSize, 3)
-        XCTAssertNil(product.bundleMaxSize)
-        XCTAssertEqual(product.bundleEditableInCart, false)
-        XCTAssertEqual(product.bundleSoldIndividuallyContext, .configuration)
-        XCTAssertEqual(product.bundleStockStatus, .insufficientStock)
-        XCTAssertEqual(product.bundleStockQuantity, 0)
-    }
-
-    /// Test that products with bundled items product type are properly parsed.
-    ///
-    func test_product_bundled_items_are_properly_parsed() throws {
-        // Given
-        let product = try XCTUnwrap(mapLoadProductBundleResponse())
         let bundledItem = try XCTUnwrap(product.bundledItems.first)
 
         // Then
+        // Check parsed Product properties
+        XCTAssertEqual(product.productType, .bundle)
+        XCTAssertEqual(product.bundleStockStatus, .insufficientStock)
+        XCTAssertEqual(product.bundleStockQuantity, 0)
         XCTAssertEqual(product.bundledItems.count, 3)
+
+        // Check parsed ProductBundleItem properties
         XCTAssertEqual(bundledItem.bundledItemID, 6)
         XCTAssertEqual(bundledItem.productID, 36)
         XCTAssertEqual(bundledItem.menuOrder, 0)
-        XCTAssertEqual(bundledItem.quantityMin, 1)
-        XCTAssertNil(bundledItem.quantityMax)
-        XCTAssertTrue(bundledItem.pricedIndividually)
-        XCTAssertFalse(bundledItem.shippedIndividually)
-        XCTAssertFalse(bundledItem.overrideTitle)
         XCTAssertEqual(bundledItem.title, "Beanie with Logo")
-        XCTAssertFalse(bundledItem.overrideDescription)
-        XCTAssertEqual(bundledItem.description, "")
-        XCTAssertTrue(bundledItem.optional)
-        XCTAssertFalse(bundledItem.hideThumbnail)
-        XCTAssertEqual(bundledItem.discount, "10")
-        XCTAssertFalse(bundledItem.overrideVariations)
-        XCTAssertEqual(bundledItem.allowedVariations.count, 3)
-        XCTAssertFalse(bundledItem.overrideDefaultVariationAttributes)
-        XCTAssertEqual(bundledItem.defaultVariationAttributes.count, 2)
-        XCTAssertEqual(bundledItem.singleProductVisibility, .visible)
-        XCTAssertEqual(bundledItem.cartVisibility, .visible)
-        XCTAssertEqual(bundledItem.orderVisibility, .visible)
-        XCTAssertEqual(bundledItem.singleProductPriceVisibility, .visible)
-        XCTAssertEqual(bundledItem.cartPriceVisibility, .visible)
-        XCTAssertEqual(bundledItem.orderPriceVisibility, .visible)
         XCTAssertEqual(bundledItem.stockStatus, .inStock)
+    }
+
+    /// Test that products with the `composite` product type are properly parsed.
+    ///
+    func test_composite_products_are_properly_parsed() throws {
+        // Given
+        let product = try XCTUnwrap(mapLoadCompositeProductResponse())
+        let compositeComponent = try XCTUnwrap(product.compositeComponents.first)
+
+        // Then
+        // Check parsed Product properties
+        XCTAssertEqual(product.productType, .composite)
+        XCTAssertEqual(product.compositeComponents.count, 3)
+
+        // Check parsed ProductCompositeComponent properties
+        XCTAssertEqual(compositeComponent.componentID, "1679310855")
+        XCTAssertEqual(compositeComponent.title, "Camera Body")
+        XCTAssertEqual(compositeComponent.imageURL, "https://example.com/woo.jpg")
+        XCTAssertEqual(compositeComponent.optionType, .productIDs)
+        XCTAssertEqual(compositeComponent.optionIDs, [413, 412])
     }
 }
 
@@ -403,5 +391,11 @@ private extension ProductMapperTests {
     ///
     func mapLoadProductBundleResponse() -> Product? {
         return mapProduct(from: "product-bundle")
+    }
+
+    /// Returns the ProductMapper output upon receiving `product-composite`
+    ///
+    func mapLoadCompositeProductResponse() -> Product? {
+        return mapProduct(from: "product-composite")
     }
 }

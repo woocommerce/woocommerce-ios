@@ -150,6 +150,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                         self.rootViewController.presentedViewController?.dismiss(animated: true)
                         return onCancel()
                     case .failure(let error):
+                        CardPresentPaymentOnboardingStateCache.shared.invalidate()
                         return onFailure(error)
                     case .success(let paymentData):
                         // Handle payment receipt
@@ -273,6 +274,7 @@ private extension CollectOrderPaymentUseCase {
             }, onCompletion: { [weak self] result in
                 switch result {
                 case .success(let capturedPaymentData):
+                    self?.markSiteHasAtLeastOneIPPTransactionFinished()
                     self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
                     onCompletion(.success(capturedPaymentData))
                 case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(let cancellationSource))):
@@ -457,6 +459,10 @@ private extension CollectOrderPaymentUseCase {
                                                  storeName: stores.sessionManager.defaultSite?.name),
                                      from: rootViewController,
                                      completion: onCompleted)
+    }
+
+    func markSiteHasAtLeastOneIPPTransactionFinished() {
+        stores.dispatch(AppSettingsAction.markSiteHasAtLeastOneIPPTransactionFinished(siteID: order.siteID))
     }
 }
 

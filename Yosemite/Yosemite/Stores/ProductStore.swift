@@ -512,6 +512,8 @@ extension ProductStore {
             handleProductTags(readOnlyProduct, storageProduct, storage)
             handleProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
             handleProductAddOns(readOnlyProduct, storageProduct, storage)
+            handleProductBundledItems(readOnlyProduct, storageProduct, storage)
+            handleProductCompositeComponents(readOnlyProduct, storageProduct, storage)
         }
     }
 
@@ -698,6 +700,40 @@ extension ProductStore {
             return storageAddOnOption
         }
         storageProductAddOn.addToOptions(NSOrderedSet(array: storageAddOnsOptions))
+    }
+
+    /// Replaces the `storageProduct.bundledItems` with the new `readOnlyProduct.bundledItems`
+    ///
+    func handleProductBundledItems(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        // Remove all previous bundledItems, they will be deleted as they have the `cascade` delete rule
+        if let bundledItems = storageProduct.bundledItems {
+            storageProduct.removeFromBundledItems(bundledItems)
+        }
+
+        // Create and add `storageBundledItems` from `readOnlyProduct.bundledItems`
+        let storageBundledItems = readOnlyProduct.bundledItems.map { readOnlyBundleItem -> StorageProductBundleItem in
+            let storageBundledItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
+            storageBundledItem.update(with: readOnlyBundleItem)
+            return storageBundledItem
+        }
+        storageProduct.addToBundledItems(NSOrderedSet(array: storageBundledItems))
+    }
+
+    /// Replaces the `storageProduct.compositeComponents` with the new `readOnlyProduct.compositeComponents`
+    ///
+    func handleProductCompositeComponents(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        // Remove all previous compositeComponents, they will be deleted as they have the `cascade` delete rule
+        if let compositeComponents = storageProduct.compositeComponents {
+            storageProduct.removeFromCompositeComponents(compositeComponents)
+        }
+
+        // Create and add `storageCompositeComponents` from `readOnlyProduct.compositeComponents`
+        let storageCompositeComponents = readOnlyProduct.compositeComponents.map { readOnlyCompositeComponent -> StorageProductCompositeComponent in
+            let storageCompositeComponent = storage.insertNewObject(ofType: StorageProductCompositeComponent.self)
+            storageCompositeComponent.update(with: readOnlyCompositeComponent)
+            return storageCompositeComponent
+        }
+        storageProduct.addToCompositeComponents(NSOrderedSet(array: storageCompositeComponents))
     }
 }
 

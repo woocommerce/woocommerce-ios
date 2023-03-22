@@ -56,6 +56,7 @@ final class StoresManagerTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertFalse(manager.isAuthenticatedWithoutWPCom)
         XCTAssertEqual(isLoggedInValues, [true])
     }
 
@@ -75,6 +76,27 @@ final class StoresManagerTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertTrue(manager.isAuthenticatedWithoutWPCom)
+        XCTAssertEqual(isLoggedInValues, [true])
+    }
+
+    /// Verifies that the Initial State is Authenticated with application password credentials.
+    ///
+    func test_initial_state_is_authenticated_if_defaultCredentials_is_application_password() {
+        // Arrange
+        let session = SessionManager.testingInstance
+        session.defaultCredentials = SessionSettings.applicationPasswordCredentials
+
+        // Action
+        let manager = DefaultStoresManager.testingInstance
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+
+        // Assert
+        XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertTrue(manager.isAuthenticatedWithoutWPCom)
         XCTAssertEqual(isLoggedInValues, [true])
     }
 
@@ -282,6 +304,26 @@ final class StoresManagerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mockSessionManager.deleteApplicationPasswordInvoked)
+    }
+
+    func test_updating_default_storeID_sets_completedAllStoreOnboardingTasks_to_nil() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let mockSessionManager = MockSessionManager()
+        let sut = DefaultStoresManager(sessionManager: mockSessionManager, defaults: defaults)
+
+        // When
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? Bool))
+
+        // When
+        sut.updateDefaultStore(storeID: 0)
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
 
     /// Verifies that user is logged out when application password regeneration fails

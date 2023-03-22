@@ -74,6 +74,10 @@ extension Product {
     @NSManaged public var productVariations: Set<ProductVariation>?
     @NSManaged public var productShippingClass: ProductShippingClass?
     @NSManaged public var addOns: NSOrderedSet?
+    @NSManaged public var bundleStockQuantity: NSNumber?
+    @NSManaged public var bundleStockStatus: String?
+    @NSManaged public var bundledItems: NSOrderedSet?
+    @NSManaged public var compositeComponents: NSOrderedSet?
 
 }
 
@@ -281,5 +285,75 @@ extension Product {
 
     @objc(removeAddOns:)
     @NSManaged public func removeFromAddOns(_ values: NSOrderedSet)
+
+}
+
+// MARK: Generated accessors for bundledItems
+extension Product {
+
+    @objc(insertObject:inBundledItemsAtIndex:)
+    @NSManaged public func insertIntoBundledItems(_ value: ProductBundleItem, at idx: Int)
+
+    @objc(removeObjectFromBundledItemsAtIndex:)
+    @NSManaged public func removeFromBundledItems(at idx: Int)
+
+    @objc(insertBundledItems:atIndexes:)
+    @NSManaged public func insertIntoBundledItems(_ values: [ProductBundleItem], at indexes: NSIndexSet)
+
+    @objc(removeBundledItemsAtIndexes:)
+    @NSManaged public func removeFromBundledItems(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInBundledItemsAtIndex:withObject:)
+    @NSManaged public func replaceBundledItems(at idx: Int, with value: ProductBundleItem)
+
+    @objc(replaceBundledItemsAtIndexes:withBundledItems:)
+    @NSManaged public func replaceBundledItems(at indexes: NSIndexSet, with values: [ProductBundleItem])
+
+    @objc(addBundledItemsObject:)
+    @NSManaged public func addToBundledItems(_ value: ProductBundleItem)
+
+    @objc(removeBundledItemsObject:)
+    @NSManaged public func removeFromBundledItems(_ value: ProductBundleItem)
+
+    @objc(addBundledItems:)
+    @NSManaged public func addToBundledItems(_ values: NSOrderedSet)
+
+    @objc(removeBundledItems:)
+    @NSManaged public func removeFromBundledItems(_ values: NSOrderedSet)
+
+}
+
+// MARK: Generated accessors for compositeComponents
+extension Product {
+
+    @objc(insertObject:inCompositeComponentsAtIndex:)
+    @NSManaged public func insertIntoCompositeComponents(_ value: ProductCompositeComponent, at idx: Int)
+
+    @objc(removeObjectFromCompositeComponentsAtIndex:)
+    @NSManaged public func removeFromCompositeComponents(at idx: Int)
+
+    @objc(insertCompositeComponents:atIndexes:)
+    @NSManaged public func insertIntoCompositeComponents(_ values: [ProductCompositeComponent], at indexes: NSIndexSet)
+
+    @objc(removeCompositeComponentsAtIndexes:)
+    @NSManaged public func removeFromCompositeComponents(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInCompositeComponentsAtIndex:withObject:)
+    @NSManaged public func replaceCompositeComponents(at idx: Int, with value: ProductCompositeComponent)
+
+    @objc(replaceCompositeComponentsAtIndexes:withCompositeComponents:)
+    @NSManaged public func replaceCompositeComponents(at indexes: NSIndexSet, with values: [ProductCompositeComponent])
+
+    @objc(addCompositeComponentsObject:)
+    @NSManaged public func addToCompositeComponents(_ value: ProductCompositeComponent)
+
+    @objc(removeCompositeComponentsObject:)
+    @NSManaged public func removeFromCompositeComponents(_ value: ProductCompositeComponent)
+
+    @objc(addCompositeComponents:)
+    @NSManaged public func addToCompositeComponents(_ values: NSOrderedSet)
+
+    @objc(removeCompositeComponents:)
+    @NSManaged public func removeFromCompositeComponents(_ values: NSOrderedSet)
 
 }

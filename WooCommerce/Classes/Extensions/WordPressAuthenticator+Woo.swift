@@ -9,6 +9,7 @@ extension WordPressAuthenticator {
         let isWPComMagicLinkPreferredToPassword = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasis)
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
         let isStoreCreationMVPEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+        let isManualErrorHandlingEnabled = featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: dotcomAuthScheme,
@@ -39,6 +40,7 @@ extension WordPressAuthenticator {
                                                                 skipXMLRPCCheckForSiteDiscovery: true,
                                                                 skipXMLRPCCheckForSiteAddressLogin: true,
                                                                 enableManualSiteCredentialLogin: true,
+                                                                enableManualErrorHandlingForSiteCredentialLogin: isManualErrorHandlingEnabled,
                                                                 useEnterEmailAddressAsStepValueForGetStartedVC: true,
                                                                 enableSiteAddressLoginOnlyInPrologue: true,
                                                                 enableSiteCredentialLoginForJetpackSites: false)

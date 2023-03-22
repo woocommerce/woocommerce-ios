@@ -71,6 +71,10 @@ final class EditableOrderViewModel: ObservableObject {
         }
     }
 
+    /// Latest state for Product Multi-Selection experimental feature
+    ///
+    @Published var isProductMultiSelectionBetaFeatureEnabled: Bool = ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection)
+
     /// Active navigation bar trailing item.
     /// Defaults to create button.
     ///
@@ -167,13 +171,15 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the product list
     ///
-    lazy var addProductViewModel = {
+    var productSelectorViewModel: ProductSelectorViewModel {
         ProductSelectorViewModel(
             siteID: siteID,
+            selectedItemIDs: selectedProductsAndVariationsIDs,
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
-            supportsMultipleSelection: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
+            supportsMultipleSelection: isProductMultiSelectionBetaFeatureEnabled,
+            isClearSelectionEnabled: false,
             toggleAllVariationsOnSelection: false,
             onProductSelected: { [weak self] product in
                 guard let self = self else { return }
@@ -182,8 +188,11 @@ final class EditableOrderViewModel: ObservableObject {
             onVariationSelected: { [weak self] variation, parentProduct in
                 guard let self = self else { return }
                 self.addProductVariationToOrder(variation, parent: parentProduct)
+            }, onMultipleSelectionCompleted: { [weak self] _ in
+                guard let self = self else { return }
+                self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
             })
-    }()
+    }
 
     /// View models for each product row in the order.
     ///
@@ -193,6 +202,22 @@ final class EditableOrderViewModel: ObservableObject {
     /// Used to open the product details in `ProductInOrder`.
     ///
     @Published var selectedProductViewModel: ProductInOrderViewModel? = nil
+
+    /// Keeps track of selected/unselected Products, if any
+    ///
+    @Published var selectedProducts: [Product] = []
+
+    /// Keeps track of selected/unselected Product Variations, if any
+    ///
+    @Published var selectedProductVariations: [ProductVariation] = []
+
+    /// Keeps track of all selected Products and Product Variations IDs
+    ///
+    var selectedProductsAndVariationsIDs: [Int64] {
+        let selectedProductsCount = selectedProducts.compactMap { $0.productID }
+        let selectedProductVariationsCount = selectedProductVariations.compactMap { $0.productVariationID }
+        return selectedProductsCount + selectedProductVariationsCount
+    }
 
     // MARK: Customer data properties
 
@@ -299,6 +324,8 @@ final class EditableOrderViewModel: ObservableObject {
         // Needs to be reset before the view model is used.
         self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
 
+        configureProductMultiSelectionIfNeeded()
+
         configureDisabledState()
         configureNavigationTrailingItem()
         configureSyncErrors()
@@ -310,6 +337,39 @@ final class EditableOrderViewModel: ObservableObject {
         configureNonEditableIndicators()
         configureMultipleLinesMessage()
         resetAddressForm()
+        syncInitialSelectedState()
+    }
+
+    /// Checks the current state of the Product Multi Selection feature toggle
+    ///
+    private func configureProductMultiSelectionIfNeeded() {
+        let action = AppSettingsAction.loadProductMultiSelectionFeatureSwitchState(onCompletion: { result in
+            switch result {
+            case .success(let isEnabled):
+                self.isProductMultiSelectionBetaFeatureEnabled = isEnabled
+            case .failure(let error):
+                DDLogError("Unable to load MultiSelection feature switch state. \(error)")
+            }
+        })
+        stores.dispatch(action)
+    }
+
+    /// Checks the latest Order sync, and returns the current items that are in the Order
+    ///
+    private func syncExistingSelectedProductsInOrder() -> [OrderItem] {
+        var itemsInOrder: [OrderItem] = []
+        let _ = orderSynchronizer.order.items.map { item in
+            if item.variationID != 0 {
+                if let _ = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+                    itemsInOrder.append(item)
+                }
+            } else {
+                if let _ = allProducts.first(where: { $0.productID == item.productID }) {
+                    itemsInOrder.append(item)
+                }
+            }
+        }
+        return itemsInOrder
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.
@@ -325,6 +385,17 @@ final class EditableOrderViewModel: ObservableObject {
     func removeItemFromOrder(_ item: OrderItem) {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
+
+        if isProductMultiSelectionBetaFeatureEnabled {
+            // Updates selected products and selected variations for all items that have been removed directly from the Order
+            // when using multi-selection, for example by tapping the `-` button within the Order view
+            if item.productID != 0 {
+                selectedProducts.removeAll(where: { $0.productID == item.productID })
+            }
+            if item.variationID != 0 {
+                selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID })
+            }
+        }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
     }
@@ -698,22 +769,120 @@ private extension EditableOrderViewModel {
             .assign(to: &$statusBadgeViewModel)
     }
 
+    /// Creates an array of OrderSyncProductInput that will be sent to the RemoteOrderSynchronizer when adding multiple products to an Order
+    /// - Parameters:
+    ///   - products: Selected products
+    ///   - variations: Selected product variations
+    /// - Returns: [OrderSyncProductInput]
+    ///
+    func productInputAdditionsToSync(products: [Product], variations: [ProductVariation]) -> [OrderSyncProductInput] {
+        var productInputs: [OrderSyncProductInput] = []
+        var productVariationInputs: [OrderSyncProductInput] = []
+
+        let itemsInOrder = syncExistingSelectedProductsInOrder()
+
+        for product in products {
+            // Only perform the operation if the product has not been already added to the existing Order
+            if !itemsInOrder.contains(where: { $0.productID == product.productID }) {
+                productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
+            }
+        }
+
+        for variation in variations {
+            // Only perform the operation if the variation has not been already added to the existing Order
+            if !itemsInOrder.contains(where: { $0.productOrVariationID == variation.productVariationID }) {
+                productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
+            }
+        }
+
+        return productInputs + productVariationInputs
+    }
+
+    /// Creates an array of OrderSyncProductInput that will be sent to the RemoteOrderSynchronizer when removing multiple products from an Order
+    /// - Parameters:
+    ///   - products: Represents a Product entity
+    ///   - variations: Represents a ProductVariation entity
+    /// - Returns: [OrderSyncProductInput]
+    ///
+    func productInputDeletionsToSync(products: [Product?], variations: [ProductVariation?]) -> [OrderSyncProductInput] {
+        var inputsToBeRemoved: [OrderSyncProductInput] = []
+
+        let itemsInOrder = syncExistingSelectedProductsInOrder()
+
+        // Products to be removed from the Order
+        let removeProducts = itemsInOrder.filter { item in
+            return item.variationID == 0 && !products.contains(where: { $0?.productID == item.productID })
+        }
+
+        // Variations to be removed from the Order
+        let removeProductVariations = itemsInOrder.filter { item in
+            return item.variationID != 0 && !variations.contains(where: { $0?.productVariationID == item.variationID })
+        }
+
+        let allOrderItemsToBeRemoved = removeProducts + removeProductVariations
+
+        for item in allOrderItemsToBeRemoved {
+
+            if let input = createUpdateProductInput(item: item, quantity: 0) {
+                inputsToBeRemoved.append(input)
+            }
+
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
+        }
+
+        return inputsToBeRemoved
+
+    }
+
+    /// Adds, or removes multiple products from an Order
+    ///
+    func syncOrderItems(products: [Product], variations: [ProductVariation]) {
+        // We need to send all OrderSyncProductInput in one call to the RemoteOrderSynchronizer, both additions and deletions
+        // otherwise may ignore the subsequent values that are sent
+        let addedItemsToSync = productInputAdditionsToSync(products: products, variations: variations)
+        let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
+        orderSynchronizer.setProducts.send(addedItemsToSync + removedItemsToSync)
+
+        if addedItemsToSync.isNotEmpty {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+        }
+
+        if removedItemsToSync.isNotEmpty {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
+        }
+    }
+
     /// Adds a selected product (from the product list) to the order.
     ///
+    // TODO:
+    // This method needs to be refactored, to reflect that adds products to Order for single selection,
+    // but only selects/unselects for multi-selection: https://github.com/woocommerce/woocommerce-ios/issues/9176
     func addProductToOrder(_ product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {
             allProducts.append(product)
         }
 
-        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
-        orderSynchronizer.setProduct.send(input)
-
-        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+        if featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled {
+            // Multi-selection
+            if !selectedProducts.contains(where: { $0.productID == product.productID }) {
+                selectedProducts.append(product)
+            } else {
+                selectedProducts.removeAll(where: { $0.productID == product.productID })
+            }
+        } else {
+            // Single-selection
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            orderSynchronizer.setProduct.send(input)
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+        }
     }
 
     /// Adds a selected product variation (from the product list) to the order.
     ///
+    // TODO:
+    // This method needs to be refactored, to reflect that adds variations to Order for single selection,
+    // but only selects/unselects for multi-selection: https://github.com/woocommerce/woocommerce-ios/issues/9176
     func addProductVariationToOrder(_ variation: ProductVariation, parent product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {
@@ -724,10 +893,19 @@ private extension EditableOrderViewModel {
             allProductVariations.append(variation)
         }
 
-        let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
-        orderSynchronizer.setProduct.send(input)
-
-        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+        if featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled {
+            // Multi-Selection
+            if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
+                selectedProductVariations.append(variation)
+            } else {
+                selectedProductVariations.removeAll(where: { $0.productVariationID == variation.productVariationID })
+            }
+        } else {
+            // Single-Selection
+            let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
+            orderSynchronizer.setProduct.send(input)
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+        }
     }
 
     /// Configures product row view models for each item in `orderDetails`.
@@ -1008,6 +1186,25 @@ private extension EditableOrderViewModel {
             allProductVariations = productVariationsResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Error fetching product variations for order: \(error)")
+        }
+    }
+
+    /// Syncs initial selected state for all items in the Order
+    ///
+    func syncInitialSelectedState() {
+        selectedProducts = []
+        selectedProductVariations = []
+
+        let _ = orderSynchronizer.order.items.map { item in
+            if item.variationID != 0 {
+                if let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+                    selectedProductVariations.append(variation)
+                }
+            } else {
+                if let product = allProducts.first(where: { $0.productID == item.productID }) {
+                    selectedProducts.append(product)
+                }
+            }
         }
     }
 

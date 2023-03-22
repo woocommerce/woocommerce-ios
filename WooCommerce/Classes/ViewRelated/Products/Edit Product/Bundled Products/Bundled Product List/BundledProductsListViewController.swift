@@ -1,5 +1,6 @@
 import UIKit
 import SwiftUI
+import Kingfisher
 
 // MARK: Hosting Controller
 
@@ -24,24 +25,36 @@ struct BundledProductsList: View {
 
     /// View model that directs the view content.
     ///
-    let viewModel: BundledProductsListViewModel
+    @ObservedObject var viewModel: BundledProductsListViewModel
+
+    /// Dynamic image width, also used for its height.
+    ///
+    @ScaledMetric private var imageWidth = Layout.standardImageWidth
 
     var body: some View {
         ScrollView {
-            LazyVStack {
-                // TODO-8954: Display actual bundled items from view model
-                VStack(spacing: 0) {
-                    TitleAndSubtitleRow(title: "Beanie with Logo", subtitle: "In stock")
-                    Divider().padding(.leading)
-                    TitleAndSubtitleRow(title: "T-Shirt with Logo", subtitle: "In stock")
-                    Divider().padding(.leading)
-                    TitleAndSubtitleRow(title: "Hoodie with Logo", subtitle: "Out of stock")
+            LazyVStack(spacing: 0) {
+                ForEach(viewModel.bundledProducts) { bundledProduct in
+                    HStack {
+                        KFImage(bundledProduct.imageURL)
+                            .placeholder {
+                                Image(uiImage: .productPlaceholderImage)
+                                    .foregroundColor(Color(.listIcon))
+                            }
+                            .resizable()
+                            .frame(width: imageWidth, height: imageWidth)
+                            .cornerRadius(Layout.imageCornerRadius)
+                            .accessibilityHidden(true)
+                            .padding(.leading)
+
+                        TitleAndSubtitleRow(title: bundledProduct.title, subtitle: bundledProduct.stockStatus)
+                    }
                     Divider().padding(.leading)
                 }
-                .background(Color(.listForeground(modal: false)))
-
-                FooterNotice(infoText: viewModel.infoNotice)
             }
+            .background(Color(.listForeground(modal: false)))
+
+            FooterNotice(infoText: viewModel.infoNotice)
         }
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
@@ -49,14 +62,32 @@ struct BundledProductsList: View {
     }
 }
 
+private enum Layout {
+    static let standardImageWidth: CGFloat = 48.0
+    static let imageCornerRadius: CGFloat = 4.0
+}
+
 
 // MARK: Previews
 struct BundledProductsList_Previews: PreviewProvider {
 
-    static let viewModel = BundledProductsListViewModel()
+    static let viewModel = BundledProductsListViewModel(bundledProducts: [
+        .init(id: 1, title: "Beanie with Logo", stockStatus: "In stock", imageURL: nil),
+        .init(id: 2, title: "T-Shirt with Logo", stockStatus: "In stock", imageURL: nil),
+        .init(id: 3, title: "Hoodie with Logo", stockStatus: "Out of stock", imageURL: nil)
+    ])
 
     static var previews: some View {
         BundledProductsList(viewModel: viewModel)
             .environment(\.colorScheme, .light)
+            .previewDisplayName("Light")
+
+        BundledProductsList(viewModel: viewModel)
+            .environment(\.colorScheme, .dark)
+            .previewDisplayName("Dark")
+
+        BundledProductsList(viewModel: viewModel)
+            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+            .previewDisplayName("Large Font")
     }
 }

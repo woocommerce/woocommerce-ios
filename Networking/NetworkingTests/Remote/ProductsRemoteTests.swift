@@ -106,16 +106,10 @@ final class ProductsRemoteTests: XCTestCase {
                                       groupedProducts: [],
                                       menuOrder: 0,
                                       addOns: [],
-                                      bundleLayout: nil,
-                                      bundleFormLocation: nil,
-                                      bundleItemGrouping: nil,
-                                      bundleMinSize: nil,
-                                      bundleMaxSize: nil,
-                                      bundleEditableInCart: nil,
-                                      bundleSoldIndividuallyContext: nil,
                                       bundleStockStatus: nil,
                                       bundleStockQuantity: nil,
-                                      bundledItems: [])
+                                      bundledItems: [],
+                                      compositeComponents: [])
         XCTAssertEqual(addedProduct, expectedProduct)
     }
 
@@ -219,16 +213,10 @@ final class ProductsRemoteTests: XCTestCase {
                                       groupedProducts: [],
                                       menuOrder: 0,
                                       addOns: [],
-                                      bundleLayout: nil,
-                                      bundleFormLocation: nil,
-                                      bundleItemGrouping: nil,
-                                      bundleMinSize: nil,
-                                      bundleMaxSize: nil,
-                                      bundleEditableInCart: nil,
-                                      bundleSoldIndividuallyContext: nil,
                                       bundleStockStatus: nil,
                                       bundleStockQuantity: nil,
-                                      bundledItems: [])
+                                      bundledItems: [],
+                                      compositeComponents: [])
         XCTAssertEqual(deletedProduct, expectedProduct)
     }
 
@@ -758,16 +746,10 @@ private extension ProductsRemoteTests {
                        groupedProducts: [],
                        menuOrder: 0,
                        addOns: [],
-                       bundleLayout: nil,
-                       bundleFormLocation: nil,
-                       bundleItemGrouping: nil,
-                       bundleMinSize: nil,
-                       bundleMaxSize: nil,
-                       bundleEditableInCart: nil,
-                       bundleSoldIndividuallyContext: nil,
-                       bundleStockStatus: nil,
+                       bundleStockStatus: .inStock,
                        bundleStockQuantity: nil,
-                       bundledItems: [])
+                       bundledItems: [],
+                       compositeComponents: [])
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {

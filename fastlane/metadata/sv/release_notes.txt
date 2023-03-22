@@ -1,1 +1,1 @@
-Goda nyheter! Tryck för att betala nu är tillgängligt för amerikanska handlare som använder WooCommerce Payments. Ta snabbt emot personliga kreditkortsbetalningar med din iPhone. Vi välkomnar feedback om appen, särskilt rörande de nya funktioner som vi arbetar med och tillhandahåller tidig åtkomst till.
+Den här versionen inkluderar ett antal förbättringar av din butikshanteringsupplevelse. Det är nu möjligt att använda Genvägar-appen i iOS för att skapa en beställning och att ta emot betalningar från WooCommerce-mobilapparna. Prova och dela din feedback.

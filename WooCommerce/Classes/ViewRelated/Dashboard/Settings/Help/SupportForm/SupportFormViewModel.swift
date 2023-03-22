@@ -160,12 +160,13 @@ private extension SupportFormViewModel {
     /// Default Woo Support Areas
     ///
     static func wooSupportAreas() -> [Area] {
-        [
-            .init(title: Localization.mobileApp, datasource: MobileAppSupportDataSource()),
-            .init(title: Localization.ipp, datasource: IPPSupportDataSource()),
-            .init(title: Localization.wcPayments, datasource: WCPaySupportDataSource()),
-            .init(title: Localization.wcPlugin, datasource: WCPluginsSupportDataSource()),
-            .init(title: Localization.otherPlugin, datasource: OtherPluginsSupportDataSource())
+        let metadataProvider = SupportFormMetadataProvider()
+        return [
+            .init(title: Localization.mobileApp, datasource: MobileAppSupportDataSource(metadataProvider: metadataProvider)),
+            .init(title: Localization.ipp, datasource: IPPSupportDataSource(metadataProvider: metadataProvider)),
+            .init(title: Localization.wcPayments, datasource: WCPaySupportDataSource(metadataProvider: metadataProvider)),
+            .init(title: Localization.wcPlugin, datasource: WCPluginsSupportDataSource(metadataProvider: metadataProvider)),
+            .init(title: Localization.otherPlugin, datasource: OtherPluginsSupportDataSource(metadataProvider: metadataProvider))
         ]
     }
 

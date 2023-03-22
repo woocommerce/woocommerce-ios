@@ -1,1 +1,1 @@
-Good news! Tap to Pay is now available to USA merchants using WooCommerce Payments. Quickly take an in-person credit card payment using your iPhone! We welcome your feedback on the app, especially the new features we’re working on and giving early access to.
+This release includes a few enhancements to your store management experience. It's now possible to use the iOS Shortcuts app to create an order and collect payments from the WooCommerce mobile apps! Please try it out and share your feedback.

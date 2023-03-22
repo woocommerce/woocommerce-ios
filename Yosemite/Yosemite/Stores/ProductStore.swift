@@ -46,6 +46,8 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
+            searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
                                  keyword,
                                  filter,
@@ -57,6 +59,7 @@ public class ProductStore: Store {
                                  productCategory,
                                  excludedProductIDs,
                                  onCompletion):
+
             searchProducts(siteID: siteID,
                            keyword: keyword,
                            filter: filter,
@@ -168,6 +171,22 @@ private extension ProductStore {
                                           onCompletion: onCompletion)
             }
         }
+    }
+
+    func searchInCache(siteID: Int64, keyword: String, pageSize: Int, onCompletion: @escaping (Bool) -> Void) {
+        let namePredicate = NSPredicate(format: "name LIKE[c] %@", keyword)
+        let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [namePredicate, sitePredicate])
+
+        let results = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
+                                                      matching: predicate,
+                                                      sortedBy: nil)
+
+        handleSearchResults(siteID: siteID,
+                            keyword: keyword,
+                            filter: .all,
+                            result: Result.success(results.prefix(pageSize).map { $0.toReadOnly() }),
+                            onCompletion: { _ in onCompletion(!results.isEmpty) })
     }
 
     /// Synchronizes the products associated with a given Site ID, sorted by ascending name.
@@ -512,6 +531,8 @@ extension ProductStore {
             handleProductTags(readOnlyProduct, storageProduct, storage)
             handleProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
             handleProductAddOns(readOnlyProduct, storageProduct, storage)
+            handleProductBundledItems(readOnlyProduct, storageProduct, storage)
+            handleProductCompositeComponents(readOnlyProduct, storageProduct, storage)
         }
     }
 
@@ -698,6 +719,40 @@ extension ProductStore {
             return storageAddOnOption
         }
         storageProductAddOn.addToOptions(NSOrderedSet(array: storageAddOnsOptions))
+    }
+
+    /// Replaces the `storageProduct.bundledItems` with the new `readOnlyProduct.bundledItems`
+    ///
+    func handleProductBundledItems(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        // Remove all previous bundledItems, they will be deleted as they have the `cascade` delete rule
+        if let bundledItems = storageProduct.bundledItems {
+            storageProduct.removeFromBundledItems(bundledItems)
+        }
+
+        // Create and add `storageBundledItems` from `readOnlyProduct.bundledItems`
+        let storageBundledItems = readOnlyProduct.bundledItems.map { readOnlyBundleItem -> StorageProductBundleItem in
+            let storageBundledItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
+            storageBundledItem.update(with: readOnlyBundleItem)
+            return storageBundledItem
+        }
+        storageProduct.addToBundledItems(NSOrderedSet(array: storageBundledItems))
+    }
+
+    /// Replaces the `storageProduct.compositeComponents` with the new `readOnlyProduct.compositeComponents`
+    ///
+    func handleProductCompositeComponents(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        // Remove all previous compositeComponents, they will be deleted as they have the `cascade` delete rule
+        if let compositeComponents = storageProduct.compositeComponents {
+            storageProduct.removeFromCompositeComponents(compositeComponents)
+        }
+
+        // Create and add `storageCompositeComponents` from `readOnlyProduct.compositeComponents`
+        let storageCompositeComponents = readOnlyProduct.compositeComponents.map { readOnlyCompositeComponent -> StorageProductCompositeComponent in
+            let storageCompositeComponent = storage.insertNewObject(ofType: StorageProductCompositeComponent.self)
+            storageCompositeComponent.update(with: readOnlyCompositeComponent)
+            return storageCompositeComponent
+        }
+        storageProduct.addToCompositeComponents(NSOrderedSet(array: storageCompositeComponents))
     }
 }
 

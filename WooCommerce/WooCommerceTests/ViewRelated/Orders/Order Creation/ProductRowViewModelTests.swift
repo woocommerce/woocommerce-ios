@@ -282,4 +282,60 @@ class ProductRowViewModelTests: XCTestCase {
         let expectedLabel = "Test Product. In stock. $10.00. 2 variations. SKU: 123456"
         XCTAssertEqual(viewModel.productAccessibilityLabel, expectedLabel)
     }
+
+    func test_product_stock_status_used_for_product_bundles_when_feature_flag_disabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "instock", bundleStockStatus: .insufficientStock)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: false)
+
+        // Then
+        let expectedStockText = ProductStockStatus.inStock.description
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockText),
+                      "Expected label to contain \"\(expectedStockText)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+    }
+
+    func test_bundle_stock_status_used_for_product_bundles_when_feature_flag_enabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "instock", bundleStockStatus: .insufficientStock)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: true)
+
+        // Then
+        let expectedStockText = ProductStockStatus.insufficientStock.description
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockText),
+                      "Expected label to contain \"\(expectedStockText)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+    }
+
+    func test_product_stock_quantity_used_for_product_bundles_when_feature_flag_disabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle", manageStock: true, stockQuantity: 5, stockStatusKey: "instock", bundleStockQuantity: 1)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: false)
+
+        // Then
+        let localizedStockQuantity = NumberFormatter.localizedString(from: 5 as NSDecimalNumber, number: .decimal)
+        let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
+        let expectedStockLabel = String.localizedStringWithFormat(format, localizedStockQuantity)
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
+                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+    }
+
+    func test_bundle_stock_quantity_used_for_product_bundles_when_feature_flag_enabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle", manageStock: true, stockQuantity: 5, stockStatusKey: "instock", bundleStockQuantity: 1)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: true)
+
+        // Then
+        let localizedStockQuantity = NumberFormatter.localizedString(from: 1 as NSDecimalNumber, number: .decimal)
+        let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
+        let expectedStockLabel = String.localizedStringWithFormat(format, localizedStockQuantity)
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
+                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+    }
 }

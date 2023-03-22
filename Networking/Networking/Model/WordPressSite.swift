@@ -28,19 +28,30 @@ public struct WordPressSite: Decodable, Equatable {
     ///
     public let namespaces: [String]
 
+    /// URL for authorizing application password if enabled.
+    ///
+    public let applicationPasswordAuthorizationURL: String?
+
     /// Whether WooCommerce is one of the active plugins in the site.
     ///
     public var isWooCommerceActive: Bool {
         namespaces.contains { $0.hasPrefix(Constants.wooNameSpace) }
     }
 
-    public init(name: String, description: String, url: String, timezone: String, gmtOffset: String, namespaces: [String]) {
+    public init(name: String,
+                description: String,
+                url: String,
+                timezone: String,
+                gmtOffset: String,
+                namespaces: [String],
+                applicationPasswordAuthorizationURL: String?) {
         self.name = name
         self.description = description
         self.url = url
         self.timezone = timezone
         self.gmtOffset = gmtOffset
         self.namespaces = namespaces
+        self.applicationPasswordAuthorizationURL = applicationPasswordAuthorizationURL
     }
 
     /// Decodable Conformance.
@@ -60,13 +71,16 @@ public struct WordPressSite: Decodable, Equatable {
             }
         }()
         let namespaces = try container.decode([String].self, forKey: .namespaces)
+        let authentication = try container.decode(Authentication.self, forKey: .authentication)
+        let applicationPasswordURL = authentication.applicationPasswords?.endpoints?.authorization
 
         self.init(name: name,
                   description: description,
                   url: url,
                   timezone: timezone,
                   gmtOffset: gmtOffset,
-                  namespaces: namespaces)
+                  namespaces: namespaces,
+                  applicationPasswordAuthorizationURL: applicationPasswordURL)
     }
 }
 
@@ -90,6 +104,21 @@ public extension WordPressSite {
               timezone: timezone,
               gmtOffset: Double(gmtOffset) ?? 0)
     }
+
+    struct Authentication: Decodable {
+        let applicationPasswords: ApplicationPasswords?
+        enum CodingKeys: String, CodingKey {
+            case applicationPasswords = "application-passwords"
+        }
+    }
+
+    struct ApplicationPasswords: Decodable {
+        let endpoints: Endpoints?
+    }
+
+    struct Endpoints: Decodable {
+        let authorization: String?
+    }
 }
 
 /// Defines all of the WordPressSite CodingKeys
@@ -102,6 +131,7 @@ private extension WordPressSite {
         case timezone = "timezone_string"
         case gmtOffset = "gmt_offset"
         case namespaces
+        case authentication
     }
 
     enum Constants {

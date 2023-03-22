@@ -310,7 +310,8 @@ extension MockObjectGraph {
             addOns: [],
             bundleStockStatus: nil,
             bundleStockQuantity: nil,
-            bundledItems: []
+            bundledItems: [],
+            compositeComponents: []
         )
     }
 }

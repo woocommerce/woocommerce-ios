@@ -26,6 +26,7 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
         /// Initialize dependencies for viewmodels first, then viewmodels
         ///
         cardReaderConnectionAnalyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: configuration)
+        cardReaderConnectionAnalyticsTracker.setGatewayID(gatewayID: activePaymentGateway.gatewayID)
 
         /// Instantiate and add each viewmodel related to setting up Tap to Pay on iPhone to the
         /// array. Viewmodels will be evaluated for shouldShow starting at the top

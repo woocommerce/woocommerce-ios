@@ -42,6 +42,8 @@ public final class SiteStore: Store {
         switch action {
         case .createSite(let name, let domain, let completion):
             createSite(name: name, domain: domain, completion: completion)
+        case let .launchSite(siteID, completion):
+            launchSite(siteID: siteID, completion: completion)
         }
     }
 }
@@ -66,6 +68,17 @@ private extension SiteStore {
                                           siteSlug: response.site.siteSlug)))
             } catch {
                 completion(.failure(SiteCreationError(remoteError: error)))
+            }
+        }
+    }
+
+    func launchSite(siteID: Int64, completion: @escaping (Result<Void, SiteLaunchError>) -> Void) {
+        Task { @MainActor in
+            do {
+                try await remote.launchSite(siteID: siteID)
+                completion(.success(()))
+            } catch {
+                completion(.failure(SiteLaunchError(remoteError: error)))
             }
         }
     }
@@ -110,5 +123,20 @@ public enum SiteCreationError: Error, Equatable {
         default:
             self = .unknown(description: remoteError.localizedDescription)
         }
+    }
+}
+
+public enum SiteLaunchError: Error, Equatable {
+    case alreadyLaunched
+    case unexpected(description: String)
+
+    init(remoteError: Error) {
+        guard let error = remoteError as? WordPressApiError,
+              case let .unknown(code, _) = error,
+              code == "already-launched" else {
+            self = .unexpected(description: remoteError.localizedDescription)
+            return
+        }
+        self = .alreadyLaunched
     }
 }

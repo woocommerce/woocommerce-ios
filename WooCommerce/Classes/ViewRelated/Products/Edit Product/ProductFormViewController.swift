@@ -443,10 +443,18 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 editAttributes()
             case .status:
                 break
-            case .bundledProducts:
-                // TODO-8954: Add tracking
+            case .bundledProducts(_, let isActionable):
+                guard isActionable else {
+                    return
+                }
+                ServiceLocator.analytics.track(event: .ProductDetail.bundledProductsTapped())
                 showBundledProducts()
-                return
+            case .components(_, let isActionable):
+                guard isActionable else {
+                    return
+                }
+                // TODO-8956: Track composite row is tapped
+                // TODO-8956: Navigate to Components view
             }
         case .optionsCTA(let rows):
             let row = rows[indexPath.row]
@@ -1683,7 +1691,7 @@ private extension ProductFormViewController {
         guard let product = product as? EditableProductModel else {
             return
         }
-        let viewModel = BundledProductsListViewModel()
+        let viewModel = BundledProductsListViewModel(siteID: product.siteID, bundleItems: product.bundledItems)
         let viewController = BundledProductsListViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }

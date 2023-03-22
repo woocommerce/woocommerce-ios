@@ -44,7 +44,8 @@ enum ProductFormSection: Equatable {
         case status(viewModel: SwitchableViewModel, isEditable: Bool)
         case linkedProducts(viewModel: ViewModel, isEditable: Bool)
         case attributes(viewModel: ViewModel, isEditable: Bool)
-        case bundledProducts(viewModel: ViewModel)
+        case bundledProducts(viewModel: ViewModel, isActionable: Bool)
+        case components(viewModel: ViewModel, isActionable: Bool)
 
         struct ViewModel {
             let icon: UIImage

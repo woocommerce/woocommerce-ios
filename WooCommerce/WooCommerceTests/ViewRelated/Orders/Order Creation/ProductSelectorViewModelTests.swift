@@ -24,6 +24,22 @@ final class ProductSelectorViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_ProductSelectorViewModel_supportsMultipleSelection_is_false_on_initialization() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Then
+        XCTAssertFalse(viewModel.supportsMultipleSelection)
+    }
+
+    func test_ProductSelectorViewModel_toggleAllVariationsOnSelection_is_true_on_initialization() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Then
+        XCTAssertTrue(viewModel.toggleAllVariationsOnSelection)
+    }
+
     func test_view_model_is_initialized_with_default_values() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
@@ -172,6 +188,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 self.insert(product, withSearchTerm: "shirt")
                 onCompletion(.success(()))
                 expectation.fulfill()
+            case .searchProductsInCache:
+                break
             default:
                 XCTFail("Unsupported Action")
             }
@@ -183,6 +201,58 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.productRows.count, 1)
+    }
+
+    func test_entering_search_term_when_there_are_no_filters_then_performs_local_product_search() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let expectation = expectation(description: "Completed product search")
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .searchProducts:
+                break
+            case let .searchProductsInCache(_, _, _, onCompletion):
+                let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
+                self.insert(product, withSearchTerm: "shirt")
+                onCompletion(true)
+                expectation.fulfill()
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.searchTerm = "shirt"
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1)
+    }
+
+    func test_entering_search_term_when_there_are_no_cached_items_then_it_does_not_reload_products() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let expectation = expectation(description: "Completed product search")
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .searchProducts:
+                break
+            case let .searchProductsInCache(_, _, _, onCompletion):
+                let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
+                self.insert(product, withSearchTerm: "shirt")
+                onCompletion(false)
+                expectation.fulfill()
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.searchTerm = "shirt"
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 0)
     }
 
     func test_searching_products_filters_product_list_as_expected() {
@@ -199,6 +269,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 self.insert(shirt, withSearchTerm: "shirt")
                 onCompletion(.success(()))
                 expectation.fulfill()
+            case .searchProductsInCache:
+                break
             default:
                 XCTFail("Unsupported Action")
             }
@@ -261,6 +333,19 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 2)
     }
 
+    func test_searchTerm_and_filters_are_clear_on_init() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(viewModel.searchTerm, "")
+        XCTAssertNil(viewModel.filters.stockStatus)
+        XCTAssertNil(viewModel.filters.productCategory)
+        XCTAssertNil(viewModel.filters.productType)
+        XCTAssertNil(viewModel.filters.productCategory)
+        XCTAssertEqual(viewModel.filters.numberOfActiveFilters, 0)
+    }
+
     func test_view_model_fires_error_notice_when_product_sync_fails() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, stores: stores)
@@ -291,6 +376,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                     onCompletion(.failure(NSError(domain: "Error", code: 0)))
                     promise(viewModel.notice)
+                case .searchProductsInCache:
+                    break
                 default:
                     XCTFail("Received unsupported action: \(action)")
                 }

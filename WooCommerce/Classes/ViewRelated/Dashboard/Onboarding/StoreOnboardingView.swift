@@ -8,8 +8,11 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
     private let viewModel: StoreOnboardingViewModel
     private let sourceNavigationController: UINavigationController
     private let site: Site
-    private lazy var coordinator: StoreOnboardingCoordinator = .init(navigationController: sourceNavigationController,
-                                                                     site: site)
+    private lazy var coordinator = StoreOnboardingCoordinator(navigationController: sourceNavigationController,
+                                                              site: site,
+                                                              onTaskCompleted: { [weak self] in
+        self?.reloadTasks()
+    })
 
     init(viewModel: StoreOnboardingViewModel,
          navigationController: UINavigationController,
@@ -27,7 +30,10 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         }
 
         rootView.taskTapped = { [weak self] task in
-            guard let self else { return }
+            guard let self,
+                  !task.isComplete else {
+                return
+            }
             self.coordinator.start(task: task)
         }
 
@@ -48,22 +54,18 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         super.viewDidLoad()
 
         configureNavigationBarAppearance()
-        Task {
-            await reloadTasks()
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        Task {
-            await reloadTasks()
-        }
+        reloadTasks()
     }
 
-    @MainActor
-    func reloadTasks() async {
-        await viewModel.reloadTasks()
+    private func reloadTasks() {
+        Task { @MainActor in
+            await viewModel.reloadTasks()
+        }
     }
 
     /// Shows a transparent navigation bar without a bottom border.
@@ -140,7 +142,7 @@ struct StoreOnboardingView: View {
 
                 // View all button
                 viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
-                    .renderedIf(!viewModel.isExpanded)
+                    .renderedIf(viewModel.shouldShowViewAllButton)
 
                 Spacer()
                     .renderedIf(viewModel.isExpanded)
@@ -192,8 +194,8 @@ private extension StoreOnboardingView {
 
 struct StoreOnboardingCardView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingView(viewModel: .init(isExpanded: false, siteID: 0))
+        StoreOnboardingView(viewModel: .init(siteID: 0, isExpanded: false))
 
-        StoreOnboardingView(viewModel: .init(isExpanded: true, siteID: 0))
+        StoreOnboardingView(viewModel: .init(siteID: 0, isExpanded: true))
     }
 }

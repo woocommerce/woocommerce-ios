@@ -79,7 +79,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
 
     private func disconnect() {
         let action = CardPresentPaymentAction.disconnect { _ in }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     private func beginConnectivityObservation() {
@@ -98,12 +98,12 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
 
     func setUpTapped() {
         setUpInProgress = true
-        connectionController?.searchAndConnect { _ in
+        connectionController?.searchAndConnect { [weak self] _ in
             /// No need for logic here. Once connected, the connected reader will publish
             /// through the `cardReaderAvailableSubscription`, so we can just
             /// dismiss the connection flow alerts.
-            self.alertsPresenter?.dismiss()
-            self.setUpInProgress = false
+            self?.alertsPresenter?.dismiss()
+            self?.setUpInProgress = false
         }
     }
 

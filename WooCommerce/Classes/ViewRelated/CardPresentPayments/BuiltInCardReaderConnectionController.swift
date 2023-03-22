@@ -121,7 +121,6 @@ final class BuiltInCardReaderConnectionController {
         self.analyticsTracker = analyticsTracker
 
         configureResultsControllers()
-        loadPaymentGatewayAccounts()
     }
 
     deinit {
@@ -144,11 +143,6 @@ private extension BuiltInCardReaderConnectionController {
         })
         // Sets gateway ID from initial fetch.
         gatewayID = dataSource.cardPresentPaymentGatewayID()
-    }
-
-    func loadPaymentGatewayAccounts() {
-        let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) {_ in}
-        stores.dispatch(action)
     }
 
     func didSetState() {

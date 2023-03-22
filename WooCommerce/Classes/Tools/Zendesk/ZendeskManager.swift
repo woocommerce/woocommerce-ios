@@ -1,4 +1,5 @@
 import Foundation
+import WordPressAuthenticator
 #if !targetEnvironment(macCatalyst)
 import SupportSDK
 import ZendeskCoreSDK

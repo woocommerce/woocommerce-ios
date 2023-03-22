@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 12.8
+This release includes a few enhancements to your store management experience. It's now possible to use the iOS Shortcuts app to create an order and collect payments from the WooCommerce mobile apps! Please try it out and share your feedback.
+
 ## 12.7
 This release has several fixes and improvements that makes it easier for you to manage your store from the app. Please continue to send us feedback – we are listening!
 

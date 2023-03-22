@@ -170,6 +170,22 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         false
     }
 
+    var bundledItems: [ProductBundleItem] {
+        []
+    }
+
+    var bundleStockStatus: ProductStockStatus? {
+        nil
+    }
+
+    var bundleStockQuantity: Int64? {
+        nil
+    }
+
+    var compositeComponents: [ProductCompositeComponent] {
+        []
+    }
+
     // Visibility logic
 
     func allowsMultipleImages() -> Bool {

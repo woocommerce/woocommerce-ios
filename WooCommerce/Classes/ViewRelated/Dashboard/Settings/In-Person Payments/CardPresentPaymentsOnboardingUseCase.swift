@@ -34,6 +34,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     let configurationLoader: CardPresentConfigurationLoader
     let featureFlagService: FeatureFlagService
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProvider
+    private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
     private var preferredPluginLocal: CardPresentPaymentsPlugin?
     private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
@@ -48,15 +49,22 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
-        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
+        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+        cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = CardPresentPaymentOnboardingStateCache.shared
     ) {
         self.storageManager = storageManager
         self.stores = stores
         self.configurationLoader = .init(stores: stores)
         self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores, configuration: configurationLoader.configuration)
         self.featureFlagService = featureFlagService
+        self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
 
-        updateState()
+        // Rely on cached value if there's any
+        if let cachedValue = cardPresentPaymentOnboardingStateCache.value {
+            state = cachedValue
+        } else {
+            updateState()
+        }
     }
 
     func refresh() {
@@ -76,6 +84,17 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         refreshOnboardingState()
     }
 
+    func refreshIfNecessary() {
+        if let cachedValue = cardPresentPaymentOnboardingStateCache.value,
+           cachedValue.isCompleted {
+            if cachedValue != state {
+                state = cachedValue
+            }
+        } else {
+            refresh()
+        }
+    }
+
     private func refreshOnboardingState() {
         synchronizeStoreCountryAndPlugins { [weak self] in
             self?.updateAccounts()
@@ -91,7 +110,12 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         }
 
         let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID) { [weak self] result in
-            self?.updateState()
+            guard let self = self else {
+                return
+            }
+
+            self.updateState()
+            CardPresentPaymentOnboardingStateCache.shared.update(self.state)
         }
         stores.dispatch(paymentGatewayAccountsAction)
     }
@@ -107,6 +131,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         deferredSaveSelectedPluginWhenOnboardingComplete(selectedPlugin: selectedPlugin)
 
         updateState()
+        CardPresentPaymentOnboardingStateCache.shared.update(self.state)
     }
 
     private func deferredSaveSelectedPluginWhenOnboardingComplete(selectedPlugin: CardPresentPaymentsPlugin) {

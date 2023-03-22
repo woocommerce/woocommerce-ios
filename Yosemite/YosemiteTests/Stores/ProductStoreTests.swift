@@ -89,7 +89,9 @@ final class ProductStoreTests: XCTestCase {
                                                   images: [mockImage],
                                                   attributes: [mockAttribute],
                                                   defaultAttributes: [mockDefaultAttribute],
-                                                  addOns: sampleAddOns())
+                                                  addOns: sampleAddOns(),
+                                                  bundledItems: [.fake()],
+                                                  compositeComponents: [.fake()])
         remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -119,6 +121,8 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 3)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOn.self), 3)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOnOption.self), 7)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductBundleItem.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCompositeComponent.self), 1)
     }
 
     func test_addProduct_returns_error_upon_network_error() {
@@ -169,7 +173,9 @@ final class ProductStoreTests: XCTestCase {
                                                   images: [mockImage],
                                                   attributes: [mockAttribute],
                                                   defaultAttributes: [mockDefaultAttribute],
-                                                  addOns: sampleAddOns())
+                                                  addOns: sampleAddOns(),
+                                                  bundledItems: [.fake()],
+                                                  compositeComponents: [.fake()])
         remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -185,6 +191,8 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOn.self), 3)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOnOption.self), 7)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductBundleItem.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCompositeComponent.self), 1)
 
         var result: Result<Yosemite.Product, ProductUpdateError>?
         waitForExpectation { expectation in
@@ -208,6 +216,8 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOn.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOnOption.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductBundleItem.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCompositeComponent.self), 0)
     }
 
     func test_deleteProduct_returns_error_upon_network_error() {
@@ -790,6 +800,8 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductBundleItem.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCompositeComponent.self), 0)
 
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(downloadable: true), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
@@ -800,6 +812,8 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDownload.self), 3)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductBundleItem.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCompositeComponent.self), 0)
 
         productStore.upsertStoredProduct(readOnlyProduct: sampleProductMutated(), in: viewStorage)
         let storageProduct1 = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
@@ -812,6 +826,8 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDownload.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductBundleItem.self), 2)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCompositeComponent.self), 2)
     }
 
     /// Verifies that `ProductStore.upsertStoredProduct` updates the correct site's product.
@@ -1017,6 +1033,36 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertNil(searchResultsWithAnotherKeyword)
     }
 
+    func test_searchProductsInCache_then_effectively_persists_search_results_entity() throws {
+        // Given
+        let keyword = "test"
+        let product = sampleProduct(name: keyword)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let thereAreCachedResults: Bool = waitFor { promise in
+            let action = ProductAction.searchProductsInCache(siteID: self.sampleSiteID,
+                                                             keyword: keyword,
+                                                             pageSize: self.defaultPageSize,
+                                                             onCompletion: { result in
+                promise(result)
+            })
+
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(thereAreCachedResults)
+        let searchResults = try XCTUnwrap(viewStorage.loadProductSearchResults(keyword: keyword, filterKey: ProductSearchFilter.all.rawValue))
+        XCTAssertEqual(searchResults.keyword, keyword)
+        XCTAssertEqual(searchResults.products?.count, viewStorage.countObjects(ofType: Storage.Product.self))
+
+        let anotherKeyword = "hello"
+        let searchResultsWithAnotherKeyword = viewStorage.loadProductSearchResults(keyword: anotherKeyword, filterKey: ProductSearchFilter.all.rawValue)
+        XCTAssertNil(searchResultsWithAnotherKeyword)
+    }
+
     /// Verifies that `ProductAction.searchProducts` does not result in duplicated entries in the ProductSearchResults entity.
     ///
     func test_searchProducts_does_not_produce_duplicated_references() {
@@ -1119,6 +1165,8 @@ final class ProductStoreTests: XCTestCase {
         let expectedProductTaxClass = "reduced-rate"
         let expectedDownloadableFileCount = 0
         let expectedDownloadable = false
+        let expectedBundleStockStatus = ProductStockStatus.insufficientStock
+        let expectedBundleStockQuantity: Int64 = 0
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         let product = sampleProduct(productID: expectedProductID)
@@ -1161,6 +1209,8 @@ final class ProductStoreTests: XCTestCase {
             XCTAssertEqual(product.taxClass, expectedProductTaxClass)
             XCTAssertEqual(product.downloadable, expectedDownloadable)
             XCTAssertEqual(product.downloads.count, expectedDownloadableFileCount)
+            XCTAssertEqual(product.bundleStockStatus, expectedBundleStockStatus)
+            XCTAssertEqual(product.bundleStockQuantity, expectedBundleStockQuantity)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
@@ -1657,6 +1707,7 @@ final class ProductStoreTests: XCTestCase {
 private extension ProductStoreTests {
 
     func sampleProduct(_ siteID: Int64? = nil,
+                       name: String? = nil,
                        productID: Int64? = nil,
                        productShippingClass: Networking.ProductShippingClass? = nil,
                        tags: [Networking.ProductTag]? = nil,
@@ -1666,7 +1717,7 @@ private extension ProductStoreTests {
         let testProductID = productID ?? sampleProductID
         return Product(siteID: testSiteID,
                        productID: testProductID,
-                       name: "Book the Green Room",
+                       name: name ?? "Book the Green Room",
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
                        date: DateFormatter.dateFromString(with: "2019-02-19T17:33:31"),
@@ -1732,9 +1783,10 @@ private extension ProductStoreTests {
                        groupedProducts: [],
                        menuOrder: 0,
                        addOns: addOns ?? sampleAddOns(),
-                       bundleStockStatus: nil,
+                       bundleStockStatus: .inStock,
                        bundleStockQuantity: nil,
-                       bundledItems: [])
+                       bundledItems: [],
+                       compositeComponents: [])
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {
@@ -1891,9 +1943,10 @@ private extension ProductStoreTests {
                        groupedProducts: [111, 222, 333],
                        menuOrder: 0,
                        addOns: [],
-                       bundleStockStatus: nil,
-                       bundleStockQuantity: nil,
-                       bundledItems: [])
+                       bundleStockStatus: .insufficientStock,
+                       bundleStockQuantity: 0,
+                       bundledItems: [.fake(), .fake()],
+                       compositeComponents: [.fake(), .fake()])
     }
 
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
@@ -2026,7 +2079,8 @@ private extension ProductStoreTests {
                        addOns: [],
                        bundleStockStatus: nil,
                        bundleStockQuantity: nil,
-                       bundledItems: [])
+                       bundledItems: [],
+                       compositeComponents: [])
     }
 
     func sampleVariationTypeDimensions() -> Networking.ProductDimensions {

@@ -141,6 +141,7 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Initializer for single selection
     ///
     init(siteID: Int64,
+         selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
@@ -148,7 +149,8 @@ final class ProductSelectorViewModel: ObservableObject {
          isClearSelectionEnabled: Bool = true,
          toggleAllVariationsOnSelection: Bool = true,
          onProductSelected: ((Product) -> Void)? = nil,
-         onVariationSelected: ((ProductVariation, Product) -> Void)? = nil) {
+         onVariationSelected: ((ProductVariation, Product) -> Void)? = nil,
+         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -157,8 +159,8 @@ final class ProductSelectorViewModel: ObservableObject {
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.onProductSelected = onProductSelected
         self.onVariationSelected = onVariationSelected
-        self.onMultipleSelectionCompleted = nil
-        self.initialSelectedItems = []
+        self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
+        self.initialSelectedItems = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
 
         configureSyncingCoordinator()
@@ -340,6 +342,8 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     /// Sync products matching a given keyword.
     ///
     private func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+        searchProductsInCacheIfPossible(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize)
+
         let action = ProductAction.searchProducts(siteID: siteID,
                                                   keyword: keyword,
                                                   pageNumber: pageNumber,
@@ -365,6 +369,27 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
             self.transitionToResultsUpdatedState()
             onCompletion?(result.isSuccess)
+        }
+
+        stores.dispatch(action)
+    }
+
+    private func searchProductsInCacheIfPossible(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int) {
+        // At the moment local search supports neither filters nor pagination
+        guard filters.numberOfActiveFilters == 0,
+              pageNumber == 1 else {
+            return
+        }
+
+        let action = ProductAction.searchProductsInCache(siteID: siteID, keyword: keyword, pageSize: pageSize) { [weak self ] thereAreCachedResults in
+            guard let self = self,
+                  keyword == self.searchTerm else {
+                return
+            }
+            if thereAreCachedResults {
+                self.updateProductsResultsController()
+                self.transitionToResultsUpdatedState()
+            }
         }
 
         stores.dispatch(action)

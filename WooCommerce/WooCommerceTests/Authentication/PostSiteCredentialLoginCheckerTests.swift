@@ -128,6 +128,8 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
             case .fetchSiteInfo(_, let completion):
                 let site = Site.fake().copy(isWooCommerceActive: true)
                 completion(.success(site))
+            default:
+                break
             }
         }
         checker.checkEligibility(for: testURL, from: navigationController) {
@@ -155,6 +157,8 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
             case .fetchSiteInfo(_, let completion):
                 let site = Site.fake().copy(isWooCommerceActive: false)
                 completion(.success(site))
+            default:
+                break
             }
         }
         checker.checkEligibility(for: testURL, from: navigationController) {
@@ -183,6 +187,8 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
             switch action {
             case .fetchSiteInfo(_, let completion):
                 completion(.failure(NetworkError.timeout))
+            default:
+                break
             }
         }
         checker.checkEligibility(for: testURL, from: navigationController) {

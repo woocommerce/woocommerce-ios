@@ -1,12 +1,15 @@
 import Foundation
 import KeychainAccess
 import WordPressAuthenticator
+import WordPressUI
 import Yosemite
 import class Networking.UserAgent
 import enum Experiments.ABTest
 import struct Networking.Settings
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
+import protocol Networking.ApplicationPasswordUseCase
+import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
 import protocol Experiments.ABTestVariationProvider
 import struct Experiments.CachedABTestVariationProvider
@@ -270,20 +273,33 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping  (Error, Bool) -> Void) {
         let useCase = SiteCredentialLoginUseCase(siteURL: credentials.siteURL)
-        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { error in
+        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error in
+            guard let self else { return }
             onLoading(false)
-            let incorrectCredentials: Bool = {
-                if case .wrongCredentials = error {
-                    return true
-                }
-                return false
-            }()
-            onFailure(error.underlyingError, incorrectCredentials)
+            onFailure(error.underlyingError, false)
+            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication, error: error))
         })
         self.siteCredentialLoginUseCase = useCase
 
         useCase.handleLogin(username: credentials.username, password: credentials.password)
         onLoading(true)
+    }
+
+    func handleSiteCredentialLoginFailure(error: Error,
+                                          for siteURL: String,
+                                          in viewController: UIViewController) {
+        guard featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin) else {
+            return
+        }
+        let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
+            message: (error as NSError).localizedDescription,
+            defaultAction: { [weak self] in
+                guard let self else { return }
+                let webViewController = self.applicationPasswordWebView(for: siteURL)
+                viewController.navigationController?.pushViewController(webViewController, animated: true)
+            }
+        )
+        viewController.present(alertController, animated: true)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.
@@ -433,7 +449,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let action = AccountAction.synchronizeAccount { result in
             switch result {
             case .success(let account):
-                let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
+                let credentials = Credentials.wpcom(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
                 ServiceLocator.stores
                     .authenticate(credentials: credentials)
                     .synchronizeEntities(onCompletion: onCompletion)
@@ -635,6 +651,31 @@ private extension AuthenticationManager {
         return ULErrorViewController(viewModel: viewModel)
     }
 
+    /// Web view to authorize application password for a given site.
+    ///
+    func applicationPasswordWebView(for siteURL: String) -> UIViewController {
+        let viewModel = ApplicationPasswordAuthorizationViewModel(siteURL: siteURL)
+        let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel,
+                                                                           onSuccess: { [weak self] applicationPassword, navigationController in
+            guard let navigationController else {
+                DDLogInfo("⚠️ No navigation controller found")
+                return
+            }
+            let credentials: Credentials = .applicationPassword(
+                username: applicationPassword.wpOrgUsername,
+                password: applicationPassword.password.secretValue,
+                siteAddress: siteURL
+            )
+            let useCase = OneTimeApplicationPasswordUseCase(applicationPassword: applicationPassword,
+                                                            siteAddress: siteURL)
+            /// IMPORTANT: authenticate after creating the use case above to make sure that
+            /// the application password is saved into keychain.
+            ServiceLocator.stores.authenticate(credentials: credentials)
+            self?.checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
+        })
+        return controller
+    }
+
     /// The error screen to be displayed when Jetpack setup for a site is required.
     /// This is the entry point to the native Jetpack setup flow.
     ///
@@ -681,6 +722,12 @@ private extension AuthenticationManager {
         ) else {
             return assertionFailure("⛔️ Error creating application password use case")
         }
+        checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
+    }
+
+    func checkSiteCredentialLogin(to siteURL: String,
+                                  with useCase: ApplicationPasswordUseCase,
+                                  in navigationController: UINavigationController) {
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
         checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
             guard let self else { return }

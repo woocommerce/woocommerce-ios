@@ -54,7 +54,7 @@ final class CardPresentPaymentsReadinessUseCase {
 
             readerConnectedReadiness.sink { [weak self] readiness in
                 if case .loading = readiness {
-                    self?.onboardingUseCase.forceRefresh()
+                    self?.onboardingUseCase.refreshIfNecessary()
                 }
             }
             .store(in: &self.cancellables)

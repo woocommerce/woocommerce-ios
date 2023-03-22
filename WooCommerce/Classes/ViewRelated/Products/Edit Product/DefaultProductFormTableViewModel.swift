@@ -112,8 +112,10 @@ private extension DefaultProductFormTableViewModel {
                 return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: true))
             case .attributes(let editable):
                 return .attributes(viewModel: productVariationsAttributesRow(product: product.product, isEditable: editable), isEditable: editable)
-            case .bundledProducts:
-                return .bundledProducts(viewModel: bundledProductsRow(product: product))
+            case .bundledProducts(let actionable):
+                return .bundledProducts(viewModel: bundledProductsRow(product: product, isActionable: actionable), isActionable: actionable)
+            case .components(let actionable):
+                return .components(viewModel: componentsRow(product: product, isActionable: actionable), isActionable: actionable)
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -512,15 +514,46 @@ private extension DefaultProductFormTableViewModel {
 
     // MARK: Bundle products only
 
-    func bundledProductsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
+    func bundledProductsRow(product: ProductFormDataModel, isActionable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.widgetsImage
         let title = Localization.bundledProductsTitle
+        let details: String
 
-        let details = "3 products" // TODO-8954: Display actual bundled product count (localized)
+        switch product.bundledItems.count {
+        case 1:
+            details = .localizedStringWithFormat(Localization.singularBundledProductFormat, product.bundledItems.count)
+        case 2...:
+            details = .localizedStringWithFormat(Localization.pluralBundledProductsFormat, product.bundledItems.count)
+        default:
+            details = ""
+        }
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
-                                                        details: details)
+                                                        details: details,
+                                                        isActionable: isActionable)
+    }
+
+    // MARK: Composite products only
+
+    func componentsRow(product: ProductFormDataModel, isActionable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.widgetsImage
+        let title = Localization.componentsTitle
+        let details: String
+
+        switch product.compositeComponents.count {
+        case 1:
+            details = .localizedStringWithFormat(Localization.singularComponentFormat, product.compositeComponents.count)
+        case 2...:
+            details = .localizedStringWithFormat(Localization.pluralComponentsFormat, product.compositeComponents.count)
+        default:
+            details = ""
+        }
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        isActionable: isActionable)
     }
 }
 
@@ -717,5 +750,16 @@ private extension DefaultProductFormTableViewModel {
 
         // Bundled products
         static let bundledProductsTitle = NSLocalizedString("Bundled products", comment: "Title for Bundled Products row in the product form screen.")
+        static let singularBundledProductFormat = NSLocalizedString("%ld product",
+                                                                    comment: "Format of the number of bundled products in singular form")
+        static let pluralBundledProductsFormat = NSLocalizedString("%ld products",
+                                                                   comment: "Format of the number of bundled products in plural form")
+
+        // Components
+        static let componentsTitle = NSLocalizedString("Components", comment: "Title for Components row in the product form screen.")
+        static let singularComponentFormat = NSLocalizedString("%ld component",
+                                                               comment: "Format of the number of components in singular form")
+        static let pluralComponentsFormat = NSLocalizedString("%ld components",
+                                                              comment: "Format of the number of components in plural form")
     }
 }

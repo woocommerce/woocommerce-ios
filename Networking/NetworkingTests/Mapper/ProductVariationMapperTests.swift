@@ -27,6 +27,20 @@ final class ProductVariationMapperTests: XCTestCase {
 
         XCTAssertEqual(productVariation, sampleProductVariation(siteID: dummySiteID, productID: dummyProductID, id: 2783))
     }
+
+    /// Verifies that the fields of the Product Variations with alternative types are parsed correctly when they have different types than in the struct.
+    /// Currently, `price`, `regularPrice`, `salePrice`, `manageStock`, `purchasable`, and `permalink`  allow alternative types.
+    ///
+    func test_that_product_variations_alternative_types_are_properly_parsed() throws {
+        let productVariation = try XCTUnwrap(mapLoadProductVariationResponseWithAlternativeTypes())
+
+        XCTAssertEqual(productVariation.price, "13.99")
+        XCTAssertEqual(productVariation.regularPrice, "16")
+        XCTAssertEqual(productVariation.salePrice, "9.99")
+        XCTAssertFalse(productVariation.manageStock)
+        XCTAssertTrue(productVariation.purchasable)
+        XCTAssertEqual(productVariation.permalink, "")
+    }
 }
 
 /// Private Helpers
@@ -52,6 +66,12 @@ private extension ProductVariationMapperTests {
     ///
     func mapLoadProductVariationResponseWithoutDataEnvelope() -> ProductVariation? {
         return mapProductVariation(from: "product-variation-update-without-data")
+    }
+
+    /// Returns the ProductVariationMapper output upon receiving `ProductVariation`
+    ///
+    func mapLoadProductVariationResponseWithAlternativeTypes() -> ProductVariation? {
+        return mapProductVariation(from: "product-variation-alternative-types")
     }
 }
 

@@ -45,10 +45,10 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
     ///
     private func reevaluateShouldShow() {
         let newShouldShow: CardReaderSettingsTriState
-        switch (doneWasTapped, connectedReader) {
-        case (true, _):
+
+        if doneWasTapped {
             newShouldShow = .isFalse
-        case (false, _):
+        } else {
             newShouldShow = connectedReader
         }
 

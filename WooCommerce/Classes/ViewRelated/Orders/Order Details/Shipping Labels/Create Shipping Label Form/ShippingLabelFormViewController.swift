@@ -219,9 +219,8 @@ private extension ShippingLabelFormViewController {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "origin_address_started"])
 
             // Skip remote validation and navigate to edit address
-            // if customs form is required and phone number is not found.
-            if self.viewModel.customsFormRequired,
-               let originAddress = self.viewModel.originAddress,
+            // if phone number is not found.
+            if let originAddress = self.viewModel.originAddress,
                originAddress.phone.isEmpty {
                 return self.displayEditAddressFormVC(address: originAddress, email: nil, validationError: nil, type: .origin)
             }
@@ -392,13 +391,14 @@ private extension ShippingLabelFormViewController {
             ServiceLocator.noticePresenter.enqueue(notice: notice)
             return
         }
-        let isPhoneNumberRequired = viewModel.customsFormRequired
+        let isPhoneNumberRequired = viewModel.customsFormRequired || type == .origin
         let shippingAddressVC = ShippingLabelAddressFormViewController(
             siteID: viewModel.siteID,
             type: type,
             address: address,
             email: email,
             phoneNumberRequired: isPhoneNumberRequired,
+            needsPhoneNumberValidation: viewModel.customsFormRequired,
             validationError: validationError,
             countries: viewModel.filteredCountries(for: type),
             completion: { [weak self] (newShippingLabelAddress) in

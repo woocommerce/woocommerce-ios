@@ -48,9 +48,6 @@ struct StoreCreationSuccessView: View {
     /// URL of the newly created site.
     let siteURL: URL
 
-    // Tracks the scale of the view due to accessibility changes.
-    @ScaledMetric private var scale: CGFloat = 1.0
-
     @State private var isPresentingWebview: Bool = false
 
     var body: some View {
@@ -62,13 +59,7 @@ struct StoreCreationSuccessView: View {
                     .titleStyle()
 
                 // Readonly webview for the new site.
-                WebView(isPresented: .constant(true), url: siteURL)
-                    .frame(height: 400 * scale)
-                    .disabled(true)
-                    .border(Color(.systemBackground), width: 8)
-                    .cornerRadius(8)
-                    .shadow(color: Color(.secondaryLabel), radius: 26)
-                    .padding(.horizontal, insets: Layout.webviewHorizontalPadding)
+                SitePreviewView(siteURL: siteURL)
             }
             .padding(Layout.contentPadding)
         }
@@ -104,7 +95,6 @@ private extension StoreCreationSuccessView {
     enum Layout {
         static let contentPadding: EdgeInsets = .init(top: 38, leading: 16, bottom: 16, trailing: 16)
         static let buttonContainerPadding: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
-        static let webviewHorizontalPadding: EdgeInsets = .init(top: 0, leading: 44, bottom: 0, trailing: 44)
     }
 
     enum Localization {

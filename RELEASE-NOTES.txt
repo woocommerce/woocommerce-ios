@@ -2,6 +2,7 @@
 
 12.9
 -----
+- [*] Payments: Local search is added to the products selection screen in the order creation flow to speed the process. [https://github.com/woocommerce/woocommerce-ios/pull/9178]
 - [*] Fix: Prevent product variations not loading due to an encoding error for `permalink`, which was altered by a plugin. [https://github.com/woocommerce/woocommerce-ios/pull/9233]
 
 12.8

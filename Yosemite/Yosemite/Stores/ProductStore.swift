@@ -46,6 +46,8 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
+            searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
                                  keyword,
                                  filter,
@@ -57,6 +59,7 @@ public class ProductStore: Store {
                                  productCategory,
                                  excludedProductIDs,
                                  onCompletion):
+
             searchProducts(siteID: siteID,
                            keyword: keyword,
                            filter: filter,
@@ -168,6 +171,22 @@ private extension ProductStore {
                                           onCompletion: onCompletion)
             }
         }
+    }
+
+    func searchInCache(siteID: Int64, keyword: String, pageSize: Int, onCompletion: @escaping (Bool) -> Void) {
+        let namePredicate = NSPredicate(format: "name LIKE[c] %@", keyword)
+        let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [namePredicate, sitePredicate])
+
+        let results = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
+                                                      matching: predicate,
+                                                      sortedBy: nil)
+
+        handleSearchResults(siteID: siteID,
+                            keyword: keyword,
+                            filter: .all,
+                            result: Result.success(results.prefix(pageSize).map { $0.toReadOnly() }),
+                            onCompletion: { _ in onCompletion(!results.isEmpty) })
     }
 
     /// Synchronizes the products associated with a given Site ID, sorted by ascending name.

@@ -127,7 +127,7 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
-    private let viewModel: DashboardViewModel = .init()
+    private let viewModel: DashboardViewModel
 
     private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
 
@@ -138,6 +138,7 @@ final class DashboardViewController: UIViewController {
 
     init(siteID: Int64) {
         self.siteID = siteID
+        self.viewModel = .init(siteID: siteID)
         super.init(nibName: nil, bundle: nil)
         configureTabBarItem()
     }
@@ -629,8 +630,8 @@ private extension DashboardViewController {
 
 private extension DashboardViewController {
     func observeOnboardingVisibility() {
-        Publishers.CombineLatest(viewModel.$showOnboarding,
-                                 ServiceLocator.stores.site.compactMap { $0 })
+        Publishers.CombineLatest(viewModel.$showOnboarding.removeDuplicates(),
+                                 ServiceLocator.stores.site.compactMap { $0 }.removeDuplicates())
         .sink { [weak self] showsOnboarding, site in
             guard let self else { return }
             if showsOnboarding {
@@ -660,8 +661,7 @@ private extension DashboardViewController {
             removeOnboardingCard()
         }
 
-        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false,
-                                                                                      siteID: site.siteID),
+        let hostingController = StoreOnboardingViewHostingController(viewModel: viewModel.storeOnboardingViewModel,
                                                                      navigationController: navigationController,
                                                                      site: site,
                                                                      shareFeedbackAction: { [weak self] in
@@ -791,7 +791,7 @@ private extension DashboardViewController {
                 await self?.reloadDashboardUIStatsVersion(forced: true)
             }
             group.addTask { [weak self] in
-                await self?.onboardingHostingController?.reloadTasks()
+                await self?.viewModel.reloadStoreOnboardingTasks()
             }
         }
     }

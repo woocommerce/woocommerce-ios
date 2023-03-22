@@ -6,20 +6,6 @@ import XCTest
 /// Test cases for `StoreOnboardingViewHostingController`.
 ///
 final class StoreOnboardingViewHostingControllerTests: XCTestCase {
-    func test_it_reloads_tasks_when_view_loads() {
-        // Given
-        let mockViewModel = MockStoreOnboardingViewModel()
-        let sut = StoreOnboardingViewHostingController(viewModel: mockViewModel, navigationController: .init(), site: .fake(), shareFeedbackAction: nil)
-
-        // When
-        sut.viewDidLoad()
-
-        // Then
-        waitUntil {
-            mockViewModel.reloadTasksCalled
-        }
-    }
-
     func test_it_reloads_tasks_when_view_appears() {
         // Given
         let mockViewModel = MockStoreOnboardingViewModel()
@@ -37,7 +23,7 @@ final class StoreOnboardingViewHostingControllerTests: XCTestCase {
 
 private class MockStoreOnboardingViewModel: StoreOnboardingViewModel {
     init() {
-        super.init(isExpanded: true, siteID: 0)
+        super.init(siteID: 0, isExpanded: true)
     }
 
     var reloadTasksCalled: Bool = false

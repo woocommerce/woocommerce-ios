@@ -151,6 +151,9 @@ public enum BottomSheetProductType: Hashable {
         case .bundle:
             // We do not yet support product editing or creation for bundles
             self = .custom("bundle")
+        case .composite:
+            // We do not yet support product editing or creation for composites
+            self = .custom("composite")
         case .custom(let string):
             self = .custom(string)
         }

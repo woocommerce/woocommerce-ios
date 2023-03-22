@@ -54,7 +54,7 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
             return assertionFailure("Invalid URL for onboarding payments setup: \(urlString)")
         }
 
-        let webViewModel = DefaultAuthenticatedWebViewModel(title: title, initialURL: url)
+        let webViewModel = WPAdminWebViewModel(title: title, initialURL: url)
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
         webViewController.navigationItem.leftBarButtonItem = .init(barButtonSystemItem: .done, target: self, action: #selector(dismissWebview))
         navigationController.show(webViewController, sender: navigationController)

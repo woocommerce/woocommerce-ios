@@ -3,6 +3,7 @@
 12.9
 -----
 - [*] Jetpack benefit banner and modal is now available on the dashboard screen after logging in with site credentials. [https://github.com/woocommerce/woocommerce-ios/pull/9232]
+- [*] Fix: Prevent product variations not loading due to an encoding error for `permalink`, which was altered by a plugin. [https://github.com/woocommerce/woocommerce-ios/pull/9233]
 
 12.8
 -----

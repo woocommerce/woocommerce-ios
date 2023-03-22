@@ -1,1 +1,1 @@
-Den här versionen innehåller flertalet korrigeringar och förbättringar som gör det enklare för dig att hantera din butik via appen. Fortsätt att skicka feedback – vi lyssnar.
+Den här versionen inkluderar ett antal förbättringar av din butikshanteringsupplevelse. Det är nu möjligt att använda Genvägar-appen i iOS för att skapa en beställning och att ta emot betalningar från WooCommerce-mobilapparna. Prova och dela din feedback.

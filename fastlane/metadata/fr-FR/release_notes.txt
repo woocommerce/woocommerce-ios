@@ -1,1 +1,1 @@
-Cette version comporte plusieurs corrections et améliorations qui vous permettent de gérer plus facilement votre boutique depuis l’application. N’hésitez pas à continuer à nous envoyer vos commentaires ; nous en tenons compte !
+Cette version apporte quelques améliorations à la gestion de votre boutique. Il est désormais possible d’utiliser l’application Raccourcis iOS pour créer une commande et recevoir des paiements depuis les applications mobiles WooCommerce ! Essayez-la et dites-nous ce que vous en pensez.

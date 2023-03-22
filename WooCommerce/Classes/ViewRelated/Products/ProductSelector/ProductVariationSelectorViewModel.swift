@@ -191,7 +191,23 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     /// Unselect all items.
     ///
     func clearSelection() {
-        selectedProductVariationIDs = []
+        if ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection) &&
+           ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
+            // Multi-Selection
+            selectedProductVariationIDs.forEach { variationID in
+                guard let parentProduct = productResultsController.fetchedObjects.first,
+                      let selectedVariation = productVariations.first(where: { $0.productVariationID == variationID  }) else {
+                    return
+                }
+                if let onVariationSelected {
+                    onVariationSelected(selectedVariation, parentProduct)
+                }
+            }
+            selectedProductVariationIDs = []
+        // Single-Selection
+        } else {
+            selectedProductVariationIDs = []
+        }
     }
 }
 

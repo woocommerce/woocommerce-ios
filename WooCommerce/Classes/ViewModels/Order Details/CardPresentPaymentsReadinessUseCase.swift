@@ -31,13 +31,12 @@ final class CardPresentPaymentsReadinessUseCase {
          stores: StoresManager = ServiceLocator.stores) {
         self.onboardingUseCase = onboardingUseCase
         self.stores = stores
-        checkCardPaymentReadiness()
     }
 
     /// Checks whether there is a reader connected (implying that we're ready to accept payments)
     /// If there's not, checks whether `CardPresentOnboardingState` is `.completed`
     ///
-    private func checkCardPaymentReadiness() {
+    func checkCardPaymentReadiness() {
         let readerConnected = CardPresentPaymentAction.publishCardReaderConnections { [weak self] connectPublisher in
             guard let self = self else { return }
             let readerConnectedReadiness = connectPublisher

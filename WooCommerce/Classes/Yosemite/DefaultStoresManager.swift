@@ -341,7 +341,7 @@ private extension DefaultStoresManager {
             credentials.hasPlaceholderUsername() else {
             return
         }
-        authenticate(credentials: .init(username: account.username, authToken: authToken, siteAddress: siteAddress))
+        authenticate(credentials: .wpcom(username: account.username, authToken: authToken, siteAddress: siteAddress))
     }
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.

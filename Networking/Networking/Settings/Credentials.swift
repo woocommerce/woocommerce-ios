@@ -16,22 +16,16 @@ public enum Credentials: Equatable {
     ///
     case applicationPassword(username: String, password: String, siteAddress: String)
 
-    /// For WPCOM credentials
+    /// For WPCOM credentials with placeholder site address
     ///
-    public init(username: String, authToken: String, siteAddress: String? = nil) {
-        self = .wpcom(username: username, authToken: authToken, siteAddress: siteAddress ?? Constants.placeholderSiteAddress)
+    public init(username: String, authToken: String) {
+        self = .wpcom(username: username, authToken: authToken, siteAddress: Constants.placeholderSiteAddress)
     }
 
-    /// For WPOrg credentials
-    ///
-    public init(username: String, password: String, siteAddress: String) {
-        self = .wporg(username: username, password: password, siteAddress: siteAddress)
-    }
-
-    /// Convenience initializer. Assigns a UUID as a placeholder for the username.
+    /// Convenience initializer for wpcom credentials. Assigns a UUID as a placeholder for the username.
     ///
     public init(authToken: String) {
-        self.init(username: UUID().uuidString, authToken: authToken, siteAddress: Constants.placeholderSiteAddress)
+        self = .wpcom(username: UUID().uuidString, authToken: authToken, siteAddress: Constants.placeholderSiteAddress)
     }
 
     /// Returns true if the username is a UUID placeholder.

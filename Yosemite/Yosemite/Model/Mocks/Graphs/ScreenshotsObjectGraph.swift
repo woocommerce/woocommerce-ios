@@ -18,7 +18,7 @@ struct i18n {
 
 struct ScreenshotObjectGraph: MockObjectGraph {
 
-     let userCredentials = Credentials(
+    let userCredentials = Credentials.wpcom(
         username: i18n.DefaultAccount.username,
         authToken: UUID().uuidString,
         siteAddress: i18n.DefaultSite.url

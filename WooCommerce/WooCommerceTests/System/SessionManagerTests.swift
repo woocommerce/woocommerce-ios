@@ -41,7 +41,7 @@ class SessionManagerTests: XCTestCase {
         }
 
         // When
-        let retrieved = Credentials(username: username, authToken: authToken, siteAddress: siteAddress)
+        let retrieved = Credentials.wpcom(username: username, authToken: authToken, siteAddress: siteAddress)
 
         // Then
         XCTAssertEqual(retrieved, Settings.wpcomCredentials)
@@ -59,10 +59,28 @@ class SessionManagerTests: XCTestCase {
         }
 
         // When
-        let retrieved = Credentials(username: username, password: password, siteAddress: siteAddress)
+        let retrieved = Credentials.wporg(username: username, password: password, siteAddress: siteAddress)
 
         // Then
         XCTAssertEqual(retrieved, Settings.wporgCredentials)
+    }
+
+    /// Verifies that `loadDefaultCredentials` effectively returns the last stored credentials
+    ///
+    func test_default_credentials_are_properly_persisted_for_application_password() {
+        // Given
+        manager.defaultCredentials = Settings.applicationPasswordCredentials
+
+        guard case let .applicationPassword(username, password, siteAddress) = manager.defaultCredentials else {
+            XCTFail("Missing credentials.")
+            return
+        }
+
+        // When
+        let retrieved = Credentials.applicationPassword(username: username, password: password, siteAddress: siteAddress)
+
+        // Then
+        XCTAssertEqual(retrieved, Settings.applicationPasswordCredentials)
     }
 
     /// Verifies that application password is deleted upon calling `deleteApplicationPassword`
@@ -181,6 +199,7 @@ class SessionManagerTests: XCTestCase {
 private enum Settings {
     static let keychainServiceName = "com.automattic.woocommerce.tests"
     static let defaults = UserDefaults(suiteName: "sessionManagerTests")!
-    static let wpcomCredentials = Credentials(username: "lalala", authToken: "1234", siteAddress: "https://example.com")
-    static let wporgCredentials = Credentials(username: "yayaya", password: "5678", siteAddress: "https://wordpress.com")
+    static let wpcomCredentials = Credentials.wpcom(username: "lalala", authToken: "1234", siteAddress: "https://example.com")
+    static let wporgCredentials = Credentials.wporg(username: "yayaya", password: "5678", siteAddress: "https://wordpress.com")
+    static let applicationPasswordCredentials = Credentials.applicationPassword(username: "username", password: "password", siteAddress: "siteAddress")
 }

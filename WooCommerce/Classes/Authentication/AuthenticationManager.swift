@@ -449,7 +449,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let action = AccountAction.synchronizeAccount { result in
             switch result {
             case .success(let account):
-                let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
+                let credentials = Credentials.wpcom(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
                 ServiceLocator.stores
                     .authenticate(credentials: credentials)
                     .synchronizeEntities(onCompletion: onCompletion)

@@ -8,6 +8,7 @@ public enum ApplicationPasswordUseCaseError: Error {
     case failedToConstructLoginOrAdminURLUsingSiteAddress
     case unauthorizedRequest
     case unableToFindPasswordUUID
+    case notSupported
 }
 
 public protocol ApplicationPasswordUseCase {

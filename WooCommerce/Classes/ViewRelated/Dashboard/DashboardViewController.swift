@@ -543,11 +543,17 @@ private extension DashboardViewController {
     }
 
     func observeAnnouncements() {
-        viewModel.$announcementViewModel.sink { [weak self] viewModel in
+        Publishers.CombineLatest(viewModel.$announcementViewModel,
+                                 viewModel.$showOnboarding)
+        .sink { [weak self] viewModel, showOnboarding in
             guard let self = self else { return }
             Task { @MainActor in
                 self.removeAnnouncement()
                 guard let viewModel = viewModel else {
+                    return
+                }
+
+                guard !showOnboarding else {
                     return
                 }
 

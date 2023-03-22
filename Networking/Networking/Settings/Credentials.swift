@@ -12,22 +12,20 @@ public enum Credentials: Equatable {
     ///
     case wporg(username: String, password: String, siteAddress: String)
 
-    /// For WPCOM credentials
+    /// For users that authorized application password through WP-admin
     ///
-    public init(username: String, authToken: String, siteAddress: String? = nil) {
-        self = .wpcom(username: username, authToken: authToken, siteAddress: siteAddress ?? Constants.placeholderSiteAddress)
+    case applicationPassword(username: String, password: String, siteAddress: String)
+
+    /// For WPCOM credentials with placeholder site address
+    ///
+    public init(username: String, authToken: String) {
+        self = .wpcom(username: username, authToken: authToken, siteAddress: Constants.placeholderSiteAddress)
     }
 
-    /// For WPOrg credentials
-    ///
-    public init(username: String, password: String, siteAddress: String) {
-        self = .wporg(username: username, password: password, siteAddress: siteAddress)
-    }
-
-    /// Convenience initializer. Assigns a UUID as a placeholder for the username.
+    /// Convenience initializer for wpcom credentials. Assigns a UUID as a placeholder for the username.
     ///
     public init(authToken: String) {
-        self.init(username: UUID().uuidString, authToken: authToken, siteAddress: Constants.placeholderSiteAddress)
+        self = .wpcom(username: UUID().uuidString, authToken: authToken, siteAddress: Constants.placeholderSiteAddress)
     }
 
     /// Returns true if the username is a UUID placeholder.
@@ -66,6 +64,8 @@ public extension Credentials {
             return username
         case .wporg(let username, _, _):
             return username
+        case .applicationPassword(let username, _, _):
+            return username
         }
     }
 
@@ -75,6 +75,8 @@ public extension Credentials {
             return siteAddress
         case .wporg(_, _, let siteAddress):
             return siteAddress
+        case .applicationPassword(_, _, let siteAddress):
+            return siteAddress
         }
     }
 
@@ -83,6 +85,8 @@ public extension Credentials {
         case .wpcom(_, let authToken, _):
             return authToken
         case .wporg(_, let password, _):
+            return password
+        case .applicationPassword(_, let password, _):
             return password
         }
     }

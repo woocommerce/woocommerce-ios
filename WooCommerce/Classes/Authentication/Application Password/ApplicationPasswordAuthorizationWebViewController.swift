@@ -8,7 +8,7 @@ import struct Networking.ApplicationPassword
 final class ApplicationPasswordAuthorizationWebViewController: UIViewController {
 
     /// Callback when application password is authorized.
-    private let onSuccess: (ApplicationPassword) -> Void
+    private let onSuccess: (ApplicationPassword, UINavigationController?) -> Void
 
     /// Main web view
     private lazy var webView: WKWebView = {
@@ -45,7 +45,7 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
     private var subscriptions: Set<AnyCancellable> = []
 
     init(viewModel: ApplicationPasswordAuthorizationViewModel,
-         onSuccess: @escaping (ApplicationPassword) -> Void) {
+         onSuccess: @escaping (ApplicationPassword, UINavigationController?) -> Void) {
         self.viewModel = viewModel
         self.onSuccess = onSuccess
         super.init(nibName: nil, bundle: nil)
@@ -68,11 +68,6 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
 private extension ApplicationPasswordAuthorizationWebViewController {
     func configureNavigationBar() {
         title = Localization.login
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .done, target: nil, action: #selector(dismissView))
-    }
-
-    @objc func dismissView() {
-        dismiss(animated: true)
     }
 
     func configureWebView() {
@@ -172,16 +167,21 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             DDLogError("⛔️ Authorization rejected for application passwords")
             return showErrorAlert(message: Localization.authorizationRejected)
         }
+
+        // hide content and show loading indicator
+        webView.isHidden = true
+        progressBar.setProgress(0, animated: false)
+        activityIndicator.startAnimating()
+
         let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: appID)
-        onSuccess(applicationPassword)
+        onSuccess(applicationPassword, navigationController)
         DDLogInfo("✅ Application password authorized")
-        dismissView()
     }
 
     func showErrorAlert(message: String, onRetry: (() -> Void)? = nil) {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         let action = UIAlertAction(title: Localization.cancel, style: .cancel) { [weak self] _ in
-            self?.dismissView()
+            self?.navigationController?.popViewController(animated: true)
         }
         alertController.addAction(action)
         if let onRetry {

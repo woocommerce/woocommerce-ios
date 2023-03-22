@@ -84,7 +84,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                 DDLogError("⛔️ Error creating Tap to Pay try a payment order: \(error)")
             }
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Updates whether the view this viewModel is associated with should be shown or not

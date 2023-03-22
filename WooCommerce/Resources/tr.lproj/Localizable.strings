@@ -203,10 +203,12 @@ which should be translated separately and considered part of this sentence. */
 "%ld files" = "%ld dosya";
 
 /* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`
+   Format of the number of bundled products in singular form
    Format of the number of grouped products in singular form */
 "%ld product" = "%ld ürün";
 
 /* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 products`
+   Format of the number of bundled products in plural form
    Format of the number of grouped products in plural form */
 "%ld products" = "%ld ürünler";
 
@@ -446,7 +448,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen.
-   Navigation bar title for selecting multiple products. */
+   Navigation bar title for selecting multiple products.
+   Title text of the button that allows to add multiple products when creating or editing an order */
 "Add Products" = "Ürün Ekle";
 
 /* Title for the Shipping Line screen during order creation
@@ -511,6 +514,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "Nitelik ekle";
+
+/* Title for the Coupon screen during order creation */
+"Add coupon" = "Kupon Ekle";
 
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Kredi kartı ekle";
@@ -998,9 +1004,6 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Beauty Products" = "Güzellik Ürünleri";
 
-/* Display label when a product bundle's add-to-cart form is displayed before the single-product tabs. */
-"Before Tabs" = "Sekmelerden Önce";
-
 /* Country option for a site address. */
 "Belarus" = "Beyaz Rusya";
 
@@ -1264,7 +1267,8 @@ which should be translated separately and considered part of this sentence. */
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen
-   Title of an option to dismiss the bulk edit action sheet */
+   Title of an option to dismiss the bulk edit action sheet
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
 "Cancel" = "İptal";
 
 /* Action button to cancel Jetpack installation. */
@@ -1511,6 +1515,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Text for the close button in the Add Product screen
+   Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Text for the close button in the Fee Details screen
    Text for the close button in the Product screen
@@ -1543,7 +1548,8 @@ which should be translated separately and considered part of this sentence. */
    Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "Ödeme Alın";
 
-/* Alert title when starting the collect payment flow without a user name. */
+/* Alert title when starting the collect payment flow without a user name.
+   Title for the Collect Payment iOS Shortcut */
 "Collect payment" = "Ödemeyi topla";
 
 /* Alert title when starting the collect payment flow with a user name. */
@@ -1632,6 +1638,7 @@ which should be translated separately and considered part of this sentence. */
    Button on the Jetpack setup interrupted screen to continue the setup
    Button title on the site credential login screen
    Button to authorize Jetpack connection from the Jetpack setup required screen
+   Title for the WPCom 2FA login screen when Jetpack is not connected yet
    Title for the WPCom email login screen when Jetpack is not connected yet
    Title for the WPCom magic link screen when Jetpack is not connected yet
    Title of the Jetpack connection web view in the login flow */
@@ -1712,9 +1719,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to contact support for help accessing a store after Jetpack setup
    Title of the view for contacting support. */
 "Contact Support" = "Destek Birimine Başvurun";
-
-/* Contact WooComerce Payments Support title */
-"Contact WooCommerce Payments Support" = "WooCommerce Payments Desteği ile iletişime geçin";
 
 /* Action button to contact support on enable analytics screen
    Local notification action to contact support.
@@ -1841,6 +1845,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "Ürünün üretildiği veya monte edildiği ülke";
+
+/* Label for the row showing the cost of coupon in the order
+   Title for the coupon field on the Coupon Details screen during order creation
+   Title for the Coupon screen during order creation */
+"Coupon" = "Kupon";
 
 /* Text field coupon code in the view for adding or editing a coupon code. */
 "Coupon Code" = "Kupon kodu";
@@ -2115,8 +2124,7 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Debt Reduction Services" = "Borç İndirimi Hizmetleri";
 
-/* Description of the default paragraph formatting style in the editor.
-   Display label for the product bundle's default form location */
+/* Description of the default paragraph formatting style in the editor. */
 "Default" = "Varsayılan";
 
 /* Button title Delete in Downloadable File Options Action Sheet
@@ -2289,6 +2297,7 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
@@ -2477,7 +2486,6 @@ which should be translated separately and considered part of this sentence. */
 "Email" = "E-posta";
 
 /* Accessibility label for the email address text field.
-   Label for the email field on the WPCom email login screen of the Jetpack setup flow.
    Placeholder for a textfield. The user may enter their email address.
    Placeholder for the email address textfield.
    Placeholder of the email field on the account creation form. */
@@ -2602,9 +2610,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
 "Enter description" = "Açıklama gir";
 
-/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
-"Enter email" = "E-posta gir";
-
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "Dosya URL'si girin";
 
@@ -2696,9 +2701,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
 "Error checking the Jetpack connection on your site" = "Sitenizdeki Jetpack bağlantısı kontrol edilirken hata oluştu";
 
-/* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
-"Error checking the WordPress.com account associated with this email. Please try again." = "Bu e-postayla ilişkili WordPress.com hesabı kontrol edilirken hata oluştu. Lütfen tekrar deneyin.";
-
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "Hata kodu %1$d";
 
@@ -2728,9 +2730,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Etiket satın alınırken hata oluştu";
-
-/* Message shown on the error alert displayed when requesting authentication link for the Jetpack setup flow fails */
-"Error requesting authentication link for your account. Please try again." = "Hesabınız için kimlik doğrulama bağlantısı istenirken hata oluştu. Lütfen tekrar deneyin.";
 
 /* Title of the notice about an error saving images uploaded in the background to a product. */
 "Error saving product images" = "Ürün görselleri kaydedilirken hata oluştu";
@@ -2963,9 +2962,6 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Sabit Ürün İndirimi";
 
-/* Display label for the product bundle's item grouping */
-"Flat" = "Düz";
-
 /* Industry option in the store creation category question. */
 "Flowers" = "Çiçek";
 
@@ -3028,9 +3024,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Gabon" = "Gabon";
-
-/* Description for Top Performers section of My Store tab. */
-"Gain insights into how products are performing on your store" = "Ürünlerin mağazanızdaki performansına dair içgörüler edinin";
 
 /* Country option for a site address. */
 "Gambia" = "Gambiya";
@@ -3171,14 +3164,10 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Grenada" = "Grenada";
 
-/* Display label for the product bundle's layout */
-"Grid" = "Izgara";
-
 /* Industry option in the store creation category question. */
 "Grocery Stores" = "Marketler";
 
-/* Display label for grouped product type.
-   Display label for the product bundle's item grouping */
+/* Display label for grouped product type. */
 "Grouped" = "Gruplanmış";
 
 /* Navigation bar title for editing linked products for a grouped product */
@@ -3400,7 +3389,8 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Apple veya Google ile devam ederseniz ve bir WordPress.com hesabınız yoksa, bir hesap oluşturur ve _Hizmet Şartlarımızı kabul edersiniz.";
 
-/* Display label for the product's inventory stock status
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "Stokta";
 
@@ -3510,6 +3500,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the site credential login screen
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
+   Title for the WPCom 2FA login screen when Jetpack is not installed yet
    Title for the WPCom email login screen when Jetpack is not installed yet
    Title for the WPCom magic link screen when Jetpack is not installed yet
    Title of install action in the Jetpack benefits view.
@@ -4275,9 +4266,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "Mağazam";
 
-/* My Tickets title */
-"My Tickets" = "Biletlerim";
-
 /* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard
    Title of the store creation summary screen. */
 "My store" = "Mağazam";
@@ -4495,7 +4483,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
-   Display label for the product bundle's item grouping
    Display label for the product's tax status setting option
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
@@ -4552,7 +4539,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Dismiss button on the alert when there is an error uploading image(s)
    Dismisses the alert
    Ok button for dismissing alert helping users understand their site address
-   Submit button on prompt for user information. */
+   Submit button on prompt for user information.
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
 "OK" = "Tamam";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -4586,7 +4574,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Spoken label to indicate switch control is turned on */
 "On" = "Açık";
 
-/* Display label for the product's inventory stock status */
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status */
 "On back order" = "Geri dönen sipariş";
 
 /* Display label for on hold order status. */
@@ -4789,7 +4778,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Other Travel And Lodging" = "Diğer Seyahat ve Konaklama";
 
-/* Display label for the product's inventory stock status */
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status */
 "Out of stock" = "Stokta kalmadı";
 
 /* Header section package details in Shipping Label Package Detail */
@@ -5249,7 +5239,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Present card to refund" = "Geri ödeme almak için kartı gösterin";
 
-/* Action for previewing draft Product changes in the webview */
+/* Action for previewing draft Product changes in the webview
+   Title of the store onboarding > launch store screen. */
 "Preview" = "Önizleme";
 
 /* A label representing the amount that was previously refunded for the order. */
@@ -5528,9 +5519,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Content of the In-Person Payments feedback banner in the Orders tab */
 "Rate your first in-person payment experience." = "İlk şahsen ödeme deneyiminizi puanlayın.";
-
-/* Subtitle for Contact WooCommerce Payments Support */
-"Reach our happiness engineers who can help answer payments related questions" = "Ödemelerle ilgili sorularınızda size yardımcı olabilecek mutluluk mühendislerimize ulaşın";
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Zor sorulara yanıt verilmesine yardımcı olabilecek mutluluk mühendislerimize ulaşın";
@@ -6552,9 +6540,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Sri Lanka" = "Sri Lanka";
 
-/* Display label for the product bundle's layout */
-"Standard" = "Standart";
-
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standart oran";
 
@@ -6734,9 +6719,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "São Tomé ve Príncipe";
-
-/* Display label for the product bundle's layout */
-"Tabular" = "Tablo Halinde";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
@@ -6932,6 +6914,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Testing Laboratories" = "Test Laboratuvarları";
 
 /* Button title
+   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow.
    The button's title text to send a 2FA code via SMS text message. */
 "Text me a code instead" = "Bunun yerine bana kodu mesaj olarak gönderin";
 
@@ -7797,7 +7780,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Undo" = "Geri al";
 
 /* The message of the alert when there is an unexpected error adding the package
-   The message of the alert when there is an unexpected error updating the product */
+   The message of the alert when there is an unexpected error updating the product
+   Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Unexpected error" = "Beklenmedik hata";
 
 /* Country option for a site address. */
@@ -8048,7 +8032,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Venezuela" = "Venezuela";
 
-/* two factor code placeholder */
+/* Placeholder for the 2FA code field on the WPCom 2FA login screen of the Jetpack setup flow.
+   two factor code placeholder */
 "Verification code" = "Doğrulama kodu";
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
@@ -8113,9 +8098,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for the items inside a Shipping Label package */
 "View items in this shipping label package." = "Bu gönderi etiketi paketindeki öğeleri görüntüleyin.";
-
-/* subtitle for My Tickets */
-"View previously submitted support tickets" = "Daha önce verilen destek biletlerini görüntüleyin";
 
 /* Accessibility label for the 'View details' refund button */
 "View refund details" = "İade detaylarını göster";
@@ -8396,9 +8378,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
-
-/* Subject of new Zendesk ticket. */
-"WooCommerce for iOS Support" = "iOS Desteği için WooCommerce";
 
 /* Caption displayed in the simplified prologue screen */
 "WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce; WordPress için oluşturulmuş özelleştirilebilir, açık kaynaklı bir e-ticaret platformudur.";

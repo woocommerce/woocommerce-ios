@@ -1,1 +1,1 @@
-Diese Version enthält mehrere Korrekturen und Verbesserungen, die die Verwaltung deines Shops in der App erleichtern. Sende uns bitte weiter Feedback – wir freuen uns darauf!
+Diese Version enthält einige Verbesserungen am Shop-Management. Ab sofort kannst du mithilfe der iOS-App „Kurzbefehle“ eine Bestellung erstellen und Zahlungen über die WooCommerce-Mobil-Apps empfangen! Probiere es aus und teile uns dein Feedback mit.

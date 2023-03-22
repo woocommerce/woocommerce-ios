@@ -52,6 +52,7 @@ struct BundledProductsList: View {
                             .padding(.leading)
 
                         TitleAndSubtitleRow(title: bundledProduct.title, subtitle: bundledProduct.stockStatus)
+                            .accessibilityElement(children: .combine)
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
                     Divider().padding(.leading, insets: safeAreaInsets)

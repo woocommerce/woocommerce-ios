@@ -8,8 +8,11 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
     private let viewModel: StoreOnboardingViewModel
     private let sourceNavigationController: UINavigationController
     private let site: Site
-    private lazy var coordinator: StoreOnboardingCoordinator = .init(navigationController: sourceNavigationController,
-                                                                     site: site)
+    private lazy var coordinator = StoreOnboardingCoordinator(navigationController: sourceNavigationController,
+                                                              site: site,
+                                                              onTaskCompleted: { [weak self] in
+        self?.reloadTasks()
+    })
 
     init(viewModel: StoreOnboardingViewModel,
          navigationController: UINavigationController,
@@ -56,14 +59,13 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        Task {
-            await reloadTasks()
-        }
+        reloadTasks()
     }
 
-    @MainActor
-    private func reloadTasks() async {
-        await viewModel.reloadTasks()
+    private func reloadTasks() {
+        Task { @MainActor in
+            await viewModel.reloadTasks()
+        }
     }
 
     /// Shows a transparent navigation bar without a bottom border.

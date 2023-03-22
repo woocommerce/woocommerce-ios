@@ -14,10 +14,14 @@ final class StoreOnboardingCoordinator: Coordinator {
     private var paymentsSetupCoordinator: StoreOnboardingPaymentsSetupCoordinator?
 
     private let site: Site
+    private let onTaskCompleted: (() -> Void)?
 
-    init(navigationController: UINavigationController, site: Site) {
+    init(navigationController: UINavigationController,
+         site: Site,
+         onTaskCompleted: (() -> Void)? = nil) {
         self.navigationController = navigationController
         self.site = site
+        self.onTaskCompleted = onTaskCompleted
     }
 
     /// Navigates to the fullscreen store onboarding view.
@@ -58,7 +62,8 @@ private extension StoreOnboardingCoordinator {
     func addProduct() {
         let coordinator = AddProductCoordinator(siteID: site.siteID, sourceView: nil, sourceNavigationController: navigationController)
         self.addProductCoordinator = coordinator
-        coordinator.onProductCreated = { _ in
+        coordinator.onProductCreated = { [weak self] _ in
+            self?.onTaskCompleted?()
             #warning("Analytics when a product is added from the onboarding task")
         }
         coordinator.start()
@@ -67,6 +72,9 @@ private extension StoreOnboardingCoordinator {
     @MainActor
     func showCustomDomains() {
         let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding, site: site, navigationController: navigationController)
+        coordinator.onDomainPurchased = { [weak self] in
+            self?.onTaskCompleted?()
+        }
         self.domainSettingsCoordinator = coordinator
         coordinator.start()
     }
@@ -74,6 +82,9 @@ private extension StoreOnboardingCoordinator {
     @MainActor
     func launchStore(task: StoreOnboardingTask) {
         let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site, isLaunched: task.isComplete, navigationController: navigationController)
+        coordinator.onStoreLaunched = { [weak self] in
+            self?.onTaskCompleted?()
+        }
         self.launchStoreCoordinator = coordinator
         coordinator.start()
     }

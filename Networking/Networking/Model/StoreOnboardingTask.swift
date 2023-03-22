@@ -17,6 +17,7 @@ public struct StoreOnboardingTask: Decodable, Equatable {
 
 public extension StoreOnboardingTask {
     enum TaskType: Decodable, Equatable {
+        case storeDetails
         case addFirstProduct
         case launchStore
         case customizeDomains
@@ -28,6 +29,8 @@ public extension StoreOnboardingTask {
             let id = try decoder.singleValueContainer().decode(String.self)
 
             switch id {
+            case "store_details":
+                self = .storeDetails
             case "launch_site":
                 self = .launchStore
             case "products":

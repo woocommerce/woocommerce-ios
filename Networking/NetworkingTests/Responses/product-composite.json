@@ -1,0 +1,315 @@
+{
+    "data": {
+        "id": 419,
+        "name": "Full Frame DSLR Kit",
+        "slug": "full-frame-dslr-kit",
+        "permalink": "https://example.com/product/full-frame-dslr-kit/",
+        "date_created": "2023-03-20T11:14:14",
+        "date_created_gmt": "2023-03-20T11:14:14",
+        "date_modified": "2023-03-20T11:30:56",
+        "date_modified_gmt": "2023-03-20T11:30:56",
+        "type": "composite",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "<p>A DSLR kit based on Canon's EOS 5D Mark III and Nikon's D600 DSLR Full Frame Cameras, complete with the Lens and Memory Card of your choice.</p>\n",
+        "short_description": "",
+        "sku": "",
+        "price": "2300",
+        "regular_price": "2300",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "on_sale": false,
+        "purchasable": true,
+        "total_sales": 1,
+        "virtual": true,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "low_stock_amount": null,
+        "sold_individually": false,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": false,
+        "shipping_taxable": false,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 0,
+        "purchase_note": "",
+        "categories": [
+            {
+                "id": 1411,
+                "name": "Camera",
+                "slug": "camera"
+            }
+        ],
+        "tags": [],
+        "images": [],
+        "attributes": [],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 0,
+        "price_html": "<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>2,300.00</bdi></span>",
+        "related_ids": [
+            413,
+            412
+        ],
+        "meta_data": [
+            {
+                "id": 11789,
+                "key": "_wpcom_is_markdown",
+                "value": "1"
+            },
+            {
+                "id": 11790,
+                "key": "_last_editor_used_jetpack",
+                "value": "classic-editor"
+            }
+        ],
+        "stock_status": "instock",
+        "has_options": true,
+        "composite_virtual": false,
+        "composite_layout": "progressive",
+        "composite_add_to_cart_form_location": "default",
+        "composite_editable_in_cart": false,
+        "composite_sold_individually_context": "product",
+        "composite_shop_price_calc": "defaults",
+        "composite_components": [
+            {
+                "id": "1679310855",
+                "title": "Camera Body",
+                "description": "<p>Choose between the Nikon D600 or the powerful 5D Mark III and take your creativity to new levels.</p>\n",
+                "query_type": "product_ids",
+                "query_ids": [
+                    413,
+                    412
+                ],
+                "default_option_id": "413",
+                "thumbnail_id": "",
+                "thumbnail_src": "https://example.com/woo.jpg",
+                "quantity_min": 1,
+                "quantity_max": 1,
+                "priced_individually": false,
+                "shipped_individually": true,
+                "optional": false,
+                "discount": "",
+                "options_style": "dropdowns",
+                "pagination_style": "classic",
+                "display_prices": "absolute",
+                "show_sorting_options": false,
+                "show_filtering_options": false,
+                "attribute_filter_ids": [],
+                "product_title_visible": true,
+                "product_descr_visible": true,
+                "product_price_visible": true,
+                "product_thumb_visible": true,
+                "subtotal_visible_product": true,
+                "subtotal_visible_cart": true,
+                "subtotal_visible_orders": true
+            },
+            {
+                "id": "1679310856",
+                "title": "Lens",
+                "description": "<p>Lenses for Nikon and Canon DSLR cameras.</p>\n",
+                "query_type": "category_ids",
+                "query_ids": [
+                    1412
+                ],
+                "default_option_id": "417",
+                "thumbnail_id": "",
+                "thumbnail_src": "",
+                "quantity_min": 1,
+                "quantity_max": 1,
+                "priced_individually": false,
+                "shipped_individually": true,
+                "optional": false,
+                "discount": "",
+                "options_style": "dropdowns",
+                "pagination_style": "classic",
+                "display_prices": "absolute",
+                "show_sorting_options": false,
+                "show_filtering_options": false,
+                "attribute_filter_ids": [],
+                "product_title_visible": true,
+                "product_descr_visible": true,
+                "product_price_visible": true,
+                "product_thumb_visible": true,
+                "subtotal_visible_product": true,
+                "subtotal_visible_cart": true,
+                "subtotal_visible_orders": true
+            },
+            {
+                "id": "1679310857",
+                "title": "Memory Card",
+                "description": "<p>CF and SD Cards for Nikon and Canon SLR cameras.</p>\n",
+                "query_type": "category_ids",
+                "query_ids": [
+                    1413
+                ],
+                "default_option_id": "",
+                "thumbnail_id": "",
+                "thumbnail_src": "",
+                "quantity_min": 1,
+                "quantity_max": 1,
+                "priced_individually": false,
+                "shipped_individually": true,
+                "optional": true,
+                "discount": "",
+                "options_style": "dropdowns",
+                "pagination_style": "classic",
+                "display_prices": "absolute",
+                "show_sorting_options": false,
+                "show_filtering_options": false,
+                "attribute_filter_ids": [],
+                "product_title_visible": true,
+                "product_descr_visible": true,
+                "product_price_visible": true,
+                "product_thumb_visible": true,
+                "subtotal_visible_product": true,
+                "subtotal_visible_cart": true,
+                "subtotal_visible_orders": true
+            }
+        ],
+        "composite_scenarios": [
+            {
+                "id": "1679311016",
+                "name": "Selected DSLR Body: Nikon",
+                "description": "Hide Canon-compatible lenses and memory cards when choosing a Nikon camera.",
+                "configuration": [
+                    {
+                        "component_id": "1679310855",
+                        "options_modifier": "in",
+                        "component_options": [
+                            412
+                        ]
+                    }
+                ],
+                "actions": [
+                    {
+                        "action_id": "compat_group",
+                        "is_active": false
+                    },
+                    {
+                        "action_id": "conditional_components",
+                        "is_active": false,
+                        "hidden_components": []
+                    },
+                    {
+                        "action_id": "conditional_options",
+                        "is_active": true,
+                        "hidden_options": [
+                            {
+                                "component_id": "1679310856",
+                                "component_options": [
+                                    417,
+                                    416,
+                                    415
+                                ],
+                                "options_modifier": "in"
+                            },
+                            {
+                                "component_id": "1679310857",
+                                "component_options": [
+                                    418
+                                ],
+                                "options_modifier": "in"
+                            }
+                        ]
+                    }
+                ],
+                "enabled": true
+            },
+            {
+                "id": "1679311017",
+                "name": "Selected DSLR Body: Canon",
+                "description": "Hide Nikon-compatible lenses and memory cards when choosing a Canon camera.",
+                "configuration": [
+                    {
+                        "component_id": "1679310855",
+                        "options_modifier": "in",
+                        "component_options": [
+                            413
+                        ]
+                    }
+                ],
+                "actions": [
+                    {
+                        "action_id": "compat_group",
+                        "is_active": false
+                    },
+                    {
+                        "action_id": "conditional_components",
+                        "is_active": false,
+                        "hidden_components": []
+                    },
+                    {
+                        "action_id": "conditional_options",
+                        "is_active": true,
+                        "hidden_options": [
+                            {
+                                "component_id": "1679310856",
+                                "component_options": [
+                                    414
+                                ],
+                                "options_modifier": "in"
+                            }
+                        ]
+                    }
+                ],
+                "enabled": true
+            }
+        ],
+        "bundled_by": [],
+        "bundle_stock_status": "instock",
+        "bundle_stock_quantity": null,
+        "bundle_virtual": false,
+        "bundle_layout": "",
+        "bundle_add_to_cart_form_location": "",
+        "bundle_editable_in_cart": false,
+        "bundle_sold_individually_context": "",
+        "bundle_item_grouping": "",
+        "bundle_min_size": "",
+        "bundle_max_size": "",
+        "bundled_items": [],
+        "bundle_sell_ids": [],
+        "jetpack_publicize_connections": [],
+        "jetpack_sharing_enabled": true,
+        "jetpack_likes_enabled": true,
+        "brands": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/419"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products"
+                }
+            ]
+        }
+    }
+}

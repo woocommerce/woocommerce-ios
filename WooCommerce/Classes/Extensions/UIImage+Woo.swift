@@ -431,6 +431,12 @@ extension UIImage {
         UIImage(named: "icon-store")!
     }
 
+    /// Store details Image
+    ///
+    static var storeDetailsImage: UIImage {
+        UIImage(named: "icon-store-details")!
+    }
+
     /// Launch store Image
     ///
     static var launchStoreImage: UIImage {

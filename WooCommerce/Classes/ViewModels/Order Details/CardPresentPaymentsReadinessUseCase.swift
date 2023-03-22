@@ -59,7 +59,8 @@ final class CardPresentPaymentsReadinessUseCase {
             }
             .store(in: &self.cancellables)
 
-            let onboardingReadiness = self.onboardingUseCase.statePublisher
+            let onboardingReadiness = self.onboardingUseCase.$state
+                .share()
                 .compactMap({ state -> CardPaymentReadiness? in
                     switch state {
                     case .loading:

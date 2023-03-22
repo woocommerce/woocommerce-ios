@@ -129,8 +129,10 @@ final class BuiltInCardReaderConnectionController {
     }
 
     func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
-        self.onCompletion = onCompletion
-        self.state = .initializing
+        Task { @MainActor [weak self] in
+            self?.onCompletion = onCompletion
+            self?.state = .initializing
+        }
     }
 }
 
@@ -335,7 +337,9 @@ private extension BuiltInCardReaderConnectionController {
         let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
             guard let self = self else { return }
 
-            softwareUpdateEvents.sink { [weak self] event in
+            softwareUpdateEvents
+                .subscribe(on: DispatchQueue.main)
+                .sink { [weak self] event in
                 guard let self = self else { return }
 
                 switch event {

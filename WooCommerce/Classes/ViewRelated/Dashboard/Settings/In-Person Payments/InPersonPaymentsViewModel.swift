@@ -20,6 +20,7 @@ final class InPersonPaymentsViewModel: ObservableObject {
         userIsAdministrator = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
 
         useCase.$state
+            .share()
             // Debounce values to prevent the loading screen flashing when there is no connection
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .removeDuplicates()

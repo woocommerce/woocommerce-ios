@@ -389,7 +389,9 @@ private extension PaymentMethodsViewModel {
     /// Observes the store CPP state and update publish variables accordingly.
     ///
     func bindStoreCPPState() {
-        ordersResultController.onDidChangeContent = updateCardPaymentVisibility
+        ordersResultController.onDidChangeContent = { [weak self] in
+            self?.updateCardPaymentVisibility()
+        }
         try? ordersResultController.performFetch()
     }
 

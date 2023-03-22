@@ -18,19 +18,20 @@ final class DomainSettingsCoordinator: Coordinator {
     private let stores: StoresManager
     private let source: Source
     private let analytics: Analytics
-
-    var onDomainPurchased: (() -> Void)? = nil
+    private let onDomainPurchased: (() -> Void)?
 
     init(source: Source,
          site: Site,
          navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         onDomainPurchased: (() -> Void)? = nil) {
         self.source = source
         self.site = site
         self.navigationController = navigationController
         self.stores = stores
         self.analytics = analytics
+        self.onDomainPurchased = onDomainPurchased
     }
 
     @MainActor

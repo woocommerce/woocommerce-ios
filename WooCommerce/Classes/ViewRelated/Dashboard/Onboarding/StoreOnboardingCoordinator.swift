@@ -71,10 +71,12 @@ private extension StoreOnboardingCoordinator {
 
     @MainActor
     func showCustomDomains() {
-        let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding, site: site, navigationController: navigationController)
-        coordinator.onDomainPurchased = { [weak self] in
+        let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding,
+                                                    site: site,
+                                                    navigationController: navigationController,
+                                                    onDomainPurchased: { [weak self] in
             self?.onTaskCompleted()
-        }
+        })
         self.domainSettingsCoordinator = coordinator
         coordinator.start()
     }
@@ -85,8 +87,8 @@ private extension StoreOnboardingCoordinator {
                                                                 isLaunched: task.isComplete,
                                                                 navigationController: navigationController,
                                                                 onStoreLaunched: { [weak self] in
-                                                                    self?.onTaskCompleted()
-                                                                })
+            self?.onTaskCompleted()
+        })
         self.launchStoreCoordinator = coordinator
         coordinator.start()
     }

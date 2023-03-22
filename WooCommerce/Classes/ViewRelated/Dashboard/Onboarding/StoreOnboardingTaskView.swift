@@ -36,10 +36,11 @@ struct StoreOnboardingTaskView: View {
                     .redacted(reason: isRedacted ? .placeholder : [])
 
                 VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+                    Spacer().frame(height: Layout.spacerHeight)
+
                     HStack {
                         // Task labels
                         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-                            Spacer().frame(height: Layout.spacerHeight)
 
                             HStack {
                                 // Task title.

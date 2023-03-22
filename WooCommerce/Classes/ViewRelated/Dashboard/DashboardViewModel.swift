@@ -174,11 +174,6 @@ final class DashboardViewModel {
     /// Fetches the current site plan.
     ///
     func syncFreeTrialBanner(siteID: Int64) {
-        // Only fetch free trial information when the local feature flag is enabled.
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.freeTrial) else {
-            return
-        }
-
         // Only fetch free trial information is the site is a WPCom site.
         guard stores.sessionManager.defaultSite?.isWordPressComStore == true else {
             return DDLogInfo("⚠️ Site is not a WPCOM site.")

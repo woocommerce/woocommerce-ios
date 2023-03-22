@@ -19,6 +19,8 @@ final class DomainSettingsCoordinator: Coordinator {
     private let source: Source
     private let analytics: Analytics
 
+    var onDomainPurchased: (() -> Void)? = nil
+
     init(source: Source,
          site: Site,
          navigationController: UINavigationController,
@@ -137,6 +139,7 @@ private extension DomainSettingsCoordinator {
             navigationController.popToRootViewController(animated: false)
         }
         navigationController.pushViewController(successController, animated: true)
+        onDomainPurchased?()
         analytics.track(event: .DomainSettings.domainSettingsStep(source: source,
                                                                   step: .purchaseSuccess))
     }

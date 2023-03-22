@@ -51,16 +51,18 @@ public extension StoreOnboardingTask {
 private extension StoreOnboardingTask.TaskType {
     var sortOrder: Int {
         switch self {
-        case .addFirstProduct:
+        case .storeDetails:
             return 0
-        case .launchStore:
+        case .addFirstProduct:
             return 1
-        case .customizeDomains:
+        case .launchStore:
             return 2
-        case .payments, .woocommercePayments:
+        case .customizeDomains:
             return 3
-        case .unsupported:
+        case .payments, .woocommercePayments:
             return 4
+        case .unsupported:
+            return 5
         }
     }
 }

@@ -182,6 +182,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         nil
     }
 
+    var compositeComponents: [ProductCompositeComponent] {
+        []
+    }
+
     // Visibility logic
 
     func allowsMultipleImages() -> Bool {

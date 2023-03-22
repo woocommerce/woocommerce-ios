@@ -14,11 +14,11 @@ final class StoreOnboardingCoordinator: Coordinator {
     private var paymentsSetupCoordinator: StoreOnboardingPaymentsSetupCoordinator?
 
     private let site: Site
-    private let onTaskCompleted: (() -> Void)?
+    private let onTaskCompleted: () -> Void
 
     init(navigationController: UINavigationController,
          site: Site,
-         onTaskCompleted: (() -> Void)? = nil) {
+         onTaskCompleted: @escaping () -> Void) {
         self.navigationController = navigationController
         self.site = site
         self.onTaskCompleted = onTaskCompleted
@@ -63,7 +63,7 @@ private extension StoreOnboardingCoordinator {
         let coordinator = AddProductCoordinator(siteID: site.siteID, sourceView: nil, sourceNavigationController: navigationController)
         self.addProductCoordinator = coordinator
         coordinator.onProductCreated = { [weak self] _ in
-            self?.onTaskCompleted?()
+            self?.onTaskCompleted()
             #warning("Analytics when a product is added from the onboarding task")
         }
         coordinator.start()
@@ -73,7 +73,7 @@ private extension StoreOnboardingCoordinator {
     func showCustomDomains() {
         let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding, site: site, navigationController: navigationController)
         coordinator.onDomainPurchased = { [weak self] in
-            self?.onTaskCompleted?()
+            self?.onTaskCompleted()
         }
         self.domainSettingsCoordinator = coordinator
         coordinator.start()
@@ -83,7 +83,7 @@ private extension StoreOnboardingCoordinator {
     func launchStore(task: StoreOnboardingTask) {
         let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site, isLaunched: task.isComplete, navigationController: navigationController)
         coordinator.onStoreLaunched = { [weak self] in
-            self?.onTaskCompleted?()
+            self?.onTaskCompleted()
         }
         self.launchStoreCoordinator = coordinator
         coordinator.start()

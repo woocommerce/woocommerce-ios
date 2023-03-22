@@ -34,7 +34,7 @@ def tracks
 end
 
 def wordpress_shared
-  pod 'WordPressShared', '~> 2.0'
+  pod 'WordPressShared', '~> 2.1'
 end
 
 def keychain
@@ -51,7 +51,7 @@ def cocoa_lumberjack
 end
 
 def stripe_terminal
-  pod 'StripeTerminal', '~> 2.14'
+  pod 'StripeTerminal', '~> 2.18'
 end
 
 def networking_pods
@@ -84,9 +84,9 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 5.5'
-  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
-  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'trunk'
+#  pod 'WordPressAuthenticator', '~> 5.5'
+#   pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
+   pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'trunk'
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
   wordpress_shared

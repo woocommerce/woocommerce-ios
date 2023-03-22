@@ -178,6 +178,10 @@ public class AppSettingsStore: Store {
             setCouponManagementFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadCouponManagementFeatureSwitchState(let onCompletion):
             loadCouponManagementFeatureSwitchState(onCompletion: onCompletion)
+        case .loadProductMultiSelectionFeatureSwitchState(let onCompletion):
+            loadProductMultiSelectionFeatureSwitchState(onCompletion: onCompletion)
+        case .setProductMultiSelectionFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setProductMultiSelectionFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .setFeatureAnnouncementDismissed(campaign: let campaign, remindAfterDays: let remindAfterDays, onCompletion: let completion):
             setFeatureAnnouncementDismissed(campaign: campaign, remindAfterDays: remindAfterDays, onCompletion: completion)
         case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
@@ -190,6 +194,11 @@ public class AppSettingsStore: Store {
             setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
         case .loadLastSelectedStatsTimeRange(let siteID, let onCompletion):
             loadLastSelectedStatsTimeRange(siteID: siteID, onCompletion: onCompletion)
+        case .loadSiteHasAtLeastOneIPPTransactionFinished(let siteID, let onCompletion):
+            loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID, onCompletion: onCompletion)
+        case .markSiteHasAtLeastOneIPPTransactionFinished(let siteID):
+            markSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID)
+
         }
     }
 }
@@ -292,6 +301,23 @@ private extension AppSettingsStore {
     ///
     func loadCouponManagementFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
         onCompletion(.success(generalAppSettings.value(for: \.isCouponManagementSwitchEnabled)))
+    }
+
+    /// Loads the most recent state for the Product Multi-Selection experimental feature switch from `GeneralAppSettings`.
+    ///
+    func loadProductMultiSelectionFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        onCompletion(.success(generalAppSettings.value(for: \.isProductMultiSelectionSwitchEnabled)))
+    }
+
+    /// Sets the state for the Product Multi-Selection experimental feature switch from `GeneralAppSettings`
+    ///
+    func setProductMultiSelectionFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            try generalAppSettings.setValue(isEnabled, for: \.isProductMultiSelectionSwitchEnabled)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
     }
 
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`
@@ -793,6 +819,16 @@ extension AppSettingsStore {
         }
     }
 
+    func loadSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64, onCompletion: (Bool) -> Void) {
+        onCompletion(generalAppSettings.value(for: \.sitesWithAtLeastOneIPPTransactionFinished).contains(siteID))
+    }
+
+    func markSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64) {
+        var updatingSet = generalAppSettings.settings.sitesWithAtLeastOneIPPTransactionFinished
+        updatingSet.insert(siteID)
+
+        try? generalAppSettings.setValue(updatingSet, for: \.sitesWithAtLeastOneIPPTransactionFinished)
+    }
 }
 
 private extension AppSettingsStore {

@@ -23,6 +23,8 @@ class DefaultStoresManager: StoresManager {
     /// https://github.com/woocommerce/woocommerce-ios/issues/878
     private var _sessionManager: SessionManagerProtocol
 
+    private let defaults: UserDefaults
+
     /// Keychain access. Used for sharing the auth access token with the widgets extension.
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
@@ -72,10 +74,13 @@ class DefaultStoresManager: StoresManager {
     /// Indicates if the StoresManager is currently authenticated with site credentials only.
     ///
     var isAuthenticatedWithoutWPCom: Bool {
-        if case .wporg = sessionManager.defaultCredentials {
-            return true
+        guard let credentials = sessionManager.defaultCredentials else {
+            return false
         }
-        return false
+        if case .wpcom = credentials {
+            return false
+        }
+        return true
     }
 
     @Published private var isLoggedIn: Bool = false
@@ -110,10 +115,12 @@ class DefaultStoresManager: StoresManager {
     /// Designated Initializer
     ///
     init(sessionManager: SessionManagerProtocol,
-         notificationCenter: NotificationCenter = .default) {
+         notificationCenter: NotificationCenter = .default,
+         defaults: UserDefaults = .standard) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
+        self.defaults = defaults
 
         isLoggedIn = isAuthenticated
 
@@ -146,6 +153,16 @@ class DefaultStoresManager: StoresManager {
         listenToApplicationPasswordGenerationFailureNotification()
 
         return self
+    }
+
+    /// Deauthenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
+    ///
+    func listenToApplicationPasswordGenerationFailureNotification() {
+        applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
+                                                                                      object: nil,
+                                                                                      queue: .main) { [weak self] note in
+            _ = self?.deauthenticate()
+        }
     }
 
     /// Synchronizes all of the Session's Entities.
@@ -217,6 +234,7 @@ class DefaultStoresManager: StoresManager {
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
         sessionManager.defaultSite = nil
+        defaults[.completedAllStoreOnboardingTasks] = nil
         restoreSessionSiteIfPossible()
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 
@@ -323,7 +341,7 @@ private extension DefaultStoresManager {
             credentials.hasPlaceholderUsername() else {
             return
         }
-        authenticate(credentials: .init(username: account.username, authToken: authToken, siteAddress: siteAddress))
+        authenticate(credentials: .wpcom(username: account.username, authToken: authToken, siteAddress: siteAddress))
     }
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
@@ -582,6 +600,9 @@ private extension DefaultStoresManager {
             keychain.siteCredentialPassword = password
             UserDefaults.group?[.defaultUsername] = username
             UserDefaults.group?[.defaultSiteAddress] = siteAddress
+        case let .applicationPassword(username, _, siteAddress):
+            UserDefaults.group?[.defaultUsername] = username
+            UserDefaults.group?[.defaultSiteAddress] = siteAddress
         default:
             break
         }
@@ -594,16 +615,6 @@ private extension DefaultStoresManager {
 
         // Reload widgets UI
         WidgetCenter.shared.reloadAllTimelines()
-    }
-
-    /// Deauthenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
-    ///
-    func listenToApplicationPasswordGenerationFailureNotification() {
-        applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
-                                                                                      object: nil,
-                                                                                      queue: .main) { [weak self] note in
-            _ = self?.deauthenticate()
-        }
     }
 }
 

@@ -172,6 +172,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, LegacyCollectOrderPaymen
                 self.trackPaymentCancelation()
                 onCancel()
             case .failure(let error):
+                CardPresentPaymentOnboardingStateCache.shared.invalidate()
                 onCollect(.failure(error))
             }
         }
@@ -315,6 +316,7 @@ private extension LegacyCollectOrderPaymentUseCase {
             }, onCompletion: { [weak self] result in
                 switch result {
                 case .success(let capturedPaymentData):
+                    self?.markSiteHasAtLeastOneIPPTransactionFinished()
                     self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
                 case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(_))):
                     self?.trackPaymentCancelation()
@@ -448,6 +450,10 @@ private extension LegacyCollectOrderPaymentUseCase {
                                                  storeName: stores.sessionManager.defaultSite?.name),
                                      from: rootViewController,
                                      completion: onCompleted)
+    }
+
+    func markSiteHasAtLeastOneIPPTransactionFinished() {
+        stores.dispatch(AppSettingsAction.markSiteHasAtLeastOneIPPTransactionFinished(siteID: order.siteID))
     }
 }
 

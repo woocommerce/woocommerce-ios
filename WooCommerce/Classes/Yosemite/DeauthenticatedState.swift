@@ -21,7 +21,8 @@ class DeauthenticatedState: StoresManagerState {
             AccountCreationStore(dotcomClientID: ApiCredentials.dotcomAppId,
                                  dotcomClientSecret: ApiCredentials.dotcomSecret,
                                  network: network,
-                                 dispatcher: dispatcher)
+                                 dispatcher: dispatcher),
+            WordPressSiteStore(network: network, dispatcher: dispatcher)
         ]
     }
 

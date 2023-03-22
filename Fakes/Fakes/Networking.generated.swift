@@ -127,6 +127,13 @@ extension Networking.Announcement {
         )
     }
 }
+extension CompositeComponentOptionType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> CompositeComponentOptionType {
+        .productIDs
+    }
+}
 extension Networking.Country {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -829,16 +836,10 @@ extension Networking.Product {
             groupedProducts: .fake(),
             menuOrder: .fake(),
             addOns: .fake(),
-            bundleLayout: .fake(),
-            bundleFormLocation: .fake(),
-            bundleItemGrouping: .fake(),
-            bundleMinSize: .fake(),
-            bundleMaxSize: .fake(),
-            bundleEditableInCart: .fake(),
-            bundleSoldIndividuallyContext: .fake(),
             bundleStockStatus: .fake(),
             bundleStockQuantity: .fake(),
-            bundledItems: .fake()
+            bundledItems: .fake(),
+            compositeComponents: .fake()
         )
     }
 }
@@ -913,13 +914,6 @@ extension ProductBackordersSetting {
         .allowed
     }
 }
-extension ProductBundleFormLocation {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> ProductBundleFormLocation {
-        .defaultLocation
-    }
-}
 extension Networking.ProductBundleItem {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -928,37 +922,9 @@ extension Networking.ProductBundleItem {
             bundledItemID: .fake(),
             productID: .fake(),
             menuOrder: .fake(),
-            quantityMin: .fake(),
-            quantityMax: .fake(),
-            quantityDefault: .fake(),
-            pricedIndividually: .fake(),
-            shippedIndividually: .fake(),
-            overrideTitle: .fake(),
             title: .fake(),
-            overrideDescription: .fake(),
-            description: .fake(),
-            optional: .fake(),
-            hideThumbnail: .fake(),
-            discount: .fake(),
-            overrideVariations: .fake(),
-            allowedVariations: .fake(),
-            overrideDefaultVariationAttributes: .fake(),
-            defaultVariationAttributes: .fake(),
-            singleProductVisibility: .fake(),
-            cartVisibility: .fake(),
-            orderVisibility: .fake(),
-            singleProductPriceVisibility: .fake(),
-            cartPriceVisibility: .fake(),
-            orderPriceVisibility: .fake(),
             stockStatus: .fake()
         )
-    }
-}
-extension ProductBundleItemGrouping {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> ProductBundleItemGrouping {
-        .parent
     }
 }
 extension ProductBundleItemStockStatus {
@@ -966,27 +932,6 @@ extension ProductBundleItemStockStatus {
     ///
     public static func fake() -> ProductBundleItemStockStatus {
         .inStock
-    }
-}
-extension ProductBundleItemVisibility {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> ProductBundleItemVisibility {
-        .visible
-    }
-}
-extension ProductBundleLayout {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> ProductBundleLayout {
-        .defaultLayout
-    }
-}
-extension ProductBundleSoldIndividuallyContext {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> ProductBundleSoldIndividuallyContext {
-        .product
     }
 }
 extension ProductCatalogVisibility {
@@ -1006,6 +951,19 @@ extension Networking.ProductCategory {
             parentID: .fake(),
             name: .fake(),
             slug: .fake()
+        )
+    }
+}
+extension Networking.ProductCompositeComponent {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductCompositeComponent {
+        .init(
+            componentID: .fake(),
+            title: .fake(),
+            imageURL: .fake(),
+            optionType: .fake(),
+            optionIDs: .fake()
         )
     }
 }

@@ -76,4 +76,8 @@ public protocol StoresManager {
     /// Update the user roles for the default site.
     ///
     func updateDefaultRoles(_ roles: [User.Role])
+
+    /// Deauthenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
+    ///
+    func listenToApplicationPasswordGenerationFailureNotification()
 }

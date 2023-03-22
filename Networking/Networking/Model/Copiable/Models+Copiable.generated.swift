@@ -1053,16 +1053,10 @@ extension Networking.Product {
         groupedProducts: CopiableProp<[Int64]> = .copy,
         menuOrder: CopiableProp<Int> = .copy,
         addOns: CopiableProp<[ProductAddOn]> = .copy,
-        bundleLayout: NullableCopiableProp<ProductBundleLayout> = .copy,
-        bundleFormLocation: NullableCopiableProp<ProductBundleFormLocation> = .copy,
-        bundleItemGrouping: NullableCopiableProp<ProductBundleItemGrouping> = .copy,
-        bundleMinSize: NullableCopiableProp<Int64> = .copy,
-        bundleMaxSize: NullableCopiableProp<Int64> = .copy,
-        bundleEditableInCart: NullableCopiableProp<Bool> = .copy,
-        bundleSoldIndividuallyContext: NullableCopiableProp<ProductBundleSoldIndividuallyContext> = .copy,
         bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
         bundleStockQuantity: NullableCopiableProp<Int64> = .copy,
-        bundledItems: CopiableProp<[ProductBundleItem]> = .copy
+        bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
+        compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1127,16 +1121,10 @@ extension Networking.Product {
         let groupedProducts = groupedProducts ?? self.groupedProducts
         let menuOrder = menuOrder ?? self.menuOrder
         let addOns = addOns ?? self.addOns
-        let bundleLayout = bundleLayout ?? self.bundleLayout
-        let bundleFormLocation = bundleFormLocation ?? self.bundleFormLocation
-        let bundleItemGrouping = bundleItemGrouping ?? self.bundleItemGrouping
-        let bundleMinSize = bundleMinSize ?? self.bundleMinSize
-        let bundleMaxSize = bundleMaxSize ?? self.bundleMaxSize
-        let bundleEditableInCart = bundleEditableInCart ?? self.bundleEditableInCart
-        let bundleSoldIndividuallyContext = bundleSoldIndividuallyContext ?? self.bundleSoldIndividuallyContext
         let bundleStockStatus = bundleStockStatus ?? self.bundleStockStatus
         let bundleStockQuantity = bundleStockQuantity ?? self.bundleStockQuantity
         let bundledItems = bundledItems ?? self.bundledItems
+        let compositeComponents = compositeComponents ?? self.compositeComponents
 
         return Networking.Product(
             siteID: siteID,
@@ -1202,16 +1190,10 @@ extension Networking.Product {
             groupedProducts: groupedProducts,
             menuOrder: menuOrder,
             addOns: addOns,
-            bundleLayout: bundleLayout,
-            bundleFormLocation: bundleFormLocation,
-            bundleItemGrouping: bundleItemGrouping,
-            bundleMinSize: bundleMinSize,
-            bundleMaxSize: bundleMaxSize,
-            bundleEditableInCart: bundleEditableInCart,
-            bundleSoldIndividuallyContext: bundleSoldIndividuallyContext,
             bundleStockStatus: bundleStockStatus,
             bundleStockQuantity: bundleStockQuantity,
-            bundledItems: bundledItems
+            bundledItems: bundledItems,
+            compositeComponents: compositeComponents
         )
     }
 }
@@ -1329,84 +1311,45 @@ extension Networking.ProductBundleItem {
         bundledItemID: CopiableProp<Int64> = .copy,
         productID: CopiableProp<Int64> = .copy,
         menuOrder: CopiableProp<Int64> = .copy,
-        quantityMin: CopiableProp<Int64> = .copy,
-        quantityMax: NullableCopiableProp<Int64> = .copy,
-        quantityDefault: CopiableProp<Int64> = .copy,
-        pricedIndividually: CopiableProp<Bool> = .copy,
-        shippedIndividually: CopiableProp<Bool> = .copy,
-        overrideTitle: CopiableProp<Bool> = .copy,
         title: CopiableProp<String> = .copy,
-        overrideDescription: CopiableProp<Bool> = .copy,
-        description: CopiableProp<String> = .copy,
-        optional: CopiableProp<Bool> = .copy,
-        hideThumbnail: CopiableProp<Bool> = .copy,
-        discount: CopiableProp<String> = .copy,
-        overrideVariations: CopiableProp<Bool> = .copy,
-        allowedVariations: CopiableProp<[Int64]> = .copy,
-        overrideDefaultVariationAttributes: CopiableProp<Bool> = .copy,
-        defaultVariationAttributes: CopiableProp<[ProductVariationAttribute]> = .copy,
-        singleProductVisibility: CopiableProp<ProductBundleItemVisibility> = .copy,
-        cartVisibility: CopiableProp<ProductBundleItemVisibility> = .copy,
-        orderVisibility: CopiableProp<ProductBundleItemVisibility> = .copy,
-        singleProductPriceVisibility: CopiableProp<ProductBundleItemVisibility> = .copy,
-        cartPriceVisibility: CopiableProp<ProductBundleItemVisibility> = .copy,
-        orderPriceVisibility: CopiableProp<ProductBundleItemVisibility> = .copy,
         stockStatus: CopiableProp<ProductBundleItemStockStatus> = .copy
     ) -> Networking.ProductBundleItem {
         let bundledItemID = bundledItemID ?? self.bundledItemID
         let productID = productID ?? self.productID
         let menuOrder = menuOrder ?? self.menuOrder
-        let quantityMin = quantityMin ?? self.quantityMin
-        let quantityMax = quantityMax ?? self.quantityMax
-        let quantityDefault = quantityDefault ?? self.quantityDefault
-        let pricedIndividually = pricedIndividually ?? self.pricedIndividually
-        let shippedIndividually = shippedIndividually ?? self.shippedIndividually
-        let overrideTitle = overrideTitle ?? self.overrideTitle
         let title = title ?? self.title
-        let overrideDescription = overrideDescription ?? self.overrideDescription
-        let description = description ?? self.description
-        let optional = optional ?? self.optional
-        let hideThumbnail = hideThumbnail ?? self.hideThumbnail
-        let discount = discount ?? self.discount
-        let overrideVariations = overrideVariations ?? self.overrideVariations
-        let allowedVariations = allowedVariations ?? self.allowedVariations
-        let overrideDefaultVariationAttributes = overrideDefaultVariationAttributes ?? self.overrideDefaultVariationAttributes
-        let defaultVariationAttributes = defaultVariationAttributes ?? self.defaultVariationAttributes
-        let singleProductVisibility = singleProductVisibility ?? self.singleProductVisibility
-        let cartVisibility = cartVisibility ?? self.cartVisibility
-        let orderVisibility = orderVisibility ?? self.orderVisibility
-        let singleProductPriceVisibility = singleProductPriceVisibility ?? self.singleProductPriceVisibility
-        let cartPriceVisibility = cartPriceVisibility ?? self.cartPriceVisibility
-        let orderPriceVisibility = orderPriceVisibility ?? self.orderPriceVisibility
         let stockStatus = stockStatus ?? self.stockStatus
 
         return Networking.ProductBundleItem(
             bundledItemID: bundledItemID,
             productID: productID,
             menuOrder: menuOrder,
-            quantityMin: quantityMin,
-            quantityMax: quantityMax,
-            quantityDefault: quantityDefault,
-            pricedIndividually: pricedIndividually,
-            shippedIndividually: shippedIndividually,
-            overrideTitle: overrideTitle,
             title: title,
-            overrideDescription: overrideDescription,
-            description: description,
-            optional: optional,
-            hideThumbnail: hideThumbnail,
-            discount: discount,
-            overrideVariations: overrideVariations,
-            allowedVariations: allowedVariations,
-            overrideDefaultVariationAttributes: overrideDefaultVariationAttributes,
-            defaultVariationAttributes: defaultVariationAttributes,
-            singleProductVisibility: singleProductVisibility,
-            cartVisibility: cartVisibility,
-            orderVisibility: orderVisibility,
-            singleProductPriceVisibility: singleProductPriceVisibility,
-            cartPriceVisibility: cartPriceVisibility,
-            orderPriceVisibility: orderPriceVisibility,
             stockStatus: stockStatus
+        )
+    }
+}
+
+extension Networking.ProductCompositeComponent {
+    public func copy(
+        componentID: CopiableProp<String> = .copy,
+        title: CopiableProp<String> = .copy,
+        imageURL: CopiableProp<String> = .copy,
+        optionType: CopiableProp<CompositeComponentOptionType> = .copy,
+        optionIDs: CopiableProp<[Int64]> = .copy
+    ) -> Networking.ProductCompositeComponent {
+        let componentID = componentID ?? self.componentID
+        let title = title ?? self.title
+        let imageURL = imageURL ?? self.imageURL
+        let optionType = optionType ?? self.optionType
+        let optionIDs = optionIDs ?? self.optionIDs
+
+        return Networking.ProductCompositeComponent(
+            componentID: componentID,
+            title: title,
+            imageURL: imageURL,
+            optionType: optionType,
+            optionIDs: optionIDs
         )
     }
 }

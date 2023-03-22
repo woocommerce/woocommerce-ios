@@ -18,7 +18,7 @@ public struct Charge: Identifiable, GeneratedCopiable, GeneratedFakeable {
     public let description: String?
 
     /// Metadata associated with the charge.
-    public let metadata: [AnyHashable: Any]?
+    public let metadata: [String: String]?
 
     /// The payment method associated with the charge.
     public let paymentMethod: PaymentMethod?
@@ -28,7 +28,7 @@ public struct Charge: Identifiable, GeneratedCopiable, GeneratedFakeable {
                 currency: String,
                 status: ChargeStatus,
                 description: String?,
-                metadata: [AnyHashable: Any]?,
+                metadata: [String: String]?,
                 paymentMethod: PaymentMethod?) {
         self.id = id
         self.amount = amount

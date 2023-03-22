@@ -43,7 +43,6 @@ final class ChargeTests: XCTestCase {
         let charge = Charge(charge: mockCharge)
 
         XCTAssertNotNil(charge.metadata)
-        // Asserting keys only, as the metadata is types as [Hashable: Any]
-        XCTAssertEqual(charge.metadata?.keys, mockCharge.metadata.keys)
+        XCTAssertEqual(charge.metadata, mockCharge.metadata)
     }
 }

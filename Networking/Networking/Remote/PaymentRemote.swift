@@ -56,11 +56,19 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
     public func loadSiteCurrentPlan(siteID: Int64) async throws -> WPComSitePlan {
         let path = "sites/\(siteID)/\(Path.products)"
         let request = DotcomRequest(wordpressApiVersion: .mark1_3, method: .get, path: path)
-        let plansByID: [String: SiteCurrentPlanResponse] = try await enqueue(request)
-        guard let currentPlan = plansByID.values.filter({ $0.isCurrentPlan == true }).first else {
+        let plansByID: [String: SiteCurrentPlanResponse] = try await enqueue(request, mapper: SiteCurrentPlanResponseMapper())
+        guard let currentPlan = plansByID.filter({ $0.value.isCurrentPlan == true }).first else {
             throw LoadSiteCurrentPlanError.noCurrentPlan
         }
-        return .init(hasDomainCredit: currentPlan.hasDomainCredit ?? false)
+
+        return .init(
+            id: currentPlan.key,
+            hasDomainCredit: currentPlan.value.hasDomainCredit ?? false,
+            expiryDate: currentPlan.value.expiryDate,
+            subscribedDate: currentPlan.value.subscribedDate,
+            name: currentPlan.value.name,
+            slug: currentPlan.value.slug
+        )
     }
 
     public func createCart(siteID: Int64, productID: Int64) async throws {
@@ -148,11 +156,41 @@ public struct WPComPlan: Decodable, Equatable {
 
 /// Contains necessary data for a site's WPCOM plan.
 public struct WPComSitePlan: Equatable {
+    /// ID of the WPCOM plan.
+    ///
+    public let id: String
+
     /// Whether a site has domain credit from the WPCOM plan.
     public let hasDomainCredit: Bool
 
-    public init(hasDomainCredit: Bool) {
+    /// Plan expiry date. `Nil` if the plan does not expire.
+    ///
+    public let expiryDate: Date?
+
+    /// Plan subscribe date. `Nil` if we are not subscribed to this plan.
+    ///
+    public let subscribedDate: Date?
+
+    /// Plan name
+    ///
+    public let name: String
+
+    /// Plan Slug
+    ///
+    public let slug: String
+
+    public init(id: String = "",
+                hasDomainCredit: Bool,
+                expiryDate: Date? = nil,
+                subscribedDate: Date? = nil,
+                name: String = "",
+                slug: String = "") {
+        self.id = id
         self.hasDomainCredit = hasDomainCredit
+        self.expiryDate = expiryDate
+        self.subscribedDate = subscribedDate
+        self.name = name
+        self.slug = slug
     }
 }
 
@@ -171,15 +209,36 @@ public enum CreateCartError: Error {
     case productNotInCart
 }
 
+/// Mapper: WPCom Site Plan Response Mapper.
+///
+private struct SiteCurrentPlanResponseMapper: Mapper {
+
+    /// (Attempts) to convert a dictionary into a WPCom site plan entity.
+    ///
+    func map(response: Data) throws -> [String: SiteCurrentPlanResponse] {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode([String: SiteCurrentPlanResponse].self, from: response)
+    }
+}
+
 /// Contains necessary data for handling the remote response from loading a site's current plan.
 /// The fields are all optional because only the current plan has these fields.
 private struct SiteCurrentPlanResponse: Decodable {
     let isCurrentPlan: Bool?
     let hasDomainCredit: Bool?
+    let expiryDate: Date?
+    let subscribedDate: Date?
+    let name: String
+    let slug: String
 
     private enum CodingKeys: String, CodingKey {
         case isCurrentPlan = "current_plan"
         case hasDomainCredit = "has_domain_credit"
+        case expiryDate = "expiry"
+        case subscribedDate = "subscribed_date"
+        case name = "product_name"
+        case slug = "product_slug"
     }
 }
 

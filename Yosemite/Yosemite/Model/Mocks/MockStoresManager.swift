@@ -207,6 +207,10 @@ public class MockStoresManager: StoresManager {
     public func updateDefaultStore(_ site: Site) {
         sessionManager.defaultSite = site
     }
+
+    public func listenToApplicationPasswordGenerationFailureNotification() {
+        // no-op
+    }
 }
 
 private extension MockStoresManager {

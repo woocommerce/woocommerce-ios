@@ -51,7 +51,7 @@ public final class StoreOnboardingTasksStore: Store {
 private extension StoreOnboardingTasksStore {
     func loadOnboardingTasks(siteID: Int64, completion: @escaping (Result<[StoreOnboardingTask], Error>) -> Void) {
         Task { @MainActor in
-            let result = await Result { try await remote.loadOnboardingTasks(siteID: siteID) }
+            let result = await Result { try await remote.loadOnboardingTasks(siteID: siteID).sorted() }
             completion(result)
         }
     }

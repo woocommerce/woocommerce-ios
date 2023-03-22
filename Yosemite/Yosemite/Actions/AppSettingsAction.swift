@@ -112,6 +112,14 @@ public enum AppSettingsAction: Action {
     ///
     case loadCouponManagementFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
+    /// Loads the most recent state for the Product Multi-Selection beta feature switch
+    ///
+    case loadProductMultiSelectionFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the state for the Product Multi-Selection beta feature switch
+    ///
+    case setProductMultiSelectionFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
     /// Remember the given card reader (to support automatic reconnection)
     /// where `cardReaderID` is a String e.g. "CHB204909005931"
     ///
@@ -210,4 +218,12 @@ public enum AppSettingsAction: Action {
     case setLastSelectedStatsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4)
 
     case loadLastSelectedStatsTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
+
+    /// Loads whether the user finished an IPP transaction for the given siteID
+    ///
+    case loadSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64, onCompletion: (Bool) -> Void)
+
+    /// Stores that the user finished an IPP transaction for the given siteID
+    ///
+    case markSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64)
 }

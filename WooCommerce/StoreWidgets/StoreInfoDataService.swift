@@ -33,10 +33,10 @@ final class StoreInfoDataService {
         network = AlamofireNetwork(credentials: credentials)
         orderStatsRemoteV4 = OrderStatsRemoteV4(network: network)
         siteStatsRemote = SiteStatsRemote(network: network)
-        if case .wporg = credentials {
-            isAuthenticatedWithoutWPCom = true
-        } else {
+        if case .wpcom = credentials {
             isAuthenticatedWithoutWPCom = false
+        } else {
+            isAuthenticatedWithoutWPCom = true
         }
     }
 

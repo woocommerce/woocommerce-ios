@@ -54,6 +54,10 @@ final class PaymentSettingsFlowPresentingViewController: UIViewController {
         view.pinSubviewToAllEdges(childViewController.view)
         childViewController.didMove(toParent: self)
     }
+
+    override var shouldShowOfflineBanner: Bool {
+        true
+    }
 }
 
 // MARK: - View Configuration

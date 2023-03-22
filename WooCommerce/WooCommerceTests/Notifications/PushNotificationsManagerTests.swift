@@ -26,10 +26,6 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     private var storesManager: MockStoresManager!
 
-    /// Mock: Support Manager
-    ///
-    private var supportManager: MockSupportManager!
-
     /// Mock: UserNotificationCenter
     ///
     private var userNotificationCenter: MockUserNotificationsCenterAdapter!
@@ -54,14 +50,12 @@ final class PushNotificationsManagerTests: XCTestCase {
         storesManager.sessionManager.setStoreId(nil)
         mockSynchronizeNotificationsAction()
 
-        supportManager = MockSupportManager()
         userNotificationCenter = MockUserNotificationsCenterAdapter()
 
         manager = {
             let configuration = PushNotificationsConfiguration(application: self.application,
                                                                defaults: self.defaults,
                                                                storesManager: self.storesManager,
-                                                               supportManager: self.supportManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
             return PushNotificationsManager(configuration: configuration)
@@ -73,7 +67,6 @@ final class PushNotificationsManagerTests: XCTestCase {
         manager.resetBadgeCountForAllStores {}
         manager = nil
         userNotificationCenter = nil
-        supportManager = nil
         storesManager = nil
 
         defaults.removePersistentDomain(forName: Sample.defaultSuiteName)
@@ -175,16 +168,6 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
     }
 
-
-    /// Verifies that `unregisterForRemoteNotifications` relays the Unregister call to the Support Manager.
-    ///
-    func testUnregisterForRemoteNotificationsRelaysUnregisterCallToSupportManager() {
-        XCTAssertFalse(supportManager.unregisterWasCalled)
-        manager.unregisterForRemoteNotifications()
-        XCTAssertTrue(supportManager.unregisterWasCalled)
-    }
-
-
     /// Verifies that `registerDevice` effectively dispatches a `registerDevice` Action.
     ///
     func testRegisterForRemoteNotificationsDispatchesRegisterDeviceAction() {
@@ -216,21 +199,6 @@ final class PushNotificationsManagerTests: XCTestCase {
         manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
         XCTAssertTrue(defaults.containsObject(forKey: .deviceToken))
     }
-
-
-    /// Verifies that `registerDevice` effectively relays the register call to the Support Manager.
-    ///
-    func testRegisterForRemoteNotificationsRelaysRegisterCallToSupportManager() {
-        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            XCTFail()
-            return
-        }
-
-        XCTAssert(supportManager.registeredDeviceTokens.isEmpty)
-        manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
-        XCTAssertEqual(supportManager.registeredDeviceTokens.first, tokenAsData.hexString)
-    }
-
 
     /// Verifies that `registrationDidFail` enqueues a `unregisterDevice` NotificationAction.
     ///
@@ -303,7 +271,6 @@ final class PushNotificationsManagerTests: XCTestCase {
             let configuration = PushNotificationsConfiguration(application: self.application,
                                                                defaults: self.defaults,
                                                                storesManager: self.storesManager,
-                                                               supportManager: self.supportManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
             return PushNotificationsManager(configuration: configuration)
@@ -331,7 +298,6 @@ final class PushNotificationsManagerTests: XCTestCase {
             let configuration = PushNotificationsConfiguration(application: self.application,
                                                                defaults: self.defaults,
                                                                storesManager: self.storesManager,
-                                                               supportManager: self.supportManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
             return PushNotificationsManager(configuration: configuration)
@@ -358,7 +324,6 @@ final class PushNotificationsManagerTests: XCTestCase {
             let configuration = PushNotificationsConfiguration(application: self.application,
                                                                defaults: self.defaults,
                                                                storesManager: self.storesManager,
-                                                               supportManager: self.supportManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
             return PushNotificationsManager(configuration: configuration)
@@ -385,7 +350,6 @@ final class PushNotificationsManagerTests: XCTestCase {
             let configuration = PushNotificationsConfiguration(application: self.application,
                                                                defaults: self.defaults,
                                                                storesManager: self.storesManager,
-                                                               supportManager: self.supportManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
             return PushNotificationsManager(configuration: configuration)
@@ -442,7 +406,6 @@ final class PushNotificationsManagerTests: XCTestCase {
             let configuration = PushNotificationsConfiguration(application: self.application,
                                                                defaults: self.defaults,
                                                                storesManager: self.storesManager,
-                                                               supportManager: self.supportManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
             return PushNotificationsManager(configuration: configuration)
@@ -480,7 +443,6 @@ final class PushNotificationsManagerTests: XCTestCase {
             let configuration = PushNotificationsConfiguration(application: self.application,
                                                                defaults: self.defaults,
                                                                storesManager: self.storesManager,
-                                                               supportManager: self.supportManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
             return PushNotificationsManager(configuration: configuration)
         }()
@@ -524,7 +486,6 @@ final class PushNotificationsManagerTests: XCTestCase {
             let configuration = PushNotificationsConfiguration(application: self.application,
                                                                defaults: self.defaults,
                                                                storesManager: stores,
-                                                               supportManager: self.supportManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
             return PushNotificationsManager(configuration: configuration)
         }()
@@ -552,7 +513,6 @@ final class PushNotificationsManagerTests: XCTestCase {
             let configuration = PushNotificationsConfiguration(application: self.application,
                                                                defaults: self.defaults,
                                                                storesManager: stores,
-                                                               supportManager: self.supportManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
             return PushNotificationsManager(configuration: configuration)
         }()
@@ -582,7 +542,6 @@ final class PushNotificationsManagerTests: XCTestCase {
             let configuration = PushNotificationsConfiguration(application: self.application,
                                                                defaults: self.defaults,
                                                                storesManager: stores,
-                                                               supportManager: self.supportManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
             return PushNotificationsManager(configuration: configuration)
         }()
@@ -608,7 +567,6 @@ final class PushNotificationsManagerTests: XCTestCase {
             let configuration = PushNotificationsConfiguration(application: self.application,
                                                                defaults: self.defaults,
                                                                storesManager: stores,
-                                                               supportManager: self.supportManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
             return PushNotificationsManager(configuration: configuration)
         }()

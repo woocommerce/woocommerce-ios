@@ -401,12 +401,25 @@ extension MainTabBarController {
                 guard storeIsShown else {
                     return
                 }
-                // We give some time to the orders tab transition to finish, otherwise it might prevent the second navigation from happening
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
                     presentDetails(for: orderID, siteID: siteID)
                 }
             }
         })
+    }
+
+    static func presentOrderCreationFlow() {
+        switchToOrdersTab {
+            let tabBar = AppDelegate.shared.tabBarController
+            let ordersNavigationController = tabBar?.ordersNavigationController
+
+            guard let ordersSplitViewWrapperController = ordersNavigationController?.viewControllers.first as? OrdersSplitViewWrapperController else {
+                return
+            }
+
+            ordersSplitViewWrapperController.presentOrderCreationFlow()
+        }
     }
 
     private static func presentDetails(for orderID: Int64, siteID: Int64) {
@@ -417,14 +430,23 @@ extension MainTabBarController {
         }
     }
 
-    static func presentPayments() {
+    @discardableResult
+    static func presentPayments() -> InPersonPaymentsMenuViewController? {
         switchToHubMenuTab()
 
         guard let hubMenuViewController: HubMenuViewController = childViewController() else {
-            return
+            return nil
         }
 
-        hubMenuViewController.showPaymentsMenu()
+        return hubMenuViewController.showPaymentsMenu()
+    }
+
+    static func presentCollectPayment() {
+        let viewController = presentPayments()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
+            viewController?.openSimplePaymentsAmountFlow()
+        }
     }
 }
 
@@ -665,6 +687,15 @@ private extension MainTabBarController {
                                                                 forceReadOnly: false)
         let productNavController = WooNavigationController(rootViewController: productViewController)
         productsNavigationController.present(productNavController, animated: true)
+    }
+}
+
+private extension MainTabBarController {
+    enum Constants {
+        // Used to delay a second navigation after the previous one is called,
+        // to ensure that the first transition is finished. Without this delay
+        // the second one might not happen.
+        static let screenTransitionsDelay = 0.3
     }
 }
 

@@ -28,10 +28,12 @@ extension Storage.GeneralAppSettings {
         isCouponManagementSwitchEnabled: CopiableProp<Bool> = .copy,
         isInAppPurchasesSwitchEnabled: CopiableProp<Bool> = .copy,
         isTapToPayOnIPhoneSwitchEnabled: CopiableProp<Bool> = .copy,
+        isProductMultiSelectionSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
         lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
         lastJetpackBenefitsBannerDismissedTime: NullableCopiableProp<Date> = .copy,
-        featureAnnouncementCampaignSettings: CopiableProp<[FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]> = .copy
+        featureAnnouncementCampaignSettings: CopiableProp<[FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]> = .copy,
+        sitesWithAtLeastOneIPPTransactionFinished: CopiableProp<Set<Int64>> = .copy
     ) -> Storage.GeneralAppSettings {
         let installationDate = installationDate ?? self.installationDate
         let feedbacks = feedbacks ?? self.feedbacks
@@ -40,10 +42,12 @@ extension Storage.GeneralAppSettings {
         let isCouponManagementSwitchEnabled = isCouponManagementSwitchEnabled ?? self.isCouponManagementSwitchEnabled
         let isInAppPurchasesSwitchEnabled = isInAppPurchasesSwitchEnabled ?? self.isInAppPurchasesSwitchEnabled
         let isTapToPayOnIPhoneSwitchEnabled = isTapToPayOnIPhoneSwitchEnabled ?? self.isTapToPayOnIPhoneSwitchEnabled
+        let isProductMultiSelectionSwitchEnabled = isProductMultiSelectionSwitchEnabled ?? self.isProductMultiSelectionSwitchEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
         let lastEligibilityErrorInfo = lastEligibilityErrorInfo ?? self.lastEligibilityErrorInfo
         let lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime ?? self.lastJetpackBenefitsBannerDismissedTime
         let featureAnnouncementCampaignSettings = featureAnnouncementCampaignSettings ?? self.featureAnnouncementCampaignSettings
+        let sitesWithAtLeastOneIPPTransactionFinished = sitesWithAtLeastOneIPPTransactionFinished ?? self.sitesWithAtLeastOneIPPTransactionFinished
 
         return Storage.GeneralAppSettings(
             installationDate: installationDate,
@@ -53,10 +57,12 @@ extension Storage.GeneralAppSettings {
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
             isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
+            isProductMultiSelectionSwitchEnabled: isProductMultiSelectionSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime,
-            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings
+            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
+            sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished
         )
     }
 }

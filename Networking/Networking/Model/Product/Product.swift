@@ -87,27 +87,6 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     // MARK: Product Bundle properties
 
-    /// Single-product details page layout. Applicable for bundle-type products only.
-    public let bundleLayout: ProductBundleLayout?
-
-    /// Controls the form location of the product in the single-product page. Applicable to bundle-type products.
-    public let bundleFormLocation: ProductBundleFormLocation?
-
-    /// Controls the display of bundle container/child items in cart/order templates. Applicable for bundle-type products only.
-    public let bundleItemGrouping: ProductBundleItemGrouping?
-
-    /// Min bundle size. Applicable for bundle-type products only.
-    public let bundleMinSize: Int64?
-
-    /// Max bundle size. Applicable for bundle-type products only.
-    public let bundleMaxSize: Int64?
-
-    /// Controls whether the configuration of this product can be modified from the cart page. Applicable to bundle-type products.
-    public let bundleEditableInCart: Bool?
-
-    /// Sold Individually option context. Applicable to bundle-type products.
-    public let bundleSoldIndividuallyContext: ProductBundleSoldIndividuallyContext?
-
     /// Stock status of this bundle, taking bundled product quantity requirements and limitations into account. Applicable for bundle-type products only.
     public let bundleStockStatus: ProductStockStatus?
 
@@ -116,6 +95,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     /// List of bundled item data contained in this product.
     public let bundledItems: [ProductBundleItem]
+
+    // MARK: Composite Product properties
+
+    /// List of components that this product consists of. Applicable to composite-type products only.
+    public let compositeComponents: [ProductCompositeComponent]
 
     /// Computed Properties
     ///
@@ -232,16 +216,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 groupedProducts: [Int64],
                 menuOrder: Int,
                 addOns: [ProductAddOn],
-                bundleLayout: ProductBundleLayout?,
-                bundleFormLocation: ProductBundleFormLocation?,
-                bundleItemGrouping: ProductBundleItemGrouping?,
-                bundleMinSize: Int64?,
-                bundleMaxSize: Int64?,
-                bundleEditableInCart: Bool?,
-                bundleSoldIndividuallyContext: ProductBundleSoldIndividuallyContext?,
                 bundleStockStatus: ProductStockStatus?,
                 bundleStockQuantity: Int64?,
-                bundledItems: [ProductBundleItem]) {
+                bundledItems: [ProductBundleItem],
+                compositeComponents: [ProductCompositeComponent]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -305,16 +283,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.groupedProducts = groupedProducts
         self.menuOrder = menuOrder
         self.addOns = addOns
-        self.bundleLayout = bundleLayout
-        self.bundleFormLocation = bundleFormLocation
-        self.bundleItemGrouping = bundleItemGrouping
-        self.bundleMinSize = bundleMinSize
-        self.bundleMaxSize = bundleMaxSize
-        self.bundleEditableInCart = bundleEditableInCart
         self.bundleStockStatus = bundleStockStatus
         self.bundleStockQuantity = bundleStockQuantity
-        self.bundleSoldIndividuallyContext = bundleSoldIndividuallyContext
         self.bundledItems = bundledItems
+        self.compositeComponents = compositeComponents
     }
 
     /// The public initializer for Product.
@@ -329,8 +301,17 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let productID = try container.decode(Int64.self, forKey: .productID)
         let name = try container.decode(String.self, forKey: .name).strippedHTML
         let slug = try container.decode(String.self, forKey: .slug)
-        let permalink = try container.decode(String.self, forKey: .permalink)
-
+        // Even though a plain install of WooCommerce Core provides string values,
+        // some plugins alter the field value from String to Int or Decimal.
+        // We handle this by returning an empty string if we can't decode it
+        let permalink: String = {
+            do {
+                return try container.decode(String.self, forKey: .permalink)
+            } catch {
+                DDLogError("⛔️ Error parsing `permalink` for Product ID \(productID): \(error)")
+                return ""
+            }
+        }()
         let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
         let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified) ?? Date()
         let dateOnSaleStart = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleStart)
@@ -456,17 +437,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         // Product Bundle properties
         // Uses failsafe decoding because non-bundle product types can return unexpected value types.
-        let bundleLayout = container.failsafeDecodeIfPresent(ProductBundleLayout.self, forKey: .bundleLayout)
-        let bundleFormLocation = container.failsafeDecodeIfPresent(ProductBundleFormLocation.self, forKey: .bundleFormLocation)
-        let bundleItemGrouping = container.failsafeDecodeIfPresent(ProductBundleItemGrouping.self, forKey: .bundleItemGrouping)
-        let bundleEditableInCart = container.failsafeDecodeIfPresent(Bool.self, forKey: .bundleEditableInCart)
-        let bundleSoldIndividuallyContext = container.failsafeDecodeIfPresent(ProductBundleSoldIndividuallyContext.self, forKey: .bundleSoldIndividuallyContext)
         let bundleStockStatus = container.failsafeDecodeIfPresent(ProductStockStatus.self, forKey: .bundleStockStatus)
-        // When the bundle min size, max size, or stock quantity is not set for a product bundle, the API returns an empty string and the value will be `nil`.
-        let bundleMinSize = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleMinSize)
-        let bundleMaxSize = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleMaxSize)
+        // When the bundle stock quantity is not set for a product bundle, the API returns an empty string and the value will be `nil`.
         let bundleStockQuantity = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleStockQuantity)
         let bundledItems = try container.decodeIfPresent([ProductBundleItem].self, forKey: .bundledItems) ?? []
+
+        // Composite Product properties
+        let compositeComponents = try container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents) ?? []
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -531,16 +508,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   groupedProducts: groupedProducts,
                   menuOrder: menuOrder,
                   addOns: addOns,
-                  bundleLayout: bundleLayout,
-                  bundleFormLocation: bundleFormLocation,
-                  bundleItemGrouping: bundleItemGrouping,
-                  bundleMinSize: bundleMinSize,
-                  bundleMaxSize: bundleMaxSize,
-                  bundleEditableInCart: bundleEditableInCart,
-                  bundleSoldIndividuallyContext: bundleSoldIndividuallyContext,
                   bundleStockStatus: bundleStockStatus,
                   bundleStockQuantity: bundleStockQuantity,
-                  bundledItems: bundledItems)
+                  bundledItems: bundledItems,
+                  compositeComponents: compositeComponents)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -727,16 +698,11 @@ private extension Product {
         case menuOrder          = "menu_order"
         case metadata           = "meta_data"
 
-        case bundleLayout                   = "bundle_layout"
-        case bundleFormLocation             = "bundle_add_to_cart_form_location"
-        case bundleItemGrouping             = "bundle_item_grouping"
-        case bundleMinSize                  = "bundle_min_size"
-        case bundleMaxSize                  = "bundle_max_size"
-        case bundleEditableInCart           = "bundle_editable_in_cart"
-        case bundleSoldIndividuallyContext  = "bundle_sold_individually_context"
         case bundleStockStatus              = "bundle_stock_status"
         case bundleStockQuantity            = "bundle_stock_quantity"
         case bundledItems                   = "bundled_items"
+
+        case compositeComponents    = "composite_components"
     }
 }
 

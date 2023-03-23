@@ -37,13 +37,13 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
             let sut = StoreOnboardingTaskViewModel(task: task)
             switch task.type {
             case .addFirstProduct:
-                XCTAssertEqual(sut.icon, .productImage)
+                XCTAssertEqual(sut.icon, .addProductImage)
             case .launchStore:
                 XCTAssertEqual(sut.icon, .launchStoreImage)
             case .customizeDomains:
-                XCTAssertEqual(sut.icon, .domainsImage)
+                XCTAssertEqual(sut.icon, .customizeDomainsImage)
             case .payments, .woocommercePayments:
-                XCTAssertEqual(sut.icon, .currencyImage)
+                XCTAssertEqual(sut.icon, .getPaidImage)
             case .unsupported:
                 XCTAssertEqual(sut.icon, .checkCircleImage)
             }

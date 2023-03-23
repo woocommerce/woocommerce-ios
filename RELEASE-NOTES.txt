@@ -4,6 +4,7 @@
 -----
 - [*] Payments: Local search is added to the products selection screen in the order creation flow to speed the process. [https://github.com/woocommerce/woocommerce-ios/pull/9178]
 - [*] Fix: Prevent product variations not loading due to an encoding error for `permalink`, which was altered by a plugin. [https://github.com/woocommerce/woocommerce-ios/pull/9233]
+- [*] Login: Users can now log in to self-hosted sites without Jetpack by approving application password authorization to their sites. [https://github.com/woocommerce/woocommerce-ios/pull/9260]
 - [*] Payments: Tap to Pay on iPhone can now be selected from the Payment Methods screen [https://github.com/woocommerce/woocommerce-ios/pull/9242]
 
 12.8

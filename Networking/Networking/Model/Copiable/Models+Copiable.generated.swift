@@ -1334,22 +1334,28 @@ extension Networking.ProductCompositeComponent {
     public func copy(
         componentID: CopiableProp<String> = .copy,
         title: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy,
         imageURL: CopiableProp<String> = .copy,
         optionType: CopiableProp<CompositeComponentOptionType> = .copy,
-        optionIDs: CopiableProp<[Int64]> = .copy
+        optionIDs: CopiableProp<[Int64]> = .copy,
+        defaultOptionID: CopiableProp<String> = .copy
     ) -> Networking.ProductCompositeComponent {
         let componentID = componentID ?? self.componentID
         let title = title ?? self.title
+        let description = description ?? self.description
         let imageURL = imageURL ?? self.imageURL
         let optionType = optionType ?? self.optionType
         let optionIDs = optionIDs ?? self.optionIDs
+        let defaultOptionID = defaultOptionID ?? self.defaultOptionID
 
         return Networking.ProductCompositeComponent(
             componentID: componentID,
             title: title,
+            description: description,
             imageURL: imageURL,
             optionType: optionType,
-            optionIDs: optionIDs
+            optionIDs: optionIDs,
+            defaultOptionID: defaultOptionID
         )
     }
 }

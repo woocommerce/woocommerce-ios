@@ -13,6 +13,10 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
         rootView.onUpgradeNowTapped = { [weak self] in
             self?.showUpgradePlanWebView(siteID: siteID, viewModel: viewModel)
         }
+
+        rootView.onReportIssueTapped = { [weak self] in
+            self?.showContactSupportForm()
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -27,6 +31,11 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
         })
         present(upgradeController, animated: true)
     }
+
+    private func showContactSupportForm() {
+        let supportController = SupportFormHostingController(viewModel: .init())
+        supportController.show(from: self)
+    }
 }
 
 /// Main view for the plan settings.
@@ -40,6 +49,10 @@ struct UpgradesView: View {
     /// Closure to be invoked when the "Upgrade Now" button is tapped.
     ///
     var onUpgradeNowTapped: (() -> ())?
+
+    /// Closure to be invoked when the "Report Issue" button is tapped.
+    ///
+    var onReportIssueTapped: (() -> ())?
 
     var body: some View {
         List {
@@ -67,7 +80,7 @@ struct UpgradesView: View {
 
             Section(Localization.troubleshooting) {
                 Button(Localization.report) {
-                    print("Report Subscription Tapped")
+                    onReportIssueTapped?()
                 }
                 .linkStyle()
             }

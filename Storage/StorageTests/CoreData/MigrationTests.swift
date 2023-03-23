@@ -1666,6 +1666,8 @@ final class MigrationTests: XCTestCase {
         XCTAssertNotNil(component.value(forKey: "imageURL"))
         XCTAssertNotNil(component.value(forKey: "optionType"))
         XCTAssertNotNil(component.value(forKey: "optionIDs"))
+        XCTAssertNotNil(component.value(forKey: "componentDescription"))
+        XCTAssertNotNil(component.value(forKey: "defaultOptionID"))
         XCTAssertEqual(component.value(forKey: "product") as? NSManagedObject, migratedProduct)
 
         // Product components attribute exists.

@@ -104,7 +104,6 @@ target 'WooCommerce' do
   alamofire
   cocoa_lumberjack
   keychain
-  pod 'XLPagerTabStrip', '~> 9.0'
   pod 'ZendeskSupportSDK', '~> 6.0'
   stripe_terminal
   pod 'Kingfisher', '~> 7.6.2'

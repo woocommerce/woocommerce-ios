@@ -283,7 +283,8 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureOrderCardReader(cell: LeftImageTableViewCell) {
-        prepareForReuse(cell, accessibilityID: "order-card-reader")
+        prepareForReuse(cell)
+        cell.accessibilityIdentifier = "order-card-reader"
         cell.configure(image: .shoppingCartIcon, text: Localization.orderCardReader.localizedCapitalized)
     }
 
@@ -298,27 +299,31 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureManagePaymentGateways(cell: LeftImageTitleSubtitleTableViewCell) {
-        prepareForReuse(cell, accessibilityID: "manage-payment-gateways")
+        prepareForReuse(cell)
+        cell.accessibilityIdentifier = "manage-payment-gateways"
         cell.configure(image: .rectangleOnRectangleAngled,
                        text: Localization.managePaymentGateways.localizedCapitalized,
                        subtitle: pluginState?.preferred.pluginName ?? "")
     }
 
     func configureCardReaderManuals(cell: LeftImageTableViewCell) {
-        prepareForReuse(cell, accessibilityID: "card-reader-manuals")
+        prepareForReuse(cell)
+        cell.accessibilityIdentifier = "card-reader-manuals"
         cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals.localizedCapitalized)
     }
 
     func configureCollectPayment(cell: LeftImageTableViewCell) {
-        prepareForReuse(cell, accessibilityID: "collect-payment")
+        prepareForReuse(cell)
+        cell.accessibilityIdentifier = "collect-payment"
         cell.configure(image: .moneyIcon, text: Localization.collectPayment.localizedCapitalized)
     }
 
     func configureToggleEnableCashOnDelivery(cell: LeftImageTitleSubtitleToggleTableViewCell) {
-        prepareForReuse(cell, accessibilityID: "pay-in-person")
+        prepareForReuse(cell)
         cell.leftImageView?.tintColor = .text
         cell.accessoryType = .none
         cell.selectionStyle = .none
+        cell.accessibilityIdentifier = "pay-in-person"
         cell.configure(image: .creditCardIcon,
                        text: Localization.toggleEnableCashOnDelivery,
                        subtitle: learnMoreViewModel.learnMoreAttributedString,
@@ -331,20 +336,21 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureSetUpTapToPayOnIPhone(cell: LeftImageTableViewCell) {
-        prepareForReuse(cell, accessibilityID: "set-up-tap-to-pay")
+        prepareForReuse(cell)
         cell.accessoryType = enableSetUpTapToPayOnIPhoneCell ? .disclosureIndicator : .none
         cell.selectionStyle = enableSetUpTapToPayOnIPhoneCell ? .default : .none
+        cell.accessibilityIdentifier = "set-up-tap-to-pay"
         cell.configure(image: .tapToPayOnIPhoneIcon,
                        text: Localization.tapToPayOnIPhone)
 
         updateEnabledState(in: cell, shouldBeEnabled: enableSetUpTapToPayOnIPhoneCell)
     }
 
-    private func prepareForReuse(_ cell: UITableViewCell, accessibilityID: String) {
+    private func prepareForReuse(_ cell: UITableViewCell) {
         cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.accessibilityIdentifier = accessibilityID
+        cell.accessibilityIdentifier = ""
         updateEnabledState(in: cell)
     }
 

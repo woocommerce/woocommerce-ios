@@ -591,6 +591,7 @@ private extension ProductsViewController {
         tableView.separatorStyle = .none
 
         tableView.allowsMultipleSelectionDuringEditing = true
+        tableView.accessibilityIdentifier = "products-table-view"
 
         // Adds the refresh control to table view manually so that the refresh control always appears below the navigation bar title in
         // large or normal size to be consistent with Dashboard and Orders tab with large titles workaround.

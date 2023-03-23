@@ -19,6 +19,10 @@ final class UpgradesViewModel: ObservableObject {
         planState == .loading
     }
 
+    /// Indicates if the view should show an error notice.
+    ///
+    var errorNotice: Notice? = nil
+
     /// Current store plan.
     ///
     private(set) var planName = ""
@@ -59,8 +63,9 @@ final class UpgradesViewModel: ObservableObject {
 
     /// Loads the plan from network if needed.
     ///
-    func loadPlan() {
-        guard planState == .notLoaded else { return }
+    func loadPlan(forced: Bool = false) {
+        // Do not fetch the plan anymore if it is loaded, unless a force-load is requested.
+        guard planState == .notLoaded || forced == true else { return }
 
         planState = .loading
         let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in
@@ -72,8 +77,7 @@ final class UpgradesViewModel: ObservableObject {
                 self.updateViewProperties(from: plan)
             case .failure(let error):
                 self.planState = .notLoaded
-                DDLogError("⛔️ Unable to fetch site's plan: \(error)")
-                // TODO: Abort flow and inform user
+                self.updateViewProperties(from: error)
             }
         }
         stores.dispatch(action)
@@ -86,6 +90,15 @@ private extension UpgradesViewModel {
         planName = Self.getPlanName(from: plan)
         planInfo = Self.getPlanInfo(from: plan)
         shouldShowUpgradeButton = Self.getUpgradeNowButtonVisibility(from: plan)
+        errorNotice = nil
+    }
+
+    func updateViewProperties(from error: Error) {
+        DDLogError("⛔️ Unable to fetch site's plan: \(error)")
+        planName = ""
+        planInfo = ""
+        shouldShowUpgradeButton = false
+        errorNotice = createErrorNotice()
     }
 
     /// Removes any occurrences of `WordPress.com` from the site's name.
@@ -171,6 +184,14 @@ private extension UpgradesViewModel {
         let daysLeft = Calendar.current.dateComponents([.day], from: today, to: expiryDate).day ?? 0
         return daysLeft
     }
+
+    /// Creates an error notice that allows to retry fetching a plan.
+    ///
+    func createErrorNotice() -> Notice {
+        .init(title: Localization.fetchErrorNotice, feedbackType: .error, actionTitle: Localization.retry) { [weak self] in
+            self?.loadPlan()
+        }
+    }
 }
 
 // MARK: Definitions
@@ -178,10 +199,13 @@ private extension UpgradesViewModel {
     enum Localization {
         static let freeTrial = NSLocalizedString("Free Trial", comment: "Plan name for an active free trial")
         static let trialEnded = NSLocalizedString("Trial ended", comment: "Plan name for an expired free trial")
-        static let trialEndedInfo = NSLocalizedString("Your free trial has ended and you have limited access to all the features. Subscribe to eCommerce now.",
+        static let trialEndedInfo = NSLocalizedString("Your free trial has ended, and you have limited access to all the features. Subscribe to eCommerce now.",
                                                       comment: "Info details for an expired free trial")
         static let planEndedInfo = NSLocalizedString("Your subscription has ended and you have limited access to all the features.",
                                                      comment: "Info details for an expired free trial")
+        static let fetchErrorNotice = NSLocalizedString("There was an error fetching your plan details, please try again later.",
+                                                        comment: "Error shown when failing to fetch the plan details in the upgrades view.")
+        static let retry = NSLocalizedString("Retry", comment: "Retry button on the error notice for the upgrade view")
 
         static func planEndedName(name: String) -> String {
             let format = NSLocalizedString("%@ ended", comment: "Reads like: eCommerce ended")

@@ -65,6 +65,12 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [ ] Reviews push notification opens the correct review
 7. Settings
     - [ ] Contact support
+8. Payments
+    - [ ] Make a Simple payment
+    - [ ] Make a Tap to Pay on iPhone payment
+    - [ ] Manage Card Reader - Connect/Disconnect Reader
+    - [x] Card Reader Manual (Chipper) loads
+    - [ ] Learn More link loads
 
 ## Running tests
 

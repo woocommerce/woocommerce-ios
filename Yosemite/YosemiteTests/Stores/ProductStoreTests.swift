@@ -1033,6 +1033,36 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertNil(searchResultsWithAnotherKeyword)
     }
 
+    func test_searchProductsInCache_then_effectively_persists_search_results_entity() throws {
+        // Given
+        let keyword = "test"
+        let product = sampleProduct(name: keyword)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let thereAreCachedResults: Bool = waitFor { promise in
+            let action = ProductAction.searchProductsInCache(siteID: self.sampleSiteID,
+                                                             keyword: keyword,
+                                                             pageSize: self.defaultPageSize,
+                                                             onCompletion: { result in
+                promise(result)
+            })
+
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(thereAreCachedResults)
+        let searchResults = try XCTUnwrap(viewStorage.loadProductSearchResults(keyword: keyword, filterKey: ProductSearchFilter.all.rawValue))
+        XCTAssertEqual(searchResults.keyword, keyword)
+        XCTAssertEqual(searchResults.products?.count, viewStorage.countObjects(ofType: Storage.Product.self))
+
+        let anotherKeyword = "hello"
+        let searchResultsWithAnotherKeyword = viewStorage.loadProductSearchResults(keyword: anotherKeyword, filterKey: ProductSearchFilter.all.rawValue)
+        XCTAssertNil(searchResultsWithAnotherKeyword)
+    }
+
     /// Verifies that `ProductAction.searchProducts` does not result in duplicated entries in the ProductSearchResults entity.
     ///
     func test_searchProducts_does_not_produce_duplicated_references() {
@@ -1677,6 +1707,7 @@ final class ProductStoreTests: XCTestCase {
 private extension ProductStoreTests {
 
     func sampleProduct(_ siteID: Int64? = nil,
+                       name: String? = nil,
                        productID: Int64? = nil,
                        productShippingClass: Networking.ProductShippingClass? = nil,
                        tags: [Networking.ProductTag]? = nil,
@@ -1686,7 +1717,7 @@ private extension ProductStoreTests {
         let testProductID = productID ?? sampleProductID
         return Product(siteID: testSiteID,
                        productID: testProductID,
-                       name: "Book the Green Room",
+                       name: name ?? "Book the Green Room",
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
                        date: DateFormatter.dateFromString(with: "2019-02-19T17:33:31"),

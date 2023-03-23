@@ -672,6 +672,53 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
+
+    func test_view_model_for_composite_product_with_feature_flag_disabled() {
+        // Arrange
+        let product = Fixtures.compositeProduct
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isCompositeProductsEnabled: false)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false, hideSeparator: false),
+                                                                       .reviews,
+                                                                       .inventorySettings(editable: false),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: false)]
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
+        assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
+    }
+
+    func test_view_model_for_composite_product_with_feature_flag_enabled() {
+        // Arrange
+        let product = Fixtures.compositeProduct
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isCompositeProductsEnabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.components(actionable: true),
+                                                                       .priceSettings(editable: false, hideSeparator: false),
+                                                                       .reviews,
+                                                                       .inventorySettings(editable: false),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: false)]
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
+        assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
+    }
 }
 
 private extension ProductFormActionsFactoryTests {
@@ -722,6 +769,9 @@ private extension ProductFormActionsFactoryTests {
         // Bundle product, missing price/short description/categories/tags
         static let bundleProduct = affiliateProduct.copy(productTypeKey: ProductType.bundle.rawValue)
 
+        // Composite product with price and composite components
+        static let compositeProduct = affiliateProduct.copy(productTypeKey: ProductType.composite.rawValue, regularPrice: "2", compositeComponents: [.fake()])
+
         // Non-core product, missing price/short description/categories/tags
         static let nonCoreProductWithoutPrice = affiliateProduct.copy(productTypeKey: "other", regularPrice: "")
 
@@ -740,6 +790,7 @@ private extension ProductFormActionsFactoryTests {
                                    isCategoriesActionAlwaysEnabled: Bool = false,
                                    isDownloadableFilesSettingBased: Bool = true,
                                    isBundledProductsEnabled: Bool = false,
+                                   isCompositeProductsEnabled: Bool = false,
                                    variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
             ProductFormActionsFactory(product: product,
                                       formType: formType,
@@ -752,6 +803,7 @@ private extension ProductFormActionsFactoryTests {
                                       isCategoriesActionAlwaysEnabled: isCategoriesActionAlwaysEnabled,
                                       isDownloadableFilesSettingBased: isDownloadableFilesSettingBased,
                                       isBundledProductsEnabled: isBundledProductsEnabled,
+                                      isCompositeProductsEnabled: isCompositeProductsEnabled,
                                       variationsPrice: variationsPrice)
         }
     }

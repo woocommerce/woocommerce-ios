@@ -449,7 +449,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 ServiceLocator.analytics.track(event: .ProductDetail.bundledProductsTapped())
                 showBundledProducts()
-                return
+            case .components(_, let isActionable):
+                guard isActionable else {
+                    return
+                }
+                // TODO-8956: Track composite row is tapped
+                // TODO-8956: Navigate to Components view
             }
         case .optionsCTA(let rows):
             let row = rows[indexPath.row]

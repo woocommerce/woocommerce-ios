@@ -112,7 +112,7 @@ struct StoreOnboardingView: View {
     }
 
     private var content: some View {
-        VStack {
+        VStack(spacing: 0) {
             Color(uiColor: .listBackground)
                 .frame(height: Layout.VerticalSpacing.collapsedMode)
                 .renderedIf(!viewModel.isExpanded)
@@ -127,7 +127,7 @@ struct StoreOnboardingView: View {
                                        isRedacted: viewModel.isRedacted)
 
                 // Task list
-                VStack(alignment: .leading, spacing: Layout.verticalSpacingBetweenTasks) {
+                VStack(alignment: .leading, spacing: 0) {
                     ForEach(viewModel.tasksForDisplay) { taskViewModel in
                         let isLastTask = taskViewModel == viewModel.tasksForDisplay.last
 
@@ -147,7 +147,8 @@ struct StoreOnboardingView: View {
                 Spacer()
                     .renderedIf(viewModel.isExpanded)
             }
-            .padding(insets: Layout.insets)
+            .padding(insets: viewModel.shouldShowViewAllButton ?
+                     Layout.insetsWithViewAllButton: Layout.insetsWithoutViewAllButton)
             .if(!viewModel.isExpanded) { $0.background(Color(uiColor: .listForeground(modal: false))) }
 
             Color(uiColor: .listBackground)
@@ -175,12 +176,12 @@ private extension StoreOnboardingView {
 
 private extension StoreOnboardingView {
     enum Layout {
-        static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+        static let insetsWithViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+        static let insetsWithoutViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 0, trailing: 16)
         enum VerticalSpacing {
             static let collapsedMode: CGFloat = 16
             static let expandedMode: CGFloat = 40
         }
-        static let verticalSpacingBetweenTasks: CGFloat = 4
     }
 
     enum Localization {

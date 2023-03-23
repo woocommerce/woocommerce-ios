@@ -15,7 +15,7 @@ class StoreOnboardingViewModel: ObservableObject {
         case failed
     }
 
-    @Published private(set) var isRedacted: Bool = false
+    @Published private(set) var isRedacted: Bool = true
     @Published private(set) var taskViewModels: [StoreOnboardingTaskViewModel] = []
 
     /// Used to determine whether the task list should be displayed in dashboard

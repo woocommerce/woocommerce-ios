@@ -140,10 +140,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.domainPurchaseSuccessImage)
     }
 
-    func test_domainsImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.domainsImage)
-    }
-
     func test_domainSearchPlaceholderImage_is_not_nil() {
         XCTAssertNotNil(UIImage.domainSearchPlaceholderImage)
     }

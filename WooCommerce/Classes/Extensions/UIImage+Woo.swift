@@ -262,12 +262,6 @@ extension UIImage {
         return UIImage(named: "domain-purchase-success")!
     }
 
-    /// Domains image.
-    ///
-    static var domainsImage: UIImage {
-        UIImage.gridicon(.domains)
-    }
-
     static var emailImage: UIImage {
         UIImage(named: "email")!
     }

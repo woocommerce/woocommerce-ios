@@ -130,6 +130,9 @@ private extension StoreOnboardingViewModel {
         case .loaded(let items):
             isRedacted = false
             taskViewModels = items
+            if hasPendingTasks(items) {
+                ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingShown())
+            }
         case .failed:
             isRedacted = false
             taskViewModels = []
@@ -149,10 +152,18 @@ private extension StoreOnboardingViewModel {
             return
         }
 
-        ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingCompleted())
+        if hasPendingTasks(taskViewModels) {
+            // Tracks the onboarding completion event only when there are any pending tasks before and
+            // now all tasks are complete.
+            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingCompleted())
+        }
 
         // This will be reset to `nil` when session resets
         defaults[.completedAllStoreOnboardingTasks] = true
+    }
+
+    func hasPendingTasks(_ tasks: [StoreOnboardingTaskViewModel]) -> Bool {
+        tasks.contains(where: { $0.isComplete == false })
     }
 }
 

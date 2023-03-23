@@ -654,8 +654,6 @@ private extension DashboardViewController {
 
         hostingController.didMove(toParent: self)
         hostingController.view.layoutIfNeeded()
-
-        ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingShown())
     }
 }
 

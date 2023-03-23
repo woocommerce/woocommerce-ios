@@ -63,7 +63,6 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
         // we can assume that the setup has completed.
         let isMobileRedirect = url.hasPrefix(Constants.mobileRedirectURL)
         let isPlansPage = url.hasPrefix(Constants.plansPage)
-        DDLogInfo("🧭 \(url)")
         if isMobileRedirect || isPlansPage {
             // Running on the main thread is necessary if this method is triggered from `decidePolicy`.
             DispatchQueue.main.async { [weak self] in

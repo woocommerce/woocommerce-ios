@@ -40,12 +40,7 @@ final class JetpackSetupViewModel: ObservableObject {
     }
 
     private(set) var jetpackConnectionURL: URL?
-    private var siteConnectionURL: URL? {
-        guard let url = URL(string: String(format: Constants.jetpackInstallString, siteURL, Constants.mobileRedirectURL)) else {
-            return nil
-        }
-        return url
-    }
+    private let siteConnectionURL: URL?
 
     @Published private(set) var currentSetupStep: JetpackInstallStep?
     @Published private(set) var currentConnectionStep: ConnectionStep?
@@ -104,6 +99,7 @@ final class JetpackSetupViewModel: ObservableObject {
         let setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.setupSteps = setupSteps
         self.storeNavigationHandler = onStoreNavigation
+        self.siteConnectionURL = URL(string: String(format: Constants.jetpackInstallString, siteURL, Constants.mobileRedirectURL))
     }
 
     func isSetupStepFailed(_ step: JetpackInstallStep) -> Bool {

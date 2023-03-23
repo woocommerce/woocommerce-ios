@@ -277,10 +277,15 @@ struct JetpackSetupView: View {
             }
         }
         .fullScreenCover(isPresented: $viewModel.jetpackConnectionInterrupted) {
-            JetpackSetupInterruptedView(siteURL: viewModel.siteURL, onSupport: supportHandler, onContinue: {
+            JetpackSetupInterruptedView(siteURL: viewModel.siteURL, onSupport: {
+                viewModel.shouldPresentWebView = false
+                supportHandler()
+            }, onContinue: {
+                viewModel.shouldPresentWebView = false
                 viewModel.jetpackConnectionInterrupted = false
                 viewModel.didTapContinueConnectionButton()
             }, onCancellation: {
+                viewModel.shouldPresentWebView = false
                 viewModel.jetpackConnectionInterrupted = false
                 // delay for the dismissal of the interrupted screen to complete.
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interruptedConnectionActionHandlerDelayTime) {

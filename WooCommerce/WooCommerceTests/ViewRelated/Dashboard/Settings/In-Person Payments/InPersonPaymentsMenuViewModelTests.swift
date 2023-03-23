@@ -128,7 +128,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
                     XCTFail("Unexpected CardPresentPaymentAction recieved")
                 }
             }
-            
+
             // When
             self.sut.viewDidLoad()
         }

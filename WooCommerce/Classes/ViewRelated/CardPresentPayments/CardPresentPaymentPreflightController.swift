@@ -107,6 +107,9 @@ final class CardPresentPaymentPreflightController {
     private func checkForConnectedReader() async {
         if let connectedReader = connectedReader,
            let paymentGatewayAccount = await selectedPaymentGateway() {
+            // The reader was already connected when the analyticsTracker was created,
+            //so we need to pass it along for properties to be correct
+            analyticsTracker.setCandidateReader(connectedReader)
             if connectedReader.discoveryMethod == discoveryMethod {
                 // If we're already connected to a reader of the correct type, return it
                 return handleConnectionResult(.success(.connected(connectedReader)), paymentGatewayAccount: paymentGatewayAccount)

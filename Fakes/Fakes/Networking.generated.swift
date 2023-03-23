@@ -961,9 +961,11 @@ extension Networking.ProductCompositeComponent {
         .init(
             componentID: .fake(),
             title: .fake(),
+            description: .fake(),
             imageURL: .fake(),
             optionType: .fake(),
-            optionIDs: .fake()
+            optionIDs: .fake(),
+            defaultOptionID: .fake()
         )
     }
 }

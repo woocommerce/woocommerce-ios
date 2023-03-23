@@ -71,8 +71,8 @@ public struct WordPressSite: Decodable, Equatable {
             }
         }()
         let namespaces = try container.decode([String].self, forKey: .namespaces)
-        let authentication = try container.decode(Authentication.self, forKey: .authentication)
-        let applicationPasswordURL = authentication.applicationPasswords?.endpoints?.authorization
+        let authentication = try? container.decode(Authentication.self, forKey: .authentication)
+        let applicationPasswordURL = authentication?.applicationPasswords?.endpoints?.authorization
 
         self.init(name: name,
                   description: description,

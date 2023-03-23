@@ -262,12 +262,6 @@ extension UIImage {
         return UIImage(named: "domain-purchase-success")!
     }
 
-    /// Domains image.
-    ///
-    static var domainsImage: UIImage {
-        UIImage.gridicon(.domains)
-    }
-
     static var emailImage: UIImage {
         UIImage(named: "email")!
     }
@@ -437,10 +431,28 @@ extension UIImage {
         UIImage(named: "icon-store-details")!
     }
 
+    /// Add product image
+    ///
+    static var addProductImage: UIImage {
+        UIImage(named: "icon-add-product")!
+    }
+
     /// Launch store Image
     ///
     static var launchStoreImage: UIImage {
         UIImage(named: "icon-launch-store")!
+    }
+
+    /// Customize domain image
+    ///
+    static var customizeDomainsImage: UIImage {
+        UIImage(named: "icon-customize-domain")!
+    }
+
+    /// Get paid image
+    ///
+    static var getPaidImage: UIImage {
+        UIImage(named: "icon-get-paid")!
     }
 
     /// Store summary image used in the store creation flow.

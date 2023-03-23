@@ -499,7 +499,9 @@
         <relationship name="products" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="Product" inverseName="categories" inverseEntity="Product"/>
     </entity>
     <entity name="ProductCompositeComponent" representedClassName="ProductCompositeComponent" syncable="YES">
+        <attribute name="componentDescription" attributeType="String" defaultValueString=""/>
         <attribute name="componentID" attributeType="String" defaultValueString=""/>
+        <attribute name="defaultOptionID" attributeType="String" defaultValueString=""/>
         <attribute name="imageURL" attributeType="String" defaultValueString=""/>
         <attribute name="optionIDs" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
         <attribute name="optionType" attributeType="String" defaultValueString=""/>

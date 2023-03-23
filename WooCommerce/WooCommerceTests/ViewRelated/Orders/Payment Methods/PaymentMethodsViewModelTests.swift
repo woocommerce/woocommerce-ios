@@ -430,17 +430,14 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
     }
 
-    func test_card_row_is_shown_for_eligible_order_and_country() {
+    func test_card_row_is_shown_for_eligible_order_and_country_even_when_ttp_is_not_supported() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storage = MockStorageManager()
         let configuration = CardPresentPaymentsConfiguration.init(country: "US")
-        stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
-            switch action {
-            case let .orderIsEligibleForCardPresentPayment(_, _, _, completion):
-                completion(.success(true))
-            }
-        }
+
+        // When
+        simulate(cardPaymentEligibility: true, tapToPayDeviceAvailability: false, on: stores)
 
         let dependencies = Dependencies(stores: stores, storage: storage, cardPresentPaymentsConfiguration: configuration)
         let viewModel = PaymentMethodsViewModel(siteID: 1212,
@@ -452,9 +449,54 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showTapToPayRow)
     }
 
-    func test_card_row_is_not_shown_when_there_is_an_error_checking_for_order_eligibility() {
+    func test_ttp_row_is_shown_for_eligible_order_and_country_when_ttp_is_supported_by_device_and_store() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storage = MockStorageManager()
+        let configuration = CardPresentPaymentsConfiguration.init(country: "US")
+
+        simulate(cardPaymentEligibility: true, tapToPayDeviceAvailability: true, on: stores)
+
+        // When
+        let dependencies = Dependencies(stores: stores, storage: storage, cardPresentPaymentsConfiguration: configuration)
+        let viewModel = PaymentMethodsViewModel(siteID: 1212,
+                                                orderID: 111,
+                                                formattedTotal: "$5.00",
+                                                flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
+                                                dependencies: dependencies)
+
+        // Then
+        XCTAssertTrue(viewModel.showPayWithCardRow)
+        XCTAssertTrue(viewModel.showTapToPayRow)
+    }
+
+    func test_ttp_row_is_not_shown_for_eligible_order_and_country_when_ttp_is_supported_by_device_but_not_store() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storage = MockStorageManager()
+        let configuration = CardPresentPaymentsConfiguration.init(country: "CA")
+
+        simulate(cardPaymentEligibility: true, tapToPayDeviceAvailability: true, on: stores)
+
+        // When
+        let dependencies = Dependencies(stores: stores, storage: storage, cardPresentPaymentsConfiguration: configuration)
+        let viewModel = PaymentMethodsViewModel(siteID: 1212,
+                                                orderID: 111,
+                                                formattedTotal: "$5.00",
+                                                flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
+                                                dependencies: dependencies)
+
+        // Then
+        XCTAssertTrue(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showTapToPayRow)
+    }
+
+    func test_card_rows_are_not_shown_when_there_is_an_error_checking_for_order_eligibility() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storage = MockStorageManager()
@@ -466,6 +508,9 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             }
         }
 
+        simulate(tapToPayDeviceAvailability: true, on: stores)
+
+        // When
         let dependencies = Dependencies(stores: stores, storage: storage, cardPresentPaymentsConfiguration: configuration)
         let viewModel = PaymentMethodsViewModel(siteID: 1212,
                                                 orderID: 111,
@@ -476,20 +521,18 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showTapToPayRow)
     }
 
-    func test_card_row_is_not_shown_for_non_eligible_order() {
+    func test_card_rows_are_not_shown_for_non_eligible_order() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storage = MockStorageManager()
         let configuration = CardPresentPaymentsConfiguration.init(country: "US")
-        stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
-            switch action {
-            case let .orderIsEligibleForCardPresentPayment(_, _, _, completion):
-                completion(.success(false))
-            }
-        }
 
+        simulate(cardPaymentEligibility: false, tapToPayDeviceAvailability: true, on: stores)
+
+        // When
         let dependencies = Dependencies(stores: stores, storage: storage, cardPresentPaymentsConfiguration: configuration)
         let viewModel = PaymentMethodsViewModel(siteID: 1212,
                                                 orderID: 111,
@@ -500,20 +543,18 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showTapToPayRow)
     }
 
-    func test_card_row_is_not_shown_for_eligible_order_but_ineligible_country() {
+    func test_card_rows_are_not_shown_for_eligible_order_but_ineligible_country() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storage = MockStorageManager()
         let configuration = CardPresentPaymentsConfiguration.init(country: "AQ")
-        stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
-            switch action {
-            case let .orderIsEligibleForCardPresentPayment(_, _, _, completion):
-                completion(.success(true))
-            }
-        }
 
+        simulate(cardPaymentEligibility: true, tapToPayDeviceAvailability: true, on: stores)
+
+        // When
         let dependencies = Dependencies(stores: stores, storage: storage, cardPresentPaymentsConfiguration: configuration)
         let viewModel = PaymentMethodsViewModel(siteID: 1212,
                                                 orderID: 111,
@@ -524,82 +565,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.showPayWithCardRow)
-    }
-
-    func test_card_row_is_not_shown_for_non_cpp_eligible_order_payment_method() {
-        // Given
-
-        let storage = MockStorageManager()
-        let orderItem = OrderItem.fake().copy(itemID: 1234,
-                                              name: "Chocolate cake",
-                                              productID: 678,
-                                              quantity: 1.0)
-        let cppEligibleOrder = Order.fake().copy(siteID: 1212,
-                                                 orderID: 111,
-                                                 status: .pending,
-                                                 currency: "USD",
-                                                 datePaid: nil,
-                                                 total: "5.00",
-                                                 paymentMethodID: "some_other_payment_method",
-                                                 items: [orderItem])
-        let nonSubscriptionProduct = Product.fake().copy(siteID: 1212,
-                                                         productID: 678,
-                                                         name: "Chocolate cake",
-                                                         productTypeKey: "simple")
-
-        storage.insertSampleProduct(readOnlyProduct: nonSubscriptionProduct)
-        storage.insertSampleOrder(readOnlyOrder: cppEligibleOrder)
-
-        let configuration = CardPresentPaymentsConfiguration.init(country: "US")
-
-        let dependencies = Dependencies(storage: storage, cardPresentPaymentsConfiguration: configuration)
-        let viewModel = PaymentMethodsViewModel(siteID: 1212,
-                                                orderID: 111,
-                                                formattedTotal: "$5.00",
-                                                flow: .simplePayment,
-                                                isTapToPayOnIPhoneEnabled: false,
-                                                dependencies: dependencies)
-
-        // Then
-        XCTAssertFalse(viewModel.showPayWithCardRow)
-    }
-
-    func test_card_row_is_not_shown_for_non_cpp_eligible_order_currency() {
-        // Given
-
-        let storage = MockStorageManager()
-        let orderItem = OrderItem.fake().copy(itemID: 1234,
-                                              name: "Chocolate cake",
-                                              productID: 678,
-                                              quantity: 1.0)
-        let cppEligibleOrder = Order.fake().copy(siteID: 1212,
-                                                 orderID: 111,
-                                                 status: .pending,
-                                                 currency: "ZZZ",
-                                                 datePaid: nil,
-                                                 total: "5.00",
-                                                 paymentMethodID: "woocommerce_payments",
-                                                 items: [orderItem])
-        let nonSubscriptionProduct = Product.fake().copy(siteID: 1212,
-                                                         productID: 678,
-                                                         name: "Chocolate cake",
-                                                         productTypeKey: "simple")
-
-        storage.insertSampleProduct(readOnlyProduct: nonSubscriptionProduct)
-        storage.insertSampleOrder(readOnlyOrder: cppEligibleOrder)
-
-        let configuration = CardPresentPaymentsConfiguration.init(country: "US")
-
-        let dependencies = Dependencies(storage: storage, cardPresentPaymentsConfiguration: configuration)
-        let viewModel = PaymentMethodsViewModel(siteID: 1212,
-                                                orderID: 111,
-                                                formattedTotal: "$5.00",
-                                                flow: .simplePayment,
-                                                isTapToPayOnIPhoneEnabled: false,
-                                                dependencies: dependencies)
-
-        // Then
-        XCTAssertFalse(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showTapToPayRow)
     }
 
     func test_paymentLinkRow_is_hidden_if_payment_link_is_not_available() {
@@ -664,6 +630,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             switch action {
             case let .selectedPaymentGatewayAccount(onCompletion):
                 onCompletion(PaymentGatewayAccount.fake())
+            case .checkDeviceSupport(_, _, _, _):
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -774,5 +742,32 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(siteID, order.siteID)
         XCTAssertEqual(orderID, order.orderID)
+    }
+}
+
+private extension PaymentMethodsViewModelTests {
+    private func simulate(cardPaymentEligibility: Bool, tapToPayDeviceAvailability: Bool, on stores: MockStoresManager) {
+        simulate(cardPaymentEligibility: cardPaymentEligibility, on: stores)
+        simulate(tapToPayDeviceAvailability: tapToPayDeviceAvailability, on: stores)
+    }
+
+    private func simulate(cardPaymentEligibility: Bool, on stores: MockStoresManager) {
+        stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
+            switch action {
+            case let .orderIsEligibleForCardPresentPayment(_, _, _, completion):
+                completion(.success(cardPaymentEligibility))
+            }
+        }
+    }
+
+    private func simulate(tapToPayDeviceAvailability: Bool, on stores: MockStoresManager) {
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            switch action {
+            case let .checkDeviceSupport(_, _, .localMobile, completion):
+                completion(tapToPayDeviceAvailability)
+            default:
+                break
+            }
+        }
     }
 }

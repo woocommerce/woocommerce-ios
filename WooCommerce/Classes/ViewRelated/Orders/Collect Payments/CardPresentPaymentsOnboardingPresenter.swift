@@ -1,12 +1,11 @@
 import UIKit
 import Yosemite
 import Combine
+import Foundation
 
 protocol CardPresentPaymentsOnboardingPresenting {
     func showOnboardingIfRequired(from: UIViewController,
                                   readyToCollectPayment: @escaping () -> Void)
-
-    func showOnboardingIfRequired(from: UIViewController) async
 
     func refresh()
 }
@@ -35,23 +34,11 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     func showOnboardingIfRequired(from viewController: UIViewController,
                                   readyToCollectPayment completion: @escaping () -> Void) {
+        readinessUseCase.checkCardPaymentReadiness()
         guard case .ready = readinessUseCase.readiness else {
             return showOnboarding(from: viewController, readyToCollectPayment: completion)
         }
         completion()
-    }
-
-    @MainActor
-    func showOnboardingIfRequired(from viewController: UIViewController) async {
-        await withCheckedContinuation { continuation in
-            guard case .ready = readinessUseCase.readiness else {
-                return showOnboarding(from: viewController) {
-                    continuation.resume()
-                }
-            }
-            continuation.resume()
-        }
-
     }
 
     private func showOnboarding(from viewController: UIViewController,
@@ -63,6 +50,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
         viewController.show(onboardingViewController, sender: viewController)
 
         readinessSubscription = readinessUseCase.$readiness
+            .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { readiness in
                 guard case .ready = readiness else {
                     return

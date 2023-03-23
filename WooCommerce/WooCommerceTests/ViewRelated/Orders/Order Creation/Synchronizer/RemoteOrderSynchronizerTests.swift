@@ -556,10 +556,49 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Then
         XCTAssertTrue(submittedItems.isNotEmpty)
         for item in submittedItems {
-            // TODO: Investigate if this is a blocker
-            // Is not empty, but is 0 as we don't pass prices.
             XCTAssertTrue(item.total.isNotEmpty)
             XCTAssertTrue(item.subtotal.isNotEmpty)
+        }
+    }
+
+    func test_sending_existing_productID_input_sends_order_with_totals_given_price_is_different_than_zero() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        let submittedItems: [OrderItem] = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, let completion):
+                    completion(.success(order.copy(orderID: self.sampleOrderID)))
+                case .updateOrder(_, let order, _, _):
+                    promise(order.items)
+                default:
+                    XCTFail("Unexpected Action received: \(action)")
+                }
+            }
+
+            let initialInput = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1)
+            self.createOrder(on: synchronizer, input: initialInput)
+
+            // Update the same input, using productID ProductType
+            let updatedInput = OrderSyncProductInput(id: self.sampleInputID, product: .productID(self.sampleProductID), quantity: 2)
+            synchronizer.setProduct.send(updatedInput)
+        }
+
+        // Then
+        XCTAssertTrue(submittedItems.isNotEmpty)
+        for item in submittedItems {
+            XCTAssertEqual(item.itemID, sampleInputID)
+            XCTAssertEqual(item.productID, sampleProductID)
+            XCTAssertEqual(item.price, 20.0)
+            XCTAssertEqual(item.quantity, 2)
+            XCTAssertTrue(item.total.isNotEmpty)
+            XCTAssertTrue(item.subtotal.isNotEmpty)
+            XCTAssertEqual(item.subtotal, "40")
+            XCTAssertEqual(item.total, "40")
         }
     }
 

@@ -125,8 +125,6 @@ private extension ProductInputTransformer {
                 let price: Decimal = existingItem?.price.decimalValue ?? Decimal(string: product.price) ?? .zero
                 return OrderItemParameters(quantity: input.quantity, price: price, productID: product.productID, variationID: nil)
             case .productID(let productID):
-                // TODO: Potential problem: Without passing a price, will always be zero.
-                // However is not a problem if the item already has a price assigned, as uses that one.
                 let price: Decimal = existingItem?.price.decimalValue ?? .zero
                 return OrderItemParameters(quantity: input.quantity, price: price, productID: productID, variationID: nil)
             case .variation(let variation):

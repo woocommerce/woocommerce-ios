@@ -114,6 +114,8 @@ private extension DefaultProductFormTableViewModel {
                 return .attributes(viewModel: productVariationsAttributesRow(product: product.product, isEditable: editable), isEditable: editable)
             case .bundledProducts(let actionable):
                 return .bundledProducts(viewModel: bundledProductsRow(product: product, isActionable: actionable), isActionable: actionable)
+            case .components(let actionable):
+                return .components(viewModel: componentsRow(product: product, isActionable: actionable), isActionable: actionable)
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -531,6 +533,28 @@ private extension DefaultProductFormTableViewModel {
                                                         details: details,
                                                         isActionable: isActionable)
     }
+
+    // MARK: Composite products only
+
+    func componentsRow(product: ProductFormDataModel, isActionable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.widgetsImage
+        let title = Localization.componentsTitle
+        let details: String
+
+        switch product.compositeComponents.count {
+        case 1:
+            details = .localizedStringWithFormat(Localization.singularComponentFormat, product.compositeComponents.count)
+        case 2...:
+            details = .localizedStringWithFormat(Localization.pluralComponentsFormat, product.compositeComponents.count)
+        default:
+            details = ""
+        }
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        isActionable: isActionable)
+    }
 }
 
 private extension DefaultProductFormTableViewModel {
@@ -730,5 +754,12 @@ private extension DefaultProductFormTableViewModel {
                                                                     comment: "Format of the number of bundled products in singular form")
         static let pluralBundledProductsFormat = NSLocalizedString("%ld products",
                                                                    comment: "Format of the number of bundled products in plural form")
+
+        // Components
+        static let componentsTitle = NSLocalizedString("Components", comment: "Title for Components row in the product form screen.")
+        static let singularComponentFormat = NSLocalizedString("%ld component",
+                                                               comment: "Format of the number of components in singular form")
+        static let pluralComponentsFormat = NSLocalizedString("%ld components",
+                                                              comment: "Format of the number of components in plural form")
     }
 }

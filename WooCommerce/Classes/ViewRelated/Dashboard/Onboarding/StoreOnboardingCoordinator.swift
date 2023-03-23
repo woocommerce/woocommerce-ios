@@ -14,10 +14,14 @@ final class StoreOnboardingCoordinator: Coordinator {
     private var paymentsSetupCoordinator: StoreOnboardingPaymentsSetupCoordinator?
 
     private let site: Site
+    private let onTaskCompleted: () -> Void
 
-    init(navigationController: UINavigationController, site: Site) {
+    init(navigationController: UINavigationController,
+         site: Site,
+         onTaskCompleted: @escaping () -> Void) {
         self.navigationController = navigationController
         self.site = site
+        self.onTaskCompleted = onTaskCompleted
     }
 
     /// Navigates to the fullscreen store onboarding view.
@@ -58,26 +62,33 @@ private extension StoreOnboardingCoordinator {
     func addProduct() {
         let coordinator = AddProductCoordinator(siteID: site.siteID, sourceView: nil, sourceNavigationController: navigationController)
         self.addProductCoordinator = coordinator
-        coordinator.onProductCreated = { _ in
-            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskCompleted(task: .addFirstProduct))
+        coordinator.onProductCreated = { [weak self] _ in
+            self?.onTaskCompleted()
+            #warning("Analytics when a product is added from the onboarding task")
         }
         coordinator.start()
     }
 
     @MainActor
     func showCustomDomains() {
-        let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding, site: site, navigationController: navigationController) {
-            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskCompleted(task: .customizeDomains))
-        }
+        let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding,
+                                                    site: site,
+                                                    navigationController: navigationController,
+                                                    onDomainPurchased: { [weak self] in
+            self?.onTaskCompleted()
+        })
         self.domainSettingsCoordinator = coordinator
         coordinator.start()
     }
 
     @MainActor
     func launchStore(task: StoreOnboardingTask) {
-        let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site, isLaunched: task.isComplete, navigationController: navigationController) {
-            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskCompleted(task: .launchStore))
-        }
+        let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site,
+                                                                isLaunched: task.isComplete,
+                                                                navigationController: navigationController,
+                                                                onStoreLaunched: { [weak self] in
+            self?.onTaskCompleted()
+        })
         self.launchStoreCoordinator = coordinator
         coordinator.start()
     }

@@ -82,7 +82,7 @@ final class HubMenuViewModel: ObservableObject {
         }
 
         // Only show the upgrades menu on WPCom sites
-        if featureFlagService.isFeatureFlagEnabled(.freeTrial) && stores.sessionManager.defaultSite?.isWordPressComStore == true {
+        if stores.sessionManager.defaultSite?.isWordPressComStore == true {
             menuElements.append(Upgrades())
         }
 
@@ -121,6 +121,13 @@ final class HubMenuViewModel: ObservableObject {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
             storePickerCoordinator?.start()
         }
+    }
+
+    /// Presents the `Upgrades` view from the view model's navigation controller property.
+    ///
+    func presentUpgrades() {
+        let upgradesViewController = UpgradesHostingController(siteID: siteID)
+        navigationController?.show(upgradesViewController, sender: self)
     }
 
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {

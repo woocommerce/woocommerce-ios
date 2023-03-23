@@ -8,8 +8,11 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
     private let viewModel: StoreOnboardingViewModel
     private let sourceNavigationController: UINavigationController
     private let site: Site
-    private lazy var coordinator: StoreOnboardingCoordinator = .init(navigationController: sourceNavigationController,
-                                                                     site: site)
+    private lazy var coordinator = StoreOnboardingCoordinator(navigationController: sourceNavigationController,
+                                                              site: site,
+                                                              onTaskCompleted: { [weak self] in
+        self?.reloadTasks()
+    })
 
     init(viewModel: StoreOnboardingViewModel,
          navigationController: UINavigationController,
@@ -57,14 +60,13 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        Task {
-            await reloadTasks()
-        }
+        reloadTasks()
     }
 
-    @MainActor
-    private func reloadTasks() async {
-        await viewModel.reloadTasks()
+    private func reloadTasks() {
+        Task { @MainActor in
+            await viewModel.reloadTasks()
+        }
     }
 
     /// Shows a transparent navigation bar without a bottom border.
@@ -111,7 +113,7 @@ struct StoreOnboardingView: View {
     }
 
     private var content: some View {
-        VStack {
+        VStack(spacing: 0) {
             Color(uiColor: .listBackground)
                 .frame(height: Layout.VerticalSpacing.collapsedMode)
                 .renderedIf(!viewModel.isExpanded)
@@ -126,7 +128,7 @@ struct StoreOnboardingView: View {
                                        isRedacted: viewModel.isRedacted)
 
                 // Task list
-                VStack(alignment: .leading, spacing: Layout.verticalSpacingBetweenTasks) {
+                VStack(alignment: .leading, spacing: 0) {
                     ForEach(viewModel.tasksForDisplay) { taskViewModel in
                         let isLastTask = taskViewModel == viewModel.tasksForDisplay.last
 
@@ -146,7 +148,8 @@ struct StoreOnboardingView: View {
                 Spacer()
                     .renderedIf(viewModel.isExpanded)
             }
-            .padding(insets: Layout.insets)
+            .padding(insets: viewModel.shouldShowViewAllButton ?
+                     Layout.insetsWithViewAllButton: Layout.insetsWithoutViewAllButton)
             .if(!viewModel.isExpanded) { $0.background(Color(uiColor: .listForeground(modal: false))) }
 
             Color(uiColor: .listBackground)
@@ -174,12 +177,12 @@ private extension StoreOnboardingView {
 
 private extension StoreOnboardingView {
     enum Layout {
-        static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+        static let insetsWithViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+        static let insetsWithoutViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 0, trailing: 16)
         enum VerticalSpacing {
             static let collapsedMode: CGFloat = 16
             static let expandedMode: CGFloat = 40
         }
-        static let verticalSpacingBetweenTasks: CGFloat = 4
     }
 
     enum Localization {

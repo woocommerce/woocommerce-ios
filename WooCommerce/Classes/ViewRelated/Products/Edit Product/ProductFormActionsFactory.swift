@@ -35,6 +35,8 @@ enum ProductFormEditAction: Equatable {
     case downloadableFiles(editable: Bool)
     // Bundle products only
     case bundledProducts(actionable: Bool)
+    // Composite products only
+    case components(actionable: Bool)
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -67,6 +69,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let isCategoriesActionAlwaysEnabled: Bool
     private let isDownloadableFilesSettingBased: Bool
     private let isBundledProductsEnabled: Bool
+    private let isCompositeProductsEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -80,6 +83,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          isCategoriesActionAlwaysEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isDownloadableFilesSettingBased: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
+         isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
@@ -94,6 +98,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.isCategoriesActionAlwaysEnabled = isCategoriesActionAlwaysEnabled
         self.isDownloadableFilesSettingBased = isDownloadableFilesSettingBased
         self.isBundledProductsEnabled = isBundledProductsEnabled
+        self.isCompositeProductsEnabled = isCompositeProductsEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -153,6 +158,8 @@ private extension ProductFormActionsFactory {
             return allSettingsSectionActionsForVariableProduct()
         case .bundle:
             return allSettingsSectionActionsForBundleProduct()
+        case .composite:
+            return allSettingsSectionActionsForCompositeProduct()
         default:
             return allSettingsSectionActionsForNonCoreProduct()
         }
@@ -271,6 +278,27 @@ private extension ProductFormActionsFactory {
         return actions.compactMap { $0 }
     }
 
+    func allSettingsSectionActionsForCompositeProduct() -> [ProductFormEditAction] {
+        let shouldShowComponentsRow = isCompositeProductsEnabled
+        let canOpenComponents = product.compositeComponents.isNotEmpty
+        let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
+        let shouldShowReviewsRow = product.reviewsAllowed
+
+        let actions: [ProductFormEditAction?] = [
+            shouldShowComponentsRow ? .components(actionable: canOpenComponents) : nil,
+            shouldShowPriceSettingsRow ? .priceSettings(editable: false, hideSeparator: false): nil,
+            shouldShowReviewsRow ? .reviews: nil,
+            .inventorySettings(editable: false),
+            .categories(editable: editable),
+            .addOns(editable: editable),
+            .tags(editable: editable),
+            .shortDescription(editable: editable),
+            .linkedProducts(editable: editable),
+            .productType(editable: false)
+        ]
+        return actions.compactMap { $0 }
+    }
+
     func allSettingsSectionActionsForNonCoreProduct() -> [ProductFormEditAction] {
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
@@ -357,6 +385,9 @@ private extension ProductFormActionsFactory {
             return true
         case .bundledProducts:
             // The bundled products row is always visible in the settings section for a bundle product.
+            return true
+        case .components:
+            // The components row is always visible in the settings section for a composite product.
             return true
         default:
             return false

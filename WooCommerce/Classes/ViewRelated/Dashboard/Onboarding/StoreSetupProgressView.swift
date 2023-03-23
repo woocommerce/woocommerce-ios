@@ -35,6 +35,7 @@ struct StoreSetupProgressView: View {
                     .footnoteStyle()
                     .multilineTextAlignment(isExpanded ? .center : .leading)
                     .redacted(reason: isRedacted ? .placeholder : [])
+                    .shimmering(active: isRedacted)
             }
 
             Spacer()

@@ -43,6 +43,9 @@ private extension PostSiteCredentialLoginChecker {
     func checkApplicationPassword(for siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
                                   in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
+        guard useCase.applicationPassword == nil else {
+            return onSuccess()
+        }
         Task { @MainActor in
             do {
                 let _ = try await useCase.generateNewPassword()

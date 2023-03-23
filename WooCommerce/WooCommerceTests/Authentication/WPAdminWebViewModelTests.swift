@@ -19,7 +19,7 @@ final class WPAdminWebViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.initialURL?.absoluteString, "https://woocommerce.com")
     }
 
-    func test_redirecting_to_wpcom_invokes_loadWebview_for_initialURL() throws {
+    func test_redirecting_to_wpcom_invokes_reloadWebview() throws {
         // Given
         let url = try XCTUnwrap(URL(string: "https://woocommerce.com"))
         let urlAfterWPComAuth = try XCTUnwrap(URL(string: URLs.urlAfterWPComAuth))
@@ -27,7 +27,7 @@ final class WPAdminWebViewModelTests: XCTestCase {
 
         // When
         let urlToLoad: URL = waitFor { promise in
-            viewModel.loadWebview = { url in
+            viewModel.reloadWebview = {
                 promise(url)
             }
             viewModel.handleRedirect(for: urlAfterWPComAuth)
@@ -37,27 +37,27 @@ final class WPAdminWebViewModelTests: XCTestCase {
         XCTAssertEqual(urlToLoad, url)
     }
 
-    func test_redirecting_to_wpcom_does_not_invoke_loadWebview_when_initialURL_is_the_same() throws {
+    func test_redirecting_to_wpcom_does_not_invoke_reloadWebview_when_initialURL_is_the_same() throws {
         // Given
         let url = try XCTUnwrap(URL(string: URLs.urlAfterWPComAuth))
         let viewModel = WPAdminWebViewModel(initialURL: url)
 
         // When
-        viewModel.loadWebview = { url in
+        viewModel.reloadWebview = {
             // Then
             XCTFail("Unexpected webview load for \(url)")
         }
         viewModel.handleRedirect(for: url)
     }
 
-    func test_redirecting_to_non_wpcom_does_not_invoke_loadWebview() throws {
+    func test_redirecting_to_non_wpcom_does_not_invoke_reloadWebview() throws {
         // Given
         let url = try XCTUnwrap(URL(string: "https://woocommerce.com"))
         let nonWPComAuthURL = try XCTUnwrap(URL(string: "https://example.com"))
         let viewModel = WPAdminWebViewModel(initialURL: url)
 
         // When
-        viewModel.loadWebview = { url in
+        viewModel.reloadWebview = {
             // Then
             XCTFail("Unexpected webview load for \(url)")
         }

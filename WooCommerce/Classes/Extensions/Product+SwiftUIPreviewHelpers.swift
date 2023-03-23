@@ -70,7 +70,8 @@ extension Product {
                 addOns: [],
                 bundleStockStatus: nil,
                 bundleStockQuantity: nil,
-                bundledItems: [])
+                bundledItems: [],
+                compositeComponents: [])
     }
 }
 

@@ -56,6 +56,7 @@ final class StoresManagerTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertFalse(manager.isAuthenticatedWithoutWPCom)
         XCTAssertEqual(isLoggedInValues, [true])
     }
 
@@ -75,6 +76,27 @@ final class StoresManagerTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertTrue(manager.isAuthenticatedWithoutWPCom)
+        XCTAssertEqual(isLoggedInValues, [true])
+    }
+
+    /// Verifies that the Initial State is Authenticated with application password credentials.
+    ///
+    func test_initial_state_is_authenticated_if_defaultCredentials_is_application_password() {
+        // Arrange
+        let session = SessionManager.testingInstance
+        session.defaultCredentials = SessionSettings.applicationPasswordCredentials
+
+        // Action
+        let manager = DefaultStoresManager.testingInstance
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+
+        // Assert
+        XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertTrue(manager.isAuthenticatedWithoutWPCom)
         XCTAssertEqual(isLoggedInValues, [true])
     }
 

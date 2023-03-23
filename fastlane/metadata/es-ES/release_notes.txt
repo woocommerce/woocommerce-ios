@@ -1,1 +1,1 @@
-Esta versión incluye algunas correcciones y mejoras con las que será más fácil gestionar tu tienda desde la aplicación. Sigue enviando comentarios: ¡te escuchamos!
+Esta versión incluye algunas mejoras en la experiencia de gestión de tu tienda. Ahora puedes utilizar la aplicación Atajos de iOS para crear pedidos y recibir pagos de las aplicaciones móviles de WooCommerce. Pruébalo y déjanos tus comentarios.

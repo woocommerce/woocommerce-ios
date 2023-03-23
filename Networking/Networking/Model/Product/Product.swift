@@ -96,6 +96,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     /// List of bundled item data contained in this product.
     public let bundledItems: [ProductBundleItem]
 
+    // MARK: Composite Product properties
+
+    /// List of components that this product consists of. Applicable to composite-type products only.
+    public let compositeComponents: [ProductCompositeComponent]
+
     /// Computed Properties
     ///
     public var productStatus: ProductStatus {
@@ -213,7 +218,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 addOns: [ProductAddOn],
                 bundleStockStatus: ProductStockStatus?,
                 bundleStockQuantity: Int64?,
-                bundledItems: [ProductBundleItem]) {
+                bundledItems: [ProductBundleItem],
+                compositeComponents: [ProductCompositeComponent]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -280,6 +286,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.bundleStockStatus = bundleStockStatus
         self.bundleStockQuantity = bundleStockQuantity
         self.bundledItems = bundledItems
+        self.compositeComponents = compositeComponents
     }
 
     /// The public initializer for Product.
@@ -294,8 +301,17 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let productID = try container.decode(Int64.self, forKey: .productID)
         let name = try container.decode(String.self, forKey: .name).strippedHTML
         let slug = try container.decode(String.self, forKey: .slug)
-        let permalink = try container.decode(String.self, forKey: .permalink)
-
+        // Even though a plain install of WooCommerce Core provides string values,
+        // some plugins alter the field value from String to Int or Decimal.
+        // We handle this by returning an empty string if we can't decode it
+        let permalink: String = {
+            do {
+                return try container.decode(String.self, forKey: .permalink)
+            } catch {
+                DDLogError("⛔️ Error parsing `permalink` for Product ID \(productID): \(error)")
+                return ""
+            }
+        }()
         let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
         let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified) ?? Date()
         let dateOnSaleStart = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleStart)
@@ -426,6 +442,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let bundleStockQuantity = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleStockQuantity)
         let bundledItems = try container.decodeIfPresent([ProductBundleItem].self, forKey: .bundledItems) ?? []
 
+        // Composite Product properties
+        let compositeComponents = try container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents) ?? []
+
         self.init(siteID: siteID,
                   productID: productID,
                   name: name,
@@ -491,7 +510,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   addOns: addOns,
                   bundleStockStatus: bundleStockStatus,
                   bundleStockQuantity: bundleStockQuantity,
-                  bundledItems: bundledItems)
+                  bundledItems: bundledItems,
+                  compositeComponents: compositeComponents)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -681,6 +701,8 @@ private extension Product {
         case bundleStockStatus              = "bundle_stock_status"
         case bundleStockQuantity            = "bundle_stock_quantity"
         case bundledItems                   = "bundled_items"
+
+        case compositeComponents    = "composite_components"
     }
 }
 

@@ -33,6 +33,11 @@ final class SetUpTapToPayTryPaymentPromptViewController: UIHostingController<Set
         fatalError("Not implemented")
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.onAppear()
+        super.viewDidAppear(animated)
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         viewModel.didUpdate = nil
         super.viewWillDisappear(animated)

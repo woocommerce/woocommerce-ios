@@ -7,6 +7,8 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
     let learnMoreURL: URL
+    var dismiss: (() -> Void)?
+
     private let stores: StoresManager
 
     @Published private(set) var enableSetup: Bool = true
@@ -17,6 +19,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     let connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
     let connectivityObserver: ConnectivityObserver
 
+    private let analytics: Analytics = ServiceLocator.analytics
 
     var connectionController: BuiltInCardReaderConnectionController? = nil
     var alertsPresenter: CardPresentPaymentAlertsPresenting? = nil
@@ -97,6 +100,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     }
 
     func setUpTapped() {
+        analytics.track(.tapToPaySetupInformationSetUpTapped)
         setUpInProgress = true
         connectionController?.searchAndConnect { [weak self] _ in
             /// No need for logic here. Once connected, the connected reader will publish
@@ -105,6 +109,11 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
             self?.alertsPresenter?.dismiss()
             self?.setUpInProgress = false
         }
+    }
+
+    func cancelTapped() {
+        analytics.track(.tapToPaySetupInformationCancelTapped)
+        dismiss?()
     }
 
     /// Updates whether the view this viewModel is associated with should be shown or not

@@ -103,11 +103,17 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
     }
 
     func tryAPaymentTapped() {
+        analytics.track(.tapToPaySummaryTryPaymentTapped)
         startTestPayment()
     }
 
     func skipTapped() {
+        analytics.track(.tapToPaySummaryTryPaymentSkipTapped)
         dismiss?()
+    }
+
+    func onAppear() {
+        analytics.track(.tapToPaySummaryShown)
     }
 
     deinit {

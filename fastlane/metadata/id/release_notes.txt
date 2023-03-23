@@ -1,1 +1,1 @@
-Rilis ini berisi beberapa perbaikan yang memudahkan Anda mengatur toko dari aplikasi. Berikan kami feedback - kami senang menerimanya!
+Rilis ini menyertakan beberapa penyempurnaan dalam pengelolaan toko Anda. Seakarang Anda dapat menggunakan aplikasi iOS Shortcut untuk membuat pesanan dan menerima pembayaran dari aplikasi seluler WooCommerce! Cobalah dan berikan feedback Anda.

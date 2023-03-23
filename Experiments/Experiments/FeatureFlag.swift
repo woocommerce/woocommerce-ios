@@ -179,4 +179,8 @@ public enum FeatureFlag: Int {
     /// Enables manual error handling for site credential login.
     ///
     case manualErrorHandlingForSiteCredentialLogin
+
+    /// Enables composite product settings in product details
+    ///
+    case compositeProducts
 }

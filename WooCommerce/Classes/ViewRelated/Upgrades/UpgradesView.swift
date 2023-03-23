@@ -8,10 +8,33 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
     init(siteID: Int64) {
         let viewModel = UpgradesViewModel(siteID: siteID)
         super.init(rootView: .init(viewModel: viewModel))
+
+        // Assign after of `init` for `self` to be properly initialized.
+        rootView.onUpgradeNowTapped = { [weak self] in
+            self?.showUpgradePlanWebView(siteID: siteID, viewModel: viewModel)
+        }
+
+        rootView.onReportIssueTapped = { [weak self] in
+            self?.showContactSupportForm()
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    /// Shows a web view for the merchant to update their site plan.
+    ///
+    private func showUpgradePlanWebView(siteID: Int64, viewModel: UpgradesViewModel) {
+        let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .upgradesScreen, onSuccess: {
+            viewModel.loadPlan(forced: true)
+        })
+        present(upgradeController, animated: true)
+    }
+
+    private func showContactSupportForm() {
+        let supportController = SupportFormHostingController(viewModel: .init())
+        supportController.show(from: self)
     }
 }
 
@@ -23,6 +46,14 @@ struct UpgradesView: View {
     ///
     @StateObject var viewModel: UpgradesViewModel
 
+    /// Closure to be invoked when the "Upgrade Now" button is tapped.
+    ///
+    var onUpgradeNowTapped: (() -> ())?
+
+    /// Closure to be invoked when the "Report Issue" button is tapped.
+    ///
+    var onReportIssueTapped: (() -> ())?
+
     var body: some View {
         List {
             Section(content: {
@@ -30,7 +61,7 @@ struct UpgradesView: View {
                     .bodyStyle()
 
                 Button(Localization.upgradeNow) {
-                    print("Upgrade Now tapped")
+                    onUpgradeNowTapped?()
                 }
                 .linkStyle()
                 .renderedIf(viewModel.shouldShowUpgradeButton)
@@ -49,11 +80,12 @@ struct UpgradesView: View {
 
             Section(Localization.troubleshooting) {
                 Button(Localization.report) {
-                    print("Report Subscription Tapped")
+                    onReportIssueTapped?()
                 }
                 .linkStyle()
             }
         }
+        .notice($viewModel.errorNotice, autoDismiss: false)
         .redacted(reason: viewModel.showLoadingIndicator ? .placeholder : [])
         .shimmering(active: viewModel.showLoadingIndicator)
         .background(Color(.listBackground))

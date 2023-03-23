@@ -203,10 +203,12 @@ which should be translated separately and considered part of this sentence. */
 "%ld files" = "%ld ファイル";
 
 /* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`
+   Format of the number of bundled products in singular form
    Format of the number of grouped products in singular form */
 "%ld product" = "%ld 商品";
 
 /* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 products`
+   Format of the number of bundled products in plural form
    Format of the number of grouped products in plural form */
 "%ld products" = "%ld 商品";
 
@@ -446,7 +448,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen.
-   Navigation bar title for selecting multiple products. */
+   Navigation bar title for selecting multiple products.
+   Title text of the button that allows to add multiple products when creating or editing an order */
 "Add Products" = "すべての商品";
 
 /* Title for the Shipping Line screen during order creation
@@ -511,6 +514,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "属性を追加";
+
+/* Title for the Coupon screen during order creation */
+"Add coupon" = "クーポンを追加";
 
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "クレジットカードを追加";
@@ -998,9 +1004,6 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Beauty Products" = "美容製品";
 
-/* Display label when a product bundle's add-to-cart form is displayed before the single-product tabs. */
-"Before Tabs" = "タブの前";
-
 /* Country option for a site address. */
 "Belarus" = "ベラルーシ";
 
@@ -1264,7 +1267,8 @@ which should be translated separately and considered part of this sentence. */
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen
-   Title of an option to dismiss the bulk edit action sheet */
+   Title of an option to dismiss the bulk edit action sheet
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
 "Cancel" = "キャンセル";
 
 /* Action button to cancel Jetpack installation. */
@@ -1511,6 +1515,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Text for the close button in the Add Product screen
+   Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Text for the close button in the Fee Details screen
    Text for the close button in the Product screen
@@ -1543,7 +1548,8 @@ which should be translated separately and considered part of this sentence. */
    Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "支払いを受け取る";
 
-/* Alert title when starting the collect payment flow without a user name. */
+/* Alert title when starting the collect payment flow without a user name.
+   Title for the Collect Payment iOS Shortcut */
 "Collect payment" = "支払いを受け取る";
 
 /* Alert title when starting the collect payment flow with a user name. */
@@ -1632,6 +1638,7 @@ which should be translated separately and considered part of this sentence. */
    Button on the Jetpack setup interrupted screen to continue the setup
    Button title on the site credential login screen
    Button to authorize Jetpack connection from the Jetpack setup required screen
+   Title for the WPCom 2FA login screen when Jetpack is not connected yet
    Title for the WPCom email login screen when Jetpack is not connected yet
    Title for the WPCom magic link screen when Jetpack is not connected yet
    Title of the Jetpack connection web view in the login flow */
@@ -1712,9 +1719,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to contact support for help accessing a store after Jetpack setup
    Title of the view for contacting support. */
 "Contact Support" = "サポートに問い合わせる";
-
-/* Contact WooComerce Payments Support title */
-"Contact WooCommerce Payments Support" = "WooCommerce Payments サポートに連絡";
 
 /* Action button to contact support on enable analytics screen
    Local notification action to contact support.
@@ -1841,6 +1845,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "商品製造国または商品の組み立てが行われた国";
+
+/* Label for the row showing the cost of coupon in the order
+   Title for the coupon field on the Coupon Details screen during order creation
+   Title for the Coupon screen during order creation */
+"Coupon" = "クーポン";
 
 /* Text field coupon code in the view for adding or editing a coupon code. */
 "Coupon Code" = "クーポンコード";
@@ -2115,8 +2124,7 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Debt Reduction Services" = "債務整理サービス";
 
-/* Description of the default paragraph formatting style in the editor.
-   Display label for the product bundle's default form location */
+/* Description of the default paragraph formatting style in the editor. */
 "Default" = "デフォルト";
 
 /* Button title Delete in Downloadable File Options Action Sheet
@@ -2289,6 +2297,7 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
@@ -2477,7 +2486,6 @@ which should be translated separately and considered part of this sentence. */
 "Email" = "メール";
 
 /* Accessibility label for the email address text field.
-   Label for the email field on the WPCom email login screen of the Jetpack setup flow.
    Placeholder for a textfield. The user may enter their email address.
    Placeholder for the email address textfield.
    Placeholder of the email field on the account creation form. */
@@ -2602,9 +2610,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
 "Enter description" = "説明を入力";
 
-/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
-"Enter email" = "メールアドレスを入力";
-
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "ファイル URL を入力";
 
@@ -2696,9 +2701,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
 "Error checking the Jetpack connection on your site" = "サイトの Jetpack 接続の確認中にエラーが発生しました";
 
-/* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
-"Error checking the WordPress.com account associated with this email. Please try again." = "このメールアドレスに関連付けられている WordPress.com の確認中にエラーが発生しました。 もう一度お試しください。";
-
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "エラーコード %1$d";
 
@@ -2728,9 +2730,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "ラベルの購入時にエラーが発生しました";
-
-/* Message shown on the error alert displayed when requesting authentication link for the Jetpack setup flow fails */
-"Error requesting authentication link for your account. Please try again." = "アカウントの認証リンクのリクエスト中にエラーが発生しました。 もう一度お試しください。";
 
 /* Title of the notice about an error saving images uploaded in the background to a product. */
 "Error saving product images" = "商品画像を保存する際にエラーが発生しました";
@@ -2963,9 +2962,6 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "商品毎に割引";
 
-/* Display label for the product bundle's item grouping */
-"Flat" = "フラット";
-
 /* Industry option in the store creation category question. */
 "Flowers" = "花";
 
@@ -3028,9 +3024,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Gabon" = "ガボン";
-
-/* Description for Top Performers section of My Store tab. */
-"Gain insights into how products are performing on your store" = "ストアでの商品売り上げ状況の統計概要をチェック";
 
 /* Country option for a site address. */
 "Gambia" = "ガンビア";
@@ -3171,14 +3164,10 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Grenada" = "グレナダ";
 
-/* Display label for the product bundle's layout */
-"Grid" = "グリッド";
-
 /* Industry option in the store creation category question. */
 "Grocery Stores" = "食料品店";
 
-/* Display label for grouped product type.
-   Display label for the product bundle's item grouping */
+/* Display label for grouped product type. */
 "Grouped" = "グループ化";
 
 /* Navigation bar title for editing linked products for a grouped product */
@@ -3400,7 +3389,8 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Apple または Google を引き続き使用し、WordPress.com アカウントをまだお持ちでない場合は、アカウントを作成して WordPress.com の _利用規約_ に同意します。";
 
-/* Display label for the product's inventory stock status
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "在庫あり";
 
@@ -3510,6 +3500,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the site credential login screen
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
+   Title for the WPCom 2FA login screen when Jetpack is not installed yet
    Title for the WPCom email login screen when Jetpack is not installed yet
    Title for the WPCom magic link screen when Jetpack is not installed yet
    Title of install action in the Jetpack benefits view.
@@ -4275,9 +4266,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "自分のストア";
 
-/* My Tickets title */
-"My Tickets" = "自分のチケット";
-
 /* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard
    Title of the store creation summary screen. */
 "My store" = "自分のストア";
@@ -4495,7 +4483,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
-   Display label for the product bundle's item grouping
    Display label for the product's tax status setting option
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
@@ -4552,7 +4539,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Dismiss button on the alert when there is an error uploading image(s)
    Dismisses the alert
    Ok button for dismissing alert helping users understand their site address
-   Submit button on prompt for user information. */
+   Submit button on prompt for user information.
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
 "OK" = "OK";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -4586,7 +4574,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Spoken label to indicate switch control is turned on */
 "On" = "オン";
 
-/* Display label for the product's inventory stock status */
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status */
 "On back order" = "入荷待ち";
 
 /* Display label for on hold order status. */
@@ -4789,7 +4778,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Other Travel And Lodging" = "その他の旅行、宿泊";
 
-/* Display label for the product's inventory stock status */
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status */
 "Out of stock" = "在庫なし";
 
 /* Header section package details in Shipping Label Package Detail */
@@ -5249,7 +5239,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Present card to refund" = "カードを提示して返金";
 
-/* Action for previewing draft Product changes in the webview */
+/* Action for previewing draft Product changes in the webview
+   Title of the store onboarding > launch store screen. */
 "Preview" = "プレビュー";
 
 /* A label representing the amount that was previously refunded for the order. */
@@ -5528,9 +5519,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Content of the In-Person Payments feedback banner in the Orders tab */
 "Rate your first in-person payment experience." = "初めてのオフラインでの支払い体験を評価してください。";
-
-/* Subtitle for Contact WooCommerce Payments Support */
-"Reach our happiness engineers who can help answer payments related questions" = "サポートスタッフにお問い合わせください。お支払いに関する質問にお答えします";
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "サポートスタッフにお問い合わせください。難しい質問にもお答えします";
@@ -6552,9 +6540,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Sri Lanka" = "スリランカ";
 
-/* Display label for the product bundle's layout */
-"Standard" = "標準";
-
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "標準税率";
 
@@ -6734,9 +6719,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "サントメ・プリンシペ";
-
-/* Display label for the product bundle's layout */
-"Tabular" = "表形式";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
@@ -6932,6 +6914,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Testing Laboratories" = "試験機関";
 
 /* Button title
+   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow.
    The button's title text to send a 2FA code via SMS text message. */
 "Text me a code instead" = "代わりに SMS でコードを送信する";
 
@@ -7797,7 +7780,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Undo" = "元に戻す";
 
 /* The message of the alert when there is an unexpected error adding the package
-   The message of the alert when there is an unexpected error updating the product */
+   The message of the alert when there is an unexpected error updating the product
+   Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Unexpected error" = "予期しないエラー";
 
 /* Country option for a site address. */
@@ -8048,7 +8032,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Venezuela" = "ベネズエラ";
 
-/* two factor code placeholder */
+/* Placeholder for the 2FA code field on the WPCom 2FA login screen of the Jetpack setup flow.
+   two factor code placeholder */
 "Verification code" = "認証コード";
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
@@ -8113,9 +8098,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for the items inside a Shipping Label package */
 "View items in this shipping label package." = "この配送ラベルの荷物の商品を表示します。";
-
-/* subtitle for My Tickets */
-"View previously submitted support tickets" = "送信済みのサポートチケットを表示";
 
 /* Accessibility label for the 'View details' refund button */
 "View refund details" = "返金の詳細を表示";
@@ -8396,9 +8378,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce の送料";
-
-/* Subject of new Zendesk ticket. */
-"WooCommerce for iOS Support" = "iOS 対応 WooCommerce サポート";
 
 /* Caption displayed in the simplified prologue screen */
 "WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce は WordPress に構築された、カスタマイズ可能かつオープンソースの eコマースプラットフォームです。";

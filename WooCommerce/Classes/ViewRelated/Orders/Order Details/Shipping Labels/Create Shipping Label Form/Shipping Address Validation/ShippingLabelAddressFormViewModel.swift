@@ -18,10 +18,12 @@ final class ShippingLabelAddressFormViewModel {
 
     let siteID: Int64
     let type: ShipType
+    let phoneNumberRequired: Bool
+    let needsPhoneNumberValidation: Bool
+
     private(set) var address: ShippingLabelAddress?
     private(set) var addressValidationError: ShippingLabelAddressValidationError?
     private(set) var addressValidated: Validation = .none
-    private(set) var phoneNumberRequired: Bool
     private(set) var email: String?
 
     private let stores: StoresManager
@@ -86,6 +88,7 @@ final class ShippingLabelAddressFormViewModel {
         address: ShippingLabelAddress?,
         email: String?,
         phoneNumberRequired: Bool = false,
+        needsPhoneNumberValidation: Bool = false,
         stores: StoresManager = ServiceLocator.stores,
         validationError: ShippingLabelAddressValidationError?,
         countries: [Country]
@@ -95,6 +98,7 @@ final class ShippingLabelAddressFormViewModel {
         self.address = address
         self.email = email
         self.phoneNumberRequired = phoneNumberRequired
+        self.needsPhoneNumberValidation = needsPhoneNumberValidation
         self.stores = stores
         if let validationError = validationError {
             addressValidationError = validationError
@@ -244,7 +248,7 @@ extension ShippingLabelAddressFormViewModel {
         if phoneNumberRequired {
             if addressToBeValidated.phone.isEmpty {
                 return .missingPhoneNumber
-            } else if !isPhoneNumberValid {
+            } else if needsPhoneNumberValidation, !isPhoneNumberValid {
                 return .invalidPhoneNumber
             }
         }

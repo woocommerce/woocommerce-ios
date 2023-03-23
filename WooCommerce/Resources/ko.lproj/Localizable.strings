@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-15 15:54:04+0000 */
+/* Translation-Revision-Date: 2023-03-21 15:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -175,6 +175,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a refund on an order, which reads \"<date> via <refund method type>\", e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". Shown in a cell with a title \"Refunded\" for context */
 "%@ via %@" = "%2$@을(를) 통한 %1$@";
 
+/* Message of the free trial banner when there is more than 1 day left */
+"%d days left in your trial." = "평가판이 %d일 남았습니다.";
+
 /* For example: `1 item` in Aggregated Product List */
 "%d item" = "%d개 아이템";
 
@@ -203,10 +206,12 @@ which should be translated separately and considered part of this sentence. */
 "%ld files" = "%ld 파일";
 
 /* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`
+   Format of the number of bundled products in singular form
    Format of the number of grouped products in singular form */
 "%ld product" = "%ld 개 제품";
 
 /* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 products`
+   Format of the number of bundled products in plural form
    Format of the number of grouped products in plural form */
 "%ld products" = "%ld 개 제품";
 
@@ -246,6 +251,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product selected" = "상품 1개 선택됨";
+
+/* Message of the free trial banner when there is 1 day left */
+"1 day left in your trial." = "평가판이 1일 남았습니다.";
 
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1개 아이템 선택됨";
@@ -446,7 +454,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen.
-   Navigation bar title for selecting multiple products. */
+   Navigation bar title for selecting multiple products.
+   Title text of the button that allows to add multiple products when creating or editing an order */
 "Add Products" = "제품 추가";
 
 /* Title for the Shipping Line screen during order creation
@@ -511,6 +520,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "속성 추가";
+
+/* Title for the Coupon screen during order creation */
+"Add coupon" = "쿠폰 추가";
 
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "신용카드 추가";
@@ -672,6 +684,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on Coupon Details screen to indicate that the coupon allows free shipping */
 "Allows free shipping" = "무료 배송 허용";
+
+/* Instruction on the WPCom 2FA login screen of the Jetpack setup flow */
+"Almost there! Please enter the verification code from your Authentication app" = "마지막 부분입니다! 인증 앱의 확인 코드를 입력하세요.";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "마지막 부분입니다! 인증 앱의 확인 코드를 입력하세요.";
@@ -955,6 +970,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility announcement message when device goes back online */
 "Back online" = "온라인 복구";
 
+/* Title of the secondary button on the store onboarding launched store screen. */
+"Back to My Store" = "내 스토어로 돌아가기";
+
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "Back to Order" = "주문으로 돌아가기";
 
@@ -997,9 +1015,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Industry option in the store creation category question. */
 "Beauty Products" = "미용 상품";
-
-/* Display label when a product bundle's add-to-cart form is displayed before the single-product tabs. */
-"Before Tabs" = "탭 앞";
 
 /* Country option for a site address. */
 "Belarus" = "벨라루스";
@@ -1264,7 +1279,8 @@ which should be translated separately and considered part of this sentence. */
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen
-   Title of an option to dismiss the bulk edit action sheet */
+   Title of an option to dismiss the bulk edit action sheet
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
 "Cancel" = "취소";
 
 /* Action button to cancel Jetpack installation. */
@@ -1511,6 +1527,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Text for the close button in the Add Product screen
+   Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Text for the close button in the Fee Details screen
    Text for the close button in the Product screen
@@ -1543,7 +1560,8 @@ which should be translated separately and considered part of this sentence. */
    Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "결제받기";
 
-/* Alert title when starting the collect payment flow without a user name. */
+/* Alert title when starting the collect payment flow without a user name.
+   Title for the Collect Payment iOS Shortcut */
 "Collect payment" = "결제받기";
 
 /* Alert title when starting the collect payment flow with a user name. */
@@ -1632,6 +1650,7 @@ which should be translated separately and considered part of this sentence. */
    Button on the Jetpack setup interrupted screen to continue the setup
    Button title on the site credential login screen
    Button to authorize Jetpack connection from the Jetpack setup required screen
+   Title for the WPCom 2FA login screen when Jetpack is not connected yet
    Title for the WPCom email login screen when Jetpack is not connected yet
    Title for the WPCom magic link screen when Jetpack is not connected yet
    Title of the Jetpack connection web view in the login flow */
@@ -1712,9 +1731,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to contact support for help accessing a store after Jetpack setup
    Title of the view for contacting support. */
 "Contact Support" = "지원팀에 문의";
-
-/* Contact WooComerce Payments Support title */
-"Contact WooCommerce Payments Support" = "WooCommerce 결제 지원 문의";
 
 /* Action button to contact support on enable analytics screen
    Local notification action to contact support.
@@ -1804,6 +1820,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem subscribing to a site or feed. */
 "Could not follow the site at the address specified." = "지정된 주소에서 사이트를 팔로우할 수 없습니다.";
 
+/* Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"Could not launch your store" = "스토어를 시작할 수 없음";
+
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "지정된 주소의 사이트에 대한 팔로우를 취소할 수 없습니다.";
 
@@ -1842,6 +1861,14 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "상품이 제조 또는 조립된 국가";
 
+/* Label for the row showing the cost of coupon in the order
+   Title for the coupon field on the Coupon Details screen during order creation
+   Title for the Coupon screen during order creation */
+"Coupon" = "쿠폰";
+
+/* The singular coupon summary. Reads like: Coupon (code1) */
+"Coupon (%1$@)" = "쿠폰(%1$@)";
+
 /* Text field coupon code in the view for adding or editing a coupon code. */
 "Coupon Code" = "쿠폰 코드";
 
@@ -1872,6 +1899,9 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "쿠폰";
+
+/* The plural coupon summary. Reads like: Coupon (code1, code2) */
+"Coupons (%1$@)" = "쿠폰(%1$@)";
 
 /* Industry option in the store creation category question. */
 "Courier Services" = "택배 서비스";
@@ -1932,6 +1962,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate just one variation */
 "Create one new variation. Manually set which attributes belong to the variable product." = "새 변형 하나를 생성합니다. 변형 가능한 상품에 속하는 속성을 수동으로 설정합니다.";
+
+/* Title for the Create Order iOS Shortcut */
+"Create order" = "주문 생성";
 
 /* Title of the banner notice in the Orders tab */
 "Create orders!" = "주문을 생성합니다!";
@@ -2115,8 +2148,7 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Debt Reduction Services" = "채무 탕감 서비스";
 
-/* Description of the default paragraph formatting style in the editor.
-   Display label for the product bundle's default form location */
+/* Description of the default paragraph formatting style in the editor. */
 "Default" = "기본";
 
 /* Button title Delete in Downloadable File Options Action Sheet
@@ -2289,6 +2321,7 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
@@ -2476,8 +2509,10 @@ which should be translated separately and considered part of this sentence. */
    Title text of the row that holds the provided email when creating a simple payment */
 "Email" = "이메일";
 
+/* Label for the email field on the WPCom email login screen of the Jetpack setup flow. */
+"Email Address or Username" = "이메일 주소 또는 사용자명";
+
 /* Accessibility label for the email address text field.
-   Label for the email field on the WPCom email login screen of the Jetpack setup flow.
    Placeholder for a textfield. The user may enter their email address.
    Placeholder for the email address textfield.
    Placeholder of the email field on the account creation form. */
@@ -2603,7 +2638,7 @@ which should be translated separately and considered part of this sentence. */
 "Enter description" = "설명 입력";
 
 /* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
-"Enter email" = "이메일 입력";
+"Enter email or username" = "이메일 주소 또는 사용자명 입력";
 
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "파일 URL 입력";
@@ -2696,9 +2731,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
 "Error checking the Jetpack connection on your site" = "사이트의 젯팩 연결 확인 중 오류 발생";
 
-/* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
-"Error checking the WordPress.com account associated with this email. Please try again." = "이 이메일과 연관된 워드프레스닷컴 계정 확인 중 오류가 발생했습니다. 다시 시도하세요.";
-
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "오류 코드 %1$d";
 
@@ -2728,9 +2760,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "레이블 구매 중 오류 발생";
-
-/* Message shown on the error alert displayed when requesting authentication link for the Jetpack setup flow fails */
-"Error requesting authentication link for your account. Please try again." = "계정 인증 링크 요청 중 오류가 발생했습니다. 다시 시도하세요.";
 
 /* Title of the notice about an error saving images uploaded in the background to a product. */
 "Error saving product images" = "상품 이미지 저장 중 오류 발생";
@@ -2963,9 +2992,6 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "정률 상품 할인";
 
-/* Display label for the product bundle's item grouping */
-"Flat" = "고정";
-
 /* Industry option in the store creation category question. */
 "Flowers" = "꽃";
 
@@ -3028,9 +3054,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Gabon" = "가봉";
-
-/* Description for Top Performers section of My Store tab. */
-"Gain insights into how products are performing on your store" = "스토어의 상품 실적에 대한 인사이트 확인";
 
 /* Country option for a site address. */
 "Gambia" = "감비아";
@@ -3171,14 +3194,10 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Grenada" = "그레나다";
 
-/* Display label for the product bundle's layout */
-"Grid" = "그리드";
-
 /* Industry option in the store creation category question. */
 "Grocery Stores" = "식료품점";
 
-/* Display label for grouped product type.
-   Display label for the product bundle's item grouping */
+/* Display label for grouped product type. */
 "Grouped" = "그룹";
 
 /* Navigation bar title for editing linked products for a grouped product */
@@ -3400,7 +3419,8 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "워드프레스닷컴 계정이 없는 경우 Apple 또는 Google을 계속 사용하면 계정이 만들어지고 _서비스 약관_에 동의하는 것으로 간주합니다.";
 
-/* Display label for the product's inventory stock status
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "재고 있음";
 
@@ -3510,6 +3530,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the site credential login screen
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
+   Title for the WPCom 2FA login screen when Jetpack is not installed yet
    Title for the WPCom email login screen when Jetpack is not installed yet
    Title for the WPCom magic link screen when Jetpack is not installed yet
    Title of install action in the Jetpack benefits view.
@@ -4275,9 +4296,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "내 스토어";
 
-/* My Tickets title */
-"My Tickets" = "내 티켓";
-
 /* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard
    Title of the store creation summary screen. */
 "My store" = "내 스토어";
@@ -4495,7 +4513,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
-   Display label for the product bundle's item grouping
    Display label for the product's tax status setting option
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
@@ -4552,7 +4569,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Dismiss button on the alert when there is an error uploading image(s)
    Dismisses the alert
    Ok button for dismissing alert helping users understand their site address
-   Submit button on prompt for user information. */
+   Submit button on prompt for user information.
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
 "OK" = "확인";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -4586,7 +4604,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Spoken label to indicate switch control is turned on */
 "On" = "켬";
 
-/* Display label for the product's inventory stock status */
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status */
 "On back order" = "이월 주문";
 
 /* Display label for on hold order status. */
@@ -4603,6 +4622,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "사이트 소유자만 배송 레이블 결제 수단을 관리할 수 있습니다. 결제 수단 관리는 %1$@(%2$@)에게 문의하세요.";
+
+/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"Oops, some unexpected errors happened." = "죄송합니다. 예기치 않은 오류가 발생했습니다.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "기기 설정 열기";
@@ -4789,7 +4811,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry option in the store creation category question. */
 "Other Travel And Lodging" = "기타 여행 및 숙박";
 
-/* Display label for the product's inventory stock status */
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status */
 "Out of stock" = "품절";
 
 /* Header section package details in Shipping Label Package Detail */
@@ -5249,7 +5272,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Present card to refund" = "환불할 카드 제시";
 
-/* Action for previewing draft Product changes in the webview */
+/* Action for previewing draft Product changes in the webview
+   Title of the store onboarding > launch store screen. */
 "Preview" = "미리보기";
 
 /* A label representing the amount that was previously refunded for the order. */
@@ -5371,6 +5395,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Product External Link navigation title */
 "Product Link" = "제품 링크";
 
+/* Cell title on beta features screen to enable Product Multi-Selection */
+"Product Multi-Selection" = "상품 다중 선택";
+
 /* Title of the view containing a single Product Review */
 "Product Review" = "제품 검토";
 
@@ -5451,6 +5478,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action for creating a new product remotely with a published status */
 "Publish" = "게시";
 
+/* Title of the primary button on the store onboarding > launch store screen to publish a store. */
+"Publish My Store" = "내 스토어 공개";
+
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "공개하기 설정";
 
@@ -5528,9 +5558,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Content of the In-Person Payments feedback banner in the Orders tab */
 "Rate your first in-person payment experience." = "첫 번째 직접 결제 경험을 평가하세요.";
-
-/* Subtitle for Contact WooCommerce Payments Support */
-"Reach our happiness engineers who can help answer payments related questions" = "결제 관련 질문에 대한 답변을 도와드릴 수 있는 해피니스 엔지니어에게 연락하기";
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "해피니스 엔지니어에게 문의하여 어려운 질문에 대한 답변 받기";
@@ -5666,6 +5693,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message from the in-person payment card reader prompting user to remove their card */
 "Remove Card" = "카드 제거";
+
+/* Text for the button to remove a Coupon from the order during order creation */
+"Remove Coupon from Order" = "주문에서 쿠폰 제거";
 
 /* Button to remove the Coupon expiry date in the Add or Edit Coupon screen */
 "Remove Expiry Date" = "만료 날짜 제거";
@@ -6174,6 +6204,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "결제 링크 공유";
 
+/* Title of the primary button on the store onboarding launched store screen. */
+"Share URL" = "공유 URL";
+
 /* Title of the feedback action button on the In-Person Payments feedback banner
    Title of the feedback button in the action sheet. */
 "Share feedback" = "피드백 공유";
@@ -6508,6 +6541,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "죄송합니다. 회원님의 지원 요청을 생성하지 못했습니다. 나중에 다시 시도해 주세요.";
 
+/* Error message when the built-in reader connection experiences an unexpected internal service error. */
+"Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "죄송합니다. iPhone의 Tap to Pay를 시작할 수 없습니다. 연결을 확인하고 다시 시도하세요.";
+
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "죄송합니다. 해당 사이트 주소는 사용할 수 없습니다.";
 
@@ -6551,9 +6587,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Sri Lanka" = "스리랑카";
-
-/* Display label for the product bundle's layout */
-"Standard" = "기본";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "표준 요율";
@@ -6735,9 +6768,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "상투메 프린시페";
 
-/* Display label for the product bundle's layout */
-"Tabular" = "테이블 형식";
-
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
@@ -6916,6 +6946,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of button that displays the App's terms of service */
 "Terms of Service" = "서비스 약관";
 
+/* Cell description on beta features screen to enable Product Multi-Selection */
+"Test out Product Multi-Selection as we get ready to launch" = "시작 준비 완료 시 상품 다중 선택 테스트";
+
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "시작할 준비가 되었으니 앱 내 구매를 테스트해 보세요.";
 
@@ -6932,6 +6965,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Testing Laboratories" = "시험연구소";
 
 /* Button title
+   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow.
    The button's title text to send a 2FA code via SMS text message. */
 "Text me a code instead" = "코드를 문자로 대신 받기";
 
@@ -7717,6 +7751,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "주문에 대한 세금을 로드할 수 없음";
 
+/* Error message explaining login failure due to blocked WP Admin page */
+"Unable to login because we cannot identify your store's admin URL." = "스토어의 관리 URL이 식별되지 않아서 로그인할 수 없습니다.";
+
+/* Error message explaining login failure due to blocked wp-login.php */
+"Unable to login because we cannot identify your store's login URL." = "스토어의 로그인 URL이 식별되지 않아서 로그인할 수 없습니다.";
+
+/* Error message explaining login failure due to unexpected response. */
+"Unable to login due to an unexpected response from your site. We are working on fixing this issue." = "사이트의 예기치 않은 응답으로 인해 로그인할 수 없습니다. 이 문제를 해결하는 중입니다.";
+
+/* Error message explaining login failure due to unacceptable status code. */
+"Unable to login with response status code %1$d." = "응답 상태 코드(%1$d)로 로그인할 수 없습니다.";
+
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "리뷰를 %@(으)로 표시할 수 없습니다.";
 
@@ -7797,7 +7843,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Undo" = "실행 취소";
 
 /* The message of the alert when there is an unexpected error adding the package
-   The message of the alert when there is an unexpected error updating the product */
+   The message of the alert when there is an unexpected error updating the product
+   Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Unexpected error" = "예기치 않은 오류";
 
 /* Country option for a site address. */
@@ -7936,6 +7983,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "상품 업데이트 중...";
 
+/* Title for the WebView when upgrading a free trial plan
+   Title on the button to upgrade a free trial plan. */
+"Upgrade Now" = "지금 업그레이드";
+
+/* Title of one of the hub menu options */
+"Upgrades" = "업그레이드";
+
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "상향 판매";
@@ -8048,7 +8102,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Venezuela" = "베네수엘라";
 
-/* two factor code placeholder */
+/* Placeholder for the 2FA code field on the WPCom 2FA login screen of the Jetpack setup flow.
+   two factor code placeholder */
 "Verification code" = "확인 코드";
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
@@ -8113,9 +8168,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for the items inside a Shipping Label package */
 "View items in this shipping label package." = "이 배송 레이블 패키지의 아이템을 보세요.";
-
-/* subtitle for My Tickets */
-"View previously submitted support tickets" = "이전에 제출한 지원 티켓 보기";
 
 /* Accessibility label for the 'View details' refund button */
 "View refund details" = "환불 세부 사항 보기";
@@ -8214,6 +8266,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
 "We encountered a problem loading analytics" = "분석을 로드하는 동안 문제가 발생했습니다.";
+
+/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"We found that the store has already launched." = "스토어가 이미 시작된 것으로 확인되었습니다.";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "입력된 주소를 약간 수정했습니다. 제안된 주소가 올바르면 정확한 배송 확인에 사용하세요.";
@@ -8397,9 +8452,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce 배송";
 
-/* Subject of new Zendesk ticket. */
-"WooCommerce for iOS Support" = "iOS용 우커머스 지원";
-
 /* Caption displayed in the simplified prologue screen */
 "WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "우커머스는 워드프레스에 구축된 사용자 정의 가능한 오픈 소스 전자상거래 플랫폼입니다.";
 
@@ -8558,11 +8610,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store creation success screen. */
 "Your store has been created!" = "스토어가 생성되었습니다!";
 
+/* Title of the store onboarding launched store screen. */
+"Your store is live!" = "스토어가 실행되고 있습니다.";
+
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "선택하신 옵션에 따라 스토어가 생성되었습니다!";
 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "회원님의 지원 요청이 받은 편지함에 수신되었습니다. 최대한 빨리 이메일로 회신하겠습니다.";
+
+/* Message of the free trial banner when there are no days left */
+"Your trial has ended." = "평가판이 종료되었습니다.";
 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "대면 결제를 수락하려면 스토어에 무료 WooCommerce 결제 확장 기능을 설치해야 합니다.";
@@ -8653,6 +8711,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "결제, 탭 투 페이, 우커머스, 우, 대면 결제, 대면 결제, 대면 결제 받기, 결제, 리더, 카드 리더, 주문 카드 리더";
+
+/* Label shown on the launch store task. */
+"private" = "비공개";
 
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "%ld번 평가됨";

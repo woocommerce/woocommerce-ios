@@ -18,17 +18,20 @@ final class DomainSettingsCoordinator: Coordinator {
     private let stores: StoresManager
     private let source: Source
     private let analytics: Analytics
+    private let onDomainPurchased: (() -> Void)?
 
     init(source: Source,
          site: Site,
          navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         onDomainPurchased: (() -> Void)? = nil) {
         self.source = source
         self.site = site
         self.navigationController = navigationController
         self.stores = stores
         self.analytics = analytics
+        self.onDomainPurchased = onDomainPurchased
     }
 
     @MainActor
@@ -137,6 +140,7 @@ private extension DomainSettingsCoordinator {
             navigationController.popToRootViewController(animated: false)
         }
         navigationController.pushViewController(successController, animated: true)
+        onDomainPurchased?()
         analytics.track(event: .DomainSettings.domainSettingsStep(source: source,
                                                                   step: .purchaseSuccess))
     }

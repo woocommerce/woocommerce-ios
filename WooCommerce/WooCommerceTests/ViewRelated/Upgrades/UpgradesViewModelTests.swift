@@ -33,6 +33,7 @@ final class UpgradesViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
         XCTAssertTrue(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
+        XCTAssertNil(viewModel.errorNotice)
     }
 
     func test_expired_free_trial_plan_has_correct_view_model_values() {
@@ -61,6 +62,7 @@ final class UpgradesViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
         XCTAssertTrue(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
+        XCTAssertNil(viewModel.errorNotice)
     }
 
     func test_active_regular_plan_has_correct_view_model_values() {
@@ -90,5 +92,32 @@ final class UpgradesViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
         XCTAssertFalse(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
+        XCTAssertNil(viewModel.errorNotice)
     }
+
+    func test_error_fetching_plan_has_correct_view_model_values() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                let error = NSError(domain: "", code: 0)
+                completion(.failure(error))
+            default:
+                break
+            }
+        }
+        let viewModel = UpgradesViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        viewModel.loadPlan()
+
+        // Then
+        XCTAssertTrue(viewModel.planName.isEmpty)
+        XCTAssertTrue(viewModel.planInfo.isEmpty)
+        XCTAssertFalse(viewModel.shouldShowUpgradeButton)
+        XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
+        XCTAssertNotNil(viewModel.errorNotice)
+    }
+
 }

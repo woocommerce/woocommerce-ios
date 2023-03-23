@@ -342,6 +342,8 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     /// Sync products matching a given keyword.
     ///
     private func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+        searchProductsInCacheIfPossible(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize)
+
         let action = ProductAction.searchProducts(siteID: siteID,
                                                   keyword: keyword,
                                                   pageNumber: pageNumber,
@@ -367,6 +369,27 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
             self.transitionToResultsUpdatedState()
             onCompletion?(result.isSuccess)
+        }
+
+        stores.dispatch(action)
+    }
+
+    private func searchProductsInCacheIfPossible(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int) {
+        // At the moment local search supports neither filters nor pagination
+        guard filters.numberOfActiveFilters == 0,
+              pageNumber == 1 else {
+            return
+        }
+
+        let action = ProductAction.searchProductsInCache(siteID: siteID, keyword: keyword, pageSize: pageSize) { [weak self ] thereAreCachedResults in
+            guard let self = self,
+                  keyword == self.searchTerm else {
+                return
+            }
+            if thereAreCachedResults {
+                self.updateProductsResultsController()
+                self.transitionToResultsUpdatedState()
+            }
         }
 
         stores.dispatch(action)

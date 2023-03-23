@@ -58,7 +58,6 @@ PODS:
   - Wormholy (1.6.6)
   - WPMediaPicker (1.8.1)
   - wpxmlrpc (0.10.0)
-  - XLPagerTabStrip (9.0.0)
   - ZendeskCommonUISDK (7.0.0)
   - ZendeskCoreSDK (3.0.0)
   - ZendeskMessagingAPISDK (4.0.0):
@@ -89,7 +88,6 @@ DEPENDENCIES:
   - WordPressUI (~> 1.12.5)
   - Wormholy (~> 1.6.6)
   - WPMediaPicker (~> 1.8.1)
-  - XLPagerTabStrip (~> 9.0)
   - ZendeskSupportSDK (~> 6.0)
 
 SPEC REPOS:
@@ -121,7 +119,6 @@ SPEC REPOS:
     - Wormholy
     - WPMediaPicker
     - wpxmlrpc
-    - XLPagerTabStrip
     - ZendeskCommonUISDK
     - ZendeskCoreSDK
     - ZendeskMessagingAPISDK
@@ -168,7 +165,6 @@ SPEC CHECKSUMS:
   Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
   WPMediaPicker: 9011a0ec1f468c039af7485c244576b4c9889a0f
   wpxmlrpc: 68db063041e85d186db21f674adf08d9c70627fd
-  XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskCommonUISDK: f06dbac6c9e74c3afff75ecdc6bec3832b23258c
   ZendeskCoreSDK: ce6dbb5eb4d61d2d061547a92bd0b0fe98602e9d
   ZendeskMessagingAPISDK: 95a99f1eab9482b4106ec88466b93a89f9f7c5fa
@@ -177,6 +173,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 3c5d780f073d93ef6927c47177253d7a0533b696
+PODFILE CHECKSUM: a0492d0ce9d1a28e8d9c9e9c335756301e19d3b2
 
 COCOAPODS: 1.11.3

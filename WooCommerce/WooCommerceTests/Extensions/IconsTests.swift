@@ -250,7 +250,6 @@ final class IconsTests: XCTestCase {
 
     func test_storeDetailsImage_is_not_nil() {
         XCTAssertNotNil(UIImage.storeDetailsImage)
-
     }
 
     func test_customizeDomainsImagee_is_not_nil() {

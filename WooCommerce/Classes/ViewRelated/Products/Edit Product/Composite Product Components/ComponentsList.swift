@@ -25,7 +25,7 @@ struct ComponentsList: View {
 
     /// View model that directs the view content.
     ///
-    let viewModel: ComponentsListViewModel
+    @StateObject var viewModel: ComponentsListViewModel
 
     /// Dynamic image width, also used for its height.
     ///

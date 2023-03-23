@@ -3,7 +3,7 @@ import Yosemite
 
 /// ViewModel for `ComponentsList`
 ///
-final class ComponentsListViewModel {
+final class ComponentsListViewModel: ObservableObject {
 
     /// Represents a component
     ///

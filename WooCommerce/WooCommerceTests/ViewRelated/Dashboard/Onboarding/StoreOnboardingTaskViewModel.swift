@@ -41,7 +41,7 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
             case .launchStore:
                 XCTAssertEqual(sut.icon, .launchStoreImage)
             case .customizeDomains:
-                XCTAssertEqual(sut.icon, .customizeImage)
+                XCTAssertEqual(sut.icon, .customizeDomainsImage)
             case .payments, .woocommercePayments:
                 XCTAssertEqual(sut.icon, .getPaidImage)
             case .unsupported:

@@ -15,6 +15,10 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
     init(task: StoreOnboardingTask) {
         self.task = task
         switch task.type {
+        case .storeDetails:
+            icon = .storeDetailsImage
+            title = Localication.StoreDetails.title
+            subtitle = Localication.StoreDetails.subtitle
         case .addFirstProduct:
             icon = .addProductImage
             title = Localication.AddFirstProduct.title
@@ -42,6 +46,17 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
 
 extension StoreOnboardingTaskViewModel {
     enum Localication {
+        enum StoreDetails {
+            static let title = NSLocalizedString(
+                "Tell us more about your store",
+                comment: "Title of the Store details task to add details about the store."
+            )
+            static let subtitle = NSLocalizedString(
+                "We’ll use the info to get a head start on your shipping, tax, and payments settings.",
+                comment: "Subtitle of the Store details task to add details about the store."
+            )
+        }
+
         enum AddFirstProduct {
             static let title = NSLocalizedString(
                 "Add your first product",

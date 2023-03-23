@@ -10,6 +10,7 @@ final class StoreOnboardingCoordinator: Coordinator {
 
     let navigationController: UINavigationController
 
+    private var storeDetailsCoordinator: StoreOnboardingStoreDetailsCoordinator?
     private var addProductCoordinator: AddProductCoordinator?
     private var domainSettingsCoordinator: DomainSettingsCoordinator?
     private var launchStoreCoordinator: StoreOnboardingLaunchStoreCoordinator?
@@ -43,6 +44,8 @@ final class StoreOnboardingCoordinator: Coordinator {
     @MainActor
     func start(task: StoreOnboardingTask) {
         switch task.type {
+        case .storeDetails:
+            showStoreDetails()
         case .addFirstProduct:
             addProduct()
         case .customizeDomains:
@@ -60,6 +63,13 @@ final class StoreOnboardingCoordinator: Coordinator {
 }
 
 private extension StoreOnboardingCoordinator {
+    @MainActor
+    func showStoreDetails() {
+        let coordinator = StoreOnboardingStoreDetailsCoordinator(site: site, navigationController: navigationController)
+        self.storeDetailsCoordinator = coordinator
+        coordinator.start()
+    }
+
     @MainActor
     func addProduct() {
         let coordinator = AddProductCoordinator(siteID: site.siteID,

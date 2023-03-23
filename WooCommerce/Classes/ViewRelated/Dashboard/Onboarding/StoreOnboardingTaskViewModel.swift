@@ -16,7 +16,7 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
         self.task = task
         switch task.type {
         case .addFirstProduct:
-            icon = .productImage
+            icon = .addProductImage
             title = Localication.AddFirstProduct.title
             subtitle = Localication.AddFirstProduct.subtitle
         case .launchStore:
@@ -24,11 +24,11 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
             title = Localication.LaunchStore.title
             subtitle = Localication.LaunchStore.subtitle
         case .customizeDomains:
-            icon = .domainsImage
+            icon = .customizeDomainsImage
             title = Localication.CustomizeDomains.title
             subtitle = Localication.CustomizeDomains.subtitle
         case .payments, .woocommercePayments:
-            icon = .currencyImage
+            icon = .getPaidImage
             title = Localication.Payments.title
             subtitle = Localication.Payments.subtitle
         case .unsupported:

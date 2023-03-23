@@ -72,7 +72,8 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                 self.summaryViewModel = TryAPaymentSummaryViewModel(
                     simplePaymentSummaryViewModel: SimplePaymentsSummaryViewModel(order: order,
                                                                                   providedAmount: order.total,
-                                                                                  presentNoticeSubject: self.presentNoticeSubject),
+                                                                                  presentNoticeSubject: self.presentNoticeSubject,
+                                                                                  analyticsFlow: .tapToPayTryAPayment),
                     siteID: self.siteID,
                     orderID: order.orderID)
 

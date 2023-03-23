@@ -135,6 +135,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     /// Tracks analytics events.
     ///
     private let analytics: Analytics
+    private let flow: WooAnalyticsEvent.PaymentsFlow.Flow
 
     /// ViewModel for the edit order note view.
     ///
@@ -151,7 +152,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         analyticsFlow: WooAnalyticsEvent.PaymentsFlow.Flow = .simplePayment) {
         self.siteID = siteID
         self.orderID = orderID
         self.paymentLink = paymentLink
@@ -160,6 +162,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         self.currencyFormatter = currencyFormatter
         self.stores = stores
         self.analytics = analytics
+        self.flow = analyticsFlow
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
         self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? totalWithTaxes
 
@@ -183,7 +186,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                      providedAmount: String,
                      presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-                     stores: StoresManager = ServiceLocator.stores) {
+                     stores: StoresManager = ServiceLocator.stores,
+                     analyticsFlow: WooAnalyticsEvent.PaymentsFlow.Flow = .simplePayment) {
 
         // Generate `TaxLine`s to represent `taxes` inside `View`.
         let taxLines = order.taxes.map({
@@ -200,7 +204,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                   feeID: order.fees.first?.feeID ?? 0,
                   presentNoticeSubject: presentNoticeSubject,
                   currencyFormatter: currencyFormatter,
-                  stores: stores)
+                  stores: stores,
+                  analyticsFlow: analyticsFlow)
     }
 
     /// Sends a signal to reload the view. Needed when coming back from the `EditNote` view.
@@ -239,7 +244,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                 self.navigateToPaymentMethods = true
             case .failure(let error):
                 self.presentNoticeSubject.send(.error(Localization.updateError))
-                self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: .simplePayment, source: .summary))
+                self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: self.flow, source: .summary))
                 DDLogError("⛔️ Error updating simple payments order: \(error)")
             }
         }
@@ -253,7 +258,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                                 orderID: orderID,
                                 paymentLink: paymentLink,
                                 formattedTotal: total,
-                                flow: .simplePayment,
+                                flow: flow,
                                 dependencies: .init(
                                     presentNoticeSubject: presentNoticeSubject,
                                     stores: stores))

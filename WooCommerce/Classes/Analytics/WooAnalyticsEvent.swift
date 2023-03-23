@@ -897,6 +897,11 @@ extension WooAnalyticsEvent {
             case tapToPayTryAPayment = "tap_to_pay_try_a_payment"
         }
 
+        enum CardReaderType: String {
+            case external
+            case builtIn = "built_in"
+        }
+
         /// Common event keys
         ///
         private enum Keys {
@@ -905,12 +910,22 @@ extension WooAnalyticsEvent {
             static let paymentMethod = "payment_method"
             static let source = "source"
             static let flow = "flow"
+            static let cardReaderType = "card_reader_type"
         }
 
-        static func paymentsFlowCompleted(flow: Flow, amount: String, method: PaymentMethod) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .paymentsFlowCompleted, properties: [Keys.flow: flow.rawValue,
-                                                                             Keys.amount: amount,
-                                                                             Keys.paymentMethod: method.rawValue])
+        static func paymentsFlowCompleted(flow: Flow,
+                                          amount: String,
+                                          method: PaymentMethod,
+                                          cardReaderType: CardReaderType?) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
+                                                                       Keys.amount: amount,
+                                                                       Keys.paymentMethod: method.rawValue]
+
+            if let cardReaderType = cardReaderType {
+                properties[Keys.cardReaderType] = cardReaderType.rawValue
+            }
+
+            return WooAnalyticsEvent(statName: .paymentsFlowCompleted, properties: properties)
         }
 
         static func paymentsFlowCanceled(flow: Flow) -> WooAnalyticsEvent {
@@ -922,9 +937,16 @@ extension WooAnalyticsEvent {
                                                                           Keys.source: source.rawValue])
         }
 
-        static func paymentsFlowCollect(flow: Flow, method: PaymentMethod, millisecondsSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
+        static func paymentsFlowCollect(flow: Flow,
+                                        method: PaymentMethod,
+                                        cardReaderType: CardReaderType?,
+                                        millisecondsSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
                               Keys.paymentMethod: method.rawValue]
+
+            if let cardReaderType = cardReaderType {
+                properties[Keys.cardReaderType] = cardReaderType.rawValue
+            }
 
             if let lapseSinceLastOrderAddNew = millisecondsSinceOrderAddNew {
                 properties[Orders.GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew

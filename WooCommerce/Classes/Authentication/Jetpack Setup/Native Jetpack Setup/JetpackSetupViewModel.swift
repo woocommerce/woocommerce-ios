@@ -260,7 +260,11 @@ private extension JetpackSetupViewModel {
             switch result {
             case .success(let url):
                 self.analytics.track(.loginJetpackSetupFetchJetpackConnectionURLSuccessful)
-                self.jetpackConnectionURL = url
+                if url.absoluteString.hasPrefix(Constants.accountConnectionURL) {
+                    self.jetpackConnectionURL = url
+                } else {
+                    self.jetpackConnectionURL = self.siteConnectionURL
+                }
                 self.shouldPresentWebView = true
             case .failure(let error):
                 self.analytics.track(.loginJetpackSetupFetchJetpackConnectionURLFailed, withError: error)
@@ -427,5 +431,6 @@ extension JetpackSetupViewModel {
         static let errorUserInfoNoWPComUser = "No connected WP.com user found"
         static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
         static let mobileRedirectURL = "woocommerce://jetpack-connected"
+        static let accountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
     }
 }

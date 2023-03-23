@@ -62,7 +62,10 @@ final class StoreOnboardingCoordinator: Coordinator {
 private extension StoreOnboardingCoordinator {
     @MainActor
     func addProduct() {
-        let coordinator = AddProductCoordinator(siteID: site.siteID, sourceView: nil, sourceNavigationController: navigationController)
+        let coordinator = AddProductCoordinator(siteID: site.siteID,
+                                                source: .storeOnboarding,
+                                                sourceView: nil,
+                                                sourceNavigationController: navigationController)
         self.addProductCoordinator = coordinator
         coordinator.onProductCreated = { [weak self] _ in
             self?.onTaskCompleted(.addFirstProduct)

@@ -30,6 +30,10 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         cardPresentPaymentsOnboardingUseCase.state.isCompleted
     }
 
+    private var enableSetUpTapToPayOnIPhoneCell: Bool {
+        cardPresentPaymentsOnboardingUseCase.state.isCompleted
+    }
+
     /// Main TableView
     ///
     private lazy var tableView: UITableView = {
@@ -70,6 +74,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel.viewDidLoad()
 
         registerUserActivity()
 
@@ -80,7 +85,6 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         configureTableReload()
         runCardPresentPaymentsOnboardingIfPossible()
         configureWebViewPresentation()
-        viewModel.viewDidLoad()
     }
 }
 
@@ -328,8 +332,12 @@ private extension InPersonPaymentsMenuViewController {
 
     func configureSetUpTapToPayOnIPhone(cell: LeftImageTableViewCell) {
         prepareForReuse(cell, accessibilityID: "set-up-tap-to-pay")
+        cell.accessoryType = enableSetUpTapToPayOnIPhoneCell ? .disclosureIndicator : .none
+        cell.selectionStyle = enableSetUpTapToPayOnIPhoneCell ? .default : .none
         cell.configure(image: .tapToPayOnIPhoneIcon,
                        text: Localization.tapToPayOnIPhone)
+
+        updateEnabledState(in: cell, shouldBeEnabled: enableSetUpTapToPayOnIPhoneCell)
     }
 
     private func prepareForReuse(_ cell: UITableViewCell, accessibilityID: String) {
@@ -348,6 +356,10 @@ private extension InPersonPaymentsMenuViewController {
 
     func configureTableReload() {
         cashOnDeliveryToggleRowViewModel.$cashOnDeliveryEnabledState.sink { [weak self] _ in
+            self?.tableView.reloadData()
+        }.store(in: &cancellables)
+
+        viewModel.$isEligibleForTapToPayOnIPhone.sink { [weak self] _ in
             self?.tableView.reloadData()
         }.store(in: &cancellables)
     }

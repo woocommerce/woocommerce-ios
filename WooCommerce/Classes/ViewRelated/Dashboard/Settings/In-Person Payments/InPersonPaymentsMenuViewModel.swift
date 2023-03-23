@@ -37,9 +37,7 @@ final class InPersonPaymentsMenuViewModel {
         cardPresentPaymentsConfiguration.isSupportedCountry
     }
 
-    var isEligibleForTapToPayOnIPhone: Bool {
-        return isEligibleForCardPresentPayments && cardPresentPaymentsConfiguration.supportedReaders.contains { $0 == .appleBuiltIn }
-    }
+    @Published var isEligibleForTapToPayOnIPhone: Bool = false
 
     let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
@@ -53,8 +51,26 @@ final class InPersonPaymentsMenuViewModel {
         guard let siteID = siteID else {
             return
         }
+        synchronizePaymentGateways(siteID: siteID)
+        checkTapToPaySupport(siteID: siteID)
+    }
 
+    private func synchronizePaymentGateways(siteID: Int64) {
         let action = PaymentGatewayAction.synchronizePaymentGateways(siteID: siteID, onCompletion: { _ in })
+        stores.dispatch(action)
+    }
+
+    private func checkTapToPaySupport(siteID: Int64) {
+        let action = CardPresentPaymentAction.checkDeviceSupport(
+            siteID: siteID,
+            cardReaderType: .appleBuiltIn,
+            discoveryMethod: .localMobile) { [weak self] deviceSupportsTapToPay in
+                guard let self = self else { return }
+                self.isEligibleForTapToPayOnIPhone = (
+                    self.isEligibleForCardPresentPayments &&
+                    self.cardPresentPaymentsConfiguration.supportedReaders.contains { $0 == .appleBuiltIn } &&
+                    deviceSupportsTapToPay)
+        }
         stores.dispatch(action)
     }
 

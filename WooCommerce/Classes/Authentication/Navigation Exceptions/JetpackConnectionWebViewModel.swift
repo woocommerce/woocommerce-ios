@@ -61,7 +61,13 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     func handleCompletionIfPossible(_ url: String) -> Bool {
         // When the web view navigates to the site address or Jetpack plans page,
         // we can assume that the setup has completed.
-        if url == Constants.mobileRedirectURL {
+        let isMobileRedirect = url.hasPrefix(Constants.mobileRedirectURL)
+        let isPlansPage = url.hasPrefix(Constants.plansPage)
+        let isAdminPage = (url.hasPrefix(siteURL) &&
+                           !url.contains(Constants.jetpackSiteConnectionPage) &&
+                           !url.hasSuffix(Constants.loginPage) &&
+                           !url.hasSuffix(Constants.nonceRetrievalPage))
+        if isMobileRedirect || isPlansPage || isAdminPage {
             // Running on the main thread is necessary if this method is triggered from `decidePolicy`.
             DispatchQueue.main.async { [weak self] in
                 self?.handleSetupCompletion()
@@ -75,6 +81,10 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
 private extension JetpackConnectionWebViewModel {
     enum Constants {
         static let mobileRedirectURL = "woocommerce://jetpack-connected"
+        static let plansPage = "https://wordpress.com/jetpack/connect/plans"
+        static let jetpackSiteConnectionPage = "/wp-admin/admin.php?page=jetpack&action=register"
+        static let loginPage = "/wp-login.php"
+        static let nonceRetrievalPage = "/wp-admin/admin-ajax.php?action=rest-nonce"
     }
 
     enum Localization {

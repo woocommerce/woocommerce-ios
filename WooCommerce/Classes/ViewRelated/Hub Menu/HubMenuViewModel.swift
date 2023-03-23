@@ -82,7 +82,7 @@ final class HubMenuViewModel: ObservableObject {
         }
 
         // Only show the upgrades menu on WPCom sites
-        if featureFlagService.isFeatureFlagEnabled(.freeTrial) && stores.sessionManager.defaultSite?.isWordPressComStore == true {
+        if stores.sessionManager.defaultSite?.isWordPressComStore == true {
             menuElements.append(Upgrades())
         }
 

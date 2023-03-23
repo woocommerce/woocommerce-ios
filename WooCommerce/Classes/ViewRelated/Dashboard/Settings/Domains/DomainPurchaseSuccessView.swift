@@ -74,7 +74,7 @@ private extension DomainPurchaseSuccessView {
             comment: "Title of the domain purchase success screen."
         )
         static let subtitle = NSLocalizedString(
-            "Your site address is being set up. It may take up 30 minutes for your domain to start working.",
+            "Your site address is being set up. It may take up to 30 minutes for your domain to start working.",
             comment: "Subtitle of the domain purchase success screen."
         )
         static let instructions = NSLocalizedString(

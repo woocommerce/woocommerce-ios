@@ -13,7 +13,7 @@
 		035DBA3929251ED6003E5125 /* CardReaderInputOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */; };
 		035DBA41292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */; };
 		0365986D29B60AA000F297D3 /* CardReaderDiscoveryMethod+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365986C29B60AA000F297D3 /* CardReaderDiscoveryMethod+Stripe.swift */; };
-		03695B9729CA0C42006AB8DB /* CardReader+CardReaderDiscoveryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03695B9629CA0C42006AB8DB /* CardReader+CardReaderDiscoveryType.swift */; };
+		03743A8829CC4D8B002CAA47 /* CardReader+CardReaderDiscoveryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03743A8729CC4D8B002CAA47 /* CardReader+CardReaderDiscoveryType.swift */; };
 		039D948B2760C0660044EF38 /* NoOpCardReaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948A2760C0660044EF38 /* NoOpCardReaderService.swift */; };
 		03B440AA2754DFC400759429 /* UnderlyingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B440A92754DFC400759429 /* UnderlyingError.swift */; };
 		03CF78D327C6710C00523706 /* interac.svg in Resources */ = {isa = PBXBuildFile; fileRef = 03CF78D227C6710B00523706 /* interac.svg */; };
@@ -160,7 +160,7 @@
 		035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderInputOptions.swift; sourceTree = "<group>"; };
 		035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderDiscoveryMethod.swift; sourceTree = "<group>"; };
 		0365986C29B60AA000F297D3 /* CardReaderDiscoveryMethod+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardReaderDiscoveryMethod+Stripe.swift"; sourceTree = "<group>"; };
-		03695B9629CA0C42006AB8DB /* CardReader+CardReaderDiscoveryType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CardReader+CardReaderDiscoveryType.swift"; path = "/Users/josh/Development/woocommerce-ios/Hardware/Hardware/CardReader/CardReader+CardReaderDiscoveryType.swift"; sourceTree = "<absolute>"; };
+		03743A8729CC4D8B002CAA47 /* CardReader+CardReaderDiscoveryType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CardReader+CardReaderDiscoveryType.swift"; path = "StripeCardReader/CardReader+CardReaderDiscoveryType.swift"; sourceTree = "<group>"; };
 		039D948A2760C0660044EF38 /* NoOpCardReaderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoOpCardReaderService.swift; sourceTree = "<group>"; };
 		03B440A92754DFC400759429 /* UnderlyingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlyingError.swift; sourceTree = "<group>"; };
 		03CF78D227C6710B00523706 /* interac.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interac.svg; sourceTree = "<group>"; };
@@ -447,7 +447,7 @@
 				D88FDB3625DD21BE00CB0DBD /* StripeCardReader */,
 				D88FDB2725DD21B000CB0DBD /* CardReader.swift */,
 				035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */,
-				03695B9629CA0C42006AB8DB /* CardReader+CardReaderDiscoveryType.swift */,
+				03743A8729CC4D8B002CAA47 /* CardReader+CardReaderDiscoveryType.swift */,
 				D88FDB2425DD21B000CB0DBD /* CardReaderEvent.swift */,
 				035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */,
 				D88FDB2625DD21B000CB0DBD /* CardReaderService.swift */,
@@ -873,7 +873,7 @@
 				030338102705F7D400764131 /* ReceiptTotalLine.swift in Sources */,
 				D8DF5F4425DD9F36008AFE25 /* CardReaderType.swift in Sources */,
 				D845BDBC262D980C00A3E40F /* CardPresentTransactionDetails.swift in Sources */,
-				03695B9729CA0C42006AB8DB /* CardReader+CardReaderDiscoveryType.swift in Sources */,
+				03743A8829CC4D8B002CAA47 /* CardReader+CardReaderDiscoveryType.swift in Sources */,
 				D88ECCE3262095A10094398A /* UpdateTimeEstimate.swift in Sources */,
 				D88ECCE7262096BD0094398A /* UpdateTimeEstimate+Stripe.swift in Sources */,
 				03CF78D927DF9D0500523706 /* RefundParameters+Stripe.swift in Sources */,

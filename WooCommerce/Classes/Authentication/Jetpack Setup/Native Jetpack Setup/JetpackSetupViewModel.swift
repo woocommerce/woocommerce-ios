@@ -156,6 +156,7 @@ final class JetpackSetupViewModel: ObservableObject {
     func didTapContinueConnectionButton() {
         analytics.track(.loginJetpackSetupScreenTryAgainButtonTapped,
                         withProperties: currentSetupStep?.analyticsDescription)
+        fetchJetpackConnectionURL()
     }
 }
 
@@ -170,7 +171,7 @@ private extension JetpackSetupViewModel {
                 if plugin.status == .inactive {
                     self.activateJetpack()
                 } else {
-                    self.checkConnectionBeforeSetup()
+                    self.fetchJetpackConnectionURL()
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving Jetpack: \(error)")
@@ -182,31 +183,6 @@ private extension JetpackSetupViewModel {
                 } else {
                     self.setupFailed = true
                 }
-            }
-        }
-        stores.dispatch(action)
-    }
-
-    /// If Jetpack plugin is active, check if site connection has already been established to decide
-    /// the appropriate URL for the connection step.
-    ///
-    func checkConnectionBeforeSetup() {
-        let action = JetpackConnectionAction.fetchJetpackUser { [weak self] result in
-            guard let self else { return }
-            guard let user = try? result.get() else {
-                // no connection yet, proceed to handling site connection
-                return self.fetchJetpackConnectionURL(hasSiteConnection: false)
-            }
-
-            if let connectedEmail = user.wpcomUser?.email {
-                // both site and account connection are done, setup completes!
-                self.jetpackConnectedEmail = connectedEmail
-                self.currentConnectionStep = .authorized
-                self.currentSetupStep = .done
-                self.analytics.track(.loginJetpackSetupAllStepsMarkedDone)
-            } else {
-                // site connection established, fetch account connection URL
-                self.fetchJetpackConnectionURL(hasSiteConnection: true)
             }
         }
         stores.dispatch(action)
@@ -237,7 +213,7 @@ private extension JetpackSetupViewModel {
             switch result {
             case .success:
                 self.analytics.track(.loginJetpackSetupActivationSuccessful)
-                self.fetchJetpackConnectionURL(hasSiteConnection: false)
+                self.fetchJetpackConnectionURL()
             case .failure(let error):
                 self.analytics.track(.loginJetpackSetupActivationFailed, withError: error)
                 DDLogError("⛔️ Error activating Jetpack: \(error)")
@@ -248,13 +224,8 @@ private extension JetpackSetupViewModel {
         stores.dispatch(action)
     }
 
-    func fetchJetpackConnectionURL(hasSiteConnection: Bool) {
+    func fetchJetpackConnectionURL() {
         currentSetupStep = .connection
-        guard hasSiteConnection == true else {
-            self.jetpackConnectionURL = siteConnectionURL
-            self.shouldPresentWebView = true
-            return
-        }
         let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
             guard let self else { return }
             switch result {

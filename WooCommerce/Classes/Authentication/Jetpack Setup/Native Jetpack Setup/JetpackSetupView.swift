@@ -280,10 +280,6 @@ struct JetpackSetupView: View {
             JetpackSetupInterruptedView(siteURL: viewModel.siteURL, onSupport: supportHandler, onContinue: {
                 viewModel.jetpackConnectionInterrupted = false
                 viewModel.didTapContinueConnectionButton()
-                // delay for the dismissal of the interrupted screen to complete.
-                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interruptedConnectionActionHandlerDelayTime) {
-                    webViewPresentationHandler()
-                }
             }, onCancellation: {
                 viewModel.jetpackConnectionInterrupted = false
                 // delay for the dismissal of the interrupted screen to complete.

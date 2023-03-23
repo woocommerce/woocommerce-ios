@@ -39,7 +39,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         sut.viewDidLoad()
 
         // Then
-        let action = try XCTUnwrap(stores.receivedActions.last as? PaymentGatewayAction)
+        let action = try XCTUnwrap(stores.receivedActions.first(where: { $0 is PaymentGatewayAction }) as? PaymentGatewayAction)
         switch action {
         case .synchronizePaymentGateways(let siteID, _):
             assertEqual(siteID, sampleStoreID)
@@ -94,6 +94,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                             cardPresentPaymentsConfiguration: configuration)
 
         // When
+        sut.viewDidLoad()
         let eligiblity = sut.isEligibleForTapToPayOnIPhone
 
         // Then
@@ -117,7 +118,21 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)
 
-        // When
+        waitFor { promise in
+            self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                switch action {
+                case .checkDeviceSupport(_, _, _, let completion):
+                    completion(true)
+                    promise(())
+                default:
+                    XCTFail("Unexpected CardPresentPaymentAction recieved")
+                }
+            }
+            
+            // When
+            self.sut.viewDidLoad()
+        }
+
         let eligiblity = sut.isEligibleForTapToPayOnIPhone
 
         // Then

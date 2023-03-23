@@ -31,6 +31,10 @@ struct ComponentsList: View {
     ///
     @ScaledMetric private var imageWidth = Layout.standardImageWidth
 
+    /// Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
     var body: some View {
         ScrollView {
             LazyVStack(spacing: Layout.sectionSpacing) {
@@ -45,20 +49,22 @@ struct ComponentsList: View {
                             .frame(width: imageWidth, height: imageWidth)
                             .cornerRadius(Layout.imageCornerRadius)
                             .accessibilityHidden(true)
-                            .padding(.leading)
+                            .padding()
 
                         Text(component.title)
                             .bodyStyle()
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
                     }
-                    Divider().padding(.leading)
+                    Divider()
                 }
+                .padding(.leading, insets: safeAreaInsets)
             }
             .background(Color(.listForeground(modal: false)))
 
             FooterNotice(infoText: viewModel.infoNotice)
+                .padding(.horizontal, insets: safeAreaInsets)
         }
+        .ignoresSafeArea(edges: .horizontal)
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
         )

@@ -132,6 +132,18 @@ private extension SiteLaunchError {
             )
         }
     }
+
+    var retryTitle: String? {
+        switch self {
+        case .alreadyLaunched:
+            return nil
+        case .unexpected:
+            return NSLocalizedString(
+                "Try again",
+                comment: "Title of the try again action when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
 }
 
 struct StoreOnboardingLaunchStoreView_Previews: PreviewProvider {

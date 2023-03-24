@@ -7,7 +7,7 @@ struct ComponentSettings: View {
 
     /// View model that directs the view content.
     ///
-    let viewModel: ComponentSettingsViewModel
+    @ObservedObject var viewModel: ComponentSettingsViewModel
 
     /// Dynamic image width for the component image, also used for its height.
     ///
@@ -66,11 +66,15 @@ struct ComponentSettings: View {
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()
+            .redacted(reason: viewModel.showOptionLoadingIndicator ? .placeholder : [])
+            .shimmering(active: viewModel.showOptionLoadingIndicator)
             .background(Color(.listForeground(modal: false)))
 
             TitleAndValueRow(title: Localization.defaultOption, value: .placeholder(viewModel.defaultOptionTitle))
                 .padding(.horizontal, insets: safeAreaInsets)
                 .addingTopAndBottomDividers()
+                .redacted(reason: viewModel.showDefaultOptionLoadingIndicator ? .placeholder : [])
+                .shimmering(active: viewModel.showDefaultOptionLoadingIndicator)
                 .background(Color(.listForeground(modal: false)))
 
             FooterNotice(infoText: viewModel.infoNotice)
@@ -153,8 +157,7 @@ struct ComponentSettings_Previews: PreviewProvider {
                                                            description: "",
                                                            imageURL: nil,
                                                            optionsType: "Products",
-                                                           options: [],
-                                                           defaultOptionTitle: "")
+                                                           options: [])
 
     static var previews: some View {
         ComponentSettings(viewModel: viewModel)

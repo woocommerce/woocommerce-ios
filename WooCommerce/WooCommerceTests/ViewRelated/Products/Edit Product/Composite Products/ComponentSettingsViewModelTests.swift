@@ -4,6 +4,8 @@ import XCTest
 
 final class ComponentSettingsViewModelTests: XCTestCase {
 
+    private let sampleSiteID: Int64 = 12345
+
     func test_component_image_and_description_visible_when_set() throws {
         // Given
         let imageURL = try XCTUnwrap(URL(string: "https://woocommerce.com/woo.jpg"))
@@ -34,10 +36,12 @@ final class ComponentSettingsViewModelTests: XCTestCase {
                                                           title: "Camera Body",
                                                           imageURL: URL(string: "https://woocommerce.com/woo.jpg"),
                                                           description: "Choose between the Nikon D600 or the powerful Canon EOS 5D Mark IV.",
-                                                          optionType: .productIDs)
+                                                          optionType: .productIDs,
+                                                          optionIDs: [],
+                                                          defaultOptionID: "")
 
         // When
-        let viewModel = ComponentSettingsViewModel(component: component)
+        let viewModel = ComponentSettingsViewModel(siteID: sampleSiteID, component: component)
 
         // Then
         XCTAssertEqual(viewModel.componentTitle, component.title)

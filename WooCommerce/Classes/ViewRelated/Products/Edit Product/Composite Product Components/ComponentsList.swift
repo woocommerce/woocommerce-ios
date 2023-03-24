@@ -90,10 +90,10 @@ private enum Layout {
 // MARK: Previews
 struct ComponentsList_Previews: PreviewProvider {
 
-    static let viewModel = ComponentsListViewModel(components: [
-        .init(id: "1", title: "Camera Body", imageURL: nil, description: "", optionType: .productIDs),
-        .init(id: "2", title: "Lens", imageURL: nil, description: "", optionType: .categoryIDs),
-        .init(id: "3", title: "Memory Card", imageURL: nil, description: "", optionType: .categoryIDs)
+    static let viewModel = ComponentsListViewModel(siteID: 123, components: [
+        .init(id: "1", title: "Camera Body", imageURL: nil, description: "", optionType: .productIDs, optionIDs: [], defaultOptionID: ""),
+        .init(id: "2", title: "Lens", imageURL: nil, description: "", optionType: .categoryIDs, optionIDs: [], defaultOptionID: ""),
+        .init(id: "3", title: "Memory Card", imageURL: nil, description: "", optionType: .categoryIDs, optionIDs: [], defaultOptionID: "")
     ])
 
     static var previews: some View {

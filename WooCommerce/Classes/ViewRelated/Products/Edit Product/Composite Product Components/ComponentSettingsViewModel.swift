@@ -49,11 +49,11 @@ final class ComponentSettingsViewModel: ObservableObject {
 
     /// Component options
     ///
-    let options: [ComponentOption]
+    @Published var options: [ComponentOption]
 
     /// Title of the default (pre-selected) component option
     ///
-    let defaultOptionTitle: String
+    @Published var defaultOptionTitle: String
 
     // MARK: Section Visibility
 
@@ -67,6 +67,42 @@ final class ComponentSettingsViewModel: ObservableObject {
     ///
     var shouldShowDescription: Bool {
         description.isNotEmpty
+    }
+
+    // MARK: Loading State
+
+    /// Dependency state.
+    ///
+    enum LoadState {
+        case notLoaded
+        case loading
+        case loaded
+    }
+
+    /// Current product dependency state.
+    ///
+    private var productsState: LoadState = .notLoaded
+
+    /// Current category dependency state.
+    ///
+    private var categoriesState: LoadState = .notLoaded
+
+    /// Current component options dependency state.
+    ///
+    private var componentOptionsState: LoadState {
+        optionsType == CompositeComponentOptionType.productIDs.description ? productsState : categoriesState
+    }
+
+    /// Indicates if the Component Options section should should show a redacted state.
+    ///
+    var showOptionLoadingIndicator: Bool {
+        componentOptionsState == .loading
+    }
+
+    /// Indicates if the Default Option section should should show a redacted state.
+    ///
+    var showDefaultOptionLoadingIndicator: Bool {
+        productsState == .loading
     }
 
     init(title: String,
@@ -86,13 +122,97 @@ final class ComponentSettingsViewModel: ObservableObject {
 
 // MARK: Initializers
 extension ComponentSettingsViewModel {
-    convenience init(component: ComponentsListViewModel.Component) {
+    convenience init(siteID: Int64,
+                     component: ComponentsListViewModel.Component,
+                     stores: StoresManager = ServiceLocator.stores,
+                     storageManager: StorageManagerType = ServiceLocator.storageManager) {
         // Initialize the view model with the available component settings and placeholders for the component options.
         self.init(title: component.title,
                   description: component.description.removedHTMLTags.trimmingCharacters(in: .whitespacesAndNewlines),
                   imageURL: component.imageURL,
                   optionsType: component.optionType.description,
-                  options: [])
+                  options: ComponentSettingsViewModel.optionsLoadingPlaceholder)
+
+        // Then load details about the component options.
+        loadComponentOptions(siteID: siteID,
+                             optionIDs: component.optionIDs,
+                             defaultOptionID: Int64(component.defaultOptionID),
+                             type: component.optionType,
+                             stores: stores,
+                             storageManager: storageManager)
+    }
+}
+
+// MARK: Private helpers
+private extension ComponentSettingsViewModel {
+    /// Load the component options (products or categories) if needed.
+    ///
+    /// Products are synced from remote, while categories are fetched from storage because they are already fully synced.
+    ///
+    func loadComponentOptions(siteID: Int64,
+                              optionIDs: [Int64],
+                              defaultOptionID: Int64?,
+                              type: CompositeComponentOptionType,
+                              stores: StoresManager,
+                              storageManager: StorageManagerType) {
+        syncProducts(siteID: siteID, optionIDs: optionIDs, defaultOptionID: defaultOptionID, type: type, stores: stores)
+        fetchCategoriesIfNeeded(siteID: siteID, optionIDs: optionIDs, type: type, storageManager: storageManager)
+    }
+
+    /// Syncs products and sets the default option and (if the component options are products) the options list.
+    ///
+    func syncProducts(siteID: Int64, optionIDs: [Int64], defaultOptionID: Int64?, type: CompositeComponentOptionType, stores: StoresManager) {
+        guard productsState == .notLoaded else { return }
+
+        // If the component options are products, sync the products matching the list of option IDs.
+        // Otherwise, the component options are categories, so we only need to sync the default option (a product).
+        let productsToSync = type == .productIDs ? optionIDs : [defaultOptionID].compactMap { $0 }
+        let productAction = ProductAction.retrieveProducts(siteID: siteID, productIDs: productsToSync) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success((let products, _)):
+                self.defaultOptionTitle = products.first(where: { $0.productID == defaultOptionID })?.name ?? Localization.noDefaultOption
+                if type == .productIDs {
+                    self.options = products.map { product in
+                        ComponentOption(id: product.productID, title: product.name, imageURL: product.imageURL)
+                    }
+                }
+                self.productsState = .loaded
+            case .failure(let error):
+                self.options = []
+                self.productsState = .notLoaded
+                DDLogError("⛔️ Unable to fetch products for composite component settings: \(error)")
+                // TODO-8956: Display notice about loading error
+            }
+        }
+
+        options = [ComponentOption(id: 1, title: "Component Option", imageURL: nil)]
+        productsState = .loading
+        stores.dispatch(productAction)
+    }
+
+    /// Fetches the categories from storage if the component options are categories.
+    ///
+    func fetchCategoriesIfNeeded(siteID: Int64, optionIDs: [Int64], type: CompositeComponentOptionType, storageManager: StorageManagerType) {
+        guard type == .categoryIDs && categoriesState == .notLoaded else { return }
+
+        categoriesState = .loading
+
+        let predicate = NSPredicate(format: "siteID = %lld AND categoryID IN %@", siteID, optionIDs)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProductCategory.name, ascending: true)
+        let resultsController = ResultsController<StorageProductCategory>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+
+        do {
+            try resultsController.performFetch()
+            self.options = resultsController.fetchedObjects.map { category in
+                ComponentOption(id: category.categoryID, title: category.name, imageURL: nil)
+            }
+            self.categoriesState = .loaded
+        } catch {
+            self.categoriesState = .notLoaded
+            DDLogError("⛔️ Unable to fetch the composite component's category options: \(error)")
+        }
     }
 }
 
@@ -104,4 +224,10 @@ private extension ComponentSettingsViewModel {
                                                   comment: "Info notice at the bottom of the component settings screen")
         static let noDefaultOption = NSLocalizedString("None", comment: "Label when there is no default option for a component in a composite product")
     }
+
+    /// Placeholder for the list of component options.
+    ///
+    /// Used in the redacted loading view.
+    ///
+    static let optionsLoadingPlaceholder: [ComponentOption] = [ComponentOption(id: 1, title: "Component Option", imageURL: nil)]
 }

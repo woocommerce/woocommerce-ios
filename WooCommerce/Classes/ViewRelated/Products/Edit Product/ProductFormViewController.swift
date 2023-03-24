@@ -1704,7 +1704,7 @@ private extension ProductFormViewController {
         guard let product = product as? EditableProductModel else {
             return
         }
-        let viewModel = ComponentsListViewModel(components: product.compositeComponents)
+        let viewModel = ComponentsListViewModel(siteID: product.siteID, components: product.compositeComponents)
         let viewController = ComponentsListViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }

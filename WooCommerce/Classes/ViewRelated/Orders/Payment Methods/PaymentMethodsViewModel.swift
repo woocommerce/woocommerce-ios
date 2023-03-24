@@ -202,7 +202,7 @@ final class PaymentMethodsViewModel: ObservableObject {
 
             onSuccess()
             self.presentNoticeSubject.send(.completed)
-            self.trackFlowCompleted(method: .cash)
+            self.trackFlowCompleted(method: .cash, cardReaderType: .none)
         }
         stores.dispatch(action)
     }
@@ -237,7 +237,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                            useCase: CollectOrderPaymentProtocol? = nil,
                            onSuccess: @escaping () -> Void,
                            onFailure: @escaping () -> Void) {
-        trackCollectIntention(method: .card)
+        trackCollectIntention(method: .card, cardReaderType: discoveryMethod.analyticsCardReaderType)
         orderDurationRecorder.recordCardPaymentStarted()
 
         guard let rootViewController = rootViewController else {
@@ -284,14 +284,14 @@ final class PaymentMethodsViewModel: ObservableObject {
                 self?.collectPaymentsUseCase = nil
 
                 // Tracks completion
-                self?.trackFlowCompleted(method: .card)
+                self?.trackFlowCompleted(method: .card, cardReaderType: discoveryMethod.analyticsCardReaderType)
             })
     }
 
     func legacyCollectPayment(on rootViewController: UIViewController?,
                               useCase: LegacyCollectOrderPaymentProtocol? = nil,
                               onSuccess: @escaping () -> Void) {
-        trackCollectIntention(method: .card)
+        trackCollectIntention(method: .card, cardReaderType: .external)
         orderDurationRecorder.recordCardPaymentStarted()
 
         guard let rootViewController = rootViewController else {
@@ -345,7 +345,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                             self?.legacyCollectPaymentsUseCase = nil
 
                             // Tracks completion
-                            self?.trackFlowCompleted(method: .card)
+                            self?.trackFlowCompleted(method: .card, cardReaderType: .external)
                         })
                 }
 
@@ -356,18 +356,18 @@ final class PaymentMethodsViewModel: ObservableObject {
     /// Tracks the collect by cash intention.
     ///
     func trackCollectByCash() {
-        trackCollectIntention(method: .cash)
+        trackCollectIntention(method: .cash, cardReaderType: .none)
     }
 
     func trackCollectByPaymentLink() {
-        trackCollectIntention(method: .paymentLink)
+        trackCollectIntention(method: .paymentLink, cardReaderType: .none)
     }
 
     /// Perform the necesary tasks after a link is shared.
     ///
     func performLinkSharedTasks() {
         presentNoticeSubject.send(.created)
-        trackFlowCompleted(method: .paymentLink)
+        trackFlowCompleted(method: .paymentLink, cardReaderType: .none)
     }
 
     /// Track the flow cancel scenario.
@@ -443,8 +443,12 @@ private extension PaymentMethodsViewModel {
 
     /// Tracks the `paymentsFlowCompleted` event.
     ///
-    func trackFlowCompleted(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod) {
-        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCompleted(flow: flow, amount: formattedTotal, method: method))
+    func trackFlowCompleted(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod,
+                            cardReaderType: WooAnalyticsEvent.PaymentsFlow.CardReaderType?) {
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCompleted(flow: flow,
+                                                                                    amount: formattedTotal,
+                                                                                    method: method,
+                                                                                    cardReaderType: cardReaderType))
     }
 
     /// Tracks the `paymentsFlowFailed` event.
@@ -461,9 +465,12 @@ private extension PaymentMethodsViewModel {
 
     /// Tracks `paymentsFlowCollect` event.
     ///
-    func trackCollectIntention(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod) {
+    func trackCollectIntention(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod,
+                               cardReaderType: WooAnalyticsEvent.PaymentsFlow.CardReaderType?) {
+
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCollect(flow: flow,
                                                                                   method: method,
+                                                                                  cardReaderType: cardReaderType,
                                                                                   millisecondsSinceOrderAddNew:
                                                                                     try? orderDurationRecorder.millisecondsSinceOrderAddNew()))
     }
@@ -484,6 +491,17 @@ private extension PaymentMethodsViewModel {
         static func markAsPaidInfo(total: String) -> String {
             NSLocalizedString("This will mark your order as complete if you received \(total) outside of WooCommerce",
                               comment: "Alert info when selecting the cash payment method during payments")
+        }
+    }
+}
+
+private extension CardReaderDiscoveryMethod {
+    var analyticsCardReaderType: WooAnalyticsEvent.PaymentsFlow.CardReaderType {
+        switch self {
+        case .localMobile:
+            return .builtIn
+        case .bluetoothScan:
+            return .external
         }
     }
 }

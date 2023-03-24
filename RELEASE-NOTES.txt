@@ -8,6 +8,7 @@
 - [*] Fix: Prevent product variations not loading due to an encoding error for `permalink`, which was altered by a plugin. [https://github.com/woocommerce/woocommerce-ios/pull/9233]
 - [*] Login: Users can now log in to self-hosted sites without Jetpack by approving application password authorization to their sites. [https://github.com/woocommerce/woocommerce-ios/pull/9260]
 - [*] Payments: Tap to Pay on iPhone can now be selected from the Payment Methods screen [https://github.com/woocommerce/woocommerce-ios/pull/9242]
+- [**] Payments: Set up Tap to Pay on iPhone flow added to the Payments Menu. Use it to configure the reader, and try a payment, before collecting a card payment with a customer. [https://github.com/woocommerce/woocommerce-ios/pull/9280]
 
 12.8
 -----

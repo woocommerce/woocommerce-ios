@@ -30,7 +30,14 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
 
         viewModel.alertsPresenter = alertsPresenter
         viewModel.connectionController = connectionController
+        configureViewModel()
         configureView()
+    }
+
+    private func configureViewModel() {
+        viewModel.dismiss = { [weak self] in
+            self?.dismiss(animated: true)
+        }
     }
 
     private func configureView() {
@@ -39,9 +46,6 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
             WebviewHelper.launch(url, with: self)
         }
         rootView.learnMoreUrl = viewModel.learnMoreURL
-        rootView.dismiss = { [weak self] in
-            self?.dismiss(animated: true)
-        }
     }
 
     required init?(coder: NSCoder) {
@@ -58,7 +62,6 @@ struct SetUpTapToPayInformationView: View {
     @ObservedObject var viewModel: SetUpTapToPayInformationViewModel
     var showURL: ((URL) -> Void)? = nil
     var learnMoreUrl: URL? = nil
-    var dismiss: (() -> Void)? = nil
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
@@ -74,7 +77,7 @@ struct SetUpTapToPayInformationView: View {
         VStack {
             HStack {
                 Button(Localization.cancelButton) {
-                    dismiss?()
+                    viewModel.cancelTapped()
                 }
                 Spacer()
             }

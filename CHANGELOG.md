@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 12.9
+For this release, we focused on making your experience smoother when creating an order and updating products. We have also made improvements to the login experience without Jetpack. Additionally, it's now possible to install Jetpack from the app if you would like additional functionality such as push notifications and visitor stats. Keep your feedback coming!
+
 ## 12.8
 This release includes a few enhancements to your store management experience. It's now possible to use the iOS Shortcuts app to create an order and collect payments from the WooCommerce mobile apps! Please try it out and share your feedback.
 

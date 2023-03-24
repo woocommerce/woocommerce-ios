@@ -167,6 +167,13 @@ public enum WooAnalyticsStat: String {
     case productsOnboardingEligible = "products_onboarding_store_is_eligible"
     case productsOnboardingCTATapped = "products_onboarding_cta_tapped"
 
+    // MARK: Store Onboarding Events
+    //
+    case storeOnboardingShown = "store_onboarding_shown"
+    case storeOnboardingTaskTapped = "store_onboarding_task_tapped"
+    case storeOnboardingTaskCompleted = "store_onboarding_task_completed"
+    case storeOnboardingCompleted = "store_onboarding_completed"
+
     // MARK: Site picker. Can be triggered by login epilogue or settings.
     //
     case sitePickerContinueTapped = "site_picker_continue_tapped"
@@ -756,6 +763,7 @@ public enum WooAnalyticsStat: String {
     case jetpackInstallFailed = "jetpack_install_failed"
     case jetpackInstallInWPAdminButtonTapped = "jetpack_install_in_wpadmin_button_tapped"
     case jetpackInstallContactSupportButtonTapped = "jetpack_install_contact_support_button_tapped"
+    case jetpackBenefitsModalWPAdminButtonTapped = "jetpack_benefits_modal_wpadmin_button_tapped"
 
     // MARK: Hub Menu
     //
@@ -847,6 +855,14 @@ public enum WooAnalyticsStat: String {
     case freeTrialUpgradeNowTapped = "free_trial_upgrade_now_tapped"
     case planUpgradeSuccess = "plan_upgrade_success"
     case planUpgradeAbandoned = "plan_upgrade_abandoned"
+
+    // MARK: Application password authorization in web view
+    case applicationPasswordAuthorizationButtonTapped = "application_password_authorization_button_tapped"
+    case applicationPasswordAuthorizationWebViewShown = "application_password_authorization_web_view_shown"
+    case applicationPasswordAuthorizationRejected = "application_password_authorization_rejected"
+    case applicationPasswordAuthorizationApproved = "application_password_authorization_approved"
+    case applicationPasswordAuthorizationURLNotAvailable = "application_password_authorization_url_not_available"
+    case applicationPasswordAuthorizationURLFetchFailed = "application_password_authorization_url_fetch_failed"
 }
 
 public extension WooAnalyticsStat {

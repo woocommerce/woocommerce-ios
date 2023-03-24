@@ -7,6 +7,8 @@ import struct Networking.ApplicationPassword
 ///
 final class ApplicationPasswordAuthorizationWebViewController: UIViewController {
 
+    private let analytics: Analytics
+
     /// Callback when application password is authorized.
     private let onSuccess: (ApplicationPassword, UINavigationController?) -> Void
 
@@ -45,9 +47,11 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
     private var subscriptions: Set<AnyCancellable> = []
 
     init(viewModel: ApplicationPasswordAuthorizationViewModel,
+         analytics: Analytics = ServiceLocator.analytics,
          onSuccess: @escaping (ApplicationPassword, UINavigationController?) -> Void) {
         self.viewModel = viewModel
         self.onSuccess = onSuccess
+        self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -127,11 +131,13 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             do {
                 guard let url = try await viewModel.fetchAuthURL() else {
                     DDLogError("⛔️ No authorization URL found for application passwords")
+                    analytics.track(.applicationPasswordAuthorizationURLNotAvailable)
                     return showErrorAlert(message: Localization.applicationPasswordDisabled)
                 }
                 loadAuthorizationPage(url: url)
             } catch {
                 DDLogError("⛔️ Error fetching authorization URL for application passwords \(error)")
+                analytics.track(.applicationPasswordAuthorizationURLFetchFailed, withError: error)
                 showErrorAlert(message: Localization.errorFetchingAuthURL, onRetry: { [weak self] in
                     self?.fetchAuthorizationURL()
                 })
@@ -154,6 +160,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         }
         let request = URLRequest(url: urlWithQueries)
         webView.load(request)
+        analytics.track(.applicationPasswordAuthorizationWebViewShown)
     }
 
     func handleAuthorizationResponse(with url: URL?) {
@@ -165,6 +172,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
               let username = queryItems.first(where: { $0.name == Constants.Query.username })?.value,
               let password = queryItems.first(where: { $0.name == Constants.Query.password })?.value else {
             DDLogError("⛔️ Authorization rejected for application passwords")
+            analytics.track(.applicationPasswordAuthorizationRejected)
             return showErrorAlert(message: Localization.authorizationRejected)
         }
 
@@ -173,6 +181,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         progressBar.setProgress(0, animated: false)
         activityIndicator.startAnimating()
 
+        analytics.track(.applicationPasswordAuthorizationApproved)
         let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: appID)
         onSuccess(applicationPassword, navigationController)
         DDLogInfo("✅ Application password authorized")

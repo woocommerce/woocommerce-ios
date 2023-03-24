@@ -18,6 +18,8 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     @Published private(set) var showPayWithCardRow = false
 
+    @Published private(set) var showTapToPayRow = false
+
     /// Allows the onboarding flow to be presented before a card present payment when required
     ///
     private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
@@ -214,13 +216,24 @@ final class PaymentMethodsViewModel: ObservableObject {
                         onFailure: @escaping () -> Void) {
         switch isTapToPayOnIPhoneEnabled {
         case true:
-            newCollectPayment(on: rootViewController, onSuccess: onSuccess, onFailure: onFailure)
+            newCollectPayment(using: .bluetoothScan, on: rootViewController, onSuccess: onSuccess, onFailure: onFailure)
         case false:
             legacyCollectPayment(on: rootViewController, useCase: useCase, onSuccess: onSuccess)
         }
     }
 
-    func newCollectPayment(on rootViewController: UIViewController?,
+    func collectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
+                        on rootViewController: UIViewController?,
+                        onSuccess: @escaping () -> Void,
+                        onFailure: @escaping () -> Void) {
+        newCollectPayment(using: discoveryMethod,
+                          on: rootViewController,
+                          onSuccess: onSuccess,
+                          onFailure: onFailure)
+    }
+
+    func newCollectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
+                           on rootViewController: UIViewController?,
                            useCase: CollectOrderPaymentProtocol? = nil,
                            onSuccess: @escaping () -> Void,
                            onFailure: @escaping () -> Void) {
@@ -246,6 +259,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             configuration: CardPresentConfigurationLoader().configuration)
 
         collectPaymentsUseCase?.collectPayment(
+            using: discoveryMethod,
             onFailure: { [weak self] error in
                 self?.trackFlowFailed()
                 // Update order in case its status and/or other details are updated after a failed in-person payment
@@ -375,28 +389,49 @@ private extension PaymentMethodsViewModel {
     /// Observes the store CPP state and update publish variables accordingly.
     ///
     func bindStoreCPPState() {
-        ordersResultController.onDidChangeContent = updateCardPaymentVisibility
+        ordersResultController.onDidChangeContent = { [weak self] in
+            self?.updateCardPaymentVisibility()
+        }
         try? ordersResultController.performFetch()
     }
 
     func updateCardPaymentVisibility() {
         guard cardPresentPaymentsConfiguration.isSupportedCountry else {
             showPayWithCardRow = false
+            showTapToPayRow = false
 
             return
         }
 
+        localMobileReaderSupported { [weak self] tapToPaySupportedByDevice in
+            let tapToPaySupportedByStore = self?.cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn) ?? false
+            self?.orderIsEligibleForCardPresentPayment { [weak self] orderIsEligible in
+                self?.showPayWithCardRow = orderIsEligible
+                self?.showTapToPayRow = orderIsEligible && tapToPaySupportedByDevice && tapToPaySupportedByStore
+            }
+        }
+    }
+
+    private func localMobileReaderSupported(onCompletion: @escaping ((Bool) -> Void)) {
+        let action = CardPresentPaymentAction.checkDeviceSupport(siteID: siteID,
+                                                                 cardReaderType: .appleBuiltIn,
+                                                                 discoveryMethod: .localMobile,
+                                                                 onCompletion: onCompletion)
+        stores.dispatch(action)
+    }
+
+    private func orderIsEligibleForCardPresentPayment(onCompletion: @escaping (Bool) -> Void) {
         let action = OrderCardPresentPaymentEligibilityAction
             .orderIsEligibleForCardPresentPayment(orderID: orderID,
                                                   siteID: siteID,
-                                                  cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) { [weak self] result in
-            switch result {
-            case .success(let eligible):
-                self?.showPayWithCardRow = eligible
-            case .failure(_):
-                self?.showPayWithCardRow = false
+                                                  cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) { result in
+                switch result {
+                case .success(let eligibility):
+                    onCompletion(eligibility)
+                case .failure:
+                    onCompletion(false)
+                }
             }
-        }
 
         stores.dispatch(action)
     }

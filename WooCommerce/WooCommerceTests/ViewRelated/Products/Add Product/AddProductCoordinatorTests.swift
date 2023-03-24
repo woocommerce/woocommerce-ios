@@ -41,6 +41,9 @@ final class AddProductCoordinatorTests: XCTestCase {
 private extension AddProductCoordinatorTests {
     func makeAddProductCoordinator() -> AddProductCoordinator {
         let view = UIView()
-        return AddProductCoordinator(siteID: 100, sourceView: view, sourceNavigationController: navigationController)
+        return AddProductCoordinator(siteID: 100,
+                                     source: .productsTab,
+                                     sourceView: view,
+                                     sourceNavigationController: navigationController)
     }
 }

@@ -328,7 +328,7 @@ private extension InPersonPaymentsMenuViewController {
 
     func configureSetUpTapToPayOnIPhone(cell: LeftImageTableViewCell) {
         prepareForReuse(cell, accessibilityID: "set-up-tap-to-pay")
-        cell.configure(image: UIImage(systemName: "wave.3.right.circle") ?? .creditCardIcon,
+        cell.configure(image: .tapToPayOnIPhoneIcon,
                        text: Localization.tapToPayOnIPhone)
     }
 

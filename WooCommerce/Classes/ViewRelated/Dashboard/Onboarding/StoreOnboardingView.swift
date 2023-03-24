@@ -10,8 +10,10 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
     private let site: Site
     private lazy var coordinator = StoreOnboardingCoordinator(navigationController: sourceNavigationController,
                                                               site: site,
-                                                              onTaskCompleted: { [weak self] in
-        self?.reloadTasks()
+                                                              onTaskCompleted: { [weak self] task in
+        guard let self else { return }
+        self.reloadTasks()
+        ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskCompleted(task: task))
     })
 
     init(viewModel: StoreOnboardingViewModel,
@@ -34,6 +36,7 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
                   !task.isComplete else {
                 return
             }
+            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskTapped(task: task.type))
             self.coordinator.start(task: task)
         }
 

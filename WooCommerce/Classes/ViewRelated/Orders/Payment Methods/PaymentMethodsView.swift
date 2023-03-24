@@ -62,7 +62,17 @@ struct PaymentMethodsView: View {
                             Divider()
 
                             MethodRow(icon: .creditCardImage, title: Localization.card, accessibilityID: Accessibility.cardMethod) {
-                                viewModel.collectPayment(on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
+                                viewModel.collectPayment(using: .bluetoothScan, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
+                            }
+                        }
+
+                        if viewModel.showTapToPayRow {
+                            Divider()
+
+                            MethodRow(icon: .tapToPayOnIPhoneIcon,
+                                      title: Localization.tapToPay,
+                                      accessibilityID: Accessibility.tapToPayMethod) {
+                                viewModel.collectPayment(using: .localMobile, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
                         }
 
@@ -201,7 +211,10 @@ extension PaymentMethodsView {
     enum Localization {
         static let header = NSLocalizedString("Choose your payment method", comment: "Heading text on the select payment method screen")
         static let cash = NSLocalizedString("Cash", comment: "Cash method title on the select payment method screen")
-        static let card = NSLocalizedString("Card", comment: "Card method title on the select payment method screen")
+        static let card = NSLocalizedString("Card Reader",
+                                            comment: "(External) card reader payment method title on the select payment method screen")
+        static let tapToPay = NSLocalizedString("Tap to Pay on iPhone",
+                                                comment: "Tap to Pay on iPhone method title on the select payment method screen")
         static let link = NSLocalizedString("Share Payment Link", comment: "Payment Link method title on the select payment method screen")
         static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method")
         static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method")
@@ -221,6 +234,7 @@ extension PaymentMethodsView {
         static let headerLabel = "payment-methods-header-label"
         static let cashMethod = "payment-methods-view-cash-row"
         static let cardMethod = "payment-methods-view-card-row"
+        static let tapToPayMethod = "payment-methods-view-tap-to-pay-row"
         static let paymentLink = "payment-methods-view-payment-link-row"
     }
 }

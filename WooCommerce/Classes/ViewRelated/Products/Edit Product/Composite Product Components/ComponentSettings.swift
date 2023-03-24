@@ -54,25 +54,7 @@ struct ComponentSettings: View {
                     .headlineStyle()
                     .padding()
 
-                ForEach(viewModel.options) { option in
-                    HStack {
-                        KFImage(option.imageURL)
-                            .placeholder {
-                                Image(uiImage: .productPlaceholderImage)
-                                    .foregroundColor(Color(.listIcon))
-                            }
-                            .resizable()
-                            .frame(width: optionImageWidth, height: optionImageWidth)
-                            .cornerRadius(Layout.imageCornerRadius)
-                            .accessibilityHidden(true)
-                            .padding()
-
-                        Text(option.title)
-                            .bodyStyle()
-                    }
-                    Divider().padding(.leading)
-                        .renderedIf(option != viewModel.options.last)
-                }
+                optionsList
             }
             .addingTopAndBottomDividers()
             .background(Color(.listForeground(modal: false)))
@@ -87,6 +69,36 @@ struct ComponentSettings: View {
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
         )
+    }
+
+    /// Displays a list of component options or a placeholder if the list is empty.
+    ///
+    @ViewBuilder private var optionsList: some View {
+        if viewModel.options.isNotEmpty {
+            ForEach(viewModel.options) { option in
+                HStack {
+                    KFImage(option.imageURL)
+                        .placeholder {
+                            Image(uiImage: .productPlaceholderImage)
+                                .foregroundColor(Color(.listIcon))
+                        }
+                        .resizable()
+                        .frame(width: optionImageWidth, height: optionImageWidth)
+                        .cornerRadius(Layout.imageCornerRadius)
+                        .accessibilityHidden(true)
+                        .padding()
+
+                    Text(option.title)
+                        .bodyStyle()
+                }
+                Divider().padding(.leading)
+                    .renderedIf(option != viewModel.options.last)
+            }
+        } else {
+            Text(Localization.noOptions)
+                .secondaryBodyStyle()
+                .padding()
+        }
     }
 }
 
@@ -103,6 +115,8 @@ private extension ComponentSettings {
     enum Localization {
         static let description = NSLocalizedString("Description", comment: "Title for the component description field in the Component Settings view")
         static let componentOptions = NSLocalizedString("Component Options", comment: "Title for the list of component options in the Component Settings view")
+        static let noOptions = NSLocalizedString("No options selected",
+                                                 comment: "Placeholder when there are no component options to show in the Component Settings view")
         static let defaultOption = NSLocalizedString("Default Option", comment: "Title for the default component option field in the Component Settings view")
     }
 }
@@ -121,10 +135,20 @@ struct ComponentSettings_Previews: PreviewProvider {
                                                       ],
                                                       defaultOptionTitle: "Nikon D600 Digital SLR Camera Body")
 
+    static let emptyViewModel = ComponentSettingsViewModel(title: "Camera Body",
+                                                           description: "",
+                                                           imageURL: nil,
+                                                           optionsType: "Products",
+                                                           options: [],
+                                                           defaultOptionTitle: "")
+
     static var previews: some View {
         ComponentSettings(viewModel: viewModel)
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light")
+
+        ComponentSettings(viewModel: emptyViewModel)
+            .previewDisplayName("Empty Options")
 
         ComponentSettings(viewModel: viewModel)
             .environment(\.colorScheme, .dark)

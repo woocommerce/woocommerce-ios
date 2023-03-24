@@ -56,9 +56,21 @@ struct StoreOnboardingLaunchStoreView: View {
             .background(Color(.systemBackground))
         }
         .alert(item: $viewModel.error) { error in
-            Alert(title: Text(error.title),
-                  message: Text(error.message),
-                  dismissButton: .default(Text(error.dismissTitle)))
+            switch error {
+            case .alreadyLaunched:
+                return Alert(title: Text(error.title),
+                             message: Text(error.message),
+                             dismissButton: .default(Text(error.dismissTitle)))
+            case .unexpected:
+                return Alert(title: Text(error.title),
+                             message: Text(error.message),
+                             primaryButton: .default(Text(error.dismissTitle)),
+                             secondaryButton: .default(Text(error.retryTitle ?? ""), action: {
+                    Task { @MainActor in
+                        await viewModel.launchStore()
+                    }
+                }))
+            }
         }
         .navigationTitle(Localization.title)
     }

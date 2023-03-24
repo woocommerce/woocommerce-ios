@@ -82,9 +82,9 @@ private enum Layout {
 struct ComponentsList_Previews: PreviewProvider {
 
     static let viewModel = ComponentsListViewModel(components: [
-        .init(id: "1", title: "Camera Body", imageURL: nil),
-        .init(id: "2", title: "Lens", imageURL: nil),
-        .init(id: "3", title: "Memory Card", imageURL: nil)
+        .init(id: "1", title: "Camera Body", imageURL: nil, description: "", optionType: .productIDs),
+        .init(id: "2", title: "Lens", imageURL: nil, description: "", optionType: .categoryIDs),
+        .init(id: "3", title: "Memory Card", imageURL: nil, description: "", optionType: .categoryIDs)
     ])
 
     static var previews: some View {

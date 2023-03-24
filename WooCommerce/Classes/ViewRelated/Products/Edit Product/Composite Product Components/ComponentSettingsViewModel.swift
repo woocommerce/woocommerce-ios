@@ -74,7 +74,7 @@ final class ComponentSettingsViewModel: ObservableObject {
          imageURL: URL?,
          optionsType: String,
          options: [ComponentOption],
-         defaultOptionTitle: String) {
+         defaultOptionTitle: String = Localization.noDefaultOption) {
         self.componentTitle = title
         self.description = description
         self.imageURL = imageURL
@@ -84,11 +84,24 @@ final class ComponentSettingsViewModel: ObservableObject {
     }
 }
 
+// MARK: Initializers
+extension ComponentSettingsViewModel {
+    convenience init(component: ComponentsListViewModel.Component) {
+        // Initialize the view model with the available component settings and placeholders for the component options.
+        self.init(title: component.title,
+                  description: component.description.removedHTMLTags.trimmingCharacters(in: .whitespacesAndNewlines),
+                  imageURL: component.imageURL,
+                  optionsType: component.optionType.description,
+                  options: [])
+    }
+}
+
 // MARK: Constants
 private extension ComponentSettingsViewModel {
     enum Localization {
         static let title = NSLocalizedString("Component Settings", comment: "Title for the settings of a component in a composite product")
         static let infoNotice = NSLocalizedString("You can edit component settings in the web dashboard.",
                                                   comment: "Info notice at the bottom of the component settings screen")
+        static let noDefaultOption = NSLocalizedString("None", comment: "Label when there is no default option for a component in a composite product")
     }
 }

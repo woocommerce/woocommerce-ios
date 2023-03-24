@@ -1607,6 +1607,7 @@
 		CC857C7529B23AE100E19D1E /* BundledProductsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC857C7429B23AE100E19D1E /* BundledProductsListViewModel.swift */; };
 		CC857C7729B25FAF00E19D1E /* FooterNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC857C7629B25FAF00E19D1E /* FooterNotice.swift */; };
 		CC923A1D2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC923A1C2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift */; };
+		CCA0EF8829CCA89300A44E6F /* CompositeComponentOptionType+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0EF8729CCA89300A44E6F /* CompositeComponentOptionType+UI.swift */; };
 		CCA1D5FE293F537400B40560 /* DeltaPercentage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA1D5FD293F537400B40560 /* DeltaPercentage.swift */; };
 		CCA1D6022943636100B40560 /* AnalyticsReportCardCurrentPeriodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA1D6012943636100B40560 /* AnalyticsReportCardCurrentPeriodViewModel.swift */; };
 		CCB366AF274518EC007D437A /* EditableOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB366AE274518EC007D437A /* EditableOrderViewModelTests.swift */; };
@@ -3811,6 +3812,7 @@
 		CC857C7429B23AE100E19D1E /* BundledProductsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledProductsListViewModel.swift; sourceTree = "<group>"; };
 		CC857C7629B25FAF00E19D1E /* FooterNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterNotice.swift; sourceTree = "<group>"; };
 		CC923A1C2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewModelTests.swift; sourceTree = "<group>"; };
+		CCA0EF8729CCA89300A44E6F /* CompositeComponentOptionType+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositeComponentOptionType+UI.swift"; sourceTree = "<group>"; };
 		CCA1D5FD293F537400B40560 /* DeltaPercentage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeltaPercentage.swift; sourceTree = "<group>"; };
 		CCA1D6012943636100B40560 /* AnalyticsReportCardCurrentPeriodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportCardCurrentPeriodViewModel.swift; sourceTree = "<group>"; };
 		CCB366AE274518EC007D437A /* EditableOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableOrderViewModelTests.swift; sourceTree = "<group>"; };
@@ -8415,6 +8417,7 @@
 				CCFBBCF529C4B9A30081B595 /* ComponentsListViewModel.swift */,
 				CCFBBCF729C4C8010081B595 /* ComponentSettings.swift */,
 				CCFBBCF929C4C85F0081B595 /* ComponentSettingsViewModel.swift */,
+				CCA0EF8729CCA89300A44E6F /* CompositeComponentOptionType+UI.swift */,
 			);
 			path = "Composite Product Components";
 			sourceTree = "<group>";
@@ -11535,6 +11538,7 @@
 				AEE1D4F525D14F88006A490B /* AttributeOptionListSelectorCommand.swift in Sources */,
 				DE2FE5812923729A0018040A /* JetpackSetupRequiredViewModel.swift in Sources */,
 				020DD48A23229495005822B1 /* ProductsTabProductTableViewCell.swift in Sources */,
+				CCA0EF8829CCA89300A44E6F /* CompositeComponentOptionType+UI.swift in Sources */,
 				26E7EE7429365F0700793045 /* TopPerformersView.swift in Sources */,
 				74AAF6A5212A04A900C612B0 /* ChartMarker.swift in Sources */,
 				CE32B11520BF8779006FBCF4 /* ButtonTableViewCell.swift in Sources */,

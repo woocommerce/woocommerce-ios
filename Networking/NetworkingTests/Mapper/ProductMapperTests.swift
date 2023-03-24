@@ -334,9 +334,12 @@ final class ProductMapperTests: XCTestCase {
         // Check parsed ProductCompositeComponent properties
         XCTAssertEqual(compositeComponent.componentID, "1679310855")
         XCTAssertEqual(compositeComponent.title, "Camera Body")
+        XCTAssertEqual(compositeComponent.description,
+                       "<p>Choose between the Nikon D600 or the powerful 5D Mark III and take your creativity to new levels.</p>\n")
         XCTAssertEqual(compositeComponent.imageURL, "https://example.com/woo.jpg")
         XCTAssertEqual(compositeComponent.optionType, .productIDs)
         XCTAssertEqual(compositeComponent.optionIDs, [413, 412])
+        XCTAssertEqual(compositeComponent.defaultOptionID, "413")
     }
 }
 

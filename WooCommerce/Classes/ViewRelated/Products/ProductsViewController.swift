@@ -273,12 +273,15 @@ private extension ProductsViewController {
         }
 
         let coordinatingController: AddProductCoordinator
+        let source: AddProductCoordinator.Source = .productsTab
         if let sourceBarButtonItem = sourceBarButtonItem {
             coordinatingController = AddProductCoordinator(siteID: siteID,
+                                                           source: source,
                                                            sourceBarButtonItem: sourceBarButtonItem,
                                                            sourceNavigationController: navigationController)
         } else if let sourceView = sourceView {
             coordinatingController = AddProductCoordinator(siteID: siteID,
+                                                           source: source,
                                                            sourceView: sourceView,
                                                            sourceNavigationController: navigationController)
         } else {

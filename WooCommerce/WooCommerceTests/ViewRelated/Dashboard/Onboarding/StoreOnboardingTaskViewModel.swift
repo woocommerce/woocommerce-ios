@@ -36,14 +36,16 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
         for task in tasks {
             let sut = StoreOnboardingTaskViewModel(task: task)
             switch task.type {
+            case .storeDetails:
+                XCTAssertEqual(sut.icon, .storeDetailsImage)
             case .addFirstProduct:
-                XCTAssertEqual(sut.icon, .productImage)
+                XCTAssertEqual(sut.icon, .addProductImage)
             case .launchStore:
                 XCTAssertEqual(sut.icon, .launchStoreImage)
             case .customizeDomains:
-                XCTAssertEqual(sut.icon, .domainsImage)
+                XCTAssertEqual(sut.icon, .customizeDomainsImage)
             case .payments, .woocommercePayments:
-                XCTAssertEqual(sut.icon, .currencyImage)
+                XCTAssertEqual(sut.icon, .getPaidImage)
             case .unsupported:
                 XCTAssertEqual(sut.icon, .checkCircleImage)
             }
@@ -54,6 +56,8 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
         for task in tasks {
             let sut = StoreOnboardingTaskViewModel(task: task)
             switch task.type {
+            case .storeDetails:
+                XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localication.StoreDetails.title)
             case .addFirstProduct:
                 XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localication.AddFirstProduct.title)
             case .launchStore:
@@ -72,6 +76,8 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
         for task in tasks {
             let sut = StoreOnboardingTaskViewModel(task: task)
             switch task.type {
+            case .storeDetails:
+                XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localication.StoreDetails.subtitle)
             case .addFirstProduct:
                 XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localication.AddFirstProduct.subtitle)
             case .launchStore:

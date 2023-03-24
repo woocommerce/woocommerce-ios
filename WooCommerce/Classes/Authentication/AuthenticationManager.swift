@@ -297,6 +297,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                 guard let self else { return }
                 let webViewController = self.applicationPasswordWebView(for: siteURL)
                 viewController.navigationController?.pushViewController(webViewController, animated: true)
+                self.analytics.track(.applicationPasswordAuthorizationButtonTapped)
             }
         )
         viewController.present(alertController, animated: true)

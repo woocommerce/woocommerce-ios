@@ -6,19 +6,22 @@ import struct Yosemite.StoreOnboardingTask
 
 /// Coordinates navigation for store onboarding.
 final class StoreOnboardingCoordinator: Coordinator {
+    typealias TaskType = StoreOnboardingTask.TaskType
+
     let navigationController: UINavigationController
 
+    private var storeDetailsCoordinator: StoreOnboardingStoreDetailsCoordinator?
     private var addProductCoordinator: AddProductCoordinator?
     private var domainSettingsCoordinator: DomainSettingsCoordinator?
     private var launchStoreCoordinator: StoreOnboardingLaunchStoreCoordinator?
     private var paymentsSetupCoordinator: StoreOnboardingPaymentsSetupCoordinator?
 
     private let site: Site
-    private let onTaskCompleted: () -> Void
+    private let onTaskCompleted: (_ task: TaskType) -> Void
 
     init(navigationController: UINavigationController,
          site: Site,
-         onTaskCompleted: @escaping () -> Void) {
+         onTaskCompleted: @escaping (_ task: TaskType) -> Void) {
         self.navigationController = navigationController
         self.site = site
         self.onTaskCompleted = onTaskCompleted
@@ -41,6 +44,8 @@ final class StoreOnboardingCoordinator: Coordinator {
     @MainActor
     func start(task: StoreOnboardingTask) {
         switch task.type {
+        case .storeDetails:
+            showStoreDetails()
         case .addFirstProduct:
             addProduct()
         case .customizeDomains:
@@ -59,12 +64,21 @@ final class StoreOnboardingCoordinator: Coordinator {
 
 private extension StoreOnboardingCoordinator {
     @MainActor
+    func showStoreDetails() {
+        let coordinator = StoreOnboardingStoreDetailsCoordinator(site: site, navigationController: navigationController)
+        self.storeDetailsCoordinator = coordinator
+        coordinator.start()
+    }
+
+    @MainActor
     func addProduct() {
-        let coordinator = AddProductCoordinator(siteID: site.siteID, sourceView: nil, sourceNavigationController: navigationController)
+        let coordinator = AddProductCoordinator(siteID: site.siteID,
+                                                source: .storeOnboarding,
+                                                sourceView: nil,
+                                                sourceNavigationController: navigationController)
         self.addProductCoordinator = coordinator
         coordinator.onProductCreated = { [weak self] _ in
-            self?.onTaskCompleted()
-            #warning("Analytics when a product is added from the onboarding task")
+            self?.onTaskCompleted(.addFirstProduct)
         }
         coordinator.start()
     }
@@ -75,7 +89,7 @@ private extension StoreOnboardingCoordinator {
                                                     site: site,
                                                     navigationController: navigationController,
                                                     onDomainPurchased: { [weak self] in
-            self?.onTaskCompleted()
+            self?.onTaskCompleted(.customizeDomains)
         })
         self.domainSettingsCoordinator = coordinator
         coordinator.start()
@@ -87,7 +101,7 @@ private extension StoreOnboardingCoordinator {
                                                                 isLaunched: task.isComplete,
                                                                 navigationController: navigationController,
                                                                 onStoreLaunched: { [weak self] in
-            self?.onTaskCompleted()
+            self?.onTaskCompleted(.launchStore)
         })
         self.launchStoreCoordinator = coordinator
         coordinator.start()

@@ -1,3 +1,4 @@
+import Experiments
 import Foundation
 import Yosemite
 
@@ -6,11 +7,23 @@ import Yosemite
 final class JetpackBenefitsViewModel {
     /// Whether the view is showing benefits for a JetpackCP site or non-Jetpack site.
     let isJetpackCPSite: Bool
+
+    /// Whether Jetpack install is not supported natively
+    let shouldShowWebViewForJetpackInstall: Bool
+
+    /// URL to install Jetpack in wp-admin
+    let wpAdminInstallURL: URL?
+
     private let stores: StoresManager
 
-    init(isJetpackCPSite: Bool, stores: StoresManager = ServiceLocator.stores) {
+    init(siteURL: String,
+         isJetpackCPSite: Bool,
+         stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.isJetpackCPSite = isJetpackCPSite
         self.stores = stores
+        self.wpAdminInstallURL = URL(string: String(format: Constants.jetpackInstallString, siteURL))
+        self.shouldShowWebViewForJetpackInstall = !isJetpackCPSite && featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword) == false
     }
 
     @MainActor
@@ -30,5 +43,9 @@ final class JetpackBenefitsViewModel {
 extension JetpackBenefitsViewModel {
     enum FetchJetpackUserError: Error, Equatable {
         case notSupportedForJCPSites
+    }
+
+    private enum Constants {
+        static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&from=mobile"
     }
 }

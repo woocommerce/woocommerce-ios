@@ -11,9 +11,20 @@ import class Networking.ProductsRemote
 /// coordinator.start()
 ///
 final class AddProductCoordinator: Coordinator {
+    /// Navigation source to the add product flow.
+    enum Source {
+        /// Initiated from the products tab.
+        case productsTab
+        /// Initiated from the product onboarding card in the dashboard.
+        case productOnboarding
+        /// Initiated from the store onboarding card in the dashboard.
+        case storeOnboarding
+    }
+
     let navigationController: UINavigationController
 
     private let siteID: Int64
+    private let source: Source
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
     private let productImageUploader: ProductImageUploaderProtocol
@@ -34,12 +45,14 @@ final class AddProductCoordinator: Coordinator {
     var onProductCreated: (Product) -> Void = { _ in }
 
     init(siteID: Int64,
+         source: Source,
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isSimplifiedBottomSheetEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.siteID = siteID
+        self.source = source
         self.sourceBarButtonItem = sourceBarButtonItem
         self.sourceView = nil
         self.navigationController = sourceNavigationController
@@ -49,12 +62,14 @@ final class AddProductCoordinator: Coordinator {
     }
 
     init(siteID: Int64,
+         source: Source,
          sourceView: UIView?,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isSimplifiedBottomSheetEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
         self.siteID = siteID
+        self.source = source
         self.sourceBarButtonItem = nil
         self.sourceView = sourceView
         self.navigationController = sourceNavigationController
@@ -68,8 +83,12 @@ final class AddProductCoordinator: Coordinator {
     }
 
     func start() {
-
-        ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible()))
+        switch source {
+        case .productsTab, .productOnboarding:
+            ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible()))
+        default:
+            break
+        }
 
         if isSimplifiedBottomSheetEnabled {
             presentProductTypeSingleBottomSheet()

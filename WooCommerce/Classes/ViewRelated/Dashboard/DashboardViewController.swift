@@ -489,7 +489,10 @@ private extension DashboardViewController {
     ///
     private func startAddProductFlow() {
         guard let announcementView, let navigationController else { return }
-        let coordinator = AddProductCoordinator(siteID: siteID, sourceView: announcementView, sourceNavigationController: navigationController)
+        let coordinator = AddProductCoordinator(siteID: siteID,
+                                                source: .productOnboarding,
+                                                sourceView: announcementView,
+                                                sourceNavigationController: navigationController)
         coordinator.onProductCreated = { [weak self] _ in
             guard let self else { return }
             self.viewModel.announcementViewModel = nil // Remove the products onboarding banner
@@ -810,9 +813,8 @@ private extension DashboardViewController {
                     guard let self = self else { return }
 
                     let isJetpackCPSite = site?.isJetpackCPConnected == true
-                    let jetpackSetupForApplicationPassword = site?.isNonJetpackSite == true &&
-                        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)
-                    let shouldShowJetpackBenefitsBanner = (isJetpackCPSite || jetpackSetupForApplicationPassword) && isVisibleFromAppSettings
+                    let isNonJetpackSite = site?.isNonJetpackSite == true
+                    let shouldShowJetpackBenefitsBanner = (isJetpackCPSite || isNonJetpackSite) && isVisibleFromAppSettings
 
                     self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
                 }

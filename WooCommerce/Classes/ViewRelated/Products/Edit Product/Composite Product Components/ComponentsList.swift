@@ -39,21 +39,26 @@ struct ComponentsList: View {
         ScrollView {
             LazyVStack(spacing: Layout.sectionSpacing) {
                 ForEach(viewModel.components) { component in
-                    HStack {
-                        KFImage(component.imageURL)
-                            .placeholder {
-                                Image(uiImage: .productPlaceholderImage)
-                                    .foregroundColor(Color(.listIcon))
-                            }
-                            .resizable()
-                            .frame(width: imageWidth, height: imageWidth)
-                            .cornerRadius(Layout.imageCornerRadius)
-                            .accessibilityHidden(true)
-                            .padding()
+                    LazyNavigationLink(destination: ComponentSettings(viewModel: viewModel.getSettingsViewModel(for: component))) {
+                        HStack {
+                            KFImage(component.imageURL)
+                                .placeholder {
+                                    Image(uiImage: .productPlaceholderImage)
+                                        .foregroundColor(Color(.listIcon))
+                                }
+                                .resizable()
+                                .frame(width: imageWidth, height: imageWidth)
+                                .cornerRadius(Layout.imageCornerRadius)
+                                .accessibilityHidden(true)
+                                .padding()
 
-                        Text(component.title)
-                            .bodyStyle()
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            Text(component.title)
+                                .bodyStyle()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                            DisclosureIndicator()
+                                .padding([.leading, .trailing])
+                        }
                     }
                     Divider()
                 }

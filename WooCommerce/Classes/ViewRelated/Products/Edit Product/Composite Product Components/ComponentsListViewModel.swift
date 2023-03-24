@@ -55,6 +55,15 @@ extension ComponentsListViewModel {
     }
 }
 
+// MARK: Helpers
+extension ComponentsListViewModel {
+    /// Returns a `ComponentSettingsViewModel` for the provided component.
+    ///
+    func getSettingsViewModel(for component: Component) -> ComponentSettingsViewModel {
+        ComponentSettingsViewModel(component: component)
+    }
+}
+
 // MARK: Constants
 private extension ComponentsListViewModel {
     enum Localization {

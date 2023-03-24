@@ -15,8 +15,12 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
     init(task: StoreOnboardingTask) {
         self.task = task
         switch task.type {
+        case .storeDetails:
+            icon = .storeDetailsImage
+            title = Localication.StoreDetails.title
+            subtitle = Localication.StoreDetails.subtitle
         case .addFirstProduct:
-            icon = .productImage
+            icon = .addProductImage
             title = Localication.AddFirstProduct.title
             subtitle = Localication.AddFirstProduct.subtitle
         case .launchStore:
@@ -24,11 +28,11 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
             title = Localication.LaunchStore.title
             subtitle = Localication.LaunchStore.subtitle
         case .customizeDomains:
-            icon = .domainsImage
+            icon = .customizeDomainsImage
             title = Localication.CustomizeDomains.title
             subtitle = Localication.CustomizeDomains.subtitle
         case .payments, .woocommercePayments:
-            icon = .currencyImage
+            icon = .getPaidImage
             title = Localication.Payments.title
             subtitle = Localication.Payments.subtitle
         case .unsupported:
@@ -42,6 +46,17 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
 
 extension StoreOnboardingTaskViewModel {
     enum Localication {
+        enum StoreDetails {
+            static let title = NSLocalizedString(
+                "Tell us more about your store",
+                comment: "Title of the Store details task to add details about the store."
+            )
+            static let subtitle = NSLocalizedString(
+                "We’ll use the info to get a head start on your shipping, tax, and payments settings.",
+                comment: "Subtitle of the Store details task to add details about the store."
+            )
+        }
+
         enum AddFirstProduct {
             static let title = NSLocalizedString(
                 "Add your first product",

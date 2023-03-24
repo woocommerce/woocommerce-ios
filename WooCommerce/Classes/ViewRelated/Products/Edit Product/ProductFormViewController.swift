@@ -449,7 +449,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 ServiceLocator.analytics.track(event: .ProductDetail.bundledProductsTapped())
                 showBundledProducts()
-                return
+            case .components(_, let isActionable):
+                guard isActionable else {
+                    return
+                }
+                // TODO-9237: Track composite row is tapped
+                showCompositeComponents()
             }
         case .optionsCTA(let rows):
             let row = rows[indexPath.row]
@@ -1688,6 +1693,19 @@ private extension ProductFormViewController {
         }
         let viewModel = BundledProductsListViewModel(siteID: product.siteID, bundleItems: product.bundledItems)
         let viewController = BundledProductsListViewController(viewModel: viewModel)
+        show(viewController, sender: self)
+    }
+}
+
+// MARK: Action - Show Composite Product Components
+//
+private extension ProductFormViewController {
+    func showCompositeComponents() {
+        guard let product = product as? EditableProductModel else {
+            return
+        }
+        let viewModel = ComponentsListViewModel(components: product.compositeComponents)
+        let viewController = ComponentsListViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }
 }

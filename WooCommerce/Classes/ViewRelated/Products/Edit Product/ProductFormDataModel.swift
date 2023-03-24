@@ -73,6 +73,9 @@ protocol ProductFormDataModel {
     var bundleStockStatus: ProductStockStatus? { get }
     var bundleStockQuantity: Int64? { get }
 
+    // Composite Products
+    var compositeComponents: [ProductCompositeComponent] { get }
+
     /// True if a product has been saved remotely.
     var existsRemotely: Bool { get }
 }

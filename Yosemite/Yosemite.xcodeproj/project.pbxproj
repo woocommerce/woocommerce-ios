@@ -115,6 +115,7 @@
 		031C1EB027B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAF27B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift */; };
 		031FD8A026FC970400B315C7 /* RosettaTestingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */; };
 		0366EADF29082B3100B51755 /* JustInTimeMessageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0366EADE29082B3100B51755 /* JustInTimeMessageStore.swift */; };
+		0391C13D29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0391C13C29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift */; };
 		03EB998C2906F1D300F06A39 /* JustInTimeMessageAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EB998B2906F1D300F06A39 /* JustInTimeMessageAction.swift */; };
 		03EB99902907B97800F06A39 /* JustInTimeMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EB998F2907B97800F06A39 /* JustInTimeMessage.swift */; };
 		03EB99922907EBB300F06A39 /* JustInTimeMessageStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EB99912907EBB300F06A39 /* JustInTimeMessageStoreTests.swift */; };
@@ -554,6 +555,7 @@
 		031C1EAF27B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPaymentDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RosettaTestingHelper.swift; sourceTree = "<group>"; };
 		0366EADE29082B3100B51755 /* JustInTimeMessageStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageStore.swift; sourceTree = "<group>"; };
+		0391C13C29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityStoreTests.swift; sourceTree = "<group>"; };
 		03EB998B2906F1D300F06A39 /* JustInTimeMessageAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageAction.swift; sourceTree = "<group>"; };
 		03EB998F2907B97800F06A39 /* JustInTimeMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessage.swift; sourceTree = "<group>"; };
 		03EB99912907EBB300F06A39 /* JustInTimeMessageStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageStoreTests.swift; sourceTree = "<group>"; };
@@ -1519,6 +1521,7 @@
 				02F2722C292F18BF00C36419 /* PaymentStoreTests.swift */,
 				DE2E8EAE29541C32002E4B14 /* WordPressSiteStore.swift */,
 				EEB4E2CE29B04D7900371C3C /* StoreOnboardingTasksStoreTests.swift */,
+				0391C13C29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -2293,6 +2296,7 @@
 				02E262C0238CE80100B79588 /* StorageShippingSettingsServiceTests.swift in Sources */,
 				45AB8B1E24AB363D00B5B36E /* ProductTagStoreTests.swift in Sources */,
 				02616F922921E1530095BC00 /* SiteStoreTests.swift in Sources */,
+				0391C13D29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift in Sources */,
 				B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */,
 				45182D2327B55F9C00B4C05C /* InboxNotesStoreTests.swift in Sources */,
 				03FBDA2A263296C400ACE257 /* CouponStoreTests.swift in Sources */,

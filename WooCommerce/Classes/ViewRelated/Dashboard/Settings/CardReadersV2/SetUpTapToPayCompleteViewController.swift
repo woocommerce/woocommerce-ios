@@ -14,14 +14,6 @@ final class SetUpTapToPayCompleteViewController: UIHostingController<SetUpTapToP
         self.viewModel = viewModel
 
         super.init(rootView: SetUpTapToPayCompleteView(viewModel: viewModel))
-
-        configureViewModel()
-    }
-
-    private func configureViewModel() {
-        viewModel.dismiss = { [weak self] in
-            self?.dismiss(animated: true)
-        }
     }
 
     required init?(coder: NSCoder) {

@@ -73,9 +73,9 @@ struct SetUpTapToPayInformationView: View {
     var body: some View {
         VStack {
             HStack {
-                Button("Cancel", action: {
+                Button(Localization.cancelButton) {
                     dismiss?()
-                })
+                }
                 Spacer()
             }
             .padding(.top)
@@ -193,6 +193,10 @@ private enum Localization {
                  which should be translated separately and considered part of this sentence.
                  """
     )
+
+    static let cancelButton = NSLocalizedString(
+        "Cancel",
+        comment: "Settings > Set up Tap to Pay on iPhone > Information > Cancel button")
 }
 
 struct SetUpTapToPayInformationView_Previews: PreviewProvider {

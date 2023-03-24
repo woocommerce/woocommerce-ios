@@ -37,7 +37,8 @@ final class InPersonPaymentsMenuViewModel {
         cardPresentPaymentsConfiguration.isSupportedCountry
     }
 
-    @Published var isEligibleForTapToPayOnIPhone: Bool = false
+    @Published private(set) var isEligibleForTapToPayOnIPhone: Bool = false
+    @Published private(set) var shouldShowTapToPayOnIPhoneFeedbackRow: Bool = true
 
     let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 

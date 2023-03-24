@@ -41,7 +41,7 @@ final class ProductsTests: XCTestCase {
 
         try TabNavComponent().goToProductsScreen()
             .selectSearchButton()
-            .verifyNumberOfProductsDisplayed(expectedNumberOfProducts: products.count)
+            .verifyNumberOfProductsOnSearchResults(expectedNumberOfProducts: products.count)
             .enterSearchCriteria(text: products[0].name)
             .verifyProductSearchResults(expectedProduct: products[0])
     }

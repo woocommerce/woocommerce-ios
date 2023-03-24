@@ -327,7 +327,7 @@ private extension SearchViewController {
         }
 
         tableView.reloadData()
-        tableView.accessibilityIdentifier = "default-search-results-list"
+        tableView.accessibilityIdentifier = "default-search-results-table-view"
     }
 
     /// Create and add `starterViewController` to the `view.`
@@ -442,7 +442,7 @@ private extension SearchViewController {
 
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
-        tableView.accessibilityIdentifier = "updated-search-results-list"
+        tableView.accessibilityIdentifier = "updated-search-results-table-view"
 
         syncingCoordinator.resynchronize()
     }

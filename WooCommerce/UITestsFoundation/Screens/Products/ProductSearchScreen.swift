@@ -8,6 +8,8 @@ public final class ProductSearchScreen: ScreenObject {
     }
 
     private var searchTextField: XCUIElement { searchTextFieldGetter(app) }
+    private var updatedSearchResultsID = "updated-search-results-table-view"
+    public static let defaultSearchResultsID = "default-search-results-table-view"
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
@@ -16,7 +18,6 @@ public final class ProductSearchScreen: ScreenObject {
         )
     }
 
-    @discardableResult
     public func enterSearchCriteria(text: String) throws -> Self {
         searchTextField.tap()
         searchTextField.enterText(text: text)
@@ -24,7 +25,7 @@ public final class ProductSearchScreen: ScreenObject {
     }
 
     @discardableResult
-    public func verifyNumberOfProductsDisplayed(expectedNumberOfProducts: Int, accessibilityId: String? = "default-search-results-list") throws -> Self {
+    public func verifyNumberOfProductsOnSearchResults(expectedNumberOfProducts: Int, accessibilityId: String? = defaultSearchResultsID) throws -> Self {
         let productTableView = app.tables.matching(identifier: accessibilityId!)
         XCTAssert(productTableView.element.waitForExistence(timeout: 5), "Product list not displayed!")
 
@@ -37,9 +38,9 @@ public final class ProductSearchScreen: ScreenObject {
     }
 
     public func verifyProductSearchResults(expectedProduct: ProductData) throws {
-        try verifyNumberOfProductsDisplayed(expectedNumberOfProducts: 1, accessibilityId: "updated-search-results-list")
+        try verifyNumberOfProductsOnSearchResults(expectedNumberOfProducts: 1, accessibilityId: updatedSearchResultsID)
 
-        let productsTableView = app.tables.matching(identifier: "updated-search-results-list")
+        let productsTableView = app.tables.matching(identifier: updatedSearchResultsID)
         productsTableView.element.assertTextVisibilityCount(textToFind: String(expectedProduct.name))
         productsTableView.element.assertTextVisibilityCount(textToFind: String(expectedProduct.stock_status))
     }

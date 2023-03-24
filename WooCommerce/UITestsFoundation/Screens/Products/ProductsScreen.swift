@@ -2,6 +2,27 @@ import ScreenObject
 import XCTest
 
 public final class ProductsScreen: ScreenObject {
+    
+    private let productAddButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["product-add-button"]
+    }
+
+    private let productSearchButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["product-search-button"]
+    }
+    
+    private let topBannerViewExpandButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["top-banner-view-expand-collapse-button"]
+    }
+    
+    private let topBannerViewInfoLabelGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["top-banner-view-info-label"]
+    }
+
+    private var productAddButton: XCUIElement { productAddButtonGetter(app) }
+    private var productSearchButton: XCUIElement { productSearchButtonGetter(app) }
+    private var topBannerViewExpandButton: XCUIElement { topBannerViewExpandButtonGetter(app) }
+    private var topBannerViewInfoLabel: XCUIElement { topBannerViewInfoLabelGetter(app) }
 
     public let tabBar: TabNavComponent
 
@@ -13,23 +34,18 @@ public final class ProductsScreen: ScreenObject {
         tabBar = try TabNavComponent(app: app)
 
         try super.init(
-            expectedElementGetters: [
-                // swiftlint:disable next opening_brace
-                { $0.buttons["product-add-button"] },
-                { $0.buttons["product-search-button"]}
-                // swiftlint:enable next opening_brace
-            ],
+            expectedElementGetters: [ productAddButtonGetter, productSearchButtonGetter ],
             app: app
         )
     }
 
     @discardableResult
     public func selectAddProduct() -> Self {
-        guard app.buttons["product-add-button"].waitForExistence(timeout: 3) else {
+        guard productAddButton.waitForExistence(timeout: 3) else {
             return self
         }
 
-        app.buttons["product-add-button"].tap()
+        productAddButton.tap()
         return self
     }
 
@@ -37,16 +53,16 @@ public final class ProductsScreen: ScreenObject {
     public func collapseTopBannerIfNeeded() -> Self {
 
         /// Without the info label, we don't need to collapse the top banner
-        guard app.buttons["top-banner-view-info-label"].waitForExistence(timeout: 3) else {
+        guard topBannerViewInfoLabel.waitForExistence(timeout: 3) else {
            return self
         }
 
         /// If the banner isn't present, there's no need to collapse it
-        guard app.buttons["top-banner-view-expand-collapse-button"].waitForExistence(timeout: 3) else {
+        guard topBannerViewExpandButton.waitForExistence(timeout: 3) else {
             return self
         }
 
-        app.buttons["top-banner-view-expand-collapse-button"].tap()
+        topBannerViewExpandButton.tap()
         return self
     }
 
@@ -66,7 +82,7 @@ public final class ProductsScreen: ScreenObject {
     public func verifyProductList(products: [ProductData]) throws -> Self {
         app.assertTextVisibilityCount(textToFind: products[0].name, expectedCount: 1)
         app.assertElement(matching: products[0].name, existsOnCellWithIdentifier: products[0].stock_status)
-        XCTAssertEqual(products.count, app.tables.cells.count, "Expecting '\(products.count)' products, got '\(app.tables.cells.count)' instead!")
+        XCTAssertEqual(products.count, app.tables.cells.count, "Expected '\(products.count)' products but found '\(app.tables.cells.count)' instead!")
 
         return self
     }
@@ -83,9 +99,8 @@ public final class ProductsScreen: ScreenObject {
         return try SingleProductScreen()
     }
 
-    @discardableResult
     public func selectSearchButton() throws -> ProductSearchScreen {
-        app.buttons["product-search-button"].tap()
+        productSearchButton.tap()
         return try ProductSearchScreen()
     }
 }

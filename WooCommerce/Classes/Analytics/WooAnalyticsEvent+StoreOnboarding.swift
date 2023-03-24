@@ -28,6 +28,8 @@ extension WooAnalyticsEvent {
 private extension StoreOnboardingTask.TaskType {
     var analyticsValue: String {
         switch self {
+        case .storeDetails:
+            return "store_details"
         case .launchStore:
             return "launch_site"
         case .addFirstProduct:

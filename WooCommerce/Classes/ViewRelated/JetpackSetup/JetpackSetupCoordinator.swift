@@ -46,7 +46,7 @@ final class JetpackSetupCoordinator {
     }
 
     func showBenefitModal() {
-        let benefitsController = JetpackBenefitsHostingController(isJetpackCPSite: site.isJetpackCPConnected)
+        let benefitsController = JetpackBenefitsHostingController(siteURL: site.url, isJetpackCPSite: site.isJetpackCPConnected)
         benefitsController.setActions (installAction: { [weak self] result in
             guard let self else { return }
             self.analytics.track(event: .jetpackInstallButtonTapped(source: .benefitsModal))

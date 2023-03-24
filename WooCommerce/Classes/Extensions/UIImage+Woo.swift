@@ -429,6 +429,12 @@ extension UIImage {
         UIImage(named: "icon-store")!
     }
 
+    /// Store details Image
+    ///
+    static var storeDetailsImage: UIImage {
+        UIImage(named: "icon-store-details")!
+    }
+
     /// Add product image
     ///
     static var addProductImage: UIImage {

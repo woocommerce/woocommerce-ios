@@ -2,7 +2,7 @@ import ScreenObject
 import XCTest
 
 public final class ProductsScreen: ScreenObject {
-    
+
     private let productAddButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["product-add-button"]
     }
@@ -10,11 +10,11 @@ public final class ProductsScreen: ScreenObject {
     private let productSearchButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["product-search-button"]
     }
-    
+
     private let topBannerViewExpandButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["top-banner-view-expand-collapse-button"]
     }
-    
+
     private let topBannerViewInfoLabelGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["top-banner-view-info-label"]
     }

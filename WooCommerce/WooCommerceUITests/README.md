@@ -48,7 +48,7 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [x] Add new product - Variable product
     - [ ] Add new product - Grouped product
     - [ ] Add new product - External product
-    - [ ] Search for product
+    - [x] Search for product
     - [ ] Filters for product
     - [ ] Edit product
     - [ ] Add media library image to existing product

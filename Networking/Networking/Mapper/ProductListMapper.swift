@@ -22,7 +22,19 @@ struct ProductListMapper: Mapper {
         do {
             return try decoder.decode(ProductListEnvelope.self, from: response).products
         } catch {
-            return try decoder.decode([Product].self, from: response)
+
+            // If the error was not a decoding error there is no point on trying another decoding strategy.
+            guard let decodingError = error as? DecodingError else {
+                throw error
+            }
+
+            // Only try the Array decoding strategy if the miss-matched was a Dictionary type.
+            switch decodingError {
+            case .typeMismatch(let type, _) where type == [String: Any].self:
+                return try decoder.decode([Product].self, from: response)
+            default:
+                throw error
+            }
         }
     }
 }

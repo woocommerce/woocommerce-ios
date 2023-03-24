@@ -5,6 +5,7 @@ import Yosemite
 final class StoreOnboardingViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private var defaults: UserDefaults!
+    private let placeholderTaskCount = 3
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -369,14 +370,14 @@ final class StoreOnboardingViewModelTests: XCTestCase {
                                            stores: stores,
                                            defaults: defaults)
         // Then
-        XCTAssertTrue(sut.tasksForDisplay.containsOnlyPlaceHolderTasks())
+        XCTAssertTrue(sut.tasksForDisplay.count == placeholderTaskCount)
 
         // When
         mockLoadOnboardingTasks(result: .success(tasks))
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(sut.tasksForDisplay.containsOnlyPlaceHolderTasks())
+        XCTAssertTrue(sut.tasksForDisplay.count == placeholderTaskCount)
     }
 
     func test_it_sends_network_request_when_completedAllStoreOnboardingTasks_is_nil() async {
@@ -392,14 +393,13 @@ final class StoreOnboardingViewModelTests: XCTestCase {
                                            stores: stores,
                                            defaults: defaults)
         // Then
-        XCTAssertTrue(sut.tasksForDisplay.containsOnlyPlaceHolderTasks())
+        XCTAssertTrue(sut.tasksForDisplay.count == placeholderTaskCount)
 
         // When
         mockLoadOnboardingTasks(result: .success(tasks))
         await sut.reloadTasks()
 
         // Then
-        XCTAssertFalse(sut.tasksForDisplay.containsOnlyPlaceHolderTasks())
         XCTAssertTrue(sut.tasksForDisplay.count == 4)
     }
 
@@ -563,10 +563,4 @@ private extension StoreOnboardingViewModelTests {
     }
 
     final class MockError: Error { }
-}
-
-private extension Array where Element == StoreOnboardingTaskViewModel {
-    func containsOnlyPlaceHolderTasks() -> Bool {
-        map({ $0.task.type }).filter({ $0 != .launchStore }).isEmpty
-    }
 }

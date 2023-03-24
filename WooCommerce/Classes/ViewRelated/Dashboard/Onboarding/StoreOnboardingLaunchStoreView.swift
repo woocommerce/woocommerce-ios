@@ -56,9 +56,21 @@ struct StoreOnboardingLaunchStoreView: View {
             .background(Color(.systemBackground))
         }
         .alert(item: $viewModel.error) { error in
-            Alert(title: Text(error.title),
-                  message: Text(error.message),
-                  dismissButton: .default(Text(error.dismissTitle)))
+            switch error {
+            case .alreadyLaunched:
+                return Alert(title: Text(error.title),
+                             message: Text(error.message),
+                             dismissButton: .default(Text(error.dismissTitle)))
+            case .unexpected:
+                return Alert(title: Text(error.title),
+                             message: Text(error.message),
+                             primaryButton: .default(Text(error.dismissTitle)),
+                             secondaryButton: .default(Text(error.retryTitle ?? ""), action: {
+                    Task { @MainActor in
+                        await viewModel.launchStore()
+                    }
+                }))
+            }
         }
         .navigationTitle(Localization.title)
     }
@@ -129,6 +141,18 @@ private extension SiteLaunchError {
             return NSLocalizedString(
                 "Cancel",
                 comment: "Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
+
+    var retryTitle: String? {
+        switch self {
+        case .alreadyLaunched:
+            return nil
+        case .unexpected:
+            return NSLocalizedString(
+                "Try again",
+                comment: "Title of the try again action when the site cannot be launched from store onboarding > launch store screen."
             )
         }
     }

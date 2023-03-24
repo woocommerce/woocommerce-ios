@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-21 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-03-22 14:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -399,6 +399,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "新增類別";
+
+/* Title text of the button that adds a fee when creating a new coupon */
+"Add Coupon" = "新增優惠券";
 
 /* Title text of the button that adds customer data when creating a new order */
 "Add Customer Details" = "新增顧客詳細資訊";

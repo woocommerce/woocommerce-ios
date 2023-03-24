@@ -36,17 +36,16 @@ class StoreOnboardingViewModel: ObservableObject {
             return placeholderTasks
         }
 
-        if isExpanded || !shouldShowViewAllButton {
+        if isExpanded {
             return taskViewModels
         }
 
-        let maxNumberOfTasksToDisplayInCollapsedMode = 3
-        let incompleteTasks = taskViewModels.filter({ !$0.isComplete })
-        return isExpanded ? taskViewModels : Array(incompleteTasks.prefix(maxNumberOfTasksToDisplayInCollapsedMode))
+        let incompleteTasks = Array(taskViewModels.filter({ !$0.isComplete }).prefix(Constants.maxNumberOfTasksToDisplayInCollapsedMode))
+        return incompleteTasks
     }
 
     var shouldShowViewAllButton: Bool {
-        !isExpanded && !isRedacted && !(taskViewModels.count < 3)
+        !isExpanded && !isRedacted && (taskViewModels.count > tasksForDisplay.count)
     }
 
     let isExpanded: Bool
@@ -164,6 +163,12 @@ private extension StoreOnboardingViewModel {
 
     func hasPendingTasks(_ tasks: [StoreOnboardingTaskViewModel]) -> Bool {
         tasks.contains(where: { $0.isComplete == false })
+    }
+}
+
+private extension StoreOnboardingViewModel {
+    enum Constants {
+        static let maxNumberOfTasksToDisplayInCollapsedMode = 3
     }
 }
 

@@ -213,7 +213,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.shouldShowViewAllButton)
     }
 
-    func test_view_all_button_is_visible_when_task_count_is_greater_than_2() async {
+    func test_view_all_button_is_visible_when_task_count_is_greater_than_3() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
@@ -230,6 +230,24 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.shouldShowViewAllButton)
+    }
+
+    func test_view_all_button_is_hidden_when_task_count_is_3() async {
+        // Given
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains)
+        ]))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.shouldShowViewAllButton)
     }
 
     func test_view_all_button_is_hidden_when_task_count_is_less_than_3() async {

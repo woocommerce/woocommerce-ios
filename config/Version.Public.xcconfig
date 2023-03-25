@@ -1,7 +1,7 @@
-VERSION_SHORT=12.8
+VERSION_SHORT=12.9
 
 // Public long version example: VERSION_LONG=1.2.0.0
-VERSION_LONG=12.8.0.3
+VERSION_LONG=12.9.0.0
 
 // Re-map our custom version values (used by release-toolkit) to the Xcode ones
 MARKETING_VERSION=$VERSION_SHORT

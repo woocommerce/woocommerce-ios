@@ -61,7 +61,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(item.quantity, input.quantity)
     }
 
-    func test_sending_new_productID_input_updates_local_order() throws {
+    func test_sending_new_productID_input_adds_product_to_local_order() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)

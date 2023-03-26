@@ -418,6 +418,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_clearSelectedItems_clears_selectedProducts_and_selectedProductVariations() {
         // Given
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, productTypeKey: "variable", purchasable: true, variations: [20])
         let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
                                                             productID: sampleProductID,
@@ -425,7 +426,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                             sku: "product-variation", purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
         storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation, on: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
 
         // When
         viewModel.productSelectorViewModel.selectProduct(product.productID)

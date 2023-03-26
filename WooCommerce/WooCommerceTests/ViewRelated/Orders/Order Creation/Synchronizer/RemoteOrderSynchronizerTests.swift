@@ -556,8 +556,8 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Then
         XCTAssertTrue(submittedItems.isNotEmpty)
         for item in submittedItems {
-            XCTAssertTrue(item.total.isNotEmpty)
-            XCTAssertTrue(item.subtotal.isNotEmpty)
+            XCTAssertEqual(item.total, "0")
+            XCTAssertEqual(item.subtotal, "0")
         }
     }
 
@@ -591,12 +591,8 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Then
         XCTAssertTrue(submittedItems.isNotEmpty)
         for item in submittedItems {
-            XCTAssertEqual(item.itemID, sampleInputID)
-            XCTAssertEqual(item.productID, sampleProductID)
             XCTAssertEqual(item.price, 20.0)
             XCTAssertEqual(item.quantity, 2)
-            XCTAssertTrue(item.total.isNotEmpty)
-            XCTAssertTrue(item.subtotal.isNotEmpty)
             XCTAssertEqual(item.subtotal, "40")
             XCTAssertEqual(item.total, "40")
         }

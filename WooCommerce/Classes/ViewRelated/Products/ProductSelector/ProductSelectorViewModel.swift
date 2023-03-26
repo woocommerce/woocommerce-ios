@@ -297,21 +297,11 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Unselect all items.
     ///
     func clearSelection() {
-
         initialSelectedItems = []
         selectedProductIDs = []
         selectedProductVariationIDs = []
 
         onClearedSelection?()
-    }
-
-    private func retrieveVariations(for productID: Int64) -> [ProductVariation] {
-        let variationsViewModel = getVariationsViewModel(for: productID)
-        guard let variationsViewModel else {
-            DDLogError("No variations found for productID \(productID)")
-            return []
-        }
-        return variationsViewModel.productVariations
     }
 }
 

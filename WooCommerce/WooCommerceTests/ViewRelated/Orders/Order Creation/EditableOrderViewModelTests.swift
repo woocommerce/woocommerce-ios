@@ -429,6 +429,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
 
         // When
+        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
         viewModel.productSelectorViewModel.selectProduct(product.productID)
         viewModel.selectedProductVariations.append(productVariation)
 

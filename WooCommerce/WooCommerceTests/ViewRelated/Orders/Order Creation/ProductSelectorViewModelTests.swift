@@ -660,6 +660,20 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(variableProductRow?.selectedState, .notSelected)
     }
 
+    func test_clearSelection_invokes_onClearedSelection_closure() {
+        // Given
+        var onClearedSelectionCalled = false
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, selectedItemIDs: [1, 12, 20], onClearedSelection: {
+            onClearedSelectionCalled = true
+        })
+
+        // When
+        viewModel.clearSelection()
+
+        // Then
+        XCTAssertTrue(onClearedSelectionCalled)
+    }
+
     func test_synchronizeProducts_are_triggered_with_correct_filters() async throws {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, stores: stores)

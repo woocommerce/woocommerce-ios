@@ -191,6 +191,9 @@ final class EditableOrderViewModel: ObservableObject {
             }, onMultipleSelectionCompleted: { [weak self] _ in
                 guard let self = self else { return }
                 self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+            }, onClearedSelection: { [weak self] in
+                guard let self = self else { return }
+                self.clearSelectedItems()
             })
     }
 
@@ -370,6 +373,13 @@ final class EditableOrderViewModel: ObservableObject {
             }
         }
         return itemsInOrder
+    }
+
+    /// Clears selected products and variations
+    ///
+    func clearSelectedItems() {
+        selectedProducts.removeAll()
+        selectedProductVariations.removeAll()
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.

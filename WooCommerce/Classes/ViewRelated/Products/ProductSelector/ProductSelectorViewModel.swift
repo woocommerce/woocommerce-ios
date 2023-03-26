@@ -138,6 +138,10 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private let purchasableItemsOnly: Bool
 
+    /// Closure to be invoked when "Clear Selection" is called.
+    ///
+    private let onClearedSelection: (() -> Void)?
+
     /// Initializer for single selection
     ///
     init(siteID: Int64,
@@ -150,7 +154,8 @@ final class ProductSelectorViewModel: ObservableObject {
          toggleAllVariationsOnSelection: Bool = true,
          onProductSelected: ((Product) -> Void)? = nil,
          onVariationSelected: ((ProductVariation, Product) -> Void)? = nil,
-         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
+         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
+         onClearedSelection: (() -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -162,6 +167,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
+        self.onClearedSelection = onClearedSelection
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -179,7 +185,8 @@ final class ProductSelectorViewModel: ObservableObject {
          supportsMultipleSelection: Bool = false,
          isClearSelectionEnabled: Bool = true,
          toggleAllVariationsOnSelection: Bool = true,
-         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
+         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
+         onClearedSelection: (() -> Void)? = nil ) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -191,6 +198,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
+        self.onClearedSelection = onClearedSelection
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -289,38 +297,12 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Unselect all items.
     ///
     func clearSelection() {
-        if ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection) &&
-            ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) {
-            products.forEach { product in
-                // Callback to deselect products
-                if selectedProductIDs.contains(where: { $0 == product.productID }) {
-                    if let onProductSelected {
-                        updateSelectedVariations(productID: product.productID, selectedVariationIDs: selectedProductVariationIDs)
-                        onProductSelected(product)
-                    }
-                }
-                // Callback to deselect the parent product:
-                // If has variations, and if any of those intersects with selected variations means the parent is toggled
-                // and can be cleared
-                if product.variations.isNotEmpty {
-                    let variationIDs = product.variations
-                    let intersection = Set(variationIDs).intersection(Set(selectedProductVariationIDs))
-                    if intersection.count != 0 {
-                        let variations = retrieveVariations(for: product.productID)
-                        if let onVariationSelected, let variation = variations.first(where: { $0.productID == product.productID }) {
-                            onVariationSelected(variation, product)
-                        }
-                    }
-                }
-            }
-            initialSelectedItems = []
-            selectedProductIDs = []
-            selectedProductVariationIDs = []
-        } else {
-            initialSelectedItems = []
-            selectedProductIDs = []
-            selectedProductVariationIDs = []
-        }
+
+        initialSelectedItems = []
+        selectedProductIDs = []
+        selectedProductVariationIDs = []
+
+        onClearedSelection?()
     }
 
     private func retrieveVariations(for productID: Int64) -> [ProductVariation] {

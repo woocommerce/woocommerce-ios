@@ -207,37 +207,37 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
+        synchronizer.setProduct.send(initialInput)
 
         // When
-        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
-        let input2 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2)
-        synchronizer.setProduct.send(input)
-        synchronizer.setProduct.send(input2)
+        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2)
+        synchronizer.setProduct.send(updatedInput)
 
         // Then
         let item = try XCTUnwrap(synchronizer.order.items.first)
-        XCTAssertEqual(item.itemID, input2.id)
+        XCTAssertEqual(item.itemID, updatedInput.id)
         XCTAssertEqual(item.productID, product.productID)
-        XCTAssertEqual(item.quantity, input2.quantity)
+        XCTAssertEqual(item.quantity, updatedInput.quantity)
     }
 
     func test_sending_update_productID_input_updates_local_order() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 1)
+        synchronizer.setProduct.send(initialInput)
 
         // When
-        let input = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 1)
-        let input2 = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 2)
-        synchronizer.setProduct.send(input)
-        synchronizer.setProduct.send(input2)
+        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 2)
+        synchronizer.setProduct.send(updatedInput)
 
         // Then
         let item = try XCTUnwrap(synchronizer.order.items.first)
-        XCTAssertEqual(item.itemID, input2.id)
+        XCTAssertEqual(item.itemID, updatedInput.id)
         XCTAssertEqual(item.productID, sampleProductID)
         XCTAssertEqual(item.variationID, 0)
-        XCTAssertEqual(item.quantity, input2.quantity)
+        XCTAssertEqual(item.quantity, updatedInput.quantity)
     }
 
     func test_sending_delete_product_input_updates_local_order() throws {
@@ -245,12 +245,12 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
+        synchronizer.setProduct.send(initialInput)
 
         // When
-        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
-        let input2 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 0)
-        synchronizer.setProduct.send(input)
-        synchronizer.setProduct.send(input2)
+        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 0)
+        synchronizer.setProduct.send(updatedInput)
 
         // Then
         XCTAssertEqual(synchronizer.order.items.count, 1)
@@ -261,12 +261,12 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 1)
+        synchronizer.setProduct.send(initialInput)
 
         // When
-        let input = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 1)
-        let input2 = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 0)
-        synchronizer.setProduct.send(input)
-        synchronizer.setProduct.send(input2)
+        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 0)
+        synchronizer.setProduct.send(updatedInput)
 
         // Then
         XCTAssertEqual(synchronizer.order.items.count, 1)

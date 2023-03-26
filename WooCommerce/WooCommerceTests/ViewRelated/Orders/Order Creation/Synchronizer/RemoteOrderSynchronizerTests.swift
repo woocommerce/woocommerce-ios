@@ -929,8 +929,8 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // When
         let states: [OrderSyncState] = waitFor { promise in
             synchronizer.statePublisher
-                .dropFirst()
-                .collect(2)
+                .dropFirst() // Initialized with .synced state, so we drop the first value
+                .collect(2) // Collect the following sync states when an Order is created
                 .sink { states in
                     promise(states)
                 }
@@ -941,7 +941,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(states, [.syncing(blocking: true), .synced])
+        assertEqual([.syncing(blocking: true), .synced], states)
     }
 
     func test_states_are_properly_set_upon_success_order_update_with_new_items() {

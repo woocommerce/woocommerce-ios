@@ -409,7 +409,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         viewModel.isProductMultiSelectionBetaFeatureEnabled = true
         viewModel.productSelectorViewModel.selectProduct(product.productID)
-        viewModel.selectedProductVariations.append(productVariation)
+        viewModel.productSelectorViewModel.getVariationsViewModel(for: product.productID)?.selectVariation(productVariation.productVariationID)
         viewModel.productSelectorViewModel.completeMultipleSelection()
 
         // Then
@@ -431,7 +431,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         viewModel.isProductMultiSelectionBetaFeatureEnabled = true
         viewModel.productSelectorViewModel.selectProduct(product.productID)
-        viewModel.selectedProductVariations.append(productVariation)
+        viewModel.productSelectorViewModel.getVariationsViewModel(for: product.productID)?.selectVariation(productVariation.productVariationID)
 
         // Confidence check
         XCTAssertEqual(viewModel.selectedProducts.count, 1)

@@ -18,13 +18,16 @@ final class StoreOnboardingCoordinator: Coordinator {
 
     private let site: Site
     private let onTaskCompleted: (_ task: TaskType) -> Void
+    private let reloadTasks: () -> Void
 
     init(navigationController: UINavigationController,
          site: Site,
-         onTaskCompleted: @escaping (_ task: TaskType) -> Void) {
+         onTaskCompleted: @escaping (_ task: TaskType) -> Void,
+         reloadTasks: @escaping () -> Void) {
         self.navigationController = navigationController
         self.site = site
         self.onTaskCompleted = onTaskCompleted
+        self.reloadTasks = reloadTasks
     }
 
     /// Navigates to the fullscreen store onboarding view.

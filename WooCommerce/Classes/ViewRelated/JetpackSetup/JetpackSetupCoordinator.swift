@@ -195,6 +195,7 @@ private extension JetpackSetupCoordinator {
             // TODO: authenticate user immediately
             return
         }
+        /// WPCom credentials to authenticate the user in the Jetpack connection web view automatically
         let credentials: Credentials? = {
             guard let username else {
                 return nil

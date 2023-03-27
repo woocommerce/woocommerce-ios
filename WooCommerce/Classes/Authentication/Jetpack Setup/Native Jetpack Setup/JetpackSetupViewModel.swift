@@ -7,11 +7,12 @@ import enum Alamofire.AFError
 final class JetpackSetupViewModel: ObservableObject {
     let siteURL: String
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
-    let connectionOnly: Bool
+    @Published private(set) var connectionOnly: Bool
+
     private let stores: StoresManager
     private let storeNavigationHandler: (_ connectedEmail: String?) -> Void
 
-    let setupSteps: [JetpackInstallStep]
+    @Published private(set) var setupSteps: [JetpackInstallStep]
 
     /// Title to be displayed on the Jetpack setup view
     var title: String {
@@ -96,8 +97,7 @@ final class JetpackSetupViewModel: ObservableObject {
         self.connectionOnly = connectionOnly
         self.stores = stores
         self.analytics = analytics
-        let setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
-        self.setupSteps = setupSteps
+        self.setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.storeNavigationHandler = onStoreNavigation
         self.siteConnectionURL = URL(string: String(format: Constants.jetpackInstallString, siteURL, Constants.mobileRedirectURL))
     }
@@ -172,9 +172,14 @@ private extension JetpackSetupViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving Jetpack: \(error)")
                 self.setupError = error
-                if self.hasEncounteredPermissionError == false,
-                    self.setupSteps.contains(.installation) {
-                    // plugin is likely to not have been installed, so proceed to install it.
+                if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error as? AFError {
+                    if self.connectionOnly {
+                        /// If site has WCPay installed and activated but not connected,
+                        /// plugins need to be installed even though we detected a connection before
+                        self.setupSteps = JetpackInstallStep.allCases
+                        self.connectionOnly = false
+                    }
+                    /// plugin is likely to not have been installed, so proceed to install it.
                     self.installJetpack()
                 } else {
                     self.setupFailed = true

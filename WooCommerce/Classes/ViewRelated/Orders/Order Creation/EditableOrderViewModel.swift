@@ -191,7 +191,7 @@ final class EditableOrderViewModel: ObservableObject {
             }, onMultipleSelectionCompleted: { [weak self] _ in
                 guard let self = self else { return }
                 self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
-            }, onClearedSelection: { [weak self] in
+            }, onSelectionsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearSelectedItems()
             })

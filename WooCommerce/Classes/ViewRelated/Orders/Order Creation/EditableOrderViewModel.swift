@@ -216,7 +216,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Keeps track of all selected Products and Product Variations IDs
     ///
-    var selectedProductsAndVariationsIDs: [Int64] {
+    private var selectedProductsAndVariationsIDs: [Int64] {
         let selectedProductsCount = selectedProducts.compactMap { $0.productID }
         let selectedProductVariationsCount = selectedProductVariations.compactMap { $0.productVariationID }
         return selectedProductsCount + selectedProductVariationsCount

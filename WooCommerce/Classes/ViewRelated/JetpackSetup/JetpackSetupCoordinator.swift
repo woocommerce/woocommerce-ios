@@ -200,15 +200,17 @@ private extension JetpackSetupCoordinator {
         /// WPCom credentials to authenticate the user in the Jetpack connection web view automatically
         let credentials: Credentials = .wpcom(username: username, authToken: authToken, siteAddress: site.url)
         guard jetpackConnectedEmail == nil else {
-            // TODO: authenticate user immediately
-            return
+            // authenticate user immediately
+            return authenticateUserAndRefreshSite(with: credentials)
         }
         let setupUI = JetpackSetupHostingController(siteURL: site.url,
                                                     connectionOnly: requiresConnectionOnly,
                                                     connectionWebViewCredentials: credentials,
-                                                    onStoreNavigation: { _ in
-            // TODO-8921: Authenticate user with the logged in WPCom credentials
+                                                    onStoreNavigation: { [weak self] _ in
             DDLogInfo("🎉 Jetpack setup completes!")
+            self?.rootViewController.topmostPresentedViewController.dismiss(animated: true, completion: {
+                self?.authenticateUserAndRefreshSite(with: credentials)
+            })
         })
         let navigationController = UINavigationController(rootViewController: setupUI)
         self.setupStepsNavigationController = navigationController
@@ -222,6 +224,30 @@ private extension JetpackSetupCoordinator {
             /// So present the Jetpack setup flow on the topmost presented controller.
             rootViewController.topmostPresentedViewController.present(navigationController, animated: true)
         }
+    }
+
+    func authenticateUserAndRefreshSite(with credentials: Credentials) {
+        stores.authenticate(credentials: credentials)
+        let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
+        rootViewController.topmostPresentedViewController.present(progressView, animated: true)
+
+        let action = AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let site):
+                self.stores.updateDefaultStore(site)
+                self.rootViewController.dismiss(animated: true)
+            case .failure(let error):
+                DDLogError("⛔️ Error fetching sites after Jetpack setup: \(error)")
+                progressView.dismiss(animated: true, completion: { [weak self] in
+                    self?.showAlert(message: Localization.errorFetchingSites, onRetry: {
+                        self?.authenticateUserAndRefreshSite(with: credentials)
+                    })
+                })
+
+            }
+        }
+        stores.dispatch(action)
     }
 }
 
@@ -359,5 +385,9 @@ private extension JetpackSetupCoordinator {
         static let errorFetchingWPComAccount = NSLocalizedString(
             "Unable to fetch the logged in WordPress.com account. Please try again.",
             comment: "Error message when failing to fetch the WPCom account after logging in with magic link.")
+        static let errorFetchingSites = NSLocalizedString(
+            "Unable to refresh current site info",
+            comment: "Error message displayed when failing to fetch the current site info."
+        )
     }
 }

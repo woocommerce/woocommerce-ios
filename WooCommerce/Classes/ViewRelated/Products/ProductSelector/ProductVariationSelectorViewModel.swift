@@ -51,7 +51,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 
     /// All purchasable product variations for the product.
     ///
-    @Published private(set) var productVariations: [ProductVariation] = []
+    @Published private var productVariations: [ProductVariation] = []
 
     /// View models for each product variation row
     ///

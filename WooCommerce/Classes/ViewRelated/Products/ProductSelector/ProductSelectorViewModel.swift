@@ -140,7 +140,11 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Closure to be invoked when "Clear Selection" is called.
     ///
-    private let onSelectionsCleared: (() -> Void)?
+    private let onAllSelectionsCleared: (() -> Void)?
+
+    /// Closure to be invoked when variations "Clear Selection" is called.
+    ///
+    private let onSelectedVariationsCleared: (() -> Void)?
 
     /// Initializer for single selection
     ///
@@ -155,7 +159,8 @@ final class ProductSelectorViewModel: ObservableObject {
          onProductSelected: ((Product) -> Void)? = nil,
          onVariationSelected: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
-         onSelectionsCleared: (() -> Void)? = nil) {
+         onAllSelectionsCleared: (() -> Void)? = nil,
+         onSelectedVariationsCleared: (() -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -167,7 +172,8 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
-        self.onSelectionsCleared = onSelectionsCleared
+        self.onAllSelectionsCleared = onAllSelectionsCleared
+        self.onSelectedVariationsCleared = onSelectedVariationsCleared
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -186,7 +192,8 @@ final class ProductSelectorViewModel: ObservableObject {
          isClearSelectionEnabled: Bool = true,
          toggleAllVariationsOnSelection: Bool = true,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
-         onSelectionsCleared: (() -> Void)? = nil ) {
+         onAllSelectionsCleared: (() -> Void)? = nil,
+         onSelectedVariationsCleared: (() -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -198,7 +205,8 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
-        self.onSelectionsCleared = onSelectionsCleared
+        self.onAllSelectionsCleared = onAllSelectionsCleared
+        self.onSelectedVariationsCleared = onSelectedVariationsCleared
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -302,7 +310,7 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedProductIDs = []
         selectedProductVariationIDs = []
 
-        onSelectionsCleared?()
+        onAllSelectionsCleared?()
     }
 
     private func clearSelectedVariations() {
@@ -310,9 +318,9 @@ final class ProductSelectorViewModel: ObservableObject {
         // We're sure to clear only those that belong to variations and leave the product ones
         let initialSelectedVariations = Set(selectedProductVariationIDs)
         initialSelectedItems = initialSelectedItems.filter { !initialSelectedVariations.contains($0) }
-
         selectedProductVariationIDs = []
-        onSelectionsCleared?()
+
+        onSelectedVariationsCleared?()
     }
 }
 

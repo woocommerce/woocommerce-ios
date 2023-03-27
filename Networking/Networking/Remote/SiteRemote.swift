@@ -12,6 +12,10 @@ public protocol SiteRemoteProtocol {
     /// Launches a site publicly through WPCOM.
     /// - Parameter siteID: Remote WPCOM ID of the site.
     func launchSite(siteID: Int64) async throws
+
+    /// Enables a free trial plan for a site.
+    ///
+    func enableFreeTrial(siteID: Int64) async throws
 }
 
 /// Site: Remote Endpoints
@@ -63,6 +67,12 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path)
         return try await enqueue(request)
     }
+
+    public func enableFreeTrial(siteID: Int64) async throws {
+        let path = Path.enableFreeTrial(siteID: siteID)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path)
+        return try await enqueue(request)
+    }
 }
 
 /// Site creation API response.
@@ -105,6 +115,12 @@ private extension SiteRemote {
         static let siteCreation = "sites/new"
         static func siteLaunch(siteID: Int64) -> String {
             "sites/\(siteID)/launch"
+        }
+
+        ///Path to add enable the free trial on a site.
+        ///
+        static func enableFreeTrial(siteID: Int64) -> String {
+            "v1.1/sites/\(siteID)/ecommerce-trial/add/ecommerce-trial-bundle-monthly"
         }
     }
 }

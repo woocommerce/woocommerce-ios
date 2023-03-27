@@ -239,7 +239,8 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  purchasableItemsOnly: purchasableItemsOnly,
                                                  supportsMultipleSelection: supportsMultipleSelection,
                                                  isClearSelectionEnabled: isClearSelectionEnabled,
-                                                 onVariationSelected: onVariationSelected)
+                                                 onVariationSelected: onVariationSelected,
+                                                 onSelectionsCleared: clearSelection)
     }
 
     /// Clears the current search term and filters to display the full product list.

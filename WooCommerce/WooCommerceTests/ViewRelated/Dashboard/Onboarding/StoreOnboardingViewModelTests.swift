@@ -5,6 +5,7 @@ import Yosemite
 final class StoreOnboardingViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private var defaults: UserDefaults!
+    private let placeholderTaskCount = 3
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -212,7 +213,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.shouldShowViewAllButton)
     }
 
-    func test_view_all_button_is_visible_when_task_count_is_greater_than_2() async {
+    func test_view_all_button_is_visible_when_task_count_is_greater_than_3() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
@@ -229,6 +230,24 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.shouldShowViewAllButton)
+    }
+
+    func test_view_all_button_is_hidden_when_task_count_is_3() async {
+        // Given
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains)
+        ]))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.shouldShowViewAllButton)
     }
 
     func test_view_all_button_is_hidden_when_task_count_is_less_than_3() async {
@@ -369,14 +388,14 @@ final class StoreOnboardingViewModelTests: XCTestCase {
                                            stores: stores,
                                            defaults: defaults)
         // Then
-        XCTAssertTrue(sut.tasksForDisplay.isEmpty)
+        XCTAssertTrue(sut.tasksForDisplay.count == placeholderTaskCount)
 
         // When
         mockLoadOnboardingTasks(result: .success(tasks))
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(sut.tasksForDisplay.isEmpty)
+        XCTAssertTrue(sut.tasksForDisplay.count == placeholderTaskCount)
     }
 
     func test_it_sends_network_request_when_completedAllStoreOnboardingTasks_is_nil() async {
@@ -392,14 +411,14 @@ final class StoreOnboardingViewModelTests: XCTestCase {
                                            stores: stores,
                                            defaults: defaults)
         // Then
-        XCTAssertTrue(sut.tasksForDisplay.isEmpty)
+        XCTAssertTrue(sut.tasksForDisplay.count == placeholderTaskCount)
 
         // When
         mockLoadOnboardingTasks(result: .success(tasks))
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(sut.tasksForDisplay.isNotEmpty)
+        XCTAssertTrue(sut.tasksForDisplay.count == 4)
     }
 
     // MARK: completedAllStoreOnboardingTasks user defaults

@@ -186,7 +186,7 @@ final class ProductSelectorViewModel: ObservableObject {
          isClearSelectionEnabled: Bool = true,
          toggleAllVariationsOnSelection: Bool = true,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
-         onClearedSelection: (() -> Void)? = nil ) {
+         onSelectionsCleared: (() -> Void)? = nil ) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -198,7 +198,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
-        self.onSelectionsCleared = onClearedSelection
+        self.onSelectionsCleared = onSelectionsCleared
 
         configureSyncingCoordinator()
         configureProductsResultsController()

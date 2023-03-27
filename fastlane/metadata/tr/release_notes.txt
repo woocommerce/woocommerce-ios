@@ -1,0 +1,1 @@
+Bu sürüm, mağaza yönetimi deneyiminiz için birkaç geliştirme içerir. Bir sipariş oluşturmak ve WooCommerce mobil uygulamalarından ödeme toplamak için iOS Kestirmeler uygulamasını kullanmak artık mümkün! Lütfen deneyin ve geri bildiriminizi paylaşın.

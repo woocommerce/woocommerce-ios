@@ -403,7 +403,14 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let shippingClassID = try container.decode(Int64.self, forKey: .shippingClassID)
 
         let reviewsAllowed = try container.decode(Bool.self, forKey: .reviewsAllowed)
-        let averageRating = try container.decode(String.self, forKey: .averageRating)
+
+        /// We have noticed this value coming as a number on some stores.
+        /// As this was introduced quite a while ago it's cheaper to handle both types than letting the whole parsing fail.
+        ///
+        let averageRating = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                              forKey: .averageRating,
+                                                              alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })]) ?? ""
+
         let ratingCount = try container.decode(Int.self, forKey: .ratingCount)
 
         let relatedIDs = try container.decode([Int64].self, forKey: .relatedIDs)
@@ -442,8 +449,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let bundleStockQuantity = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleStockQuantity)
         let bundledItems = try container.decodeIfPresent([ProductBundleItem].self, forKey: .bundledItems) ?? []
 
+        ///`ProductCompositeComponent.defaultOptionID` is being returned as an `Int` instead of as a `String` in some test store.
+        /// Since this feature is still in development I'm defaulting to evict any composite component when a parsing error occurs.
+        /// We should identify why that field can be of multiple types before releasing the feature to the public.
+        ///
         // Composite Product properties
-        let compositeComponents = try container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents) ?? []
+        let compositeComponents = (try? container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents)) ?? []
+
 
         self.init(siteID: siteID,
                   productID: productID,

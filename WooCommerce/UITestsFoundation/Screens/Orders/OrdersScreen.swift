@@ -56,8 +56,8 @@ public final class OrdersScreen: ScreenObject {
     public func verifyOrdersList(orders: [OrderData]) throws -> Self {
         let ordersTableView = app.tables.matching(identifier: "orders-table-view")
         XCTAssertEqual(orders.count, ordersTableView.cells.count, "Expecting '\(orders.count)' orders, got '\(app.tables.cells.count)' instead!")
-        ordersTableView.element.assertTextVisibilityCount(textToFind: String(orders[0].id))
-        ordersTableView.element.assertTextVisibilityCount(textToFind: String(orders[0].total))
+        ordersTableView.element.assertTextVisibilityCount(textToFind: String(orders[0].id), expectedCount: 1)
+        ordersTableView.element.assertTextVisibilityCount(textToFind: String(orders[0].total), expectedCount: 1)
         ordersTableView.element.assertLabelContains(firstSubstring: String(orders[0].id), secondSubstring: orders[0].billing.first_name)
 
         return self

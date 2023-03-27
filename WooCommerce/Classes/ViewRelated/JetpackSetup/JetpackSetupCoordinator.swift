@@ -235,8 +235,12 @@ private extension JetpackSetupCoordinator {
             guard let self else { return }
             switch result {
             case .success(let site):
-                self.stores.updateDefaultStore(site)
-                self.rootViewController.dismiss(animated: true)
+                self.stores.updateDefaultStore(storeID: site.siteID)
+                self.stores.synchronizeEntities { [weak self] in
+                    self?.stores.updateDefaultStore(site)
+                    self?.rootViewController.dismiss(animated: true)
+                }
+
             case .failure(let error):
                 DDLogError("⛔️ Error fetching sites after Jetpack setup: \(error)")
                 progressView.dismiss(animated: true, completion: { [weak self] in

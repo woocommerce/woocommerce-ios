@@ -8,7 +8,7 @@ class IDTokenTests: XCTestCase {
     }
 
     func testInitWithJWTWithEmail() throws {
-        let jwt = try XCTUnwrap(JSONWebToken(encodedString: JSONWebToken.validJWTStringWithEmail))
+        let jwt = try XCTUnwrap(JSONWebToken(encodedString: JSONWebToken.validJWTStringWithEmailOnly))
         let token = try XCTUnwrap(IDToken(jwt: jwt))
 
         XCTAssertEqual(token.email, JSONWebToken.emailFromValidJWTStringWithEmail)

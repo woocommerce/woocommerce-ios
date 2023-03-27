@@ -7,8 +7,8 @@ class ProductFlow {
         let product = try GetMocks.readNewProductData()
 
         try TabNavComponent().goToProductsScreen()
-            .selectAddProduct()
-            .selectProductType(productType: productType)
+            .tapAddProduct()
+            .tapProductType(productType: productType)
             .verifyProductTypeScreenLoaded(productType: productType)
             .addProductTitle(productTitle: product.name)
             .publishProduct()

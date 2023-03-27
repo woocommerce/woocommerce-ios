@@ -21,8 +21,8 @@ public final class PaymentsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func selectCardReaderManuals() throws -> CardReaderManualsScreen {
         selectCardReaderManualsButton.tap()
+    public func tapCardReaderManuals() throws -> CardReaderManualsScreen {
         return try CardReaderManualsScreen()
     }
 }

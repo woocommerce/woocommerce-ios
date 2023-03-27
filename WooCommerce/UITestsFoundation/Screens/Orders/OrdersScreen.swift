@@ -33,13 +33,13 @@ public final class OrdersScreen: ScreenObject {
     }
 
     @discardableResult
-    public func selectOrder(atIndex index: Int) throws -> SingleOrderScreen {
+    public func tapOrder(atIndex index: Int) throws -> SingleOrderScreen {
         app.tables.cells.element(boundBy: index).tap()
         return try SingleOrderScreen()
     }
 
     @discardableResult
-    public func selectOrder(byOrderNumber orderNumber: String) throws -> SingleOrderScreen {
+    public func tapOrder(byOrderNumber orderNumber: String) throws -> SingleOrderScreen {
         let orderNumberPredicate = NSPredicate(format: "label CONTAINS[c] %@", orderNumber)
         app.staticTexts.containing(orderNumberPredicate).firstMatch.tap()
 

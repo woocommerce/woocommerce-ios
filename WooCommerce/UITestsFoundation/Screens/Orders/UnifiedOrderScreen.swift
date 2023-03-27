@@ -155,21 +155,21 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// - Returns: Unified Order screen object.
     public func editOrderStatus() throws -> UnifiedOrderScreen {
       return try openOrderStatusScreen()
-            .selectOrderStatus(atIndex: 1)
+            .tapOrderStatus(atIndex: 1)
     }
 
-    /// Select the first product from the addProductScreen
+    /// Tap the first product from the addProductScreen
     /// - Returns: Unified Order screen object.
     public func addProduct(byName name: String) throws -> UnifiedOrderScreen {
         return try openAddProductScreen()
-            .selectProduct(byName: name)
+            .tapProduct(byName: name)
     }
 
-    /// Select the first product from the addProductScreen
+    /// Tap the first product from the addProductScreen
     /// - Returns: Unified Order screen object.
     public func addProducts(numberOfProductsToAdd numberOfProducts: Int) throws -> UnifiedOrderScreen {
         return try openAddProductScreen()
-            .selectMultipleProducts(numberOfProductsToAdd: numberOfProducts)
+            .tapMultipleProducts(numberOfProductsToAdd: numberOfProducts)
     }
 
     /// Adds minimal customer details on the Customer Details screen

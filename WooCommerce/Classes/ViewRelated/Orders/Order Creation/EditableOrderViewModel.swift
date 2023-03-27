@@ -843,8 +843,10 @@ private extension EditableOrderViewModel {
         let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
         orderSynchronizer.setProducts.send(addedItemsToSync + removedItemsToSync)
 
+        let productCount = addedItemsToSync.count - removedItemsToSync.count
+
         if addedItemsToSync.isNotEmpty {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: productCount))
         }
 
         if removedItemsToSync.isNotEmpty {
@@ -874,7 +876,7 @@ private extension EditableOrderViewModel {
             // Single-selection
             let input = OrderSyncProductInput(product: .product(product), quantity: 1)
             orderSynchronizer.setProduct.send(input)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: 1))
         }
     }
 
@@ -904,7 +906,7 @@ private extension EditableOrderViewModel {
             // Single-Selection
             let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
             orderSynchronizer.setProduct.send(input)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: 1))
         }
     }
 

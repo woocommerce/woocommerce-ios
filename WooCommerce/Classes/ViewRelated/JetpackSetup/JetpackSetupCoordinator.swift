@@ -180,7 +180,13 @@ private extension JetpackSetupCoordinator {
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
         Task { @MainActor in
-            let username = await loadWPComAccountUsername(authToken: authToken)
+            guard let username = await loadWPComAccountUsername(authToken: authToken) else {
+                showAlert(message: Localization.errorFetchingWPComAccount, onRetry: { [weak self] in
+                    self?.startJetpackSetupFlow(authToken: authToken)
+                })
+                return
+            }
+
             let result = await fetchJetpackUser()
             checkJetpackStatus(result, onSuccess: { [weak self] in
                 progressView.dismiss(animated: true, completion: {
@@ -190,18 +196,13 @@ private extension JetpackSetupCoordinator {
         }
     }
 
-    func showSetupSteps(username: String?, authToken: String) {
+    func showSetupSteps(username: String, authToken: String) {
+        /// WPCom credentials to authenticate the user in the Jetpack connection web view automatically
+        let credentials: Credentials = .wpcom(username: username, authToken: authToken, siteAddress: site.url)
         guard jetpackConnectedEmail == nil else {
             // TODO: authenticate user immediately
             return
         }
-        /// WPCom credentials to authenticate the user in the Jetpack connection web view automatically
-        let credentials: Credentials? = {
-            guard let username else {
-                return nil
-            }
-            return .wpcom(username: username, authToken: authToken, siteAddress: site.url)
-        }()
         let setupUI = JetpackSetupHostingController(siteURL: site.url,
                                                     connectionOnly: requiresConnectionOnly,
                                                     connectionWebViewCredentials: credentials,
@@ -355,5 +356,8 @@ private extension JetpackSetupCoordinator {
             "Please wait",
             comment: "Message on the loading view displayed when the magic link authentication for Jetpack setup is in progress"
         )
+        static let errorFetchingWPComAccount = NSLocalizedString(
+            "Unable to fetch the logged in WordPress.com account. Please try again.",
+            comment: "Error message when failing to fetch the WPCom account after logging in with magic link.")
     }
 }

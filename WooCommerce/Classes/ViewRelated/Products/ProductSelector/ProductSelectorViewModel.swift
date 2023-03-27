@@ -140,7 +140,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Closure to be invoked when "Clear Selection" is called.
     ///
-    private let onClearedSelection: (() -> Void)?
+    private let onSelectionsCleared: (() -> Void)?
 
     /// Initializer for single selection
     ///
@@ -167,7 +167,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
-        self.onClearedSelection = onSelectionsCleared
+        self.onSelectionsCleared = onSelectionsCleared
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -198,7 +198,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
-        self.onClearedSelection = onClearedSelection
+        self.onSelectionsCleared = onClearedSelection
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -302,7 +302,7 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedProductIDs = []
         selectedProductVariationIDs = []
 
-        onClearedSelection?()
+        onSelectionsCleared?()
     }
 }
 

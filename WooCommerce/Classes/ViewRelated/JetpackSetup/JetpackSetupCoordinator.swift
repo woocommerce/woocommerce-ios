@@ -228,6 +228,7 @@ private extension JetpackSetupCoordinator {
 
     func authenticateUserAndRefreshSite(with credentials: Credentials) {
         stores.authenticate(credentials: credentials)
+        registerForPushNotifications()
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
 
@@ -238,7 +239,6 @@ private extension JetpackSetupCoordinator {
                 self.stores.updateDefaultStore(storeID: site.siteID)
                 self.stores.synchronizeEntities { [weak self] in
                     self?.stores.updateDefaultStore(site)
-                    self?.registerForPushNotifications()
                     self?.rootViewController.dismiss(animated: true)
                 }
 

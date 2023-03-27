@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import enum Alamofire.AFError
+import class Networking.AlamofireNetwork
 import WordPressAuthenticator
 
 /// Coordinates the Jetpack setup flow in the authenticated state.
@@ -178,15 +179,15 @@ private extension JetpackSetupCoordinator {
         }
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
-        let action = JetpackConnectionAction.fetchJetpackUser { [weak self] result in
-            guard let self else { return }
-            progressView.dismiss(animated: true)
-            self.checkJetpackStatus(result, onSuccess: { [weak self] in
-                // TODO: find username based on token
-                self?.showSetupSteps(username: nil, authToken: authToken)
+        Task { @MainActor in
+            let username = await loadWPComAccountUsername(authToken: authToken)
+            let result = await fetchJetpackUser()
+            checkJetpackStatus(result, onSuccess: { [weak self] in
+                progressView.dismiss(animated: true, completion: {
+                    self?.showSetupSteps(username: username, authToken: authToken)
+                })
             })
         }
-        stores.dispatch(action)
     }
 
     func showSetupSteps(username: String?, authToken: String) {
@@ -209,16 +210,44 @@ private extension JetpackSetupCoordinator {
         })
         let navigationController = UINavigationController(rootViewController: setupUI)
         self.setupStepsNavigationController = navigationController
-        loginNavigationController?.dismiss(animated: true, completion: {
-            self.rootViewController.topmostPresentedViewController.present(navigationController, animated: true)
-        })
-        loginNavigationController = nil
+        if let loginNavigationController {
+            loginNavigationController.dismiss(animated: true, completion: {
+                self.rootViewController.topmostPresentedViewController.present(navigationController, animated: true)
+            })
+            self.loginNavigationController = nil
+        } else {
+            /// If user reaches this from the magic link flow, no loginNavigationController is available
+            /// So present the Jetpack setup flow on the topmost presented controller.
+            rootViewController.topmostPresentedViewController.present(navigationController, animated: true)
+        }
     }
 }
 
 // MARK: - WPCom Login flow
 //
 private extension JetpackSetupCoordinator {
+
+    @MainActor
+    func loadWPComAccountUsername(authToken: String) async -> String? {
+        await withCheckedContinuation { continuation in
+            let network = AlamofireNetwork(credentials: Credentials(authToken: authToken))
+            let accountAction = JetpackConnectionAction.loadWPComAccount(network: network) { account in
+                continuation.resume(returning: account?.username)
+            }
+            stores.dispatch(accountAction)
+        }
+    }
+
+    @MainActor
+    func fetchJetpackUser() async -> Result<JetpackUser, Error> {
+        await withCheckedContinuation { continuation in
+            let action = JetpackConnectionAction.fetchJetpackUser { result in
+                continuation.resume(returning: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
     func showWPComEmailLogin() {
         let emailLoginController = WPComEmailLoginHostingController(viewModel: emailLoginViewModel)
         let loginNavigationController = LoginNavigationController(rootViewController: emailLoginController)

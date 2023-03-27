@@ -27,12 +27,9 @@ public final class ProductSearchScreen: ScreenObject {
     @discardableResult
     public func verifyNumberOfProductsInSearchResults(equals expectedNumber: Int, accessibilityId: String? = defaultSearchResultsID) throws -> Self {
         let productTableView = app.tables.matching(identifier: accessibilityId!)
+
         XCTAssert(productTableView.element.waitForExistence(timeout: 5), "Product list not displayed!")
-
-        let expectedCount = expectedNumber
-        let actualCount = productTableView.cells.count
-
-        XCTAssertTrue(expectedCount == actualCount, "Expected \(expectedCount) products but found \(actualCount) instead!")
+        XCTAssertEqual(expectedNumber, productTableView.cells.count, "Products number is not equal!")
 
         return self
     }

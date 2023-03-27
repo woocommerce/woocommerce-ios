@@ -211,11 +211,11 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Keeps track of selected/unselected Products, if any
     ///
-    @Published private(set) var selectedProducts: [Product] = []
+    @Published private var selectedProducts: [Product] = []
 
     /// Keeps track of selected/unselected Product Variations, if any
     ///
-    @Published private(set) var selectedProductVariations: [ProductVariation] = []
+    @Published private var selectedProductVariations: [ProductVariation] = []
 
     /// Keeps track of all selected Products and Product Variations IDs
     ///

@@ -238,6 +238,7 @@ private extension JetpackSetupCoordinator {
                 self.stores.updateDefaultStore(storeID: site.siteID)
                 self.stores.synchronizeEntities { [weak self] in
                     self?.stores.updateDefaultStore(site)
+                    self?.registerForPushNotifications()
                     self?.rootViewController.dismiss(animated: true)
                 }
 
@@ -252,6 +253,16 @@ private extension JetpackSetupCoordinator {
             }
         }
         stores.dispatch(action)
+    }
+
+    func registerForPushNotifications() {
+        #if targetEnvironment(simulator)
+            DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
+        #else
+            let pushNotesManager = ServiceLocator.pushNotesManager
+            pushNotesManager.registerForRemoteNotifications()
+            pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
+        #endif
     }
 }
 

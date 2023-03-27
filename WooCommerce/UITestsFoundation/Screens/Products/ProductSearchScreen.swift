@@ -25,11 +25,11 @@ public final class ProductSearchScreen: ScreenObject {
     }
 
     @discardableResult
-    public func verifyNumberOfProductsOnSearchResults(expectedNumberOfProducts: Int, accessibilityId: String? = defaultSearchResultsID) throws -> Self {
+    public func verifyNumberOfProductsInSearchResults(equals expectedNumber: Int, accessibilityId: String? = defaultSearchResultsID) throws -> Self {
         let productTableView = app.tables.matching(identifier: accessibilityId!)
         XCTAssert(productTableView.element.waitForExistence(timeout: 5), "Product list not displayed!")
 
-        let expectedCount = expectedNumberOfProducts
+        let expectedCount = expectedNumber
         let actualCount = productTableView.cells.count
 
         XCTAssertTrue(expectedCount == actualCount, "Expected \(expectedCount) products but found \(actualCount) instead!")
@@ -38,7 +38,7 @@ public final class ProductSearchScreen: ScreenObject {
     }
 
     public func verifyProductSearchResults(expectedProduct: ProductData) throws {
-        try verifyNumberOfProductsOnSearchResults(expectedNumberOfProducts: 1, accessibilityId: updatedSearchResultsID)
+        try verifyNumberOfProductsInSearchResults(equals: 1, accessibilityId: updatedSearchResultsID)
 
         let productsTableView = app.tables.matching(identifier: updatedSearchResultsID)
         productsTableView.element.assertTextVisibilityCount(textToFind: String(expectedProduct.name))

@@ -120,7 +120,7 @@ private extension SiteRemote {
         ///Path to add enable the free trial on a site.
         ///
         static func enableFreeTrial(siteID: Int64) -> String {
-            "v1.1/sites/\(siteID)/ecommerce-trial/add/ecommerce-trial-bundle-monthly"
+            "sites/\(siteID)/ecommerce-trial/add/ecommerce-trial-bundle-monthly"
         }
     }
 }

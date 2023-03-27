@@ -181,4 +181,33 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         // Then
         XCTAssertTrue(result)
     }
+
+    func test_handleAuthenticationUrl_presents_jetpack_setup_flow_after_fetching_wpcom_account_and_jetpack_user() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
+        let expectedScheme = "scheme"
+        let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController, stores: stores)
+        let url = try XCTUnwrap(URL(string: "scheme://magic-login?token=test"))
+
+        let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil)
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case let .loadWPComAccount(_, onCompletion):
+                onCompletion(expectedAccount)
+            case let .fetchJetpackUser(completion):
+                completion(.success(JetpackUser.fake()))
+            default:
+                break
+            }
+        }
+
+        // When
+        _ = coordinator.handleAuthenticationUrl(url)
+
+        // Then
+        waitUntil {
+            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is JetpackSetupHostingController
+        }
+    }
 }

@@ -377,7 +377,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Clears selected products and variations
     ///
-    func clearSelectedItems() {
+    private func clearSelectedItems() {
         selectedProducts.removeAll()
         selectedProductVariations.removeAll()
     }

@@ -416,34 +416,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedProductsAndVariationsIDs.count, 2)
     }
 
-    func test_clearSelectedItems_clears_selectedProducts_and_selectedProductVariations() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, productTypeKey: "variable", purchasable: true, variations: [20])
-        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
-                                                            productID: sampleProductID,
-                                                            productVariationID: 20,
-                                                            sku: "product-variation", purchasable: true)
-        storageManager.insertSampleProduct(readOnlyProduct: product)
-        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation, on: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
-
-        // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
-        viewModel.productSelectorViewModel.getVariationsViewModel(for: product.productID)?.selectVariation(productVariation.productVariationID)
-
-        // Confidence check
-        XCTAssertEqual(viewModel.selectedProducts.count, 1)
-        XCTAssertEqual(viewModel.selectedProductVariations.count, 1)
-
-        viewModel.clearSelectedItems()
-
-        // Then
-        XCTAssertEqual(viewModel.selectedProducts.count, 0)
-        XCTAssertEqual(viewModel.selectedProductVariations.count, 0)
-    }
-
     func test_createProductRowViewModel_creates_expected_row_for_product() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)

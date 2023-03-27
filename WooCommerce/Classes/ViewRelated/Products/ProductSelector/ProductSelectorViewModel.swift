@@ -248,7 +248,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  supportsMultipleSelection: supportsMultipleSelection,
                                                  isClearSelectionEnabled: isClearSelectionEnabled,
                                                  onVariationSelected: onVariationSelected,
-                                                 onSelectionsCleared: clearSelectedVariations)
+                                                 onSelectionsCleared: onSelectedVariationsCleared)
     }
 
     /// Clears the current search term and filters to display the full product list.
@@ -311,16 +311,6 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedProductVariationIDs = []
 
         onAllSelectionsCleared?()
-    }
-
-    private func clearSelectedVariations() {
-        // InitialSelectedItems contains both IDs for products and variations
-        // We're sure to clear only those that belong to variations and leave the product ones
-        let initialSelectedVariations = Set(selectedProductVariationIDs)
-        initialSelectedItems = initialSelectedItems.filter { !initialSelectedVariations.contains($0) }
-        selectedProductVariationIDs = []
-
-        onSelectedVariationsCleared?()
     }
 }
 

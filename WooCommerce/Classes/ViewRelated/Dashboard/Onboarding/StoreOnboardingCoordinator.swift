@@ -68,7 +68,11 @@ final class StoreOnboardingCoordinator: Coordinator {
 private extension StoreOnboardingCoordinator {
     @MainActor
     func showStoreDetails() {
-        let coordinator = StoreOnboardingStoreDetailsCoordinator(site: site, navigationController: navigationController)
+        let coordinator = StoreOnboardingStoreDetailsCoordinator(site: site,
+                                                                 navigationController: navigationController,
+                                                                 onDismiss: { [weak self] in
+            self?.reloadTasks()
+        })
         self.storeDetailsCoordinator = coordinator
         coordinator.start()
     }
@@ -112,14 +116,24 @@ private extension StoreOnboardingCoordinator {
 
     @MainActor
     func showWCPaySetup() {
-        let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .wcPay, site: site, navigationController: navigationController)
+        let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .wcPay,
+                                                                  site: site,
+                                                                  navigationController: navigationController,
+                                                                  onDismiss: { [weak self] in
+             self?.reloadTasks()
+         })
         self.paymentsSetupCoordinator = coordinator
         coordinator.start()
     }
 
     @MainActor
     func showPaymentsSetup() {
-        let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .payments, site: site, navigationController: navigationController)
+        let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .payments,
+                                                                  site: site,
+                                                                  navigationController: navigationController,
+                                                                  onDismiss: { [weak self] in
+            self?.reloadTasks()
+         })
         self.paymentsSetupCoordinator = coordinator
         coordinator.start()
     }

@@ -35,4 +35,14 @@ final class ProductsTests: XCTestCase {
     func test_add_variable_product() throws {
         try ProductFlow.addAndVerifyNewProduct(productType: "variable")
     }
+
+    func test_search_product() throws {
+        let products = try GetMocks.readProductsData()
+
+        try TabNavComponent().goToProductsScreen()
+            .selectSearchButton()
+            .verifyNumberOfProductsInSearchResults(equals: products.count)
+            .enterSearchCriteria(text: products[0].name)
+            .verifyProductSearchResults(expectedProduct: products[0])
+    }
 }

@@ -16,7 +16,6 @@ final class JetpackSetupCoordinator {
     private let analytics: Analytics
     private let dotcomAuthScheme: String
 
-    private var jetpackConnectedEmail: String?
     private var benefitsController: JetpackBenefitsHostingController?
     private var loginNavigationController: LoginNavigationController?
     private var setupStepsNavigationController: UINavigationController?
@@ -54,7 +53,18 @@ final class JetpackSetupCoordinator {
             guard let self else { return }
             self.analytics.track(event: .jetpackInstallButtonTapped(source: .benefitsModal))
             if self.site.isNonJetpackSite {
-                self.checkJetpackStatus(result)
+                do {
+                    if let connectedEmail = try self.retrieveJetpackConnectedEmail(result) {
+                        self.startAuthentication(with: connectedEmail)
+                    } else {
+                        self.showWPComEmailLogin()
+                    }
+                } catch JetpackCheckError.missingPermission {
+                    self.displayAdminRoleRequiredError()
+                } catch {
+                    DDLogError("⛔️ Jetpack status fetched error: \(error)")
+                    self.showAlert(message: Localization.errorCheckingJetpack)
+                }
             } else {
                 self.presentJCPJetpackInstallFlow()
             }
@@ -104,37 +114,32 @@ private extension JetpackSetupCoordinator {
         })
     }
 
-    /// Checks the Jetpack connection status for non-Jetpack sites to infer the setup steps to be handled.
-    func checkJetpackStatus(_ result: Result<JetpackUser, Error>, onSuccess: (() -> Void)? = nil) {
+    /// Checks the Jetpack connection status for non-Jetpack sites to return the connected email if available.
+    /// Throws any error if the Jetpack user fetch failed.
+    ///
+    func retrieveJetpackConnectedEmail(_ result: Result<JetpackUser, Error>) throws -> String? {
         switch result {
         case .success(let user):
-            requiresConnectionOnly = !user.isConnected
-            let connectedEmail = user.wpcomUser?.email
-            jetpackConnectedEmail = connectedEmail
-            if let onSuccess {
-                onSuccess()
-            } else {
-                startAuthentication(with: connectedEmail)
-            }
+            requiresConnectionOnly = true
+            return user.wpcomUser?.email
 
         case .failure(let error):
-            DDLogError("⛔️ Jetpack status fetched error: \(error)")
+            requiresConnectionOnly = false
             switch error {
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
                 /// 404 error means Jetpack is not installed or activated yet.
-                requiresConnectionOnly = false
-                if let onSuccess {
-                    onSuccess()
+                let roles = stores.sessionManager.defaultRoles
+                if roles.contains(.administrator) {
+                    return nil
                 } else {
-                    checkAdminRoleAndStartLoginIfPossible()
+                    throw JetpackCheckError.missingPermission
                 }
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
                 /// 403 means the site Jetpack connection is not established yet
                 /// and the user has no permission to handle this.
-                displayAdminRoleRequiredError()
-                requiresConnectionOnly = true
+                throw JetpackCheckError.missingPermission
             default:
-                showAlert(message: Localization.errorCheckingJetpack)
+                throw error
             }
         }
     }
@@ -146,15 +151,6 @@ private extension JetpackSetupCoordinator {
             }
         } else {
             showWPComEmailLogin()
-        }
-    }
-
-    func checkAdminRoleAndStartLoginIfPossible() {
-        let roles = stores.sessionManager.defaultRoles
-        if roles.contains(.administrator) {
-            showWPComEmailLogin()
-        } else {
-            displayAdminRoleRequiredError()
         }
     }
 
@@ -188,15 +184,22 @@ private extension JetpackSetupCoordinator {
             }
 
             let result = await fetchJetpackUser()
-            checkJetpackStatus(result, onSuccess: { [weak self] in
-                progressView.dismiss(animated: true, completion: {
-                    self?.showSetupSteps(username: username, authToken: authToken)
-                })
+            progressView.dismiss(animated: true, completion: { [weak self] in
+                guard let self else { return }
+                do {
+                    let connectedEmail = try self.retrieveJetpackConnectedEmail(result)
+                    self.showSetupSteps(username: username, authToken: authToken, jetpackConnectedEmail: connectedEmail)
+                } catch JetpackCheckError.missingPermission {
+                    self.displayAdminRoleRequiredError()
+                } catch {
+                    DDLogError("⛔️ Jetpack status fetched error: \(error)")
+                    self.showAlert(message: Localization.errorCheckingJetpack)
+                }
             })
         }
     }
 
-    func showSetupSteps(username: String, authToken: String) {
+    func showSetupSteps(username: String, authToken: String, jetpackConnectedEmail: String? = nil) {
         /// WPCom credentials to authenticate the user in the Jetpack connection web view automatically
         let credentials: Credentials = .wpcom(username: username, authToken: authToken, siteAddress: site.url)
         guard jetpackConnectedEmail == nil else {
@@ -383,6 +386,10 @@ private extension JetpackSetupCoordinator {
 
 // MARK: - Subtypes
 private extension JetpackSetupCoordinator {
+    enum JetpackCheckError: Error {
+        case missingPermission
+    }
+
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
     }

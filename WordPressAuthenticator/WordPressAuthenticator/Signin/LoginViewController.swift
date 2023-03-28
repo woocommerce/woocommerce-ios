@@ -132,8 +132,8 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             fatalError()
         }
 
-        let service = loginFields.meta.googleUser.flatMap {
-            return SocialService.google(user: $0)
+        let service: SocialService? = loginFields.meta.googleUser.map {
+            SocialService.google(user: $0)
         }
 
         authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)
@@ -425,10 +425,19 @@ extension LoginViewController {
     /// Updates the LoginFields structure, with the specified Google User + Token + Email.
     ///
     func updateLoginFields(googleUser: GIDGoogleUser, googleToken: String, googleEmail: String) {
-        loginFields.emailAddress = googleEmail
-        loginFields.username = googleEmail
+        updateLoginFields(
+            email: googleEmail,
+            username: googleEmail,
+            fullName: googleUser.profile?.name ?? "",
+            googleToken: googleToken
+        )
+    }
+
+    func updateLoginFields(email: String, username: String, fullName: String, googleToken: String) {
+        loginFields.emailAddress = email
+        loginFields.username = email
         loginFields.meta.socialServiceIDToken = googleToken
-        loginFields.meta.googleUser = googleUser
+        loginFields.meta.googleUser = SocialService.User(email: email, fullName: fullName)
     }
 
     // Used by SIWA when logging with with a passwordless, 2FA account.

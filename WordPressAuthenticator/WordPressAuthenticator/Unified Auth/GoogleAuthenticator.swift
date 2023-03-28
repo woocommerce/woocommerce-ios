@@ -145,7 +145,7 @@ class GoogleAuthenticator: NSObject {
                     loginFields: loginFields
                 )
 
-                didSignIn(token: token.token.rawValue, email: token.email)
+                didSignIn(token: token.token.rawValue, email: token.email, fullName: token.name)
             } catch {
                 failedToSignIn(error: error)
             }
@@ -216,15 +216,13 @@ private extension GoogleAuthenticator {
         // Get account information
         guard let user = user,
               let token = user.authentication.idToken,
-              let email = user.profile?.email else {
+              let email = user.profile?.email,
+              let fullName = user.profile?.name else {
             failedToSignIn(error: error)
             return
         }
 
-        // Set `googleUser` here, `didSignIn(token:, email:)` will do the rest.
-        loginFields.meta.googleUser = user
-
-        didSignIn(token: token, email: email)
+        didSignIn(token: token, email: email, fullName: fullName)
     }
 
     private func failedToSignIn(error: Error?) {
@@ -251,11 +249,12 @@ private extension GoogleAuthenticator {
         delegate?.googleAuthCancelled()
     }
 
-    private func didSignIn(token: String, email: String) {
+    private func didSignIn(token: String, email: String, fullName: String) {
         // Save account information to pass back to delegate later.
         loginFields.emailAddress = email
         loginFields.username = email
         loginFields.meta.socialServiceIDToken = token
+        loginFields.meta.googleUser = SocialService.User(email: email, fullName: fullName)
 
         guard authConfig.enableUnifiedAuth else {
             // Initiate separate WP login / signup paths.

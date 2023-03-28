@@ -37,6 +37,7 @@
 		3F86A84229D28473005D20C0 /* SocialUserCreating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F86A84129D28473005D20C0 /* SocialUserCreating.swift */; };
 		3F86A84629D2A306005D20C0 /* WordPressAuthenticatorDelegateSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F86A84529D2A306005D20C0 /* WordPressAuthenticatorDelegateSpy.swift */; };
 		3F86A84829D2A42D005D20C0 /* WordPressAuthenticator+TestsUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F86A84729D2A42D005D20C0 /* WordPressAuthenticator+TestsUtils.swift */; };
+		3F86A84A29D2A982005D20C0 /* LoginViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F86A84929D2A982005D20C0 /* LoginViewControllerTests.swift */; };
 		3F879FD5293A3AB6005C2B48 /* OAuthTokenRequestBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FD4293A3AB6005C2B48 /* OAuthTokenRequestBody.swift */; };
 		3F879FD7293A44F2005C2B48 /* OAuthTokenRequestBodyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FD6293A44F2005C2B48 /* OAuthTokenRequestBodyTests.swift */; };
 		3F879FD9293A48B2005C2B48 /* OAuthTokenResponseBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F879FD8293A48B2005C2B48 /* OAuthTokenResponseBody.swift */; };
@@ -292,6 +293,7 @@
 		3F86A84129D28473005D20C0 /* SocialUserCreating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialUserCreating.swift; sourceTree = "<group>"; };
 		3F86A84529D2A306005D20C0 /* WordPressAuthenticatorDelegateSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorDelegateSpy.swift; sourceTree = "<group>"; };
 		3F86A84729D2A42D005D20C0 /* WordPressAuthenticator+TestsUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WordPressAuthenticator+TestsUtils.swift"; sourceTree = "<group>"; };
+		3F86A84929D2A982005D20C0 /* LoginViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewControllerTests.swift; sourceTree = "<group>"; };
 		3F879FD4293A3AB6005C2B48 /* OAuthTokenRequestBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenRequestBody.swift; sourceTree = "<group>"; };
 		3F879FD6293A44F2005C2B48 /* OAuthTokenRequestBodyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenRequestBodyTests.swift; sourceTree = "<group>"; };
 		3F879FD8293A48B2005C2B48 /* OAuthTokenResponseBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenResponseBody.swift; sourceTree = "<group>"; };
@@ -557,6 +559,7 @@
 			isa = PBXGroup;
 			children = (
 				3F86A83D29D280D7005D20C0 /* AppleAuthenticatorTests.swift */,
+				3F86A84929D2A982005D20C0 /* LoginViewControllerTests.swift */,
 			);
 			path = SingIn;
 			sourceTree = "<group>";
@@ -1569,6 +1572,7 @@
 				3FEC44F9293A0F2900EBDECF /* ProofKeyForCodeExchangeTests.swift in Sources */,
 				3F107B0529A87AF0009B3658 /* CodeVerifier+Fixture.swift in Sources */,
 				CE16177821B70C1A00B82A47 /* WordPressAuthenticatorDisplayTextTests.swift in Sources */,
+				3F86A84A29D2A982005D20C0 /* LoginViewControllerTests.swift in Sources */,
 				3F86A84829D2A42D005D20C0 /* WordPressAuthenticator+TestsUtils.swift in Sources */,
 				3F879FF4293A7F46005C2B48 /* GoogleOAuthTokenGetterTests.swift in Sources */,
 				B501C048208FC79C00D1E58F /* LoginFacadeTests.m in Sources */,

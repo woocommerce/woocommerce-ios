@@ -13,11 +13,16 @@ final class StoreOnboardingPaymentsSetupCoordinator: Coordinator {
 
     private let task: Task
     private let site: Site
+    private let onDismiss: (() -> Void)?
 
-    init(task: Task, site: Site, navigationController: UINavigationController) {
+    init(task: Task,
+         site: Site,
+         navigationController: UINavigationController,
+         onDismiss: (() -> Void)? = nil) {
         self.task = task
         self.site = site
         self.navigationController = navigationController
+        self.onDismiss = onDismiss
     }
 
     func start() {
@@ -61,6 +66,7 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
     }
 
     @objc func dismissWebview() {
+        onDismiss?()
         navigationController.dismiss(animated: true)
     }
 }

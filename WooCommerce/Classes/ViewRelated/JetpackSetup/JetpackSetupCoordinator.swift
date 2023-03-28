@@ -232,6 +232,7 @@ private extension JetpackSetupCoordinator {
     }
 
     func authenticateUserAndRefreshSite(with credentials: Credentials) {
+        stores.sessionManager.deleteApplicationPassword()
         stores.authenticate(credentials: credentials)
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.syncingData, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)

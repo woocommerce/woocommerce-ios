@@ -10,6 +10,9 @@ final class MockSiteRemote {
     /// The results to return in `launchSite`.
     private var launchSiteResult: Result<Void, Error>?
 
+    /// The results to return in `enableFreeTrial`.
+    private var enableFreeTrialResult: Result<Void, Error>?
+
     /// Returns the value when `createSite` is called.
     func whenCreatingSite(thenReturn result: Result<SiteCreationResponse, Error>) {
         createSiteResult = result
@@ -34,6 +37,15 @@ extension MockSiteRemote: SiteRemoteProtocol {
     func launchSite(siteID: Int64) async throws {
         guard let result = launchSiteResult else {
             XCTFail("Could not find result for launching a site.")
+            throw NetworkError.notFound
+        }
+
+        return try result.get()
+    }
+
+    func enableFreeTrial(siteID: Int64) async throws {
+        guard let result = enableFreeTrialResult else {
+            XCTFail("Could not find result for enabling a trial.")
             throw NetworkError.notFound
         }
 

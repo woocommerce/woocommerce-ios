@@ -17,6 +17,10 @@ public enum SiteAction: Action {
     ///   - siteID: ID of the site to launch.
     ///   - completion: Called when the result of site launch is available.
     case launchSite(siteID: Int64, completion: (Result<Void, SiteLaunchError>) -> Void)
+
+    /// Enables a free trial plan for a site.
+    ///
+    case enableFreeTrial(siteID: Int64, completion: (Result<Void, Error>) -> Void)
 }
 
 /// The result of site creation including necessary site information.

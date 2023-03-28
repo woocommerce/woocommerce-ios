@@ -44,6 +44,8 @@ public final class SiteStore: Store {
             createSite(name: name, domain: domain, completion: completion)
         case let .launchSite(siteID, completion):
             launchSite(siteID: siteID, completion: completion)
+        case let .enableFreeTrial(siteID, completion):
+            enableFreeTrial(siteID: siteID, completion: completion)
         }
     }
 }
@@ -79,6 +81,17 @@ private extension SiteStore {
                 completion(.success(()))
             } catch {
                 completion(.failure(SiteLaunchError(remoteError: error)))
+            }
+        }
+    }
+
+    func enableFreeTrial(siteID: Int64, completion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                try await remote.enableFreeTrial(siteID: siteID)
+                completion(.success(()))
+            } catch {
+                completion(.failure(error))
             }
         }
     }

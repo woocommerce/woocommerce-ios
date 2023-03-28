@@ -43,7 +43,7 @@ final class AuthenticatedWebViewController: UIViewController {
         let currentCredentials = ServiceLocator.stores.sessionManager.defaultCredentials
 
         self.siteCredentials = {
-            if case let.wporg(username, password, siteAddress) = extraCredentials {
+            if case let .wporg(username, password, siteAddress) = extraCredentials {
                 return WordPressOrgCredentials(username: username,
                                                password: password,
                                                xmlrpc: siteAddress + "/xmlrpc.php",

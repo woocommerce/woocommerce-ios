@@ -427,6 +427,13 @@ extension WooAnalyticsEvent {
             case list
         }
 
+        /// Possible item types to add to an Order
+        ///
+        enum ProductType: String {
+            case product
+            case variation
+        }
+
         enum GlobalKeys {
             static let millisecondsSinceOrderAddNew = "milliseconds_since_order_add_new"
         }
@@ -446,6 +453,7 @@ extension WooAnalyticsEvent {
             static let orderID = "id"
             static let hasMultipleShippingLines = "has_multiple_shipping_lines"
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
+            static let itemType = "item_type"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -566,6 +574,24 @@ extension WooAnalyticsEvent {
                 Keys.flow: flow.rawValue,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
+            ])
+        }
+
+        static func orderCreationProductSelectorItemSelected(productType: ProductType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCreationProductSelectorItemSelected, properties: [
+                Keys.itemType: productType.rawValue
+            ])
+        }
+
+        static func orderCreationProductSelectorItemUnselected(productType: ProductType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCreationProductSelectorItemUnselected, properties: [
+                Keys.itemType: productType.rawValue
+            ])
+        }
+
+        static func orderCreationProductSelectorConfirmButtonTapped(productCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCreationProductSelectorConfirmButtonTapped, properties: [
+                Keys.productCount: Int64(productCount)
             ])
         }
 

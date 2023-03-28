@@ -283,6 +283,8 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     func completeMultipleSelection() {
         let allIDs = selectedProductIDs + selectedProductVariationIDs
+        // TODO: Inject into constructor
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: allIDs.count))
         onMultipleSelectionCompleted?(allIDs)
     }
 

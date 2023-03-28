@@ -869,8 +869,10 @@ private extension EditableOrderViewModel {
             // Multi-selection
             if !selectedProducts.contains(where: { $0.productID == product.productID }) {
                 selectedProducts.append(product)
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .product))
             } else {
                 selectedProducts.removeAll(where: { $0.productID == product.productID })
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .product))
             }
         } else {
             // Single-selection
@@ -899,8 +901,10 @@ private extension EditableOrderViewModel {
             // Multi-Selection
             if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
                 selectedProductVariations.append(variation)
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .variation))
             } else {
                 selectedProductVariations.removeAll(where: { $0.productVariationID == variation.productVariationID })
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
             }
         } else {
             // Single-Selection

@@ -166,7 +166,7 @@ private extension AppleAuthenticator {
     func updateLoginFields(email: String, fullName: String, token: String) {
         updateLoginEmail(email)
         loginFields.meta.socialServiceIDToken = token
-        loginFields.meta.appleUser = AppleUser(email: email, fullName: fullName)
+        loginFields.meta.appleUser = SocialService.User(email: email, fullName: fullName)
     }
 
     func updateLoginEmail(_ email: String) {

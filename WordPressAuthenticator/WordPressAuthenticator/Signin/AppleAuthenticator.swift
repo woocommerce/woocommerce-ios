@@ -17,9 +17,9 @@ class AppleAuthenticator: NSObject {
     private var showFromViewController: UIViewController?
     private let loginFields = LoginFields()
     weak var delegate: AppleAuthenticatorDelegate?
-    let signupService: SignupService
+    let signupService: SocialUserCreating
 
-    init(signupService: SignupService = SignupService()) {
+    init(signupService: SocialUserCreating = SignupService()) {
         self.signupService = signupService
         super.init()
     }

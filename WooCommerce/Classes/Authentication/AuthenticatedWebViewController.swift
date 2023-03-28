@@ -169,7 +169,7 @@ private extension AuthenticatedWebViewController {
 
         /// Authenticate for WP.com automatically if credentials are available.
         ///
-        if let wpcomCredentials {
+        if let wpcomCredentials, case .wpcom = wpcomCredentials {
             webView.authenticateForWPComAndRedirect(to: url, credentials: wpcomCredentials)
         } else {
             let request = URLRequest(url: url)

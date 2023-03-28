@@ -14,10 +14,15 @@ class AppleAuthenticator: NSObject {
     // MARK: - Properties
 
     static var sharedInstance: AppleAuthenticator = AppleAuthenticator()
-    private override init() {}
     private var showFromViewController: UIViewController?
     private let loginFields = LoginFields()
     weak var delegate: AppleAuthenticatorDelegate?
+    let signupService: SignupService
+
+    init(signupService: SignupService = SignupService()) {
+        self.signupService = signupService
+        super.init()
+    }
 
     static let credentialRevokedNotification = ASAuthorizationAppleIDProvider.credentialRevokedNotification
 
@@ -88,8 +93,7 @@ private extension AppleAuthenticator {
 
         updateLoginFields(email: email, fullName: name, token: token)
 
-        let service = SignupService()
-        service.createWPComUserWithApple(token: token, email: email, fullName: name,
+        signupService.createWPComUserWithApple(token: token, email: email, fullName: name,
                                          success: { [weak self] accountCreated,
                                             existingNonSocialAccount,
                                             existing2faAccount,

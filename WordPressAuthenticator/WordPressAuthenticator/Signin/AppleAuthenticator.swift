@@ -225,8 +225,8 @@ extension AppleAuthenticator {
             fatalError()
         }
 
-        let service = loginFields.meta.appleUser.flatMap {
-            return SocialService.apple(user: $0)
+        let service = loginFields.meta.appleUser.map {
+            SocialService.apple(user: $0)
         }
 
         authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)

@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import Yosemite
+import enum Networking.SiteCreationFlow
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
 
@@ -136,16 +137,29 @@ private extension StoreCreationCoordinator {
         navigationController.isModalInPresentation = true
 
         let isProfilerEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationM3Profiler)
+        let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
         let storeNameForm = StoreNameFormHostingController { [weak self] storeName in
             if isProfilerEnabled {
                 self?.showCategoryQuestion(from: navigationController, storeName: storeName, planToPurchase: planToPurchase)
             } else {
-                self?.showDomainSelector(from: navigationController,
-                                         storeName: storeName,
-                                         category: nil,
-                                         sellingStatus: nil,
-                                         countryCode: nil,
-                                         planToPurchase: planToPurchase)
+                if isFreeTrialEnabled {
+                    Task {
+                        await self?.createStoreAndContinueToStoreSummary(from: navigationController,
+                                                                         name: storeName,
+                                                                         category: nil,
+                                                                         sellingStatus: nil,
+                                                                         countryCode: nil,
+                                                                         flow: .wooexpress,
+                                                                         planToPurchase: planToPurchase)
+                    }
+                } else {
+                    self?.showDomainSelector(from: navigationController,
+                                             storeName: storeName,
+                                             category: nil,
+                                             sellingStatus: nil,
+                                             countryCode: nil,
+                                             planToPurchase: planToPurchase)
+                }
             }
         } onClose: { [weak self] in
             self?.showDiscardChangesAlert(flow: .native)
@@ -394,7 +408,7 @@ private extension StoreCreationCoordinator {
                                                             category: category,
                                                             sellingStatus: sellingStatus,
                                                             countryCode: countryCode,
-                                                            domain: domain.name,
+                                                            flow: .onboarding(domain: domain.name),
                                                             planToPurchase: planToPurchase)
         }, onSupport: { [weak self] in
             self?.showSupport(from: navigationController)
@@ -409,19 +423,32 @@ private extension StoreCreationCoordinator {
                                               category: StoreCreationCategoryAnswer?,
                                               sellingStatus: StoreCreationSellingStatusAnswer?,
                                               countryCode: SiteAddress.CountryCode?,
-                                              domain: String,
+                                              flow: SiteCreationFlow,
                                               planToPurchase: WPComPlanProduct) async {
-        let result = await createStore(name: name, domain: domain)
+
+        let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
+        let result = await createStore(name: name, flow: flow)
         analytics.track(event: .StoreCreation.siteCreationProfilerData(category: category,
                                                                        sellingStatus: sellingStatus,
                                                                        countryCode: countryCode))
         switch result {
         case .success(let siteResult):
-            showStoreSummary(from: navigationController,
-                             result: siteResult,
-                             category: category,
-                             countryCode: countryCode,
-                             planToPurchase: planToPurchase)
+            if isFreeTrialEnabled {
+
+                let result = await enableFreeTrial(siteID: siteResult.siteID)
+                switch result {
+                case .success:
+                    showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteResult.siteID)
+                case .failure(let error):
+                    print(error) // TODO: Properly handle errors
+                }
+            } else {
+                showStoreSummary(from: navigationController,
+                                 result: siteResult,
+                                 category: category,
+                                 countryCode: countryCode,
+                                 planToPurchase: planToPurchase)
+            }
         case .failure(let error):
             analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native))
             showStoreCreationErrorAlert(from: navigationController, error: error)
@@ -429,9 +456,20 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func createStore(name: String, domain: String) async -> Result<SiteCreationResult, SiteCreationError> {
+    func createStore(name: String, flow: SiteCreationFlow) async -> Result<SiteCreationResult, SiteCreationError> {
         await withCheckedContinuation { continuation in
-            stores.dispatch(SiteAction.createSite(name: name, domain: domain) { result in
+            stores.dispatch(SiteAction.createSite(name: name, flow: flow) { result in
+                continuation.resume(returning: result)
+            })
+        }
+    }
+
+    /// Enables a free trial on a recently created store.
+    ///
+    @MainActor
+    func enableFreeTrial(siteID: Int64) async -> Result<Void, Error> {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(SiteAction.enableFreeTrial(siteID: siteID) { result in
                 continuation.resume(returning: result)
             })
         }

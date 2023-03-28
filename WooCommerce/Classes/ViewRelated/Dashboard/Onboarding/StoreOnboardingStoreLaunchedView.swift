@@ -41,7 +41,7 @@ struct StoreOnboardingStoreLaunchedView: View {
                     }
 
                     // URL label.
-                    Text(siteURL.absoluteString)
+                    Text(siteURL.absoluteString.trimHTTPScheme())
                         .underline()
                         .foregroundColor(.init(.textSubtle))
                         .captionStyle()

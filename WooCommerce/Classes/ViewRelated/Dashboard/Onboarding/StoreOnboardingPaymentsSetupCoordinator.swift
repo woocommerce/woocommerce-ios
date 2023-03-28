@@ -79,7 +79,7 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
 
     enum URLs {
         static func wcPay(site: Site) -> String {
-            "\(site.adminURL.removingSuffix("/"))/admin.php?page=wc-settings&tab=checkout"
+            "\(site.adminURL.removingSuffix("/"))/admin.php?page=wc-settings&tab=checkout&section=woocommerce_payments"
         }
 
         static func payments(site: Site) -> String {

@@ -179,7 +179,7 @@ final class EditableOrderViewModel: ObservableObject {
             storageManager: storageManager,
             stores: stores,
             supportsMultipleSelection: isProductMultiSelectionBetaFeatureEnabled,
-            isClearSelectionEnabled: false,
+            isClearSelectionEnabled: isProductMultiSelectionBetaFeatureEnabled,
             toggleAllVariationsOnSelection: false,
             onProductSelected: { [weak self] product in
                 guard let self = self else { return }
@@ -191,6 +191,12 @@ final class EditableOrderViewModel: ObservableObject {
             }, onMultipleSelectionCompleted: { [weak self] _ in
                 guard let self = self else { return }
                 self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+            }, onAllSelectionsCleared: { [weak self] in
+                guard let self = self else { return }
+                self.clearAllSelectedItems()
+            }, onSelectedVariationsCleared: { [weak self] in
+                guard let self = self else { return }
+                self.clearSelectedVariations()
             })
     }
 
@@ -205,15 +211,15 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Keeps track of selected/unselected Products, if any
     ///
-    @Published var selectedProducts: [Product] = []
+    @Published private var selectedProducts: [Product] = []
 
     /// Keeps track of selected/unselected Product Variations, if any
     ///
-    @Published var selectedProductVariations: [ProductVariation] = []
+    @Published private var selectedProductVariations: [ProductVariation] = []
 
     /// Keeps track of all selected Products and Product Variations IDs
     ///
-    var selectedProductsAndVariationsIDs: [Int64] {
+    private var selectedProductsAndVariationsIDs: [Int64] {
         let selectedProductsCount = selectedProducts.compactMap { $0.productID }
         let selectedProductVariationsCount = selectedProductVariations.compactMap { $0.productVariationID }
         return selectedProductsCount + selectedProductVariationsCount
@@ -370,6 +376,19 @@ final class EditableOrderViewModel: ObservableObject {
             }
         }
         return itemsInOrder
+    }
+
+    /// Clears selected products and variations
+    ///
+    private func clearAllSelectedItems() {
+        selectedProducts.removeAll()
+        selectedProductVariations.removeAll()
+    }
+
+    /// Clears selected variations
+    /// 
+    private func clearSelectedVariations() {
+        selectedProductVariations.removeAll()
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.

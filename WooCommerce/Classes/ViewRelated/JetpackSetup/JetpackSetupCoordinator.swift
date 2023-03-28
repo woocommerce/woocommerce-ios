@@ -228,7 +228,7 @@ private extension JetpackSetupCoordinator {
 
     func authenticateUserAndRefreshSite(with credentials: Credentials) {
         stores.authenticate(credentials: credentials)
-        let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
+        let progressView = InProgressViewController(viewProperties: .init(title: Localization.syncingData, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
 
         let action = AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url) { [weak self] result in
@@ -397,6 +397,10 @@ private extension JetpackSetupCoordinator {
         static let pleaseWait = NSLocalizedString(
             "Please wait",
             comment: "Message on the loading view displayed when the magic link authentication for Jetpack setup is in progress"
+        )
+        static let syncingData = NSLocalizedString(
+            "Syncing data",
+            comment: "Message on the loading view displayed when the data is being synced after Jetpack setup completes"
         )
         static let errorFetchingWPComAccount = NSLocalizedString(
             "Unable to fetch the logged in WordPress.com account. Please try again.",

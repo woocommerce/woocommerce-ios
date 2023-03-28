@@ -381,13 +381,23 @@ final class EditableOrderViewModel: ObservableObject {
     /// Clears selected products and variations
     ///
     private func clearAllSelectedItems() {
+        selectedProducts.forEach { _ in
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .product))
+        }
         selectedProducts.removeAll()
+
+        selectedProductVariations.forEach { _ in
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
+        }
         selectedProductVariations.removeAll()
     }
 
     /// Clears selected variations
     /// 
     private func clearSelectedVariations() {
+        selectedProductVariations.forEach { _ in
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
+        }
         selectedProductVariations.removeAll()
     }
 

@@ -8,6 +8,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     var supportEnabled: Bool = true
     var allowWPComLogin: Bool = true
 
+    private(set) var presentSignupEpilogueCalled = false
     private(set) var socialService: SocialService?
 
     func createdWordPressComAccount(username: String, authToken: String) {
@@ -31,6 +32,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     }
 
     func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialService?) {
+        presentSignupEpilogueCalled = true
         socialService = service
     }
 

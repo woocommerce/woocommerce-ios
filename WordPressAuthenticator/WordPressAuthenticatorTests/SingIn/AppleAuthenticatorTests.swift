@@ -4,8 +4,7 @@ import XCTest
 
 class AppleAuthenticatorTests: XCTestCase {
 
-    // showSignupEpilogue with loginFields.meta.appleUser set will pass SocialService.apple to
-    // the delegate
+    // showSignupEpilogue with loginFields.meta.appleUser set will pass SocialService.apple to the delegate
     func testShowingSignupEpilogueWithApple() throws {
         WordPressAuthenticator.initializeForTesting()
         let delegateSpy = WordPressAuthenticatorDelegateSpy()
@@ -20,9 +19,9 @@ class AppleAuthenticatorTests: XCTestCase {
         let socialUserCreatingStub = SocialUserCreatingStub(appleResult: .success((true, true, true, "a", "b")))
         let sut = AppleAuthenticator(signupService: socialUserCreatingStub)
 
-        // before acting on the SUT, we need to ensure the login fields are set as we expect
+        // Before acting on the SUT, we need to ensure the login fields are set as we expect
         let presenterViewController = UIViewController()
-        // we need to create this because it's accessed by showFrom(viewController:)
+        // We need to create this because it's accessed by showFrom(viewController:)
         _ = UINavigationController(rootViewController: presenterViewController)
         sut.showFrom(viewController: presenterViewController)
         sut.createWordPressComUser(
@@ -40,6 +39,37 @@ class AppleAuthenticatorTests: XCTestCase {
         }
         XCTAssertEqual(user.fullName, "Full Name")
         XCTAssertEqual(user.email, "test@email.com")
+    }
+
+    // showSignupEpilogue with loginFields.meta.appleUser set will not pass SocialService.apple to the delegate
+    func testShowingSignupEpilogueWithoutAppleUser() throws {
+        WordPressAuthenticator.initializeForTesting()
+        let delegateSpy = WordPressAuthenticatorDelegateSpy()
+        WordPressAuthenticator.shared.delegate = delegateSpy
+
+        // This might be unnecessary because delegateSpy shoudl be deallocated once the test method finished.
+        // Leaving it here, just in case.
+        addTeardownBlock {
+            WordPressAuthenticator.shared.delegate = nil
+        }
+
+        let sut = AppleAuthenticator(signupService: SocialUserCreatingStub())
+
+        // Before acting on the SUT, we need to ensure the login fields are set as we expect
+        let presenterViewController = UIViewController()
+        // We need to create this because it's accessed by showFrom(viewController:)
+        _ = UINavigationController(rootViewController: presenterViewController)
+        sut.showFrom(viewController: presenterViewController)
+
+        sut.showSignupEpilogue(for: AuthenticatorCredentials())
+
+        // The delegate is called, but without social service.
+        //
+        // By the way, the type system and runtime allow this to happen, but does it actually
+        // make sense? Not so sure. How can we callback from Sign In with Apple without the
+        // matching social service?
+        XCTAssertTrue(delegateSpy.presentSignupEpilogueCalled)
+        XCTAssertNil(delegateSpy.socialService)
     }
 }
 

@@ -644,6 +644,7 @@ private extension ProductsViewController {
         let filterTitle = NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products by different attributes.")
         filterButton.setTitle(filterTitle, for: .normal)
         filterButton.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+        filterButton.accessibilityIdentifier = "product-filter-button"
 
         [sortButton, filterButton].forEach {
             $0.applyLinkButtonStyle()

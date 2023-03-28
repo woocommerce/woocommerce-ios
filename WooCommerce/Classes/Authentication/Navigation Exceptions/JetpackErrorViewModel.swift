@@ -72,7 +72,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
             if let siteCredentials {
                 return .wporg(username: siteCredentials.username,
                               password: siteCredentials.password,
-                              siteAddress: siteCredentials.password)
+                              siteAddress: siteCredentials.siteURL)
             }
             return nil
         }()

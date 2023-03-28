@@ -232,6 +232,9 @@ private extension JetpackSetupViewModel {
             switch result {
             case .success(let url):
                 self.analytics.track(.loginJetpackSetupFetchJetpackConnectionURLSuccessful)
+                /// Checks if the fetch URL is for account connection;
+                /// if not, use the web view solution to avoid the need for cookie-nonce.
+                /// Reference: pe5sF9-1le-p2#comment-1942.
                 if url.absoluteString.hasPrefix(Constants.accountConnectionURL) {
                     self.jetpackConnectionURL = url
                 } else {

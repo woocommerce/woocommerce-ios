@@ -115,7 +115,7 @@ private extension JetpackSetupCoordinator {
     }
 
     /// Checks the Jetpack connection status for non-Jetpack sites to return the connected email if available.
-    /// Returns Jetpack connected error if available
+    /// Throws any error if the Jetpack user fetch failed.
     ///
     func retrieveJetpackConnectedEmail(_ result: Result<JetpackUser, Error>) throws -> String? {
         switch result {

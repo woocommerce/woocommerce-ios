@@ -124,8 +124,8 @@ public final class ProductsScreen: ScreenObject {
         // get filtered mock file responses to compare with elements displayed on UI
         let filteredProduct = products.filter { $0.stock_status == filter.lowercased() }
 
-        productsTableView.assertTextVisibilityCount(textToFind: (filteredProduct[0].name))
-        productsTableView.assertTextVisibilityCount(textToFind: filteredProduct[0].stock_status)
+        productsTableView.assertTextVisibilityCount(textToFind: (filteredProduct[0].name), expectedCount: 1)
+        productsTableView.assertTextVisibilityCount(textToFind: filteredProduct[0].stock_status, expectedCount: 1)
 
         return self
     }

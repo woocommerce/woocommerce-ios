@@ -1,3 +1,5 @@
+import SVProgressHUD
+
 /// View controller that handles the google authentication flow
 ///
 class GoogleAuthViewController: LoginViewController {
@@ -142,6 +144,7 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
     }
 
     func googleAuthCancelled() {
+        SVProgressHUD.dismiss()
         navigationController?.popViewController(animated: true)
     }
 

@@ -107,10 +107,10 @@ class StoreOnboardingViewModel: ObservableObject {
 private extension StoreOnboardingViewModel {
     @MainActor
     func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
-        let shouldManuallyAppendLaunchStoreTask = await isFreeTrialPlan()
+        async let shouldManuallyAppendLaunchStoreTask = isFreeTrialPlan()
         let tasksFromServer: [StoreOnboardingTask] = try await fetchTasks()
 
-        if shouldManuallyAppendLaunchStoreTask {
+        if await shouldManuallyAppendLaunchStoreTask {
             return (tasksFromServer + [.init(isComplete: false, type: .launchStore)])
                 .sorted()
                 .map { .init(task: $0) }

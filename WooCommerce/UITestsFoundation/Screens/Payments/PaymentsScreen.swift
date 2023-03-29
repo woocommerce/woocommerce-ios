@@ -6,12 +6,12 @@ public final class PaymentsScreen: ScreenObject {
         $0.cells["collect-payment"]
     }
 
-    private let selectCardReaderManualsButtonGetter: (XCUIApplication) -> XCUIElement = {
+    private let cardReaderManualsButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.cells["card-reader-manuals"]
     }
 
     private var collectPaymentButton: XCUIElement { collectPaymentButtonGetter(app) }
-    private var selectCardReaderManualsButton: XCUIElement { selectCardReaderManualsButtonGetter(app) }
+    private var cardReaderManualsButton: XCUIElement { cardReaderManualsButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
@@ -21,8 +21,8 @@ public final class PaymentsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func selectCardReaderManuals() throws -> CardReaderManualsScreen {
-        selectCardReaderManualsButton.tap()
+    public func tapCardReaderManuals() throws -> CardReaderManualsScreen {
+        cardReaderManualsButton.tap()
         return try CardReaderManualsScreen()
     }
 }

@@ -14,6 +14,8 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         guard let self else { return }
         self.reloadTasks()
         ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskCompleted(task: task))
+    }, reloadTasks: { [weak self] in
+        self?.reloadTasks()
     })
 
     init(viewModel: StoreOnboardingViewModel,

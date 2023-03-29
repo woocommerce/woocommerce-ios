@@ -1,4 +1,5 @@
 import SwiftUI
+import enum Yosemite.Credentials
 
 /// Hosting controller for `JetpackSetupView`.
 ///
@@ -6,15 +7,18 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
     private let viewModel: JetpackSetupViewModel
     private let analytics: Analytics
     private let authentication: Authentication
+    private let connectionWebViewCredentials: Credentials?
 
     init(siteURL: String,
          connectionOnly: Bool,
+         connectionWebViewCredentials: Credentials? = nil,
          authentication: Authentication = ServiceLocator.authenticationManager,
          analytics: Analytics = ServiceLocator.analytics,
          onStoreNavigation: @escaping (String?) -> Void) {
         self.analytics = analytics
         self.viewModel = JetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
         self.authentication = authentication
+        self.connectionWebViewCredentials = connectionWebViewCredentials
         super.init(rootView: JetpackSetupView(viewModel: viewModel))
 
         rootView.webViewPresentationHandler = { [weak self] in
@@ -78,7 +82,7 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
             guard let self else { return }
             self.viewModel.jetpackConnectionInterrupted = true
         })
-        let webView = AuthenticatedWebViewController(viewModel: webViewModel)
+        let webView = AuthenticatedWebViewController(viewModel: webViewModel, extraCredentials: connectionWebViewCredentials)
         webView.navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel,
                                                                    style: .plain,
                                                                    target: self,
@@ -273,14 +277,15 @@ struct JetpackSetupView: View {
             }
         }
         .fullScreenCover(isPresented: $viewModel.jetpackConnectionInterrupted) {
-            JetpackSetupInterruptedView(siteURL: viewModel.siteURL, onSupport: supportHandler, onContinue: {
+            JetpackSetupInterruptedView(siteURL: viewModel.siteURL, onSupport: {
+                viewModel.shouldPresentWebView = false
+                supportHandler()
+            }, onContinue: {
+                viewModel.shouldPresentWebView = false
                 viewModel.jetpackConnectionInterrupted = false
                 viewModel.didTapContinueConnectionButton()
-                // delay for the dismissal of the interrupted screen to complete.
-                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interruptedConnectionActionHandlerDelayTime) {
-                    webViewPresentationHandler()
-                }
             }, onCancellation: {
+                viewModel.shouldPresentWebView = false
                 viewModel.jetpackConnectionInterrupted = false
                 // delay for the dismissal of the interrupted screen to complete.
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interruptedConnectionActionHandlerDelayTime) {

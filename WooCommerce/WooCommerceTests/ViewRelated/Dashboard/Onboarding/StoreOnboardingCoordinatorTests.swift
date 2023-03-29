@@ -23,7 +23,7 @@ final class StoreOnboardingCoordinatorTests: XCTestCase {
 
     func test_starting_with_customDomains_task_presents_DomainSettingsHostingController() throws {
         // Given
-        let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: .fake(), onTaskCompleted: { _ in })
+        let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: .fake(), onTaskCompleted: { _ in }, reloadTasks: {})
 
         // When
         coordinator.start(task: .init(isComplete: true, type: .customizeDomains))

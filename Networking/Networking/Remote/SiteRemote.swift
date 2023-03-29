@@ -34,9 +34,12 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
         let path = Path.siteCreation
         let subdomainName = flow.domain.split(separator: ".").first
 
-        // If we provide a domain, we should have been able to extract the subdomain name.
-        if !flow.domain.isEmpty && subdomainName == nil {
+        // Do not allow nil subdomains on the `.onboarding` flow
+        switch flow {
+        case .onboarding where subdomainName == nil:
             throw SiteCreationError.invalidDomain
+        default:
+            break
         }
 
         let parameters: [String: Any] = [

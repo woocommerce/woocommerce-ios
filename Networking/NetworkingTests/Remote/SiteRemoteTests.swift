@@ -27,7 +27,7 @@ final class SiteRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "sites/new", filename: "site-creation-success")
 
         // When
-        let response = try await remote.createSite(name: "Wapuu swags", domain: "wapuu.store")
+        let response = try await remote.createSite(name: "Wapuu swags", flow: .onboarding(domain: "wapuu.store"))
 
         // Then
         XCTAssertTrue(response.success)
@@ -38,7 +38,7 @@ final class SiteRemoteTests: XCTestCase {
     }
 
     func test_createSite_returns_invalidDomain_error_when_domain_is_empty() async throws {
-        await assertThrowsError({ _ = try await remote.createSite(name: "Wapuu swags", domain: "") },
+        await assertThrowsError({ _ = try await remote.createSite(name: "Wapuu swags", flow: .onboarding(domain: "")) },
                                 errorAssert: { ($0 as? SiteCreationError) == .invalidDomain} )
     }
 
@@ -48,7 +48,7 @@ final class SiteRemoteTests: XCTestCase {
 
         await assertThrowsError({
             // When
-            _ = try await remote.createSite(name: "Wapuu swags", domain: "wapuu.store")
+            _ = try await remote.createSite(name: "Wapuu swags", flow: .onboarding(domain: "wapuu.store"))
         }, errorAssert: { ($0 as? DotcomError) == .unknown(code: "blog_name_only_lowercase_letters_and_numbers",
                                                 message: "Site names can only contain lowercase letters (a-z) and numbers.")
         })
@@ -57,7 +57,7 @@ final class SiteRemoteTests: XCTestCase {
     func test_createSite_returns_failure_on_empty_response() async throws {
         await assertThrowsError({
             // When
-            _ = try await remote.createSite(name: "Wapuu swags", domain: "wapuu.store")
+            _ = try await remote.createSite(name: "Wapuu swags", flow: .onboarding(domain: "wapuu.store"))
         }, errorAssert: { ($0 as? NetworkError) == .notFound })
     }
 

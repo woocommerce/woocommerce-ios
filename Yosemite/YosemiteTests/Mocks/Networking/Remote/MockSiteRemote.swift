@@ -25,7 +25,7 @@ final class MockSiteRemote {
 }
 
 extension MockSiteRemote: SiteRemoteProtocol {
-    func createSite(name: String, domain: String) async throws -> SiteCreationResponse {
+    func createSite(name: String, flow: SiteCreationFlow) async throws -> SiteCreationResponse {
         guard let result = createSiteResult else {
             XCTFail("Could not find result for creating a site.")
             throw NetworkError.notFound

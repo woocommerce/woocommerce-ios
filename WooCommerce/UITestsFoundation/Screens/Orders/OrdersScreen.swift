@@ -33,13 +33,13 @@ public final class OrdersScreen: ScreenObject {
     }
 
     @discardableResult
-    public func selectOrder(atIndex index: Int) throws -> SingleOrderScreen {
+    public func tapOrder(atIndex index: Int) throws -> SingleOrderScreen {
         app.tables.cells.element(boundBy: index).tap()
         return try SingleOrderScreen()
     }
 
     @discardableResult
-    public func selectOrder(byOrderNumber orderNumber: String) throws -> SingleOrderScreen {
+    public func tapOrder(byOrderNumber orderNumber: String) throws -> SingleOrderScreen {
         let orderNumberPredicate = NSPredicate(format: "label CONTAINS[c] %@", orderNumber)
         app.staticTexts.containing(orderNumberPredicate).firstMatch.tap()
 
@@ -56,8 +56,8 @@ public final class OrdersScreen: ScreenObject {
     public func verifyOrdersList(orders: [OrderData]) throws -> Self {
         let ordersTableView = app.tables.matching(identifier: "orders-table-view")
         XCTAssertEqual(orders.count, ordersTableView.cells.count, "Expecting '\(orders.count)' orders, got '\(app.tables.cells.count)' instead!")
-        ordersTableView.element.assertTextVisibilityCount(textToFind: String(orders[0].id))
-        ordersTableView.element.assertTextVisibilityCount(textToFind: String(orders[0].total))
+        ordersTableView.element.assertTextVisibilityCount(textToFind: String(orders[0].id), expectedCount: 1)
+        ordersTableView.element.assertTextVisibilityCount(textToFind: String(orders[0].total), expectedCount: 1)
         ordersTableView.element.assertLabelContains(firstSubstring: String(orders[0].id), secondSubstring: orders[0].billing.first_name)
 
         return self

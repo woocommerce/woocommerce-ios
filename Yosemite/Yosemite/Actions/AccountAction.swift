@@ -12,6 +12,7 @@ public enum AccountAction: Action {
     case synchronizeAccountSettings(userID: Int64, onCompletion: (Result<AccountSettings, Error>) -> Void)
     /// The boolean in the completion block indicates whether the sites contain any JCP sites (connected to Jetpack without Jetpack-the-plugin).
     case synchronizeSites(selectedSiteID: Int64?, onCompletion: (Result<Bool, Error>) -> Void)
+    case synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: String, onCompletion: (Result<Site, Error>) -> Void)
     case synchronizeSitePlan(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
     case updateAccountSettings(userID: Int64, tracksOptOut: Bool, onCompletion: (Result<Void, Error>) -> Void)
     case closeAccount(onCompletion: (Result<Void, Error>) -> Void)

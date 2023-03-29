@@ -18,7 +18,7 @@ final class ProductsTests: XCTestCase {
         try TabNavComponent().goToProductsScreen()
             .verifyProductsScreenLoaded()
             .verifyProductList(products: products)
-            .selectProduct(byName: products[0].name)
+            .tapProduct(byName: products[0].name)
             .verifyProduct(product: products[0])
             .goBackToProductList()
             .verifyProductsScreenLoaded()
@@ -40,7 +40,7 @@ final class ProductsTests: XCTestCase {
         let products = try GetMocks.readProductsData()
 
         try TabNavComponent().goToProductsScreen()
-            .selectSearchButton()
+            .tapSearchButton()
             .verifyNumberOfProductsInSearchResults(equals: products.count)
             .enterSearchCriteria(text: products[0].name)
             .verifyProductSearchResults(expectedProduct: products[0])

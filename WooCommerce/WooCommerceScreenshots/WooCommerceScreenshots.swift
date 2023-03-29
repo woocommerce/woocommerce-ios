@@ -54,9 +54,9 @@ class WooCommerceScreenshots: XCTestCase {
         .cancelOrderCreation()
 
         // Collect payment
-        .selectOrder(atIndex: 0)
+        .tapOrder(atIndex: 0)
         .tapCollectPaymentButton()
-        .selectCardPresentPayment()
+        .tapCardPresentPayment()
         .thenTakeScreenshot(named: "order-payment")
         .goBackToPaymentMethodsScreen()
         .goBackToOrderScreen()
@@ -65,7 +65,7 @@ class WooCommerceScreenshots: XCTestCase {
         // Products
         try TabNavComponent()
         .goToProductsScreen()
-        .selectAddProduct()
+        .tapAddProduct()
         .thenTakeScreenshot(named: "product-add")
 
         // Push notification

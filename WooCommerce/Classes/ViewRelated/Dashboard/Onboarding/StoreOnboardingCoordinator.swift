@@ -19,15 +19,18 @@ final class StoreOnboardingCoordinator: Coordinator {
     private let site: Site
     private let onTaskCompleted: (_ task: TaskType) -> Void
     private let reloadTasks: () -> Void
+    private let onUpgradePlan: (() -> Void)?
 
     init(navigationController: UINavigationController,
          site: Site,
          onTaskCompleted: @escaping (_ task: TaskType) -> Void,
-         reloadTasks: @escaping () -> Void) {
+         reloadTasks: @escaping () -> Void,
+         onUpgradePlan: (() -> Void)? = nil) {
         self.navigationController = navigationController
         self.site = site
         self.onTaskCompleted = onTaskCompleted
         self.reloadTasks = reloadTasks
+        self.onUpgradePlan = onUpgradePlan
     }
 
     /// Navigates to the fullscreen store onboarding view.
@@ -149,6 +152,7 @@ private extension StoreOnboardingCoordinator {
         let upgradeController = UpgradePlanCoordinatingController(siteID: site.siteID,
                                                                   source: .bannerInLaunchYourStoreOnboardingTask,
                                                                   onSuccess: { [weak self] in
+            self?.onUpgradePlan?()
             self?.reloadTasks()
         })
         navigationController.present(upgradeController, animated: true)

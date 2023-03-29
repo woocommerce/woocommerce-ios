@@ -161,6 +161,27 @@ private extension StoreOnboardingViewModel {
         defaults[.completedAllStoreOnboardingTasks] = true
     }
 
+    @MainActor
+    func isFreeTrialPlan() async -> Bool {
+        // Only fetch free trial information if the site is a WPCom site.
+        guard stores.sessionManager.defaultSite?.isWordPressComStore == true else {
+            return false
+        }
+
+        return await withCheckedContinuation({ continuation in
+            let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
+                switch result {
+                case .success(let plan):
+                    return continuation.resume(returning: plan.isFreeTrial)
+                case .failure(let error):
+                    DDLogError("⛔️ Error fetching the current site's plan information: \(error)")
+                    continuation.resume(returning: false)
+                }
+            }
+            stores.dispatch(action)
+        })
+    }
+
     func hasPendingTasks(_ tasks: [StoreOnboardingTaskViewModel]) -> Bool {
         tasks.contains(where: { $0.isComplete == false })
     }

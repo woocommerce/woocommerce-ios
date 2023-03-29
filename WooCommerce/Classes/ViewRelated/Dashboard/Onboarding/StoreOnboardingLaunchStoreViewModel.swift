@@ -5,9 +5,13 @@ import Yosemite
 final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
     /// UI state of the lauch store view.
     enum State {
+        // Checking current site's plan to check for free trial
         case checkingSitePlan
+        // Using free trial. Need to purchase plan before publishing site.
         case needsPlanUpgrade
+        // Ready to publish site.
         case readyToPublish
+        // Processing launch store request
         case launchingStore
     }
 

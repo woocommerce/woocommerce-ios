@@ -10,7 +10,7 @@ class AppleAuthenticatorTests: XCTestCase {
         let delegateSpy = WordPressAuthenticatorDelegateSpy()
         WordPressAuthenticator.shared.delegate = delegateSpy
 
-        // This might be unnecessary because delegateSpy shoudl be deallocated once the test method finished.
+        // This might be unnecessary because delegateSpy should be deallocated once the test method finished.
         // Leaving it here, just in case.
         addTeardownBlock {
             WordPressAuthenticator.shared.delegate = nil
@@ -47,7 +47,7 @@ class AppleAuthenticatorTests: XCTestCase {
         let delegateSpy = WordPressAuthenticatorDelegateSpy()
         WordPressAuthenticator.shared.delegate = delegateSpy
 
-        // This might be unnecessary because delegateSpy shoudl be deallocated once the test method finished.
+        // This might be unnecessary because delegateSpy should be deallocated once the test method finished.
         // Leaving it here, just in case.
         addTeardownBlock {
             WordPressAuthenticator.shared.delegate = nil

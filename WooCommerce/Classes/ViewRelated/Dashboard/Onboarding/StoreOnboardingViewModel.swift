@@ -194,7 +194,7 @@ private extension StoreOnboardingViewModel {
                     return continuation.resume(returning: plan.isFreeTrial)
                 case .failure(let error):
                     DDLogError("⛔️ Error fetching the current site's plan information: \(error)")
-                    continuation.resume(returning: false)
+                    return continuation.resume(returning: false)
                 }
             }
             stores.dispatch(action)

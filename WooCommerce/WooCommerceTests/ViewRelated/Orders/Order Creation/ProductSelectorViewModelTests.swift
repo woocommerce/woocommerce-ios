@@ -10,6 +10,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
     private var storage: StorageType {
         storageManager.viewStorage
     }
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
     private let stores = MockStoresManager(sessionManager: .testingInstance)
     private let searchDebounceTime: UInt64 = 600_000_000 // 500 milliseconds with buffer
 
@@ -17,10 +19,14 @@ final class ProductSelectorViewModelTests: XCTestCase {
         super.setUp()
         storageManager = MockStorageManager()
         stores.reset()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
         storageManager = nil
+        analytics = nil
+        analyticsProvider = nil
         super.tearDown()
     }
 
@@ -630,6 +636,33 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(selectedItems, [simpleProduct.productID, 12])
+    }
+
+    func test_analytics_when_completeMultipleSelection_closure_is_invoked_then_event_and_properties_are_logged_correctly() throws {
+        // Given
+        let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        let variableProduct = Product.fake().copy(siteID: sampleSiteID, productID: 10, purchasable: true, variations: [12, 20])
+        insert(simpleProduct)
+        insert(variableProduct)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 selectedItemIDs: [1, 10, 20],
+                                                 storageManager: storageManager,
+                                                 analytics: analytics,
+                                                 supportsMultipleSelection: true)
+
+        // When
+        viewModel.completeMultipleSelection()
+
+        // Then
+        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(where: { $0 == "order_creation_product_selector_confirm_button_tapped"}) else {
+            return XCTFail("No event received")
+        }
+
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+        guard let property = eventProperties.first(where: { $0.key as? String == "product_count"}) else {
+            return XCTFail("No property received")
+        }
+        XCTAssertEqual(property.value as? Int64, 3)
     }
 
     func test_filter_button_title_shows_correct_number_of_active_filters() async throws {

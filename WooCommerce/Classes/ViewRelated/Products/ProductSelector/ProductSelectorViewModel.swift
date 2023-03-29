@@ -17,6 +17,10 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Analytics service
+    ///
+    private let analytics: Analytics
+
     /// Store for publishers subscriptions
     ///
     private var subscriptions = Set<AnyCancellable>()
@@ -153,6 +157,7 @@ final class ProductSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          isClearSelectionEnabled: Bool = true,
          toggleAllVariationsOnSelection: Bool = true,
@@ -164,6 +169,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
+        self.analytics = analytics
         self.supportsMultipleSelection = supportsMultipleSelection
         self.isClearSelectionEnabled = isClearSelectionEnabled
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
@@ -188,6 +194,7 @@ final class ProductSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          isClearSelectionEnabled: Bool = true,
          toggleAllVariationsOnSelection: Bool = true,
@@ -197,6 +204,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
+        self.analytics = analytics
         self.supportsMultipleSelection = supportsMultipleSelection
         self.isClearSelectionEnabled = isClearSelectionEnabled
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
@@ -300,6 +308,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     func completeMultipleSelection() {
         let allIDs = selectedProductIDs + selectedProductVariationIDs
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: allIDs.count))
         onMultipleSelectionCompleted?(allIDs)
     }
 

@@ -136,7 +136,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
     }
 
-    func test_tasksForDisplay_contains_launch_store_task_for_WPCOM_site_under_free_trail() async {
+    func test_tasksForDisplay_contains_launch_store_task_for_WPCOM_site_under_free_trial() async {
         // Given
         sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]

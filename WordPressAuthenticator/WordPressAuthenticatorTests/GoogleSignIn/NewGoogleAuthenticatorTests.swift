@@ -86,7 +86,7 @@ class NewGoogleAuthenticatorTests: XCTestCase {
             clientId: fakeClientId,
             scheme: "scheme",
             audience: "audience",
-            oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture(rawIDToken: JSONWebToken.validJWTStringWithEmail))
+            oautTokenGetter: GoogleOAuthTokenGettingStub(response: .fixture(rawIDToken: JSONWebToken.validJWTStringWithNameAndEmail))
         )
         let url = URL(string: "https://test.com?code=a_code")!
 

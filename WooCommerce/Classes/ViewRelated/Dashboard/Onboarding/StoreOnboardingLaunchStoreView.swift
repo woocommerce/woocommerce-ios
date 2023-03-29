@@ -97,7 +97,7 @@ struct StoreOnboardingLaunchStoreView: View {
         }
         .padding(insets: Layout.FreeTrialBanner.padding)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.wooCommercePurple(.shade0)))
+        .background(Color(.bannerBackground))
         .onTapGesture {
             viewModel.didTapUpgrade()
         }

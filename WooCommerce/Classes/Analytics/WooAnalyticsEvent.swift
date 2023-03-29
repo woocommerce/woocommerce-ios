@@ -2192,7 +2192,6 @@ extension WooAnalyticsEvent {
         enum Source: String {
             case banner
             case upgradesScreen = "upgrades_screen"
-            case bannerInLaunchYourStoreOnboardingTask = "launch_your_store_screen_banner"
         }
 
         static func freeTrialUpgradeNowTapped(source: Source) -> WooAnalyticsEvent {

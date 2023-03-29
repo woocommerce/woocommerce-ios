@@ -150,7 +150,7 @@ private extension StoreOnboardingCoordinator {
     ///
     func showUpgradePlanWebView() {
         let upgradeController = UpgradePlanCoordinatingController(siteID: site.siteID,
-                                                                  source: .bannerInLaunchYourStoreOnboardingTask,
+                                                                  source: .banner,
                                                                   onSuccess: { [weak self] in
             self?.onUpgradePlan?()
             self?.reloadTasks()

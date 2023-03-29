@@ -32,7 +32,7 @@ struct StoreOnboardingLaunchStoreView: View {
 
     var body: some View {
         ScrollView {
-            #warning("TODO: 9141 - show upsell banner when the launch store action requires an upgraded plan")
+            freeTrialBanner
 
             // Readonly webview for the site.
             WebView(isPresented: .constant(true), url: viewModel.siteURL)
@@ -50,7 +50,12 @@ struct StoreOnboardingLaunchStoreView: View {
                         await viewModel.launchStore()
                     }
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLaunchingStore))
+                .if(viewModel.canPublishStore) {
+                    $0.buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLaunchingStore))
+                }
+                .if(!viewModel.canPublishStore) {
+                    $0.buttonStyle(PrimaryButtonStyle()).disabled(true)
+                }
                 .padding(insets: Layout.buttonContainerPadding)
             }
             .background(Color(.systemBackground))
@@ -73,13 +78,63 @@ struct StoreOnboardingLaunchStoreView: View {
             }
         }
         .navigationTitle(Localization.title)
+        .task {
+            await viewModel.checkEligibilityToPublishStore()
+        }
+    }
+
+    var freeTrialBanner: some View {
+        HStack(alignment: .top, spacing: Layout.FreeTrialBanner.horizontalSpacing) {
+            Image(uiImage: .infoOutlineImage)
+                .resizable()
+                .renderingMode(.template)
+                .foregroundColor(Color(.withColorStudio(.green, shade: .shade80)))
+                .frame(width: Layout.FreeTrialBanner.infoIconSize.width * scale, height: Layout.FreeTrialBanner.infoIconSize.height * scale)
+
+            AttributedText(upgradePlanAttributedString)
+        }
+        .padding(insets: Layout.FreeTrialBanner.padding)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.wooCommercePurple(.shade0)))
+        .onTapGesture {
+            viewModel.didTapUpgrade()
+        }
     }
 }
 
 private extension StoreOnboardingLaunchStoreView {
+    var upgradePlanAttributedString: NSAttributedString {
+        let font: UIFont = .body
+        let foregroundColor: UIColor = .text
+        let linkColor: UIColor = .textLink
+        let linkContent = Localization.upgrade
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .left
+
+        let attributedString = NSMutableAttributedString(
+            string: .localizedStringWithFormat(Localization.upgradePlanToLaunchStore, linkContent),
+            attributes: [.font: font,
+                         .foregroundColor: foregroundColor,
+                         .paragraphStyle: paragraphStyle,
+                        ]
+        )
+        let upgradeLink = NSAttributedString(string: linkContent, attributes: [.font: font,
+                                                                                      .foregroundColor: linkColor,
+                                                                                      .underlineStyle: NSUnderlineStyle.single.rawValue,
+                                                                                      .underlineColor: UIColor.textLink])
+        attributedString.replaceFirstOccurrence(of: linkContent, with: upgradeLink)
+        return attributedString
+    }
+
     enum Layout {
         static let webviewHeight: CGFloat = 400
         static let buttonContainerPadding: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+        enum FreeTrialBanner {
+            static let infoIconSize: CGSize = .init(width: 24, height: 24)
+            static let horizontalSpacing: CGFloat = 16
+            static let padding: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+        }
     }
 
     enum Localization {
@@ -91,6 +146,12 @@ private extension StoreOnboardingLaunchStoreView {
             "Publish My Store",
             comment: "Title of the primary button on the store onboarding > launch store screen to publish a store."
         )
+        static let upgradePlanToLaunchStore = NSLocalizedString(
+            "To launch your store, you need to upgrade to our plan. %1$@",
+            comment: "Message to ask the user to upgrade free trial plan to launch store."
+            + "Reads - To launch your store, you need to upgrade to our plan. Upgrade"
+        )
+        static let upgrade = NSLocalizedString("Upgrade", comment: "Title on the button to upgrade a free trial plan.")
     }
 }
 
@@ -160,6 +221,6 @@ private extension SiteLaunchError {
 
 struct StoreOnboardingLaunchStoreView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingLaunchStoreView(viewModel: .init(siteURL: .init(string: "https://woocommerce.com")!, siteID: 0, onLaunch: {}))
+        StoreOnboardingLaunchStoreView(viewModel: .init(siteURL: .init(string: "https://woocommerce.com")!, siteID: 0, onLaunch: {}, onUpgradeTapped: {}))
     }
 }

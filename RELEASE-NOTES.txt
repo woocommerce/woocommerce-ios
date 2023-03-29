@@ -2,7 +2,7 @@
 
 13.0
 -----
-
+- [*] Adds a banner in "Launch store" task screen to upgrade from free trial plan. [https://github.com/woocommerce/woocommerce-ios/pull/9323]
 
 12.9
 -----

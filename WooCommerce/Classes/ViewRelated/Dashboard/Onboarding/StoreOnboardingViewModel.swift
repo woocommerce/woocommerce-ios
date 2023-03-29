@@ -106,18 +106,32 @@ class StoreOnboardingViewModel: ObservableObject {
 
 private extension StoreOnboardingViewModel {
     @MainActor
-    private func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
-        try await withCheckedThrowingContinuation { continuation in
+    func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
+        let shouldManuallyAppendLaunchStoreTask = await isFreeTrialPlan()
+        let tasksFromServer: [StoreOnboardingTask] = try await withCheckedThrowingContinuation({ continuation in
             stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
-                continuation.resume(with: result
-                    .map { $0.filter({ task in
+                switch result {
+                case .success(let tasks):
+                    return continuation.resume(returning: tasks.filter({ task in
                         if case .unsupported = task.type {
                             return false
                         } else {
                             return true
                         }
-                    }).map { .init(task: $0) }})
+                    }))
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
             })
+        })
+
+        if shouldManuallyAppendLaunchStoreTask {
+            return (tasksFromServer + [.init(isComplete: false, type: .launchStore)])
+                .sorted()
+                .map { .init(task: $0) }
+        } else {
+            return tasksFromServer
+                .map { .init(task: $0) }
         }
     }
 

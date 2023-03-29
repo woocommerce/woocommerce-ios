@@ -29,12 +29,12 @@ public final class PrologueScreen: ScreenObject {
         )
     }
 
-    public func selectContinueWithWordPress() throws -> GetStartedScreen {
+    public func tapContinueWithWordPress() throws -> GetStartedScreen {
         continueButton.tap()
         return try GetStartedScreen()
     }
 
-    public func selectSiteAddress() throws -> LoginSiteAddressScreen {
+    public func tapSiteAddress() throws -> LoginSiteAddressScreen {
         selectSiteButton.tap()
         return try LoginSiteAddressScreen()
     }

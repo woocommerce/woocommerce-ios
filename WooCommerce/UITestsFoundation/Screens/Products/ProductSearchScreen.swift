@@ -38,7 +38,7 @@ public final class ProductSearchScreen: ScreenObject {
         try verifyNumberOfProductsInSearchResults(equals: 1, accessibilityId: updatedSearchResultsID)
 
         let productsTableView = app.tables.matching(identifier: updatedSearchResultsID)
-        productsTableView.element.assertTextVisibilityCount(textToFind: String(expectedProduct.name))
-        productsTableView.element.assertTextVisibilityCount(textToFind: String(expectedProduct.stock_status))
+        productsTableView.element.assertTextVisibilityCount(textToFind: String(expectedProduct.name), expectedCount: 1)
+        productsTableView.element.assertTextVisibilityCount(textToFind: String(expectedProduct.stock_status), expectedCount: 1)
     }
 }

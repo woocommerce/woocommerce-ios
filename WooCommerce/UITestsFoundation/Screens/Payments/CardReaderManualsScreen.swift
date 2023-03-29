@@ -27,7 +27,7 @@ public final class CardReaderManualsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func selectChipperManual() throws -> Self {
+    public func tapChipperManual() throws -> Self {
         chipperManualButton.tap()
         return self
     }

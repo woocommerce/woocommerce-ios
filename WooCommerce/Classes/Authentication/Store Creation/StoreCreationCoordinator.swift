@@ -616,11 +616,11 @@ private extension StoreCreationCoordinator {
             .compactMap { $0 }
             .removeDuplicates()
             .asyncMap { [weak self] siteID -> Site? in
-                // Waits for 5 seconds before syncing sites every time.
-                try await Task.sleep(nanoseconds: 5_000_000_000)
+                // Waits for 10 seconds before syncing sites every time.
+                try await Task.sleep(nanoseconds: 10_000_000_000)
                 return try await self?.syncSites(forSiteThatMatchesSiteID: siteID)
             }
-            // Retries 10 times with 5 seconds pause in between to wait for the newly created site to be available as a Jetpack site
+            // Retries 10 times with 10 seconds pause in between to wait for the newly created site to be available as a Jetpack site
             // in the WPCOM `/me/sites` response.
             .retry(10)
             .replaceError(with: nil)
@@ -649,10 +649,12 @@ private extension StoreCreationCoordinator {
                 // which results in a JCP site.
                 // In this case, we want to retry sites syncing.
                 guard let site = self.storePickerViewModel.site(thatMatchesSiteID: siteID) else {
+                    DDLogInfo("🔵 Retrying: Site unavailable...")
                     return continuation.resume(throwing: StoreCreationError.newSiteUnavailable)
                 }
 
                 guard site.isJetpackConnected && site.isJetpackThePluginInstalled else {
+                    DDLogInfo("🔵 Retrying: Site available but is not a jetpack site yet...")
                     return continuation.resume(throwing: StoreCreationError.newSiteIsNotJetpackSite)
                 }
                 continuation.resume(returning: site)

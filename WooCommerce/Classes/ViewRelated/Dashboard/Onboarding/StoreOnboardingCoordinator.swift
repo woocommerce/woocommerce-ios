@@ -107,6 +107,9 @@ private extension StoreOnboardingCoordinator {
         let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site,
                                                                 isLaunched: task.isComplete,
                                                                 navigationController: navigationController,
+                                                                onUpgradeTapped: { [weak self] in
+            self?.showUpgradePlanWebView()
+        },
                                                                 onStoreLaunched: { [weak self] in
             self?.onTaskCompleted(.launchStore)
         })
@@ -136,5 +139,18 @@ private extension StoreOnboardingCoordinator {
          })
         self.paymentsSetupCoordinator = coordinator
         coordinator.start()
+    }
+}
+
+private extension StoreOnboardingCoordinator {
+    /// Shows a web view for the merchant to update their site plan.
+    ///
+    func showUpgradePlanWebView() {
+        let upgradeController = UpgradePlanCoordinatingController(siteID: site.siteID,
+                                                                  source: .bannerInLaunchYourStoreOnboardingTask,
+                                                                  onSuccess: { [weak self] in
+            self?.reloadTasks()
+        })
+        navigationController.present(upgradeController, animated: true)
     }
 }

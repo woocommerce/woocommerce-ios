@@ -112,7 +112,7 @@ public enum SiteCreationError: Error, Equatable {
     /// Unknown error that is not a `DotcomError` nor `Networking.SiteCreationError`.
     case unknown(description: String)
 
-    init(remoteError: Error) {
+    public init(remoteError: Error) {
         switch remoteError {
         case let remoteError as Networking.SiteCreationError:
             switch remoteError {

@@ -144,13 +144,7 @@ private extension StoreCreationCoordinator {
             } else {
                 if isFreeTrialEnabled {
                     Task {
-                        await self?.createStoreAndContinueToStoreSummary(from: navigationController,
-                                                                         name: storeName,
-                                                                         category: nil,
-                                                                         sellingStatus: nil,
-                                                                         countryCode: nil,
-                                                                         flow: .wooexpress,
-                                                                         planToPurchase: planToPurchase)
+                        await self?.createFreeTrialStore(from: navigationController, storeName: storeName)
                     }
                 } else {
                     self?.showDomainSelector(from: navigationController,
@@ -389,6 +383,47 @@ private extension StoreCreationCoordinator {
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCountryQuestion))
     }
 
+    /// This method shows a progress view and proceeds to:
+    /// - Create a simple site
+    /// - Enable Free Trial on the site
+    /// - Wait for JetPack to be installed on the site.
+    ///
+    @MainActor
+    func createFreeTrialStore(from navigationController: UINavigationController, storeName: String) async {
+
+        // Show a progress view while the free trial store is created.
+        showInProgressView(from: navigationController, viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
+
+        // Create store site
+        let createStoreResult = await createStore(name: storeName, flow: .wooexpress)
+
+        switch createStoreResult {
+        case .success(let siteResult):
+
+            // Enable Free trial on site
+            let freeTrialResult = await enableFreeTrial(siteID: siteResult.siteID)
+            switch freeTrialResult {
+            case .success:
+                // Wait for jetpack to be installed
+                DDLogInfo("🟢 Free trial enabled on site. Waiting for jetpack to be installed...")
+                waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteResult.siteID)
+                analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
+
+            case .failure(let error):
+                navigationController.popViewController(animated: true)
+                showStoreCreationErrorAlert(from: navigationController, error: SiteCreationError(remoteError: error))
+
+                // TODO: Confirm if we should track a different error here.
+                analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native))
+            }
+
+        case .failure(let error):
+            navigationController.popViewController(animated: true)
+            showStoreCreationErrorAlert(from: navigationController, error: error)
+            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native))
+        }
+    }
+
     @MainActor
     func showDomainSelector(from navigationController: UINavigationController,
                             storeName: String,
@@ -425,30 +460,17 @@ private extension StoreCreationCoordinator {
                                               countryCode: SiteAddress.CountryCode?,
                                               flow: SiteCreationFlow,
                                               planToPurchase: WPComPlanProduct) async {
-
-        let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
         let result = await createStore(name: name, flow: flow)
         analytics.track(event: .StoreCreation.siteCreationProfilerData(category: category,
                                                                        sellingStatus: sellingStatus,
                                                                        countryCode: countryCode))
         switch result {
         case .success(let siteResult):
-            if isFreeTrialEnabled {
-
-                let result = await enableFreeTrial(siteID: siteResult.siteID)
-                switch result {
-                case .success:
-                    showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteResult.siteID)
-                case .failure(let error):
-                    print(error) // TODO: Properly handle errors
-                }
-            } else {
-                showStoreSummary(from: navigationController,
-                                 result: siteResult,
-                                 category: category,
-                                 countryCode: countryCode,
-                                 planToPurchase: planToPurchase)
-            }
+            showStoreSummary(from: navigationController,
+                             result: siteResult,
+                             category: category,
+                             countryCode: countryCode,
+                             planToPurchase: planToPurchase)
         case .failure(let error):
             analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native))
             showStoreCreationErrorAlert(from: navigationController, error: error)

@@ -107,25 +107,10 @@ class StoreOnboardingViewModel: ObservableObject {
 private extension StoreOnboardingViewModel {
     @MainActor
     func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
-        let shouldManuallyAppendLaunchStoreTask = await isFreeTrialPlan()
-        let tasksFromServer: [StoreOnboardingTask] = try await withCheckedThrowingContinuation({ continuation in
-            stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
-                switch result {
-                case .success(let tasks):
-                    return continuation.resume(returning: tasks.filter({ task in
-                        if case .unsupported = task.type {
-                            return false
-                        } else {
-                            return true
-                        }
-                    }))
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            })
-        })
+        async let shouldManuallyAppendLaunchStoreTask = isFreeTrialPlan()
+        let tasksFromServer: [StoreOnboardingTask] = try await fetchTasks()
 
-        if shouldManuallyAppendLaunchStoreTask {
+        if await shouldManuallyAppendLaunchStoreTask {
             return (tasksFromServer + [.init(isComplete: false, type: .launchStore)])
                 .sorted()
                 .map { .init(task: $0) }
@@ -176,6 +161,26 @@ private extension StoreOnboardingViewModel {
     }
 
     @MainActor
+    func fetchTasks() async throws -> [StoreOnboardingTask] {
+        try await withCheckedThrowingContinuation({ continuation in
+            stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
+                switch result {
+                case .success(let tasks):
+                    return continuation.resume(returning: tasks.filter({ task in
+                        if case .unsupported = task.type {
+                            return false
+                        } else {
+                            return true
+                        }
+                    }))
+                case .failure(let error):
+                    return continuation.resume(throwing: error)
+                }
+            })
+        })
+    }
+
+    @MainActor
     func isFreeTrialPlan() async -> Bool {
         // Only fetch free trial information if the site is a WPCom site.
         guard stores.sessionManager.defaultSite?.isWordPressComStore == true else {
@@ -189,7 +194,7 @@ private extension StoreOnboardingViewModel {
                     return continuation.resume(returning: plan.isFreeTrial)
                 case .failure(let error):
                     DDLogError("⛔️ Error fetching the current site's plan information: \(error)")
-                    continuation.resume(returning: false)
+                    return continuation.resume(returning: false)
                 }
             }
             stores.dispatch(action)

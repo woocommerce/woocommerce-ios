@@ -136,7 +136,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
     }
 
-    func test_tasksForDisplay_contains_launch_store_task_for_WPCOM_site_under_free_trail() async {
+    func test_tasksForDisplay_contains_launch_store_task_for_WPCOM_site_under_free_trial() async {
         // Given
         sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]
@@ -220,6 +220,33 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).isEmpty)
+    }
+
+    func test_tasksForDisplay_is_sorted_when_launch_store_task_gets_manually_added_for_WPCOM_site_under_free_trial() async {
+        // Given
+        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
+        sessionManager.defaultRoles = [.administrator]
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .customizeDomains),
+        ]))
+
+        let sitePlan = WPComSitePlan(id: self.freeTrialID,
+                                     hasDomainCredit: false,
+                                     expiryDate: Date().addingDays(14))
+        mockLoadSiteCurrentPlan(result: .success(sitePlan))
+
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
+                                           stores: stores,
+                                           defaults: defaults)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), [.init(isComplete: false, type: .addFirstProduct),
+                                                              .init(isComplete: false, type: .launchStore),
+                                                              .init(isComplete: false, type: .customizeDomains)])
     }
 
     // MARK: - shouldShowViewAllButton

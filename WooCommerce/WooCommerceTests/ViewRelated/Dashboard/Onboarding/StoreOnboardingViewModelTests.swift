@@ -181,7 +181,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_tasksForDisplay_does_not_contain_launch_store_task_for_WPCOM_site_not_under_free_trial() async {
         // Given
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: false)
+        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
@@ -203,7 +203,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_tasksForDisplay_does_not_contain_launch_store_task_for_WPCOM_site_when_checking_site_plan_fails() async {
         // Given
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: false)
+        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),

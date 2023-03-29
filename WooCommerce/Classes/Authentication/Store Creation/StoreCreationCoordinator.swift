@@ -610,17 +610,20 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func waitForSiteToBecomeJetpackSite(from navigationController: UINavigationController, siteID: Int64) {
+        /// Free trial sites need more waiting time that regular sites.
+        ///
+        let retryInterval: UInt64 = featureFlagService.isFeatureFlagEnabled(.freeTrial) ? 10_000_000_000 : 5_000_000_000
         siteIDFromStoreCreation = siteID
 
         jetpackSiteSubscription = $siteIDFromStoreCreation
             .compactMap { $0 }
             .removeDuplicates()
             .asyncMap { [weak self] siteID -> Site? in
-                // Waits for 10 seconds before syncing sites every time.
-                try await Task.sleep(nanoseconds: 10_000_000_000)
+                // Waits some seconds before syncing sites every time.
+                try await Task.sleep(nanoseconds: retryInterval)
                 return try await self?.syncSites(forSiteThatMatchesSiteID: siteID)
             }
-            // Retries 10 times with 10 seconds pause in between to wait for the newly created site to be available as a Jetpack site
+            // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack site
             // in the WPCOM `/me/sites` response.
             .retry(10)
             .replaceError(with: nil)

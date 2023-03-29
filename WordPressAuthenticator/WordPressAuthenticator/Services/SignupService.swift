@@ -4,7 +4,7 @@ import WordPressKit
 
 /// SignupService: Responsible for creating a new WPCom user and blog.
 ///
-class SignupService {
+class SignupService: SocialUserCreating {
 
     /// Create a new WPcom account using Google signin token
     ///

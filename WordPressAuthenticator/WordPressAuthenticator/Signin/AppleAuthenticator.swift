@@ -14,10 +14,15 @@ class AppleAuthenticator: NSObject {
     // MARK: - Properties
 
     static var sharedInstance: AppleAuthenticator = AppleAuthenticator()
-    private override init() {}
     private var showFromViewController: UIViewController?
     private let loginFields = LoginFields()
     weak var delegate: AppleAuthenticatorDelegate?
+    let signupService: SocialUserCreating
+
+    init(signupService: SocialUserCreating = SignupService()) {
+        self.signupService = signupService
+        super.init()
+    }
 
     static let credentialRevokedNotification = ASAuthorizationAppleIDProvider.credentialRevokedNotification
 
@@ -76,59 +81,12 @@ private extension AppleAuthenticator {
                 return
         }
 
-        tracker.set(flow: .signupWithApple)
-        tracker.track(step: .start) {
-            track(.createAccountInitiated)
-        }
-
-        SVProgressHUD.show(withStatus: NSLocalizedString("Continuing with Apple", comment: "Shown while logging in with Apple and the app waits for the site creation process to complete."))
-
-        let email = appleCredentials.email ?? ""
-        let name = fullName(from: appleCredentials.fullName)
-
-        updateLoginFields(email: email, fullName: name, token: token)
-
-        let service = SignupService()
-        service.createWPComUserWithApple(token: token, email: email, fullName: name,
-                                         success: { [weak self] accountCreated,
-                                            existingNonSocialAccount,
-                                            existing2faAccount,
-                                            wpcomUsername,
-                                            wpcomToken in
-                                            SVProgressHUD.dismiss()
-
-                                            // Notify host app of successful Apple authentication
-                                            self?.authenticationDelegate.userAuthenticatedWithAppleUserID(appleCredentials.user)
-
-                                            guard !existingNonSocialAccount else {
-                                                self?.tracker.set(flow: .loginWithApple)
-
-                                                if existing2faAccount {
-                                                    self?.show2FA()
-                                                    return
-                                                }
-
-                                                self?.updateLoginEmail(wpcomUsername)
-                                                self?.logInInstead()
-                                                return
-                                            }
-
-                                            let wpcom = WordPressComCredentials(authToken: wpcomToken, isJetpackLogin: false, multifactor: false, siteURL: self?.loginFields.siteAddress ?? "")
-                                            let credentials = AuthenticatorCredentials(wpcom: wpcom)
-
-                                            if accountCreated {
-                                                self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
-                                                self?.signupSuccessful(with: credentials)
-                                            } else {
-                                                self?.authenticationDelegate.sync(credentials: credentials) {
-                                                    self?.loginSuccessful(with: credentials)
-                                                }
-                                            }
-
-            }, failure: { [weak self] error in
-                SVProgressHUD.dismiss()
-                self?.signupFailed(with: error)
-        })
+        createWordPressComUser(
+            appleUserId: appleCredentials.user,
+            email: appleCredentials.email ?? "",
+            name: fullName(from: appleCredentials.fullName),
+            token: token
+        )
     }
 
     func signupSuccessful(with credentials: AuthenticatorCredentials) {
@@ -153,18 +111,6 @@ private extension AppleAuthenticator {
         }
 
         showLoginEpilogue(for: credentials)
-    }
-
-    func showSignupEpilogue(for credentials: AuthenticatorCredentials) {
-        guard let navigationController = showFromViewController?.navigationController else {
-            fatalError()
-        }
-
-        let service = loginFields.meta.appleUser.flatMap {
-            return SocialService.apple(user: $0)
-        }
-
-        authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)
     }
 
     func showLoginEpilogue(for credentials: AuthenticatorCredentials) {
@@ -220,7 +166,7 @@ private extension AppleAuthenticator {
     func updateLoginFields(email: String, fullName: String, token: String) {
         updateLoginEmail(email)
         loginFields.meta.socialServiceIDToken = token
-        loginFields.meta.appleUser = AppleUser(email: email, fullName: fullName)
+        loginFields.meta.appleUser = SocialService.User(email: email, fullName: fullName)
     }
 
     func updateLoginEmail(_ email: String) {
@@ -265,5 +211,82 @@ extension AppleAuthenticator {
     func getAppleIDCredentialState(for userID: String,
                                    completion: @escaping (ASAuthorizationAppleIDProvider.CredentialState, Error?) -> Void) {
         ASAuthorizationAppleIDProvider().getCredentialState(forUserID: userID, completion: completion)
+    }
+}
+
+// This needs to be internal, at this point in time, to allow testing.
+//
+// Notice that none of this code was previously tested. A small encapsulation breach like this is
+// worth the testability we gain from it.
+extension AppleAuthenticator {
+
+    func showSignupEpilogue(for credentials: AuthenticatorCredentials) {
+        guard let navigationController = showFromViewController?.navigationController else {
+            fatalError()
+        }
+
+        let service = loginFields.meta.appleUser.map {
+            SocialService.apple(user: $0)
+        }
+
+        authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)
+    }
+
+    func createWordPressComUser(appleUserId: String, email: String, name: String, token: String) {
+        tracker.set(flow: .signupWithApple)
+        tracker.track(step: .start) {
+            track(.createAccountInitiated)
+        }
+
+        SVProgressHUD.show(
+            withStatus: NSLocalizedString(
+                "Continuing with Apple",
+                comment: "Shown while logging in with Apple and the app waits for the site creation process to complete."
+            )
+        )
+
+        updateLoginFields(email: email, fullName: name, token: token)
+
+        signupService.createWPComUserWithApple(
+            token: token,
+            email: email,
+            fullName: name,
+            success: { [weak self] accountCreated, existingNonSocialAccount, existing2faAccount, wpcomUsername, wpcomToken in
+                SVProgressHUD.dismiss()
+
+                // Notify host app of successful Apple authentication
+                self?.authenticationDelegate.userAuthenticatedWithAppleUserID(appleUserId)
+
+                guard !existingNonSocialAccount else {
+                    self?.tracker.set(flow: .loginWithApple)
+
+                    if existing2faAccount {
+                        self?.show2FA()
+                        return
+                    }
+
+                    self?.updateLoginEmail(wpcomUsername)
+                    self?.logInInstead()
+                    return
+                }
+
+                let wpcom = WordPressComCredentials(authToken: wpcomToken, isJetpackLogin: false, multifactor: false, siteURL: self?.loginFields.siteAddress ?? "")
+                let credentials = AuthenticatorCredentials(wpcom: wpcom)
+
+                if accountCreated {
+                    self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
+                    self?.signupSuccessful(with: credentials)
+                } else {
+                    self?.authenticationDelegate.sync(credentials: credentials) {
+                        self?.loginSuccessful(with: credentials)
+                    }
+                }
+
+            },
+            failure: { [weak self] error in
+                SVProgressHUD.dismiss()
+                self?.signupFailed(with: error)
+            }
+        )
     }
 }

@@ -222,6 +222,33 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).isEmpty)
     }
 
+    func test_tasksForDisplay_is_sorted_when_launch_store_task_gets_manually_added_for_WPCOM_site_under_free_trial() async {
+        // Given
+        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
+        sessionManager.defaultRoles = [.administrator]
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .customizeDomains),
+        ]))
+
+        let sitePlan = WPComSitePlan(id: self.freeTrialID,
+                                     hasDomainCredit: false,
+                                     expiryDate: Date().addingDays(14))
+        mockLoadSiteCurrentPlan(result: .success(sitePlan))
+
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
+                                           stores: stores,
+                                           defaults: defaults)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), [.init(isComplete: false, type: .addFirstProduct),
+                                                              .init(isComplete: false, type: .launchStore),
+                                                              .init(isComplete: false, type: .customizeDomains)])
+    }
+
     // MARK: - shouldShowViewAllButton
 
     func test_view_all_button_is_hidden_in_expanded_mode() async {

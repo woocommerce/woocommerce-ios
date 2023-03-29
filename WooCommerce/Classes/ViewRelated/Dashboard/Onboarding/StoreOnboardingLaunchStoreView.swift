@@ -33,6 +33,7 @@ struct StoreOnboardingLaunchStoreView: View {
     var body: some View {
         ScrollView {
             freeTrialBanner
+                .renderedIf(viewModel.state == .needsPlanUpgrade)
 
             // Readonly webview for the site.
             WebView(isPresented: .constant(true), url: viewModel.siteURL)
@@ -50,13 +51,14 @@ struct StoreOnboardingLaunchStoreView: View {
                         await viewModel.launchStore()
                     }
                 }
-                .if(viewModel.canPublishStore) {
-                    $0.buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLaunchingStore))
+                .if((viewModel.state == .launchingStore || viewModel.state == .readyToPublish)) {
+                    $0.buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.state == .launchingStore))
                 }
-                .if(!viewModel.canPublishStore) {
+                .if(viewModel.state == .needsPlanUpgrade) {
                     $0.buttonStyle(PrimaryButtonStyle()).disabled(true)
                 }
                 .padding(insets: Layout.buttonContainerPadding)
+                .renderedIf(viewModel.state != .checkingSitePlan)
             }
             .background(Color(.systemBackground))
         }

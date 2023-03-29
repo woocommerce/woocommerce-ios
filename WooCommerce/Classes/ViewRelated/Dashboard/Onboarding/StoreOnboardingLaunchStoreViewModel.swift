@@ -3,11 +3,18 @@ import Yosemite
 
 /// View model for `StoreOnboardingLaunchStoreView`.
 final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
+    /// UI state of the lauch store view.
+    enum State {
+        case checkingSitePlan
+        case needsPlanUpgrade
+        case readyToPublish
+        case launchingStore
+    }
+
     let siteURL: URL
 
-    @Published private(set) var isLaunchingStore: Bool = false
+    @Published private(set) var state: State = .checkingSitePlan
     @Published var error: SiteLaunchError?
-    @Published private(set) var canPublishStore: Bool = false
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -31,21 +38,26 @@ final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
 
     @MainActor
     func checkEligibilityToPublishStore() async {
-        canPublishStore = !(await isFreeTrialPlan())
+        update(state: .checkingSitePlan)
+        if await isFreeTrialPlan() {
+            update(state: .needsPlanUpgrade)
+        } else {
+            update(state: .readyToPublish)
+        }
     }
 
     @MainActor
     func launchStore() async {
         error = nil
-        isLaunchingStore = true
+        update(state: .launchingStore)
         let result = await launchStoreRemotely()
         switch result {
         case .success:
             onLaunch()
         case .failure(let error):
             self.error = error
+            update(state: .readyToPublish)
         }
-        isLaunchingStore = false
     }
 
     @MainActor
@@ -55,6 +67,11 @@ final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
 }
 
 private extension StoreOnboardingLaunchStoreViewModel {
+    @MainActor
+    func update(state: State) {
+        self.state = state
+    }
+
     @MainActor
     func isFreeTrialPlan() async -> Bool {
         // Only fetch free trial information if the site is a WPCom site.

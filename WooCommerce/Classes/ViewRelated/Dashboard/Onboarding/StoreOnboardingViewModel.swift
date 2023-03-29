@@ -108,22 +108,7 @@ private extension StoreOnboardingViewModel {
     @MainActor
     func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
         let shouldManuallyAppendLaunchStoreTask = await isFreeTrialPlan()
-        let tasksFromServer: [StoreOnboardingTask] = try await withCheckedThrowingContinuation({ continuation in
-            stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
-                switch result {
-                case .success(let tasks):
-                    return continuation.resume(returning: tasks.filter({ task in
-                        if case .unsupported = task.type {
-                            return false
-                        } else {
-                            return true
-                        }
-                    }))
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            })
-        })
+        let tasksFromServer: [StoreOnboardingTask] = try await fetchTasks()
 
         if shouldManuallyAppendLaunchStoreTask {
             return (tasksFromServer + [.init(isComplete: false, type: .launchStore)])
@@ -173,6 +158,26 @@ private extension StoreOnboardingViewModel {
 
         // This will be reset to `nil` when session resets
         defaults[.completedAllStoreOnboardingTasks] = true
+    }
+
+    @MainActor
+    func fetchTasks() async throws -> [StoreOnboardingTask] {
+        try await withCheckedThrowingContinuation({ continuation in
+            stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
+                switch result {
+                case .success(let tasks):
+                    return continuation.resume(returning: tasks.filter({ task in
+                        if case .unsupported = task.type {
+                            return false
+                        } else {
+                            return true
+                        }
+                    }))
+                case .failure(let error):
+                    return continuation.resume(throwing: error)
+                }
+            })
+        })
     }
 
     @MainActor

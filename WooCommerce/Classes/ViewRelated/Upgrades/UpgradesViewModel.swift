@@ -199,7 +199,8 @@ private extension UpgradesViewModel {
     enum Localization {
         static let freeTrial = NSLocalizedString("Free Trial", comment: "Plan name for an active free trial")
         static let trialEnded = NSLocalizedString("Trial ended", comment: "Plan name for an expired free trial")
-        static let trialEndedInfo = NSLocalizedString("Your free trial has ended, and you have limited access to all the features. Subscribe to eCommerce now.",
+        static let trialEndedInfo = NSLocalizedString("Your free trial has ended and you have limited access to all the features. " +
+                                                      "Subscribe to Woo Express Performance Plan now.",
                                                       comment: "Info details for an expired free trial")
         static let planEndedInfo = NSLocalizedString("Your subscription has ended and you have limited access to all the features.",
                                                      comment: "Info details for an expired free trial")

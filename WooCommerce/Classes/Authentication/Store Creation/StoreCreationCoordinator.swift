@@ -612,7 +612,8 @@ private extension StoreCreationCoordinator {
     func waitForSiteToBecomeJetpackSite(from navigationController: UINavigationController, siteID: Int64) {
         /// Free trial sites need more waiting time that regular sites.
         ///
-        let retryInterval: UInt64 = featureFlagService.isFeatureFlagEnabled(.freeTrial) ? 10_000_000_000 : 5_000_000_000
+        let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
+        let retryInterval: UInt64 = isFreeTrialEnabled ? 10_000_000_000 : 5_000_000_000
         siteIDFromStoreCreation = siteID
 
         jetpackSiteSubscription = $siteIDFromStoreCreation
@@ -637,7 +638,15 @@ private extension StoreCreationCoordinator {
                     }
                     return
                 }
-                self.showSuccessView(from: navigationController, site: site)
+
+                /// Free trial stores should land directly on the dashboard and not show any success view.
+                ///
+                if isFreeTrialEnabled {
+                    self.analytics.track(event: .StoreCreation.siteCreated(source: self.source.analyticsValue, siteURL: site.url, flow: .native))
+                    self.continueWithSelectedSite(site: site)
+                } else {
+                    self.showSuccessView(from: navigationController, site: site)
+                }
             }
     }
 

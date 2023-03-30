@@ -84,7 +84,9 @@ struct StoreOnboardingLaunchStoreView: View {
             await viewModel.checkEligibilityToPublishStore()
         }
     }
+}
 
+private extension StoreOnboardingLaunchStoreView {
     var freeTrialBanner: some View {
         HStack(alignment: .top, spacing: Layout.FreeTrialBanner.horizontalSpacing) {
             Image(uiImage: .infoOutlineImage)
@@ -102,9 +104,7 @@ struct StoreOnboardingLaunchStoreView: View {
             viewModel.didTapUpgrade()
         }
     }
-}
 
-private extension StoreOnboardingLaunchStoreView {
     var upgradePlanAttributedString: NSAttributedString {
         let font: UIFont = .body
         let foregroundColor: UIColor = .text

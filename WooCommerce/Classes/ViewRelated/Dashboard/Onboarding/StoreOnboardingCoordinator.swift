@@ -40,7 +40,8 @@ final class StoreOnboardingCoordinator: Coordinator {
         let onboardingViewController = StoreOnboardingViewHostingController(viewModel: .init(siteID: site.siteID,
                                                                                              isExpanded: true),
                                                                             navigationController: onboardingNavigationController,
-                                                                            site: site)
+                                                                            site: site,
+                                                                            onUpgradePlan: onUpgradePlan)
         onboardingNavigationController.pushViewController(onboardingViewController, animated: false)
         navigationController.present(onboardingNavigationController, animated: true)
     }

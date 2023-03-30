@@ -125,6 +125,9 @@ struct ProductSelectorView: View {
                 if let cancelButtonTitle = configuration.cancelButtonTitle {
                     Button(cancelButtonTitle) {
                         isPresented.toggle()
+                        if !isPresented {
+                            viewModel.clearSelection()
+                        }
                     }
                 }
             }

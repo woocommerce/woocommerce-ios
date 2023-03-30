@@ -194,6 +194,7 @@ final class EditableOrderViewModel: ObservableObject {
             }, onAllSelectionsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearAllSelectedItems()
+                self.syncInitialSelectedState()
             }, onSelectedVariationsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearSelectedVariations()

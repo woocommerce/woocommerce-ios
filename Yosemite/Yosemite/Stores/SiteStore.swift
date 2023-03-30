@@ -40,8 +40,8 @@ public final class SiteStore: Store {
             return
         }
         switch action {
-        case .createSite(let name, let domain, let completion):
-            createSite(name: name, domain: domain, completion: completion)
+        case .createSite(let name, let flow, let completion):
+            createSite(name: name, flow: flow, completion: completion)
         case let .launchSite(siteID, completion):
             launchSite(siteID: siteID, completion: completion)
         case let .enableFreeTrial(siteID, completion):
@@ -52,11 +52,11 @@ public final class SiteStore: Store {
 
 private extension SiteStore {
     func createSite(name: String,
-                    domain: String,
+                    flow: SiteCreationFlow,
                     completion: @escaping (Result<SiteCreationResult, SiteCreationError>) -> Void) {
         Task { @MainActor in
             do {
-                let response = try await remote.createSite(name: name, domain: domain)
+                let response = try await remote.createSite(name: name, flow: flow)
 
                 guard response.success else {
                     return completion(.failure(SiteCreationError.unsuccessful))
@@ -112,7 +112,7 @@ public enum SiteCreationError: Error, Equatable {
     /// Unknown error that is not a `DotcomError` nor `Networking.SiteCreationError`.
     case unknown(description: String)
 
-    init(remoteError: Error) {
+    public init(remoteError: Error) {
         switch remoteError {
         case let remoteError as Networking.SiteCreationError:
             switch remoteError {

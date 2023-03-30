@@ -43,6 +43,7 @@ struct ProductVariationSelector: View {
                     }
                     .buttonStyle(LinkButtonStyle())
                     .fixedSize()
+                    .renderedIf(viewModel.supportsMultipleSelection)
                     .disabled(viewModel.selectedProductVariationIDs.isEmpty || viewModel.syncStatus != .results)
 
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,

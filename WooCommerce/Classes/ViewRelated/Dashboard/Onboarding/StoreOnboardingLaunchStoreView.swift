@@ -51,12 +51,8 @@ struct StoreOnboardingLaunchStoreView: View {
                         await viewModel.launchStore()
                     }
                 }
-                .if((viewModel.state == .launchingStore || viewModel.state == .readyToPublish)) {
-                    $0.buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.state == .launchingStore))
-                }
-                .if(viewModel.state == .needsPlanUpgrade) {
-                    $0.buttonStyle(PrimaryButtonStyle()).disabled(true)
-                }
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.state == .launchingStore))
+                .disabled(viewModel.state == .needsPlanUpgrade)
                 .padding(insets: Layout.buttonContainerPadding)
                 .renderedIf(viewModel.state != .checkingSitePlan)
             }

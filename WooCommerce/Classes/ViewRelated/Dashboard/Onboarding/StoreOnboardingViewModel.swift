@@ -107,7 +107,7 @@ class StoreOnboardingViewModel: ObservableObject {
 private extension StoreOnboardingViewModel {
     @MainActor
     func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
-        async let shouldManuallyAppendLaunchStoreTask = isFreeTrialPlan()
+        async let shouldManuallyAppendLaunchStoreTask = isFreeTrialPlan
         let tasksFromServer: [StoreOnboardingTask] = try await fetchTasks()
 
         if await shouldManuallyAppendLaunchStoreTask {
@@ -181,24 +181,26 @@ private extension StoreOnboardingViewModel {
     }
 
     @MainActor
-    func isFreeTrialPlan() async -> Bool {
-        // Only fetch free trial information if the site is a WPCom site.
-        guard stores.sessionManager.defaultSite?.isWordPressComStore == true else {
-            return false
-        }
-
-        return await withCheckedContinuation({ continuation in
-            let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
-                switch result {
-                case .success(let plan):
-                    return continuation.resume(returning: plan.isFreeTrial)
-                case .failure(let error):
-                    DDLogError("⛔️ Error fetching the current site's plan information: \(error)")
-                    return continuation.resume(returning: false)
-                }
+    var isFreeTrialPlan: Bool {
+        get async {
+            // Only fetch free trial information if the site is a WPCom site.
+            guard stores.sessionManager.defaultSite?.isWordPressComStore == true else {
+                return false
             }
-            stores.dispatch(action)
-        })
+
+            return await withCheckedContinuation({ continuation in
+                let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
+                    switch result {
+                    case .success(let plan):
+                        return continuation.resume(returning: plan.isFreeTrial)
+                    case .failure(let error):
+                        DDLogError("⛔️ Error fetching the current site's plan information: \(error)")
+                        return continuation.resume(returning: false)
+                    }
+                }
+                stores.dispatch(action)
+            })
+        }
     }
 
     func hasPendingTasks(_ tasks: [StoreOnboardingTaskViewModel]) -> Bool {

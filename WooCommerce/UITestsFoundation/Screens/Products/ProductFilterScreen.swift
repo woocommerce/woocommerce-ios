@@ -22,7 +22,7 @@ public final class ProductFilterScreen: ScreenObject {
         )
     }
 
-    public func setStockStatusFilterAs(filter: String) throws -> ProductsScreen {
+    public func setStockStatusFilterAs(_ filter: String) throws -> ProductsScreen {
         stockStatusButton.tap()
         app.cells[filter].tap()
         showProductsButton.tap()

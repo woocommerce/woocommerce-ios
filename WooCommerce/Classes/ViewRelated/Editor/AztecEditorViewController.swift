@@ -2,6 +2,26 @@ import UIKit
 import Aztec
 import WordPressEditor
 
+// TODO-JC: move this
+final class InputAccessoryView: UIView, UITextViewDelegate {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        // Required to make the view grow vertically.
+        self.autoresizingMask = .flexibleHeight
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override var intrinsicContentSize: CGSize {
+        // Calculates intrinsicContentSize that will fit to content.
+        let contentSize = sizeThatFits(CGSize(width: bounds.width, height: CGFloat.greatestFiniteMagnitude))
+        return CGSize(width: bounds.width, height: contentSize.height)
+    }
+}
+
 /// Aztec's Native Editor!
 final class AztecEditorViewController: UIViewController, Editor {
     var onContentSave: OnContentSave?
@@ -48,6 +68,15 @@ final class AztecEditorViewController: UIViewController, Editor {
 
     private lazy var formatBarFactory: AztecFormatBarFactory = {
         return AztecFormatBarFactory()
+    }()
+
+    private lazy var generatorActionView: UIView = {
+        let button = UIButton(type: .custom)
+        button.setTitle("🪄 Write with magic", for: .normal)
+        button.applyPrimaryButtonStyle()
+        // TODO-JC: layout margins not working
+        button.directionalLayoutMargins = .init(top: 8, leading: 16, bottom: 8, trailing: 16)
+        return button
     }()
 
     /// Aztec's Format Bar (toolbar above the keyboard)
@@ -187,6 +216,24 @@ private extension AztecEditorViewController {
         }
         recognizer.isEnabled = false
     }
+
+    func createInputAccessoryView() -> UIView {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productDescriptionGenerator) else {
+            return formatBar
+        }
+
+        let stackView = UIStackView(arrangedSubviews: [generatorActionView, formatBar])
+        stackView.spacing = 0
+        stackView.axis = .vertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        let accessoryView = InputAccessoryView()
+        accessoryView.addSubview(stackView)
+        accessoryView.pinSubviewToAllEdges(stackView)
+        accessoryView.translatesAutoresizingMaskIntoConstraints = false
+
+        return accessoryView
+    }
 }
 
 private extension AztecEditorViewController {
@@ -294,7 +341,7 @@ extension AztecEditorViewController: UITextViewDelegate {
     }
 
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        textView.inputAccessoryView = formatBar
+        textView.inputAccessoryView = createInputAccessoryView()
         return true
     }
 }

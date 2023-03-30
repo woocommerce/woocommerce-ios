@@ -16,7 +16,7 @@ final class EditorFactory {
         let viewProperties = EditorViewProperties(navigationTitle: Localization.productDescriptionTitle,
                                                   placeholderText: Localization.placeholderText(product: product),
                                                   showSaveChangesActionSheet: true)
-        let editor = AztecEditorViewController(content: product.description, viewProperties: viewProperties)
+        let editor = AztecEditorViewController(content: product.description, product: product, viewProperties: viewProperties)
         editor.onContentSave = onContentSave
         return editor
     }
@@ -26,7 +26,7 @@ final class EditorFactory {
         let viewProperties = EditorViewProperties(navigationTitle: Localization.productShortDescriptionTitle,
                                                   placeholderText: Localization.placeholderText(product: product),
                                                   showSaveChangesActionSheet: true)
-        let editor = AztecEditorViewController(content: product.shortDescription, viewProperties: viewProperties)
+        let editor = AztecEditorViewController(content: product.shortDescription, product: product, viewProperties: viewProperties)
         editor.onContentSave = onContentSave
         return editor
     }

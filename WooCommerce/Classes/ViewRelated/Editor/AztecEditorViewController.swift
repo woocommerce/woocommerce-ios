@@ -28,6 +28,8 @@ final class AztecEditorViewController: UIViewController, Editor {
 
     private var content: String
 
+    private let product: ProductFormDataModel
+
     private let viewProperties: EditorViewProperties
 
     private let aztecUIConfigurator = AztecUIConfigurator()
@@ -76,8 +78,13 @@ final class AztecEditorViewController: UIViewController, Editor {
         button.applyPrimaryButtonStyle()
         // TODO-JC: layout margins not working
         button.directionalLayoutMargins = .init(top: 8, leading: 16, bottom: 8, trailing: 16)
+        button.on(.touchUpInside) { [weak self] _ in
+            self?.showProductGeneratorBottomSheet()
+        }
         return button
     }()
+
+    private var generatorController: ProductDescriptionGenerationHostingController?
 
     /// Aztec's Format Bar (toolbar above the keyboard)
     ///
@@ -127,9 +134,11 @@ final class AztecEditorViewController: UIViewController, Editor {
     private let textViewAttachmentDelegate: TextViewAttachmentDelegate
 
     required init(content: String?,
+                  product: ProductFormDataModel,
                   viewProperties: EditorViewProperties,
                   textViewAttachmentDelegate: TextViewAttachmentDelegate = AztecTextViewAttachmentHandler()) {
         self.content = content ?? ""
+        self.product = product
         self.textViewAttachmentDelegate = textViewAttachmentDelegate
         self.viewProperties = viewProperties
         super.init(nibName: nil, bundle: nil)
@@ -171,6 +180,11 @@ final class AztecEditorViewController: UIViewController, Editor {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         richTextView.becomeFirstResponder()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        dismissProductGeneratorBottomSheetIfNeeded()
     }
 }
 
@@ -341,7 +355,33 @@ extension AztecEditorViewController: UITextViewDelegate {
     }
 
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        dismissProductGeneratorBottomSheetIfNeeded()
         textView.inputAccessoryView = createInputAccessoryView()
         return true
+    }
+}
+
+private extension AztecEditorViewController {
+    func showProductGeneratorBottomSheet() {
+        let controller = ProductDescriptionGenerationHostingController(viewModel: .init(product: product))
+        generatorController = controller
+        configureBottomSheetPresentation(for: controller)
+        view.endEditing(true)
+        present(controller, animated: true)
+    }
+
+    func configureBottomSheetPresentation(for viewController: UIViewController) {
+        if let sheet = viewController.sheetPresentationController {
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .large
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
+        }
+    }
+
+    func dismissProductGeneratorBottomSheetIfNeeded() {
+        generatorController?.dismiss(animated: false) { [weak self] in
+            self?.generatorController = nil
+        }
     }
 }

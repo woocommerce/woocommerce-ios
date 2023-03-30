@@ -146,6 +146,9 @@
 		023078FE25872CCF008EADEE /* PrintShippingLabelViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023078FD25872CCF008EADEE /* PrintShippingLabelViewModelTests.swift */; };
 		02307924258731B2008EADEE /* PrintShippingLabelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02307923258731B2008EADEE /* PrintShippingLabelViewModel.swift */; };
 		02312797277D4F650060E180 /* StoreStatsPeriodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02312796277D4F640060E180 /* StoreStatsPeriodViewModel.swift */; };
+		0231871E29D58546003C3224 /* ProductDescriptionGenerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0231871D29D58546003C3224 /* ProductDescriptionGenerationView.swift */; };
+		0231872029D58557003C3224 /* ProductDescriptionGenerationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0231871F29D58557003C3224 /* ProductDescriptionGenerationViewModel.swift */; };
+		0231872329D5887F003C3224 /* OpenAISwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0231872229D5887F003C3224 /* OpenAISwift */; };
 		023453F22579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023453F12579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift */; };
 		0234680A282CEA5F00CFC503 /* ReceiptViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02346809282CEA5F00CFC503 /* ReceiptViewModelTests.swift */; };
 		0235354E2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235354D2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift */; };
@@ -2346,6 +2349,8 @@
 		023078FD25872CCF008EADEE /* PrintShippingLabelViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrintShippingLabelViewModelTests.swift; sourceTree = "<group>"; };
 		02307923258731B2008EADEE /* PrintShippingLabelViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrintShippingLabelViewModel.swift; sourceTree = "<group>"; };
 		02312796277D4F640060E180 /* StoreStatsPeriodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsPeriodViewModel.swift; sourceTree = "<group>"; };
+		0231871D29D58546003C3224 /* ProductDescriptionGenerationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionGenerationView.swift; sourceTree = "<group>"; };
+		0231871F29D58557003C3224 /* ProductDescriptionGenerationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionGenerationViewModel.swift; sourceTree = "<group>"; };
 		023453F12579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPrintingInstructionsViewController.swift; sourceTree = "<group>"; };
 		02346809282CEA5F00CFC503 /* ReceiptViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptViewModelTests.swift; sourceTree = "<group>"; };
 		0235354D2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSettingsViewModelTests.swift; sourceTree = "<group>"; };
@@ -4383,6 +4388,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3FFC5EAC2851942F00563C48 /* Charts in Frameworks */,
+				0231872329D5887F003C3224 /* OpenAISwift in Frameworks */,
 				D88FDB4525DD223B00CB0DBD /* Hardware.framework in Frameworks */,
 				263E37E12641AD8300260D3B /* Codegen in Frameworks */,
 				4598298128574688003A9AFE /* Inject in Frameworks */,
@@ -4969,6 +4975,8 @@
 				0269576F237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift */,
 				024DF3062372C18D006658FE /* AztecUIConfigurator.swift */,
 				024DF3082372CA00006658FE /* EditorViewProperties.swift */,
+				0231871D29D58546003C3224 /* ProductDescriptionGenerationView.swift */,
+				0231871F29D58557003C3224 /* ProductDescriptionGenerationViewModel.swift */,
 			);
 			path = Editor;
 			sourceTree = "<group>";
@@ -10037,6 +10045,7 @@
 				174CA86927D90A6200126524 /* AutomatticAbout */,
 				3FFC5EAB2851942F00563C48 /* Charts */,
 				4598298028574688003A9AFE /* Inject */,
+				0231872229D5887F003C3224 /* OpenAISwift */,
 			);
 			productName = WooCommerce;
 			productReference = B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */;
@@ -10207,6 +10216,7 @@
 				3FFC5EAA2851942F00563C48 /* XCRemoteSwiftPackageReference "Charts" */,
 				4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */,
 				3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */,
+				0231872129D5887F003C3224 /* XCRemoteSwiftPackageReference "OpenAISwift" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
@@ -10817,6 +10827,7 @@
 				02D681AB29C3F8AC00348510 /* StoreOnboardingPaymentsSetupCoordinator.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				265BCA0C2430E741004E53EE /* ProductCategoryTableViewCell.swift in Sources */,
+				0231872029D58557003C3224 /* ProductDescriptionGenerationViewModel.swift in Sources */,
 				02ACD25A2852E11700EC928E /* CloseAccountCoordinator.swift in Sources */,
 				036CA6F129229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift in Sources */,
 				451A9973260E39270059D135 /* ShippingLabelPackageNumberRow.swift in Sources */,
@@ -11615,6 +11626,7 @@
 				DE69C54A27BB715D000BB888 /* CouponRestrictionsViewModel.swift in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */,
 				DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */,
+				0231871E29D58546003C3224 /* ProductDescriptionGenerationView.swift in Sources */,
 				021125992578D9C20075AD2A /* ShippingLabelPrintingInstructionsView.swift in Sources */,
 				03E471D42942096B001A58AD /* BuiltInCardReaderPaymentAlertsProvider.swift in Sources */,
 				028A4659295BCFFC001CF6CE /* StoreCreationSellingStatusQuestionContainerView.swift in Sources */,
@@ -13401,6 +13413,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		0231872129D5887F003C3224 /* XCRemoteSwiftPackageReference "OpenAISwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/adamrushy/OpenAISwift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.2.0;
+			};
+		};
 		174CA86827D90A6200126524 /* XCRemoteSwiftPackageReference "AutomatticAbout-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/automattic/AutomatticAbout-swift";
@@ -13468,6 +13488,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0231872229D5887F003C3224 /* OpenAISwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0231872129D5887F003C3224 /* XCRemoteSwiftPackageReference "OpenAISwift" */;
+			productName = OpenAISwift;
+		};
 		174CA86927D90A6200126524 /* AutomatticAbout */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 174CA86827D90A6200126524 /* XCRemoteSwiftPackageReference "AutomatticAbout-swift" */;

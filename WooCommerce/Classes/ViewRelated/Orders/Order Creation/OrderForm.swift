@@ -380,7 +380,7 @@ private extension ProductSelectorView.Configuration {
                                                           "when one product is selected")
         static let doneButtonPlural = NSLocalizedString("%1$d Products Selected",
                                                         comment: "Title of the action button at the bottom of the Select Products screen " +
-                                                        "when more than 1 item is selected, reads like: 5 Products selected")
+                                                        "when more than 1 item is selected, reads like: 5 Products Selected")
         static let productRowAccessibilityHint = NSLocalizedString("Adds product to order.",
                                                                    comment: "Accessibility hint for selecting a product in the Add Product screen")
         static let variableProductRowAccessibilityHint = NSLocalizedString(

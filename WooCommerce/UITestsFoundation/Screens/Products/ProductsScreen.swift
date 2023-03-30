@@ -121,11 +121,13 @@ public final class ProductsScreen: ScreenObject {
 
     @discardableResult
     public func verifyProductFilterResults(products: [ProductData], filter: String) throws -> Self {
-        // get filtered mock file responses to compare with elements displayed on UI
-        let filteredProduct = products.filter { $0.stock_status == filter.lowercased() }
+        let filteredProducts = products.filter { $0.stock_status == filter.lowercased() }
 
-        productsTableView.assertTextVisibilityCount(textToFind: (filteredProduct[0].name), expectedCount: 1)
-        productsTableView.assertTextVisibilityCount(textToFind: filteredProduct[0].stock_status, expectedCount: 1)
+        for product in filteredProducts {
+            productsTableView.assertTextVisibilityCount(textToFind: product.name, expectedCount: 1)
+        }
+
+        productsTableView.assertTextVisibilityCount(textToFind: filter, expectedCount: filteredProducts.count)
 
         return self
     }

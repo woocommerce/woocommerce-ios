@@ -20,6 +20,30 @@ final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
     @Published private(set) var state: State = .checkingSitePlan
     @Published var error: SiteLaunchError?
 
+    lazy var upgradePlanAttributedString: NSAttributedString = {
+        let font: UIFont = .body
+        let foregroundColor: UIColor = .text
+        let linkColor: UIColor = .textLink
+        let linkContent = Localization.upgrade
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .left
+
+        let attributedString = NSMutableAttributedString(
+            string: .localizedStringWithFormat(Localization.upgradePlanToLaunchStore, linkContent),
+            attributes: [.font: font,
+                         .foregroundColor: foregroundColor,
+                         .paragraphStyle: paragraphStyle,
+                        ]
+        )
+        let upgradeLink = NSAttributedString(string: linkContent, attributes: [.font: font,
+                                                                                      .foregroundColor: linkColor,
+                                                                                      .underlineStyle: NSUnderlineStyle.single.rawValue,
+                                                                                      .underlineColor: UIColor.textLink])
+        attributedString.replaceFirstOccurrence(of: linkContent, with: upgradeLink)
+        return attributedString
+    }()
+
     private let siteID: Int64
     private let stores: StoresManager
     private let onLaunch: () -> Void
@@ -104,5 +128,16 @@ private extension StoreOnboardingLaunchStoreViewModel {
                 continuation.resume(returning: result)
             })
         }
+    }
+}
+
+private extension StoreOnboardingLaunchStoreViewModel {
+    enum Localization {
+        static let upgradePlanToLaunchStore = NSLocalizedString(
+            "To launch your store, you need to upgrade to our plan. %1$@",
+            comment: "Message to ask the user to upgrade free trial plan to launch store."
+            + "Reads - To launch your store, you need to upgrade to our plan. Upgrade"
+        )
+        static let upgrade = NSLocalizedString("Upgrade", comment: "Title on the button to upgrade a free trial plan.")
     }
 }

@@ -20,7 +20,7 @@ final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
     @Published private(set) var state: State = .checkingSitePlan
     @Published var error: SiteLaunchError?
 
-    lazy var upgradePlanAttributedString: NSAttributedString = {
+    private(set) lazy var upgradePlanAttributedString: NSAttributedString = {
         let font: UIFont = .body
         let foregroundColor: UIColor = .text
         let linkColor: UIColor = .textLink

@@ -76,9 +76,9 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when the user taps on the CTA in login prologue (logged out) to create a store.
-        static func loginPrologueCreateSiteTapped() -> WooAnalyticsEvent {
+        static func loginPrologueCreateSiteTapped(isFreeTrial: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginPrologueCreateSiteTapped,
-                              properties: [:])
+                              properties: [Key.isFreeTrial: isFreeTrial])
         }
 
         /// Tracked when the user taps on the CTA in the account creation form to log in instead.

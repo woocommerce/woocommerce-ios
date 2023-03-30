@@ -416,13 +416,19 @@ private extension StoreCreationCoordinator {
                 showStoreCreationErrorAlert(from: navigationController, error: SiteCreationError(remoteError: error))
 
                 // TODO: Confirm if we should track a different error here.
-                analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native, isFreeTrial: isFreeTrialCreation))
+                analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
+                                                                         error: error,
+                                                                         flow: .native,
+                                                                         isFreeTrial: isFreeTrialCreation))
             }
 
         case .failure(let error):
             navigationController.popViewController(animated: true)
             showStoreCreationErrorAlert(from: navigationController, error: error)
-            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native, isFreeTrial: isFreeTrialCreation))
+            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
+                                                                     error: error,
+                                                                     flow: .native,
+                                                                     isFreeTrial: isFreeTrialCreation))
         }
     }
 
@@ -475,7 +481,10 @@ private extension StoreCreationCoordinator {
                              planToPurchase: planToPurchase)
         case .failure(let error):
             let isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
-            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native, isFreeTrial: isFreeTrialCreation))
+            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
+                                                                     error: error,
+                                                                     flow: .native,
+                                                                     isFreeTrial: isFreeTrialCreation))
             showStoreCreationErrorAlert(from: navigationController, error: error)
         }
     }

@@ -88,7 +88,7 @@ private extension StoreOnboardingLaunchStoreView {
             Image(uiImage: .infoOutlineImage)
                 .resizable()
                 .renderingMode(.template)
-                .foregroundColor(Color(.withColorStudio(.green, shade: .shade80)))
+                .foregroundColor(Color(.text))
                 .frame(width: Layout.FreeTrialBanner.infoIconSize.width * scale, height: Layout.FreeTrialBanner.infoIconSize.height * scale)
 
             AttributedText(viewModel.upgradePlanAttributedString)

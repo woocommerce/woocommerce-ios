@@ -56,7 +56,7 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
                 "site_information": [
                     "title": ""
                 ],
-                "theme": "pub/zoologist",
+                "theme": flow.theme,
                 "use_theme_annotation": false,
                 "wpcom_public_coming_soon": 1
             ]
@@ -109,6 +109,15 @@ public enum SiteCreationFlow {
             return "onboarding"
         case .wooexpress:
             return "wooexpress"
+        }
+    }
+
+    var theme: String {
+        switch self {
+        case .onboarding:
+            return "pub/zoologist"
+        case .wooexpress:
+            return "pub/twentytwentytwo"
         }
     }
 }

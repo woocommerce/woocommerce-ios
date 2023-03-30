@@ -50,7 +50,7 @@ struct ProductSelectorView: View {
                 }
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
-                .renderedIf(configuration.clearSelectionEnabled && viewModel.totalSelectedItemsCount > 0 && viewModel.syncStatus == .results)
+                .renderedIf(viewModel.totalSelectedItemsCount > 0 && viewModel.syncStatus == .results)
                 Spacer()
 
                 Button(viewModel.filterButtonTitle) {
@@ -190,7 +190,6 @@ extension ProductSelectorView {
     struct Configuration {
         var showsFilters: Bool = false
         var multipleSelectionsEnabled: Bool = false
-        var clearSelectionEnabled: Bool = true
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
         var doneButtonTitleSingularFormat: String = ""

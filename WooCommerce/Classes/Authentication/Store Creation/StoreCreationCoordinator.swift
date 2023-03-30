@@ -238,7 +238,7 @@ private extension StoreCreationCoordinator {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] site in
                 guard let self, let site else { return }
-                self.analytics.track(event: .StoreCreation.siteCreated(source: self.source.analyticsValue, siteURL: site.url, flow: .web))
+                self.analytics.track(event: .StoreCreation.siteCreated(source: self.source.analyticsValue, siteURL: site.url, flow: .web, isFreeTrial: false))
                 self.continueWithSelectedSite(site: site)
             }
     }
@@ -254,7 +254,7 @@ private extension StoreCreationCoordinator {
             // of them matches the final site URL from WPCOM `/me/sites` endpoint.
             possibleSiteURLsFromStoreCreation.insert(siteURL)
         case .failure(let error):
-            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .web))
+            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .web, isFreeTrial: false))
             DDLogError("Store creation error: \(error)")
         }
     }
@@ -299,7 +299,8 @@ private extension StoreCreationCoordinator {
 
         alert.addDestructiveActionWithTitle(Localization.DiscardChangesAlert.confirmActionTitle) { [weak self] _ in
             guard let self else { return }
-            self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: flow))
+            let isFreeTrialCreation = self.featureFlagService.isFeatureFlagEnabled(.freeTrial) && flow == .native
+            self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: flow, isFreeTrial: isFreeTrialCreation))
             self.navigationController.dismiss(animated: true)
         }
 
@@ -396,6 +397,7 @@ private extension StoreCreationCoordinator {
 
         // Create store site
         let createStoreResult = await createStore(name: storeName, flow: .wooexpress)
+        let isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
 
         switch createStoreResult {
         case .success(let siteResult):
@@ -414,13 +416,13 @@ private extension StoreCreationCoordinator {
                 showStoreCreationErrorAlert(from: navigationController, error: SiteCreationError(remoteError: error))
 
                 // TODO: Confirm if we should track a different error here.
-                analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native))
+                analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native, isFreeTrial: isFreeTrialCreation))
             }
 
         case .failure(let error):
             navigationController.popViewController(animated: true)
             showStoreCreationErrorAlert(from: navigationController, error: error)
-            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native))
+            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native, isFreeTrial: isFreeTrialCreation))
         }
     }
 
@@ -472,7 +474,8 @@ private extension StoreCreationCoordinator {
                              countryCode: countryCode,
                              planToPurchase: planToPurchase)
         case .failure(let error):
-            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native))
+            let isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
+            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native, isFreeTrial: isFreeTrialCreation))
             showStoreCreationErrorAlert(from: navigationController, error: error)
         }
     }
@@ -679,7 +682,8 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func showSuccessView(from navigationController: UINavigationController, site: Site) {
-        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue, siteURL: site.url, flow: .native))
+        let isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
+        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue, siteURL: site.url, flow: .native, isFreeTrial: isFreeTrialCreation))
         guard let url = URL(string: site.url) else {
             return continueWithSelectedSite(site: site)
         }

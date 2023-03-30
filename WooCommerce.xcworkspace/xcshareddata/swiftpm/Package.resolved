@@ -47,6 +47,15 @@
         }
       },
       {
+        "package": "OpenAISwift",
+        "repositoryURL": "https://github.com/adamrushy/OpenAISwift.git",
+        "state": {
+          "branch": null,
+          "revision": "aeb19b0d5739fd6e3f568ccdb93376827e3cde0e",
+          "version": "1.2.0"
+        }
+      },
+      {
         "package": "ScreenObject",
         "repositoryURL": "https://github.com/Automattic/ScreenObject",
         "state": {

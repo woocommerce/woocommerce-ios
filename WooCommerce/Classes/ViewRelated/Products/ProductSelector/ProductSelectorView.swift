@@ -142,6 +142,7 @@ struct ProductSelectorView: View {
                 // no-op
             }
         }
+        .interactiveDismissDisabled()
     }
 
     /// Creates the `ProductRow` for a product, depending on whether the product is variable.

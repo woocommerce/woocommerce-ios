@@ -57,7 +57,10 @@ final class JetpackSetupCoordinator {
                 self.analytics.track(.jetpackSetupLoginButtonTapped)
                 do {
                     try self.saveJetpackConnectionStateIfPossible(result)
-                    self.analytics.track(event: .JetpackSetup.connectionCheckCompleted(isAlreadyConnected: self.jetpackConnectedEmail != nil, requiresConnectionOnly: self.requiresConnectionOnly))
+                    self.analytics.track(event: .JetpackSetup.connectionCheckCompleted(
+                        isAlreadyConnected: self.jetpackConnectedEmail != nil,
+                        requiresConnectionOnly: self.requiresConnectionOnly
+                    ))
                     if let connectedEmail = self.jetpackConnectedEmail {
                         self.startAuthentication(with: connectedEmail)
                     } else {

@@ -143,6 +143,10 @@ private extension StoreCreationCoordinator {
         let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
         let storeNameForm = StoreNameFormHostingController { [weak self] storeName in
             if isProfilerEnabled {
+                /// `storeCreationM3Profiler` is currently disabled.
+                /// Before enabling it again, make sure the onboarding questions are properly sent on the trial flow around line `343`.
+                /// Ref: https://github.com/woocommerce/woocommerce-ios/issues/9326#issuecomment-1490012032
+                ///
                 self?.showCategoryQuestion(from: navigationController, storeName: storeName, planToPurchase: planToPurchase)
             } else {
                 if isFreeTrialEnabled {
@@ -371,15 +375,22 @@ private extension StoreCreationCoordinator {
                                   category: StoreCreationCategoryAnswer?,
                                   sellingStatus: StoreCreationSellingStatusAnswer?,
                                   planToPurchase: WPComPlanProduct) {
+        let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
         let questionController = StoreCreationCountryQuestionHostingController(viewModel:
                 .init(storeName: storeName) { [weak self] countryCode in
                     guard let self else { return }
-                    self.showDomainSelector(from: navigationController,
-                                            storeName: storeName,
-                                            category: category,
-                                            sellingStatus: sellingStatus,
-                                            countryCode: countryCode,
-                                            planToPurchase: planToPurchase)
+                    if isFreeTrialEnabled {
+                        Task {
+                            await self.createFreeTrialStore(from: navigationController, storeName: storeName)
+                        }
+                    } else {
+                        self.showDomainSelector(from: navigationController,
+                                                storeName: storeName,
+                                                category: category,
+                                                sellingStatus: sellingStatus,
+                                                countryCode: countryCode,
+                                                planToPurchase: planToPurchase)
+                    }
                 } onSupport: { [weak self] in
                     self?.showSupport(from: navigationController)
                 })

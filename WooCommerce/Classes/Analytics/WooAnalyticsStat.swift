@@ -874,6 +874,16 @@ public enum WooAnalyticsStat: String {
     case applicationPasswordAuthorizationApproved = "application_password_authorization_approved"
     case applicationPasswordAuthorizationURLNotAvailable = "application_password_authorization_url_not_available"
     case applicationPasswordAuthorizationURLFetchFailed = "application_password_authorization_url_fetch_failed"
+
+    // MARK: Jetpack setup for non-Jetpack sites
+    case jetpackSetupLoginButtonTapped = "jetpack_benfits_login_button_tapped"
+    case jetpackSetupConnectionCheckCompleted = "jetpack_setup_connection_check_completed"
+    case jetpackSetupConnectionCheckFailed = "jetpack_setup_connection_check_failed"
+    case jetpackSetupLoginFlow = "jetpack_setup_login_flow"
+    case jetpackSetupLoginCompleted = "jetpack_setup_login_completed"
+    case jetpackSetupFlow = "jetpack_setup_flow"
+    case jetpackSetupCompleted = "jetpack_setup_completed"
+    case jetpackSetupSynchronizationCompleted = "jetpack_setup_synchronization_completed"
 }
 
 public extension WooAnalyticsStat {

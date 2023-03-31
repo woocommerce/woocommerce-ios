@@ -52,8 +52,9 @@ final class JetpackSetupCoordinator {
         let benefitsController = JetpackBenefitsHostingController(siteURL: site.url, isJetpackCPSite: site.isJetpackCPConnected)
         benefitsController.setActions (installAction: { [weak self] result in
             guard let self else { return }
-            self.analytics.track(event: .jetpackInstallButtonTapped(source: .benefitsModal))
+
             if self.site.isNonJetpackSite {
+                self.analytics.track(.jetpackSetupLoginButtonTapped)
                 do {
                     try self.saveJetpackConnectionStateIfPossible(result)
                     if let connectedEmail = self.jetpackConnectedEmail {
@@ -68,6 +69,7 @@ final class JetpackSetupCoordinator {
                     self.showAlert(message: Localization.errorCheckingJetpack)
                 }
             } else {
+                self.analytics.track(event: .jetpackInstallButtonTapped(source: .benefitsModal))
                 self.presentJCPJetpackInstallFlow()
             }
         }, dismissAction: { [weak self] in

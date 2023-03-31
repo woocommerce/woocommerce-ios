@@ -1,5 +1,5 @@
 import Foundation
-import OpenAISwift
+import Yosemite
 
 final class ProductDescriptionGenerationViewModel: ObservableObject {
     @Published var name: String
@@ -16,45 +16,46 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     }
 
     private let product: ProductFormDataModel
+    private let stores: StoresManager
 
-    init(product: ProductFormDataModel) {
+    init(product: ProductFormDataModel,
+         stores: StoresManager = ServiceLocator.stores) {
         self.name = product.name
         self.prompt = product.description ?? ""
         self.product = product
+        self.stores = stores
     }
 
     @MainActor
     func generateDescription() async {
-        let content = """
-Generate an elegant product description that is optimized for SEO with the following attributes on an e-commerce site:
-Product name: \(name)
-Description: \(prompt)
-"""
         isGenerationInProgress = true
 
         defer {
             isGenerationInProgress = false
         }
 
-        let openAI = OpenAISwift(authToken: Constants.authToken)
-        do {
-            let chat: [ChatMessage] = [
-                ChatMessage(role: .user, content: content)
-            ]
-
-            let result = try await openAI.sendChat(with: chat)
-            guard let text = result.choices.first?.message.content else {
-                return
-            }
+        let result = await generateProductDescription()
+        switch result {
+        case let .success(text):
             suggestedText = text
-        } catch {
+        case let .failure(error):
             print("Error generating product description: \(error)")
         }
     }
 }
 
 private extension ProductDescriptionGenerationViewModel {
-    enum Constants {
-        static let authToken = ""
+    @MainActor
+    func generateProductDescription() async -> Result<String, Error> {
+        let base = """
+Generate an elegant product description that is optimized for SEO with the following attributes on an e-commerce site:
+Product name: \(name)
+Description: \(prompt)
+"""
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(ProductAction.generateProductDescription(siteID: product.siteID, base: base) { result in
+                continuation.resume(returning: result)
+            })
+        }
     }
 }

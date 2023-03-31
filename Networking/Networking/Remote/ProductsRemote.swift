@@ -44,6 +44,7 @@ public protocol ProductsRemoteProtocol {
     func updateProducts(siteID: Int64, products: [Product], completion: @escaping (Result<[Product], Error>) -> Void)
     func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Int64], Error>) -> Void)
     func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void)
+    func generateProductDescription(siteID: Int64, base: String) async throws -> String
 }
 
 extension ProductsRemoteProtocol {
@@ -390,6 +391,13 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let mapper = EntityIDMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    public func generateProductDescription(siteID: Int64, base: String) async throws -> String {
+        let path = "sites/\(siteID)/jetpack-ai/completions"
+        let parameters = ["content": base]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
+        return try await enqueue(request)
     }
 }
 

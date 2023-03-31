@@ -109,6 +109,8 @@ public class ProductStore: Store {
             checkProductsOnboardingEligibility(siteID: siteID, onCompletion: onCompletion)
         case let .createTemplateProduct(siteID, template, onCompletion):
             createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
+        case let .generateProductDescription(siteID, base, completion):
+            generateProductDescription(siteID: siteID, base: base, completion: completion)
         }
     }
 }
@@ -464,6 +466,13 @@ private extension ProductStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             }
+        }
+    }
+
+    func generateProductDescription(siteID: Int64, base: String, completion: @escaping (Result<String, Error>) -> Void) {
+        Task {
+            let result = await Result { try await remote.generateProductDescription(siteID: siteID, base: base) }
+            completion(result)
         }
     }
 }

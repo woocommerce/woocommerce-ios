@@ -1127,12 +1127,14 @@ lane :test_without_building do |options|
 
   inject_buildkite_analytics_environment(xctestrun_path: xctestrun_path) if buildkite_ci?
 
+  parallel_testing_value = options[:name] == "UnitTests" ? false : true
+  
   run_tests(
     workspace: 'WooCommerce.xcworkspace',
     scheme: TEST_SCHEME,
     device: options[:device],
-    parallel_testing: true,
-    concurrent_workers: 2,
+    parallel_testing: parallel_testing_value,
+    concurrent_workers: 3,
     test_without_building: true,
     xctestrun: xctestrun_path,
     result_bundle: true,

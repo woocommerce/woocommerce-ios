@@ -100,19 +100,20 @@ extension JetpackInstallStep {
     /// Description dictionary for Analytics
     ///
     var analyticsDescription: [String: String] {
-        let stepDescription = {
-            switch self {
-            case .installation:
-                return "installation"
-            case .activation:
-                return "activation"
-            case .connection:
-                return "connection"
-            case .done:
-                return "all_done"
-            }
-        }()
-        return ["jetpack_install_step": stepDescription]
+        ["jetpack_install_step": analyticsValue]
+    }
+
+    var analyticsValue: String {
+        switch self {
+        case .installation:
+            return "installation"
+        case .activation:
+            return "activation"
+        case .connection:
+            return "connection"
+        case .done:
+            return "all_done"
+        }
     }
 
     private enum Localization {

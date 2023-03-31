@@ -40,7 +40,7 @@ public final class ProductsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func selectAddProduct() -> Self {
+    public func tapAddProduct() -> Self {
         guard productAddButton.waitForExistence(timeout: 3) else {
             return self
         }
@@ -67,13 +67,13 @@ public final class ProductsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func selectProduct(atIndex index: Int) throws -> SingleProductScreen {
+    public func tapProduct(atIndex index: Int) throws -> SingleProductScreen {
         app.tables.cells.element(boundBy: index).tap()
         return try SingleProductScreen()
     }
 
     @discardableResult
-    public func selectProduct(byName name: String) throws -> SingleProductScreen {
+    public func tapProduct(byName name: String) throws -> SingleProductScreen {
         app.tables.cells.staticTexts[name].tap()
         return try SingleProductScreen()
     }
@@ -93,13 +93,13 @@ public final class ProductsScreen: ScreenObject {
         return self
     }
 
-    public func selectProductType(productType: String) throws -> SingleProductScreen {
+    public func tapProductType(productType: String) throws -> SingleProductScreen {
         let productTypeLabel = NSPredicate(format: "label CONTAINS[c] %@", productType)
         app.staticTexts.containing(productTypeLabel).firstMatch.tap()
         return try SingleProductScreen()
     }
 
-    public func selectSearchButton() throws -> ProductSearchScreen {
+    public func tapSearchButton() throws -> ProductSearchScreen {
         productSearchButton.tap()
         return try ProductSearchScreen()
     }

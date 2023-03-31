@@ -5,6 +5,7 @@
 - [*] Adds a banner in "Launch store" task screen to upgrade from free trial plan. [https://github.com/woocommerce/woocommerce-ios/pull/9323]
 - [*] Fix: Description, sale price, and image will be copied over to the new product variations when duplicating a variable product. [https://github.com/woocommerce/woocommerce-ios/pull/9322]
 
+
 12.9
 -----
 - [**] Dashboard: an onboarding card is shown for sites with the following tasks if any is incomplete: "tell us more about your store" (store location) that opens a webview, "add your first product" that starts the product creation flow, "launch your store" that publishes the store, "customize your domain" that starts the domain purchase flow, and "get paid" that opens a webview. A subset of the tasks may be shown to self-hosted sites and WPCOM sites on a free trial. [https://github.com/woocommerce/woocommerce-ios/pull/9285]

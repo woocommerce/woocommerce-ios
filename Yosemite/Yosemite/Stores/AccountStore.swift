@@ -56,6 +56,8 @@ public class AccountStore: Store {
         case .synchronizeSites(let selectedSiteID, let onCompletion):
             synchronizeSites(selectedSiteID: selectedSiteID,
                              onCompletion: onCompletion)
+        case .synchronizeSitesAndReturnSelectedSiteInfo(let siteAddress, let onCompletion):
+            synchronizeSitesAndReturnSelectedSiteInfo(for: siteAddress, onCompletion: onCompletion)
         case .synchronizeSitePlan(let siteID, let onCompletion):
             synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         case .updateAccountSettings(let userID, let tracksOptOut, let onCompletion):
@@ -114,6 +116,24 @@ private extension AccountStore {
                 onCompletion(.success(site))
             }
         }
+    }
+
+    func synchronizeSitesAndReturnSelectedSiteInfo(for siteAddress: String, onCompletion: @escaping (Result<Site, Error>) -> Void) {
+        remote.loadSites()
+            .sink { [weak self] result in
+                switch result {
+                case .success(let sites):
+                    guard let selectedSite = sites.first(where: { $0.url == siteAddress }) else {
+                        return onCompletion(.failure(NetworkError.notFound))
+                    }
+                    self?.upsertStoredSitesInBackground(readOnlySites: sites, selectedSiteID: selectedSite.siteID) {
+                        onCompletion(.success(selectedSite))
+                    }
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                }
+            }
+            .store(in: &cancellables)
     }
 
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.

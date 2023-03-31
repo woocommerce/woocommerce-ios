@@ -3,6 +3,7 @@ import UIKit
 import WebKit
 import class Networking.UserAgent
 import struct WordPressAuthenticator.WordPressOrgCredentials
+import enum Yosemite.Credentials
 
 /// A web view which is authenticated for WordPress.com, when possible.
 ///
@@ -32,20 +33,35 @@ final class AuthenticatedWebViewController: UIViewController {
 
     /// Optional credentials for authenticating with WP.org
     ///
-    private let wporgCredentials: WordPressOrgCredentials?
+    private let siteCredentials: WordPressOrgCredentials?
+
+    private let wpcomCredentials: Credentials?
 
 
-    init(viewModel: AuthenticatedWebViewModel, wporgCredentials: WordPressOrgCredentials? = nil) {
+    init(viewModel: AuthenticatedWebViewModel, extraCredentials: Credentials? = nil) {
         self.viewModel = viewModel
-        self.wporgCredentials = {
-            if let wporgCredentials {
-                return wporgCredentials
-            } else if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials,
-               case let.wporg(username, password, siteAddress) = credentials {
+        let currentCredentials = ServiceLocator.stores.sessionManager.defaultCredentials
+
+        self.siteCredentials = {
+            if case let .wporg(username, password, siteAddress) = extraCredentials {
                 return WordPressOrgCredentials(username: username,
                                                password: password,
                                                xmlrpc: siteAddress + "/xmlrpc.php",
                                                options: [:])
+            } else if case let.wporg(username, password, siteAddress) = currentCredentials {
+                return WordPressOrgCredentials(username: username,
+                                               password: password,
+                                               xmlrpc: siteAddress + "/xmlrpc.php",
+                                               options: [:])
+            }
+            return nil
+        }()
+
+        self.wpcomCredentials = {
+            if case .wpcom = extraCredentials {
+                return extraCredentials
+            } else if case .wpcom = currentCredentials {
+                return currentCredentials
             }
             return nil
         }()
@@ -136,7 +152,7 @@ private extension AuthenticatedWebViewController {
             }
             .store(in: &subscriptions)
 
-        if let wporgCredentials, let request = try? webView.authenticateForWPOrg(with: wporgCredentials) {
+        if let siteCredentials, let request = try? webView.authenticateForWPOrg(with: siteCredentials) {
             webView.load(request)
         } else {
             loadContent()
@@ -151,11 +167,10 @@ private extension AuthenticatedWebViewController {
             return
         }
 
-        /// Authenticate for WP.com automatically if user is logged in.
+        /// Authenticate for WP.com automatically if credentials are available.
         ///
-        if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials,
-           case .wpcom = credentials {
-            webView.authenticateForWPComAndRedirect(to: url, credentials: credentials)
+        if let wpcomCredentials, case .wpcom = wpcomCredentials {
+            webView.authenticateForWPComAndRedirect(to: url, credentials: wpcomCredentials)
         } else {
             let request = URLRequest(url: url)
             webView.load(request)

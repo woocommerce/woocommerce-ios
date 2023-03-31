@@ -24,7 +24,7 @@ final class ReviewsTests: XCTestCase {
             .goToReviewsScreen()
             .verifyReviewsScreenLoaded()
             .verifyReviewList(reviews: reviews)
-            .selectReview(byReviewer: reviews[0].reviewer)
+            .tapReview(byReviewer: reviews[0].reviewer)
             .verifySingleReviewScreenLoaded()
             .verifyReview(review: reviews[0])
             .goBackToReviewsScreen()

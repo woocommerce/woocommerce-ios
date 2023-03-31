@@ -5,13 +5,17 @@ public protocol SiteRemoteProtocol {
     /// Creates a site given
     /// - Parameters:
     ///   - name: The name of the site.
-    ///   - domain: The domain selected for the site.
+    ///   - flow: The creation flow to follow.
     /// - Returns: The response with the site creation.
-    func createSite(name: String, domain: String) async throws -> SiteCreationResponse
+    func createSite(name: String, flow: SiteCreationFlow) async throws -> SiteCreationResponse
 
     /// Launches a site publicly through WPCOM.
     /// - Parameter siteID: Remote WPCOM ID of the site.
     func launchSite(siteID: Int64) async throws
+
+    /// Enables a free trial plan for a site.
+    ///
+    func enableFreeTrial(siteID: Int64) async throws
 }
 
 /// Site: Remote Endpoints
@@ -26,29 +30,33 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
         super.init(network: network)
     }
 
-    public func createSite(name: String,
-                           domain: String) async throws -> SiteCreationResponse {
+    public func createSite(name: String, flow: SiteCreationFlow) async throws -> SiteCreationResponse {
         let path = Path.siteCreation
+        let subdomainName = flow.domain.split(separator: ".").first
 
-        // Domain input should be a `wordpress.com` subdomain.
-        guard let subdomainName = domain.split(separator: ".").first else {
+        // Do not allow nil subdomains on the `.onboarding` flow
+        switch flow {
+        case .onboarding where subdomainName == nil:
             throw SiteCreationError.invalidDomain
+        default:
+            break
         }
+
         let parameters: [String: Any] = [
-            "blog_name": subdomainName,
+            "blog_name": subdomainName ?? "",
             "blog_title": name,
             "client_id": dotcomClientID,
             "client_secret": dotcomClientSecret,
-            "find_available_url": false,
+            "find_available_url": flow.useRandomURL,
             "public": 0,
             "validate": false,
             "options": [
                 "default_annotation_as_primary_fallback": true,
-                "site_creation_flow": "onboarding",
+                "site_creation_flow": flow.flowID,
                 "site_information": [
                     "title": ""
                 ],
-                "theme": "pub/zoologist",
+                "theme": flow.theme,
                 "use_theme_annotation": false,
                 "wpcom_public_coming_soon": 1
             ]
@@ -62,6 +70,55 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
         let path = Path.siteLaunch(siteID: siteID)
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path)
         return try await enqueue(request)
+    }
+
+    public func enableFreeTrial(siteID: Int64) async throws {
+        let path = Path.enableFreeTrial(siteID: siteID)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path)
+        return try await enqueue(request)
+    }
+}
+
+/// Possible Site Creation Flows
+///
+public enum SiteCreationFlow {
+    case onboarding(domain: String)
+    case wooexpress
+
+    var domain: String {
+        switch self {
+        case .onboarding(let domain):
+            return domain
+        case .wooexpress:
+            return ""
+        }
+    }
+
+    var useRandomURL: Bool {
+        switch self {
+        case .onboarding:
+            return false
+        case .wooexpress:
+            return true
+        }
+    }
+
+    var flowID: String {
+        switch self {
+        case .onboarding:
+            return "onboarding"
+        case .wooexpress:
+            return "wooexpress"
+        }
+    }
+
+    var theme: String {
+        switch self {
+        case .onboarding:
+            return "pub/zoologist"
+        case .wooexpress:
+            return "pub/twentytwentytwo"
+        }
     }
 }
 
@@ -105,6 +162,12 @@ private extension SiteRemote {
         static let siteCreation = "sites/new"
         static func siteLaunch(siteID: Int64) -> String {
             "sites/\(siteID)/launch"
+        }
+
+        ///Path to add enable the free trial on a site.
+        ///
+        static func enableFreeTrial(siteID: Int64) -> String {
+            "sites/\(siteID)/ecommerce-trial/add/ecommerce-trial-bundle-monthly"
         }
     }
 }

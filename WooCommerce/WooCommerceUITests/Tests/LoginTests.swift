@@ -17,7 +17,7 @@ final class LoginTests: XCTestCase {
             return
         }
         try PrologueScreen()
-            .selectSiteAddress()
+            .tapSiteAddress()
             .proceedWith(siteUrl: TestCredentials.siteUrl)
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)
@@ -35,7 +35,7 @@ final class LoginTests: XCTestCase {
         guard try PrologueScreen().isWPComLoginAvailable() else {
             return
         }
-        try PrologueScreen().selectContinueWithWordPress()
+        try PrologueScreen().tapContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)
 
@@ -56,7 +56,7 @@ final class LoginTests: XCTestCase {
         guard try PrologueScreen().isWPComLoginAvailable() else {
             return
         }
-        _ = try PrologueScreen().selectContinueWithWordPress()
+        _ = try PrologueScreen().tapContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .tryProceed(password: "invalidPswd")
             .verifyLoginError()

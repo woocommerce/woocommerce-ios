@@ -11,6 +11,14 @@ public final class ProductsScreen: ScreenObject {
         $0.buttons["product-search-button"]
     }
 
+    private let productFilterButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["product-filter-button"]
+    }
+
+    private let productsTableViewGetter: (XCUIApplication) -> XCUIElement = {
+        $0.tables["products-table-view"]
+    }
+
     private let topBannerViewExpandButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["top-banner-view-expand-collapse-button"]
     }
@@ -21,6 +29,8 @@ public final class ProductsScreen: ScreenObject {
 
     private var productAddButton: XCUIElement { productAddButtonGetter(app) }
     private var productSearchButton: XCUIElement { productSearchButtonGetter(app) }
+    private var productFilterButton: XCUIElement { productFilterButtonGetter(app) }
+    private var productsTableView: XCUIElement { productsTableViewGetter(app) }
     private var topBannerViewExpandButton: XCUIElement { topBannerViewExpandButtonGetter(app) }
     private var topBannerViewInfoLabel: XCUIElement { topBannerViewInfoLabelGetter(app) }
 
@@ -102,5 +112,23 @@ public final class ProductsScreen: ScreenObject {
     public func tapSearchButton() throws -> ProductSearchScreen {
         productSearchButton.tap()
         return try ProductSearchScreen()
+    }
+
+    public func tapFilterButton() throws -> ProductFilterScreen {
+        productFilterButton.tap()
+        return try ProductFilterScreen()
+    }
+
+    @discardableResult
+    public func verifyProductFilterResults(products: [ProductData], filter: String) throws -> Self {
+        let filteredProducts = products.filter { $0.stock_status == filter.lowercased() }
+
+        for product in filteredProducts {
+            productsTableView.assertTextVisibilityCount(textToFind: product.name, expectedCount: 1)
+        }
+
+        productsTableView.assertTextVisibilityCount(textToFind: filter, expectedCount: filteredProducts.count)
+
+        return self
     }
 }

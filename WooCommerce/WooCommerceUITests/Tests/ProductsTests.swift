@@ -45,4 +45,13 @@ final class ProductsTests: XCTestCase {
             .enterSearchCriteria(text: products[0].name)
             .verifyProductSearchResults(expectedProduct: products[0])
     }
+
+    func test_filter_product() throws {
+        let products = try GetMocks.readProductsData()
+
+        try TabNavComponent().goToProductsScreen()
+            .tapFilterButton()
+            .setStockStatusFilterAs("Out of stock")
+            .verifyProductFilterResults(products: products, filter: "Out of stock" )
+    }
 }

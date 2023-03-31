@@ -154,6 +154,7 @@ private extension JetpackSetupCoordinator {
     }
 
     func startAuthentication(with email: String?) {
+        analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
         if let email {
             Task { @MainActor in
                 await emailLoginViewModel.checkWordPressComAccount(email: email)
@@ -319,11 +320,13 @@ private extension JetpackSetupCoordinator {
     }
 
     func showMagicLinkUI(email: String) {
+        analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink))
         let viewController = WPComMagicLinkHostingController(email: email, requiresConnectionOnly: requiresConnectionOnly)
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 
     func showPasswordUI(email: String) {
+        analytics.track(event: .JetpackSetup.loginFlow(step: .password))
         let viewModel = WPComPasswordLoginViewModel(
             siteURL: site.url,
             email: email,
@@ -333,6 +336,7 @@ private extension JetpackSetupCoordinator {
             },
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
+                self.analytics.track(event: .JetpackSetup.loginFlow(step: .password, failure: error))
                 let message = error.localizedDescription
                 self.showAlert(message: message)
             },
@@ -360,11 +364,13 @@ private extension JetpackSetupCoordinator {
     }
 
     func show2FALoginUI(with loginFields: LoginFields) {
+        analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode))
         let viewModel = WPCom2FALoginViewModel(
             loginFields: loginFields,
             requiresConnectionOnly: requiresConnectionOnly,
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
+                self.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, failure: error))
                 let message = error.localizedDescription
                 self.showAlert(message: message)
             },

@@ -421,7 +421,7 @@ private extension StoreCreationCoordinator {
                 analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
                                                                          error: error,
                                                                          flow: .native,
-                                                                         isFreeTrial: isFreeTrialCreation))
+                                                                         isFreeTrial: true))
             }
 
         case .failure(let error):
@@ -430,7 +430,7 @@ private extension StoreCreationCoordinator {
             analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
                                                                      error: error,
                                                                      flow: .native,
-                                                                     isFreeTrial: isFreeTrialCreation))
+                                                                     isFreeTrial: true))
         }
     }
 
@@ -485,7 +485,7 @@ private extension StoreCreationCoordinator {
             analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
                                                                      error: error,
                                                                      flow: .native,
-                                                                     isFreeTrial: isFreeTrialCreation))
+                                                                     isFreeTrial: false))
             showStoreCreationErrorAlert(from: navigationController, error: error)
         }
     }
@@ -692,7 +692,7 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func showSuccessView(from navigationController: UINavigationController, site: Site) {
-        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue, siteURL: site.url, flow: .native, isFreeTrial: isFreeTrialCreation))
+        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue, siteURL: site.url, flow: .native, isFreeTrial: false))
         guard let url = URL(string: site.url) else {
             return continueWithSelectedSite(site: site)
         }

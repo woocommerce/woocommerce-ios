@@ -29,14 +29,7 @@ extension WooAnalyticsEvent {
                 case support
                 case continueSetup = "continue_setup"
                 case goToStore = "go_to_store"
-            }
-
-            enum Step: String {
-                case fetchPluginDetail = "fetch_plugin_detail"
-                case install
-                case activate
-                case fetchConnectionURL = "fetch_connection_url"
-                case checkConnection = "check_connection"
+                case retry
             }
         }
 
@@ -55,8 +48,8 @@ extension WooAnalyticsEvent {
             return .init(statName: .jetpackSetupLoginFlow, properties: properties, error: failure)
         }
 
-        static func setupFlow(step: SetupFlow.Step, tap: SetupFlow.TapTarget? = nil, failure: Error? = nil) -> WooAnalyticsEvent {
-            var properties: [String: WooAnalyticsEventPropertyType] = [Key.step.rawValue: step.rawValue]
+        static func setupFlow(step: JetpackInstallStep, tap: SetupFlow.TapTarget? = nil, failure: Error? = nil) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [Key.step.rawValue: step.analyticsValue]
             if let tap {
                 properties[Key.tap.rawValue] = tap.rawValue
             }

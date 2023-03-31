@@ -250,8 +250,6 @@ def xcodebuild(*build_cmds)
   cmd += " -workspace #{XCODE_WORKSPACE}"
   cmd += " -scheme #{XCODE_SCHEME}"
   cmd += " -configuration #{xcode_configuration}"
-  cmd += " -parallel-testing-enabled YES"
-  cmd += " -maximum-concurrent-test-simulator-destinations 3"
   cmd += ' '
   cmd += build_cmds.map(&:to_s).join(' ')
   unless ENV['verbose']

@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 13.0
+This release includes several bug fixes and improvements to make your experience smoother and more enjoyable. It's possible to duplicate a variable product and this includes the product description, sale price, and image. We have some exciting updates coming in the next few weeks. Stay tuned for more information!
+
 ## 12.9
 For this release, we focused on making your experience smoother when creating an order and updating products. We have also made improvements to the login experience without Jetpack. Additionally, it's now possible to install Jetpack from the app if you would like additional functionality such as push notifications and visitor stats. Keep your feedback coming!
 

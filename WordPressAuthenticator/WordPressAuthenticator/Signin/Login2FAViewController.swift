@@ -1,6 +1,5 @@
 import UIKit
 import SVProgressHUD
-import GoogleSignIn
 import WordPressShared
 import WordPressKit
 
@@ -164,9 +163,6 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: true, siteURL: loginFields.siteAddress)
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
         syncWPComAndPresentEpilogue(credentials: credentials)
-
-        // Disconnect now that we're done with Google.
-        GIDSignIn.sharedInstance.disconnect()
 
         // This stat is part of a funnel that provides critical information.  Please
         // consult with your lead before removing this event.

@@ -1,6 +1,5 @@
 import WordPressShared
 import WordPressKit
-import GoogleSignIn
 
 /// View Controller for login-specific screens
 open class LoginViewController: NUXViewController, LoginFacadeDelegate {

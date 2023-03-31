@@ -1,4 +1,3 @@
-import GoogleSignIn
 import WordPressKit
 
 // MARK: - WordPressAuthenticator Configuration

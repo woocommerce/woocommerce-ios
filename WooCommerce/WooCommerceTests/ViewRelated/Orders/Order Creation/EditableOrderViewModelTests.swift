@@ -38,10 +38,6 @@ final class EditableOrderViewModelTests: XCTestCase {
     }
 
     func test_view_model_product_list_is_initialized_with_expected_values_given_product_multiselection_is_disabled() {
-        // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = false
-
-        // Then
         XCTAssertFalse(viewModel.productSelectorViewModel.supportsMultipleSelection)
         XCTAssertFalse(viewModel.productSelectorViewModel.isClearSelectionEnabled)
         XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
@@ -51,9 +47,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
-
-        // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
 
         // Then
         XCTAssertTrue(viewModel.productSelectorViewModel.supportsMultipleSelection)
@@ -311,7 +304,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
 
         // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
         viewModel.productSelectorViewModel.selectProduct(product.productID)
         viewModel.productSelectorViewModel.selectProduct(anotherProduct.productID)
         viewModel.productSelectorViewModel.completeMultipleSelection()
@@ -955,7 +947,6 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = false
         viewModel.productSelectorViewModel.selectProduct(product.productID)
 
         // Then
@@ -977,7 +968,6 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
         viewModel.productSelectorViewModel.selectProduct(product.productID)
         viewModel.productSelectorViewModel.completeMultipleSelection()
 

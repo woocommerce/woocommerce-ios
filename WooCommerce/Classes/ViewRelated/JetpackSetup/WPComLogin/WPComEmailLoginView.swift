@@ -21,7 +21,7 @@ final class WPComEmailLoginHostingController: UIHostingController<WPComEmailLogi
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTransparentNavigationBar()
-        presentationController?.delegate = self
+        navigationController?.presentationController?.delegate = self
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
     }
 

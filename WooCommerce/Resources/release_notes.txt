@@ -1,1 +1,4 @@
-For this release, we focused on making your experience smoother when creating an order and updating products. We have also made improvements to the login experience without Jetpack. Additionally, it's now possible to install Jetpack from the app if you would like additional functionality such as push notifications and visitor stats. Keep your feedback coming!
+- [*] Adds a banner in "Launch store" task screen to upgrade from free trial plan. [https://github.com/woocommerce/woocommerce-ios/pull/9323]
+- [*] Fix: Description, sale price, and image will be copied over to the new product variations when duplicating a variable product. [https://github.com/woocommerce/woocommerce-ios/pull/9322]
+
+

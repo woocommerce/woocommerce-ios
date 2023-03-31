@@ -57,6 +57,7 @@ final class JetpackSetupCoordinator {
                 self.analytics.track(.jetpackSetupLoginButtonTapped)
                 do {
                     try self.saveJetpackConnectionStateIfPossible(result)
+                    self.analytics.track(event: .JetpackSetup.connectionCheckCompleted(isAlreadyConnected: self.jetpackConnectedEmail != nil, requiresConnectionOnly: self.requiresConnectionOnly))
                     if let connectedEmail = self.jetpackConnectedEmail {
                         self.startAuthentication(with: connectedEmail)
                     } else {
@@ -64,8 +65,10 @@ final class JetpackSetupCoordinator {
                     }
                 } catch JetpackCheckError.missingPermission {
                     self.displayAdminRoleRequiredError()
+                    self.analytics.track(.jetpackSetupConnectionCheckFailed, withError: JetpackCheckError.missingPermission)
                 } catch {
                     DDLogError("⛔️ Jetpack status fetched error: \(error)")
+                    self.analytics.track(.jetpackSetupConnectionCheckFailed, withError: error)
                     self.showAlert(message: Localization.errorCheckingJetpack)
                 }
             } else {
@@ -126,7 +129,6 @@ private extension JetpackSetupCoordinator {
         case .success(let user):
             requiresConnectionOnly = true
             jetpackConnectedEmail = user.wpcomUser?.email
-            analytics.track(event: .JetpackSetup.connectionCheckCompleted(isAlreadyConnected: jetpackConnectedEmail != nil, requiresConnectionOnly: true))
 
         case .failure(let error):
             requiresConnectionOnly = false
@@ -136,18 +138,14 @@ private extension JetpackSetupCoordinator {
                 let roles = stores.sessionManager.defaultRoles
                 if roles.contains(.administrator) {
                     jetpackConnectedEmail = nil
-                    analytics.track(event: .JetpackSetup.connectionCheckCompleted(isAlreadyConnected: false, requiresConnectionOnly: false))
                 } else {
-                    analytics.track(.jetpackSetupConnectionCheckFailed, withError: error)
                     throw JetpackCheckError.missingPermission
                 }
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
                 /// 403 means the site Jetpack connection is not established yet
                 /// and the user has no permission to handle this.
-                analytics.track(.jetpackSetupConnectionCheckFailed, withError: error)
                 throw JetpackCheckError.missingPermission
             default:
-                analytics.track(.jetpackSetupConnectionCheckFailed, withError: error)
                 throw error
             }
         }

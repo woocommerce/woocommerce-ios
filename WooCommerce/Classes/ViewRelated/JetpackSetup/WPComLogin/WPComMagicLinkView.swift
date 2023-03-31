@@ -23,6 +23,13 @@ final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkV
         super.viewDidLoad()
         configureTransparentNavigationBar()
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if isMovingFromParent {
+            ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .dismiss))
+        }
+    }
 }
 
 

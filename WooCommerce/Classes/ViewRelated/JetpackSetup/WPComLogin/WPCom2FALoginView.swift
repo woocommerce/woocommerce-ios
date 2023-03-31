@@ -17,6 +17,13 @@ final class WPCom2FALoginHostingController: UIHostingController<WPCom2FALoginVie
         super.viewDidLoad()
         configureTransparentNavigationBar()
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if isMovingFromParent {
+            ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .dismiss))
+        }
+    }
 }
 
 /// View for 2FA login screen of the custom WPCom login flow for Jetpack setup.

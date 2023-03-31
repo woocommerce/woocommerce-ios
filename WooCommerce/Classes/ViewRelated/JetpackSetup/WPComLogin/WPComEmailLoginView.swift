@@ -26,6 +26,7 @@ final class WPComEmailLoginHostingController: UIHostingController<WPComEmailLogi
     @objc
     private func dismissView() {
         dismiss(animated: true)
+        ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, tap: .dismiss))
     }
 }
 

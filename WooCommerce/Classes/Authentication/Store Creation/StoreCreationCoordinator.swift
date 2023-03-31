@@ -17,6 +17,8 @@ final class StoreCreationCoordinator: Coordinator {
 
     let navigationController: UINavigationController
 
+    let isFreeTrialCreation: Bool
+
     // MARK: - Store creation M1
 
     @Published private var possibleSiteURLsFromStoreCreation: Set<String> = []
@@ -63,6 +65,7 @@ final class StoreCreationCoordinator: Coordinator {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
 
         Task { @MainActor in
             if let purchasesManager {
@@ -299,7 +302,7 @@ private extension StoreCreationCoordinator {
 
         alert.addDestructiveActionWithTitle(Localization.DiscardChangesAlert.confirmActionTitle) { [weak self] _ in
             guard let self else { return }
-            let isFreeTrialCreation = self.featureFlagService.isFeatureFlagEnabled(.freeTrial) && flow == .native
+            let isFreeTrialCreation = self.isFreeTrialCreation && flow == .native
             self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: flow, isFreeTrial: isFreeTrialCreation))
             self.navigationController.dismiss(animated: true)
         }
@@ -397,7 +400,6 @@ private extension StoreCreationCoordinator {
 
         // Create store site
         let createStoreResult = await createStore(name: storeName, flow: .wooexpress)
-        let isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
 
         switch createStoreResult {
         case .success(let siteResult):
@@ -480,7 +482,6 @@ private extension StoreCreationCoordinator {
                              countryCode: countryCode,
                              planToPurchase: planToPurchase)
         case .failure(let error):
-            let isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
             analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
                                                                      error: error,
                                                                      flow: .native,
@@ -624,7 +625,7 @@ private extension StoreCreationCoordinator {
     func waitForSiteToBecomeJetpackSite(from navigationController: UINavigationController, siteID: Int64) {
         /// Free trial sites need more waiting time that regular sites.
         ///
-        let retryInterval: UInt64 = featureFlagService.isFeatureFlagEnabled(.freeTrial) ? 10_000_000_000 : 5_000_000_000
+        let retryInterval: UInt64 = isFreeTrialCreation ? 10_000_000_000 : 5_000_000_000
         siteIDFromStoreCreation = siteID
 
         jetpackSiteSubscription = $siteIDFromStoreCreation
@@ -691,7 +692,6 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func showSuccessView(from navigationController: UINavigationController, site: Site) {
-        let isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
         analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue, siteURL: site.url, flow: .native, isFreeTrial: isFreeTrialCreation))
         guard let url = URL(string: site.url) else {
             return continueWithSelectedSite(site: site)

@@ -92,6 +92,7 @@ struct WPComPasswordLoginView: View {
                 // Primary CTA
                 Button(Localization.primaryAction) {
                     viewModel.handleLogin()
+                    ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .password, tap: .submit))
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoggingIn))
                 .disabled(viewModel.password.isEmpty)

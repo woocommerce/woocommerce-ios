@@ -67,6 +67,7 @@ struct WPComMagicLinkView: View {
             VStack {
                 // Primary CTA
                 Button(Localization.openMail) {
+                    ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .submit))
                     onOpenMail()
                 }
                 .buttonStyle(PrimaryButtonStyle())

@@ -72,6 +72,7 @@ struct WPCom2FALoginView: View {
             VStack {
                 // Primary CTA
                 Button(viewModel.titleString) {
+                    ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, tap: .submit))
                     viewModel.handleLogin()
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoggingIn))

@@ -80,6 +80,7 @@ struct WPComEmailLoginView: View {
             VStack {
                 // Primary CTA
                 Button(viewModel.titleString) {
+                    ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, tap: .submit))
                     Task { @MainActor in
                         isPrimaryButtonLoading = true
                         await viewModel.checkWordPressComAccount(email: viewModel.emailAddress)

@@ -12,8 +12,12 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
          connectionOnly: Bool,
          connectionWebViewCredentials: Credentials? = nil,
          authentication: Authentication = ServiceLocator.authenticationManager,
+         analytics: Analytics = ServiceLocator.analytics,
          onStoreNavigation: @escaping (String?) -> Void) {
-        self.viewModel = JetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
+        self.viewModel = JetpackSetupViewModel(siteURL: siteURL,
+                                               connectionOnly: connectionOnly,
+                                               analytics: analytics,
+                                               onStoreNavigation: onStoreNavigation)
         self.authentication = authentication
         self.connectionWebViewCredentials = connectionWebViewCredentials
         super.init(rootView: JetpackSetupView(viewModel: viewModel))

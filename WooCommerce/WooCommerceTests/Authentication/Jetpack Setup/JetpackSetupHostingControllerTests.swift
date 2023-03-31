@@ -3,9 +3,9 @@ import XCTest
 
 @testable import WooCommerce
 
-/// Test cases for `LoginJetpackSetupHostingController`.
+/// Test cases for `JetpackSetupHostingController`.
 ///
-final class LoginJetpackSetupHostingControllerTests: XCTestCase {
+final class JetpackSetupHostingControllerTests: XCTestCase {
     private let testURL = "https://test.com"
 
     func test_it_tracks_login_jetpack_setup_screen_viewed_when_view_loads() throws {
